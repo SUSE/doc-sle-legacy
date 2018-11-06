@@ -1,0 +1,100 @@
+On Tue, 2008-10-14 at 10:37 -0600, Gary Ekker wrote:
+> Hi Tanja,
+> 
+> You probably already have this in your todo list for SLE11 docs.
+> 
+> Given that David presented this in Ralf's all-hands meeting today, there
+> is now a lot of interest in checking it out internally. I'm wondering if
+> you would be able to move this up in your list and do it soonish?
+> 
+> If so, David can supply you with what he has already written to help
+> others in the team configure and use NOMAD. He can also answer any
+> questions you might have.
+
+Thanks Gary,
+
+I've attached some existing usage information. The terms VDISTRO and
+PDISTRO are probably not something people are aware of so we'll have to
+replace it with vdistro="remote desktop" and pdistro="local desktop".
+The instructions should be accurate otherwise.
+
+ -david
+Encapsulated message
+  [Nomad-dev] nomad instructions for sled11
+From: 
+David Reveman <dreveman@novell.com>
+  To: 
+nomad-dev@forge.provo.novell.com
+  CC: 
+Hubert Figuiere <hfiguiere@novell.com>
+  Date: 
+29.09.2008 16:48
+   
+These instructions should not change in any significant way between now
+and the release SLED11. The required versions of all these packages have
+not yet made it to Factory so you'll have to use our nomad obs project
+for now.
+
+OBS project:
+home:hfiguiere:NOMAD
+
+(https://build.opensuse.org/project/show?project=home%3Ahfiguiere:NOMAD)
+
+
+VDISTRO
+
+required packages:
+xrdp xorg-x11-server-rdp xorg-x11-server-dmx
+
+additional packages:
+compiz compiz-plugins-dmx compiz-fusion-plugins-main libcompizconfig
+python-compizconfig compiz-manager simple-ccsm
+
+instructions:
+xrdp is an RDP server and it will automatically be added to run-level 5
+during package installation. To start/stop the service manually,
+use /etc/init.d/xrdp. xrdp handles RDP connections and provides session
+management. xrdp desktop sessions are independent and doesn't conflict
+with regular display managers like gdm. However, you likely want to
+disable the normal display manager when using xrdp.
+
+Port 3389 is used for RDP connections so you'll have to configure the
+firewall to allow connections to this port.
+
+you should be able to connect and start desktop sessions from any RDP
+client once xrdp is running and port 3389 is open.
+
+xrdp will automatically take advantage of the rdpx11 channel for
+superior performance when a client supports it.
+
+install the additional compiz packages if you like use desktop effects.
+This will improve performance significantly when using a client with
+rdpx11 support.
+
+
+PDISTRO
+
+required packages:
+rdesktop
+
+additional packages:
+compiz compiz-plugins-dmx compiz-fusion-plugins-main libcompizconfig
+python-compizconfig compiz-manager simple-ccsm tsclient
+
+instructions:
+simply install the rdesktop package and use it to connect to your
+vdistro just like you would use it to connect to a Windows machine.
+
+install the tsclient package for a graphical interface to rdesktop.
+
+for improved performance and desktop effects, install the additional
+compiz packages and use the control panel applet to enable desktop
+effects on both the vdistro and the pdistro just like you would on a
+normal system.
+
+
+_______________________________________________
+Nomad-dev mailing list
+Nomad-dev@forge.provo.novell.com
+http://forge.provo.novell.com/mailman/listinfo/nomad-dev
+  End of encapsulated message
