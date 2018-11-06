@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_smpppd.xml" id="sec.smpppd">
+ <title>作为拨号助手的 smpppd</title><indexterm id="idx.Internet_smpppd"> <primary>因特网</primary><secondary>smpppd</secondary></indexterm><indexterm id="idx.Internet_dial-up"><primary>因特网</primary><secondary>拨号</secondary></indexterm>
+
+ <para>
+  部分家庭用户不具备连接到因特网的专线。而是使用拨号连接。根据所用的拨号方法（ISDN 或 DSL），连接受 ipppd 或 pppd 的控制。基本上，只要正确启动这些程序就可以联网了。
+ </para>
+
+ <para>
+  如果采用包月付费方式（拨号连接不产生任何附加费用），则只需启动相应的守护程序。用桌面小程序或命令行界面来控制拨号连接。如果因特网网关不是您所用的主机，最好通过网络主机来控制拨号连接。
+ </para>
+
+ <para>
+  在这种环境下需使用 smpppd (SUSE Meta PPP Daemon)。该程序为辅助程序提供统一的界面，并且可以双向执行。首先，它要对所需的 pppd 或 ipppd 编程，并控制其拨号属性。然后，向用户程序提供各种提供商，并传送有关当前连接状态的信息。由于还可以通过网络来控制 smpppd，该程序适用于从专用子网中的工作站控制与因特网的拨号连接。
+ </para>
+
+ <sect2>
+  <title>配置 smpppd</title>
+  <para>
+   YaST 可以自动配置由 smpppd 提供的连接。同时还会预先配置实际的拨号程序 KInternet 和 cinternet。只有在配置 smpppd 的附加功能（如远程控制）时，才需要手动设置。
+  </para>
+  <para>
+   smpppd 的配置文件为 <filename>/etc/smpppd.conf</filename>。默认情况下并未启用远程控制。此配置文件最重要的选项包括：
+  </para><indexterm> <primary>配置文件</primary><secondary>smppd.conf</secondary> </indexterm>
+  <variablelist>
+   <varlistentry>
+    <term>open-inet-socket = <replaceable>yes|no</replaceable>
+    </term>
+    <listitem>
+     <para>
+      要通过网络控制 smpppd，请将此选项设置为 <literal>yes</literal>。smpppd 侦听端口 <literal>3185</literal>。如果将此参数设置为 <literal>yes</literal>，则还必须相应设置 <literal>bind-address</literal>、<literal>host-range</literal> 和 <literal>password</literal> 等参数。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>bind-address = <replaceable>ip address</replaceable>
+    </term>
+    <listitem>
+     <para>
+      如果主机有多个 IP 地址，使用此参数可以确定 smpppd 应在哪个 IP 地址上接受连接。默认值是监听所有地址。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>host-range = <replaceable>min ip</replaceable><replaceable>max ip</replaceable>
+    </term>
+    <listitem>
+     <para>
+      参数 <literal>host-range</literal> 用于定义网络范围。IP 地址属于这一范围的主机将被授予访问 smpppd 的权限。此范围之外的所有主机均不具备访问权。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>password = <replaceable>password</replaceable>
+    </term>
+    <listitem>
+     <para>
+      通过指派口令可使客户端仅限于授权主机。由于这是个纯文本口令，不应高估该口令提供的安全性。如果未指派任何口令，所有客户端都有权访问 smpppd。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>slp-register = <replaceable>yes|no</replaceable>
+    </term>
+    <listitem>
+     <para>
+      使用此参数，可以通过 SLP 在网络中声明 smpppd 服务。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   关于 smpppd 的详细信息，请参见 <systemitem>smpppd(8)</systemitem> 和 <systemitem>smpppd.conf(5)</systemitem> 手册页。
+  </para>
+ </sect2>
+
+ <sect2>
+  <title>为远程使用配置 <command>cinternet</command></title><indexterm> <primary>因特网</primary> <secondary>cinternet</secondary></indexterm>
+  <para>
+   cinternet 可用于控制本地或远程 smpppd。cinternet 是图形 KInternet 的命令行形式。要使这些实用程序可用于远程 smpppd，请手动编辑配置文件 <filename>/etc/smpppd-c.conf</filename> 或使用 cinternet。此文件仅使用四个选项：
+  </para><indexterm> <primary>配置文件</primary> <secondary>smpppd-c.conf</secondary> </indexterm>
+  <variablelist>
+   <varlistentry>
+    <term>sites = <replaceable>list of sites</replaceable>
+    </term>
+    <listitem>
+     <para>
+      <replaceable>list of sites</replaceable>，其中前端搜索 smpppd。前端将按照在此指定的选项顺序来测试这些选项。<literal>local</literal> 规定建立到本地 smpppd 的连接。<literal>gateway</literal> 指向网关上的 smpppd。<literal>config-file</literal> 表示应建立到 <filename>/etc/smpppd-c.conf</filename> 中 <systemitem>server</systemitem> 和 <systemitem>port</systemitem> 选项指定的 smpppd 连接。<literal>slp</literal> 命令前端通过 SLP 连接到发现的 smpppd。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>server = <replaceable>server</replaceable>
+    </term>
+    <listitem>
+     <para>
+      运行 smpppd 的主机。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>port = <replaceable>port</replaceable>
+    </term>
+    <listitem>
+     <para>
+      运行 smpppd 的端口。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>password = <replaceable>password</replaceable>
+    </term>
+    <listitem>
+     <para>
+      为 smpppd 选择的口令。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   如果 smpppd 处于活动状态，请尝试访问它。例如，使用 <command>cinternet</command> <option>--verbose --interface-list</option>。如果此时遇到困难，请参见 <systemitem>smpppd-c.conf(5)</systemitem> 和 <systemitem>cinternet(8)</systemitem> 手册页。
+  </para>
+ </sect2>
+</sect1>

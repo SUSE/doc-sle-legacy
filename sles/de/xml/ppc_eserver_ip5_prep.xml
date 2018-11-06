@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_eserver_ip5_prep.xml" id="sec.prep.eserver">
+ <title>Vorbereitung der Installation auf den IBM-Modellen eServer p5, System p und OpenPower</title><indexterm> <primary>Vorbereitung</primary><secondary>eServer</secondary> </indexterm>
+ <para>
+  Dieser Abschnitt befasst sich mit der Vorbereitung für die Installation von SUSE® Linux Enterprise Server auf IBM eServer p5-Systemen. Der Abschnitt beschreibt die Installation über das systemeigene CD-ROM-Laufwerk und die Installation über das Netzwerk.
+ </para>
+ <para>
+  In diesem Abschnitt wird davon ausgegangen, dass die Hardware Management Console (HMC) eingerichtet und mit Ihrem System verbunden ist. Weitere Informationen zur Verwendung des Assistenten für die Konfiguration der HMC finden Sie unter <quote>HMC mit dem Guided Setup Wizard konfigurieren</quote>: <ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphai_p5/confighmcgs.htm?"/>
+ </para>
+ <sect3 id="sec.prep.eserver.features6x0">
+
+  <title>Moderne Funktionen der IBM eServer p5-Systeme</title>
+  <para>
+   IBM eServer p5-Systeme bieten die Möglichkeit, das System zu partitionieren. Dies ermöglicht den gleichzeitigen Betrieb von bis zu 254 Betriebssystemen auf einem Computer. Die Betriebssysteme werden in <emphasis>LPARs</emphasis> (logischen Partitionen) installiert. Eine oder auch mehrere dieser Partitionen können eine SUSE Linux Enterprise Server-Umgebung enthalten.
+  </para>
+  <para>
+   Zur Vorbereitung einer LPAR-Partition für SUSE Linux Enterprise Server konfigurieren Sie das System zunächst über die <emphasis>HMC</emphasis>. Einzelheiten hierzu erfahren Sie in der IBM-Dokumentation: <ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphbi/iphbikickoff.htm"/>
+  </para>
+
+
+
+
+
+
+
+
+
+ </sect3>
+ <sect3 id="sec.prep.eserver.diskspace">
+  <title>Speicherbedarf</title>
+  <para>
+   Vergewissern Sie sich, dass Ihre Festplatte über ausreichend Speicherplatz für die Installation von SUSE Linux Enterprise Server verfügt. Das Standardsystem benötigt mindestens 4 GB freien Festplattenspeicher.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.netsource">
+
+  <title>Zuweisen eines Installationsgeräts für eine LPAR</title>
+  
+  <para>
+   SUSE Linux Enterprise Server kann von einem CD-ROM- oder DVD-Laufwerk oder einer Netzwerkinstallationsquelle installiert werden. Machen Sie das CD-ROM-/DVD-Laufwerk oder Netzwerkgerät der zu installierenden LPAR verfügbar.
+  </para>
+  <figure id="fig.ip5.hmc.start.menu">
+   <title>HMC: Serververwaltung – Eigenschaften</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <procedure id="ip5.hmc.assign.cdrom">
+   <title>Zuweisen eines CD-ROM- oder DVD-Laufwerks zu einer LPAR</title>
+   <step performance="required">
+    <para>
+     Öffnen Sie die HMC-Anwendung und navigieren Sie zu <menuchoice> <guimenu>Server und Partition</guimenu> <guimenu>Server Management</guimenu></menuchoice>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Erweitern Sie von den verfügbaren Servern den Server und die Partition, die installiert werden soll.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Klicken Sie mit der rechten Maustaste auf das gewünschte Profil für die Installation und wählen Sie <guimenu>Eigenschaften</guimenu> (siehe <xref linkend="fig.ip5.hmc.start.menu"/>).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Wählen Sie im Dialogfeld <guimenu>Logical Partition Profile Properties</guimenu> (Profileigenschaften der logischen Partition) den Karteireiter <guimenu>Physisches I/O</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     
+     
+     
+     Wählen Sie unter <guimenu>Verwaltete E/A-Geräte des Systems</guimenu> unter dem Bus, an dem das Laufwerk installiert ist, die Option <guimenu>Andere Massenspeicher-Controller</guimenu> aus. Zum Zuweisen des CD-ROM/DVD-Laufwerks zur Partition klicken Sie auf <guimenu>Bei Bedarf hinzufügen</guimenu>.
+    </para>
+   </step>
+  </procedure>
+  <para>
+   Das Ergebnis sollte folgendermaßen aussehen: <xref linkend="fig.ip5.hmc.assign.cdrom"/>.
+  </para>
+  <figure id="fig.ip5.hmc.assign.cdrom">
+   <title>HMC: Verwaltete E/A-Geräte des Systems</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  
+  <para>
+   Legen Sie nun die SUSE Linux Enterprise Server-CD1 oder -DVD1 in das Laufwerk ein.
+  </para>
+
+  <procedure>
+   <title>Zuweisen eines Netzwerkgeräts zu einer LPAR</title>
+   <step performance="required">
+    <para>
+     Öffnen Sie die HMC-Anwendung und navigieren Sie zu <menuchoice> <guimenu>Server und Partition</guimenu> <guimenu>Server Management</guimenu></menuchoice>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Öffnen Sie von den verfügbaren Servern den Server und die Partition, auf denen die Installation erfolgen soll.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Klicken Sie mit der rechten Maustaste auf das gewünschte Profil für die Installation und wählen Sie <guimenu>Eigenschaften</guimenu> (siehe <xref linkend="fig.ip5.hmc.start.menu"/>).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Wählen Sie im Dialogfeld <guimenu>Logical Partition Profile Properties</guimenu> (Profileigenschaften der logischen Partition) den Karteireiter <guimenu>Physisches I/O</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Wählen Sie unter <guimenu>Verwaltete E/A-Geräte des Systems</guimenu> unter dem Bus, an dem die Netzwerkkarte angeschlossen ist, die Option <guimenu>PCI 10/100/1000Mbps Ethernet UTP 2-Port</guimenu> aus. Klicken Sie danach auf <guimenu>Bei Bedarf hinzufügen</guimenu>.
+    </para>
+    <para>
+     Informationen zur Installation über einen virtuellen Ethernet-Adapter finden Sie in der IBM-Dokumentation.
+     
+     
+     
+    </para>
+   </step>
+  </procedure>
+  
+  <para>
+
+   Wenn SUSE Linux Enterprise Server auf mehreren Partitionen installiert werden soll, sollten Sie eine Netzwerkinstallationsquelle erstellen. Sie brauchen die CDs dann während der Installation nicht ständig zu wechseln. Die Installationsquelle kann auch für gleichzeitige Installationen auf verschiedenen Systemen verwendet werden. Informationen zur Konfiguration einer Netzwerkinstallationsquelle finden Sie in <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.startinstall">
+  <title>Starten der Installation</title>
+  <para>
+   Zur Ausführung der Installation müssen Sie das System neu starten. Klicken Sie mit der rechten Maustaste auf den Profilnamen, klicken Sie auf <guimenu>Aktivieren</guimenu> und bestätigen Sie das darauf folgende Dialogfeld mit <guimenu>OK</guimenu>.
+  </para>
+  
+  <para>
+   Verwenden Sie die Bildschirmkonsole oder verbinden Sie sich, wie in der IBM-Dokumentation beschrieben, mit einer seriellen Konsole. Eine einfache Startmethode für eine serielle Konsole ist das Öffnen von VTerm während der Aktivierung der Partition. Aktivieren Sie dazu im Dialogfeld <guimenu>Logische Partition aktivieren</guimenu> die Option <guimenu>Terminalfenster oder Konsolensitzung öffnen</guimenu>.
+  </para>
+  <para>
+   Drücken Sie beim Starten des Systems während der Systemüberprüfung die Taste <keycap>F1</keycap> bzw. bei Verwendung einer seriellen oder virtuellen Konsole die Taste <keycap>1</keycap>, um die System-Firmware anzuzeigen:
+
+  </para>
+
+<screen>
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+
+       1 = SMS Menu                          5 = Default Boot List
+       8 = Open Firmware Prompt              6 = Stored Boot List
+
+
+     memory      keyboard     network     scsi     speaker 
+</screen>
+
+  <para>
+   Drücken Sie während der Überprüfung der SCSI-Geräte die Taste <keycap>F1</keycap> bzw. <keycap>1. </keycap> Wählen Sie <guimenu>5. Select Boot Options</guimenu>, um das Dialogfeld mit den Boot-Optionen zu öffnen:
+
+  </para>
+
+
+<screen>
+Version SF220_004
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+---------------------------------------------------------------------
+Main Menu
+ 1.  Select Language
+ 2.  Setup Remote IPL (Initial Program Load)
+ 3.  Change SCSI Settings
+ 4.  Select Console
+ 5.  Select Boot Options
+
+
+---------------------------------------------------------------------
+Navigation Keys:
+
+                                  X = eXit System Management Services
+---------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation
+                                                                Key:5
+</screen>
+
+  <para>
+   Wählen Sie <guimenu>1. Select Install/Boot Device</guimenu>, um das <emphasis>Installationsgerät</emphasis> festzulegen. Wechseln Sie zu <guimenu>7. List all Devices</guimenu>, um die Liste der verfügbaren Geräte zu sehen:
+
+  </para>
+
+<screen>
+Version SF220_011
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Device
+Device  Current  Device
+Number  Position  Name
+ 1.        -      Virtual Ethernet 
+                  ( loc=U9111.520.10D3CCC-V1-C3-T1 )
+ 2.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T5 )
+ 3.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T6 )
+ 4.        -      IDE CD-ROM 
+                  ( loc=U787A.001.DNZ00XG-P4-D3 )
+ 5.        1      SCSI 73407 MB Harddisk
+                  ( loc=U787A.001.DNZ00XG-P1-T10-L8-L0 )
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+ </sect3>
+
+ <sect3 id="sec.prep.eserver.boot.cd">
+  <title>Booten vom CD-ROM-Laufwerk</title>
+  <para>
+   Wählen Sie das CD-ROM-Laufwerk aus (in diesem Beispiel <literal>4</literal>):
+
+  </para>
+  
+
+<screen>SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Task
+
+IDE CD-ROM 
+    ( loc=U787A.001.DNZ00XG-P4-D3 )
+
+ 1.  Information
+ 2.  Normal Mode Boot
+ 3.  Service Mode Boot
+
+
+
+
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+  <para>
+   Wählen Sie <guimenu>2. Normal Mode Boot</guimenu>, um die Installation von diesem Gerät auszuführen. Bestätigen Sie das nächste Fenster mit <guimenu>1. Yes</guimenu>, um die <guimenu>System-Verwaltungsdienste</guimenu> zu beenden und von diesem Gerät zu booten.
+  </para>
+  <para>
+   Das System liest die CD-ROM ein und startet das Dienstprogramm yaboot:
+
+  </para>
+  
+
+
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+
+  <para>
+   Geben Sie <guimenu>install</guimenu> ein und drücken Sie <keycap>Eingabe</keycap>.
+  </para>
+  <para>
+   Wenn Sie die Installationsdaten nicht von der CD-ROM, sondern von einer Netzwerkinstallationsquelle einlesen möchten (siehe <xref linkend="sec.prep.eserver.netsource"/>), fügen Sie an den Namen des Kernel (<option>install</option>) die Option <literal>manual</literal> an.
+  </para>
+  <para>
+   Wenn Sie die Installation über VNC ausführen möchten, fügen Sie die Parameter <option>vnc=1</option> und <option>vncpassword=<replaceable>passwort</replaceable></option> an den Namen des Kernel (<literal>install</literal>) an. Weitere Informationen über VNC finden Sie in <xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.boot.net">
+  <title>Booten von der Netzwerkquelle</title>
+  <para>
+   Wählen Sie ein Ethernet-Gerät aus, das auf die Installationsquelle (in diesem Beispiel <literal>2</literal>) zugreifen kann.
+  </para>
+ </sect3>
+ <sect3>
+  <title>Weitere Schritte</title>
+  <para>
+   Fahren Sie nun mit Kapitel <xref linkend="cha.inst"/> fort, um die Installation der Software mit linuxrc und YaST auszuführen.
+  </para>
+ </sect3>
+</sect2>

@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="zseries_info_i.xml" id="cha.info_sysreq">
+ <title>Informazioni e requisiti generali</title>
+
+ <para>
+  Questa sezione contiene informazioni di base sui requisiti di sistema come hardware, livello di MicroCode e software supportati. Inoltre, contiene informazioni sui diversi tipi di installazione, le operazioni per effettuare un IPL per la prima installazione e informazioni sull'IOCDS.
+ </para>
+
+ <sect2 id="sec.info_sysreq.sysreq">
+  <title>Requisiti di sistema</title><indexterm> <primary>preparazione</primary> <secondary>requisiti di sistema</secondary> </indexterm> <indexterm> <primary>requisiti di sistema</primary> </indexterm>
+  <para>
+   Questa sezione offre un elenco di componenti hardware per IBM System z supportati da <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Inoltre, contiene una descrizione sul livello del MicroCode (MCL) utilizzato nel proprio sistema IBM System z9 e zSeries, che è molto importante per l'installazione. Nella parte conclusiva di questa sezione viene elencato il software aggiuntivo da installare e utilizzare per l'installazione.
+  </para>
+  <sect3 id="sec.info_sysreq.sysreq.hw">
+   <title>Hardware</title><indexterm> <primary>requisiti di sistema</primary><secondary>hardware</secondary> </indexterm>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> è stato eseguito correttamente sulle piattaforme seguenti:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      IBM Series z9 (z9-EC) 2094
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM Series z9 (z9-BC) 2096
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM Series z10 (z10-EC) 2097
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM Series z10 (z10-BC) 2098
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      
+      IBM zEnterprise System z196 2817
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      
+      IBM zEnterprise System z114 2818
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM zEnterprise EC12 (zEC12) 2827
+     </para>
+    </listitem>
+      
+   </itemizedlist>
+   <sect4 id="sec.info_sysreq.sysreq.hw.mem">
+    <title>Requisiti di memoria</title>
+    <para>
+     Metodi di installazione diversi richiedono requisiti di memoria diversi nel corso dell'installazione. Al termine dell'installazione, l'amministratore di sistema può ridurre la memoria alla dimensione desiderata. SUSE consiglia il seguente utilizzo:
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          768 MB
+         </para>
+        </entry>
+        <entry>
+         <para>
+          Per installazione in z/VM.
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          1 GB
+         </para>
+        </entry>
+        <entry>
+         <para>
+          Per installazione in LPAR.
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+    <note>
+     <title>requisiti di memoria per origini di installazione remota</title>
+     <para>
+      Per origini di installazione NFS, FTP, o SMB o quando si utilizza VNC, è richiesto un minimo di 512 MB di memoria; in caso contrario è probabile che il tentativo di installazione non riesca. Notare inoltre che il numero di dispositivi visibili dal guest z/VM o dall'immagine LPAR influenza i requisiti di memoria. L'installazione con, letteralmente, centinaia di dispositivi accessibili (anche se non utilizzati per l'installazione) potrebbe richiede un'ulteriore quantità di memoria.
+     </para>
+    </note>
+   </sect4>
+   <sect4 id="sec.info_sysreq.sysreq.hw.diskspace">
+    <title>Requisiti per lo spazio su disco</title>
+    <para>
+     I requisiti dipendono dall'applicazione. In generale, per ottenere un sistema che funzioni correttamente, sarà necessario più spazio di quanto richiesto dall'installazione software. I requisiti minimi per le differenti selezioni sono:
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          2.6 GB
+         </para>
+        </entry>
+        <entry>
+         <para>
+          Installazione di default
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          3.6 GB+
+         </para>
+        </entry>
+        <entry>
+         <para>
+          Consigliati (con desktop grafico, pacchetti di sviluppo e Java).
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect4>
+   <sect4 id="sec.info_sysreq.sysreq.hw.network">
+    <title>Connessione di rete</title>
+    <para>
+     È necessaria una connessione di rete per comunicare con il sistema <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. È possibile scegliere una o più tra le seguenti connessioni o schede di rete:
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       OSA Express Ethernet (incluso Fast e Gigabit Ethernet)
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       HiperSockets o LAN Guest
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       10 GBE, VSWITCH
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     Le seguenti interfacce sono ancora incluse, ma non più supportate:
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       CTC (o CTC virtuale)
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       ESCON
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Interfaccia di rete IP per IUCV
+      </para>
+     </listitem>
+    </itemizedlist>
+   </sect4>
+   <sect4 id="sec.info_sysreq.sysreq.hw.ipl">
+    <title>Opzioni IPL</title>
+    <para>
+     Per un'installazione da LPAR, l'opzione <guimenu>Load from CD-ROM or Server (Carica da CD-ROM o da server)</guimenu> è la modalità preferita per effettuare l'IPL del kernel e dell'initrd (disco RAM iniziale) dell'installazione. Se questa opzione non è disponibile e non è possibile utilizzare z/VM per l'installazione del sistema, è necessario effettuare l'IPL, utilizzando il kernel tapeipl, il parmfile e l'initrd, da un'unità a nastro collegata a un canale. Per questo motivo, è necessario accedere a un'unità a nastro (3480, 3490 o 3590, ad esempio).
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.info_sysreq.sysreq.microcode">
+   <title>Livello di MicroCode, APAR e correzioni</title><indexterm> <primary>requisiti di sistema</primary> <secondary>livello di MicroCode</secondary> </indexterm>
+   <para>
+    La documentazione relativa alle restrizioni e ai requisiti per questa release di SUSE Linux Enterprise Server è disponibile in IBM developerWorks all'indirizzo <ulink url="http://www.ibm.com/developerworks/linux/linux390/documentation_suse.html"/>. È consigliabile utilizzare sempre il livello massimo di servizio disponibile. Contattare l'assistenza IBM per conoscere i requisiti minimi.
+   </para>
+   <sect4 id="sec.info_sysreq.sysreq.microcode.vm">
+    <title>z/VM</title>
+    <variablelist>
+     <varlistentry>
+      <term>z/VM 5.4</term>
+      <listitem>
+       <para/>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>z/VM 6.2</term>
+      <listitem>
+       <para/>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     È consigliabile concordare l'ordine di installazione con la propria assistenza IBM, poiché potrebbe essere necessario attivare gli APAR della VM prima di installare i nuovi livelli di MicroCode.
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.info_sysreq.sysreq.software">
+   <title>Software</title><indexterm> <primary>requisiti di sistema</primary> <secondary>software</secondary> </indexterm>
+   <para>
+    Durante l'installazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> tramite NFS o FTP non basati su Linux, potrebbero verificarsi problemi con il software del server NFS o FTP. Possono verificarsi errori in presenza di un server FTP standard su Windows. Per questo motivo è sempre consigliabile installare SMB su questi computer.
+   </para>
+   <para>
+    Per connettersi al sistema di installazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, è richiesto uno dei metodi seguenti:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>SSH con emulazione di terminale (compatibile xterm)</term>
+     <listitem>
+      <para>
+       SSH è lo strumento standard Unix che dovrebbe essere presente su qualsiasi sistema Unix o Linux. Per Windows, esiste un client SSH chiamato Putty. L'utilizzo è gratuito ed è disponibile presso <ulink url="http://www.chiark.greenend.org.uk/~sgtatham/putty/"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Client VNC</term>
+     <listitem>
+      <para>
+       Per Linux, un client VNC chiamato vncviewer è incluso in <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> come parte del pacchetto <systemitem class="resource">tightvnc</systemitem>. tightvnc è anche disponibile per Windows il cui download può essere eseguito da <ulink url="http://www.tightvnc.com/"/>. In alternativa, utilizzare il client Java per VNC e un browser Web con supporto Java.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Server X</term>
+     <listitem>
+      <para>
+       Su qualsiasi workstation Linux o Unix è possibile trovare un'implementazione adatta del server X. Esistono in commercio molti ambienti di sistema X Window per Windows e Macintosh. Alcuni sono scaricabili in prova gratuita. Una versione di prova di Mocha X Server di MochaSoft è disponibile in <ulink url="http://www.mochasoft.dk/freeware/x11.htm"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <tip>
+    <title>informazioni aggiuntive</title>
+    <para>
+     Consultare il file <filename>README</filename> disponibile nella directory radice del DVD 1 del proprio <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> prima di procedere alla relativa installazione<phrase role="productname"><phrase os="sles"/></phrase> in IBM System z. Questo file completa la documentazione inclusa nel presente manuale.
+    </para>
+   </tip>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.info.installation">
+  <title>Tipi di installazione</title><indexterm> <primary>preparazione</primary> <secondary>tipi di installazione</secondary> </indexterm> <indexterm> <primary>tipi di installazione</primary> </indexterm>
+  <para>
+   Questa sezione contiene una panoramica dei diversi tipi di installazione possibili con <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> per IBM System z. In sostanza, vengono descritti i due tipi seguenti:
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>LPAR</term>
+    <listitem>
+     <para>
+      Installazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> mediante una partizione logica (LPAR).
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>VM (z/VM)</term>
+    <listitem>
+     <para>
+      Installazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> come sistema operativo guest all'interno di z/VM.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   In base alla modalità di installazione (LPAR o VM) esistono diverse possibilità per l'avvio del processo di installazione e l'esecuzione dell'IPL del sistema installato.
+  </para>
+  <sect3 id="sec.info.installation.lpar">
+   <title>LPAR</title><indexterm> <primary>tipi di installazione</primary> <secondary>LPAR</secondary> </indexterm>
+   <para>
+    Se si installa <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> per IBM System z in una partizione logica separata (LPAR), consentire a <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> di utilizzate una parte speciale della memoria fisica nel sistema. Stabilire inoltre quanti processori assegnare a <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. In questa modalità, sui sistemi IBM System z9 e zSeries è possibile eseguire contemporaneamente diversi sistemi operativi.
+   </para>
+  </sect3>
+  <sect3 id="sec.info.installation.vm">
+   <title>z/VM</title><indexterm> <primary>tipi di installazione</primary> <secondary>z/VM</secondary> </indexterm>
+   <para>
+    L'esecuzione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> per IBM System z in z/VM significa che <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> è un sistema guest all'interno di z/VM. Un vantaggio di questa modalità è la possibilità di disporre del controllo completo su <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> da z/VM. Ciò è molto utile per lo sviluppo del kernel o per il debugging basato sul kernel. È inoltre molto semplice aggiungere o rimuovere hardware sui sistemi Linux ospiti. La creazione di guest <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> aggiuntivi è semplice e consente l'esecuzione simultanea di centinaia di istanze Linux.
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.info.iplopt">
+  <title>Opzioni IPL</title><indexterm> <primary>preparazione</primary> <secondary>opzioni IPL</secondary> </indexterm> <indexterm> <primary>opzioni IPL</primary> </indexterm>
+  <para>
+   Questa sezione contiene le informazioni necessarie per eseguire un IPL per la prima installazione. In base al tipo di installazione, sono necessarie opzioni diverse. Vengono descritte le opzioni per unità a nastro collegate a un canale, per il lettore VM e per il caricamento da CD-ROm o da server. L'installazione dei pacchetti software, effettuata tramite la rete, non richiede il supporto IPL.
+  </para>
+  <sect3 id="sec.info.iplopt.tape">
+   <title>Unità a nastro collegata a canali ESCON/FICON</title><indexterm> <primary>opzioni IPL</primary> <secondary>unità a nastro collegata a canali ESCON</secondary> </indexterm> <indexterm> <primary>opzioni IPL</primary> <secondary>unità a nastro collegata a canali FICON</secondary> </indexterm>
+   <para>
+    L'esecuzione dell'IPL da un'unità a nastro collegata a un canale è possibile su tutti i sistemi collegati a una libreria a nastro. L'unico prerequisito è che la LPAR in cui eseguire l'installazione (o consentire l'esecuzione di z/VM) sia in grado di accedere all'unità a nastro. Per questa operazione, la dichiarazione <literal>IODEVICE</literal> nell'IOCDS deve presentare l'attributo <literal>SHARED</literal> o <literal>PART=&lt;LPARName&gt;</literal>.
+   </para>
+  </sect3>
+  <sect3 id="sec.info.iplopt.vm_reader">
+   <title>Lettore VM</title><indexterm> <primary>opzioni IPL</primary> <secondary>lettore VM</secondary> </indexterm>
+   <para>
+    Per eseguire l'IPL da un lettore VM, è necessario prima trasferire i file necessari nel lettore. In seguito, è possibile eseguire facilmente più IPL. Questa è la modalità preferita di procedere su z/VM. Per maggiore praticità nell'amministrazione, è consigliabile creare un utente <literal>linuxmnt</literal> che dispone di un minidisco contenente i file e gli script necessari per l'IPL. Questo minidisco in seguito può essere accessibile in sola lettura dai sistemi Linux ospiti.
+   </para>
+  </sect3>
+  <sect3 id="sec.info.iplopt.cdrom">
+   <title>Caricamento da CD/DVD-ROM o server</title><indexterm> <primary>opzioni IPL</primary> <secondary>caricamento da CD/DVD-ROM o server</secondary> </indexterm>
+   <para>
+    Per eseguire IPL in una LPAR, è possibile caricare l'immagine del kernel direttamente dall'SE, dal dispositivo CD/DVD-ROM di HMC oppure da qualsiasi sistema remoto accessibile tramite FTP. Questa funzione può essere eseguita dall'HMC. Il processo di installazione richiede un file con una mappatura dell'ubicazione dei dati di installazione nel file system e le ubicazioni di memoria dove dovranno essere copiati i dati. Per <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> questo file è chiamato <filename>suse.ins</filename> e si trova nella directory radice del file system sul DVD 1.
+   </para>
+   <para>
+    Nel riquadro di navigazione sinistro di HMC espandere <guimenu>Gestione dei sistemi e server</guimenu> e selezionare il sistema mainframe con cui lavorare. Scegliere la partizione LPAR in cui si desidera avviare <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> nella tabella delle LPAR visualizzate nell'area dei contenuti in alto a destra. Nell'area Task, espandere <guimenu>Ripristino</guimenu> e fare clic su <guimenu>Carica da CD-ROM, DVD o server</guimenu>.
+   </para>
+   <para>
+    Quindi, scegliere <guimenu>CD-ROM/DVD della consolle di gestione hardware</guimenu> o <guimenu>Origine FTP</guimenu>. Se si sceglie l'ultima opzione, è necessario specificare l'indirizzo o il nome del server e fornire le credenziali. Se il file <filename>suse.ins</filename> non è ubicato nella directory root sul server, specificare il percorso del file. Passare al menu <guimenu>Selezionare il software da caricare</guimenu>, quindi scegliere la voce <filename>suse.ins</filename>. Fare clic su <guimenu>OK</guimenu> per avviare l'installazione.
+   </para>
+  </sect3>
+  <sect3 id="sec.info.iplopt.dvd">
+   <title>Caricamento da DVD SCSI</title>
+   <para>
+    Per eseguire l'IPL da un DVD SCSI, è necessario accedere a un adattatore FCP collegato ad un'unità DVD. Sono necessari valori quali WWPN e LUN dell'unità SCSI. Per informazioni, vedere la <xref linkend="sec.prep.ipling.lpar.dvd"/>.
+   </para>
+  </sect3>
+   <sect3 id="sec.info.iplopt.zpxe">
+   <title>Caricamento dalla rete con zPXE</title>
+   <para>
+    Per l'esecuzione dell'IPL dalla rete con zPXE è necessario un server Cobbler in grado di fornire kernel, disco RAM e un parmfile. zPXE è disponibile solo su z/VM ed è possibile inizializzarlo eseguendo lo script ZPXE EXEC. Per ulteriori informazioni, vedere <xref linkend="sec.prep.makeavail.zpxe_cobbler"/>.
+   </para>
+  </sect3> 
+ </sect2>
+
+ <sect2 id="sec.info.iocds">
+  <title>L'IOCDS</title><indexterm> <primary>preparazione</primary> <secondary>IOCDS</secondary> </indexterm> <indexterm> <primary>IOCDS</primary> </indexterm>
+  <para>
+   Questa sezione contiene alcune informazioni necessarie sull'IOCDS e sulla personalizzazione di alcune impostazioni per la condivisione delle schede di rete o dei dispositivi DASD tra più LPAR. Nell'IOCDS, vengono definiti il <literal>chpid</literal> e i tipi di dispositivi collegati ai sistemi IBM System z9 e zSeries. Le risorse possono essere dedicate o condivise tra più LPAR.
+  </para>
+  <warning>
+   <title>condivisione dei dispositivi (DASD)</title>
+   <para>
+    Non è consigliabile condividere DASD scrivibili tra LPAR, poiché ciò potrebbe provocare una perdita di dati. Durante la pianificazione della configurazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> sui sistemi IBM System z, occorre valutare in anticipo la definizione delle risorse necessarie.
+   </para>
+  </warning>
+  <para>
+   Questo esempio mostra come procedere per dedicare un dispositivo DASD a una specifica LPAR. In questo caso il nome della partizione LPAR è <literal>LPAR1</literal>.
+  </para>
+  <example id="ex.info.iocds.dasdtolpar">
+   <title>Assegnazione di un dispositivo DASD a una sola LPAR</title>
+   <screen>CHPID PATH=FD,TYPE=DSD,SHARED 
+CNTLUNIT CUNUMBR=FD00,PATH=FD,UNITADD=((00,256)),UNIT=3990-2 
+IODEVICE ADDRESS=(FD03,1),CUNUMBR=FD00,UNIT=3390,PART=LPAR1</screen>
+  </example>
+  <para>
+   Per condividere un dispositivo DASD tra più LPAR, eliminare la parte <literal>PART=LPAR1</literal> nella definizione di IOCDS. Ciò potrebbe essere utile per motivi di alta disponibilità o per la condivisione di dati tra LPAR in sola lettura.
+  </para>
+  <para>
+   Diversi sistemi Linux possono utilizzare lo stesso dispositivo di rete se quest'ultimo viene condiviso tra LPAR o sistemi z/VM ospiti. Ciò riduce il numero di dispositivi di rete in dotazione al sistema Linux. D'altro canto, può essere utile disporre di più di un dispositivo di rete per aumentare la disponibilità di un sistema Linux, in caso di malfunzionamento di una connessione.
+  </para>
+  <para>
+   Le schede di rete come le OSA-Express possono essere utilizzate in due modalità diverse. Queste modalità sono conosciute come QDIO e non-QDIO. Ebtrambe le modalità possono essere definite nell'IOCDS tramite la dichiarazione <literal>TYPE. </literal> La modalità QDIO è molto più veloce della modalità non-QDIO, ma utilizza tre indirizzi per i dispositivi invece dei due previsti dalla modalità non-QDIO. Per la pianificazione della configurazione del proprio ambiente Linux su sistemi IBM System z9 e zSeries, è necessario valutare il numero limitato di indirizzi dei dispositivi.
+  </para>
+  <example id="ex.info.iocds.non_qdio">
+   <title>Condivisione di una scheda OSA Express tra più LPAR (non-qdio) su z9</title>
+   <screen>CHPID PATH=(FE),SHARED,PARTITION=((LPAR1,LPAR2)),TYPE=OSE 
+CNTLUNIT CUNUMBR=FE00,PATH=(FE),UNIT=OSA 
+IODEVICE ADDRESS=(FE00,016),CUNUMBR=(FE00),UNIT=OSA 
+IODEVICE ADDRESS=(FEFE,001),CUNUMBR=(FE00),UNIT=OSAD</screen>
+  </example>
+  <example id="ex.info.iocds.qdio">
+   <title>Condivisione di una scheda OSA Express tra più LPAR (qdio) su z9</title>
+   <screen>CHPID PATH=(FE),SHARED,PARTITION=((LPAR1,LPAR2)),TYPE=OSD 
+CNTLUNIT CUNUMBER=FE00,PATH=(FE),UNIT=OSA 
+IODEVICE ADDRESS=(FE00,016),CUNUMBR=(FE00),UNIT=OSA 
+IODEVICE ADDRESS=(FEFE,001),CUNUMBR=(FE00),UNIT=OSAD</screen>
+  </example>
+ </sect2>
+</sect1>

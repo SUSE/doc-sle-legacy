@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_addon_creator.xml" id="cha.addon_creator">
+ <title>Criando produtos complementares com o criador de complementos</title>
+ <abstract>
+  <para>
+   Um complemento é uma mídia especial criada, geralmente um CD ou um DVD, para estender seu produto. O Criador de Complementos foi desenvolvido para oferecer suporte a clientes e parceiros e simplificar a distribuição de software de terceiros para todos os produtos SUSE.
+  </para>
+ </abstract>
+ <sect1 id="sec.addon_creator.creating">
+  <title>Criando imagens</title>
+
+  <para>
+   Para criar um CD complementar, faça o seguinte:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Inicie o YaST e abra o módulo <guimenu>Criador de Complementos</guimenu>. Uma janela é aberta.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Se ainda não tiver executado esse módulo, clique em <guimenu>Criar um Complemento do Início</guimenu> para iniciar. Caso já tenha criado um complemento, uma janela mostrará uma lista de todos os complementos criados. Clique em <guimenu>Adicionar</guimenu> para iniciar.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Digite o nome do produto e a versão de seu complemento e escolha mais algumas opções:
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Escolha o produto base necessário.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Selecione o caminho aos pacotes complementares adicionais. Isso será necessário se precisar de outros pacotes RPM que não estejam incluídos no produto base (esta etapa é opcional).
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Selecione o caminho com os pacotes de produtos necessários (esta etapa é opcional).
+      </para>
+      
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     Corrija a definição do produto e digite um nome de fornecedor. Desabilite <guimenu>Mostrar Apenas Palavras-chave Necessárias</guimenu> para exibir mais palavras-chave.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Modifique as descrições do pacote. Use <guimenu>Adicionar Idioma</guimenu> para inserir um novo idioma e adicionar descrições traduzidas (esta etapa é opcional).
+    </para>
+    
+   </step>
+   <step performance="required">
+    <para>
+     Adicione novos padrões. Com os padrões, você poderá agrupar seus pacotes RPM. Use <guimenu>Novo</guimenu> para adicionar um novo nome de padrão e mudar os respectivos atributos na lista a seguir (esta etapa é opcional).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Modifique as configurações de saída. Insira o caminho do seu diretório de saída e mude o nome da imagem ISO (mudar o nome da ISO é opcional). Você também pode modificar outros recursos:
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Use <guimenu>Configurar Workflow...</guimenu> para digitar os arquivos que personalizarão o workflow de seu produto.
+      </para>
+      
+     </listitem>
+     <listitem>
+      <para>
+       Use <guimenu>Arquivos Opcionais...</guimenu> para adicionar arquivos ao seu produto complementar. A primeira parte pode ser usada para inserir informações sobre o complemento no arquivo <filename>info.txt</filename>. Use os arquivos de licença para exibir uma janela com os botões <guimenu>Concordo</guimenu> e <guimenu>Discordo</guimenu> antes do início da instalação. Mais arquivos podem ser adicionados à seção README.
+      </para>
+      <para>
+       A segunda parte pode ser usada para armazenar os arquivos <filename>COPYRIGHT</filename> e <filename>COPYING</filename> em vários idiomas.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     Assine seu produto complementar com sua chave GPG. A assinatura de seu produto com sua chave GPG comprova com evidência a origem do produto. Se não tiver uma chave, você deverá criá-la primeiro e digitar a respectiva frase secreta duas vezes.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Verifique seu produto na visão geral e continue com <guimenu>Concluir</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Use o botão <guimenu>Construir</guimenu> para iniciar o processo. <guimenu>Concluir</guimenu> fecha a janela.
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.addon_creator.structure">
+  <title>Estrutura do complemento</title>
+
+  <para>
+   Se você criar um produto complementar, a seguinte visão geral conterá a estrutura dos arquivos e dos diretórios:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>ARCHIVES.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém o conteúdo de gzipped em todos os arquivos RPM. Na verdade, ele é uma listagem do comando <command>rpm</command> com as opções <option>-qil</option> para cada arquivo RPM.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>Changelog</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém todas as mudanças dos arquivos RPM.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>conteúdo</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém informações sobre seu produto complementar.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      Inclui o arquivo de assinatura do GPG.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.key</filename>, <filename>gpg-pubkey-<replaceable>NÚMERO</replaceable>.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      A chave pública GPG.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>INDEX.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém uma lista de todos os arquivos RPM e compactada com <command>gzip</command>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>ls-lR.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém uma lista de todos os arquivos e diretórios de seu meio do produto complementar.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>GroupWise para Linux.<replaceable>N</replaceable>/</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém arquivos com informações básicas sobre o conjunto de mídias complementares. O diretório é numerado, portanto, <filename>media.1/</filename> corresponde ao primeiro meio complementar. A mídia adicional terá um número consecutivo.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>suse/</filename>
+    </term>
+    <listitem>
+     <para>
+      Contém subdiretórios com informações específicas à arquitetura. As exceções são <filename>noarch/</filename> para os pacotes independentes da arquitetura e <filename>src/</filename> para os pacotes de origem. Os pacotes de software proprietário são armazenados em <filename>nosrc/</filename>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.addon_creator.moreinfo">
+  <title>Para obter mais informações</title>
+
+  <para>
+   Encontre mais informações nos seguintes documentos no Portal KIWI em <ulink url="http://en.opensuse.org/Portal:KIWI"/>.
+  </para>
+ </sect1>
+</chapter>

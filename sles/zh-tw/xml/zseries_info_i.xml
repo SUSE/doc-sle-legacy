@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="zseries_info_i.xml" id="cha.info_sysreq">
+ <title>一般資訊及需求</title>
+
+ <para>
+  本節提供有關系統要求 (例如支援的硬體) 的基本資訊、微碼層級及軟體。文中也涵蓋了不同的安裝類型、第一次安裝時如何執行 IPL，以及關於 IOCDS 的資訊。
+ </para>
+
+ <sect2 id="sec.info_sysreq.sysreq">
+  <title>系統要求</title><indexterm> <primary>準備</primary><secondary>系統要求</secondary></indexterm><indexterm><primary>系統要求</primary></indexterm>
+  <para>
+   本節提供 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 所支援且適用於 IBM System z 的硬體清單。其次會討論 IBM System z 系統中使用的微碼層級 (MCL)，這對安裝而言非常重要。本節文末會提到安裝作業所需安裝和使用的其他軟體。
+  </para>
+  <sect3 id="sec.info_sysreq.sysreq.hw">
+   <title>硬體</title><indexterm> <primary>系統要求</primary><secondary>硬體</secondary> </indexterm>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 在下列平台上可順利執行：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      IBM Series z9 (z9-EC) 2094
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM Series z9 (z9-BC) 2096
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM Series z10 (z10-EC) 2097
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM Series z10 (z10-BC) 2098
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      
+      IBM zEnterprise System z196 2817
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      
+      IBM zEnterprise System z114 2818
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM zEnterprise EC12 (zEC12) 2827
+     </para>
+    </listitem>
+      
+   </itemizedlist>
+   <sect4 id="sec.info_sysreq.sysreq.hw.mem">
+    <title>記憶體要求</title>
+    <para>
+     在安裝期間，不同的安裝方法所需的記憶體各異。完成安裝後，系統管理員可以將記憶體降低至所需大小。SUSE 建議使用：
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          768 MB
+         </para>
+        </entry>
+        <entry>
+         <para>
+          適用於 z/VM 下的安裝。
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          1 GB
+         </para>
+        </entry>
+        <entry>
+         <para>
+          適用於 LPAR 下的安裝。
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+    <note>
+     <title>遠端安裝來源的記憶體要求</title>
+     <para>
+      從 NFS、FTP 或 SMB 安裝來源或使用 VNC 進行安裝時，至少需要 512MB 的記憶體，否則安裝嘗試可能會失敗。另外請注意，z/VM 訪客或 LPAR 影像可視的裝置數量會影響記憶體要求。當有數百個可存取的裝置 (即使不用於安裝) 時，安裝作業可能需要更多記憶體。
+     </para>
+    </note>
+   </sect4>
+   <sect4 id="sec.info_sysreq.sysreq.hw.diskspace">
+    <title>磁碟空間要求</title>
+    <para>
+     磁碟要求很大程度上取決於安裝。一般而言，需要比安裝軟體本身所需空間更大的空間，才能使系統正常運作。其他選擇的最低要求如下：
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          2.6 GB
+         </para>
+        </entry>
+        <entry>
+         <para>
+          預設安裝
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          3.6 GB+
+         </para>
+        </entry>
+        <entry>
+         <para>
+          建議 (當有圖形桌面、開發套件和 Java 時)。
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </sect4>
+   <sect4 id="sec.info_sysreq.sysreq.hw.network">
+    <title>網路連接</title>
+    <para>
+     與 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 系統通訊必須具有網路連接。可以是下列一或多個連接或網路卡：
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       OSA 高速乙太網路 (包括 Fast 和 Gigabit 乙太網路)
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       HiperSocket 或 Guest LAN
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       10 GBE、VSWITCH
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     下列介面仍然包含在內，但已不提供支援：
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       CTC (或虛擬 CTC)
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       ESCON
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       IUCV 的 IP 網路介面
+      </para>
+     </listitem>
+    </itemizedlist>
+   </sect4>
+   <sect4 id="sec.info_sysreq.sysreq.hw.ipl">
+    <title>IPL 選項</title>
+    <para>
+     如果是 LPAR 安裝，請優先選擇<guimenu>從 CD-ROM 或伺服器載入</guimenu>以對安裝核心與 initrd (啟始 RAM 磁碟) 執行 IPL。如果沒有這個選項，而且無法使用 z/VM 來安裝系統，您就必須從連接通道的磁帶，使用 tapeipl 核心、parmfile 及 initrd 來執行 IPL。因此，您需要存取磁帶裝置 (例如 3480、3490 或 3590)。
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.info_sysreq.sysreq.microcode">
+   <title>微碼層級、APAR 和修正程式</title><indexterm> <primary>系統要求</primary><secondary>微碼層級</secondary> </indexterm>
+   <para>
+    IBM developerWorks 上提供了關於此 SUSE Linux Enterprise Server 版本之限制和要求的文件，網址為 <ulink url="http://www.ibm.com/developerworks/linux/linux390/documentation_suse.html"/>。建議您盡量使用最高的可用服務層級。聯絡您的 IBM 支援以瞭解最低要求。
+   </para>
+   <sect4 id="sec.info_sysreq.sysreq.microcode.vm">
+    <title>z/VM</title>
+    <variablelist>
+     <varlistentry>
+      <term>z/VM 5.4</term>
+      <listitem>
+       <para/>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>z/VM 6.2</term>
+      <listitem>
+       <para/>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     請與 IBM 支援商討安裝順序，因為再安裝新的微碼層級之前，可能必須先啟動 VM APAR。
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.info_sysreq.sysreq.software">
+   <title>軟體</title><indexterm> <primary>系統要求</primary><secondary>軟體</secondary> </indexterm>
+   <para>
+    若要透過基於非 Linux 系統的 NFS 或 FTP 來安裝 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>，NFS 或 FTP 伺服器軟體可能會發生問題。Windows 標準 FTP 伺服器可能會產生錯誤，因此一般建議您透過這些機器上的 SMB 來進行安裝。
+   </para>
+   <para>
+    若要連接到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安裝系統，需要使用下列其中一種方法：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>SSH 與終端機模擬 (xterm 相容)</term>
+     <listitem>
+      <para>
+       SSH 是標準的 Unix 工具，可配備在任何 Unix 或 Linux 系統上。Windows 中有一個稱為 Putty 的 SSH 用戶端。它可免費使用，並可從 <ulink url="http://www.chiark.greenend.org.uk/~sgtatham/putty/"/> 獲取。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>VNC 用戶端</term>
+     <listitem>
+      <para>
+       對於 Linux，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 會在 <systemitem class="resource">tightvnc</systemitem> 套件中隨附一個稱為 vncviewer 的 VNC 用戶端。對於 Windows，tightvnc 也可用。可從 <ulink url="http://www.tightvnc.com/"/> 下載該套件。或者，也可使用 VNC Java 用戶端和啟用 Java 的網頁瀏覽器。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>X 伺服器</term>
+     <listitem>
+      <para>
+       尋找 Linux 或 Unix 工作站上適合的 X 伺服器實作方式。Windows 和 Macintosh 適用的商用 X Window System 環境有很多。有些提供免費的試用版下載。MochaSoft 之 Mocha X 伺服器的試用版可在 <ulink url="http://www.mochasoft.dk/freeware/x11.htm"/> 處取得。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <tip>
+    <title>其他資訊</title>
+    <para>
+     在 IBM System z 上安裝 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 之前，請參閱 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> DVD 1 根目錄中的<filename>讀我檔案</filename>。此檔案對本手冊中提供的文件做了補充。
+    </para>
+   </tip>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.info.installation">
+  <title>安裝類型</title><indexterm> <primary>準備</primary><secondary>安裝類型</secondary></indexterm><indexterm><primary>安裝類型</primary></indexterm>
+  <para>
+   本節概述了 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z 的不同安裝類型。主要介紹了以下兩種安裝類型︰
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>LPAR</term>
+    <listitem>
+     <para>
+      使用邏輯分割區 (LPAR) 安裝 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>VM (z/VM)</term>
+    <listitem>
+     <para>
+      將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安裝為 z/VM 內的客體作業系統。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   依據安裝模式 (LPAR 或 VM)，會有不同的方式可啟動安裝程序以及對已安裝系統執行 IPL。
+  </para>
+  <sect3 id="sec.info.installation.lpar">
+   <title>LPAR</title><indexterm> <primary>安裝類型</primary><secondary> LPAR</secondary> </indexterm>
+   <para>
+    如果您將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z 安裝到單獨的邏輯分割區 (LPAR) 中，則 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 便能夠使用系統中實體記憶體的特殊部份。此外，還需決定 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 使用的處理器數量。在此模式下，您可以在 IBM System z 系統上同時執行不同的作業系統。
+   </para>
+  </sect3>
+  <sect3 id="sec.info.installation.vm">
+   <title>z/VM</title><indexterm> <primary>安裝類型</primary> <secondary>z/VM</secondary> </indexterm>
+   <para>
+    如果在 z/VM 中執行 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 就相當於 z/VM 中的客體系統。這個模式的優點在於，您可以從 z/VM 完全控制 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。這對於核心開發或以核心為基礎的除錯來說非常有幫助。從 Linux 訪客新增或移除硬體也很方便。建立額外的 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 客體很簡單，而且您可以同時執行數百個 Linux 例項。
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.info.iplopt">
+  <title>IPL 選項</title><indexterm> <primary>準備</primary><secondary>IPL 選項</secondary></indexterm><indexterm><primary>IPL 選項</primary></indexterm>
+  <para>
+   本節提供第一次安裝時執行 IPL 所需的資訊。視安裝類型而定，需要使用不同的選項。討論連接通道的磁帶、VM 讀取器及從 CD-ROM 或伺服器選項進行載入。透過網路安裝軟體套件並不需要 IPL 媒體。
+  </para>
+  <sect3 id="sec.info.iplopt.tape">
+   <title>連接 ESCON 或 FICON 的磁帶</title><indexterm> <primary>IPL 選項</primary><secondary>連接 ESCON 的磁帶</secondary></indexterm><indexterm><primary>IPL 選項</primary><secondary>連接 FICON 的磁帶 </secondary></indexterm>
+   <para>
+    從連接通道的磁帶執行 IPL 可在所有連接至磁帶庫的系統上進行。唯一的先決條件是要在其中安裝 (或允許 z/VM 執行) 的 LPAR 必須可以存取磁帶裝置。因此，IOCDS 中的 <literal>IODEVICE</literal> 陳述式必須具有屬性 <literal>SHARED</literal> 或 <literal>PART=&lt;LPARName&gt;</literal>。
+   </para>
+  </sect3>
+  <sect3 id="sec.info.iplopt.vm_reader">
+   <title>VM Reader</title><indexterm> <primary>IPL 選項</primary><secondary> VM 讀取器</secondary> </indexterm>
+   <para>
+    若要從 VM 讀取器執行 IPL，請先傳輸必要的檔案至讀取器。然後便可以輕鬆執行多個 IPL。這在 z/VM 上是優先選擇的作法。為了便於管理，建議您建立使用者 <literal>linuxmnt</literal>，讓其擁有包含 IPL 所需檔案及程序檔的迷你磁碟。接著 Linux 客體便會以唯讀方式存取這個迷你磁碟。
+   </para>
+  </sect3>
+  <sect3 id="sec.info.iplopt.cdrom">
+   <title>從 CD/DVD-ROM 或伺服器載入</title><indexterm> <primary>IPL 選項</primary> <secondary>從 CD/DVD-ROM 或伺服器載入</secondary> </indexterm>
+   <para>
+    若要 IPL 到 LPAR，可以直接從 SE 或 HMC 的 CD/DVD-ROM 裝置，或從任何可透過 FTP 存取的遠端系統載入核心影像。這個功能可以從 HMC 執行。安裝程序需要這樣一個檔案，其中包含檔案系統中安裝資料的位置與要在其中複製資料的記憶體位置之間的映射。對於 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>，此檔案名為 <filename>suse.ins</filename>，位於 DVD 1 上系統檔案的根目錄中。
+   </para>
+   <para>
+    在 HMC 的左側導覽窗格中，展開<guimenu>系統管理與伺服器</guimenu>，選取要使用的大型主機系統。從右上方內容區域所顯示的 LPAR 表格中，選擇要從中將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 開機的 LPAR。在「任務」區域中，展開<guimenu>復原</guimenu>並按一下<guimenu>從 CD-ROM、DVD 或伺服器載入</guimenu>。
+   </para>
+   <para>
+    現在選擇<guimenu>硬體管理主控台 CD-ROM/DVD</guimenu>或<guimenu>FTP 來源</guimenu>。如果選擇了後者，請提供伺服器位址或名稱以及您的身分證明。如果 <filename>suse.ins</filename> 檔案不在伺服器的根目錄中，請提供此檔案的路徑。接著按一下<guimenu>選取要載入的軟體</guimenu>功能表，然後選取 <filename>suse.ins</filename> 項目。按一下<guimenu>確定</guimenu>開始安裝。
+   </para>
+  </sect3>
+  <sect3 id="sec.info.iplopt.dvd">
+   <title>從連接 SCSI 的 DVD 載入</title>
+   <para>
+    若要從 SCSI DVD 執行 IPL，需要存取連接至 DVD 光碟機的 FCP 介面卡。您必須從 SCSI 磁碟機取得 WWPN 和 LUN 等值。如需詳細資料，請參閱<xref linkend="sec.prep.ipling.lpar.dvd"/>。
+   </para>
+  </sect3>
+   <sect3 id="sec.info.iplopt.zpxe">
+   <title>使用 zPXE 從網路載入</title>
+   <para>
+    使用 zPXE 從網路進行 IPL 需要可提供核心、RAM 磁碟和 parmfile 的 Cobbler 伺服器。zPXE 僅適用於 z/VM 並透過執行 ZPXE EXEC 程序檔來啟始化。如需詳細資料，請參閱<xref linkend="sec.prep.makeavail.zpxe_cobbler"/>。
+   </para>
+  </sect3> 
+ </sect2>
+
+ <sect2 id="sec.info.iocds">
+  <title>IOCDS</title><indexterm> <primary>準備</primary><secondary>IOCDS</secondary></indexterm><indexterm><primary>IOCDS</primary></indexterm>
+  <para>
+   本節提供有關 IOCDS 的一些必要資訊，以及如何自定某些設定以便在多個 LPAR 中共享網路卡或 DASD。在 IOCDS 中可定義 <literal>chpid</literal> 與連接至 IBM System z 的裝置類型。可以將資源設為專用或於 LPAR 中共享。
+  </para>
+  <warning>
+   <title>共享裝置 (DASD)</title>
+   <para>
+    請勿在 LPAR 中共享可寫入的 DASD，因為這樣可能會造成資料遺失。規劃 IBM System z 上的 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 設定時，請事先考慮必要資源的定義。
+   </para>
+  </warning>
+  <para>
+   這個範例會顯示如何讓 DASD 用於特定的 LPAR。這個 LPAR 稱為 <literal>LPAR1</literal>。
+  </para>
+  <example id="ex.info.iocds.dasdtolpar">
+   <title>DASD 專用於單一 LPAR</title>
+   <screen>CHPID PATH=FD,TYPE=DSD,SHARED 
+CNTLUNIT CUNUMBR=FD00,PATH=FD,UNITADD=((00,256)),UNIT=3990-2 
+IODEVICE ADDRESS=(FD03,1),CUNUMBR=FD00,UNIT=3390,PART=LPAR1</screen>
+  </example>
+  <para>
+   若要在 LPAR 中共享 DASD，請將 IOCDS 定義中的 <literal>PART=LPAR1</literal> 部分刪除。如果為了廣泛使用起見，或是以唯讀方式在 LPAR 中共享資料，這個方式就很有用。
+  </para>
+  <para>
+   若您要在 LPAR 或 z/VM 訪客中共享網路裝置，則多個 Linux 系統都能使用相同的網路裝置。這樣可減少必須提供給 Linux 系統的網路裝置數量。另一方面，您必須提供不只一個網路裝置給單一 Linux 系統，以便在連接失敗時替用。
+  </para>
+  <para>
+   OSA-Express 等網路卡可以用於兩種不同的模式。這些模式稱為 QDIO 與非 QDIO 模式。使用 <literal>TYPE</literal> 陳述式在 IOCDS 中定義這些模式。QDIO 模式比非 QDIO 模式快得多，但是要使用三個裝置位址而非 QDIO 只需要兩個位址。規劃 IBM System z Linux 環境的設定時，請考慮裝置位址的數量限制。
+  </para>
+  <example id="ex.info.iocds.non_qdio">
+   <title>在 z9 上的 LPAR (非 qdio) 中共享 OSA Express 卡</title>
+   <screen>CHPID PATH=(FE),SHARED,PARTITION=((LPAR1,LPAR2)),TYPE=OSE 
+CNTLUNIT CUNUMBR=FE00,PATH=(FE),UNIT=OSA 
+IODEVICE ADDRESS=(FE00,016),CUNUMBR=(FE00),UNIT=OSA 
+IODEVICE ADDRESS=(FEFE,001),CUNUMBR=(FE00),UNIT=OSAD</screen>
+  </example>
+  <example id="ex.info.iocds.qdio">
+   <title>在 z9 上的 LPAR (qdio) 中共享 OSA Express 卡</title>
+   <screen>CHPID PATH=(FE),SHARED,PARTITION=((LPAR1,LPAR2)),TYPE=OSD 
+CNTLUNIT CUNUMBER=FE00,PATH=(FE),UNIT=OSA 
+IODEVICE ADDRESS=(FE00,016),CUNUMBR=(FE00),UNIT=OSA 
+IODEVICE ADDRESS=(FEFE,001),CUNUMBR=(FE00),UNIT=OSAD</screen>
+  </example>
+ </sect2>
+</sect1>

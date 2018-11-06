@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="inst_yast2.xml" id="cha.inst">
+ <title>YaSTによるインストール</title><indexterm id="idx.Installation_YaST2" class="startofrange"> <primary>インストール</primary> <secondary>YaST</secondary></indexterm><indexterm id="idx.YaST2_Installation" class="startofrange"> <primary>YaST</primary> <secondary>インストール</secondary></indexterm><indexterm id="idx.Installation" class="startofrange"> <primary>インストール</primary></indexterm>
+ <abstract>
+  <para os="sles">
+   <xref linkend="part.archspec"/>の説明に従って<phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase>をインストールできるようにハードウェアを準備し、インストールシステムとの接続を確立すると、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のシステムアシスタントであるYaSTのインタフェースが表示されます。YaSTは、インストールおよび環境設定作業全体をお手伝いいたします。
+  </para>
+
+  
+
+  
+ </abstract>
+ 
+ <sect1 id="sec.i.yast2.method">
+  <title>インストール方法の選択</title><indexterm> <primary>インストール</primary> <secondary>方法</secondary> </indexterm>
+
+  <para>
+   インストールメディアの選択後、ニーズを最適に満たすインストール方法とブートオプションを決定します。
+  </para>
+
+  <variablelist>
+   <varlistentry id="sec.i.yast2.source.cd">
+    <term><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>メディア(DVD、CD、USB)からのインストール</term>
+    <listitem>
+     <para>
+      スタンドアロンのインストールを実行し、インストールデータやブートインフラストラクチャをネットワークから取得しない場合は、このオプションを選択します。インストールは、<xref linkend="sec.i.yast2.steps"/>の説明どおりに進行します。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term>ネットワークサーバからのインストール</term>
+    <listitem>
+     <para>
+      ネットワークにインストールサーバがあるか、インストールデータのソースとして外部サーバを使用する場合は、このオプションを選択します。これは、物理メディア(フロッピー、CD/DVD、またはハードディスク)からブートするように設定したり、PXE/BOOTPを使用してネットワークからブートするように設定できます。詳細については、<xref linkend="sec.i.yast2.source.slp"/>、<xref linkend="sec.i.yast2.source.network"/>または<xref linkend="cha.deployment.remoteinst"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、数種類のブートオプションをサポートしています。使用可能なハードウェアと目的のインストールシナリオに基づいて、それらからブート形態を選択できます。<phrase os="sles;sled"><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>メディアからブートする方法が最も簡単なオプションですが、特別な要件がある場合は、特別な設定が必要になることがあります。</phrase>
+  </para>
+
+  <table id="tab.boot.opt">
+   <title>ブートオプション</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        ブートオプション
+       </para>
+      </entry>
+      <entry>
+       <para>
+        説明
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        DVD
+       </para>
+      </entry>
+      <entry>
+       <para>
+        これが最も簡単なブートオプションです。このオプションは、Linuxでサポートされている/DVD-ROMが、システムのローカルにある場合に使用できます。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        USB大容量ストレージデバイス
+       </para>
+      </entry>
+      <entry>
+       <para>
+        マシンに光ドライブが装備されていない場合、USBスティックなどのUSB大容量ストレージデバイスからインストールイメージをブートすることができます。ブート可能なUSBストレージデバイスを作成するには、<command>dd</command>コマンドを使用して、DVDまたはMini CDのいずれかのISOイメージをデバイスにコピーする必要があります(USBデバイスはマウントされていない必要があり、デバイス上のすべてのデータは消去されます)。
+       </para>
+<screen>dd if=<replaceable>PATH_TO_ISO_IMAGE</replaceable> of=<replaceable>USB_STORAGE_DEVICE</replaceable> bs=4M</screen>
+       <para>
+        <command>dd</command>コマンドはデフォルトでLinuxおよびMacOS上で使用可能です。Microsoft Windows*バージョンは<ulink url="http://www.chrysocome.net/dd"/>からダウンロードすることができます。
+       </para>
+       <important>
+        <title>互換性</title>
+        <para>
+         UEFIマシン(これには完全なia64アーキテクチャが含まれる)およびppc64アーキテクチャでは、USB大容量ストレージデバイスのブートをサポート<emphasis>していない</emphasis>ことに注意してください。
+        </para>
+       </important>
+      </entry>
+     </row>
+     
+     <row>
+      <entry>
+       <para>
+        PXEまたはBOOTP
+       </para>
+      </entry>
+      <entry>
+       <para>
+        ネットワークによるブートは、システムのBIOSまたはファームウェアでサポートされる必要があります。ネットワーク内にブートサーバがあることも必要です。このタスクは、別の<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムで扱うこともできます。<phrase>詳細については、<xref linkend="cha.deployment.remoteinst"/>を参照してください。</phrase>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        ハードディスク
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールをハードディスクからブートすることもできます。それを実現するには、インストールメディアの<filename>/boot/<replaceable>architecture</replaceable>/</filename>ディレクトリからカーネル(<systemitem>linux</systemitem>)とインストールシステム(<systemitem>initrd</systemitem>)をハードディスクにコピーし、これまでの<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>インストール環境にある既存のブートローダに適切なエントリを追加します。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <tip arch="amd64;em64t">
+   <title>UEFIコンピュータ上のDVDからのブート</title>
+   <para arch="amd64;em64t">
+    DVD1は、UEFI (Unified Extensible Firmware Interface)を備えたコンピュータのブートメディアとして使用できます。固有の情報については、ベンダのマニュアルを参照してください。起動が失敗した場合は、ファームウェアのCSM (Compatibility Support Module)を有効にしてみてください。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.source.slp">
+   <title>SLPを使ったネットワークサーバからのインストール</title><indexterm> <primary>インストール</primary> <secondary>ネットワーク</secondary> <tertiary>SLP</tertiary> </indexterm>
+   <para>
+    ネットワークの設定がOpenSLPをサポートし、ネットワークのインストールソースがSLPを介して自分自身をアナウンスするように設定されている場合は(<xref linkend="sec.deployment.remoteinst.instserver"/>参照)、システムをブートし、ブート画面で<keycap>F4</keycap>を押して、メニューから<guimenu>SLP</guimenu>を選択します。
+   </para>
+   <para>
+    インストールプログラムがDHCPでネットワーク接続を設定し、OpenSLPサーバからネットワークインストールソースの場所を検索します。DHCPを使った自動ネットワーク設定に失敗した場合、適切なパラメータの入力を要求するプロンプトが表示されます。その後は、後で説明するようにインストールが進行します。ただし、リポジトリを追加するには、その前にネットワークを設定する必要があります。このステップは、この時点でネットワークがすでに設定されアクティブなので必要ありません。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.source.network">
+   <title>SLPを使用しないネットワークソースからのインストール</title><indexterm> <primary>インストール</primary> <secondary>ネットワーク</secondary> <tertiary>その他</tertiary> </indexterm>
+   <para>
+    ネットワーク設定でネットワークインストールソース検索用のOpenSLPがサポートされていない場合は、システムをブートし、ブート画面で<keycap>F4</keycap>を押して、適切なネットワークプロトコル(NFS、HTTP、FTP、またはSMB/CIFS)を選択してます。サーバのアドレスとインストールメディアへのパスを指定します。
+   </para>
+   <para>
+    インストールプログラムが自動的に、DHCPでネットワーク接続を設定します。この設定に失敗した場合、適切なパラメータの入力を要求するプロンプトが表示されます。指定されたソースから、インストールデータが取得されます。その後は、追加リポジトリの追加前に必要なネットワーク設定ステップを除き、以降で説明するようにインストールが進行します。このステップは、この時点でネットワークがすでに設定されアクティブなので必要ありません。
+   </para>
+  </sect2>
+
+
+
+  
+ </sect1>
+ <sect1 id="sec.i.yast2.steps">
+  <title>インストールのワークフロー</title><indexterm> <primary>インストール</primary> <secondary>ワークフロー</secondary> </indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールは、準備、インストール、設定の3つの主要部分に分かれています。準備段階では、基本的なパラメータ(言語、時間、ハードディスクのセットアップ、インストール範囲など)を設定します。非対話式のインストールフェーズで、ソフトウェアがインストールされ、最初のブート用にシステムが準備されます。インストールを終了すると、コンピュータがリブートして新しくインストールされたシステムが生成され、最終的なシステム設定が開始されます。この段階で、ネットワークと  インターネットアクセスのほか、プリンタなどのハードウェアコンポーネントも設定されます。
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.start.ppc" arch="ipseries" os="sles">
+  <title>IBM POWER:ネットワークインストールのためのシステムのスタートアップ</title>
+
+  <para>
+   IBM POWERプラットフォームの場合、<xref linkend="cha.ppc.prep"/>で説明されているように、システムがブートされます(IPL、初期プログラムロード)。ネットワークインストールの場合、SUSE Linux Enterprise Serverではこれらのシステムにスプラッシュスクリーンやブートローダのコマンドラインを表示しません。カーネルはインストール時に手動でロードします。VNC、X、またはSSH経由でインストールシステムとの接続が確立されると、YaSTのインストール画面が表示されます。カーネルやブートのパラメータは、スプラッシュスクリーンやブートローダコマンドラインがないので画面に入力できませんが、これらは<command>mkzimage_cmdline</command>ユーティリティでカーネルイメージに含める必要があります。
+  </para>
+
+  <tip>
+   <title>IBM POWER:次のステップ</title>
+   <para>
+    から始まるYaSTによるインストール手順の説明に従い、インストールを行います。<xref linkend="sec.i.yast2.welcome"/>
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.i.yast2.start.390" arch="zseries" os="sles">
+  <title>IBM System z:インストールのためのシステムのスタートアップ</title>
+
+  <para>
+   IBM System zプラットフォームでは、<xref linkend="sec.prep.ipling"/>の説明にあるようにシステムがブートします(IPL (Initial Program Load: 初期プログラムロード))。これらのシステムでは、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のスプラッシュ画面が表示されません。インストール時に、カーネル、initrd、およびparmfileを手動でロードしてください。VNC、X、またはSSH経由でインストールシステムとの接続が確立されると、YaSTのインストール画面が表示されます。スプラッシュスクリーンがないため、画面上でカーネルやブートパラメータを指定することはできません。そのため、カーネルやブートパラメータはparmfileで指定する必要があります(<xref linkend="sec.appdendix.parm"/>を参照してください)。
+  </para>
+
+  <tip>
+   <title>IBM System z:次のステップ</title>
+   <para>
+    から始まるYaSTによるインストール手順の説明に従い、インストールを行います。<xref linkend="sec.i.yast2.welcome"/>
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.i.yast2.start">
+  <title>インストール時のシステム起動</title><indexterm> <primary>YaST</primary> <secondary>システムのスタートアップ</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>起動</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>システムのスタートアップ</secondary></indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、ローカルインストールソース(<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のCDやDVDなど)からでも、ネットワークソース(FTP、HTTP、NFS、またはSMBサーバ)からでもインストールできます。これらの方法では、インストールするシステムへの物理アクセスのほか、インストール時のユーザ介入も必要です。基本的にインストール手順は、インストールソースに関係なく一緒です。例外については、以降のワークフローの説明で十分に解説します。<phrase os="sles;sled">非対話式の自動インストールの実行方法に関する説明は、<xref linkend="part.autoinstall"/>を参照してください。</phrase>
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.bootscreen">
+  <title>従来のBIOSを備えたマシンのブート画面</title><indexterm> <primary>ブート画面</primary> </indexterm> <indexterm> <primary>インストール</primary> <secondary>ブート画面</secondary> </indexterm>
+
+  <para>
+   ブート画面には、インストール手順の複数のオプションが表示されます。<guimenu>ハードディスクから起動</guimenu>は、インストールしたシステムをブートし、デフォルトで選択されています。これは、多くの場合、CDがドライブに残っているからです。矢印キーで他のオプションの1つを選択し、<keycap function="enter"/>を押します。関連するオプションは次のとおりです。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>インストール</guimenu>
+    </term>
+    <listitem>
+     <para>
+      通常のインストールモード。最新のハードウェア機能のすべてが有効になります。インストールが失敗した場合は、<xref linkend="sec.i.yast2.bootscreen.kernel"/>で問題の原因となっている可能性のある機能を無効にするブートオプションについて参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Repair Installed System</guimenu>
+    </term>
+    <listitem>
+     <para>
+      グラフィック修復システムにブートします。インストール済みシステムの修復の詳細については、<xref linkend="sec.trouble.data.recover"/>を参照してください。 
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>レスキューシステム</guimenu> <indexterm> <primary>YaST</primary> <secondary>レスキューシステム</secondary></indexterm></term>
+    <listitem>
+     <para>
+      グラフィックユーザインタフェースのない、最小構成のLinuxを起動します。詳細については、<xref linkend="sec.trouble.data.recover.rescue"/>を参照してください。 
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><guimenu>Check Installation Media (インストールメディアのチェック)</guimenu> <indexterm> <primary>YaST</primary> <secondary>メディアチェック</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>メディアチェック</secondary></indexterm></term>
+    <listitem>
+     <para>
+      このオプションは、ダウンロードしたISOから作成したメディアからインストールする場合のみ使用できます。その場合、インストールメディアの整合性をチェックすることをお勧めします。このオプションを選択すると、インストールシステムの起動後、自動的にメディアがチェックされます。チェックが成功した場合は、通常のインストールルーチンが開始されます。メディアの破損が検出された場合は、インストールルーチンが中止されます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+
+    <term><guimenu>ファームウェアのテスト</guimenu><indexterm><primary>ファームウェアのテスト</primary></indexterm></term>
+    <listitem>
+     <para>
+      ACPIやBIOSのその他の部分を検証するBIOSチェッカを起動します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>メモリテスト</guimenu><indexterm><primary>メモリテスト</primary></indexterm></term>
+    <listitem>
+     <para>
+      読み取りと書き込みサイクルを繰り返して、システムのRAMをテストします。リブートしてテストを終了します。詳細については、<xref linkend="sec.trouble.install.noboot"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>従来のBIOSを備えたマシンのブート画面</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_boot_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_boot_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   画面下部のバーに示されたファンクションキーを使用して、言語、画面解像度、インストールソースを変更したり、ハードウェアベンダからのドライバを追加します。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><keycap>F1</keycap> <guimenu>ヘルプ</guimenu>
+    </term>
+    <listitem>
+     <para>
+      ブート画面のアクティブ要素の文脈依存型ヘルプを表示します。ナビゲートには矢印キー、リンクのアクセスには<keycap function="enter"/>、ヘルプ画面の終了には<keycap function="escape"/> を使用します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F2</keycap><guimenu>言語</guimenu>
+    </term>
+    <listitem>
+     <para>
+      インストールシステムの表示言語および対応のキーボードレイアウトを選択します。デフォルト言語は、英語(米国)が選択されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F3</keycap><guimenu>ビデオモード</guimenu>
+    </term>
+    <listitem>
+     <para>
+      インストールに使用するグラフィカルディスプレイモードを選択します。GUIで問題が発生する場合は、<guimenu>テキストモード</guimenu>を使用してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F4</keycap><guimenu>Source (ソース)</guimenu>
+    </term>
+    <listitem>
+     <para>
+      通常、インストールはデバイスに挿入されたメディアから実行されます。ここでは、FTPやNFSサーバなどの、他のソースを選択します。SLPサーバのあるネットワークでインストールを展開する場合は、このオプションを使用して、SLPサーバ上のインストールソースを選択します。SLPの詳細については、<xref linkend="cha.slp"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry id="sec.i.yast2.bootscreen.kernel">
+    <term><keycap>F5</keycap><guimenu>カーネル</guimenu>
+    </term>
+    <listitem>
+     <para>
+      通常のインストールで問題が発生した場合は、このメニューで、問題の原因として考えられるいくつかの機能を無効にできます。お使いのハードウェアでACPI(advanced configuration and power interface)がサポートされていない場合は、<guimenu>No ACPI</guimenu>選択してACPIサポートなしでインストールを実行します。<guimenu>No local APIC</guimenu>を選択すると、一部のハードウェアで問題の原因となる可能性のあるAPIC (Advanced Programmable Interrupt Controllers)のサポートが無効になります。<guimenu>セーフ設定</guimenu>を選択すると、DMAモード(CD/DVD-ROMドライブ用)で電源管理機能は無効のままシステムがブートされます。
+     </para>
+     <para>
+      どちらにすべきかわからない場合、<guimenu>インストール -- ACPI無効</guimenu>または<guimenu>インストール -- セーフ設定</guimenu>のオプションを最初に試してください。上級ユーザは、コマンドライン(<guimenu>起動オプション</guimenu>)を使用してカーネルパラメータを入力または変更することもできます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F6</keycap><guimenu>ドライバ</guimenu>
+    </term>
+    <listitem>
+     <para>
+      このキーを押すと、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>に適用できるオプションのドライバアップデートがあることをシステムに通知できます。<guimenu>ファイル</guimenu>または<guimenu>URL</guimenu>を使用して、インストール開始前にドライバを直接ロードします。<guimenu>はい</guimenu>を選択した場合、インストールプロセス中の適切な時点で、アップデートディスクの挿入を要求するプロンプトが表示されます。
+     </para>
+     <tip os="sles;sled">
+      <title>ドライバ更新ディスクの取得</title>
+      <para>
+       SUSE Linux Enterpriseのドライバのアップデートは<ulink url="http://drivers.suse.com/"/>に用意されています。これらのドライバは、Partner Linux Driver Programによって作成されています。
+      </para>
+     </tip>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+
+  <tip>
+   <title>インストール時のIPv6の使用</title>
+   <para>
+    デフォルトでは、マシンにIPv4ネットワークアドレスのみを割り当てることができます。インストール時にIPv6を有効にするには、ブートプロンプトで<literal>ipv6=1</literal>(IPv4とIPv6を受け入れ)パラメータまたは<literal>ipv6only=1</literal>(IPv6のみを受け入れ)パラメータのいずれかを入力します。
+   </para>
+  </tip>
+
+  <para>
+   インストールを開始すると、インストール手順の実行に必要な最小限のLinuxシステムが<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>によってロードされ、設定されます。このプロセス中にブートメッセージと著作権表示を表示するには、<keycap>Esc</keycap>キーを押します。このプロセスが完了すると、YaSTのインストールプログラムが起動し、グラフィカルインストーラが表示されます。
+  </para>
+
+  <tip>
+   <title>マウスを使わないインストール</title>
+   <para>
+    インストーラがマウスを正しく検出しない場合は、<keycap>Tab</keycap>でナビゲートし、矢印キーでスクロールし、<keycap>Enter</keycap>で確定します。各種のボタンや選択フィールドには、下線付きの英字が含まれています。［<keycap>タブ</keycap>］ボタンでナビゲートする代わりに、<keycombo action="press"><keycap>Alt</keycap><keycap>Letter</keycap></keycombo>(Letterは該当する英字)を使用してボタンまたは項目を直接選択します。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.fun.yep" os="sles;sled">
+   <title>SMTサーバにアクセスするためのデータの提供</title>
+   <para>
+    デフォルトでは、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のアップデートはNovell Customer Centerから配布されます。ローカルアップデートソースを提供する名目上のSMTサーバがネットワークにある場合は、サーバのURLをクライアントに指定する必要があります。クライアントとサーバはHTTPSプロトコルのみを通じて通信するため、証明書が認証局から発行されていない場合は、サーバの証明書へのパスを入力する必要があります。この情報は、ブートプロンプトで入力するか（このセクションで説明）、または登録プロセスで入力できます(<xref linkend="sec.i.yast2.conf.manual.cc.local"/>で説明）。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>regurl</term>
+     <listitem>
+      <para>
+       SMTサーバのURLURLには固定フォーマットがあり(<literal>https://<replaceable>FQN</replaceable>/center/regsvc/</literal>)、<replaceable>FQN</replaceable>は、SMTサーバの完全修飾ホスト名にする必要があります。例:
+      </para>
+<screen>regurl=https://smt.example.com/center/regsvc/</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>regcert</term>
+     <listitem>
+      <para>
+       SMTサーバの証明書の場所。次のいずれかの場所を指定します。
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term>URL</term>
+        <listitem>
+         <para>
+          証明書をダウンロードできる、リモートの場所(HTTP、HTTPS、またはFTP)。例:
+         </para>
+<screen>regcert=http://smt.example.com/smt-ca.crt</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>フロッピー(Floppy)</term>
+        <listitem>
+         <para>
+          フロッピーの場所を指定します。フロッピーはブート時に挿入する必要があります。フロッピーがなくても、挿入を要求されることはありません。値は、文字列<literal>floppy</literal>に証明書へのパスを連結したものにします。例:
+         </para>
+<screen>regcert=floppy/smt/smt-ca.crt</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>local path</term>
+        <listitem>
+         <para>
+          ローカルマシン上の証明書への絶対パス。例:
+         </para>
+<screen>regcert=/data/inst/smt/smt-ca.cert</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Interactive</term>
+        <listitem>
+         <para>
+          <literal>ask</literal>を使用してインストール中にポップアップメニューを開き、証明書へのパスを指定します。AutoYaSTでは、このオプションを使用しないでください。例:
+         </para>
+<screen>regcert=ask</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>証明書のインストールの無効化</term>
+        <listitem>
+         <para>
+          アドオン製品によって証明書がインストールされる場合、または公式の認証局によって発行される証明書を使用している場合は、<literal>done</literal>を使用します。例:
+         </para>
+<screen>regcert=done</screen>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <warning>
+    <title>入力ミスに注意してください</title>
+    <para>
+     入力した値が正しいことを確認してください。<literal>regurl</literal>が正しく指定されていないと、アップデートソースの登録が失敗します。regcertに正しくない値が入力されると、証明書へのローカルパスの指定を求められます。
+    </para>
+    <para>
+     regcertが指定されていない場合は、デフォルトで<literal>http://<replaceable>FQN</replaceable>/smt.crt</literal>が使用されます。ここで、<literal>FQN</literal>はSMTサーバ名です。
+    </para>
+   </warning>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.fun.supportconfigurl" os="sles;sled">
+   <title><systemitem>supportconfig</systemitem>用代替データサーバの設定</title>
+   <para>
+    supportconfigで収集したデータは(詳細は<xref linkend="cha.adm.support"/>を参照)、デフォルトでNovell Customer Centerに送信されます。このデータを収集するローカルサーバを設定することも可能です。そのようなサーバがネットワーク上にある場合は、サーバのURLをクライアント上に設定する必要があります。この情報はブートプロンプトで入力する必要があります。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>supporturl</term>
+     <listitem>
+      <para>
+       サーバのURLURLは<literal>http://<replaceable>FQN</replaceable>/<replaceable>Path</replaceable>/</literal> <replaceable>FQN</replaceable>というフォーマットで、サーバの完全修飾ホスト名にします。<replaceable>Path</replaceable>にはサーバの場所を入力します。例:
+      </para>
+<screen>supporturl=http://support.example.com/supportconfig/data/</screen>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.bootscreen_uefi">
+  <title>UEFIを装備したマシンのブート画面</title>
+
+  <para>
+   UEFI (Unified Extensible Firmware Interface)は、従来のBIOSの後継で機能を拡張した新しい業界規格です。最新のUEFIの実装形態には<quote>セキュアブート</quote>拡張機能が含まれており、これは、署名済みのブートローダのみの実行を許可することにより、悪意のあるコードのブートを防止するものです。詳細については、<xref linkend="cha.uefi"/>を参照してください。
+  </para>
+
+
+
+  <para>
+   従来のBIOSを備えたマシンをブートする際に使用するブートマネージャGRUBは、UEFIをサポートしていないのでELILOに置き換えられています。セキュアブートが有効な場合は、ELILO互換層を介してGRUB 2 UEFIモジュールが使用されます。管理およびユーザの視点からは、両方のブートマネージャの実装形態は同様に動作し、次では<literal>ELILO</literal>と呼ばれています。
+  </para>
+
+  <tip>
+   <title>UEFIおよびセキュアブートはデフォルトでサポートされます</title>
+   <para>
+    マシンがUEFIを備えていれば、SUSE Linux Enterpriseのインストールルーチンで自動的に検出されます。すべてのインストールソースもセキュアブートをサポートします。デュアルブートマシン上に既にEFIシステムパーティションが存在する場合(例えば、Microsoft Windows 8インストール環境から)、自動的に検出され使用されます。パーティションテーブルはUEFIシステム上でGPTとして書き込まれます。
+   </para>
+  </tip>
+  
+  <warning>
+   <title>セキュアブートでInbox以外のドライバを使用しています。</title>
+   <para>
+    セキュアブートを有効にしたインストールでは、Inbox以外のドライバ(SLEに付属していないドライバ)の追加がサポートされません。SolidDriver/PLDPで使用される署名キーは、デフォルトでは信頼されていません。
+   </para>
+   <para>
+    この問題を解決するには、インストール前にファームウェア/システム管理ツールを使用して必要なキーをファームウェアデータベースに追加するか、初回ブート時に必要なキーをMOKリストに登録するブート可能なISOを使用します。詳細については、<xref linkend="sec.uefi.secboot"/>を参照してください。
+   </para>
+  </warning>
+  <para>
+   ブート画面には、インストール手順の複数のオプションが表示されます。矢印キーで選択したオプションを変更し、<keycap function="enter"/>を押してブートします。関連するオプションは次のとおりです。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>インストール</guimenu>
+    </term>
+    <listitem>
+     <para>
+      通常のインストールモード。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>レスキューシステム</guimenu> <indexterm> <primary>YaST</primary> <secondary>レスキューシステム</secondary></indexterm></term>
+    <listitem>
+     <para>
+      グラフィックユーザインタフェースのない、最小構成のLinuxを起動します。詳細については、<xref linkend="sec.trouble.data.recover.rescue"/>を参照してください。 
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><guimenu>Check Installation Media (インストールメディアのチェック)</guimenu> <indexterm> <primary>YaST</primary> <secondary>メディアチェック</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>メディアチェック</secondary></indexterm></term>
+    <listitem>
+     <para>
+      このオプションは、ダウンロードしたISOから作成したメディアからインストールする場合のみ使用できます。その場合、インストールメディアの整合性をチェックすることをお勧めします。このオプションを選択すると、インストールシステムの起動後、自動的にメディアがチェックされます。チェックが成功した場合は、通常のインストールルーチンが開始されます。メディアの破損が検出された場合は、インストールルーチンが中止されます。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure>
+   <title>UEFIを使用したマシンのブート画面</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_boot_uefi.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_boot_uefi.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>上のELILOは、グラフィカルブート画面またはブートプロンプトをサポートしていません。付加的なブートパラメータを追加するには、それぞれのブートエントリを編集する必要があります。矢印キーを使用して強調表示にして、<keycap>E</keycap>を押します。ヒントを編集するには、オンスクリーンヘルプを参照します(この時点では、英語のキーボードのみが使用可能であることに注意してください)。<guimenu>インストール</guimenu>エントリが次のように表示されます。
+  </para>
+
+<screen>setparams 'Installation'
+
+  set gfxpayload=keep
+  echo 'Loading kernel ...'
+  linuxefi /boot/x86_64/loader/linux
+  echo 'Loading initial ramdisk ...'
+  initrdefi /boot/x86_64/loader/initrd</screen>
+
+  <para>
+   <literal>linuxefi</literal>で始まる行の最後に、スペースで区切られたパラメータを追加します。パラメータのリストは<ulink url="https://en.opensuse.org/Linuxrc"/>から入手できます。次の例では、インストール言語はドイツ語に設定されています:
+  </para>
+
+<screen>linuxefi /boot/x86_64/loader/linux Language=de_DE</screen>
+
+  <para>
+   編集済みエントリをブートするには、<keycap>F10</keycap>を押します。シリアルコンソールを介してマシンにアクセスする場合には、<keycombo><keycap function="escape"/> <keycap>0</keycap></keycombo>を押します。
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.welcome">
+  <title>ようこそ</title><indexterm> <primary>インストール</primary> <secondary>言語</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>キーボード</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>言語</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>キーボード</secondary></indexterm><indexterm> <primary>使用許諾契約</primary></indexterm>
+
+  <para>
+   目的の言語を選択して、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールを開始します。言語を変更すると、自動的に、対応のキーボードレイアウトが事前選択されます。この提案を上書きするには、ドロップダウンメニューから別のキーボードレイアウトを選択します。ここで選択した言語は、システム時計のタイムゾーンの設定に使用されます。この設定(およびシステムにインストールする第2言語の選択)は、後で<guimenu>インストールの概要</guimenu>で変更可能です(<xref linkend="sec.i.yast2.proposal"/>を参照)。インストール済みシステムの言語設定の詳細は、<xref linkend="cha.y2.lang"/>を参照してください。
+  </para>
+
+  <para>
+   言語およびキーボードの選択の下に表示される使用許諾契約をよくお読みください。<guimenu>License Translations...</guimenu>を使用して翻訳文にアクセスします。契約条件に同意する場合は、<phrase os="sles;sled"><guimenu>はい、ライセンスに同意します</guimenu>を選択し、</phrase><guimenu>次へ</guimenu>をクリックしてインストールを続行します。使用許諾契約に同意しないと<phrase os="sles;sled">、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></phrase>をインストールできません。その場合は、<guimenu>中止</guimenu>をクリックしてインストールを終了します。
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>ようこそ</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_welcome_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_welcome_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.i.yast2.s390.part" arch="zseries" os="sles">
+  <title>IBM System z:ハードディスクの設定</title>
+
+  <para>
+   IBM System zプラットフォームでのインストール時、言語選択ダイアログは、外部ハードディスクを設定するダイアログの後で表示されます。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールでは、DASD、Fibre Channel Attached SCSI Disk (zFCP)、またはiSCSIを選択します。DASDおよびzFCP設定ボタンは、対応するデバイスが接続されている場合にのみ使用可能です。iSCSIディスクの環境設定方法については、<xref linkend="bj4rqa5"/>を参照してください。
+  </para>
+
+  <tip>
+   <title>後のステージでのDASDまたはzFCPディスクの追加</title>
+   <para>
+    DASDまたはzFCPディスクの追加は、インストールワークフロー時だけでなく、インストール提案の表示時にも行えます。ステージにディスクを追加するには、<guimenu>Expert</guimenu>をクリックして、下にスクロールします。DASDおよびzFCPエントリは、下の方に表示されています。
+   </para>
+   <para>
+    ディスクを追加したら、パーティションテーブルを再読込します。インストール提案画面に戻り、<guimenu>パーティション</guimenu>を選択した後、<guimenu>パーティションテーブルの再読み込み</guimenu>を選択します。これによって、新しいパーティションテーブルがアップデートされます。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.s390.part.dasd">
+   <title>DASDディスクの設定</title>
+   <para>
+    <guimenu>Configure DASD Disks (DASDディスクの設定)</guimenu>を選択すると、利用可能なすべてのDASDが概要にリスト表示されます。使用可能なデバイスについて、より詳細な情報を取得するには、リストの上部にある入力フィールドを使用して、表示するチャンネルの範囲を指定します。指定した範囲に従ってリストをフィルタするには、<guimenu>フィルタ</guimenu>を選択します。
+   </para>
+   <figure id="fig.s390_yast2.i_y2_sel_dasd">
+    <title>IBM System z: DASDの選択</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="70%" fileref="s390_i_y2_sel_dasd.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="70%" fileref="s390_i_y2_sel_dasd.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    リスト内の該当するエントリを選択することで、インストールに使用するDASDを指定します。<guimenu>選択/解除</guimenu>をクリックします。<menuchoice><guimenu>アクションの実行</guimenu><guimenu>有効化</guimenu></menuchoice>の順に選択して、DASDを有効にし、インストールに使用できるようにします。DASDをフォーマットするには、<menuchoice><guimenu>Perform Action</guimenu><guimenu>Format</guimenu></menuchoice>の順に選択してすぐに実行するか、後でYaSTパーティショナを使用して実行します(<xref linkend="sec.yast2.i_y2_part_expert"/>を参照)。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.s390.part.zfcp">
+   <title>zFCPディスクの設定</title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールにzFCPディスクを使用するには、選択ダイアログで<guimenu>zFCPディスクの設定</guimenu>を選択します。これによりダイアログが開き、システムで使用可能なZFCPディスクのリストが表示されます。このダイアログで<guimenu>追加</guimenu>を選択すると、zFCPパラメータを入力する別のダイアログが開きます。
+   </para>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールにzFCPディスクを使用できるようにするには、<guimenu>チャネル番号</guimenu>のドロップダウンリストから使用可能な番号を選択します。<guimenu>WWPNの取得</guimenu>(World Wide Port Number)および<guimenu>LUNの取得</guimenu>(Logical Unit Number)は、それぞれ使用できるWWPNとFCP-LUNのリストを返し、ここから選択できます。ここまでの設定が完了したら、<guimenu>次へ</guimenu>をクリックしてZFCPダイアログから、ハードディスクの一般設定ダイアログに戻ります。続いて<guimenu>完了</guimenu>をクリックして終了し、残りの設定を続けます。
+   </para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="sec.i.yast2.mediacheck" os="sles;sled">
+  <title>メディアチェック</title><indexterm> <primary>YaST</primary> <secondary>メディアチェック</secondary></indexterm>
+
+  <para>
+   ［メディアチェック］ダイアログは、ダウンロードしたISOから作成したメディアからインストールする場合のみ、表示されます。元のメディアキットからインストールする場合は、ダイアログはスキップされます。
+  </para>
+
+  <para>
+   メディアチェックでは、メディアの整合性を確認します。メディアチェックを開始するには、インストールメディアを含むドライブを選択し、<guimenu>チェック開始</guimenu>をクリックします。チェックには少し時間がかかります。
+  </para>
+
+  <para>
+   複数のメディアをテストするには、結果メッセージがダイアログに表示されるまで待機し、それからメディアを変更します。最後にチェックしたメディアがインストールを開始したメディアではない場合は、YaSTからインストールを続行する前に適切なメディアの使用を求められます。
+  </para>
+
+  <para>
+   (アドオン製品のインストールなどのため)ISOイメージを使用する場合は、<guimenu>ISOファイルの確認</guimenu>をクリックし、ファイルダイアログでイメージを選択します。
+  </para>
+
+  <warning>
+   <title>メディアチェックの失敗</title>
+   <para>
+    メディアチェックが失敗した場合、メディアは破損しています。その場合は、インストールを続行しないでください。インストールが失敗したり、データが損失することがあります。破損したメディアを交換し、インストール作業をやり直します。
+   </para>
+  </warning>
+
+  <para>
+   メディアチェックが成功した場合は、<guimenu>次へ</guimenu>をクリックしてインストールを続行します。
+  </para>
+
+
+ </sect1>
+ <sect1 id="sec.i.yast2.inst_mode">
+  <title>インストールモード</title><indexterm> <primary>YaST</primary> <secondary>インストールモード</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>モード</secondary></indexterm>
+
+  <para>
+   システムの分析(YaSTによる記憶装置のチェックとコンピュータにインストールされている他のシステムの検出)が終了すると、使用可能なインストールモードが表示されます。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>新しいインストール</guimenu>
+    </term>
+    <listitem>
+     <para>
+      最初から新しくインストールを開始する場合に、このオプションを選択します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Update</guimenu>
+    </term>
+    <listitem>
+     <para>
+      既存のインストールを新しいバージョンにアップデートする場合に、このオプションを選択します。<phrase os="sled;sles">システムアップデートの詳細は、<xref linkend="cha.update.sle"/>を参照してください。.</phrase>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Repair Installed System</guimenu>
+    </term>
+    <listitem>
+     <para>
+      インストール済みの損傷したシステムの修復には、このオプションを選択します。詳細は、<xref linkend="sec.trouble.data.recover"/>にあります。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>インストールモード</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_inst_mode_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_inst_mode_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  
+
+  <para os="sled;sles;osuse">
+   <guimenu>個別のメディアからのアドオン製品を含める</guimenu>を選択して、インストール時にアドオン製品を組み込みます。アドオン製品には、ご使用のシステムのための、拡張機能、サードパーティの製品とドライバ、または追加ソフトウェアなどがあります。
+  </para>
+
+
+
+  <tip>
+   <title>インストール時にSMTサーバからの製品パッチをインストールする</title>
+   <para>
+    組織がSMTサーバを介して<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>に更新チャネルを提供する場合は、このチャネルを、そのHTTPアドレスを入力して、アドオン製品として指定することができます。その結果、システムは、最新パッケージとともにインストールされ、インストール終了時に更新を適用する必要がなくなります。
+   </para>
+  </tip>
+
+  <para>
+   <guimenu>次へ</guimenu>をクリックして続行します。アドオン製品の組み込みを選択した場合は、<xref linkend="sec.i.yast2.inst_mode.addon"/>に進み、そうでない場合は、次のセクションをスキップして、<xref linkend="sec.i.yast2.timezone"/>に進みます。
+  </para>
+
+  <sect2 id="sec.i.yast2.inst_mode.addon">
+   <title>アドオン製品</title><indexterm> <primary>YaST</primary> <secondary>アドオン</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>アドオン</secondary></indexterm>
+   <para>
+    アドオン製品はローカルソース(CD、DVDまたはディレクトリ)またはネットワークソース(HTTP、FTP、NFS、CIFS、...)のいずれかからインストールできます。ネットワークソースからインストールする際には、最初に、ネットワークを設定する必要があります(ネットワークインストールを実行中でない場合)。ネットワークインストールを実行中の場合は、既存のネットワーク設定が使用されます。<guimenu>Yes, Run the Network Setup</guimenu>を選択し、<xref linkend="sec.i.yast2.inst_mode.network"/>にある説明に従って続行します。アドオン製品がローカルで使用できる場合は、<guimenu>No, Skip the Network Setup</guimenu>を選択します。
+   </para>
+   <para>
+    <guimenu>次へ</guimenu>をクリックして、製品のソースを指定します。ネットワークが設定されていない場合、使用可能なソースタイプは、<guimenu>CD</guimenu>、<guimenu>DVD</guimenu>、<guimenu>ハードディスク</guimenu>、<guimenu>USB 大容量記憶装置</guimenu>、<guimenu>ローカルディレクトリ</guimenu>、または<guimenu>ローカルISOイメージ</guimenu>です。アドオン製品がリムーバブルメディアで提供される場合、メディアは自動的にマウントされ、その内容が読み込まれます。アドオン製品がハードディスクで提供される場合は、<guimenu>ハードディスク</guimenu>を選択して、アンマウントされているハードドライブからインストールします。あるいは、<guimenu>ローカルディレクトリ</guimenu>または<guimenu>ローカルISOイメージ</guimenu>を選択して、ローカルファイルシステムからインストールします。アドオン製品は、リポジトリとして、またはRPMファイルのセットとして配布される場合があります。後者の場合は、<guimenu>Plain RPM Directory</guimenu>をオンにします。ネットワークが使用可能な場合は、HTTP、SLP、FTPなどの追加リモートソースから選択できます。直接、URLを指定することもできます。
+   </para>
+   <para>
+    リポジトリを記述するファイルを今すぐダウンロードするには、<guimenu>Download Repository Description Files</guimenu>をオンにします。この項目をオフにすると(チェックマークを付けないと)、インストールが開始してからファイルがダウンロードされます。<guimenu>次へ</guimenu>で続行し、必要な場合は、CDまたはDVDを挿入します。製品のコンテンツによっては、追加の使用許諾契約の受諾が必要な場合があります。
+   </para>
+   <para>
+    アドオン製品を後で設定することも可能です。インストール済みシステムでアドオン製品を使用する方法については、<xref linkend="cha.add-ons"/>に説明があります。
+   </para>
+   <tip os="sles;sled">
+    <title>ドライバの更新</title>
+    <para>
+     また、アドオン製品ダイアログを介して、ドライバの更新リポジトリを追加することもできます。SUSE Linux Enterpriseのドライバのアップデートは<ulink url="http://drivers.suse.com/"/>に用意されています。これらのドライバは、Partner Linux Driver Programによって作成されています。
+    </para>
+   </tip>
+   <sect3 id="sec.i.yast2.inst_mode.network">
+    <title>ネットワークのセットアップ</title><indexterm> <primary>インストール</primary><secondary>ネットワーク</secondary></indexterm>
+    <para>
+     ネットワークセットアップの起動時に、YaSTは、使用可能なネットワークカードの有無をスキャンします。2つ以上のネットワークカードが検出された場合は、設定するカードをリストから選択する必要があります。
+    </para>
+    <para>
+     Ethernetネットワークアダプタがまだ接続されていない場合は、警告ボックスが開きます。ネットワークケーブルが接続されていることを確認したら、<guimenu>Yes, Use It</guimenu>を選択します。ネットワークにDHCPサーバがある場合は、<guimenu>Automatic Address Setup (via DHCP)</guimenu>を選択します。ネットワークを手動で設定するには、<guimenu>Static Address Setup</guimenu>を選択し、<guimenu>IPアドレス</guimenu>、<guimenu>ネットマスク</guimenu>、 <guimenu>デフォルトゲートウェイのIPアドレス</guimenu>、および<guimenu>DNS Server IP</guimenu>を指定します。
+    </para>
+    <para>
+     一部のネットワークでは、プロキシサーバを使用してインターネットにアクセスする必要があります。チェックボックス<guimenu>Use Proxy for Accessing the Internet</guimenu>にチェックを入れ、該当する仕様を入力します。<guimenu>受諾</guimenu>をクリックして、ネットワークのセットアップを実行します。インストールプロシージャで、アドオン製品またはリポジトリのセットアップが続行されます(  <xref linkend="sec.i.yast2.inst_mode.addon"/>参照)。
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.timezone">
+  <title>時計とタイムゾーン</title><indexterm> <primary>YaST</primary> <secondary>タイムゾーン</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>時計</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>タイムゾーン</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>時計</secondary></indexterm>
+
+  <para>
+   このダイアログでは、地域とタイムゾーンを選択します。これらは両方とも、選択したインストール言語に従って事前に選択されています。事前選択された値を変更するには、<guimenu>地域</guimenu>および <guimenu>タイムゾーン</guimenu>用の地図またはドロップダウンリストを使用します。地図を使用する場合は、地域のおおよその方向をカーソルでポイントし、左クリックでズームします。次に、左クリックで国または地域を選択します。右クリックで、世界地図に戻ります。
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>時計とタイムゾーン</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_timezone_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_timezone_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   時計を設定するには、 <guimenu>Hardware Clock is Set to UTC］ </guimenu>にするかどうかを選択します。コンピュータで別のオペレーティングシステム(Microsoft Windows*など)を実行する場合は、大抵はローカルタイムが使用されます。コンピュータでLinuxだけを実行する場合は、ハードウェアクロックをUTCに設定し、標準時間から夏時間への切り換えを自動的に実行させます。
+  </para>
+
+  <important>
+   <title>UTCへのハードウェアクロックの設定</title>
+   <para>
+    標準時間からサマータイムへの転換(およびその逆)は、ハードウェアロック(CMOSクロック)がUTCに設定されている場合にのみ、自動的に行われます。これはさらに、自動同期はハードウェアとシステムクロックの時間差が15分未満の場合にのみ行われるので、NTPによる自動時間同期を使用している場合にのみ、適用されます。
+   </para>
+   <para>
+    誤ったシステム時間は、深刻な問題の原因になる場合があります(バックアップの失敗、メールメッセージの削除、リモートファイルシステムでの障害の発生など)。ハードウェアのクロックを<emphasis>常に</emphasis>UTCに設定することを強くお勧めします。
+   </para>
+  </important>
+
+  <para>
+   ネットワークがすでに設定済みの場合、<phrase os="sles;sled">NTPサーバとの時間の同期を設定できます。</phrase><guimenu>変更</guimenu>をクリックして、NTP設定を変更するか、または<guimenu>手動</guimenu>で時間を設定します。NTPサービスの設定の詳細については、<xref linkend="cha.netz.xntp"/>を参照してください。設定が完了したら、<guimenu>受諾</guimenu>をクリックしてインストールを続行します。
+  </para>
+  
+  
+
+  <note arch="zseries" os="sles">
+   <title>IBM System z上での時間変更不可</title>
+   <para>
+    オペレーティングシステムからは時刻と日付を直接変更できないので、IBM System zでは<guimenu>変更</guimenu>オプションを使用できません。
+   </para>
+  </note>
+ </sect1>
+ 
+ <sect1 id="sec.i.yast2.server" os="sles">
+  <title>サーバベースシナリオ</title><indexterm> <primary>YaST</primary> <secondary>サーバシナリオ</secondary></indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>では、3つのベースシナリオの中から選択できます。選択されたシナリオはパッケージの選択に影響します。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>物理マシン</term>
+    <listitem>
+     <para>
+      <quote>実際の</quote>コンピュータまたは完全に仮想化されたゲストにインストールする場合は、このシナリオを選択します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Virtual Machine</term>
+    <listitem>
+     <para>
+      擬似仮想化されたゲストをインストールする場合は、このシナリオを選択します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Xen仮想マシンホスト</term>
+    <listitem>
+     <para>
+      XENホストとして使用するコンピュータにインストールする場合は、このシナリオを選択します。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure>
+   <title>サーバベースシナリオ</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_server_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_server_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ 
+ 
+ <sect1 id="sec.i.yast2.proposal">
+  <title>インストールの設定</title><indexterm> <primary>YaST</primary> <secondary>インストールの設定</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>インストールの概要</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>設定</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>概要</secondary></indexterm>
+
+  <para>
+   実際のインストール開始前の最後のステップで、YaST推奨のインストール設定を変更し、今まで行った設定をレビューできます。<phrase os="sles;sled">基本設定は<guimenu>概要</guimenu>タブで変更でき、詳細オプションは<guimenu>エキスパート</guimenu>タブで使用できます。</phrase>提案を変更するには、<guimenu>変更</guimenu>をクリックして変更するカテゴリを選択するか、または見出しの1つをクリックします。これらのダイアログに示された項目を設定すると、常に、設定の変更に応じて更新されたインストール設定ウィンドウに戻ります。
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>インストールの設定</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_inst_summary_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_inst_summary_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <tip>
+   <title>デフォルト設定の復元</title>
+   <para>
+    すべての変更内容をデフォルト値にリセットするには、<menuchoice><guimenu>変更</guimenu><guimenu>デフォルトにリセット</guimenu></menuchoice>の順にクリックします。YaSTに、元の推奨値が再表示されます。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.proposal.partitioning">
+   <title><guimenu>パーティション分割</guimenu><phrase os="sles;sled">(概要)</phrase></title>
+   <para>
+    <phrase os="sled;sles">システムから提示された</phrase>パーティションの設定をレビューし、(必要な場合は)変更します。<phrase os="sled;sles">パーティション設定の変更では、特定のディスクをパーティション分割したり、あるいは<guimenu>カスタムパーティション</guimenu>を選択して独自のパーティション分割スキームを適用できます。</phrase>パーティションのセットアップを変更すると、エキスパートパーティショナが開きます(<xref linkend="sec.yast2.i_y2_part_expert"/>参照)。
+   </para>
+   <tip os="sles">
+    <title>デフォルトファイルシステムとしてのBtrfs</title>
+    <para>
+     デフォルトのパーティションスキームはExt3ファイルシステムに基づいています。デフォルトファイルシステムとして代わりにBtrfsを使用するには、<guimenu>概要</guimenu>タブの<guimenu>パーティション</guimenu>をクリックして<guimenu>デフォルトファイルシステムとしてBtrfsを使用</guimenu>をチェックします。
+    </para>
+   </tip>
+   <note os="sles" arch="zseries">
+
+    <title>z/VMでのミニディスクの使用</title>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>をz/VMのミニディスクにインストールしていて、そのz/VMがミニディスクと同じ物理ディスク上にある場合、そのミニディスクのアクセスパス(/dev/disk/by-id/)は固有ではなく、物理ディスクのIDになります。このため、同じ物理ディスク上に2つ以上のミニディスクがある場合、これらはすべて同じIDを持ちます。
+    </para>
+    <para>
+     ミニディスクのマウント時の問題を回避するには、「パス」または「UUID」のいずれかでマウントしてください。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.booting">
+   <title><guimenu>ブート</guimenu><phrase os="sles;sled"> (エキスパート)</phrase></title>
+   <para os="sles" arch="zseries">
+    IBM System zプラットフォームでのブートローダ(zipl)の環境設定に、このモジュールを利用することはできません。
+   </para>
+
+
+   <para>
+    YaSTにより、システムのブート設定が提案されます。システム内の他のオペレーティングシステム(Microsoft Windows、他のLinuxインストールなど)が自動的に検出され、ブートローダに追加されます。ただし、デフォルトでブートするのは<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>です。通常、設定を変更せずに、そのまま適用することができます。カスタムセットアップが必要な場合は、ご使用のシステムの提案を変更します。詳細については、<xref linkend="sec.boot.yast2.config"/>を参照してください。 
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.sofware">
+   <title><guimenu>ソフトウェア</guimenu><phrase os="sles;sled"> (概要)</phrase></title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>には、各種用途に使用する多数のソフトウェアパターンが用意されています。<guimenu>ソフトウェア</guimenu>をクリックして、パターンの選択を開始し、必要に応じてインストールのスコープを変更します。リストからパターンを選択し、ウィンドウの右部分にパターン記述を表示します。各パターンには、特定の機能に必要なソフトウェアパッケージが多数含まれています(<phrase os="sles">WebおよびLAMPサーバまたは印刷サーバ</phrase>など)。インストールするソフトウェアパッケージに基づく詳細な選択を参照するには、<guimenu>詳細</guimenu>を選択し、YaSTソフトウェアマネージャに切り替えます。
+   </para>
+   <para>
+    YaSTソフトウェアマネージャを使用して、新しいソフトウェアパッケージのインストールやシステムからのソフトウェアパッケージの削除をいつでも実行できます。詳細については、<xref linkend="cha.y2.sw"/>を参照してください。
+   </para>
+   
+   
+   <figure os="sles">
+    <title>ソフトウェア選択とシステムタスク</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="i_y2_software_sles.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="i_y2_software_sles.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <note os="sles">
+    <title>デフォルトのデスクトップ</title>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のデフォルトのデスクトップはGNOMEです。KDEをインストールするには、<guimenu>ソフトウェア</guimenu>をクリックして、<guimenu>グラフィック環境</guimenu>から<guimenu>KDE Desktop Environment</guimenu>を選択します。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.locale">
+   <title><guimenu os="sles;sled">［言語</guimenu><phrase os="sles;sled"> (概要)</phrase></title>
+   <para>
+    ここで、インストールの最初の手順でユーザにより定義されたシステム<guimenu>言語</guimenu>を変更できます。言語を追加することもできます。システムの言語設定を調整するには、<guimenu>言語</guimenu>を選択します。リストから言語を選択します。第一言語がシステム言語として使用されます。現在の設定が違う場合は、キーボードレイアウトおよびタイムゾーンを第一言語に適応させることもできます。<guimenu>詳細</guimenu>では、ユーザ<systemitem class="username">root</systemitem>の言語設定を変更したり、<systemitem>UTF-8</systemitem>サポートを設定したり、言語の詳細を指定できます(たとえば、英語(南アフリカ)を選択します)。
+   </para>
+   <para>
+    第2言語を選択すると、追加パッケージをインストールしなくても、いつでも言語間で切り替えられます。詳細については、<xref linkend="cha.y2.lang"/>を参照してください。
+   </para>
+   
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.add-on" os="sles;sled">
+   <title><guimenu>アドオン製品</guimenu> (エキスパート)</title>
+   <para>
+    アドオンメディアのソースを追加した場合は、ここに表示されます。必要に応じて、アドオン製品の追加、削除、変更をここで行います。これは、<xref linkend="sec.i.yast2.inst_mode.addon"/>で説明された同じ設定ダイアログです。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.keyboard" os="sles;sled">
+   <title><guimenu>キーボード配列</guimenu> (エキスパート)</title>
+   <para>
+    キーボードの配列を変更するには、<guimenu>キーボード配列</guimenu>選択します。デフォルトでは、インストール用に選択した言語に対応する配列が選択されます。リストからキーボードレイアウトを選択します。特殊文字などを正しく入力できるかどうかを確認するには、ダイアログの下にある<guimenu>テスト</guimenu>フィールドを使用します。<guimenu>エキスパートモード</guimenu>には、各種の設定を微調整するオプションがあります。完了したら、<guimenu>受諾</guimenu>をクリックして、インストールの概要に戻ります。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.timezone">
+   <title><guimenu>タイムゾーン</guimenu><phrase os="sles;sled"> (エキスパート)</phrase></title>
+   <para>
+    ここでタイムゾーンと時刻の設定を調整します。ネットワークが設定済みの場合、コンピュータをタイムサーバと自動的に同期させるネットワーク時間プロトコル (NTP) クライアントを設定できます。これは、前に<xref linkend="sec.i.yast2.timezone"/>で示されたのと同じ設定です。
+   </para>
+  </sect2>
+
+  
+
+  <sect2 id="sec.i.yast2.proposal.runlevel">
+   <title><guimenu>デフォルトのランレベル</guimenu><phrase os="sles;sled"> (エキスパート)</phrase></title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、複数のランレベルにブートすることができます。通常は、ここでは何も変更する必要はありません。しかし、必要な場合には、このダイアログでデフォルトのランレベルを設定してください。ランレベルの設定の詳細については、<xref linkend="sec.boot.runlevel.edit"/>を参照してください。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.system">
+   <title><guimenu>システム</guimenu><phrase os="sles;sled"> (エキスパート)</phrase></title>
+   <para>
+    このダイアログには、お使いのコンピュータからYaSTが取得したすべてのハードウェア情報が表示されます。呼び出すと、ハードウェア検出ルーチンが起動します。システムによっては、このプロセスに時間がかかる場合があります。リストのいずれかの項目を選択して<guimenu>詳細</guimenu>をクリックすれば、選択した項目についての詳細な情報を表示できます。<guimenu>ファイルに保存</guimenu>を使用して、詳細リストをローカルファイルシステムまたはフロッピーに保存します。高度なユーザは、<guimenu>カーネル設定</guimenu>の選択によって、PCI ID設定とカーネル設定も変更できます。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.kdump" os="sles">
+   <title><guimenu>Kdump</guimenu> (エキスパート)</title>
+   <para>
+    kdumpを使用すると、クラッシュの際にカーネルのダンプを保存して、問題を分析できます。このダイアログを使用して、kdumpを有効にして設定できます。詳細については、<xref linkend="cha.tuning.kexec"/>を参照してください。
+   </para>
+  </sect2>
+
+  
+
+  
+ </sect1>
+ <sect1 id="sec.i.yast2.perform">
+  <title>インストールの実行</title><indexterm> <primary>インストール</primary> <secondary>実行</secondary> </indexterm>
+
+  <para>
+   すべてのインストール設定を完了したら、［インストールの設定］ウィンドウで、<guimenu>インストールする</guimenu>をクリックしてインストールを開始します。一部のソフトウェアでは、ライセンスの確認が必要になります。選択したソフトウェアの中にこのようなソフトウェアがある場合は、ライセンスの確認ダイアログが表示されます。<guimenu>受諾</guimenu>をクリックして、ソフトウェアパッケージをインストールします。ライセンスに同意しない場合は、<guimenu>同意しません</guimenu>をクリックします。この場合ソフトウェアパッケージはインストールされません。次のダイアログで、再度<guimenu>インストールする</guimenu>をクリックして確定します。
+  </para>
+
+  <para>
+   システムのパフォーマンスと選択したソフトウェアスコープにより、インストールには15〜30分かかります。ハードディスクの準備が完了し、<phrase os="sles;sled">ユーザ設定の保存/復元を完了すると、</phrase>ソフトウェアのインストールが開始します。
+   
+  </para>
+
+  
+
+  <para>
+   ソフトウェアのインストールが完了したら、基本システムが設定されます。中でも、<quote>Finishing the Basic Installation</quote>では、ブートマネージャのインストール、フォントの初期化などが行われます。次に、YaSTにより新しいLinuxシステムがブートされ、システム設定が開始します。
+  </para>
+
+  <tip>
+
+   <title>既存のSSHホストキー</title>
+   <para>
+    Linux環境がすでにインストールされているコンピュータに<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>をインストールする場合は、インストールルーチンによって、既存のLinuxインストール環境からアクセス日時が最新のSSHホストキーが自動的にインポートされます。
+   </para>
+  </tip>
+
+  <sect2 id="sec.s390.inst.reipl" arch="zseries" os="sles">
+   <title>IBM System z: インストールしたシステムのIPL処理</title>
+   <para>
+    ほとんどの場合、YaSTは、IBM System zプラットフォーム上にインストールしたシステムで自動的にリブートします。この件で既知の例外は、ブートローダが、LPARがz9以前のマシン上にある環境、またはリリース 5.3以前のz/VM環境でFCPデバイス上にある場合です。ブートローダは<filename>/boot</filename>ディレクトリを持つデバイスに書き込まれます。<filename>/boot</filename>が個別のパーティションにない場合、ルートファイルシステム<filename>/</filename>と同じパーティションに存在します。
+   </para>
+   <para>
+    自動再起動を実行できない場合、YaSTはIPLを実行するデバイスについての情報を示すダイアログボックスを表示します。シャットダウンオプションを使用して、シャットダウン後にIPLを実行します。この手順はインストールのタイプによって異なります。以下に示します。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>LPARインストール</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>LPARインストール</primary> <secondary>IPL</secondary> </indexterm> IBM System z HMCでは、<guimenu>ロード</guimenu><guimenu>消去</guimenu>の順に選択し、次にロードアドレス(ブートローダの<filename>/boot</filename>ディレクトリを持つデバイスのデバイスアドレス)を入力します。ZFCPディスクをブートデバイスとして使用している場合、<guimenu>Load from SCSI(SCSIからロード)</guimenu>を選択して、FCPアダプタのロードアドレスとブートアドレスのWWPNおよびLUNを指定します。この時点でロードプロセスが開始します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>z/VMのインストール</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>z/VMインストール</primary> <secondary>IPL</secondary> </indexterm> VMゲスト(設定は<xref linkend="ex.prep.prep_ipl.vm.linux_guest.config"/>を参照してください)に<systemitem class="username">LINUX1</systemitem>としてログインし、インストールしたシステムのIPL処理を続行します。
+      </para>
+<screen>IPL 151 CLEAR</screen>
+      <para>
+       <literal>151</literal>はZFCPアダプタのアドレスの例です。この値を正しいアドレスに置き換えてください。
+      </para>
+      <para>
+       ZFCPディスクをブートデバイスとして使用している場合は、IPLをインストールする前に、ブートデバイスのZFCP WWPNとLUNを指定します。パラメータの長さは8文字に制限されています。8文字を越える長いパラメータを使用する場合は、以下に示すように分割します。
+      </para>
+<screen>SET LOADDEV PORT 50050763 00C590A9 LUN 50010000 00000000 </screen>
+      <para>
+       最後にIPLを初期化します。以下に示します。
+      </para>
+<screen>IPL FC00</screen>
+      <para>
+       <literal>FC00</literal>はZFCPアダプタのアドレスの例です。この値を正しいアドレスに置き換えてください。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.s390.inst.reipl.reconnect" arch="zseries" os="sles">
+   <title>IBM System z: インストールしたシステムとの接続</title>
+   <para>
+    インストール済みシステムのIPL処理が完了した後は、インストールを完了するためにシステムへの接続を確立します。接続を確立するためのステップは、最初に使用した接続のタイプによって異なります。
+   </para>
+   <sect3 id="sec.s390.inst.reipl.reconnect.vnc">
+    <title>接続にVNCを使用する場合</title>
+    <para>
+     3270端末では、VNCクライアントを使用して、Linuxシステムへ接続するように促すメッセージが表示されます。ただし、このメッセージは、カーネルからのメッセージに紛れてしまったり、ユーザが気付く前にこの端末プロセスが終了したりするため、見落とされることがよくあります。5分待機しても何も起こらないようであれば、VNCビューアを使用して、Linuxシステムへの接続を開始するようにしてください。
+    </para>
+    <para>
+     Java対応ブラウザを使用して接続を行う場合は、インストール済みシステムのIPアドレスとポート番号から成る完全なURLを、次のように入力します。
+    </para>
+<screen> http://&lt;IP of installed system&gt;:5801/ </screen>
+   </sect3>
+   <sect3 id="sec.s390.inst.reipl.reconnect.x">
+    <title>接続にXを使用する場合</title>
+    <para>
+     インストール済みシステムのIPL処理を行う場合、DASDからブートする前に、インストールの最初のフェーズで利用されたXサーバが有効で、引き続き利用できることを確認してください。YaSTはこのXサーバを使ってインストールを完了します。システムが起動されてもXサーバに適切なタイミングで接続できなければ、問題が起きる可能性があります。
+    </para>
+   </sect3>
+   <sect3 id="sec.s390.inst.reipl.reconnect.ssh">
+    <title>接続にSSHを使用する場合</title>
+    <important>
+     <title>IBM System z:LinuxまたはUNIXシステムからの接続</title>
+     <para>
+      xtermでsshを開始します。他の端末エミュレータは、YaSTのテキストベースのインタフェースを完全にサポートしていません。
+     </para>
+    </important>
+    <para>
+     3270端末では、SSHクライアントを使用して、Linuxシステムへ接続するように促すメッセージが表示されます。ただし、このメッセージは、カーネルからのメッセージに紛れてしまったり、ユーザが気付く前にこの端末プロセスが終了したりするため、見落とされることがよくあります。
+    </para>
+    <para>
+     メッセージが表示されたら、SSHを使ってLinuxシステムに<systemitem class="username">root</systemitem>としてログインします。接続が拒否されたり、タイムアウトになった場合は、ログインタイムアウトが時間切れになるまで待ち、再試行します(この時間はサーバの設定によって変化します)。
+    </para>
+    <para>
+     接続が確立されたら、コマンド<command>/usr/lib/YaST2/startup/YaST2.ssh</command>を実行します。このような場合、<command>yast</command>コマンドを実行するだけでは不十分です。
+    </para>
+    <para>
+     次に、YaSTは残っているパッケージのインストールの完了と初期システム設定の作成を開始します。
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.conf">
+  <title>インストール済みシステムの環境設定</title>
+
+  <para>
+   これで、システムのインストールは完了しました。しかし、システムを使用するには、まだ設定が残っています。ハードウェア、ネットワーク、その他のサービスはまだ設定されていません。
+  </para>
+
+  
+
+  <sect2 id="sec.i.yast2.conf.manual">
+   <title>システム設定</title><indexterm> <primary>インストール</primary> <secondary>手動設定</secondary> </indexterm>
+   <para>
+    システムは、リブート後、手動設定を起動します。この段階のあるステップで設定が失敗すると、再起動して最後に成功したステップから続行されます。
+   </para>
+   <sect3 id="sec.i.yast2.conf.manual.root" os="sles">
+    <title>システム管理者向けパスワード<quote>root</quote></title><indexterm> <primary>YaST</primary><secondary>rootのパスワード</secondary></indexterm>
+    <para>
+     <systemitem class="username">root</systemitem>とは、スーパーユーザ、つまり、システム管理者の名前です。システムで管理コマンドを実行するパーミッションを持つことも、持たないこともある通常ユーザと異なり、<systemitem class="username">root</systemitem>には、無制限のコマンドキャパシティ(システム設定の即時変更、プログラムのインストール、新規ハードウェアのセットアップなど)があります。ユーザがパスワードを忘れてしまった場合、システムに関連する他の問題がある場合、<systemitem class="username">root</systemitem>は支援することができます。 <systemitem class="username">root</systemitem>アカウントは、システム管理、メンテナンス、修復のみに限って使用するのが妥当です。 日常的な作業のために<systemitem class="username">root</systemitem>でログインすると、ただ1度のミスが、システムファイルの回復不可能な喪失を招くことがあり、非常に危険です。
+    </para>
+    <para>
+     root<systemitem class="username">のパスワードは、確認の目的で示すように、2度入力しなければなりません。</systemitem> root<systemitem class="username">のパスワードは、決して忘れないでください。</systemitem> 1度入力すると、このパスワードを取得することはできません。
+    </para>
+    <para>
+     パスワードを入力するとき、文字はドットに変換されるため、入力中の文字を見ることはできません。正しい文字列を入力したかどうか不確かな場合は、<guimenu>キーボードレイアウトのテスト</guimenu>フィールドでテストしてください。
+    </para>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>では、パスワードにはDES、MD5、またはBlowfishの暗号化アルゴリズムを利用できます。デフォルトの暗号化タイプはBlowfishです。暗号化タイプを変更するには、<menuchoice><guimenu>エキスパートオプション</guimenu><guimenu>暗号化の種類</guimenu></menuchoice>の順にクリックして、目的のタイプを選択します。
+    </para>
+    <para>
+     <systemitem class="username">root</systemitem>は、インストール済みのシステムで後で変更できます。その場合は、YaSTを実行し、<menuchoice><guimenu>セキュリティとユーザ</guimenu><guimenu>ユーザとグループの管理</guimenu></menuchoice>の順に選択します。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.hostname">
+    <title>ホスト名とドメイン名</title><indexterm> <primary>YaST</primary> <secondary>ホスト名</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>ドメイン名</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>ホスト名</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>ドメイン名</secondary></indexterm>
+    <para>
+     ホスト名は、ネットワーク上のコンピュータ名です。ドメイン名は、ネットワークの名前です。デフォルトでは、ホスト名とドメインの推奨値が提示されます。システムがネットワークに属している場合、ホスト名はこのネットワーク内で固有である必要があり、ドメイン名はネットワーク上のすべてのホストで共通にします。
+    </para>
+    <para>
+     多くのネットワークでは、システムはDHCP経由で名前を受け取ります。この場合、提示されたホスト名とドメイン名を変更する必要はありません。その代わり、<guimenu>DHCPでホスト名を変更する</guimenu>を選択します。システムがネットワークに接続していなくても、このホスト名を使用してシステムにアクセスできるようにするには、<guimenu>ホスト名をループバックIPに割り当てる</guimenu>￼］を選択します。ご使用のコンピュータがネットワークサービスを提供している場合は、このオプションを有効にしないでください。デスクトップ環境を再起動せずにネットワークを頻繁に変更する場合(異なるWLANに切り替える場合など)も、このオプションを有効にしないでください。<filename>/etc/hosts</filename>内のホスト名が変更されると、デスクトップシステムが混乱する可能性があるからです。
+    </para>
+    <para>
+     インストール後にホスト名の設定を変更する場合は、YaSTで<menuchoice><guimenu>ネットワークデバイス</guimenu><guimenu>ネットワーク設定</guimenu></menuchoice>の順にクリックします。詳細については、<xref linkend="sec.basicnet.yast.netcard"/>を参照してください。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.network">
+    <title>ネットワーク設定</title><indexterm> <primary>YaST</primary> <secondary>ネットワーク設定</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>ネットワーク設定</secondary></indexterm>
+    <tip arch="zseries" os="sles">
+     <title>IBM System z:ネットワーク設定</title>
+     <para>
+      IBM System zプラットフォームでは、インストール中に、ターゲットシステム、インストール\'83\'5cース、および、プロセスを制御するYaST端末に接続するには、機\'94\'5cしているネットワーク接続が必要になります。ネットワークを設定する手順については、<xref linkend="sec.prep.netcfg"/>で解説されています。IBM System zプラットフォームでは、そこに記載されているネットワークインタフェース(OSA Ethernet、OSA Gigabit Ethernet、OSA Express Fast Ethernet、Escon、IUCV)のみをサポートしています。YaSTのダイアログには単純に、すでに設定されているインタフェースがそのまま表示されます。このダイアログは単に確認のみで、次に進みます。
+     </para>
+    </tip>
+    
+    <para os="sles">
+     デフォルトでは、<guimenu>NetworkManagerアプレットを使用しない従来の方法</guimenu>が有効になっています。必要に応じて、NetworkManagerを使用してネットワークデバイスを管理することもできます。ただし、サーバソリューションとしては、従来の方法をお勧めします。NetworkManagerの詳細については、「<xref linkend="cha.nm"/>」を参照してください。
+    </para>
+    <para>
+     システムのインストール完了後に、ネットワークを設定することもできます。このステップをスキップすると、システムはオフラインのままとなり、更新を取得できません。後でネットワーク接続を設定する場合は、<guimenu>環境設定をスキップ</guimenu>を選択して、<guimenu>次へ</guimenu>をクリックします。
+    </para>
+    <para>
+     このステップでは、次のネットワーク設定が可能です。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>General Network Settings</guimenu>
+      </term>
+      <listitem>
+       <para>
+        上述したように、NetworkManagerの使用を有効または無効にします。IPv6サポートも、ここで変更します。デフォルトでは、IPv6サポートが有効になっています。無効にするには、<guimenu>Disable IPv6</guimenu>をクリックします。IPv6の詳細は、<xref linkend="sec.basicnet.ipv6"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>ファイアウォール</guimenu>
+      </term>
+      <listitem>
+       <para>
+        設定されているすべてのネットワークインタフェースに対して、デフォルトでSuSEfirewall2が有効になります。このコンピュータのファイアウォールをグローバルに無効化するには、<guimenu>無効化</guimenu>をクリックします。ファイアウォールが有効になっている場合、SSHポートを<guimenu>開いて</guimenu>セキュアシェル経由でリモート接続を可能にすることができます。詳細なファイアウォール設定ダイアログを開くには、<guimenu>ファイアウォール</guimenu>をクリックします。詳細については、<xref linkend="sec.fire.SuSE.yast"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>ネットワークインタフェース</guimenu>
+      </term>
+      <listitem>
+       <para>
+        ここでは、YaSTにより検出されたすべてのネットワークカードがリストされます。インストール時にすでにネットワーク接続を設定した場合(<xref linkend="sec.i.yast2.inst_mode.network"/>参照)、その接続に使用されたカードが<guimenu>Configured</guimenu>としてリストされます。<guimenu>ネットワークインタフェース</guimenu>をクリックして、<guimenu>ネットワーク設定</guimenu>ダイアログを開きます。ここでは、既存の設定を変更したり、まだ設定されていないネットワークカードを設定したり、カードを追加および設定できます。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>DSL接続</guimenu>、<guimenu>ISDNアダプタ</guimenu>、および<guimenu>モデム</guimenu>
+      </term>
+      <listitem>
+       <para>
+        コンピュータに、DSLモデム、内部ADSL Fritzカード、ISDNカード、またはモデムが搭載されている場合、各ヘッドラインをクリックすると、その設定ダイアログが開きます。詳細については、<xref linkend="cha.internet"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>VNCリモート管理</term>
+      <listitem>
+       <para>
+        VNCによるコンピュータのリモート管理を有効にするには、<guimenu>VNCリモート管理</guimenu>をクリックします。次のダイアログで<guimenu>リモート管理を許可する</guimenu>を選択し、ファイアウォール設定を適宜調整します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>代理</term>
+      <listitem>
+       <para>
+        ネットワークでインターネットアクセスを制御するプロキシサーバがある場合は、プロキシURLと認証の詳細をこのダイアログで設定します。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <tip>
+     <title>ネットワーク設定のデフォルト値へのリセット</title>
+     <para>
+      ネットワーク設定を元の推奨値にリセットするには、<menuchoice><guimenu>変更</guimenu><guimenu>デフォルトにリセット</guimenu></menuchoice>の順にクリックします。この操作により、変更内容が破棄されます。
+     </para>
+    </tip>
+    <sect4 id="sec.i.yast2.conf.manual.network.internet">
+     <title>インターネット接続のテスト</title><indexterm> <primary>インストール</primary> <secondary>インターネット接続</secondary> </indexterm>
+     <para>
+      ネットワーク接続を設定した後で、テストできます。YaSTはこの目的で<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のサーバに接続し、最新版のリリースノートをダウンロードします。インストールプロセスが終了したら、これを読んでください。テストの成功は、デフォルトリポジトリの自動追加とオンラインアップデートの前提条件でもあります。
+     </para>
+     <para>
+      複数のネットワークインタフェースがある場合、インターネットへの接続に適したカードを使用しているかどうかを確認してください。使用していない場合は、<guimenu>デバイスの変更</guimenu>をクリックします。
+     </para>
+     <para>
+      テストを開始するには、<guimenu>Yes, Test Connection to the Internet</guimenu>を選択して、<guimenu>次へ</guimenu>をクリックします。次のダイアログに、テストの進捗状況と結果が表示されます。テストプロセスの詳細は、<guimenu>ログの表示</guimenu>で参照できます。テストが失敗した場合、<guimenu>戻る</guimenu>をクリックしてネットワーク設定に戻り、入力内容を修正します。
+     </para>
+     <para>
+      <guimenu>次へ</guimenu>で続行します。テストが成功した場合は、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>の公式ソフトウェアリポジトリとアップデートリポジトリが設定されます。リポジトリデータの初回ダウンロードには、時間がかかることがあります。
+     </para>
+     <para>
+      この時点でテストを行わない場合は、<guimenu>Skip Test</guimenu>を選択し、<guimenu>次へ</guimenu>をクリックします。これにより、リリースノートのダウンロード、<phrase os="sles;sled">カスタマセンターの設定</phrase>、オンラインアップデートもスキップされます。これらのステップは、システムが最初に設定した後にいつでも実行できます。
+     </para>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.cc" os="sles;sled">
+    <title>ノベルカスタマセンターの環境設定</title>
+    <para>
+     テクニカルサポート情報や製品のアップデートを入手するには、Novell Customer Centerで製品を登録してアクティブ化する必要があります。製品の登録には、<guimenu>Novell Customer Centerの設定</guimenu>を利用することができます。Novell Customer Centerの詳細については、<ulink url="http://www.novell.com/documentation/ncc/"/>を参照してください。
+    </para>
+    <para>
+     ネットワークに接続していない、またはこのステップをスキップしたい場合は、<guimenu>Configure Later</guimenu>を選択します。これにより、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のオンラインアップデートもスキップされます。
+    </para>
+    <para>
+     <guimenu>含める情報</guimenu>で、<guimenu>ハードウェアプロファイル</guimenu>または<guimenu>オプションの情報</guimenu>など、登録時に求められていない追加情報を送信するかどうかを選択します。これにより、登録プロセスが簡単になります。<guimenu>詳細</guimenu>をクリックして、データの収集方法についての詳細情報を取得します。特定の製品にどのデータが送信されるかについての情報を取得するために、Novellサーバが接続されます。この初期接続では、製品のID以外のデータはNovellサーバに送信されません。
+    </para>
+    <para>
+     サポートを受ける資格を得るには<guimenu>登録コード</guimenu>がオンになっていることを確認してください。<guimenu>次へ</guimenu>をクリックして続行するときに、コードを入力するように求められます。技術サポートに関する詳細は、<ulink url="http://www.suse.com/support/programs/"/>を参照してください。
+    </para>
+    <note>
+     <title>データプライバシー</title>
+     <para>
+      Novell以外のユーザには情報は送信されません。データは、統計のためと、ドライバサポートおよびWebアカウントの利便性向上のために使用されます。<guimenu>詳細</guimenu>をクリックすると、詳細なプライバシーポリシーにリンクできます。<filename>/root/.suse_register.log</filename>でログファイルに送信された情報を表示します。
+     </para>
+    </note>
+    <para>
+     製品を有効化して登録するほかに、このモジュールは公式なアップデートリポジトリを設定に追加します。これらのリポジトリは、既知のバグまたはセキュリティ問題の修正を含み、オンラインアップデートでインストールできます。
+    </para>
+    <para>
+     リポジトリを有効に維持するために、<guimenu>カスタマセンタで定期的に同期化</guimenu>を選択します。このオプションではリポジトリをチェックし、新しいカタログを追加したり、古いカタログを削除したりします。このオプションは、手動で追加したリポジトリには影響しません。
+    </para>
+    
+    <para>
+     <guimenu>次へ</guimenu>で続行します。Novellサーバとの接続が確立されます。画面の説明に従って、登録を完了します。
+    </para>
+    <tip>
+     <title>異なる登録コードでのインストール済みシステムの再登録</title>
+     <para>
+      Novell Customer Centerでシステムを登録すると、登録データはローカルとNovell Customer Centerデータベースの両方に格納されます。通常はこれは必ずしも必要ではありませんが、既にインストール済みのマシンを異なる登録コードで再登録することが必要の場合がまれにあります。そのようにするには、インスタンス済みシステムで次のステップを進めます:
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="username">root</systemitem>ユーザとして次のコマンドを入力して、ローカルマシンのインストールデータを削除します。
+       </para>
+<screen>suse_register.pl --erase-local-regdata</screen>
+      </listitem>
+      <listitem>
+       <para>
+        次に、Novell Customer Centerデータベースから登録済みシステムを削除する必要があります。<ulink url="http://www.suse.com/"/>ブラウザに移動して、<menuchoice><guimenu>サポート</guimenu><guimenu>カスタマセンター</guimenu></menuchoice>をクリックします。ログインして、<menuchoice><guimenu>マイシステム</guimenu> <guimenu>システム</guimenu></menuchoice>にナビゲートします。システムを選択して、テーブルの下のバーのダッシュ記号をクリックします。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        これで、<command>suse-register</command>またはYaSTモジュール<guimenu>オンライン更新設定</guimenu>のいずれかでマシンを再登録することができます。
+       </para>
+      </listitem>
+     </orderedlist>
+    </tip>
+    <sect4 id="sec.i.yast2.conf.manual.cc.local">
+     <title>ローカル登録サーバ</title>
+     <para>
+      会社でNovell Customer Centerを使用せず、ローカル登録サーバが提供されている場合、サーバのURLを指定する必要があります。クライアントとサーバはHTTPSプロトコルのみを通じて通信するため、証明書が認証局から発行されていない場合は、サーバの証明書へのパスを入力する必要があります。<menuchoice><guimenu>詳細</guimenu><guimenu>Local Registration Server</guimenu></menuchoice>の順に選択してダイアログを開きます。
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><guimenu>Registration Server</guimenu>
+       </term>
+       <listitem>
+        <para>
+         登録サーバのURLURLは<literal>https://<replaceable>FQN</replaceable>/center/regsvc/</literal>という固定フォーマットで、<replaceable>FQN</replaceable>は登録サーバの完全修飾ホスト名にします。例:
+        </para>
+<screen>https://smt.example.com/center/regsvc/</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>サーバCA証明書の場所</term>
+       <listitem>
+        <para>
+         登録サーバの証明書の場所。次のいずれかの場所を指定します。
+        </para>
+        <variablelist>
+         <varlistentry>
+          <term>URL</term>
+          <listitem>
+           <para>
+            証明書をダウンロードできる、リモートの場所(HTTP、HTTPS、またはFTP)。例:
+           </para>
+<screen>http://smt.example.com/smt-ca.crt</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>フロッピー(Floppy)</term>
+          <listitem>
+           <para>
+            フロッピーの場所を指定します。続行する前にフロッピーを挿入してください。値は、文字列<literal>floppy</literal>に証明書へのパスを連結したものにします。例:
+           </para>
+<screen>floppy/smt/smt-ca.crt</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>local path</term>
+          <listitem>
+           <para>
+            ローカルマシン上の証明書への絶対パス。例:
+           </para>
+<screen>/data/inst/smt/smt-ca.cert</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>Interactive</term>
+          <listitem>
+           <para>
+            <literal>ask</literal>を使用してポップアップメニューを開き、証明書へのパスを指定します。AutoYaSTでは、このオプションを使用しないでください。例:
+           </para>
+<screen>ask</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>証明書のインストールの無効化</term>
+          <listitem>
+           <para>
+            アドオン製品によって証明書がインストールされる場合、または公式の認証局によって発行される証明書を使用している場合は、<literal>done</literal>を使用します。例:
+           </para>
+<screen>done</screen>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.update">
+    <title>オンラインアップデート</title><indexterm> <primary>YaST</primary> <secondary>ソフトウェアアップデート</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>オンラインアップデート</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>オンラインアップデート</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>ソフトウェアアップデート</secondary></indexterm>
+    <para>
+     インターネット接続が確立されていて、アップデートがある場合は、YaSTオンラインアップデートを実行するかどうか選択します。サーバ上に利用可能なパッチ付きパッケージがある場合、既知のバグやセキュリティ問題を修正するために、ここでそれらをダウンロードしてインストールします。詳細については、<xref linkend="cha.onlineupdate.you"/>を参照してください。インストールしたシステムでオンラインアップデートを実行する方法に関する指示は、<xref linkend="sec.updater"/>または<xref linkend="cha.onlineupdate.you"/>にあります。アップデートがないか、インターネット接続が確立されていない場合、このステップはスキップされます。セキュリティ上の問題を解決するパッチとインストールへの適用が推奨されるパッチは、自動的に事前選択されています。<guimenu>受諾</guimenu>をクリックしてそれらをインストールし、<guimenu>次へ</guimenu>をクリックしてシステム設定を続行します。
+    </para>
+    <important>
+     <title>ソフトウェアアップデートのダウンロード</title>
+     <para>
+      アップデートのダウンロードには、インターネット接続の帯域幅とアップデートファイルのサイズによっては長時間かかります。パッチシステム自身が更新された場合、オンラインアップデートが再起動し、再起動後にその他のパッチがダウンロードされます。カーネルが更新された場合、設定の完了前にシステムが再起動します。
+     </para>
+    </important>
+   </sect3>
+   <sect3 id="sec.i.yast2.servprop" os="sles">
+    <title>Services Configuration</title>
+    <para>
+     インターネット接続のテストと最初のアップデートのダウンロードを完了すると、ダイアログが表示されます。このダイアログでは、3つのネットワークサービスを有効にし、設定することができます。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>CA管理</term>
+      <listitem>
+       <para>
+        CA (Certificate Authority)の目的は、相互の通信に使用するすべてのネットワークサービス間で、信頼関係を保証することです。CAがない場合、各サービス個別にSSLとTLSを使ってサーバ通信を保護することができます。デフォルトでは、CAが作成され、インストール中に有効になります。YaSTを使用したCAの作成方法の詳細については、<xref linkend="cha.security.yast_ca"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>OpenLDAPサーバ</term>
+      <listitem>
+       <para>
+        一連の設定ファイルの集中管理を可能にする機能を備えるため、ご使用のホストでLDAPサービスを実行することができます。LDAPサーバは、ユーザのアカウントデータ管理に用いるのが一般的ですが、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>と組み合わせることにより、電子メール、DHCP、DNS関連データに対しても使用できます。デフォルトでは、インストール中にLDAPサーバがセットアップされます。LDAPサーバを使用しない場合、YaSTの電子メールサーバモジュールは機能しません。このモジュールは、LDAPの機能に依存しているからです。ただし、<guimenu>Mail Transfer Agent (メール転送エージェント)</guimenu>モジュールを利用して、ご使用のシステムにメールサーバをセットアップすることは可能です。LDAP、およびYaSTを使ったLDAPの設定については、<xref linkend="cha.security.ldap"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>サービス</term>
+      <listitem>
+       <para>
+        デフォルトでは、CIM (Common Information Model)サーバが起動します。<guimenu>無効</guimenu>をクリックして、ブート時にサーバが自動的に起動しないようにします。CIMサービスの詳細については、<xref linkend="cha.wbem"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     必要に応じて、この設定推奨値をスキップすることができます。インストールの完了後は、YaSTを利用して、同じサービスを設定、開始することができます。
+    </para>
+    <tip>
+     <title>サーバ設定のデフォルト値へのリセット</title>
+     <para>
+      デフォルト値にリセットするには、<menuchoice><guimenu>変更</guimenu><guimenu>デフォルトにリセット</guimenu></menuchoice>の順にクリックします。この操作により、変更内容が破棄されます。
+     </para>
+    </tip>
+   </sect3>
+   
+   <sect3 id="sec.i.yast2.conf.manual.user_auth" os="sles">
+    <title>ユーザ認証方法</title><indexterm> <primary>インストール</primary> <secondary>ユーザ</secondary> <tertiary>エキススパート設定</tertiary> </indexterm>
+    <para>
+     インストールの前のステップでネットワークアクセスが正常に設定された場合、複数のユーザ管理オプションを選択できます。ネットワーク接続が設定されていない場合は、ローカルユーザアカウントを作成します。また、前のインストールのユーザが存在する場合、これをインポートできます。このダイアログでは、パスワード暗号化のタイプも変更します。
+    </para>
+    <para>
+     他のユーザアカウントを追加したり、インストール済みシステムのユーザ認証方法を変更することもできます。ユーザ管理の詳細は、<xref linkend="cha.y2.userman"/>を参照してください。
+    </para>
+    <para>
+     デフォルトの認証方法は、<guimenu>Local (/etc/passwd)</guimenu>です。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>の以前のバージョン、または<filename>/etc/passwd</filename>を使用している別のシステムが検出された場合は、ローカルユーザをインポートできます。インポートする場合は、<guimenu>以前のインストールからユーザデータを読み込む</guimenu>を選択して、<guimenu>選択</guimenu>をクリックします。次のダイアログでは、インポートするユーザを選択し、<guimenu>OK</guimenu>で完了します。
+    </para>
+    <para>
+     <guimenu>次へ</guimenu>をクリックして手動でローカルユーザを入力します。［新規のローカルユーザ］ダイアログが開きます。姓名の入力後、提案を受諾するか、またはログインで使用する新しい<guimenu>ユーザ名</guimenu>を指定します。最後にユーザのパスワードを入力します。確認用に(入力内容が誤っていないことを再確認する目的で)、パスワードを再入力します。セキュリティを効果的にするには、パスワードの長さを5〜8文字にする必要があります。パスワードの最大長は、72文字です。ただし、特別なセキュリティモジュールをロードしていない場合、パスワードの識別に使用されるのは、最初の8字のみです。パスワードでは、大文字/小文字が区別されます。特殊文字(7ビットASCII)と数字(0〜9)を使用できます。その他の特殊文字(ウムラウト記号やアクセント記号付き文字など)は使用できません。
+    </para>
+    <para>
+     入力したパスワードは、弱点がないかどうかチェックされます。推理しやすいパスワード(辞書に載っている言葉や名前など)を入力した場合は、警告メッセージが表示されます。セキュリティを確保する上で、強力なパスワードの使用をお勧めします。
+    </para>
+    <para>
+     次の2つの追加オプションがあります。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>システムメールを受信</guimenu>
+      </term>
+      <listitem>
+       <para>
+        このボックスにチェックマークを入れると、システムサービスにより作成されたメッセージがユーザに送信されます。これらのメッセージは通常、<systemitem class="username">root</systemitem>、つまりシステム管理者にのみ、送信されます。このオプションは、主に使用するアカウントに設定すると便利です。<systemitem class="username">root</systemitem>を使用してログインするのは、特殊な場合に限るよう推奨されているためです。
+       </para>
+       <para>
+        システムサービスにより送信されたメールは、ローカルメールボックス<filename>/var/spool/mail/</filename><replaceable>username</replaceable>に保存されます(<replaceable>username</replaceable>は選択されたユーザのログイン名)。インストール後のメールの読み込みには、任意の電子メールクライアントを使用できます(たとえば、KMailや Evolution)。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>自動ログイン</guimenu>
+      </term>
+      <listitem>
+       <para>
+        このオプションを使用すると、起動時に、現在のユーザがシステムに自動ログインします。この機能は、主に、コンピュータを操作するユーザが1人に限定されている場合、有用です。<phrase os="sles">自動ログインを機能させるには、このオプションを明示的に有効にする必要があります。</phrase>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <warning>
+     <title>自動ログイン</title>
+     <para>
+      自動ログインが有効になっていると、システムは認証をまったく行わず、ただちにデスクトップを表示します。システム上に機密データを格納していて、他のユーザがコンピュータにアクセスできる場合は、このオプションを有効にすべきではありません。
+     </para>
+    </warning>
+    <para>
+     <xref linkend="cha.y2.userman"/>で説明されている<guimenu>ユーザ管理</guimenu>モジュールを呼び出して他のユーザを入力します。
+    </para>
+    <para>
+     ユーザ認証用のネットワークサーバを使用している場合、次のサービスへのアクセスを設定できます。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>LDAP</term>
+      <listitem>
+       <para>
+        ユーザはネットワーク上のすべてのシステムに対し、1台のLDAPサーバ上で集中的に管理されます。詳細は、<xref linkend="sec.ldap.yast.client"/>にあります。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>NIS</term>
+      <listitem>
+       <para>
+        ユーザはネットワーク上のすべてのシステムに対し、1台のNISサーバ上で集中的に管理されます。詳細については、<xref linkend="sec.nis.client"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Windowsドメイン</term>
+      <listitem>
+       <para>
+        SMB認証は、通常、LinuxとWindowsが混在するネットワークで使用されます。詳細な情報は<xref linkend="sec.samba.adnet"/>と<xref linkend="sec.ad.config"/>を参照してください。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     <guimenu>LDAP</guimenu>および<guimenu>NIS</guimenu>によるユーザ管理とともに、Kerberos認証を使用できます。Kerberos認証を使用するには、<guimenu>Kerberos認証の設定</guimenu>を選択します。Kerberosの詳細については、<xref linkend="cha.net.kerberos"/>を参照してください。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.relnotes">
+    <title>リリースノート</title><indexterm> <primary>インストール</primary> <secondary>リリースノート</secondary> </indexterm>
+    <para>
+     ユーザ認証のセットアップを完了した後、YaSTはリリースノートを表示します。リリースノートには、マニュアルの印刷時には利用できなかった、最新の重要情報が含まれているため確認するようにしてください。インターネット接続のテストが成功した場合は、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のサーバから取得した最新のリリースノートをお読みください。YaSTで<menuchoice><guimenu>その他の情報</guimenu><guimenu>リリースノート</guimenu></menuchoice>の順に選択するか、SUSEヘルプセンターを起動して、インストール後のリリースノートを表示します。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.hardware">
+    <title>ハードウェア設定</title><indexterm> <primary>インストール</primary> <secondary>ハードウェア設定</secondary> </indexterm>
+    <para>
+     インストールが終了すると、YaSTは、<guimenu>グラフィックカード</guimenu>、<guimenu>プリンタ</guimenu>、<phrase os="sles">および<guimenu>サウンド</guimenu></phrase>の設定用ダイアログを開きます。個別のコンポーネントをクリックすると、ハードウェア設定が開始されます。多くの場合、デバイスはYaSTにより、自動的に検出され、設定されます。
+    </para>
+    <tip arch="zseries" os="sles">
+     <title>IBM System z:ハードウェア設定</title>
+     <para>
+      IBM System zには、XFreeがサポートしているディスプレイはありません。したがって、これらのシステムでは、<guimenu>グラフィックカード</guimenu>エントリは検出されません。
+     </para>
+    </tip>
+    <para>
+     すべての周辺デバイスの設定を省略し、後で設定することもできます。<xref linkend="cha.y2.hw"/>を参照してください。設定を行わない場合は、<guimenu>設定をスキップする</guimenu>を選択して<guimenu>次へ</guimenu>をクリックします。
+    </para>
+    <para>
+     ただし、デスクトップシステムのセットアップでは、グラフィックカードをただちに設定する必要があります。YaSTが自動設定したディスプレイの設定は、通常、適用して問題ありません。ただし、解像度、色深度、その他のグラフィック機能の設定については好みが分かれる点でもあるため、設定はユーザごとにまったく異なることがあります。これらの設定を変更するには、それぞれの項目を選択して、値を設定してください。
+    </para>
+    <tip>
+     <title>ハードウェア設定のデフォルト値へのリセット</title>
+     <para>
+      ハードウェア設定の変更をキャンセルするには、<menuchoice><guimenu>変更</guimenu><guimenu>デフォルトに戻す</guimenu></menuchoice>の順にクリックします。YaSTに、元の推奨値が再表示されます。
+     </para>
+    </tip>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.complete">
+    <title>インストールが完了しました</title><indexterm><primary>AutoYaST</primary><secondary>システムのクローン</secondary></indexterm>
+    <para>
+     インストールが完了したら、［Installation Completed］ダイアログが表示されます。このダイアログでは、新しくインストールしたシステムを、AutoYaST用に複製するかどうかを選択します。 システムを複製する場合は、<guimenu>Clone This System for AutoYaST</guimenu>を選択します。 現在のシステムのプロファイルが、<filename>/root/autoyast.xml</filename>に格納されます。 <phrase os="sles">デフォルトでは、クローンが選択されています。</phrase>
+    </para>
+    <para>
+     AutoYaSTは、ユーザの介入なしで、1つ以上の<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムを自動的にインストールするためのシステムです。AutoYaSTインストールを行うには、インストールおよび環境設定データを記述した制御ファイルを使用します。<phrase os="sles">詳細については、<xref linkend="cha.deployment.autoinst"/>を参照してください。</phrase>最後のダイアログで<guimenu>完了</guimenu>をクリックして、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールを完了してください。
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.conf.dm">
+  <title>グラフィカルログイン</title>
+
+  <tip arch="zseries" os="sles">
+   <title>IBM System z:グラフィカルログインがない</title>
+   <para>
+    IBM System zプラットフォームでは、使用可\'94\'5cなグラフィカルログインはありません。
+   </para>
+  </tip>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、完全にインストールおよび設定されました。自動ログイン機能を有効にするか、デフォルトのランレベルを変更していない限り、グラフィカルログイン画面が表示されます。この画面から、ユーザ名とパスワードを入力してシステムにログインすることができます。自動ログインを有効にしたシングルユーザシステムでは、自動的にデスクトップが起動します。
+  </para>
+
+  <indexterm class="endofrange" startref="idx.Installation"/><indexterm class="endofrange" startref="idx.Installation_YaST2"/><indexterm class="endofrange" startref="idx.YaST2_Installation"/>
+ </sect1>
+</chapter>

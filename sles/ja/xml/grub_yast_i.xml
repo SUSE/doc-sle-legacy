@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="grub_yast_i.xml" id="sec.boot.yast2.config">
+ <title>YaSTによるブートローダの設定</title><indexterm> <primary>ブート</primary> <secondary>設定</secondary> <tertiary>YaST</tertiary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>ブート設定</secondary> </indexterm>
+
+ <para>
+  <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムでブートローダを設定する最も簡単な方法は、YaSTモジュールを使用することです。［YaSTコントロールセンター］で、<menuchoice><guimenu>システム</guimenu><guimenu>ブートローダ</guimenu></menuchoice>の順に選択します。<xref linkend="fig.yast.bootloader.config"/>で説明しているように、システムの現在のブートローダ設定が表示され、設定を変更できます。
+ </para>
+
+ <figure id="fig.yast.bootloader.config">
+  <title>ブートローダの設定</title>
+  <mediaobject>
+   <imageobject role="fo">
+    <imagedata fileref="yast2_bootloader.png" width="75%" format="PNG"/>
+   </imageobject>
+   <imageobject role="html">
+    <imagedata fileref="yast2_bootloader.png" width="75%" format="PNG"/>
+   </imageobject>
+  </mediaobject>
+ </figure>
+
+ <para>
+  <guimenu>セクション管理</guimenu>タブを使用して、各オペレーティングシステムのブートローダセクションの編集、変更、削除を行うことができます。オプションを追加するには、<guimenu>追加</guimenu>をクリックします。既存のオプションの値を変更するには、マウスで選択してから<guimenu>編集</guimenu>をクリックします。既存のエントリを削除するには、エントリを選択して<guimenu>削除</guimenu>をクリックします。ブートローダのオプションをよくご存知でない場合には、はじめに<xref linkend="sec.grub.basic"/>を参照してください。
+ </para>
+
+ <para>
+  <guimenu>ブートローダのインストール</guimenu>タブで、タイプ、場所、高度なローダ設定に関する設定を表示および変更できます。
+ </para>
+
+ <para>
+  <guimenu>その他</guimenu>をクリックして、高度な設定オプションにアクセスします。組み込みエディタでGRUB設定ファイルを変更できます。詳細については、<xref linkend="sec.grub.basic"/>を参照してください。既存の設定を削除して<guimenu>新しい設定を作成</guimenu>したり、YaSTで<guimenu>新しい設定を提案</guimenu>できます。設定をディスクに書き込んだり、ディスクから設定を読み直すこともできます。インストール時に保存した最初のMBR(Master Boot Record)ｊを復元するには、<guimenu>ハードディスクのMBRの復元</guimenu>を選択します。
+ </para>
+
+ <sect2 id="sec.boot.yast2.config.default">
+  <title>デフォルトブートエントリの調整</title><indexterm> <primary>YaST</primary> <secondary>ブート設定</secondary> <tertiary>デフォルトシステム</tertiary> </indexterm>
+  <para>
+   デフォルトでブートされるシステムを変更するには、次の手順に従います。
+  </para>
+  <procedure id="pro.boot.yast2.config.default">
+   <title>標準のシステムの設定</title>
+   <step performance="required">
+    <para>
+     <guimenu>セクション管理</guimenu>タブを開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     リストから目的の項目を選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>デフォルトにする</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>をクリックしてこれらの変更を有効にします。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.blocation">
+  <title>ブートローダの場所の変更</title><indexterm> <primary>YaST</primary> <secondary>ブートローダ</secondary> <tertiary>場所</tertiary> </indexterm>
+  <para>
+   ブートローダの場所を変更するには、次の手順に従います。
+  </para>
+  <procedure id="pro.boot.yast2.config.blocation">
+   <title>ブートローダの場所の変更</title>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのインストール</guimenu>タブを選択し、<guimenu>ブートローダの場所</guimenu>で、次のオプションの1つを選択します。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>マスタブートレコードからブート</guimenu>
+      </term>
+      <listitem>
+       <para>
+        最初のディスクのMBRにブートローダをインストールします(BIOS 中のブートシーケンスプリセットによる)。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>ルートパーティションからブート</guimenu>
+      </term>
+      <listitem>
+       <para>
+        <filename>/</filename>パーティションのブートセクタにブートローダがインストールされます(デフォルト)。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>ブートパーティションからブート</guimenu>
+      </term>
+      <listitem>
+       <para>
+        <filename>/boot</filename>パーティションのブートセクタにブートローダがインストールされます。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>拡張パーティションからブート</guimenu>
+      </term>
+      <listitem>
+       <para>
+        拡張パーティションコンテナにブートローダがインストールされます。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>カスタムブートパーティション</guimenu>
+      </term>
+      <listitem>
+       <para>
+        このオプションを選択すると、手動でブートローダの場所を指定できます。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>をクリックして、変更を適用します。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.timeout">
+  <title>ブートローダのタイムアウトの変更</title><indexterm> <primary>YaST</primary> <secondary>ブート設定</secondary> <tertiary>タイムアウト</tertiary> </indexterm>
+  <para>
+   ブートローダは、標準のシステムを直ちにブートするわけではありません。タイムアウト中、ブートまたはカーネルパラメータを書き込むシステムを選択できます。ブートローダのタイムアウトを設定するには、次の手順に従います。
+  </para>
+  <procedure id="pro.boot.yast2.config.timeout">
+   <title>ブートローダのタイムアウトの変更</title>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのインストール</guimenu>タブを開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのオプション</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     新しい値を入力するか、マウスで矢印キーをクリックするか、またはキーボードの矢印キーを使って、<guimenu>タイムアウト(秒)</guimenu>の値を変更します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>を2回クリックして、変更内容を保存します。
+    </para>
+   </step>
+  </procedure>
+  <warning>
+   <title>タイムアウト0秒</title>
+   <para>
+    タイムアウトを0秒に設定すると、ブート中にGRUBにアクセスできなくなります。同時に、デフォルトブートオプションをLinux以外のオペレーティングシステムに設定すると、結果としてLinuxシステムもアクセスできなくなります。
+   </para>
+  </warning>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.security">
+  <title>ブートパスワードの設定</title><indexterm> <primary>YaST</primary> <secondary>ブート設定</secondary> <tertiary>パスワード</tertiary></indexterm><indexterm> <primary>YaST</primary> <secondary>ブートローダ</secondary> <tertiary>パスワード</tertiary></indexterm>
+  <para>
+   このYaSTモジュールでは、ブートを保護するためのパスワードを設定することもできます。そうすれば、セキュリティに付加的なレベルを追加できます。
+  </para>
+  <procedure id="pro.boot.yast2.config.security">
+   <title>ブートローダパスワードの設定</title>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのインストール</guimenu>タブを開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのオプション</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>パスワードでブートローダを保護する</guimenu>オプションをクリックして有効にし、<guimenu>パスワード</guimenu>を2回入力します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>を2回クリックして、変更内容を保存します。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.order">
+  <title>ディスクの順序の変更</title><indexterm> <primary>YaST</primary><secondary>ブートローダ</secondary><tertiary>ディスクの順序</tertiary></indexterm>
+  <para>
+   コンピュータに複数のハードディスクがある場合、ディスクのブートシーケンスを、コンピュータのBIOSセットアップと一致するように指定できます(「<xref linkend="sec.grub.map"/>」を参照してください)。次の手順に従います。
+  </para>
+  <procedure id="pro.boot.yast2.config.order">
+   <title>ディスクの順序の設定</title>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのインストール</guimenu>タブを開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのインストールの詳細</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     複数のディスクが表示されている場合には、ディスクを選択してから<guimenu>上へ</guimenu>または<guimenu>下へ</guimenu>をクリックして、ディスクの表示順を変更します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>を2回クリックして、変更内容を保存します。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.advanced">
+  <title>詳細オプションの設定</title><indexterm> <primary>YaST</primary> <secondary>ブート設定</secondary> <tertiary>詳細</tertiary></indexterm>
+  <para>
+   詳細なブートオプションは、<menuchoice><guimenu>ブートローダのインストール</guimenu> <guimenu>ブートローダのオプション</guimenu></menuchoice>の順に選択して、設定できます。通常は、デフォルト設定を変更する必要はありません。
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>ブートパーティション用パーティションテーブルにアクティブフラグを設定</guimenu>
+    </term>
+    <listitem>
+     <para>
+      ブートローダを含むパーティションをアクティブにします。Windows 98のような一部のレガシーオペレーティングシステムは、アクティブパーティションからのみブートできます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>MBRに汎用ブートコードを書き込む</guimenu>
+    </term>
+    <listitem>
+     <para>
+      現在のMBRを、オペレーティングシステムに依存しない独立した汎用コードで置換します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>デバッグフラグ</guimenu>
+    </term>
+    <listitem>
+     <para>
+      GRUB をデバッグモードに設定し、ディスクのアクティビティを示すメッセージを表示します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>ブートメニューを隠す</guimenu>
+    </term>
+    <listitem>
+     <para>
+      ブートメニューを隠し、デフォルトエントリをブートします。
+     </para>
+     <warning>
+      <para>
+       ブートメニューを隠すと、ブート中にGRUBにアクセスできなくなります。同時に、デフォルトブートオプションをLinux以外のオペレーティングシステムに設定すると、結果としてLinuxシステムもアクセスできなくなります。
+      </para>
+     </warning>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Trusted GRUBを使用</guimenu>
+    </term>
+    <listitem>
+     <para>
+      信頼性の高いコンピューティング機能をサポートする信頼できるGRUBを起動します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>グラフィカルメニューファイル</guimenu>
+    </term>
+    <listitem>
+     <para>
+      ブート画面の表示時に使用されるグラフィックファイルへのパスを設定します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>シリアル接続パラメータ</guimenu>
+    </term>
+    <listitem>
+     <para>
+      コンピュータがシリアルコンソールで制御されている場合は、どのCOMポートをどの速度で使用するか指定できます。さらに、<guimenu>ターミナル定義</guimenu>を<quote>serial</quote>に設定します。詳細については、<command>info grub</command>または<ulink url="http://www.gnu.org/software/grub/manual/grub.html"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>シリアルコンソールの使用</guimenu>
+    </term>
+    <listitem>
+     <para>
+      コンピュータがシリアルコンソールで制御されている場合は、このオプションを有効にして、どのCOMポートをどの速度で使用するか指定します。<command>info grub</command>または<ulink url="http://www.gnu.org/software/grub/manual/grub.html#Serial-terminal"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.loader">
+  <title>ブートローダタイプの変更</title><indexterm> <primary>YaST</primary> <secondary>ブートローダ</secondary> <tertiary>タイプ</tertiary></indexterm><indexterm> <primary>YaST</primary> <secondary>LILO</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>GRUB</secondary></indexterm>
+  <para>
+   <guimenu>ブートローダのインストール</guimenu>でブートローダのタイプを設定します。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のデフォルトのブートローダは、GRUBです。LILOまたはELILOを使用するには、次の手順に従います。
+  </para>
+  <warning>
+   <title>LILOはサポートされていません</title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>ではサポートされていないため、LILOの使用はお勧めしません。特殊な場合にのみ、使用してください。
+   </para>
+  </warning>
+  <procedure id="pro.boot.yast2.config.loader">
+   <title>ブートローダのタイプの変更</title>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダのインストール</guimenu>タブを選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>ブートローダ</guimenu>で、<guimenu>LILO</guimenu>を選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     表示されるダイアログボックスで、次のオプションのうち、いずれかを選択します。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>新しい設定を提案する</guimenu>
+      </term>
+      <listitem>
+       <para>
+        YaSTは新しい設定を提案します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>Convert Current Configuration (現在の設定の変換)</guimenu>
+      </term>
+      <listitem>
+       <para>
+        YaSTは現在の設定を変換します。設定を変換すると、いくつかの設定内容が失われることがあります。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>Start New Configuration from Scratch (新しい設定を新規に作成する)</guimenu>
+      </term>
+      <listitem>
+       <para>
+        カスタム設定を書き込みます。このアクションは、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストール時には使用できません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>ディスクに保存された環境設定の読み込み</guimenu>
+      </term>
+      <listitem>
+       <para>
+        独自の<filename>/etc/lilo.conf</filename>をロードします。このアクションは、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストール時には使用できません。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>を2回クリックして、変更内容を保存します。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   変換中に、古いGRUB はディスクに保存されます。これを使うには、ブートローダのタイプをGRUB に戻し、<guimenu>変換前に保存した環境設定に戻す</guimenu>を選択します。この操作は、インストール済みのシステムでのみ実行可能です。
+  </para>
+  <note>
+   <title>カスタムのブートローダ</title>
+   <para>
+    GRUBやLILO以外のブートローダを使用する場合は、<guimenu>ブートローダはインストールしないでください</guimenu>を選択します。このオプションを選択する場合には、あらかじめ、ブートローダのドキュメントをよくお読みください。
+   </para>
+  </note>
+ </sect2>
+</sect1>

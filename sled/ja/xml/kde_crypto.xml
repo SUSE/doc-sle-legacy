@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="kde_crypto.xml" id="cha.crypto">
+ <title>KGpg:データの署名と暗号化</title><indexterm class="startofrange" id="idx.encryption"> <primary>暗号化</primary> </indexterm> <indexterm class="startofrange" id="idx.kgpg"> <primary>KGpg</primary> </indexterm> <indexterm> <primary>KDE</primary> <secondary>KGpg</secondary> </indexterm>
+ <para>
+  GPG用のグラフィカルユーザインタフェースであるKGpgを使用して、データの署名や暗号化を行うことができます。このプログラムは、必要なすべての鍵の生成と管理に役立ちます。また、そのエディタ機能を使用してファイルの迅速な作成と暗号化を行うか、パネル内にあるアプレットを使用して、ドラッグアンドドロップ形式で暗号化または復号化を行うことができます。電子メールプログラム(KontactまたはEvolution)のような他のプログラムは、鍵データにアクセスして、署名済みまたは暗号化済みの内容を処理します。以降のセクションでは、KGpgを使用した署名と暗号化に必要な手順を説明します。
+ </para>
+ <orderedlist spacing="normal">
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.keygen" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.export" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.import" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.applet" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+ </orderedlist>
+ <sect1 id="sec.crypto.kgpg.why">
+  <title>署名と暗号化</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>署名</term>
+    <listitem>
+     <para>
+      署名とは、電子署名をメールまたはソフトウェアに添付して、その発行者が正しいことを証明するものです。誰かがユーザ自身の名前を使ってメールを作成することを防ぎ、ユーザ自身と受信者の両方を保護するために、メールに署名する必要があります。署名によって、受信したメールの送信者を簡単に確認し、正当なメールと悪意のあるメールを見分けられます。
+     </para>
+     <para>
+      ソフトウェア開発者はソフトウェアに署名して、整合性を確認できます。非公式のサーバからのソフトウェアを所有している場合でも、パッケージを署名で検証できます。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist>
+   <varlistentry>
+    <term>暗号化</term>
+    <listitem>
+     <para>
+      他者から保護する必要がある機密情報を所有していることがあります。暗号化によって、データを変換して他者が読めないようにすることができます。これは、内部情報のほか従業員のプライバシーを保護する必要がある企業にとって特に重要です。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.keygen">
+  <title>新しい鍵ペアの生成</title><indexterm> <primary>KGpg</primary> <secondary>鍵の作成</secondary> </indexterm>
+
+
+
+  <para>
+   暗号化済みメッセージを他のユーザとの間で交換するには、最初に自分専用の鍵ペアを生成します。その1つである<emphasis/>「公開鍵」(公開キー)は、通信相手に対して配布するものであり、通信相手はファイルや電子メールメッセージを送信する前に、公開鍵を使用してそれらを暗号化します。鍵ペアのもう一方は、<emphasis/>「秘密鍵」(秘密キー)です。これは、暗号化済みの内容を復号化する目的で使用されます。
+  </para>
+
+  <important>
+   <title>秘密鍵と公開鍵</title>
+   <para>
+    秘密鍵にアクセスするのはそれを所有しているユーザだけです。秘密鍵のデータにアクセスすることを他のユーザに許可しないでください。
+   </para>
+   <para>
+    秘密鍵はパスフレーズによって保護されています。パスフレーズは慎重に選択してください。辞書から用語を選択せずに、アルファベット文字とそれ以外の文字を混合して使用してください。
+   </para>
+  </important>
+
+  <para>
+   新しいペアを作成するには、次の手順に従います。
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     <indexterm><primary>KGpg</primary><secondary>起動</secondary></indexterm> KGpgはメインメニューから起動するか、または<keycombo><keycap function="alt"/><keycap>F2</keycap></keycombo>キーを押して、「<command>kgpg</command>」と入力します。プログラムを初めて起動すると、設定手順を支援するウィザードが表示されます。鍵の作成が要求される時点まで、アシスタントの指示に従って進みます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <menuchoice><guimenu>鍵</guimenu><guimenu>鍵ペアの生成</guimenu></menuchoice>の順に選択します。
+    </para>
+    <figure id="fig.kgpg_keygen">
+     <title>KGpg:鍵の作成</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="40%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="35%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+   <step performance="required">
+    <para>
+     名前と電子メールアドレス、そして必要に応じて、コメントを入力します。デフォルト設定が適当でない場合は、鍵の有効期限、サイズ、および使用する暗号化アルゴリズムも設定します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     標準的な鍵を生成するには、<guimenu>OK</guimenu>を押して設定を確認します。<guimenu>OK</guimenu>をクリックすると、再度パスフレーズを入力するように促すダイアログが表示されます。パスフレーズによって秘密鍵を保護します。選択したパスワードの相対強度が測定され、<guimenu>Password strength meter</guimenu>に表示されます。鍵ペアが生成されます。これにはしばらく時間がかかります。
+    </para>
+    <note>
+     <title>エキスパートモード</title>
+     <para>
+      上級ユーザの場合は、<guimenu>エキスパートモード</guimenu>を使用して追加のオプションを指定します。これによってターミナルウィンドウが表示され、生成する鍵のタイプ、鍵のサイズ(ビット数)、有効期限を設定できます。名前と電子メールアドレスを入力したら、秘密鍵を保護するパスフレーズの入力を促されます。
+     </para>
+    </note>
+   </step>
+   <step performance="required">
+    <para>
+     鍵の生成が終了した後、概要が表示されます。証明書取り消しを保存、印刷して、保存場所に保管します。パスフレーズを忘れた場合に、パスフレーズの取り消しのためにこの証明書が必要になります。<guimenu>OK</guimenu>をクリックして確定した後、KGpgのメインウィンドウが表示され、作業は終了です。
+    </para>
+    <figure id="fig.kgpg_manager">
+     <title>KGpgメインウィンドウ: 鍵の管理</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="90%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="70%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+  </procedure>
+
+  <para>
+   メインウィンドウには、キーリングに含まれている自分の鍵とインポート済みの他のユーザの鍵が表示されます。GPGは高度な実装技術によって鍵ペアを実装するので、各ユーザ名に対して複数のサブキーが表示されますが、この章ではこれについては無視します。詳細情報(鍵の有効期限、作成日、IDなど)以外に、メインウィンドウには各鍵の信頼度が色分けされて表示されます。白は信頼度が不明で、青は信頼度が高いことを示します。詳細については、<xref linkend="sec.crypto.kgpg.mng.trust"/>を参照してください。
+  </para>
+
+  <note>
+   <title>KGpgアイコンとメインウィンドウ</title>
+   <para>
+    後のセッションでKGpgを起動すると、小さな錠前アイコンのみがシステムトレイに表示されます。KGpgのメインウィンドウをデスクトップに表示するには、そのアイコンをクリックします。
+   </para>
+  </note>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1 id="sec.crypto.kgpg.mng.export">
+  <title>公開鍵のエクスポート</title><indexterm> <primary>KGpg</primary><secondary>公開鍵のエクスポート</secondary> </indexterm>
+
+  <para>
+   鍵ペアを生成した後で、公開鍵を他のユーザが利用できるようにします。その結果、他のユーザが自分(鍵生成者)にメッセージやファイルを送信する前に、その公開鍵を使用して暗号化または署名できるようになります。たとえば、ユーザtuxに対するメッセージを暗号化する場合、tuxの公開鍵を使用して暗号化します。tuxはこの秘密鍵を使用してメッセージを復号化します。tuxがメッセージを送信する場合、相手先の公開鍵を使用して暗号化し、相手先の秘密鍵を使用して復号化します。
+  </para>
+
+  <para>
+   公開鍵を他のユーザが利用できるようにするには、<menuchoice><guimenu>鍵</guimenu><guimenu>公開鍵をエクスポート</guimenu></menuchoice>の順に選択します。ダイアログが表示され、4つのオプションが表示されます。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>電子メール</guimenu>
+    </term>
+    <listitem>
+     <para>
+      公開鍵は、選択した受信者へ電子メールで送信できます。このオプションを選択し、<guimenu>OK</guimenu>をクリックしてその選択結果を確定した場合は、デフォルトのメールプログラムで新しい電子メールを作成するためのダイアログが開きます。受信者を入力し、<guimenu>送信</guimenu>をクリックします。受信者は、生成された鍵を受信し、その後は、暗号化された内容を鍵生成者へ送信することができます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>クリップボード</guimenu>
+    </term>
+    <listitem>
+     <para>
+      鍵生成者は自分の公開鍵の操作を続ける前に、その公開鍵をクリップボードに書き込んでおくことができます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>デフォルト鍵サーバ</guimenu>
+    </term>
+    <listitem>
+     <para>
+      自分の公開鍵を幅広いユーザが利用できるようにするには、インターネット上に存在する鍵サーバのいずれかにその鍵をエクスポートします。詳細については、<xref linkend="sec.crypto.kgpg.serv"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>ファイル</guimenu>
+    </term>
+    <listitem>
+     <para>
+      自分の鍵を電子メールで送信する代わりに、データメディア上のファイルとしてその鍵を配布することもできます。 このオプションをクリックし、ファイルのパスと名前をデフォルト値のままにするか変更を加え、<guimenu>OK</guimenu>をクリックします。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.mng.import">
+  <title>他のユーザの公開鍵のインポート</title><indexterm> <primary>KGpg</primary> <secondary>鍵のインポート</secondary> </indexterm>
+
+  <para>
+   ファイルの形で(たとえば、電子メールへの添付物として)鍵を受け取った場合、<guimenu>鍵をインポート</guimenu>を使用してその鍵を自分の鍵束に統合し、その送信者との間で暗号化された通信を行う場合にその鍵を使用します。通信先のユーザが公開サーバに公開鍵を保存している場合は、そこから公開鍵をインポートすることもできます。詳細については、<xref linkend="sec.crypto.kgpg.serv"/>を参照してください。この手順は、すでに説明した、鍵をエクスポートする手順に似ています。
+  </para>
+
+  <sect2 id="sec.crypto.kgpg.mng.sign">
+   <title>鍵への署名</title><indexterm> <primary>KGpg</primary> <secondary>鍵の署名</secondary> </indexterm>
+   <para>
+    他のファイルと同様に、鍵に署名して、その鍵の正当性と整合性を保証することもできます。インポート済みの鍵が、所有者として明示されている個人に所属していることが確かな場合は、その鍵に自分が署名することにより、その鍵の正当性を自分が信頼していると表明することができます。
+   </para>
+   <important>
+    <title>信頼の連鎖の確立</title>
+    <para>
+     暗号化された通信がセキュア(安全)であるのは、配布されている公開鍵を、指定されたユーザに積極的に関連付けている場合だけです。それらの鍵を互いにチェックし、署名することは、信頼の連鎖の確立につながります。このような理由があるため、個人的に確認した鍵にのみ署名するようにしてください。
+    </para>
+   </important>
+   <para>
+    鍵を使用する前に、鍵に署名しておく必要があります。
+   </para>
+   <procedure>
+    <title>鍵の署名</title>
+    <step performance="required">
+     <para>
+      <guimenu>Key Management (鍵の管理)</guimenu>ウィンドウの鍵リストから、署名する鍵を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>鍵</guimenu><guimenu>鍵に署名</guimenu></menuchoice>の順に選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      続いて表示されるダイアログで、署名に使用する秘密鍵を指定します。署名する前に、その鍵の正当性を確認するよう注意する警告が表示されます。ドロップダウンリストから、通信相手の鍵であることを入念にチェックしたことを確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>続ける</guimenu>をクリックして、次の手順でパスフレーズを入力します。パスフレーズの入力によって、自身の秘密鍵でその鍵を署名したことになります。署名した鍵が、信頼列に緑で表示されます。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    他のユーザは、自分への公開鍵を使用することにより、その署名をチェックできます。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.mng.trust">
+   <title>鍵の信頼レベル</title><indexterm> <primary>KGpg</primary> <secondary>鍵を信頼</secondary> </indexterm>
+   <para>
+    通常、ユーザがその鍵を信頼しているかどうか、承認された所有者が実際にその鍵を使用していると考えているかどうかについて、使用しているプログラムによる確認が行われます。これはメッセージを復号化する、または署名を確認する必要があるたびに行われます。これを防ぐには、新しくインポートした鍵の信頼レベルを編集します。鍵を信頼し、特定の信頼度を設定するには、次の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      鍵を右クリックし、<guimenu>Key Properties (鍵のプロパティ)</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>Owner Trust (所有者の信頼)</guimenu>ドロップダウンリストから、信頼度を調整します。この値はこの鍵の所有者をどの程度信頼しているのかを示し、署名された鍵の識別情報を正しく検証します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ［プロパティ］ダイアログを閉じます。信頼度を<guimenu>Fully</guimenu>または<guimenu>Ultimately</guimenu>に設定すると、信頼列に鍵が青で表示されます。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    信頼レベルがより低ければ、鍵が署名された真の身元を確認する鍵の署名者をより信頼していないことを意味します。署名者の身元が完全にわかっている場合もありますが、署名者が鍵に署名する前に他者の身元を十分に確認していない場合も考えられます。信頼レベルによって、KGpgの自動処理が発生することはありません。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.serv">
+  <title>鍵サーバダイアログ</title><indexterm> <primary>KGpg</primary> <secondary>鍵サーバ</secondary> </indexterm>
+
+  <para>
+   インターネットベースの鍵サーバのいくつかは、多くのユーザの公開鍵を提供しています。多くのユーザとの間で暗号化された通信を実施するには、それらのサーバを使用して、公開鍵を配布します。この目的を果たすには、公開鍵をそれらのサーバのいずれかにエクスポートします。同様に、KGpgを使用して、特定のユーザに対応する鍵を保持しているそれらのサーバのいずれかを検索すること、またはサーバからそれらのユーザの公開鍵をインポートすることができます。<menuchoice><guimenu>ファイル</guimenu><guimenu>鍵サーバダイアログ</guimenu></menuchoice>の順に選択して、鍵サーバダイアログを開きます。
+  </para>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.crypto.kgpg.serv.import">
+   <title>鍵サーバからの鍵のインポート</title><indexterm> <primary>KGpg</primary> <secondary>鍵サーバ</secondary> <tertiary>鍵のインポート</tertiary> </indexterm>
+   <para>
+    ［鍵サーバ］ダイアログの<guimenu>インポート</guimenu>タブを通して、インターネットベースの鍵サーバのいずれかから公開鍵をインポートします。構成済みの鍵サーバのいずれかを選択し、検索文字列(通信相手の電子メールアドレス)または検索する鍵のIDを入力します。<guimenu>検索</guimenu>をクリックすると、使用中のシステムがインターネットに接続し、指定された鍵サーバから、指定に一致する鍵を検索します。
+   </para>
+   <figure id="fig.kgpg_servimp">
+    <title>鍵をインポートするための検索画面</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    鍵サーバに対する検索が成功した場合、取得したすべてのサーバエントリからなるリストが新しいウィンドウ内で表示されます。鍵束に含めたい鍵を選択し、<guimenu>インポート</guimenu>をクリックします。メッセージが表示されたら<guimenu>OK</guimenu>をクリックして確認し、<guimenu>閉じる</guimenu>をクリックして鍵サーバダイアログを閉じます。これで、インポート済みの鍵は、［鍵マネージャ］のメインウィンドウ内にある概要の中で表示され、使用可能になります。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.serv.export">
+   <title>鍵サーバへの鍵のエクスポート</title><indexterm> <primary>KGpg</primary> <secondary>鍵サーバ</secondary> <tertiary>鍵のエクスポート</tertiary> </indexterm>
+   <para>
+    鍵を、インターネット上で自由にアクセス可能な鍵サーバのいずれかにエクスポートするには、［鍵サーバ］ダイアログの<guimenu>エクスポート</guimenu>タブを選択します。2つのドロップダウンメニューを使って、エクスポート先のサーバと、エクスポートする鍵を指定します。次に、<guimenu>エクスポート</guimenu>を使用して、エクスポートを開始します。
+   </para>
+   <figure id="fig.kgpg_servexp">
+    <title>鍵サーバへの鍵のエクスポート</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.applet">
+  <title>データの暗号化</title><indexterm> <primary>KGpg</primary> <secondary>テキストの暗号化</secondary> </indexterm> <indexterm> <primary>KGpg</primary> <secondary>ファイルの暗号化</secondary> </indexterm> <indexterm> <primary>ファイル</primary> <secondary>暗号化</secondary> </indexterm>
+
+  <para>
+   鍵ペアの作成後、公開鍵をエクスポートし、他のユーザの公開鍵をインポートしたら、暗号化された電子メールを送受信できます。KMailでのこれらのオプションの使用方法については、<xref linkend="sec.kontact.mail.crypto"/>を参照してください。
+  </para>
+
+  <para>
+   KGpgには、テキストを暗号化する機能もあります。統合エディタを開くには、<menuchoice><guimenu>ファイル</guimenu><guimenu>エディタを開く</guimenu></menuchoice>の順に選択します。
+  </para>
+
+  
+
+
+
+  <sect2 id="sec.crypto.kgpg.dnd">
+   <title>ファイリマネージャからの暗号化と復号化</title>
+   <para>
+    KGpgはDolphinやKonquerorなどのファイルマネージャに統合することもできます。通常、PGP暗号化ファイルはサフィックス<filename>asc</filename>で指定されます。ファイルマネージャ内でファイルを暗号化または復号化する方法に関するオプションは複数あります。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>ファイルの暗号化</guimenu>
+     </term>
+     <listitem>
+      <para>
+       ファイルマネージャ内でファイルを暗号化するには、ファイルを右クリックして、<menuchoice><guimenu>アクション</guimenu><guimenu>ファイルの暗号化</guimenu></menuchoice>の順に選択します。ダイアログで信頼された鍵のいずれかを選択します。ダイアログで<guimenu>OK</guimenu>をクリックした後、<filename>arc</filename>サフィックスの付いた新しいファイルが同じディレクトリに作成されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>オンザフライでのファイルの復号化</guimenu>
+     </term>
+     <listitem>
+      <para>
+       暗号化されたファイルをすぐにすぐに復号化するには、ファイルを右クリックして、<menuchoice><guimenu>KGpgで開く</guimenu></menuchoice>を選択します。元のファイル名が既に存在する場合は、ファイル名の付け方または上書きするかどうかを確認するダイアログボックスが開きます。KGpgからパスワードと秘密鍵を入力するように求められ、復号化したファイルが同じディレクトリに保存されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>エディタを使用した復号化</guimenu>
+     </term>
+     <listitem>
+      <para>
+       暗号化したファイルをエディタで復号化するには、ファイルマネージャでファイルを右クリックし、<menuchoice><guimenu>アクション</guimenu><guimenu>復号されたファイルを表示</guimenu></menuchoice>の順に選択します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+
+
+
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.edit">
+   <title>KGpgのエディタ</title><indexterm> <primary>KGpg</primary> <secondary>エディタ</secondary> </indexterm>
+   <para>
+    暗号化する内容を外部エディタで作成し、上記のいずれかの方法でファイルを暗号化する代わりに、KGpgの内蔵エディタを使用することができます。エディタを開くには、<menuchoice><guimenu>ファイル</guimenu><guimenu>エディタを開く</guimenu></menuchoice>の順に選択します。エディタ内で該当するテキストを入力し(またはクリップボードまたはファイルからエディタにコピーし)、<guimenu>暗号化</guimenu>をクリックします。次に、使用する鍵を選択し、暗号化の手順を完了させます。ファイルを復号化するには、<guimenu>復号化</guimenu>を使用し、秘密鍵に関連付けられているパスワードを入力します。
+   </para>
+   <para>
+    署名の生成と確認は、エディタから直接暗号化するのと同様に簡単です。<menuchoice><guimenu>署名</guimenu><guimenu>鍵の生成</guimenu></menuchoice>に進み、ファイルダイアログから署名するファイルを選択します。使用する秘密鍵を選択し、それに関連付けられているパスワードを入力します。KGpgから、署名の生成に成功したことが通知されます。単純に<guimenu>署名 / 確認</guimenu>をクリックする方法で、エディタからファイルに署名することもできます。署名済みファイルを確認するには、<menuchoice><guimenu>署名</guimenu><guimenu>署名の検証</guimenu></menuchoice>に進み、次のダイアログで検証対象のファイルを選択します。 選択内容を確認したら、KGpgが署名を確認し、処理結果を報告します。もう1つの方法として、署名済みのファイルをエディタにロードし、<guimenu>署名/検証</guimenu>をクリックすることもできます。
+   </para>
+  </sect2>
+ </sect1>
+<?dbfo-need height="15em"?>
+
+
+ <sect1 id="sec.crypto.basics">
+  <title>詳細情報</title>
+
+  <para>
+   暗号化手法に関する詳細な背景情報については、<ulink url="http://www.gnupg.org/documentation/index.en.html"/>に記載されているGPGプロジェクトページを参照してください。<indexterm class="endofrange" startref="idx.encryption"/><indexterm class="endofrange" startref="idx.kgpg"/>
+  </para>
+ </sect1>
+</chapter>

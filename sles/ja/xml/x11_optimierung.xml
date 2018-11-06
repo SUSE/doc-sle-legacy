@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_optimierung.xml" id="sec.x11.optimieren">
+ <title>X Window システムの手動設定</title><indexterm id="idx.X_optimizing" class="startofrange"> <primary>X</primary> <secondary>設定</secondary></indexterm><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+
+ <para>
+  デフォルトでは、X Windowシステムは<xref linkend="cha.y2.hw.graph"/>に説明されているSaX2インタフェースを使用して設定されます。代わりに設定ファイルを編集して、手動設定することもできます。
+ </para>
+
+ <warning>
+  <title>X環境設定ファイルに不適切な設定を行うとハードウェアが損傷する可能性があります</title>
+  <para>
+   X Window Systemの設定は慎重に行う必要があります。設定が完了するまでは、X Window Systemを起動しないでください。システムが正しく設定されていないと、ハードウェアが復元不能な損傷を受ける可能性があります(特に固定周波数モニタの場合)。本書および<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>の作成者は、このような原因による損傷や損害に対していかなる責任も負いません。この情報は慎重に調査されたものですが、ここで説明する方法がすべて正しく、ハードウェアが損傷を受けないという保証はありません。
+  </para>
+ </warning>
+
+ <para>
+  コマンド<command>sax2</command>で<filename>/etc/X11/xorg.conf</filename>ファイルが作成されます。これは<phrase role="productname">X Window System</phrase>の基本設定ファイルです。このファイルには、グラフィックカード、マウス、およびモニタに関する設定がすべて含まれています。<indexterm> <primary>X</primary> <secondary>SaX2</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xorg.conf</secondary> </indexterm>
+ </para>
+
+ <important>
+  <title>X -configureの使用</title>
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のSaX2で失敗した場合は、<command>X -configure</command>を使用してXセットアップの設定を行ってください。セットアップにバイナリのみの専有ドライバが使用される場合、<command>X -configure</command>は動作しません。
+  </para>
+ </important>
+
+ <para>
+  ここでは、設定ファイル<filename>/etc/X11/xorg.conf</filename>の構造について説明します。xorg.confは複数のセクションで構成され、各セクションは設定の特定の側面を取り扱います。各セクションは、キーワード<systemitem>Section &lt;designation&gt;</systemitem>で始まってキーワード<systemitem>EndSection</systemitem>で終わります。すべてのセクションで、以下の表記規則を使用します。
+ </para>
+
+<screen>Section "designation"
+  entry 1
+  entry 2
+  entry n
+EndSection </screen>
+
+ <para>
+  使用可能なセクションのタイプのリストは<xref linkend="tab.x11.sections"/>にあります。
+ </para>
+
+ <table id="tab.x11.sections">
+  <title>/etc/X11/xorg.confのセクション</title>
+  <tgroup cols="2" align="left">
+   <thead>
+    <row>
+     <entry>
+      <para>
+       <emphasis role="bold">タイプ</emphasis>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       <emphasis role="bold">意味</emphasis>
+      </para>
+     </entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Files</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       フォントとRGBカラーテーブルで使用するパス。<indexterm> <primary>xorg.conf</primary> <secondary>ファイル</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>ServerFlags</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       サーバ動作の汎用スイッチ。<indexterm> <primary>xorg.conf</primary> <secondary>ServerFlags</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Module</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       サーバがロードする必要があるモジュールリスト<indexterm> <primary>xorg.conf</primary> <secondary>modules</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>InputDevice</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       キーボードや特殊入力デバイス(タッチパッド、ジョイスティックなど)といった入力デバイスを設定します。このセクションで重要なパラメータは<systemitem>Driver</systemitem>と、<systemitem>Protocol</systemitem>および<systemitem>Device</systemitem>を定義するオプションです。通常、コンピュータに接続した1つのデバイスごとに1つの<systemitem>InputDevice</systemitem>があります。<indexterm> <primary>xorg.conf</primary> <secondary>InputDevice</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Monitor</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       使用するモニタ。このセクションの重要な要素は、後で<systemitem>Screen</systemitem>の定義で参照する<systemitem>ID</systemitem>、リフレッシュレートの<systemitem>VertRefresh</systemitem>、および同期周波数の制限(<systemitem>HorizSync</systemitem>および<systemitem>VertRefresh</systemitem>)です。設定値はMHz、kHz、およびHz単位です。通常、サーバはモニタ仕様に対応しないmodelineを拒否します。このため、意図せずに高すぎる周波数がモニタに送信されるのを防止できます。<indexterm><primary>xorg.conf</primary><secondary>Monitor</secondary></indexterm><indexterm><primary>xorg.conf</primary><secondary>modeline </secondary></indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Modes</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       特定の画面解像度のmodelineパラメータ。これらのパラメータは、ユーザ指定の値に基づいてSaX2で計算でき、通常は変更不要です。固定周波数モニタに接続する場合などは、この時点で手動で介入します。個々の数値の意味の詳細については、HOWTOファイル<filename>/usr/share/doc/howto/en/html/XFree86-Video-Timings-HOWTO</filename>を参照してください(<systemitem>howtoenh</systemitem>パッケージ内)。VESAモードを手動で計算する場合は、ツール<command>cvt</command>を使用できます。たとえば、1680x1050@60Hzモニタのmodelineを計算する場合は、コマンド<command>cvt 1680 1050 60</command>を使用します。<indexterm> <primary>xorg.conf</primary> <secondary>Modes</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Device</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       特定のグラフィックカード。グラフィックカードは記述名で参照されます。このセクションで利用可能なオプションは、使用するドライバに大きく依存します。たとえば、<literal>i810</literal>ドライバを使用する場合では、マニュアルページ<command>man 4 i810</command>に使用可能なオプションの詳細が記載されています。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Screen</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       <systemitem>Monitor</systemitem>および<systemitem>Device </systemitem>の組み合わせで、X.Orgに必要なすべての設定を指定します。<systemitem>Display</systemitem>サブセクションでは、仮想画面(<systemitem>Virtual</systemitem>)のサイズ、<systemitem>ViewPort</systemitem>、およびこの画面で使用する<systemitem>Modes</systemitem>を指定します。
+      </para>
+      <para>
+       一部のドライバでは、いずれかの場所にある<systemitem>Display</systemitem>セクションにすべての使用設定が存在しなければならないことに注意してください。たとえば、ラップトップを使用している場合で、内部LCDより大きい外部モニタを使用するときは、内部LCDによりサポートされる以上の分解能を<systemitem>Modes</systemitem>行の最後に追加することが必要になる場合があります。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>ServerLayout</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       シングルまたはマルチヘッド設定のレイアウト。このセクションにより、入力デバイス<systemitem>InputDevice</systemitem>と表示デバイス<systemitem>Screen</systemitem>がバインドされます。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>DRI</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       DRI(Direct Rendering Infrastructure)の情報を提供します。
+      </para>
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+
+ <para>
+  ここでは、<systemitem>Monitor</systemitem>、<systemitem>Device</systemitem>、および<systemitem>Screen</systemitem>について詳しく説明します。他のセクションの詳細については、<filename>X.Org</filename>および<filename>xorg.conf</filename>のマニュアルページを参照してください。
+ </para>
+
+ <para>
+  xorg.conf<systemitem>には、複数の異なる</systemitem>Monitor<systemitem>および</systemitem>Device<filename>セクションを記述できます。</filename>複数の<systemitem>Screen</systemitem>セクションを記述することも可能です。<systemitem>ServerLayout</systemitem>セクションでは、このセクションのうち使用するものを判定します。
+ </para>
+
+ <sect2 id="sec.x11.screen">
+  <title>Screenセクション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary> <tertiary>Screen</tertiary> </indexterm>
+  <para>
+   Screenセクションでは、MonitorセクションとDeviceセクションを組み合わせて、どの解像度とカラー設定を使用するかを決定します。Screenセクションは<xref linkend="dat.x11.scrsec"/>のようになります。
+  </para>
+  <example id="dat.x11.scrsec">
+   <title>ファイル/etc/X11/xorg.confのScreenセクション</title>
+<screen>Section "Screen"<co id="co.x11.screen"/>
+  DefaultDepth  16<co id="co.x11.ddepth"/>
+  SubSection "Display"<co id="co.x11.display"/>
+    Depth       16<co id="co.x11.depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co id="co.x11.mode"/>
+    Virtual     1152x864<co id="co.x11.virt"/>
+  EndSubSection
+  SubSection "Display"
+    Depth       24
+    Modes       "1280x1024"
+  EndSubSection
+  SubSection "Display"
+    Depth       32
+    Modes "640x480"
+  EndSubSection
+  SubSection "Display"
+    Depth        8
+    Modes       "1280x1024"
+  EndSubSection
+  Device        "Device[0]"
+  Identifier    "Screen[0]"<co id="co.x11.ident"/>
+  Monitor       "Monitor[0]"
+EndSection</screen>
+  </example>
+  <calloutlist>
+   <callout arearefs="co.x11.screen">
+    <para>
+     <literal>Section</literal>はセクションタイプを判定し、この場合は<literal>Screen</literal>になります。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.ddepth">
+    <para>
+     <indexterm> <primary>xorg.conf</primary> <secondary>Monitor</secondary> </indexterm> <literal>DefaultDepth</literal>は、色深度が明示的に指定されていない場合にデフォルトで使用する色深度を示します。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.display">
+    <para>
+     <indexterm> <primary>xorg.conf</primary> <secondary>Display</secondary> </indexterm> 各色深度に対して、異なる<literal>Display</literal>サブセクションが指定されます。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.depth">
+    <para>
+     <indexterm> <primary>xorg.conf</primary> <secondary>Depth</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>色深度</secondary> </indexterm> <literal>Depth</literal>は、このセットの<literal>Display</literal>設定とともに使用する色深度を示します。<literal>8</literal>、<literal>15</literal>、<literal>16</literal>、<literal>24</literal>、および<literal>32</literal>を指定できますが、すべてのXサーバモジュールまたは解像度がこれらの値をすべてサポートしている訳ではありません。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.mode">
+    <para>
+     <systemitem>Modes</systemitem>セクションは、可能な画面解像度のリストから成り立っています。Xサーバは、このリストを左から右に検査します。解像度ごとに、Xサーバは<systemitem>Modes</systemitem>セクション内で適切な<systemitem>Modeline</systemitem>を検索します。Modeline<systemitem>は、モニタとグラフィックカード両方の機能に応じて異なります。</systemitem>Monitor<systemitem>設定により、</systemitem>Modeline<systemitem>が決まります。</systemitem><indexterm> <primary>xorg.conf</primary> <secondary>Modes</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>Modeline</secondary> </indexterm>
+    </para>
+    <para>
+     最初に検出される解像度は<systemitem>Default mode</systemitem>です。<keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap> <keycap>+</keycap></keycombo>(数字パッド上のキー)を使用すると、リスト内で右隣の解像度に切り替えることができます。以前の値に切り替えるには、<keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap><keycap>–</keycap></keycombo> (数字パッド上のキー)を使用します。これにより、Xの実行中に解像度を変更できます。<indexterm> <primary>画面</primary> <secondary>解像度</secondary> </indexterm>
+    </para>
+   </callout>
+   <callout arearefs="co.x11.virt">
+    <para>
+     <indexterm><primary>X</primary><secondary>仮想画面</secondary></indexterm><systemitem>Depth 16</systemitem>が指定されている<systemitem>Display</systemitem>サブセクションの最終行は、仮想画面のサイズを指します。仮想画面の最大許容サイズは、モニタの最大解像度ではなく、グラフィックカードにインストールされているメモリの容量と必要なカラー設定に応じて異なります。この行を省略すると、仮想解像度は物理解像度と同じになります。最近のグラフィックカードはビデオメモリ容量が大きくなってきているため、きわめて大型の仮想デスクトップを作成できます。ただし、ビデオメモリのほとんどが仮想デスクトップを占めると、3D機能を使用できなくなる場合があります。たとえば、カードのビデオRAMが16MBであれば、仮想画面には8ビットカラー深度で最大4096x4096ピクセルのサイズを設定できます。ただし、特にアクセラレータカードの場合は、仮想画面にメモリすべてを使用しないことをお勧めします。この種のカードのメモリは、複数のフォントやグラフィックキャッシュにも使用されるからです。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.ident">
+    <para>
+     Identifier<systemitem>行(ここでは</systemitem>Screen[0]<systemitem>)では、このセクションに以降の</systemitem>ServerLayout<systemitem>セクションで固有に参照できる定義済みの名前を割り当てています。</systemitem>Device<systemitem>行と</systemitem>Monitor<systemitem>行では、この定義に属しているグラフィックカードとモニタを指定しています。</systemitem>これらは、対応する名前または<systemitem>識別子</systemitem>を持つ<systemitem>Device</systemitem>および<emphasis>Monitor</emphasis>セクションにリンクされます。これらのセクションの詳細については、以下を参照してください。<indexterm> <primary>xorg.conf</primary> <secondary>Device</secondary> </indexterm>
+    </para>
+   </callout>
+  </calloutlist>
+ </sect2>
+
+ <sect2 id="sec.x11.device.section">
+  <title>Deviceセクション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary> <tertiary>Device</tertiary> </indexterm>
+  <para>
+   Deviceセクションでは、特定のグラフィックカードを記述します。名前が異なっていれば、キーワード<filename>Identifier</filename>を使用して<systemitem>xorg.conf</systemitem>内で必要な数だけデバイスエントリを指定できます。複数のグラフィックカードをインストールしている場合、セクションには順番に番号が付けられます。最初のセクションは<systemitem>Device[0]</systemitem>、2 番目のセクションは<systemitem>Device[1]</systemitem>となります。次のファイルは、Matrox Millennium PCIグラフィックカードが搭載されているコンピュータの<systemitem>Device</systemitem>セクションから抜粋したものです(SaX2が設定)。
+  </para>
+<screen>Section "Device"
+  BoardName     "MGA2064W"
+  BusID         "0:19:0"<co id="co.x11.bus"/>
+  Driver        "mga"<co id="co.x11.driver"/>
+  Identifier    "Device[0]"
+  VendorName    "Matrox"
+  Option        "sw_cursor"
+EndSection</screen>
+  <calloutlist>
+   <callout arearefs="co.x11.bus">
+    <para>
+     <systemitem>BusID</systemitem>は、グラフィックカードがインストールされているPCIスロットまたはAGPスロットの定義です。これは、<command>lspci</command>コマンドで表示されるIDと一致します。Xサーバは10進形式による詳細を必要としますが、<command>lspci</command>ではこれらが16進形式で表示されます。<systemitem>BusID</systemitem>の値は、SaX2が自動検出します。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.driver">
+    <para>
+     <indexterm> <primary>X</primary> <secondary>ドライバ</secondary> </indexterm> <indexterm> <primary>カード</primary> <secondary>グラフィック</secondary> </indexterm> <indexterm> <primary>グラフィック</primary> <secondary>カード</secondary> <tertiary>ドライバ</tertiary> </indexterm><systemitem>Driver</systemitem>の値はSaX2が自動的に検出し、グラフィックカードで使用するドライバを指定します。カードがMatrox Millenniumである場合は、ドライバモジュールは<systemitem>mga</systemitem>と呼ばれます。Xサーバは、<systemitem>drivers</systemitem>サブディレクトリの<systemitem>Files</systemitem>セクションで定義されている<filename>ModulePath</filename>を検索します。標準インストールでは、これは<filename>/usr/lib/xorg/modules/drivers</filename>ディレクトリ、または64ビットオペレーティングシステムディレクトリでは<filename>/usr/lib64/xorg/modules/drivers</filename>ディレクトリです。<filename>名前には</filename>_drv.oが追加されるので、<systemitem>mga</systemitem>ドライバの場合は、ドライバファイル<systemitem>mga_drv.o</systemitem>がロードされます。
+    </para>
+   </callout>
+  </calloutlist>
+  <para>
+   Xサーバやドライバの動作は、その他のオプションを使用して変更することもできます。その一例がDeviceセクションで設定するオプション<systemitem>sw_cursor</systemitem>です。このオプションは、ハードウェアのマウスカーソルを無効にし、ソフトウェアを使用してマウスカーソルを示します。ドライバモジュールによっては、さまざまなオプションを使用できます。各オプションは、ディレクトリ<filename>/usr/share/doc/package<replaceable>package_name</replaceable></filename>内のドライバモジュールの記述ファイル内にあります。通常、有効なオプションについてはマニュアルページ(<command>man</command> <option>xorg.conf</option>、<command>man</command> <option>4</option> <option><replaceable>&lt;ドライバモジュール&gt;</replaceable></option>、および<command>man</command> <option>4</option> <option><replaceable>chips</replaceable></option>)でも確認できます。
+  </para>
+  <para>
+   グラフィックカードに複数のビデオコネクタがある場合、この1枚のカードの異なるデバイスを単一ビューとして設定できます。SaX2を使用してグラフィックインタフェースをこのように設定します。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.opt.monitor">
+  <title>MonitorセクションとModesセクション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary> <tertiary>Monitor</tertiary> </indexterm>
+  <para>
+   Device<systemitem>セクションと同様に、</systemitem>Monitor<systemitem>セクションと</systemitem>Modes<systemitem>セクションでもモニタを1つずつ記述します。</systemitem>設定ファイル<filename>/etc/X11/xorg.conf</filename>では、<systemitem>Monitor</systemitem>セクションを必要な数だけ指定できます。<systemitem>Monitor</systemitem>セクションはそれぞれ、<systemitem>UseModes</systemitem>行がある<systemitem>Modes</systemitem>セクションを参照します。<systemitem>Monitor</systemitem>セクションに<systemitem>Modes</systemitem>セクションがない場合、Xサーバは該当する値を一般的な同期の値から計算します。サーバレイアウトセクションでは、どの<systemitem>Monitor</systemitem>セクションが関係するかを指定します。
+  </para>
+  <para>
+   熟練者以外は、モニタ定義を設定しないでください。modelineは、<systemitem>Monitor</systemitem>セクションで重要な役割を果たします。modelineでは、関連解像度の水平と垂直のタイミングを設定します。モニタ特性、特に許容周波数は、<systemitem>Monitor</systemitem>セクションに格納されます。標準VESAモードは、ユーティリィティ<command>cvt</command>により生成できます。詳細については、マニュアルページcvt <command>man cvt</command>を参照してください。
+  </para>
+  <warning>
+   <para>
+    モニタおよびグラフィックカード機能の詳細な知識がない場合は、modelineを変更しないでください。モニタに重大な損傷が生じることがあります。
+   </para>
+  </warning><indexterm> <primary>ヘルプ</primary> <secondary>X</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>ヘルプ</secondary> </indexterm>
+  <para>
+   独自のモニタ記述を作成する場合は、<filename>/usr/share/X11/doc</filename>内のドキュメントを熟読する必要があります。PDFおよびHTMLページを参照するために、パッケージ<systemitem>xorg-x11-doc</systemitem>をインストールします。
+  </para>
+  <para>
+   modelineの手動指定が必要になることはほとんどありません。最新のマルチシンクモニタを使用している場合、許容周波数と最適解像度は、SaX2設定のセクションで説明したように、原則としてXサーバがDDCを介してモニタから直接読み込みます。何らかの原因で直接読み込めない場合は、Xサーバに付属するVESAモードの1つを使用してください。このモードは、実際にはグラフィックカードとモニタの大半の組み合わせに機能します。
+  </para><indexterm class="endofrange" startref="idx.X_optimizing"/>
+ </sect2>
+</sect1>

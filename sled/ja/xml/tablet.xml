@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="tablet.xml" id="cha.tablet">
+ <title>タブレットPCの使用</title><indexterm id="idx.tablet" class="startofrange"> <primary>タブレットPC</primary> </indexterm>
+ <abstract>
+  <para>
+   <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase>は、タブレットPCをサポートしています。ここでは、タブレットPCのインストールと設定の方法を学び、デジタルペンで入力できるLinux* アプリケーションの利便性を理解します。
+  </para>
+ </abstract>
+ <para>
+  次のタブレットPCが使用できます。
+ </para>
+ <itemizedlist mark="bullet" spacing="normal">
+  <listitem>
+   <para>
+    シリアルおよびUSB接続の<phrase role="productname">Wacom</phrase>タブレット（ペンベース)、タッチスクリーン、またはマルチタッチのデバイスを含むタブレットPC。
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <phrase role="productname">FinePoint</phrase>デバイス(<phrase role="productname">Gateway C210X/M280E/CX2724</phrase>、<phrase role="productname">HP Compaq TC1000</phrase>など)を含むタブレットPC。
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <phrase role="productname">Asus R2H</phrase>、<phrase role="productname">Clevo TN120R</phrase>、<phrase role="productname">Fujitsu Siemens Computers P-Series</phrase>、<phrase role="productname">LG C1</phrase>、<phrase role="productname">Samsung Q1/Q1-Ultra</phrase>などのタッチスクリーンデバイスを含むタブレットPC。
+   </para>
+  </listitem>
+ </itemizedlist>
+ <para>
+  タブレットPCパッケージをインストールしてデジタイザを正しく設定すると、スタイラスと呼ばれるペンによる入力を、次のアクションとアプリケーションに使用できます。
+ </para>
+ <itemizedlist mark="bullet" spacing="normal">
+  <listitem>
+   <para>
+    KDMまたはGDMへのログイン
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    KDEとGNOMEデスクトップの画面のロック解除
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    カーソルの画面上の移動、アプリケーションの起動、終了、サイズ変更、ウィンドウの移動、ウィンドウのフォーカス移動、オブジェクトのドラッグ&amp;ドロップなど、その他のポインティングデバイス(マウスやタッチパッドなど)によって起動されるアクション
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    X Window Systemのアプリケーションのジェスチャ認識の使用
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    GIMPによる描画
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    JarnalまたはXournalなどのアプリケーションでのメモ作成またはスケッチ、またはDasherによる大量のテキストの編集
+   </para>
+  </listitem>
+ </itemizedlist>
+ <sect1 id="sec.tablet.install">
+  <title>タブレットPCパッケージのインストール</title>
+
+  <para>
+   <indexterm> <primary>タブレットPC</primary> <secondary>インストール</secondary> </indexterm>タブレットPC用に必要なパッケージは、<literal>TabletPC</literal>インストールパターンに含まれています。インストール時にタブレットPCを選択した場合は、次のパッケージがすでにシステムにインストールされているはずです。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <systemitem class="resource">cellwriter</systemitem>: 文字ベースの手書き入力パネル
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">jarnal</systemitem>: Javaベースのメモ作成用アプリケーション
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">xournal</systemitem>: メモ作成およびスケッチ用アプリケーション
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">xstroke</systemitem>: X Windows System向けジェスチャー認識プログラム
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">xvkbd</systemitem>: X Window System向け仮想キーボード
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">x11-input-fujitsu</systemitem>: <phrase role="productname">Fujitsu P-Series</phrase>タブレット向けX入力モジュール
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">x11-input-evtouch</systemitem>: タッチスクリーンのある一部のタブレットPCのX入力モジュール
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">xorg-x11-driver-input</systemitem>: Wacomデバイス向けモジュールなど、入力デバイスのX入力モジュール
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   これらのパッケージがインストールされていない場合は、必要なパッケージをコマンドラインから手動でインストールするか、YaST内で<systemitem>TabletPC</systemitem>インストール用パターンを選択します。
+  </para>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1 id="sec.tablet.conf">
+  <title>タブレットデバイスの設定</title>
+
+  <para>
+   タブレットまたはタッチデバイスは、インストール時にデフォルトで設定されます。このWacomデバイスの設定に問題がある場合は、コマンドラインで<command>xsetwacom</command>を使用して、設定を変更してください。
+  </para>
+ </sect1>
+ <sect1 id="sec.tablet.use.login">
+  <title>仮想キーボードの使用</title>
+
+  <para>
+   <indexterm> <primary>タブレットPC</primary> <secondary>xvkbd</secondary> </indexterm>KDEまたはGNOMEデスクトップにログインしたり、画面のロックを解除するには、ユーザ名とパスワードを、通常通りに入力するか、ログインフィールドの下に表示される仮想キーボードxvkbdから入力します。キーボードを設定するには、または統合ヘルプにアクセスするには、左下隅の<guimenu>xvkbd</guimenu>フィールドをクリックしてxvkbdメインメニューを開きます。
+  </para>
+
+  <para>
+   入力が表示されない場合(または表示されるべきウィンドウに転送されない場合)、xvkbdで<guimenu>Focus</guimenu>キーをクリックしてフォーカスをリダイレクトしてから、キーボードイベントを反映させるウィンドウをクリックします。
+  </para>
+
+  <figure id="fig.tablet.xvkbd">
+   <title>xvkbd仮想キーボード</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="xvkbd.png" width="95%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="xvkbd.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   ログイン後にxvkbdを使用するには、メインメニューから起動するか、またはシェルから<command>xvkbd</command>で起動します。
+  </para>
+ </sect1>
+ <sect1 id="sec.tablet.use.rotate">
+  <title>ディスプレイの回転</title>
+
+  <para>
+   <indexterm> <primary>タブレットPC</primary> <secondary>KRandRTray</secondary> </indexterm> <indexterm> <primary>タブレットPC</primary> <secondary>gnome-display-properties</secondary> </indexterm>KRandRTray(KDE)またはgnome-display-properties(GNOME)を使用すると、オンザフライで、ディスプレイの回転やサイズ変更を手動で行うことができます。KRandRTrayおよびgnome-display-propertiesは両方とも、XサーバのRANDR拡張用アプレットです。
+  </para>
+
+  <para>
+   メインメニューからKRandRTrayまたはgnome-display-properties を起動するか、「<command>krandrtray</command>」または「<command>gnome-display-properties</command>」を入力して、シェルからアプレットを起動します。アプレットを起動すると、通常、アプレットアイコンがシステムトレイに追加されます。gnome-display-propertiesアイコンがシステムトレイに自動的に表示されない場合は、<guimenu>Show Displays in Panel</guimenu>が<guimenu>Monitor Resolution Settings</guimenu>ダイアログでオンになっているかかどうかを確認してください。
+  </para>
+
+  <para>
+   KRandRTrayでディスプレイを回転するには、アイコンを右クリックし、<guimenu>ディスプレイの設定</guimenu>を選択します。設定ダイアログから、該当する向きを選択します。
+  </para>
+
+  <para>
+   gnome-display-propertiesでディスプレイを回転するには、アイコンを右クリックし、該当する向きを選択します。ディスプレイが新しい方向にすぐに回転します。また、グラフィックタブレットの向きも変更されるので、(ディスプレイの向きが変わっても)ペンの動きを正しく解釈できます。
+  </para>
+
+  <para>
+   デスクトップの向きの変更で問題がある場合は、<xref linkend="sec.tablet.trouble"/>で詳細を参照してください。
+  </para>
+
+  <para os="sled">
+   RANDR拡張のデスクトップ固有のアプレットの詳細については、<xref linkend="sec.kde.cust.hw.display"/>と<xref linkend="sec.gnome.settings.hardware.screen"/>を参照してください。
+  </para>
+ </sect1>
+ <sect1 id="sec.tablet.use.gesture">
+  <title>ジェスチャ認識の使用</title>
+
+  <para>
+   <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>には、CellWriterとジェスチャ認識用のxstrokeが含まれています。どちらのアプリケーションでも、ペンまたはその他のポインティングデバイスによるジェスチャを、X Window Systemのアプリケーションへの入力として使用できます。
+  </para>
+
+  <sect2 id="sec.tablet.use.gesture.cellwriter">
+   <title>CellWriterの使用</title>
+   <para>
+    <indexterm><primary>タブレットPC</primary><secondary>CellWriter</secondary></indexterm>CellWriterを使用すると、セルのグリッドに文字を書き込むことができ、書き込んだ内容は文字ベースで即座に認識されます。書き込みが終了したら、入力を現在フォーカスされているアプリケーションに送信できます。ジェスチャ認識にCellWriterを使用できるようにするには、最初にアプリケーションがユーザの手書き文字を認識できるよう学習させる必要があります。文字を1つずつ特定のキーのマップで覚えさせます(覚えさせていない文字はアクティブ化されないため使用できません)。
+   </para>
+   <procedure>
+    <title>CellWriterのトレーニング</title>
+    <step performance="required">
+     <para>
+      メインメニューから、またはコマンドラインから「<command>cellwriter</command>」を入力してCellWriterを起動します。最初の起動時には、CellWriterは自動的にトレーニングモードで起動します。トレーニングモードでは、現在選択されているキーマップの文字セットが示されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      各文字のセルに文字に使用するジェスチャを入力します。最初の入力時に背景の色が白に変わり、文字は薄いグレーで表示されます。文字の色が黒に変わるまでジェスチャを複数回繰り返します。トレーニングされていない文字は薄いグレーまたは茶色の背景で表示されます(デスクトップのカラースキームによる)。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      CellWriterが必要な文字をすべて覚えるまでこの手順を繰り返します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      CellWriterに別の言語を覚えさせるには、<guimenu>Setup</guimenu>ボタンをクリックして<guimenu>言語</guimenu>タブから言語を選択します。<guimenu>閉じる</guimenu>をクリックして設定ダイアログを閉じます。<guimenu>Train</guimenu>ボタンをクリックし、<guimenu>CellWriter</guimenu>ウインドウの右下にあるドロップダウンボックスからキーマップを選択します。新しいキーのマップについてトレーニングを繰り返します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      キーマップのトレーニングが終了したら、<guimenu>Train</guimenu>ボタンをクリックして通常モードに切り替えます。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    通常のモードでは、CellWriterウィンドウにジェスチャを入力するための空のセルがいくつか表示されます。<guimenu>Enter</guimenu>ボタンをクリックするまで文字は別のアプリケーションには送信されません。文字を入力として使用する前に修正したり削除できます。認識の確実度が低い文字はハイライト表示されます。入力を修正するには、セルを右クリックすると表示されるコンテキストメニューを使用します。文字を削除するには、ペンの消しゴムを使用するか、マウスで中央をクリックしてセルをクリアします。CellWriterで入力が終了したら、アプリケーションのウィンドウをクリックして入力の送信先となるアプリケーションを定義します。<guimenu>Enter</guimenu>をクリックしてアプリケーションに入力を送信します。
+   </para>
+   <figure id="fig.tablet.cellwriter">
+    <title>CellWriterのジェスチャ認識</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="cellwriter.png" width="95%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="cellwriter.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    CellWriterの<guimenu>Keys</guimenu>ボタンをクリックすると、仮想キーボードが表示され、手書き認識の変わりに使用できます。
+   </para>
+   <para>
+    CellWriterを非表示にするには、CellWriterウィンドウを閉じます。これでこのアプリケーションはシステムトレー内にアイコンで表示されます。入力ウィンドウを再表示するには、システムトレイのアイコンをクリックします。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.tablet.use.gesture.xstroke">
+   <title>Xstrokeの使用</title>
+   <para>
+    <indexterm> <primary>タブレットPC</primary> <secondary>xstroke</secondary> </indexterm>xstrokeでは、ペンまたはその他のポインティングデバイスでのジェスチャを、X Window Systemのアプリケーションへの入力として使用できます。xstrokeアルファベットは、Graffiti*アプレットに類似のユニストロークアルファベットです。有効にすると、xstrokeは入力を現在フォーカスされているウィンドウに送信します。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      メインメニューから、またはシェルから<command>xstroke</command>を使用して、xstrokeを起動します。これで、ペンシルアイコンがシステムトレイに追加されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ペンでテキスト入力を作成したいアプリケーション(ターミナルウィンドウ、テキストエディタ、LibreOffice Writerなど)を起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ジェスチャー認識モードを有効にするため、ペンシルアイコンを1回クリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ペンまたは別のポインティングデバイスで、グラフィックタブレット上で何らかのジェスチャを行います。xstrokeはジェスチャをキャプチャし、テキストに転送してフォーカスのあるアプリケーションウィンドウに表示します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      フォーカスを別のウィンドウに移すには、目的のウィンドウをペンでクリックしてしばらくそのままにします(または、デスクトップのコントロールセンターで定義したキーボードショートカットを使用します)。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ジェスチャ認識モードを無効にするには、ペンシルアイコンをもう一度クリックします。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1 id="sec.tablet.use.journal">
+  <title>ペンを使用したメモの作成とスケッチ</title>
+
+  <para>
+   <indexterm> <primary>タブレットPC</primary> <secondary>Xournal</secondary> </indexterm> <indexterm> <primary>タブレットPC</primary> <secondary>Jarnal</secondary> </indexterm>ペンで図を描くには、GIMPなどのプロ向けグラフィックエディタを使用したり、XournalまたはJarnalなどのメモ作成アプリケーションを使用します。XournalとJarnalの両方を使用し、ペンを使って、メモを取ったり、図を作成したり、PDFファイルにコメントを付けたりすることができます。いくつかのプラットフォームで使用できるJavaベースのアプリケーションとして、Jarnalには基本的なコラボレーション機能もあります。詳細については、<ulink url="http://www.dklevine.com/general/software/tc1000/jarnal-net.htm"/>を参照してください。コンテンツを保存するとき、Jarnalはデータをアーカイブ形式(*.jaj)にデータを保存し、これにはSVG形式のファイルも含まれます。
+  </para>
+
+  <para>
+   JarnalまたはXournalをメインメニューから、またはシェルに「<command>jarnal</command>」または「<command>xournal</command>」と入力して起動します。XournalでPDFファイルにコメントを付けるには、<menuchoice><guimenu>ファイル</guimenu><guimenu>Annotate PDF</guimenu></menuchoice>を選択して、ファイルシステムからPDFファイルを開きます。ペンまたは別のポインティングデバイスを使用してPDFに注釈を付け、<menuchoice><guimenu>ファイル</guimenu><guimenu>Export to PDF</guimenu></menuchoice>の順に選択して変更内容を保存します。
+  </para>
+
+  <figure id="fig.tablet.xournal">
+   <title>XournalによるPDFへの注釈</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="xournal.png" width="70%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="xournal.png" width="50%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   <indexterm> <primary>タブレットPC</primary> <secondary>Dasher</secondary> </indexterm> Dasherも便利なアプリケーションです。キーボード入力が実用的ではない、または利用できない場合に適しています。少し訓練することで、ペンだけで大量のテキストを高速に入力できるようになります(または、視線追跡手段などによるペン以外の入力デバイス)。
+  </para>
+
+  <para>
+   メインメニューから、またはシェルから「<command>dasher</command>」と入力してDasherを起動します。ペンをある方向に動かすと、アプリケーションが右側の文字にズームインし始めます。中央の十字を過ぎた文字から、テキストが作成または予測され、ウィンドウ上部に出力されます。書き込みを停止または開始するには、ディスプレイをペンで1回クリックします。ウィンドウ下部でズーム速度を変更します。
+  </para>
+
+  <figure id="fig.tablet.dasher">
+   <title>Dasherによるテキストの編集</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="dasher.png" width="70%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="dasher.png" width="50%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   Dasherの概念は、多くの言語で動作します。詳細はDasherのWebサイトを参照してください。包括的なドキュメント、デモ、トレーニング用テキストがあります。<ulink url="http://www.inference.phy.cam.ac.uk/dasher/"/>をご覧ください。
+  </para>
+ </sect1>
+ <sect1 id="sec.tablet.trouble">
+  <title>トラブルシューティング</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>仮想キーボードがログイン画面に表示されない</term>
+    <listitem>
+     <para>
+      時々、ログイン画面が仮想キーボードに表示されないことがあります。これを解決するには、<keycombo><keycap function="control"/><keycap function="alt"/><keycap function="backspace"/></keycombo>を押すか、またはタブレットPCの該当するキー(内蔵キーボードのないスレートモデルを使用している場合)を押して、X Serverを再起動します。仮想キーボードがまだ表示されない場合は、外部キーボードをスレートモデルに接続し、ハードウェアキーボードを使用してログインします。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Wacomグラフィックタブレットの向きが変わらない</term>
+    <listitem>
+     <para>
+      <command>xrandr</command>コマンドで、シェルからディスプレイの向きを変更できます。「<command>xrandr<option>--help</option></command>」と入力すると、使用できるオプションが表示されます。グラフィックタブレットの向きも同時に変更するには、コマンドを以下のように変更します。
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        通常の方向(0度回転):
+       </para>
+<screen>xrandr -o normal &amp;&amp; xsetwacom --set "Serial Wacom Tablet" Rotate NONE</screen>
+      </listitem>
+      <listitem>
+       <para>
+        90度回転(時計回り、縦):
+       </para>
+<screen>xrandr -o right &amp;&amp; xsetwacom --set "Serial Wacom Tablet" Rotate CW</screen>
+      </listitem>
+      <listitem>
+       <para>
+        180度回転(横):
+       </para>
+<screen> xrandr -o inverted &amp;&amp; xsetwacom --set "Serial Wacom Tablet" Rotate HALF</screen>
+      </listitem>
+      <listitem>
+       <para>
+        270度回転(反時計回り、縦):
+       </para>
+<screen> xrandr -o left &amp;&amp; xsetwacom set --"Serial Wacom Tablet" Rotate CCW</screen>
+      </listitem>
+     </itemizedlist>
+     <para>
+      ただし、上記のコマンドは、<command>xsetwacom list</command>コマンドの出力に依存します。<option>"Serial Wacom Tablet"</option>は、スタイラスまたはタッチデバイスの出力で置き換えます。タッチサポート(指を使ってカーソルを移動できる)の備わったWacomデバイスの場合、タッチデバイスを回転させることも必要です。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1>
+  <title>詳細情報</title>
+
+  <para>
+   ここで説明したアプリケーションの一部には統合オンラインヘルプがありませんが、使用方法および設定についての便利な情報が、インストールしたシステムの<filename>/usr/share/doc/package/<replaceable>packagename</replaceable></filename>またはWeb上にあります。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Xournalのマニュアルは、<ulink url="http://xournal.sourceforge.net/manual.html"/>を参照してください。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Jarnalのドキュメントは、<ulink url="http://jarnal.wikispaces.com/"/>にあります。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     xstrokeのマニュアルページは、<ulink url="http://davesource.com/Projects/xstroke/xstroke.txt"/>にあります。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Linux上でXを設定する方法は、Wacom Webサイト(<ulink url="http://sourceforge.net/apps/mediawiki/linuxwacom/index.php?title=Configuring_X"/>)を参照してください。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Dasherプロジェクトについては、Webサイト<ulink url="http://www.inference.phy.cam.ac.uk/dasher/"/>に詳細な情報があります。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     CellWriterの詳細およびドキュメントについては、<ulink url="http://risujin.org/cellwriter/"/>を参照してください。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     gnome-display-propertiesについては、<ulink url="http://old-en.opensuse.org/GNOME/Multiscreen"/>を参照してください。
+    </para>
+   </listitem>
+  </itemizedlist><indexterm class="endofrange" startref="idx.tablet"/>
+ </sect1>
+</chapter>

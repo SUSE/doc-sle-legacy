@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_fonts.xml" id="sec.x11.fontconfig">
+ <title>フォントのインストールと設定</title><indexterm> <primary>X</primary> <secondary>TrueTypeフォント</secondary> </indexterm> <indexterm> <primary>フォント</primary> <secondary>TrueType</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>フォント</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xft</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>文字セット</secondary> </indexterm>
+
+ <para>
+  <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>では、追加フォントのインストールを簡単に行えます。フォントを、X 11フォントパスにある任意のディレクトリにコピーするだけです(<xref linkend="sec.x11.fontconfig.fontsys.x11core"/>を参照)。フォントの使用を有効にするには、インストールディレクトリが<filename>/etc/fonts/fonts.conf</filename>に設定されているディレクトリのサブディレクトリでなければなりません(<xref linkend="sec.x11.fontconfig.fontsys.xft"/>を参照)。または、このファイルを<filename>/etc/fonts/suse-font-dirs.conf</filename>に入れなければなりません。
+ </para>
+
+ <para>
+  以下は、<filename>/etc/fonts/fonts.conf</filename>から抜粋したものです。このファイルは、大半の設定に適合する標準設定ファイルです。また、インクルード済みのディレクトリ<filename>/etc/fonts/conf.d</filename>を定義します。このディレクトリには、すべてのファイルまたは2桁の数字で始まるシンボリックリンクがfontconfigによりロードされます。この機能の詳細な説明は、<filename>/etc/fonts/conf.d/README</filename>を参照してください。
+ </para>
+
+<screen>&lt;!-- Font directory list --&gt;
+&lt;dir&gt;/usr/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/X11R6/lib/X11/fonts&lt;/dir&gt; 
+&lt;dir&gt;/opt/kde3/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+&lt;dir&gt;~/.fonts&lt;/dir&gt;
+</screen>
+
+ <para>
+  <filename>/etc/fonts/suse-font-dirs.conf</filename>は、LibreOffice、Java、またはAdobe Readerなどのアプリケーション(多くはサードパーティ製)に付属のフォントを取り込むために、自動的に生成されます。エントリの例を次に示します。
+ </para>
+
+<screen>&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font&lt;/dir&gt;
+&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font/PFM&lt;/dir&gt;
+ </screen>
+
+ <para>
+  システム全体に追加フォントをインストールするには、フォントファイルを<systemitem class="username">/usr/share/fonts/truetype</systemitem>などの適切なディレクトリに手動コピーしてください(<filename>root</filename>として)。また、この作業は、KDEコントロールセンターでKDEフォントインストーラを使用して行うこともできます。結果は同じです。
+ </para>
+
+ <para>
+  フォントを実際にコピーする代わりに、シンボリックリンクを作成することもできます。たとえば、マウントされているWindowsパーティション上にライセンスを取得しているフォントがあり、それらのフォントを使用したい場合は、シンボリックリンクを作成します。次に、<command>SuSEconfig<option>--module fonts</option></command>コマンドを実行します。
+ </para>
+
+ <para>
+  <command>SuSEconfig<option>--module fonts</option></command>コマンドは、フォントを設定するスクリプト、<filename>/usr/sbin/fonts-config</filename>を実行します。このスクリプトの詳細については、マニュアルページ(<command>man <option>fonts-config</option></command>)を参照してください。
+ </para><indexterm> <primary>コマンド</primary> <secondary>fonts-config</secondary> </indexterm>
+
+ <para>
+  手順は、ビットマップフォント、TrueTypeフォントとOpenTypeフォント、およびType1 (PostScript)フォントの場合と同様です。これらのタイプのフォントはすべて、任意のディレクトリにインストールできます。<indexterm> <primary>X</primary><secondary>フォントシステム</secondary></indexterm><indexterm><primary>フォント </primary></indexterm>
+ </para>
+
+ <para>
+  X.Orgには、従来の<guimenu>X11コアフォントシステム</guimenu>と、新たに設計された<guimenu>Xftおよびfontconfig</guimenu>システムの2種類のまったく異なるフォントシステムが含まれています。以降のセクションでは、これらの2つのシステムについて簡単に説明します。
+ </para>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.x11core">
+  <title>X11コアフォント</title><indexterm> <primary>X</primary> <secondary>X11コアフォント</secondary> </indexterm> <indexterm> <primary>フォント</primary> <secondary>X11コア</secondary> </indexterm>
+  <para>
+   今日、X11コアフォントシステムは、ビットマップフォントだけでなく、Type1フォント、TrueTypeとOpenTypeフォントなどのスケーラブルフォントもサポートしています。スケーラブルフォントは、アンチエイリアスとサブピクセルレンダリングなしでサポートされており、多数の言語用のグリフを持つ大きいスケーラブルフォントのロードには時間がかかります。Unicodeフォントもサポートされていますが、使用すると時間がかかり、より多くのメモリが必要になります。
+  </para>
+  <para>
+   X11コアフォントシステムには、その他にも固有の弱点がいくつかあります。時代遅れになっており、これ以上拡張することはできません。下位互換性のために保持されていますが、可能なときはいつでも、新しいXftおよびfontconfigシステムを使用してください。
+  </para>
+  <para>
+   Xサーバは、操作のためにどのようなフォントが使用可能で、そのフォントがシステム内のどこにあるかを認識する必要があります。この情報は、有効なすべてのシステムフォントディレクトリへのパスを含む<literal>FontPath</literal>変数で処理されます。これらの各ディレクトリでは、ファイル<filename>fonts.dir</filename>にそのディレクトリ内で使用可能なフォントのリストがあります。<literal>FontPath</literal>は、起動時にXサーバにより生成されます。設定ファイル<filename>/etc/X11/xorg.conf</filename>の各<literal>FontPath</literal> エントリ内で、有効なファイル<filename>fonts.dir</filename>が検索されます。これらのエントリは、<literal>Files</literal>セクションにあります。実際の<literal>FontPath</literal>を表示するには、<command>xset</command> <option>q</option>を使用します。このパスは、<command>xset</command>を使用して実行時に変更することもできます。パスを追加するには、<command>xset</command><option>+fp &lt;path&gt;</option>を使用します。不要なパスを削除するには、<command>xset</command><option>-fp &lt;path&gt;</option>を使用します。
+  </para>
+  <para>
+   Xサーバがすでにアクティブである場合、マウントされたディレクトリに新たにインストールされたフォントは、コマンド<command>xset</command><option>fp rehash</option>で使用可能にできます。このコマンドは、<command>SuSEconfig</command><option>--module fonts</option>によって実行されます。コマンド<command>xset</command>が実行中のXサーバにアクセスする必要がある場合、これは、<command>SuSEconfig</command><option>--module fonts</option>が実行中のXサーバにアクセスできるシェルから起動されている場合にのみ可能です。これを実行する簡単な方法は、<command>su</command>と<systemitem class="username">root</systemitem>パスワードを入力して、<systemitem class="username">root</systemitem>パーミッションを取得することです。<command>su</command>によってXサーバを起動したユーザのアクセスパーミッションが<systemitem class="username">root</systemitem>シェルに転送されます。フォントが正しくインストールされ、X11コアフォントシステムを介して使用可能かどうか検査するには、コマンド<command>xlsfonts</command>を使用して、すべての使用可能なフォントのリストを表示します。
+  </para>
+  <para>
+   デフォルトでは、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、UTF-8ロケールを使用します。そのため、Unicodeフォントを使用するようにします(<literal>xlsfonts</literal>の出力中で<command>iso10646-1</command>で終了するフォント名)。使用可能なすべてのUnicodeフォントは、<command>xlsfonts</command><option>| grep iso10646-1</option>コマンドでリストを表示できます。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>で使用可能なほとんどすべてのUnicodeフォントには、少なくともヨーロッパ言語に必要なグリフが含まれています(以前は<literal>iso-8859-*</literal>としてエンコードされていました)。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.xft">
+  <title>Xft</title><indexterm> <primary>X</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>フォント</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Xft</primary> </indexterm>
+  <para>
+   最初から、Xftのプログラムは、アンチエイリアスを含むスケーラブルフォントが適切にサポートされるようにしています。Xftが使用された場合、フォントは、X11コアフォントシステムにおけるXサーバではなく、そのフォントを使用するアプリケーションによってレンダリングされます。このようにすると、それぞれのアプリケーションは実際のフォントファイルにアクセスでき、グリフのレンダリング方法を完全に制御できます。これが、多数の言語においてテキストを正しく表示するための基本となっています。フォントファイルに直接アクセスできることは、印刷のためにフォントを組み込んで、画面出力と同じ印刷出力を得るのに役立ちます。
+  </para>
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>では、2種類のデスクトップ環境(KDEとGNOME)、Mozilla、および他の多くのアプリケーションが、すでにXftをデフォルトで使用しています。そのため、Xftはすでに、古いX11コアフォントシステムよりも多くのアプリケーションで使用されています。
+  </para>
+  <para>
+   Xftは、fontconfigライブラリを使ってフォントを検索し、フォントのレンダリング方法を制御します。fontconfigのプロパティは、グローバルな設定ファイル<filename>/etc/fonts/fonts.conf</filename>によって制御されます。特別設定は、<filename>/etc/fonts/local.conf</filename>およびユーザ固有の設定ファイル<filename>~/.fonts.conf</filename>に追加する必要があります。これらのfontconfig設定ファイルはどちらも、以下の行で始まっていなればなりません。
+  </para>
+<screen>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+&lt;fontconfig&gt;</screen>
+  <para>
+   さらに、以下の行で終っていなければなりません。
+  </para>
+<screen>&lt;/fontconfig&gt;</screen>
+  <para>
+   フォントを検索するためのディレクトリを追加するには、以下のような行を付加します。
+  </para>
+<screen>&lt;dir&gt;/usr/local/share/fonts/&lt;/dir&gt;</screen>
+  <para>
+   ただし、これは通常、必要ありません。デフォルトで、ユーザ固有のディレクトリ<filename>~/.fonts</filename>は、すでに<filename>/etc/fonts/fonts.conf</filename>に入っています。その結果、追加のフォントをインストールするには、それらのフォントを <filename>~/.fonts</filename>にコピーするだけです。
+  </para>
+  <para>
+   また、フォントの見栄えを制御する規則を導入することもできます。例えば、次のように入力して、すべてのフォントについてアンチエイリアスを無効にします。
+  </para>
+<screen>
+&lt;match target="font"&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+  &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   この場合、すべてのフォントのアンチエイリアスが無効になります。また、
+  </para>
+<screen>&lt;match target="font"&gt;
+ &lt;test name="family"&gt;
+  &lt;string&gt;Luxi Mono&lt;/string&gt;
+  &lt;string&gt;Luxi Sans&lt;/string&gt;
+ &lt;/test&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+ &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   この場合、特定のフォントのアンチエイリアスが無効になります。
+  </para>
+  <para>
+   デフォルトで、ほとんどのアプリケーションは、フォント名の<literal>sans-serif</literal> (または等価の<literal>sans</literal>)、<literal>serif</literal>、あるいは<literal>monospace</literal>を使用します。これらは、実際のフォントではなく、言語設定に応じて適切なフォントに解決されるエイリアスにすぎません。
+  </para>
+  <para>
+   ユーザは、規則を<filename>~/.fonts.conf</filename>ファイルに追加して、それらのエイリアスを簡単に好みのフォントに変換できます。
+  </para>
+<screen>&lt;alias&gt;
+ &lt;family&gt;sans-serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSans&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSerif&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;monospace&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeMono&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;</screen>
+  <para>
+   ほとんどすべてのアプリケーションで、これらのエイリアスがデフォルトで使用されるので、システム全体が影響を受けます。そのため、個々のアプリケーションでフォント設定を変更しなくても、ほとんどどこででも好みのフォントを簡単に使用できます。
+  </para>
+  <para>
+   fc-list<command>を使用して、どのフォントがインストールされており、使用可能になっているか調べます。</command>たとえば、<command>fc-list</command>コマンドを実行すると、すべてのフォントのリストが表示されます。使用可能なスケーラブルフォント(<option>:scalable=true</option>)のうち、どのフォントがHebrew (<option>:lang=he</option>)に必要なすべてのグリフ、それらのフォント名(<option>family</option>)、それらのスタイル(<option>style</option>)、それらの幅(<option>weight</option>)、およびフォントを含むファイルの名前を含んでいるか調べるには、次のコマンドを入力します。
+  </para>
+<screen>fc-list ":lang=he:scalable=true" family style weight</screen>
+  <para>
+   上記のコマンドの出力は、以下のようになります。
+  </para>
+<screen>
+Lucida Sans:style=Demibold:weight=200
+DejaVu Sans:style=Bold Oblique:weight=200
+Lucida Sans Typewriter:style=Bold:weight=200
+DejaVu Sans:style=Oblique:weight=80
+Lucida Sans Typewriter:style=Regular:weight=80
+DejaVu Sans:style=Book:weight=80
+DejaVu Sans:style=Bold:weight=200
+Lucida Sans:style=Regular:weight=80</screen>
+  <para>
+   fc-list<command>で調べることができる重要なパラメータ:</command>
+  </para>
+  <table id="tab.x11.fonts.fclist">
+   <title>fc-list<command>のパラメータ</command></title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        ﾊﾟﾗﾒｰﾀ
+       </para>
+      </entry>
+      <entry>
+       <para>
+        意味と有効な値
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <option>family</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        フォントファミリの名前。たとえば、<literal>FreeSans</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>foundry</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        フォントメーカ。たとえば、<literal>urw</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>style</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        フォントスタイル。たとえば、<literal>Medium</literal>、<literal>Regular</literal>、<literal>Bold</literal>、<literal>Italic</literal>、<literal>Heavy</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>lang</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        フォントがサポートする言語。たとえば、ドイツ語には<literal>de</literal>、日本語には<literal>ja</literal>、繁体字中国語には<literal>zh-TW</literal>、簡体字中国語には<literal>zh-CN</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>weight</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        フォント幅。たとえば、通常では<literal>80</literal>、ボールドでは<literal>200</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>slant</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        スラント。通常、なしでは<literal>0</literal>、イタリックでは<literal>100</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>file</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        フォントを含むファイルの名前。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>outline</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        アウトラインフォントでは<literal>true</literal>、他のフォントでは<literal>false</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>scalable</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        スケーラブルフォントでは<literal>true</literal>、他のフォントでは<literal>false</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>bitmap</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        ビットマップフォントでは<literal>true</literal>、他のフォントでは<literal>false</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>pixelsize</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        ピクセル単位でのフォントサイズ。fc-listとの関連で、このオプションはビットマップフォントでのみ有効。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </sect2>
+</sect1>

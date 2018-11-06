@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="gnome_admin.xml" id="cha.gnome.gconf">
+ <title>管理者用のGNOME設定</title>
+ <para>
+  本章では、メニューのカスタマイズ、テーマのインストール、フォントの設定、優先アプリケーションの変更、機能のロックダウンなど、管理者がシステム全体の設定を調整するのに使用できるGNOME設定オプションについて説明します。
+ </para>
+ <para>
+  これらの設定オプションは、GConfシステムに格納されています。<command>gconftool-2</command>コマンドラインインタフェースや<command>gconf-editor</command> GUIツールなどのツールを使用して、GConfシステムにアクセスします。
+ </para>
+ <sect1 id="sec.gnome.gconf">
+  <title>GConfシステム</title>
+
+  <para>
+   GNOMEデスクトップはGConfで設定を管理します。これは階層構造のデータベースまたはレジストリで、ここではユーザが自身の設定を変更したり、システム管理者がデフォルトまたは必須の値をすべてのユーザに設定することができます。<systemitem>/desktop/gnome/background/picture_filename</systemitem>のようにアクセスパスを指定することによって、GConf設定に到達します。たとえば、これはデスクトップバックグラウンド画像のファイル名を保有するキーです。
+  </para>
+
+  <para>
+   オプションをすべて参照するには、グラフィカル<systemitem>gconf-editor</systemitem>を使用すると便利です。gconf-editorの手短な使用ガイドについては、<xref linkend="sec.gnome.gconf-editor"/>を参照してください。スクリプトによるソリューションが必要な場合は、<xref linkend="sec.gnome.gconftool2"/>を参照してください。
+  </para>
+
+  <warning>
+   <title>GNOMEコントロールセンターダイアログ</title>
+   <para>
+    Gconfシステムに直接アクセスする場合、注意してアクセスしないとシステムが使用不能になることがあります。
+   </para>
+   <para>
+    ユーザの経験が少なく、共通デスクトップ機能の一部のみを調整したい場合は、GNOMEコントロールセンターの設定ダイアログの使用をお勧めします。GNOMEコントロールセンターを起動するには、<menuchoice><guimenu>コンピュータ</guimenu><guimenu>コントロールセンター</guimenu></menuchoice>の順にクリックします。詳細については、<xref linkend="sec.gnome.settings.cc"/>を参照してください。
+   </para>
+  </warning>
+
+  <sect2 id="sec.gnome.gconf-editor">
+   <title>グラフィカルgconf-editor</title>
+   <para>
+    gconf-editorを使用すると、GConf設定を参照し、対話的に設定を変更できます。デフォルトの<guimenu>設定ウィンドウ</guimenu>ビューでgconf-editorを起動するには、<menuchoice><guimenu>コンピュータ</guimenu><guimenu>その他のアプリケーション</guimenu></menuchoice>の順にクリックし、次に<guimenu>システム</guimenu>グループで<guimenu>GNOME設定エディタ</guimenu>をクリックします。
+   </para>
+   <para>
+    デフォルトで、ユーザは自分のデスクトップの設定を変更でき、管理者はデフォルト値または必須値を指定する設定を準備できます。たとえば、すべてのユーザに対して<emphasis>入力休憩</emphasis>機能を必須機能として有効にする場合、次の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      コマンドラインで<command>gconf-editor</command>を<systemitem>root</systemitem>として起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      左側のツリーペインで<systemitem>/desktop/gnome/typing_break</systemitem>を拡張します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>有効</guimenu>を右クリックし、<guimenu>Set as Mandatory(必須として設定)</guimenu>を選択します。完了すると、この機能を管理できるようになります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>ファイル</guimenu><guimenu>New Mandatory Window(新規必須ウィンドウ)</guimenu></menuchoice>をクリックし、<guimenu>Mandatory settings(必須設定)</guimenu>ウィンドウを開きます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>必須設定</guimenu>ウィンドウで<systemitem>/desktop/gnome/typing_break</systemitem>を拡張し、<guimenu>有効</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>ファイル</guimenu><guimenu>ウィンドウを閉じる</guimenu></menuchoice>の順にクリックし、設定を保存してウィンドウを閉じます。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    gconf-editorの詳細については、<ulink url="http://library.gnome.org/users/gconf-editor/stable/"/>の『Configuration Editor Manual』を参照してください。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconftool2">
+   <title>gconftool-2コマンドラインインタフェース</title>
+   <para>
+    コマンドラインから、またはスクリプト内で設定を変更するには、<command>gconftool-2</command>を使用します。次に例を示します。
+   </para>
+   <para>
+    <systemitem>root</systemitem>として、次のコマンドを使用し、すべてのキーの値を一覧にします。
+   </para>
+<screen>gconftool-2 --recursive-list /
+</screen>
+   <para>
+    サブセットのみが必要な場合は、<systemitem>/desktop/gnome/typing_break</systemitem>のようにアクセスパスを指定します。
+   </para>
+<screen>gconftool-2 --recursive-list /desktop/gnome/typing_break
+</screen>
+   <para>
+    必須設定を一覧にするには、次の手順に従います。
+   </para>
+<screen>gconftool-2 --recursive-list \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory /
+</screen>
+   <para>
+    <systemitem>typing_break</systemitem>のように必須設定を設定するには、次の手順に従います。
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --type bool \
+  --set /desktop/gnome/typing_break/enabled true
+</screen>
+   <para>
+    必須設定を設定解除するには、次の手順に従います。
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --unset /desktop/gnome/typing_break/enabled
+</screen>
+   <para>
+    デフォルト設定には<systemitem>/etc/gconf/gconf.xml.default</systemitem>を使用します。
+   </para>
+   <para>
+    <command>gconftool-2</command>の詳細については、<ulink url="http://help.gnome.org/admin/system-admin-guide/2.32/gconf-6.html.en"/>の『GNOME Desktop System Administration Guide』の「GConf Command Line Tool」の項と、<command>gconftool-2</command>のマニュアルページ(<command>man gconftool-2</command>)を参照してください。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1>
+  <title>メインメニュー、パネル、アプリケーションブラウザのカスタイズ</title>
+
+
+
+  <para>
+   次のファイルをカスタイズすることで、メインメニュー(<guimenu>コンピュータ</guimenu>)のさまざまな項に示されるデフォルトアイテムを管理します。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/applications.xbel:</title>
+     <para>
+      デフォルトのお気に入りのアプリケーションのリスト。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/documents.xbel:</title>
+     <para>
+      デフォルトのお気に入りのドキュメントのリスト。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/system-items.xbel:</title>
+     <para>
+      システムセクションに表示されるアイテム。
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   <command>gconf-editor</command>を使用して、表示される項目数をカスタマイズできます。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/min_recent_items:</title>
+     <para>
+      最新アイテムの最小数。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/max_total_items:</title>
+     <para>
+      全アイテムの最大数。
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   アプリケーションブラウザはたとえば、アイテムを起動するときの動作や、<guimenu>新しいアプリケーション</guimenu>カテゴリーに表示されるアイテム数など、さまざまな部分をカスタマイズできます。<command>gconf-editor</command>を使用してキー<systemitem>/desktop/gnome/applications/main-menu/ab_*</systemitem>を検索します。
+  </para>
+
+  <para>
+   詳細は、<ulink url="https://help.gnome.org/admin/system-admin-guide/2.32/menustructure-0.html.en"/>にある『GNOME Desktop System Administration Guide』の「Customizing Menus」の項を参照してください。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.autostart">
+  <title>アプリケーションの自動的な起動</title>
+
+  <para>
+   GNOMEのアプリケーションを自動で起動するには、次のどちらかの方法を使用します。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>各ユーザに対してアプリケーションを実行する:</title>
+     <para>
+      <filename>/usr/share/gnome/autostart</filename>に<filename>.desktop</filename>ファイルを格納します。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>個別のユーザ用にアプリケーションを実行する:</title>
+     <para>
+      <filename>~/.config/autostart</filename>に<filename>.desktop</filename>ファイルを格納します。
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   自動的に起動するアプリケーションを無効にするには、<literal>X-Autostart-enabled=false</literal>を<filename>.desktop</filename>ファイルに追加します。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.automount">
+  <title>メディアデバイスの自動マウントと管理</title>
+
+  <para>
+   Nautilus(<command>nautilus</command>)はボリューム関連イベントを監視し、ユーザ指定のポリシーに対応します。Nautilusを使用して、ホットプラグ対応ドライブおよび挿入されたリムーバブルメディアを自動的にマウントし、プログラムを自動実行し、オーディオCDまたはビデオDVDを再生できます。Nautilusでは、デジタルカメラから自動的に写真をインポートすることもできます。
+  </para>
+
+  <para>
+   システム管理者はシステム全体のデフォルトを設定できます。詳細については、<xref linkend="sec.gnome.gconf.pref_app"/>を参照してください。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.pref_app">
+  <title>優先アプリケーションの変更</title>
+
+  <para>
+   ユーザの優先アプリケーションを変更するには、<filename>/etc/gnome_defaults.conf</filename>を編集します。このファイル内にある他のヒントを参照してください。
+  </para>
+
+  <para>
+   ファイルを編集後、<command>SuSEconfig --module glib2</command>を実行します。
+  </para>
+
+  <para>
+   MIMEタイプの詳細については、<ulink url="http://www.freedesktop.org/Standards/shared-mime-info-spec"/>を参照してください。
+  </para>
+ </sect1>
+
+ <sect1 id="sec.gnome.gconf.sabayon">
+  <title>Sabayonによるプロファイルの管理</title>
+
+  <para>
+   Sabayonはシステム管理ツールで、これを使用してデスクトップ環境プロファイルを作成、適用します。デスクトッププロファイルは、個々のユーザまたはユーザグループのいずれにも適用できるデフォルト設定および制限の集合です。Sabayonではグラフィカルツールを使用して、GConfデフォルトと必須キーを編集できます。
+  </para>
+
+  <para>
+   プロファイル定義は、ユーザが実行しているものと同様のグラフィカルセッションを介して、デスクトップウィンドウ内で実行されます。プロパティ(デスクトップバックグラウンド、ツールバー、使用可能なアプレット)を通常の方法で変更できます。Sabayonはまた、ほとんどのデスクトップアプリケーション内のデフォルト設定への変更を検出します。
+  </para>
+
+  <para>
+   擬似ホームディレクトリ内またはデスクトップ上に残されたファイルドキュメントは、完了したプロファイルに含まれます。これにはTomboyメモなど、多くのアプリケーション特定データベースが含まれます。このメカニズムを使用すると、新しいユーザに簡単にアクセスできる方法で、導入メモやテンプレートを提供しやすくなります。
+  </para>
+
+  <para>
+   ユーザプロファイルは親プロファイルから設定を継承し、特定の値を上書きまたは追加します。これによって設定の階層設定が有効になります。たとえば、従業員プロファイルを定義し、そこからアーティストと品質保証プロフファイルを抽出します。
+  </para>
+
+  <para>
+   デフォルトの提供に加え、Sabayonでは設定をロックダウンできます。これによって設定はユーザによる変更ができなくなります。たとえば、デスクトップバックグラウンドは管理者が提供したデフォルト以外の値に変更することはできません。設定が偶然改ざんされないよう防止するため、ヘルプデスクへの電話件数を減らし、キオスクのような環境を有効にできる可能性があります。ただし、絶対的なセキュリティをを提供するわけではありません。絶対に安全とは考えないでください。
+  </para>
+
+  <para>
+   Sabayonはまた、OpenOffice.orgやGNOMEパネルなど、ビルトインのロックダウンサポートを備えたアプリケーションと汎用ユーザインタフェース要素の設定のリストを提供します。たとえば、パネルが特定のアプレットのみの追加を許可するよう設定したり、画面上でその場所やサイズを変更できないように設定できます。同様に、［保存］メニューアイテムは、これを使用するすべてのアプリケーション全体で無効にして、ユーザがドキュメントを保存できないように設定できます。
+  </para>
+
+  <para>
+   プロファイルは他のコンピュータに転送可能です。プロファイルは<filename>/etc/desktop-profiles/</filename>に常駐し、それぞれのプロファイルは別々のZIPファイルに保存されます。
+  </para>
+
+  <sect2 id="sec.gnome.gconf.sabayon.create">
+   <title>プロファイルの作成</title>
+   <para>
+    プロファイルは<filename>/etc/desktop-profiles</filename>に存在するZIPファイルに保存されます。保存する各プロファイルは<filename><replaceable>name-of-the-profile</replaceable>.zip</filename>として別々のZIPファイルに格納されます。プロファイルを他のコンピュータにコピーすることも、移動することもできます。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>コンピュータ</guimenu><guimenu>その他のアプリケーション</guimenu><guimenu>システム</guimenu><guimenu>プロファイルエディタ</guimenu></menuchoice>の順にクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <systemitem>root</systemitem>としてログインしていない場合、<systemitem>root</systemitem>パスワードを入力してから、<guimenu>継続</guimenu>をクリックします。
+     </para>
+     <figure id="fig.gnome.gconf.sabayon1">
+      <title>Sabayon:ユーザプロファイルエディタ</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon1.png" width="70%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon1.png" width="70%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>Add</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      プロファイルの名前を指定して、<guimenu>Add(追加)</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      プロファイルを選択してから、<guimenu>編集</guimenu>をクリックします。
+     </para>
+     <para>
+      Xnestウィンドウに新しいデスクトップセッションが開きます。
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.xnest">
+      <title>Sabayon: Xnestの新規ウィンドウ</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Xnestウィンドウで、希望する設定に変更を加えます。
+     </para>
+     <para>
+      変更する各設定はXnestウィンドウに表示されます。
+     </para>
+     <para>
+      各設定を必須にすることも(<menuchoice><guimenu>編集</guimenu><guimenu>強制適用</guimenu></menuchoice>をクリック)、設定を無視することも(<menuchoice><guimenu>編集</guimenu><guimenu>Changes(変更)</guimenu><guimenu>無視</guimenu></menuchoice>をクリック)、または設定デフォルトを作成することも(<guimenu>無視</guimenu>も<guimenu>Mandatory(必須)</guimenu>も選ばない)、選択できます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ユーザの設定をロックするには、Xnestウィンドウで<menuchoice><guimenu>編集</guimenu><guimenu>Lockdown(ロックダウン)</guimenu></menuchoice>の順にクリックします。
+     </para>
+     <para>
+      次のようなオプションから選択できます。
+     </para>
+     <formalpara>
+      <title>一般:</title>
+      <para>
+       コマンドライン、印刷、印刷設定、save to disk機能を無効にできます。
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>パネル:</title>
+      <para>
+       パネルのロックダウン、強制終了の無効化、画面のロックの無効化、ログアウトの無効化、および<guimenu>Disabled Applets(無効化されたアプレット)</guimenu>リストのアプレットのいずれかを無効化できます。
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>OpenOffice.org:</title>
+      <para>
+       OpenOffice.orgドキュメントのマクロセキュリティレベルを定義でき、オプションおよびユーザインタフェースオプションのロードおよび保存ができます。
+      </para>
+     </formalpara>
+
+
+    </step>
+    <step performance="required">
+     <para>
+      プロファイルを保存するには、<menuchoice><guimenu>プロファイル</guimenu><guimenu>保存</guimenu></menuchoice>の順にクリックします。
+     </para>
+     <para>
+      プロファイルは<filename>/etc/desktop-profiles</filename>に保存されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>プロファイル</guimenu><guimenu>Quit（終了）</guimenu></menuchoice>をクリックしてXnes ウィンドウを閉じてから、<guimenu>閉じる</guimenu>をクリックしてSabayonを終了します。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconf.sabayon.apply">
+   <title>プロファイルの適用</title>
+   <para>
+    プロファイルは、個別のユーザにも、ワークステーション上のすべてのユーザにも適用できます。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>コンピュータ</guimenu><guimenu>その他のアプリケーション</guimenu><guimenu>システム</guimenu><guimenu>プロファイルエディタ</guimenu></menuchoice>の順にクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <systemitem>root</systemitem>としてログインしていない場合、<systemitem>root</systemitem>パスワードを入力してから、<guimenu>継続</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      適用するプロファイルを選択し、<guimenu>ユーザ</guimenu>をクリックします。
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.apply.users">
+      <title>Sabayon:ユーザの選択</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      プロファイルを使用するユーザを選択します。
+     </para>
+     <para>
+      ワークステーション上のすべてのユーザにこのプロファイルを適用するには、<guimenu>Use this profile for all users(すべてのユーザにこのプロファイルを使用)</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>閉じる</guimenu>をクリックします。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.templates">
+  <title>ドキュメントテンプレートの追加</title>
+
+  <para>
+   ユーザにドキュメントテンプレートを追加するには、ユーザのホームディレクトリにある<filename>［Templates(テンプレート)］</filename>ディレクトリに入力します。手動で各ユーザごとにこれを行うには、<filename>~/Templates</filename>にファイルをｺﾋﾟｰします。システム全体でこれを行うには、ユーザが作成される前に<filename>Templates</filename>ディレクトリに<filename>/etc/skel</filename>へのドキュメントを追加します。
+  </para>
+
+  <para>
+   ユーザはデスクトップを右クリックして<guimenu>Create Document(ドキュメントの作成)</guimenu>を選択すると、テンプレートから新しいドキュメントを作成できます。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.lockdown">
+  <title>デスクトップロックダウン機能</title>
+
+  <para>
+   ときには、デスクトップ機能や基盤となるオペレーティングシステムへのユーザアクセスを削除または無効にしたい場合があります。GNOMEではこのような場合にデスクトップを変更するために、ロックダウン機能を使用できます。厳密にはこうした変更を実行するには、GConfキーを設定します。
+  </para>
+
+  <para>
+   たとえば、gconf-editorを開くと、<systemitem>/desktop/gnome/applications/main-menu/lock-down/application_browser_link_visible</systemitem>のメインメニューにロックダウンキーが表示されます。すべてのキーの説明も表示されます。その他のロックダウンキーは次のとおりです。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>/desktop/gnome/lockdown/disable_command_line</term>
+    <listitem>
+     <para>
+      これを設定すると、メインメニューとAppBrowserに端末が表示されません。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_log_out</term>
+    <listitem>
+     <para/>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_lock_screen</term>
+    <listitem>
+     <para>
+      これを設定すると、メインメニューにこれらの項目が表示されません。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+
+
+  <para>
+   <systemitem>/apps/firefox/lockdown</systemitem>のFirefoxロックダウンキーを検索します。
+  </para>
+
+  <para>
+   詳細については、<ulink url="http://library.gnome.org/admin/deployment-guide/"/>にある<quote>『Desktop Administrators' Guide to GNOME Lockdown and Preconfiguration』</quote>(Sayam ndu Dasgupta著)を参照してください。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.info">
+  <title>詳細情報</title>
+
+  <para>
+   詳細については、<ulink url="http://library.gnome.org/admin/"/>を参照してください。
+  </para>
+ </sect1>
+</chapter>

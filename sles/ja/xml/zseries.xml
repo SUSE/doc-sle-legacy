@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="zseries.xml" id="cha.zseries">
+ <title>IBM System zでのインストール</title>
+ <abstract>
+  <para>
+   この章では、IBM System zシステムに<phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase>をインストールするための手順について説明します。LPARおよびz/VM側でのインストールの準備に必要なすべての情報を提供します。
+  </para>
+ </abstract>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="zseries_info_i.xml" parse="xml"/>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="zseries_prep_i.xml" parse="xml"/>
+ <sect1 id="sec.appdendix.inst_netcontypes">
+  <title>ネットワーク接続の種類</title><indexterm> <primary>インストール</primary><secondary>ネットワーク接続の種類</secondary> </indexterm>
+
+  <para>
+   IBM System z対応の<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>には、OSAデバイス(イーサネットおよびギガビットイーサネット)およびHiperSocket用のネットワークドライバが含まれています。この章では、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>インストールシステム内の設定について説明します。
+  </para>
+
+  <warning>
+   <title>CTC、ESCON、およびIUCVインタフェースはサポートされなくなりました。</title>
+   <para>
+    CTC、ESCON、およびIUCVインタフェースは公式にはサポートされなくなりました。互換性を維持するため、これらのインタフェースは引き続き使用できますが、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>の次期リリースでは、完全にサポートされなくなります。
+   </para>
+  </warning>
+
+  <sect2 id="sec.appdendix.inst_netcontypes.ethernet_tokenring">
+   <title>HiperSocket</title><indexterm> <primary>ネットワーク接続の種類</primary> </indexterm>
+   <para>
+    ネットワークデバイスのリストからデバイスを選択します。次に、ネットワークデバイスのREADチャネル番号(たとえば、0.0.700)、WRITEチャネル番号(たとえば、0.0.701)、およびデータチャネル番号(たとえば、0.0.702)を入力します。
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.types">
+    <title>サポートされているネットワーク接続の種類とドライバパラメータ</title>
+<screen>Choose the network device.
+
+ 1) IBM parallel CTC Adapter (0.0.0600)
+ 2) IBM parallel CTC Adapter (0.0.0602)
+ 3) IBM parallel CTC Adapter (0.0.0604)
+ 4) IBM Hipersocket (0.0.0700)
+ 5) IBM Hipersocket (0.0.0701)
+ 6) IBM Hipersocket (0.0.0702)
+ 7) IBM OSA Express Network card (0.0.050c)
+ 8) IBM OSA Express Network card (0.0.050d)
+ 9) IBM OSA Express Network card (0.0.050e)
+10) IBM OSA Express Network card (0.0.f401)
+11) IBM OSA Express Network card (0.0.f400)
+12) IBM OSA Express Network card (0.0.f402)
+13) IBM IUCV
+
+&gt; 4
+
+Device address for read channel [0.0.700]
+[0.0.700]&gt; 0.0.700
+
+Device address for write channel
+&gt; 0.0.701
+
+Device address for data channel
+&gt; 0.0.702</screen>
+   </example>
+   <para>
+    次に、手動設定を選択し、IPアドレス、ネットマスク、ブロードキャストアドレス、ゲートウェイのIPアドレス、およびDNAサーバの検索リストを入力します。
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.devname">
+    <title>ネットワークデバイス名</title>
+<screen>Automatic configuration via DHCP?
+
+1) Yes
+2) No
+
+&gt; 2
+
+Enter your IP address
+&gt; 192.168.0.20
+
+Enter your netmask. For a normal class C network, this is usually
+255.255.255.0 [255.255.255.0]
+&gt; 255.255.255.0
+
+Enter the IP address of the gateway. Leave empty if you don't need one
+&gt; 192.168.0.1
+
+Enter your search domains, separated by a space:
+&gt; example.com</screen>
+   </example>
+  </sect2>
+
+  <sect2 id="sec.appdendix.inst_netcontypes.gigabit">
+   <title>gethモジュール付きのGigabit Ethernet</title><indexterm><primary>ネットワーク接続の種類</primary><secondary>Gigabit ethernet</secondary></indexterm>
+   <para>
+    ネットワークデバイスのリストから<literal>IBM OSA Express Network card</literal>を選択し、次にethernetに<literal>1</literal>を選択します。入力するように指示されたら、ネットワークデバイスのREAD、WRITE、およびデータチャネル番号を、たとえば、「<literal>0.0.0600</literal>」、「<literal>0.0.0601</literal>」、「<literal>0.0.0602</literal>」のように入力し、必要に応じてポート名を入力します。OSIレイヤ 2サポートを有効にするかどうかを選択します。
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.gigabit.param">
+    <title>ネットワークデバイスドライバのパラメータ</title>
+<screen>Detecting and loading network drivers
+netiucv.8db02b: driver initialized
+
+Choose the network device.
+1) IBM OSA Express Network card (0.0.09a0)
+2) IBM OSA Express Network card (0.0.09a1)
+3) IBM OSA Express Network card (0.0.09a2)
+4) IBM OSA Express Network card (0.0.0600)
+5) IBM OSA Express Network card (0.0.0601)
+6) IBM OSA Express Network card (0.0.0602)
+7) IBM IUCV
+
+&gt; 4
+
+Please choose the physical medium.
+1) Ethernet
+2) Token Ring
+
+&gt; 1
+
+Enter the relative port number
+&gt; 0
+
+Device address for read channel
+[0.0.0600]&gt; 0.0.0600
+
+Device address for write channel
+&gt; 0.0.0601
+
+Device address for data channel
+&gt; 0.0.0602
+
+Portname to use
+&gt; DT70
+
+Enable OSI Layer 2 support?
+1) Yes
+2) No
+
+&gt; 2</screen>
+   </example>
+   <para>
+    次に、DHCP設定を拒否し、IPアドレスとネットマスクを入力します。さらに、ゲートウェイのIPアドレス(該当する場合)、検索ドメイン、およびDNSサーバのIPアドレスを入力します。
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.gigabit.devname">
+    <title>ネットワーク設定</title>
+<screen>Automatic configuration via DHCP?
+
+1) Yes
+2) No
+
+&gt; 2
+
+Enter your IPv4 address.
+Example: 192.168.5.77/24
+&gt; 192.168.0.20
+
+Enter your netmask. For a normal class C network, this is usually
+255.255.255.0
+[255.255.255.0]&gt; 255.255.255.0
+
+Enter the IP address of the gateway. Leave empty if you don't need one
+&gt; 192.168.0.2
+
+Enter your search domains, separated by a space:
+&gt; example.net
+
+Enter the IP address of your name server. Leave empty or enter "+++" if you
+don't need one
+&gt; 192.168.0.1</screen>
+   </example>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.appdendix.parm">
+  <title>parmfile: システム設定の自動化</title><indexterm> <primary>インストール</primary><secondary>parmfile</secondary> </indexterm>
+
+  <para>
+   インストールプロセスは、<filename>parmfile</filename>で不可欠なパラメータを指定することで、部分的に自動化することができます。parmfile<filename>には、ネットワーク設定とDASD設定に必要なすべてのデータが含まれています。</filename>また、parmfileを使用して、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールシステムおよびそのシステムで実行しているYaSTインスタンスに接続する方法を設定することもできます。したがって、ユーザ操作は、YaSTダイアログによって制御される実際のYaSTインストールで必要になるだけです。
+  </para>
+
+  <para>
+   次のパラメータをインストールルーチンに渡して、インストール用のデフォルト値として適用させることができます。IPアドレス、サーバ名、および数値は、いずれも例として使用されています。これらの値は、実際のインストールシナリオで必要になる値に置き換えてください。
+  </para>
+
+  <para>
+   parmfile内の行数は10に制限されます。各行に複数のパラメータを指定します。パラメータ名は大文字小文字を区別しません。各パラメータはスペースで区切ります。パラメータは任意の順序で指定できます。PARAMETER=value<literal>の文字列は、必ず1行に収めてください。</literal>例を次に示します。
+  </para>
+
+<screen>Hostname=s390zvm01.suse.de HostIP=10.11.134.65</screen>
+
+  <tip>
+   <title>インストール時のIPv6の使用</title>
+   <para>
+    デフォルトでは、マシンにIPv4ネットワークアドレスのみを割り当てることができます。インストール時にIPv6を有効にするには、ブートプロンプトで<literal>ipv6=1</literal>(IPv4とIPv6を受け入れ)パラメータまたは<literal>ipv6only=1</literal>(IPv6のみを受け入れ)パラメータのいずれかを入力します。
+   </para>
+  </tip>
+
+  <para>
+   次のパラメータの一部は必須です。必須パラメータがない場合、自動プロセスは停止し、値の手動入力を要求してきます。
+  </para>
+
+  <sect2 id="sec.appdendix.parm.general">
+   <title>一般パラメータ</title>
+   <variablelist>
+    <varlistentry>
+     <term><command><replaceable>AutoYaST=&lt;URL&gt;</replaceable>Manual=0</command><command/>
+     </term>
+     <listitem>
+      <para>
+       <envar>AutoYaST</envar>パラメータは、自動インストール用<filename>autoinst.xml</filename>制御ファイルの場所を指定します。<envar>Manual</envar>パラメータは、他のパラメータをユーザによる確認が必要なデフォルト値のみにするかどうか決定します。すべての値を受け入れて、確認のメッセージを表示しないようにする場合は、このパラメータを<literal>0</literal>に設定します。<envar>AutoYaST</envar>を設定すると、暗示的に<envar>Manualが</envar><literal>0</literal>に設定されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Info=<replaceable>&lt;URL&gt;</replaceable></command>
+     </term>
+     <listitem>
+      <para>
+       追加オプションの読み取り元ファイルの場所を指定します。これによって、parmfileの10行制限(およびz/VMでの1行当たり80文字の制限)を克服することができます。Infoファイルの詳細については、<xref linkend="sec.deployment.autoinst.simple.info"/>を参照してください。Infoファイルは、通常、System z上でネットワークを介してアクセスできるだけなので、Infoファイルを使用して、ネットワークの設定に必要なオプション(つまり、<xref linkend="sec.appdendix.parm.net"/>に記載されているオプション)を指定することはできません。他のlinuxrc固有のオプション(デバッグ用オプションなど)は、有効であるためには、parmfile内で指定されている必要があります。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <tip>
+    <title>自動インストール情報を含むファイルの作成</title>
+    <para>
+     システムのインストールの最後で、<guimenu>このシステムをautoyast用に複製する</guimenu>をオンにすることができます。プロファイル<filename>/root/autoinst.xml</filename>が作成されます。このプロファイルを使って、このインストールの複製を作成することができます。自動インストールファイルを最初から作成する場合や既存の自動インストールファイルを編集する場合は、YaSTの<guimenu>自動インストール</guimenu>モジュールを使用します。AutoYaSTについての詳細は、<xref linkend="cha.deployment.autoinst"/>を参照してください。
+    </para>
+   </tip>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.appdendix.parm.net">
+   <title>ネットワークインタフェースの設定</title>
+   <important>
+    <title>ネットワークインタフェースの設定</title>
+    <para>
+     このセクションで説明する設定は、インストール時に使用されるネットワークインタフェースのみに適用されます。インストールされたシステムで追加のネットワークインタフェースを設定するには、 <xref linkend="sec.basicnet.manconf"/>の指示に従ってください。
+    </para>
+   </important>
+   <variablelist>
+    <varlistentry>
+     <term><command>Hostname=zseries.example.com</command>
+     </term>
+     <listitem>
+      <para>
+       完全修飾ホスト名を入力します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Domain=example.com</command>
+     </term>
+     <listitem>
+      <para>
+       DNSのドメインサーチパス完全修飾ホスト名ではなく短いホスト名を使用できます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>HostIP=192.168.1.2</command>
+     </term>
+     <listitem>
+      <para>
+       設定するインタフェースのIPアドレスを入力します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Gateway=192.168.1.3</command>
+     </term>
+     <listitem>
+      <para>
+       使用するゲートウェイを指定します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Nameserver=192.168.1.4</command>
+     </term>
+     <listitem>
+      <para>
+       サービスを提供するDNSサーバを指定します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>InstNetDev=osa</command>
+     </term>
+     <listitem>
+      <para>
+       設定するインタフェースタイプを入力します。指定できる値は、<literal>osa</literal>、<literal>hsi</literal>、<literal>ctc</literal>、<literal>escon</literal>、および<literal>iucv</literal>です(CTC、ESCON、およびIUCVは正式サポート対象外となりました)。
+      </para>
+      <para>
+       インタフェースタイプが<literal>hsi</literal>および<literal>osa</literal>の場合は、適切なネットマスクとオプションのブロードキャストアドレスを次のように指定します。
+      </para>
+<screen>Netmask=255.255.255.0
+Broadcast=192.168.255.255</screen>
+      <para>
+       インタフェースタイプが、<literal>ctc</literal>、<literal>escon</literal>、<literal>iucv</literal>の場合は(CTC、ESCON、IUCVは公式にはサポートされなくなりました)、ピアのIPアドレスを次のように入力します。
+      </para>
+<screen>Pointopoint=192.168.55.20</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>OsaInterface=&lt;lcs|qdio&gt;</command> <command>OsaMedium=&lt;eth|tr&gt;</command>
+     </term>
+     <listitem>
+      <para>
+       <literal>osa</literal>ネットワークデバイスの場合は、ホストインタフェース(<literal>qdio</literal>または<literal>lcs</literal>)と物理メディア(イーサネットの場合は<literal>eth</literal>、トークンリングの場合は<literal>tr</literal>)を指定します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Layer2= &lt;0|1&gt;</command>
+     </term>
+     <listitem>
+      <para>
+       <literal>osa</literal> QDIOイーサネットデバイスと<literal>hsi</literal>デバイス の場合は、OSIレイヤ2サポートを有効にするかどうか指定します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>OSAHWAddr=02:00:65:00:01:09</command>
+     </term>
+     <listitem>
+      <para>
+       レイヤ2対応の<literal>osa</literal> QDIOイーサネットデバイスの場合は、手動でMACアドレスを指定します。これは、HWAddrとは異なるので注意してください。HWAddrは、linuxrcによって検出されるデフォルトMACアドレスを含みます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>PortNo=&lt;0|1&gt;</command>
+     </term>
+     <listitem>
+      <para>
+       <literal>osa</literal>ネットワークデバイスには、ポート番号を指定します(デバイスがこの機能をサポートしている場合)。デフォルト値は「0」です。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    それぞれのインタフェースで、次のように特定の設定オプションが必要になります。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      インタフェース<literal>ctc</literal>および<literal>escon</literal>(CTCおよびESCONは、公式にはサポートされなくなりました):
+     </para>
+<screen>ReadChannel=0.0.0424
+WriteChannel=0.0.0425</screen>
+     <para>
+      <envar>ReadChannel</envar>は、使用するREADチャネルを指定します。<envar>WriteChannel</envar>は、WRITEチャネルを指定します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      ctc<literal>インタフェース(公式にはサポートされなくなりました)の場合は、次のように、このインタフェースに使用する必要があるプロトコルを指定します。</literal>
+     </para>
+<screen>CTCProtocol=&lt;0/1/2&gt;</screen>
+     <para>
+      有効なエントリは次のとおりです。
+     </para>
+     <informaltable>
+      <tgroup cols="2">
+       <tbody>
+        <row>
+         <entry>
+          <para>
+           <literal>0</literal>
+          </para>
+         </entry>
+         <entry>
+          <para>
+           OS/390およびz/OS以外の非Linuxピアにも有効な互換モード(デフォルトモード)
+          </para>
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <para>
+           <literal>1</literal>
+          </para>
+         </entry>
+         <entry>
+          <para>
+           拡張モード
+          </para>
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <para>
+           <literal>2</literal>
+          </para>
+         </entry>
+         <entry>
+          <para>
+           OS/390およびz/OSに使用する互換モード
+          </para>
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+    </listitem>
+    <listitem>
+     <para>
+      インタフェース<literal>lcs</literal>付きのネットワークデバイスタイプ<literal>osa</literal>:
+     </para>
+<screen>ReadChannel=0.0.0124
+Portname=1</screen>
+     <para>
+      <envar>ReadChannel</envar>は、この設定で使用されるチャネル番号を表します。2番目のポート番号をここから取得するには、<envar>ReadChannel</envar>に1を追加します。<envar>Portnumber</envar>を使用して、相対ポートを指定します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      インタフェース<literal>iucv</literal>:
+     </para>
+<screen>IUCVPeer=PARTNER</screen>
+     <para>
+      ピアコンピュータの名前を入力します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      OSA-Express Gigabit EthernetおよびOSA-Express High-Speed Token Ring用のインタフェース<literal>qdio</literal>付きのネットワークデバイスタイプ<literal>osa</literal>:
+     </para>
+<screen>ReadChannel=0.0.0524
+WriteChannel=0.0.0525
+DataChannel=0.0.0526
+Portname=FEF400</screen>
+     <para>
+      ReadChannel<envar>では、READチャネルの番号を入力します。</envar>WriteChannel<envar>では、WRITEチャネルの番号を入力します。</envar><envar>DataChannel</envar>は、DATAチャネルを指定します。Portname<envar>では、適切なポート名を入力します。</envar>READチャネルに偶数のデバイス番号が設定されていることを確認します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      HiperSocketおよびVMゲストLAN用のインタフェース<literal>hsi</literal>:
+     </para>
+<screen>ReadChannel=0.0.0624
+WriteChannel=0.0.0625
+DataChannel=0.0.0626</screen>
+     <para>
+      ReadChannel<envar>では、READチャネルの適切な番号を入力します。</envar>WriteChannel <envar>および </envar>DataChannel <envar>では、WRITEチャネル番号とDATAチャネル番号を入力します。</envar>
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.appdendix.parm.yast2">
+   <title>インストールソースとYaSTインタフェースの指定</title>
+   <variablelist>
+    <varlistentry>
+     <term><command>Install=nfs://server/directory/DVD1/</command>
+     </term>
+     <listitem>
+      <para>
+       使用するインストールソースの場所を指定します。使用できるプロトコルは、<literal>nfs</literal>、<literal>smb</literal>(Samba/CIFS)、<literal>ftp</literal>、<literal>http</literal>です。
+      </para>
+      <para>
+       <literal>ftp</literal>または<literal>smb</literal>URLを指定する場合は、URLとともにユーザ名およびパスワードを指定します。これらのパラメータは任意に指定します。指定しない場合は、匿名またはゲストログインが想定されます。
+      </para>
+<screen>Install=ftp://<replaceable>user</replaceable>:<replaceable>password</replaceable>@<replaceable>server</replaceable>/<replaceable>directory</replaceable>/DVD1/</screen>
+      <para>
+       SambaまたはCIFSインストールの場合は、次のように、使用する必要があるドメインを指定することもできます。
+      </para>
+<screen>Install=smb://<replaceable>workdomain</replaceable>;<replaceable>user</replaceable>:<replaceable>password</replaceable>@<replaceable>server</replaceable>/<replaceable>directory</replaceable>/DVD1/</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>UseSSH=1</command><command>UseVNC=1</command>Display_IP=192.168.42.42<command/>
+     </term>
+     <listitem>
+      <para>
+       指定するパラメータに応じて、リモートXサーバ、SSH、またはVNCがインストールに使用されます。<envar>UseSSH </envar>は、SSHインストールを有効にし、 <envar>UseVNC </envar>はインストールコンピュータ上でサーバを起動します。また、 <envar>Display_IP </envar>を指定すると、インストールシステムによって、指定されたアドレスのXサーバへの接続が試行されます。これらのパラメータのうちの1つのみを随時設定する必要があります。
+      </para>
+      <important>
+       <title>X認証メカニズム</title>
+       <para>
+        X Window Systemを使用する直接インストールでは、ホスト名に基づくプリミティブな認証メカニズムに依存します。現在のバージョンの<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>では、このメカニズムが無効になっています。SSHまたはVNCによるインストールが推奨されています。
+       </para>
+      </important>
+      <para>
+       YaSTとリモートXサーバを接続できるようにするには、<command>xhost</command><option>&lt;IPアドレス&gt;</option>を実行します。&lt;IPアドレス&gt;には、リモートマシン上のインストール先コンピュータのアドレスを指定します。
+      </para>
+      <para>
+       VNC<literal>の場合は、次のように、インストールに使用する6～8文字のパスワードを指定します。</literal>
+      </para>
+<screen>VNCPassword=&lt;a password&gt;</screen>
+      <para>
+       SSH<literal>の場合は、次のように、インストールに使用する6～8文字のパスワードを指定します。</literal>
+      </para>
+<screen>SSHPassword=&lt;a password&gt;</screen>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.appdendix.parm.examples">
+   <title>parmfileの例</title>
+   <para>
+    LPARでAutoYaSTを使用して自動インストールする場合は、parmfileには、できれば1つの長い行だけを含めます。読みやすさのために複数の行が必要な場合は、各行の最初と最後に空白を使用します。parmfileの最大行数は、10です。
+   </para>
+   <para>
+    コンソールでエラーメッセージを受け取るには、次のコードを使用します。
+   </para>
+<screen>linuxrclog=/dev/console</screen>
+   <example id="ex.appdendix.parm.ex1">
+    <title>NFS、VNC、IUCV、およびHTTPによるAutoYaSTを使用したインストール用のparmfile</title>
+<screen>ramdisk_size=131072 root=/dev/ram1 ro init=/linuxrc TERM=dumb 
+instnetdev=iucv iucvpeer=ROUTER01 pointopoint=192.168.0.1 
+hostip=192.168.0.2 
+nameserver=192.168.0.3
+install=nfs://192.168.0.4/SLES/SLES-11-s390x/DVD1
+autoyast=http://192.168.0.5/autoinst.xml 
+linuxrclog=/dev/console usevnc=1
+vncpassword=testin</screen>
+   </example>
+   <example id="ex.appdendix.parm.ex2">
+    <title>NFS、SSH、HSI、およびNFSによるAutoYaSTを使用したインストール用のparmfile</title>
+<screen>ramdisk_size=131072 root=/dev/ram1 ro init=/linuxrc TERM=dumb
+AutoYast=nfs://192.168.1.1/autoinst/s390.xml
+Hostname=zseries.example.com HostIP=192.168.1.2
+Gateway=192.168.1.3 Nameserver=192.168.1.4
+InstNetDev=hsi layer2=0
+Netmask=255.255.255.128 Broadcast=192.168.1.255
+readchannel=0.0.702c writechannel=0.0.702d datachannel=0.0.702e
+install=nfs://192.168.1.5/SLES-11-s390x/DVD1/
+UseSSH=1 SSHPassword=testing linuxrclog=/dev/console</screen>
+   </example>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.appdendix.vt220">
+  <title>vt220ターミナルエミュレータの使用</title><indexterm> <primary>vt220</primary> </indexterm>
+
+  <para>
+   最新のMicroCodeレベルでは、標準のラインモードターミナルに加えて、統合されたvt220ターミナルエミュレータを使用できます。vt220ターミナルは<filename>/dev/ttyS1</filename>に接続されます。ラインモードターミナルは<filename>/dev/ttyS0</filename>に接続されます。vt220エミュレーションが使用可能になると、HMC/SE上の3215コンソールのアイコンの隣に、統合されたvt220 ASCIIコンソールのアイコンが表示されます。
+  </para>
+
+  <para>
+   コンピュータ上でvt220サポートを有効にするには、<systemitem class="username">root</systemitem>ユーザとして<filename>/etc/inittab</filename>を編集します。次の行を探して、先頭の<literal>#</literal>符号を削除します。
+  </para>
+
+<screen>#2:2345:respawn:/sbin/mingetty --noclear /dev/ttyS1 xterm</screen>
+
+  <para>
+   ファイルを保存し、<command>telinit</command> <option>q</option>を実行して<filename>/etc/inittab</filename>の変更内容をinitに渡します。vt220ターミナルが使用できる状態になります。使用準備が整わない場合は、ログインプロンプトが表示されるまで、ターミナルで<keycap>Enter</keycap>を押してみます。
+  </para>
+
+  <para>
+   すでに説明したとおりに、vt220ターミナルエミュレータをサポートしていないシステムには変更を適用しないようにします。そのようにしないと、このシステム上でログインできなくなる可能性があり、その場合は、次のメッセージが表示されます。
+  </para>
+
+<screen>INIT respawning too fast, disabled for 5 minutes.</screen>
+
+  <para>
+   ブート時にカーネルメッセージをシステムコンソールからvt220ターミナルにリダイレクトするには、次のエントリを、<filename>/etc/zipl.conf</filename>内の<literal>parameters</literal>行に追加します。
+  </para>
+
+<screen>console=ttyS0 console=ttyS1</screen>
+
+<?dbfo-need height="3em"?>
+
+
+
+  <para>
+   その結果、<literal>parameters</literal>行は次の例のようになります。
+  </para>
+
+<screen>parameters = "root=/dev/dasda2 TERM=dumb console=ttyS0 console=ttyS1"</screen>
+
+  <para>
+   <filename>/etc/zipl.conf</filename>内の変更を保存し、<command>zipl</command>を実行してシステムを再起動します。
+  </para>
+ </sect1>
+ <sect1 id="sec.appdendix.further_information">
+  <title>IBM System zに関するさらに詳しい情報</title>
+
+  <para>
+   IBMは、同社のSystem zプラットフォームに関する興味深いドキュメントを数多く発表しています。それらは、次のサイトに記載されています。<ulink url="http://www.redbooks.ibm.com"/>
+  </para>
+
+  <sect2 id="sec.intro.further_information.sles">
+   <title><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>でのIBM System z</title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>でのIBM System zのカーネルとアプリケーションに関する詳しい技術ドキュメントが次の場所にあります。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      <ulink url="http://www.ibm.com/developerworks/linux/linux390/documentation_novell_suse.html"/>
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.intro.further_information.hardware">
+   <title>ハードウェア</title>
+   <para>
+    システムの技術的な詳細情報の概要については、次のマニュアルを参照してください。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      IBM System z10 Enterprise Class Technical Introduction (SG24-7515)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM System z9 Business Class Technical Introduction (SG24-7241)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on zSeries Fibre Channel Protocol Implementation Guide (SG24-6344)
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.intro.further_information.general">
+   <title>IBM System z上のLinuxに関する一般的なドキュメント</title>
+   <para>
+    IBM System z上のLinuxに関する一般情報については、次のドキュメントを参照してください。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: ISP and ASP Solutions (SG24-6299)
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    これらのドキュメントは、Linuxの現在の状態を反映していない可能性がありますが、説明されているLinux展開の原則は変化していません。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.intro.further_information.technical">
+   <title>IBM System z上のLinuxについての技術的問題</title>
+   <para>
+    Linuxカーネルとアプリケーションのトピックについて詳細な技術情報を得るには、次のドキュメントを参照してください。最新のcode dropについては、これらのドキュメントの最新版をインターネットで参照してください(<ulink url="http://www.ibm.com/developerworks/linux/linux390/index.html"/>)。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on System z Device Drivers, Features, and Commands
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      zSeries ELF Application Binary Interface Supplement
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on System z Device Drivers, Using the Dump Tools
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM System z9-109 Technical Introduction (SG26-6669)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM System z10 Enterprise Class Technical Guide (SG24-7516)
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Linuxアプリケーション開発用のRedbookは、<ulink url="http://www.redbooks.ibm.com"/>にもあります。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: Application Development (SG24-6807)
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.info.further_information.advanced">
+   <title>LinuxのIBM System z上での詳細設定</title>
+   <para>
+    より詳細なIBM System zのシナリオについては、次のRedbook、Redpaper、およびリンクを参照してください。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390:Large Scale Deployment (SG24-6824)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: Performance Measuring and Tuning (SG24-6926)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux with zSeries and ESS: Essentials (SG24-7025)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM TotalStorage Enterprise Storage Server Implementing ESS Copy Services with IBM eServer zSeries (SG24-5680)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on IBM zSeries and S/390: High Availability for z/VM and Linux (REDP-0220)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Saved Segments Planning and Administration
+     </para>
+     <para>
+      <ulink url="http://publibz.boulder.ibm.com/epubs/pdf/hcsg4a00.pdf"/>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on System z documentation for "Development stream"
+     </para>
+     <para>
+      <ulink url="http://www.ibm.com/developerworks/linux/linux390/development_documentation.html"/>
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+ </sect1>
+</chapter>

@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="kde_crypto.xml" id="cha.crypto">
+ <title>KGpg: Assinando e criptografando dados</title><indexterm class="startofrange" id="idx.encryption"> <primary>criptografia</primary></indexterm><indexterm class="startofrange" id="idx.kgpg"><primary>KGpg</primary></indexterm><indexterm><primary>KDE</primary><secondary>KGpg </secondary></indexterm>
+ <para>
+  Você pode assinar ou criptografar dados com o KGpg, a interface gráfica do usuário do GPG. Este programa ajuda a gerar e gerenciar todas as chaves necessárias. Use a função de editor para a criação e criptografia rápida de arquivos ou use o applet no painel para criptografar ou descriptografar através do recurso de arrastar e soltar. Outros programas, como os de e-mail (Kontact ou Evolution), acessam os dados de chaves para processar conteúdos assinados ou criptografados. Nas próximas seções, você aprenderá a executar as seguintes etapas necessárias para assinar e criptografar dados com KGpg:
+ </para>
+ <orderedlist spacing="normal">
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.keygen" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.export" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.import" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.applet" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+ </orderedlist>
+ <sect1 id="sec.crypto.kgpg.why">
+  <title>Por que assinar e criptografar?</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>Assinar</term>
+    <listitem>
+     <para>
+      Assinar significa anexar assinaturas eletrônicas a e-mails (ou mesmo a softwares) para provar sua origem. Para que ninguém escreva e-mails em seu nome e para proteger você e os destinatários, você deve assinar seus e-mails. As assinaturas o ajudam a confirmar o remetente das mensagens que recebe e distinguir mensagens autênticas das maliciosas.
+     </para>
+     <para>
+      Os desenvolvedores de software assinam o próprio software para que você possa verificar sua integridade. Mesmo que tenha o software de um servidor não oficial, você poderá verificar o pacote com a assinatura.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist>
+   <varlistentry>
+    <term>Criptografar</term>
+    <listitem>
+     <para>
+      Você talvez tenha informações confidenciais que queira proteger contra o acesso de outras pessoas. A criptografia ajuda a transformar os dados e torná-los ilegíveis para outras pessoas. Isso é importante principalmente no caso de empresas que precisam proteger as informações internas e a privacidade dos funcionários.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.keygen">
+  <title>Gerando um novo par de chaves</title><indexterm><primary>KGpg</primary><secondary>criando chaves</secondary></indexterm>
+
+
+
+  <para>
+   Para poder trocar mensagens criptografadas com outros usuários, primeiro gere seu próprio par de chaves. Uma das chaves – a <emphasis>chave pública</emphasis> – será distribuída a seus parceiros de comunicação, que poderão usá-la para criptografar os arquivos ou mensagens de e-mail que enviarem. A outra parte do par de chaves, a <emphasis>chave privada</emphasis>, será usada para descriptografar o conteúdo criptografado.
+  </para>
+
+  <important>
+   <title>Comparação entre chave privada e chave pública</title>
+   <para>
+    Só você deve ter acesso à chave privada. Não permita que outros usuários tenham acesso a esses dados.
+   </para>
+   <para>
+    A sua chave privada é protegida com uma frase secreta. Escolha a frase secreta com cuidado: não use palavras de um dicionário, e misture caracteres alfabéticos com não alfabéticos.
+   </para>
+  </important>
+
+  <para>
+   Para criar um novo par, faça o seguinte:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     <indexterm> <primary>KGpg</primary><secondary>iniciando</secondary></indexterm> Inicie o KGpg no menu principal ou pressione <keycombo><keycap function="alt"/><keycap>F2</keycap></keycombo> e digite <command>kgpg</command>. Ao iniciar o programa pela primeira vez, um assistente aparece o orientando pela configuração. Siga as instruções até o ponto em que receber uma solicitação para criar uma chave.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Selecione <menuchoice><guimenu>Chaves</guimenu> <guimenu>Gerar Par de Chaves</guimenu> </menuchoice>, se quiser criar um novo par de chaves.
+    </para>
+    <figure id="fig.kgpg_keygen">
+     <title>KGpg: Criando uma chave</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="40%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="35%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+   <step performance="required">
+    <para>
+     Digite um nome, um endereço de e-mail e, opcionalmente, um comentário. Se você não estiver satisfeito com as configurações padrão fornecidas, defina também o horário de vencimento da chave, seu tamanho e o algoritmo de criptografia usado. 
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Para gerar uma chave padrão, clique em <guimenu>OK</guimenu> para confirmar suas configurações. Clique em <guimenu>OK</guimenu> e uma caixa de diálogo será mostrada, solicitando a digitação da frase secreta duas vezes. A frase secreta protege a chave privada. A força de segurança relativa da senha escolhida é medida e exibida pelo <guimenu>Medidor de dificuldade da senha</guimenu>. O par de chaves é gerado. O processo pode demorar. 
+    </para>
+    <note>
+     <title>Modo Especialista</title>
+     <para>
+      Se você é um usuário experiente, use o <guimenu>Modo Especialista</guimenu> para definir as opções adicionais. Você é levado a uma janela de terminal na qual pode definir o tipo de chave a ser gerado, o tamanho da chave (em bits) e a data de vencimento. Depois que digitar seu nome e endereço de e-mail, você receberá uma solicitação para especificar uma frase secreta para proteger a chave privada.
+     </para>
+    </note>
+   </step>
+   <step performance="required">
+    <para>
+     Após o término da geração da chave, aparecerá um resumo. Grave e imprima o certificado de revogação e o mantenha em local seguro. Você precisará do certificado para revogar a frase secreta se esquecê-la. Depois que você clicar em <guimenu>OK</guimenu> para confirmar, o KGpg exibirá sua janela principal e o processo estará concluído.
+    </para>
+    <figure id="fig.kgpg_manager">
+     <title>Janela principal do KGpg: gerenciamento de chaves</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="90%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="70%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+  </procedure>
+
+  <para>
+   A janela principal mostra as chaves que pertencem ao seu chaveiro: sua própria chave e as chaves de outras pessoas que você importou. Como o GPG usa uma implementação mais sofisticada de pares de chaves, para cada nome de usuário, várias subchaves são exibidas, mas essa questão está fora do escopo deste capítulo. Além de alguns outros detalhes (como data de vencimento ou data de criação da chave e ID), as janelas principais também mostram o nível de confiança de cada chave, indicado por cores. Branco significa que o nível de confiança é desconhecido, azul indica um alto nível de confiança. Para obter mais informações, consulte a <xref linkend="sec.crypto.kgpg.mng.trust"/>.
+  </para>
+
+  <note>
+   <title>Janela principal e ícone do KGpg</title>
+   <para>
+    Quando você iniciar o KGpg em sessões posteriores, somente um ícone pequeno com um cadeado será exibido na bandeja do sistema. Clique nesse ícone para exibir a janela principal do KGpg na área de trabalho.
+   </para>
+  </note>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1 id="sec.crypto.kgpg.mng.export">
+  <title>Exportando a chave pública</title><indexterm> <primary>KGpg</primary><secondary>exportando chaves públicas</secondary> </indexterm>
+
+  <para>
+   Após gerar o novo par de chaves, disponibilize a chave pública para todos os usuários. Esse procedimento permitirá que eles usem o par para criptografar ou assinar as mensagens ou arquivos que enviarem a você. Por exemplo, para criptografar uma mensagem para o usuário tux, utilize a chave pública de tux. Para decodificar a mensagem, tux utiliza sua chave privada. Se tux quiser enviar uma mensagem a você, ele a criptografará usando sua chave pública, e você a decodificará com sua chave privada.
+  </para>
+
+  <para>
+   Para disponibilizar a chave pública para outras pessoas, selecione <menuchoice><guimenu>Chaves</guimenu><guimenu>Exportar Chaves Públicas</guimenu> </menuchoice>. A caixa de diálogo aberta oferece quatro opções:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>E-mail</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Sua chave pública será enviada por e-mail ao destinatário que você escolher. Se você ativar essa opção e confirmar com <guimenu>OK</guimenu>, a caixa de diálogo para criação de nova mensagem de e-mail com KMail será exibida. Especifique o destinatário e clique em <guimenu>Enviar</guimenu>. O destinatário receberá sua chave e poderá enviar-lhe conteúdo criptografado.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Área de transferência</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Você poderá usar essa opção para informar sua chave pública antes de continuar a processá-la.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Servidor de chave padrão</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Para disponibilizar sua chave pública para um número maior de pessoas, exporte-a para um dos servidores de chaves da Internet. Para obter mais informações, consulte a <xref linkend="sec.crypto.kgpg.serv"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Arquivo</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Se você preferir distribuir sua chave na forma de arquivo em um meio de dados em vez de enviá-la por e-mail, clique nessa opção, confirme ou mude o caminho e o nome do arquivo e clique em <guimenu>OK</guimenu>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.mng.import">
+  <title>Importando chaves públicas de outras pessoas</title><indexterm><primary>KGpg</primary><secondary>importando chaves</secondary></indexterm>
+
+  <para>
+   Se você receber uma chave em um arquivo (como anexo de e-mail, por exemplo), integre-a ao seu chaveiro usando o recurso <guimenu>Importar Chave</guimenu> e use-a nas comunicações criptografadas com o remetente. Também será possível importar chaves de um servidor público se a pessoa com a qual você deseja se comunicar tiver armazenado a chave pública dela nesse servidor. Para obter mais informações, consulte a <xref linkend="sec.crypto.kgpg.serv"/>. O procedimento é semelhante ao da exportação de chaves, já descrito.
+  </para>
+
+  <sect2 id="sec.crypto.kgpg.mng.sign">
+   <title>Assinando chaves</title><indexterm><primary>KGpg</primary><secondary>assinando chaves</secondary></indexterm>
+   <para>
+    As chaves podem ser assinadas como qualquer outro arquivo para garantir sua autenticidade e integridade. Se você tiver certeza absoluta de que uma chave importada pertence à pessoa especificada como proprietário, expresse sua confiança na autenticidade da chave assinando-a.
+   </para>
+   <important>
+    <title>Estabelecendo uma rede de confiança</title>
+    <para>
+     A comunicação criptografada só é segura enquanto você consegue associar as chaves públicas em circulação ao usuário específico. A verificação cruzada dessas chaves e sua assinatura contribuem para o estabelecimento de uma Rede de confiança. Por esses motivos, tenha certeza absoluta de que só você assine as chaves que verifica pessoalmente.
+    </para>
+   </important>
+   <para>
+    Antes de utilizar sua chave, você precisa assiná-la.
+   </para>
+   <procedure>
+    <title>Assinando uma chave</title>
+    <step performance="required">
+     <para>
+      Na janela <guimenu>Gerenciamento de Chaves</guimenu>, selecione a chave a ser assinada na lista de chaves.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione <menuchoice><guimenu>Chaves</guimenu><guimenu>Assinar Chaves</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na caixa de diálogo a seguir, selecione a chave privada a ser usada com a assinatura. Um alerta o lembrará de verificar a autenticidade da chave antes de assiná-la. Na lista suspensa, selecione o modo como você verificou atentamente que a chave pertence à pessoa com a qual deseja se comunicar.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Continuar</guimenu> e digite sua frase secreta na etapa seguinte. Com a digitação da frase secreta, você assina a chave com sua própria chave privada. A chave assinada agora aparece verde na coluna de confiança.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Agora, outros usuários podem verificar a assinatura usando sua chave pública.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.mng.trust">
+   <title>Confiando em chaves</title><indexterm><primary>KGpg</primary><secondary>confiando em chaves</secondary></indexterm>
+   <para>
+    Normalmente, o programa correspondente pergunta se você confia na chave ou se acredita que ela seja realmente usada por seu proprietário autorizado. Isso ocorrerá sempre que for necessário decodificar uma mensagem ou verificar uma assinatura. Para evitar essa situação, edite o nível de confiança da chave recém-importada. Para confiar em uma chave e definir um certo nível de confiança, siga este procedimento:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Clique o botão direito do mouse na chave e selecione <guimenu>Propriedades da Chave</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na lista suspensa <guimenu>Confiabilidade do Dono</guimenu>, ajuste o nível de confiança. Esse valor indica o quanto você confia na capacidade do proprietário dessa chave de verificar corretamente a identidade das chaves que ele assina.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Feche a caixa de diálogo de propriedades. Se você tiver definido o nível de confiança como <guimenu>Total</guimenu> ou <guimenu>Definitivamente</guimenu>, a chave aparecerá em azul na coluna de confiança.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Quanto mais baixo for o nível de confiança, menos você confia que o assinante da chave tenha verificado a identidade das chaves assinadas. Você pode ter total certeza da identidade do signatário, mas este usuário pode não verificar as identidades das outras pessoas apropriadamente antes de assinar suas chaves. Observe que o nível de confiança não aciona nenhuma ação automática pelo KGpg.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.serv">
+  <title>Caixa de diálogo do servidor de chaves</title><indexterm><primary>KGpg</primary><secondary>servidores de chave</secondary></indexterm>
+
+  <para>
+   Vários servidores de chaves baseados em Internet oferecem chaves públicas de vários usuários. Para estabelecer comunicação criptografada com um grande número de usuários, use esses servidores para distribuir sua chave pública. Para isso, exporte a chave pública para um desses servidores. De maneira semelhante, o KGpg permite que você procure as chaves de determinadas pessoas em algum desses servidores e as importe. Abra a caixa de diálogo do servidor de chaves em <menuchoice><guimenu>Arquivo</guimenu><guimenu>Diálogo do Servidor de Chave</guimenu> </menuchoice>.
+  </para>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.crypto.kgpg.serv.import">
+   <title>Importando uma chave de um servidor de chaves</title><indexterm><primary>KGpg</primary><secondary>servidores de chave</secondary><tertiary>importando chaves</tertiary></indexterm>
+   <para>
+    Usando a guia <guimenu>Importar</guimenu> da caixa de diálogo do servidor de chaves, importe chaves públicas de um dos servidores de chaves baseados na Internet. Selecione um dos servidores de chaves pré-configurados e digite uma string de pesquisa (endereço de e-mail do parceiro de comunicação) ou o ID da chave a ser localizada. Quando você clica em <guimenu>Pesquisar</guimenu>, o sistema se conecta à Internet e procura no servidor de chaves especificado uma chave que corresponda às especificações.
+   </para>
+   <figure id="fig.kgpg_servimp">
+    <title>Tela de pesquisa para importação de chave</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Se a pesquisa no servidor de chaves for bem-sucedida, em uma nova janela, será exibida uma lista de todas as entradas recuperadas do servidor. Selecione a chave a ser incluída no seu chaveiro e clique em <guimenu>Importar</guimenu>. Clique em <guimenu>OK</guimenu> para confirmar a mensagem a seguir e depois saia da caixa de diálogo do servidor de chaves clicando em <guimenu>Fechar</guimenu>. A chave importada aparecerá na visão geral principal do gerenciador de chaves e estará pronta para uso.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.serv.export">
+   <title>Exportando suas chaves para um servidor de chaves</title><indexterm><primary>KGpg</primary><secondary>servidores de chave</secondary><tertiary>exportando chaves</tertiary></indexterm>
+   <para>
+    Para exportar sua chave para um dos servidores acessíveis gratuitamente na Internet, selecione <guimenu>Exportar</guimenu> na caixa de diálogo do servidor de chaves. Designe o servidor de destino e a chave a ser exportada em dois menus suspensos. Em seguida, inicie a exportação clicando em <guimenu>Exportar</guimenu>.
+   </para>
+   <figure id="fig.kgpg_servexp">
+    <title>Exportando uma chave para um servidor de chaves</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.applet">
+  <title>Criptografando seus dados</title><indexterm> <primary>KGpg</primary><secondary>criptografia de texto</secondary></indexterm><indexterm><primary>KGpg</primary><secondary>criptografia de arquivo</secondary></indexterm><indexterm><primary>arquivos</primary><secondary>criptografia</secondary></indexterm>
+
+  <para>
+   Depois que tiver gerado seu par de chaves, exportado sua chave pública e importado as chaves públicas de outras pessoas, você também poderá enviar ou receber e-mails criptografados. Consulte a <xref linkend="sec.kontact.mail.crypto"/> para saber como utilizar essas opções no KMail.
+  </para>
+
+  <para>
+   O KGpg também oferece a possibilidade de criptografar texto. Para abrir o editor integrado, escolha <menuchoice><guimenu>Arquivo</guimenu> <guimenu>Abrir editor</guimenu></menuchoice>.
+  </para>
+
+  
+
+
+
+  <sect2 id="sec.crypto.kgpg.dnd">
+   <title>Criptografando e decodificando em um gerenciador de arquivos</title>
+   <para>
+    O KGpg também está integrado a gerenciadores de arquivos, como Dolphin ou Konqueror. Em geral, os arquivos criptografados com PGP são designados com o sufixo <filename>asc</filename>. Há várias opções para criptografar ou decodificar arquivos em um gerenciador de arquivos:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>Criptografar um Arquivo</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Para criptografar um arquivo do gerenciador de arquivos, clique o botão direito do mouse no arquivo e selecione <menuchoice><guimenu>Ações</guimenu><guimenu>Criptografar Arquivo</guimenu></menuchoice>. Escolha umas das chaves confiáveis na caixa de diálogo. Após clicar em <guimenu>OK</guimenu> na caixa de diálogo, um novo arquivo com o sufixo <filename>asc</filename> será criado no mesmo diretório.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Decodificar um Arquivo simultaneamente</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Para decodificar um arquivo criptografado instantaneamente, clique o botão direito do mouse no arquivo e selecione <menuchoice><guimenu>Abrir com KGpg</guimenu></menuchoice>. Se o nome de arquivo original já existir, uma caixa de diálogo será aberta perguntando o nome do arquivo ou se ele deve ser sobregravado. O KGpg pede a senha da sua chave privada e grava o arquivo decodificado no mesmo diretório.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Decodificar com o editor</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Para decodificar um arquivo criptografado com o editor, clique o botão direito do mouse no arquivo do gerenciador de arquivos e selecione <menuchoice><guimenu>Ações</guimenu> <guimenu>Ver arquivo descriptografado</guimenu></menuchoice>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+
+
+
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.edit">
+   <title>O editor do KGpg</title><indexterm><primary>KGpg</primary><secondary>editor</secondary></indexterm>
+   <para>
+    Em vez de criar conteúdo para criptografia em um editor externo e, depois, criptografar o arquivo usando um dos métodos descritos acima, utilize o editor integrado do KGpg. Para abrir o editor, selecione <menuchoice> <guimenu>Arquivo</guimenu><guimenu>Abrir editor</guimenu></menuchoice>. No editor, digite o texto desejado (ou copie-o da área de transferência ou de qualquer arquivo para o editor) e clique em <guimenu>Criptografar</guimenu>. Em seguida, selecione a chave a ser usada e conclua o procedimento de criptografia. Para descriptografar arquivos, use opção <guimenu>Descriptografar</guimenu> e digite a senha associada à chave.
+   </para>
+   <para>
+    Gerar e verificar assinaturas é tão fácil quanto criptografar diretamente no editor. Vá para <menuchoice> <guimenu>Assinatura</guimenu> <guimenu>Gerar Assinatura</guimenu> </menuchoice> e selecione o arquivo a ser assinado na caixa de diálogo. Selecione a chave privada a ser usada e digite a senha associada. O KGpg o informa da geração bem-sucedida da assinatura. Os arquivos também podem ser assinados no editor com um simples clique em <guimenu>Assinar/Verificar</guimenu>. Para verificar um arquivo assinado, vá para <menuchoice><guimenu>Assinatura</guimenu><guimenu>Verificar Assinatura</guimenu></menuchoice> e selecione o arquivo a ser verificado na caixa de diálogo seguinte.  Depois que você confirmar a seleção, o KGpg verificará a assinatura e reportará o resultado da operação. Outra possibilidade é carregar o arquivo assinado no editor e clicar em <guimenu>Assinar/Verificar</guimenu>.
+   </para>
+  </sect2>
+ </sect1>
+<?dbfo-need height="15em"?>
+
+
+ <sect1 id="sec.crypto.basics">
+  <title>Para obter mais informações</title>
+
+  <para>
+   Para obter informações mais abrangentes sobre o método de criptografia, consulte as páginas do projeto GPG em <ulink url="http://www.gnupg.org/documentation/index.en.html"/>. <indexterm class="endofrange" startref="idx.encryption"/> <indexterm class="endofrange" startref="idx.kgpg"/>
+  </para>
+ </sect1>
+</chapter>

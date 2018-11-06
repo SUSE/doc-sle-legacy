@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+[
+  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
+  <!ENTITY % entities SYSTEM "entity-decl.ent">
+  %entities;
+]>
+<!--
+Ky Srinivasan (ksrinivasan@novell.com) wrote:
+> >>> On Thu, Jun 19, 2008 at  6:14 AM, in message
+> <20080619101402.GE32237@atlantic.linksys.moosehall>, Adam Spiers
+> <aspiers@novell.com> wrote:
+> > So if the VMDP is still required for optimal disk and network
+> > performance in a WS2008 guest, what exactly are the optimisations
+> > provided as a result of WS2008 operating in enlightened mode on top of
+> > the SP2 hypercall-adapting shim?
+>
+> TLB management, context switch and APIC access are exposed via enlightenments.
+
+Thanks - that was exactly the answer I was looking for.  I suspected
+that memory handling and CPU scheduling would be part of it, but
+wasn't sure about interrupts.
+
+-->
+<sect1 id="sec.xen.guests.windows">
+ <title>Windows Virtual Machines</title>
+
+ <para>
+  The installation of Windows virtual machines is supported by the virtual
+  machine manager. To install a Windows &vmguest;, select the respective
+  system from the list provided there.
+ </para>
+
+ <para>
+  To get the best available support for Windows systems, install the driver
+  pack. For more information about this, see
+  <xref
+    linkend="sec.xen.driver.winwizard"/>.
+ </para>
+
+<!-- bg: I don't want to talk about supported configurations. I have
+  no idea what happened with SP2 
+   <para>
+    On host computers running SUSE Linux code 10 with Service Pack 1, the
+    following Windows operating systems are supported as guests.
+   </para>
+
+   <informaltable frame="topbot" rowsep="1" pgwide="0">
+    <tgroup cols="4">
+     <colspec colnum="1" colname="1" colwidth="44*"/>
+     <colspec colnum="2" colname="2" colwidth="19*"/>
+     <colspec colnum="3" colname="3" colwidth="16*"/>
+     <colspec colnum="4" colname="4" colwidth="22*"/>
+     <thead>
+      <row rowsep="1">
+       <entry colname="1">
+        <para>
+         Operating System
+        </para>
+       </entry>
+       <entry colname="2">
+        <para>
+         Fully Virtual
+        </para>
+       </entry>
+       <entry colname="3">
+        <para>
+         Paravirtual
+        </para>
+       </entry>
+       <entry colname="4">
+        <para>
+         Available SUSE Linux Drivers
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row rowsep="1">
+       <entry colname="1">
+        <para>
+         Windows Vista
+        </para>
+       </entry>
+       <entry colname="2">
+        <para>
+         Yes
+        </para>
+       </entry>
+       <entry colname="3"/>
+       <entry colname="4"/>
+      </row>
+      <row rowsep="1">
+       <entry colname="1">
+        <para>
+         Windows Server 2003
+        </para>
+       </entry>
+       <entry colname="2">
+        <para>
+         Yes
+        </para>
+       </entry>
+       <entry colname="3"/>
+       <entry colname="4">
+        <para>
+         Yes
+        </para>
+       </entry>
+      </row>
+      <row rowsep="1">
+       <entry colname="1">
+        <para>
+         Windows XP
+        </para>
+       </entry>
+       <entry colname="2">
+        <para>
+         Yes
+        </para>
+       </entry>
+       <entry colname="3"/>
+       <entry colname="4">
+        <para>
+         Yes
+        </para>
+       </entry>
+      </row>
+      <row rowsep="0">
+       <entry colname="1">
+        <para>
+         Windows 2000 Server
+        </para>
+       </entry>
+       <entry colname="2">
+        <para>
+         Yes
+        </para>
+       </entry>
+       <entry colname="3"/>
+       <entry colname="4">
+        <para>
+         Yes
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </informaltable>
+
+  <sect2 id="sec.xen.windows.hypervisor">
+   <title>Domain 0 and Hypervisor Combinations</title>
+
+   <para>
+    Windows guest operating systems can be installed as guests on a host
+    computer that is running any of the following combinations of domain 0
+    and hypervisor architecture.
+   </para>
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Windows Vista (32-bit) Guest Operating System
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        32-bit hypervisor / 32-bit domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        32-bit PAE hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 64-bit domain 0
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Windows Vista (64-bit) Guest Operating System
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        64-bit hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 64-bit domain 0
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Windows Server 2003 R2 (32-bit) Guest Operating System
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        32-bit hypervisor / 32-bit domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        32-bit PAE hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 64-bit domain 0
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Windows Server 2003 (64-bit) Guest Operating System
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        64-bit hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 64-bit domain 0
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Windows 2000 Server Guest Operating System
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        32-bit hypervisor / 32-bit domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        32-bit PAE hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 32-bit PAE domain 0
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        64-bit hypervisor / 64-bit domain 0
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </itemizedlist>
+  </sect2> -->
+</sect1>

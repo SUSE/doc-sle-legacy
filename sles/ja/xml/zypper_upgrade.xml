@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="zypper_upgrade.xml" id="sec.update.zypper">
+ <title>zypperによるディストリビューションアップグレード</title><indexterm> <primary>zypper</primary> <secondary>アップグレード</secondary></indexterm><indexterm> <primary>アップグレード</primary> <secondary>zypper</secondary></indexterm>
+ <para>
+  <command>zypper</command>コマンドラインユーティリティを使用すると、次のバージョンのディストリビューションにアップグレードできます。最も重要なことは、実行中のシステムからシステムアップグレードのプロセスを開始できることです。
+ </para>
+ <para>
+  これは、リモートアップグレードや、同様な設定の多数のシステムでアップグレードを実行したい高度なユーザにとって魅力的な機能です。
+ </para>
+ <sect3>
+  <title>zypperによるアップグレードを開始する前に</title>
+  <para>
+   <command>zypper</command>を使用したアップグレード中に予期しないエラーが発生しないようにするには、リスクの高いコンステレーションを最小限にします。
+  </para>
+  
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     できるだけ多くのアプリケーションや不要なサービスを終了し、すべての通常ユーザをログアウトします。
+    </para>
+   </listitem>
+   
+   <listitem os="sled;sles">
+    <para>
+     アップグレードの開始前にサードパーティーのリポジトリを無効にしたり、それらのリポジトリの優先度を下げることによって、デフォルトのシステムリポジトリからのパッケージが優先されるようにします。アップグレード後にそれらのリポジトリを再度有効にし、それらのバージョン文字列を編集して、アップグレードした現在実行中のシステムのディストリビューションのバージョン番号に一致させます。
+    </para>
+   </listitem>
+   <listitem os="sled;sles">
+    <para>システムが登録済みであることを確認します。登録済みではない場合は、YaSTの<guimenu>Novell Customer Centerの設定</guimenu>モジュールを使用したり、<command>suse_register</command>コマンドラインツールを使用して登録できます。これにより、システムにアップデートソースが追加されます。
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <warning>
+    <title>再起動からアップグレードを実行します。</title>
+    <para>再起動するには、アップグレードプロセスを最初から始めて完了する必要があります。変更を元に戻す機会はほとんどありません。さらに、プロセス全体でサーバをオンライン接続しておく必要があります。
+</para>
+  </warning>
+ </sect3>
+ <sect3>
+  <title>アップグレード手順</title>
+  <warning>
+   <title>システムのバックアップを確認してください。</title>
+   <para>
+    アップグレード手順を実際に開始する前に、システムのバックアップが最新であり、復元可能であることを確認します。以降のステップの多くで手動入力が必要なので、これは特に重要です。
+   </para>
+  </warning>
+  <para>
+   プログラム<command>zypper</command>は、長いコマンド名と短いコマンド名をサポートしています。たとえば、<command>zypper install</command>を短縮して<command>zypper in</command>にすることができます。次のテキストでは、短いコマンド名が使用されています。
+  </para> 
+  <para><systemitem class="username">root</systemitem>としてログインし、次の手順を実行します。</para>
+ 
+  <procedure>
+    
+    <step performance="required">
+      <para>すべてのサービスとリポジトリを更新します。</para>
+      <screen>zypper ref -s</screen>
+    </step>
+    <step id="st.update.zypper.proc.softwarestack" performance="required">
+      <para>パッケージ管理アップデートをインストールします。</para>
+      <screen>zypper up -t patch</screen>
+      <para>詳細については、<xref linkend="cha.onlineupdate.you"/>を参照してください。</para>
+    </step>
+    <step performance="required">
+    <para><xref linkend="st.update.zypper.proc.softwarestack"/>を繰り返して、システムで使用可能なすべてのアップデートをインストールします。
+    </para>
+    <para>メモ:ユーザが介入しないアップグレードで、上述のコマンドをスクリプト内で使用する場合は、次のコマンドを入力します。 </para>
+    <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
+   </step>
+    <step performance="required">
+      <para><filename>/etc/products.d/*.prod</filename>のマイグレーションに関する製品情報を参照してください。インストール済みの製品には、配布アップグレードに関する情報と、マイグレーションを実行するためにインストール不可欠なマイグレーション製品に関する情報が記載されています。次のコマンドで、マイグレーション製品をインストールします。
+      </para>
+      <substeps performance="required">
+        <step performance="required">
+          <para>製品情報を抽出します。</para>
+          <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
+          <para>サンプル出力は次のとおりです。</para>
+          <screen>SUSE_SLES-SP3-migration
+sle-sdk-SP3-migration</screen>
+        </step>
+        <step performance="required">
+          <para>これらのマイグレーション製品をインストールします(例)。</para>
+          <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
+        </step>
+        <step performance="required">
+          <para>対応するアップデートリポジトリを取得するために、製品を登録します。</para>
+          <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+          <warning>
+            <title>SLEDユーザ用の追加リポジトリを有効化してください。</title>
+            <para>一部の開発パッケージは、<literal>SLED11-SP2</literal>インストールメディアから<literal>SLED11-Extras</literal>リポジトリに移動されました。アップグレード時に依存関係の競合を回避するには、実際のアップグレードを実行する前にこのリポジトリを有効化してください。<command>yast2 repositories</command>を実行し、そこで<literal>SLED11-Extras</literal>を有効化します。SLESでは、この余分なステップは不要です。 </para>
+          </warning>
+        </step>
+      </substeps>      
+    </step>
+    
+    <step performance="required">
+      <para>サービスとリポジトリを更新します。</para>
+      <screen>zypper ref -s</screen>
+    </step>
+    <step performance="required">
+        <para><command>zypper lr</command>を使用してリポジトリを確認します。必要に応じてSP1/SP2の<systemitem>Pool/Core/Updates</systemitem>リポジトリを手動で無効化し、新しいSP3 (<systemitem>SP3-Pool</systemitem>、<systemitem>SP3-Updates</systemitem>)リポジトリを有効化します。</para>
+      <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
+zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
+    </step>
+    <step performance="required">
+      <para>次のコマンドを使用して、distアップグレードを実行します(SLESの例。SLEDの更新時にはカタログ名を変更してください)。</para>
+      <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
+      <para>ここでは、必要に応じてカタログを追加できます(アドオン製品をインストールする場合など)。マイグレーション製品の削除と、主要製品の更新が行われることが通知されます。メッセージを確定して、rpmパッケージの更新に進みます。</para>
+    </step>
+    <step performance="required">
+      <para>アップグレードが完了したら、新しい製品を再度登録します。</para>
+      <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
+    </step>
+    <step performance="required">
+      <para>システムを再起動します。</para>
+      <screen>shutdown -r</screen>
+    </step>
+  </procedure>
+   
+ </sect3>
+</sect2>

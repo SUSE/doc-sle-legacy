@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="grub_bootcd_i.xml" id="sec.grub.bootcd">
+ <title>建立開機 CD</title><indexterm><primary>磁片</primary><secondary>開機</secondary></indexterm>
+
+ <para>
+  如果使用開機管理員來啟動系統時發生問題，或者無法在硬碟上安裝開機管理員，也可以建立一張包含所有 Linux 必要啟動檔案的開機 CD。此時，要求您的系統安裝有 CD 燒錄器。
+ </para>
+
+ <para>
+  要使用 GRUB 建立可開機的 CD-ROM 只需要一個特殊形式的 <emphasis>stage2</emphasis>，它叫做 <filename>stage2_eltorito</filename>，還可以選用自訂的 <filename>menu.lst</filename>。不需要典型的檔案 <filename>stage1</filename> 和 <filename>stage2</filename>。
+ </para>
+
+ <procedure>
+  <title>建立開機 CD</title>
+  <step performance="required">
+   <para>
+    變更至要在其中建立 ISO 影像的目錄，例如： <command>cd</command> <filename>/tmp</filename>
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    為 GRUB 建立子目錄，然後變更至新建立的 <filename>iso</filename> 目錄︰
+   </para>
+<screen>mkdir -p iso/boot/grub &amp;&amp; cd iso</screen>
+  </step>
+  <step performance="required">
+   <para>
+    將核心以及 <filename>stage2_eltorito</filename>、<filename>initrd</filename>、<filename>menu.lst</filename> 和 <filename>message</filename> 檔案複製到 <filename>iso/boot/</filename>：
+   </para>
+<screen>cp /boot/vmlinuz boot/
+cp /boot/initrd boot/
+cp /boot/message boot/
+cp /usr/lib/grub/stage2_eltorito boot/grub
+cp /boot/grub/menu.lst boot/grub</screen>
+   <para>
+    
+    在某些情況下 (例如將多個作業系統開機時)，同時將 <filename>/boot/grub/device.map</filename> 複製到 <filename>boot/grub</filename> 可能有所幫助。  
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    以 <literal>root (cd)</literal> 取代 <literal>root (hd<replaceable>x</replaceable>, <replaceable>y</replaceable>)</literal> 項目，以指向 CD_ROM 裝置。您可能還需要調整訊息檔案、核心和 initrd 的路徑 — 它們須分別指向 <filename>/boot/message</filename>、<filename>/boot/vmlinuz</filename> 和 <filename>/boot/initrd</filename>。調整之後，<filename>menu.lst</filename> 的內容應類似於下面的範例：
+   </para>
+<screen>timeout 8
+default 0
+gfxmenu (cd)/boot/message
+
+title Linux
+   root (cd)
+   kernel /boot/vmlinuz root=/dev/sda5 vga=794 resume=/dev/sda1 \
+   splash=verbose showopts
+   initrd /boot/initrd</screen>
+   <para>
+    使用 <option>splash=silent</option> (而非使用 <option>splash=verbose</option>) 讓開機訊息不要出現在開機程序中。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    使用以下指令建立 ISO 影像：
+   </para>
+<screen>genisoimage -R -b boot/grub/stage2_eltorito -no-emul-boot \
+-boot-load-size 4 -boot-info-table -iso-level 2 -input-charset utf-8 \
+-o grub.iso /tmp/iso</screen>
+  </step>
+  <step performance="required">
+   <para>
+    使用您偏好的公用程式，將產生的檔案 <filename>grub.iso</filename> 燒錄至光碟。請勿將 ISO 影像燒錄為資料檔案，而是在您的燒錄公用程式中使用燒錄 CD 影像的選項。
+   </para>
+  </step>
+ </procedure>
+</sect1>

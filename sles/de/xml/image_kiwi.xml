@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_kiwi.xml" id="cha.kiwi">
+ <title>KIWI</title>
+ <abstract>
+  <para>
+   KIWI ist ein System zur Erstellung von Betriebssystem-Images. Ein Image ist ein Verzeichnis mit einer Datei, die das Betriebssystem, seine Anwendungen und Konfigurationen, die Dateisystemstruktur des Betriebssystems, mögliche zusätzliche Metadaten und (abhängig vom Image-Typ) auch Plattengeometrie und Partitionstabellendaten enthält. Mit KIWI können Sie LiveCDs und LiveDVDs, USB-Sticks, virtuelle Festplatten, um vollständig virtuelle Systeme wie VMware einzuspielen, XEN-Images zur Paravirtualisierung in einem Hypervisor und eine PXE-Umgebung für den Start über das Netzwerk erstellen.
+  </para>
+
+ </abstract>
+
+
+ <sect1 id="sec.kiwi.prereq">
+  <title>Voraussetzungen für KIWI</title>
+
+  <para>
+   Zum Erstellen von Images mithilfe von KIWI müssen die folgenden Voraussetzungen erfüllt sein:
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     Stellen Sie ausreichend Speicherplatz für den Vorgang zur Verfügung.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     KIWI ist in mehrere Pakete gegliedert, die für verschiedene Image-Typen vorgesehen sind. In jedem Fall benötigen Sie das Basispaket <systemitem class="resource">kiwi</systemitem>. Abhängig vom Ziel-Image brauchen Sie die folgenden Pakete:
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>
+         <para>
+          Image-Typ
+         </para>
+        </entry>
+        <entry>
+         <para>
+          Paketname
+         </para>
+        </entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          Installationsmedien
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-oemboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          Virtualisierung
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-xenboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          USB-Sticks
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-usbboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          Network Client
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-netboot</systemitem>
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </listitem>
+   <listitem>
+    <para>
+     Installieren Sie das Paket <systemitem class="resource">kiwi-doc</systemitem>. Sie können anhand einiger Beispielkonfigurationen eine Vorstellung von der Struktur und dem Inhalt gewinnen.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Machen Sie sich mit der KIWI-Konfigurationsdatei und ihrer Struktur vertraut. Sie basiert auf einem RELAX NG-Schema und ist im <systemitem class="resource">kiwi</systemitem>-Paket unter <filename>/usr/share/doc/packages/kiwi/kiwi.html</filename> dokumentiert. Sie brauchen dieses Dokument, wenn Sie die Konfigurationsdatei von Grund auf neu erstellen oder wenn Sie Elemente oder Attribute einfügen.
+    </para>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.kiwi.process">
+  <title>Erläuterungen zum Erstellungsvorgang von KIWI</title>
+
+  <para>
+   Der Erstellungsvorgang von KIWI besteht aus drei Schritten:
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>Physische Erweiterung (Vorbereitung)</title>
+     <para>
+      Diese Stufe bereitet den Inhalt Ihres neuen Dateisystems vor. Während dieses Schrittes wird das root-Verzeichnis angelegt, Sie bestimmen, welche Pakete auf Ihrem Image installiert und welche Benutzerkonfigurationsdateien eingeschlossen werden.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>Logische Erweiterung (Erstellung)</title>
+     <para>
+      Diese Stufe setzt einen erfolgreichen Vorbereitungsschritt voraus. Der Schritt der logischen Erweiterung erstellt das Betriebssystem-Image auf der Basis des ersten Schrittes.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>Bereitstellung</title>
+     <para>
+      Das resultierende Image kann mit verschiedenen Methoden bereitgestellt werden, etwa auf Festplatte installiert oder durch ein Virtualisierungssystem ausgeführt (VMware, Qemu, VirtualBox).
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.kiwi.imagedesc">
+  <title>Image-Beschreibung</title>
+
+  <para>
+   KIWI benötigt eine Image-Beschreibung, um einen Image-Typ zu erstellen. Die Image-Beschreibung ist ein Verzeichnis, das mindestens eine Datei <filename>config.xml</filename> oder alternativ mit der Erweiterung <filename>*.kiwi</filename> enthält.
+  </para>
+
+  <sect2 id="sec.kiwi.imagedescr.contents">
+   <title>Inhalt der Image-Beschreibung</title>
+   <para>
+    Die folgende Tabelle enthält zusätzliche optionale Informationen. Die meisten Informationen sind jedoch für die spätere Funktionalität des Betriebssystems obligatorisch:
+   </para>
+   <table id="tab.kiwi.imagedesc">
+    <title>Zusätzliche Dateien und Verzeichnisse zur Image-Beschreibung</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         Datei/Verzeichnis
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Beschreibung
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <filename>config/</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Optionales Unterverzeichnis. Enthält Bash-Skripten, die nach der Installation aller Image-Pakete ausgeführt werden.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Optionales Konfigurationsskript während der Erstellung der physischen Erweiterung
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Konfigurationsdatei für jede Image-Beschreibung, erläutert in <xref linkend="sec.kiwi.config.xml" xrefstyle="select:label"/>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-cdroot.tgz</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Archiv, nur für ISO-Images verwendet
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-cdroot.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Manipuliert extrahierte Daten aus <filename>config-cdroot.tgz</filename>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-yast-autoyast.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Von AutoYaST erstellte Konfigurationsdatei
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-yast-firstboot.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Konfigurationsdatei zur Steuerung des YaST-Firstboot-Service
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>images.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Optionales Konfigurationsskript bei der Erstellung des Vorbereitungsschritts
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>Root/</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Enthält andere Verzeichnisse, besondere Dateien und Skripten, die <emphasis>nach</emphasis> der Installation aller Image-Pakete geändert werden.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect2>
+
+  <sect2 id="sec.kiwi.config.xml">
+   <title>Die Datei <filename>config.xml</filename></title>
+   <para>
+    Sämtliche Informationen über eine Image-Beschreibung werden in einer zentralen XML-Konfigurationsdatei mit dem Namen <filename>config.xml</filename> gespeichert. Bei jeder Ausführung von KIWI wird <filename>config.xml</filename> anhand eines RELAX NG-Schemas überprüft. (Weitere Informationen zu dieser Schemasprache siehe <ulink url="http://www.relaxng.org"/>.) Daher wird empfohlen, einen angemessenen XML-Editor mit RELAX NG-Unterstützung zu verwenden oder die Dokumentation über das Schema in der HTML-Datei <filename>/usr/share/doc/packages/kiwi/schema/kiwi.xsd.html</filename> zu verwenden.
+   </para>
+   <para>
+    Die Konfigurationsdatei besteht aus mehreren Teilen:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+
+     <para>
+      Beschreibung zum Verfasser, Kontaktdaten und eine kurze Erläuterung,
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      erforderliche Voreinstellungsoption für die Stufe der logischen Erweiterung,
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      Informationen über die Benutzer, deren Namen, deren Home-Verzeichnisse und deren Passwörter,
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      Links zu Repositorys,
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      eine Liste aller Pakete, die für den definierten Image-Typ verwendet werden,
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      sowie andere, weniger wichtige Informationen, die Sie in der obigen HTML-Datei der RELAX NG-Schemadokumentation nachschlagen können.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Das folgende Beispiel zeigt ein Gerüst der Datei:
+   </para>
+   <example id="ex.kiwi.config">
+    <title>KIWI-Konfigurationsdatei</title>
+<screen>&lt;image schemeversion="2.0" name="..."&gt; <co id="co.kiwi.config.image"/>
+  &lt;description type="system"&gt; <co id="co.kiwi.config.description"/>
+    &lt;author&gt;...&lt;/author&gt;
+    &lt;contact&gt;...&lt;/contact&gt;
+    &lt;specification&gt;...&lt;/specification&gt;
+  &lt;/description&gt;
+  &lt;preferences&gt; <co id="co.kiwi.config.preferences"/>
+    &lt;type primary="true" boot="..." flags="..."&gt;iso&lt;/type&gt;
+    &lt;type boot="..." filesystem="ext3" format="vmdk"&gt;vmx&lt;/type&gt;
+    &lt;type boot="..." filesystem="ext3"&gt;xen&lt;/type&gt;
+    &lt;type boot="..." filesystem="squashfs" flags="unified"&gt;oem&lt;/type&gt;
+    &lt;version&gt;2.7.0&lt;/version&gt;
+    &lt;size unit="M"&gt;780&lt;/size&gt;
+    &lt;packagemanager&gt;zypper&lt;/packagemanager&gt;
+    &lt;rpm-check-signatures&gt;False&lt;/rpm-check-signatures&gt;
+    &lt;rpm-force&gt;False&lt;/rpm-force&gt;
+    &lt;locale&gt;en_US.UTF-8&lt;/locale&gt;
+    &lt;oem-swap&gt;no&lt;/oem-swap&gt;
+    &lt;oem-boot-title&gt;USB&lt;/oem-boot-title&gt;
+  &lt;/preferences&gt;
+  &lt;users group="users"&gt; <co id="co.kiwi.config.users"/>
+    &lt;user name="root" pwd="" home="/root"/&gt;
+  &lt;/users&gt;
+  &lt;repository type="rpm-md"&gt; <co id="co.kiwi.config.repository"/>
+    &lt;source path="/home/rpmdir"/&gt;
+  &lt;/repository&gt;
+  &lt;packages type="image" patternPackageType="onlyRequired"&gt; <co id="co.kiwi.config.packages"/>
+    &lt;package name="yast2-live-installer"/&gt;
+    &lt;package name="pam"/&gt;
+    &lt;!-- List of packages reduced --&gt;
+  &lt;/packages&gt;</screen>
+   </example>
+   <calloutlist>
+    <callout arearefs="co.kiwi.config.image">
+     <para>
+      Das Stammelement jeder KIWI-Konfigurationsdatei. Jede Datei benötigt die Versionsnummer. Mit einem optionalen <literal>kiwirevision</literal>-Attribut können Sie eine SVN-Revision von KIWI angeben.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.description">
+     <para>
+      Enthält eine obligatorische Beschreibung mit Informationen über den Ersteller dieser Image-Beschreibungen, seiner Kontaktadresse und einer kurzen Erläuterung.
+     </para>
+    </callout>
+
+    <callout arearefs="co.kiwi.config.preferences">
+     <para>
+      Enthält obligatorische Voreinstellungen mit Informationen über die Version dieses Image, den verwendeten Paketmanager, die unterstützten Image-Typen und andere Einstellungen.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.users">
+     <para>
+      Das optionale <literal>users</literal>-Element enthält eine Liste aller Benutzer, die dem Image hinzugefügt wurden. Das <literal>user</literal>-Element enthält den Namen, den Pfad zu seinem Home-Verzeichnis, Passwort und die Shell.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.repository">
+     <para>
+      Enthält eine obligatorische Liste der Repositorys, die der Paketmanager verwendet.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.packages">
+     <para>
+      Enthält eine obligatorische Liste der Pakete, die im Image eingeschlossen sind.
+     </para>
+    </callout>
+   </calloutlist>
+   <para>
+    Weitere Details über die Konfigurationsdatei werden in der obigen HTML-Datei gezeigt.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.kiwi.creating">
+  <title>Erstellen von Appliances mit KIWI</title>
+
+  <para>
+   Dieser Abschnitt beschreibt, wie Sie mithilfe von KIWI Appliances erstellen. Eine Appliance ist ein speziell gestaltetes Betriebssystem für eine bestimmte Aufgabe. Sie können beispielsweise eine Appliance mit Fokus auf Büroprogramme erstellen.
+  </para>
+
+  <sect2 id="sec.kiwi.img.createrepo">
+   <title>Erstellen einer lokalen Installationsquelle</title>
+   <para>
+    Alle Beispiele in den <systemitem class="resource">kiwi-doc</systemitem>-Paketen benötigen eine gültige Installationsquelle, um ein Image zu erstellen. Gewöhnlich erhalten die Beispiele eine Verbindung zu einer Netzwerkquelle. Je höher die Netzwerkbandbreite ist, um so schneller erfolgt die Image-Erstellung. Wenn Sie über kein schnelles Netzwerk verfügen oder es nicht verwenden möchten, erstellen Sie eine lokale Installationsquelle. Führen Sie dazu die folgenden Schritte aus:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Holen Sie Ihre Installations-DVD.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Öffnen Sie eine Shell und melden Sie sich als <systemitem class="username">root</systemitem> an.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Legen Sie ein Verzeichnis für Ihr lokales Installationsverzeichnis an. Die Beispiele verwenden gewöhnlich den Pfad <filename>/image/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable></filename>. Ersetzen Sie die Platzhalter <replaceable>VERSION</replaceable> und <replaceable>ARCH</replaceable> durch ihren jeweiligen Wert.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Hängen Sie das Medium ein. Ersetzen Sie den Platzhalter <replaceable>DRIVE</replaceable> durch das entsprechende Gerät (gewöhnlich <filename>dvd</filename>, <filename>cdrom</filename> usw.):
+     </para>
+<screen>mount -o loop /dev/<replaceable>DRIVE</replaceable> /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Kopieren Sie sämtlichen Inhalt des Mediums in das Installationsverzeichnis.
+     </para>
+<screen>cp -a /mnt/* /images/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable></screen>
+    </step>
+   </procedure>
+   <para>
+    Zur Verwendung der lokalen Installationsquelle müssen Sie diese einfach im Element <literal>repository</literal> aktivieren:
+   </para>
+<?dbfo-need height="6em"?>
+
+
+<screen>&lt;repository type="..."&gt;
+  &lt;!-- Remove the comment markers in the next line --&gt;
+  &lt;!-- &lt;source path="/image/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable>" --&gt;
+  &lt;source path="opensuse://openSUSE:11.0/standard"/&gt; 
+&lt;/repository&gt;</screen>
+  </sect2>
+
+  <sect2 id="sec.kiwi.img">
+   <title>Erstellen eines Image</title>
+   <para>
+    Ein Image ist ein virtuelles Disk-Image, das alle Partitionen, Bootloader-Informationen und Pakete wie auf einer realen Festplatte enthält. So erstellen Sie ein ISO-Image:
+   </para>
+   <procedure id="pr.kiwi.img">
+
+    <step performance="required">
+     <para>
+      Installieren Sie die Pakete <systemitem class="resource">kiwi</systemitem> und <systemitem class="resource">kiwi-doc</systemitem> und lösen Sie etwaige Abhängigkeiten auf.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Öffnen Sie eine Shell und melden Sie sich als <systemitem class="username">root</systemitem> an.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Kopieren Sie das Verzeichnis <filename>/usr/share/doc/packages/kiwi/examples/suse-11.0/suse-oem-preload</filename> in Ihr aktuelles Verzeichnis.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Öffnen Sie die Datei <filename>config.xml</filename> und suchen Sie das Element <literal>repository</literal>. Wenn Sie eine lokale Installation verwenden möchten, erhalten Sie unter <xref xrefstyle="select: label" linkend="sec.kiwi.img.createrepo"/> weitere Informationen.
+     </para>
+    </step>
+    <step id="st.kiwi.prep" performance="required">
+     <para>
+      Führen Sie KIWI zur Vorbereitung der ersten Stufe (<quote>physische Erweiterung</quote>) mit dem folgenden Kommando aus:
+     </para>
+<screen>kiwi --prepare suse-oem-preload --root oem</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Erstellen Sie das ISO-Image:
+     </para>
+<screen>kiwi --create oem --type iso --destdir /tmp/myoem</screen>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.kiwi.img.nfs">
+   <title>Erstellen eines Preload-Image mit NFS</title>
+   <para>
+    So erstellen Sie ein Image mit NFS-Funktionen:
+   </para>
+   <procedure id="pr.kiwi.img.nfs">
+    <step performance="required">
+     <para>
+      Öffnen Sie eine Shell und melden Sie sich als <systemitem class="username">root</systemitem> an.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Kopieren Sie das Verzeichnis <filename>/usr/share/doc/packages/kiwi/examples/suse-11.1/suse-oem-preload</filename> in Ihr aktuelles Verzeichnis.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Öffnen Sie die Datei <filename>suse-oem-preload/config.xml</filename> und suchen Sie das Element <literal>packages</literal> mit dem Attribut <literal>type=„image“</literal>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Fügen Sie die folgende Zeile zwischen <literal>&lt;packages type=„image“&gt;</literal> und <literal>&lt;/packages&gt;</literal> ein und speichern Sie die Datei:
+     </para>
+<screen>&lt;package name="nfs-client"/&gt;</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Erstellen Sie das Image neu, wie unter <xref linkend="st.kiwi.prep"/> beschrieben.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.kiwi.moreinfo">
+  <title>Weiterführende Informationen</title>
+  <para>
+   Weitere Informationen finden Sie in den nachfolgenden Dokumenten im KIWI-Portal unter <ulink url="http://en.opensuse.org/Portal:KIWI"/>.
+  </para>
+ </sect1>
+</chapter>

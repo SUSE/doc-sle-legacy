@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_nfs.xml" id="cha.nfs">
+ <title>NFS共有ファイルシステム</title><indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>ネットワークファイルシステム</primary> <see>NFS</see> </indexterm>
+ <abstract>
+  <para>
+   ネットワーク上でファイルシステムを分散して共有することは、企業環境では一般的なタスクです。十分に実績のあるネットワークファイルシステム (<emphasis>NFS</emphasis>)は、<emphasis>NIS </emphasis>(Yellow Pagesプロトコル)と連携して機能します。<emphasis>LDAP</emphasis>と連携して機能し、Kerberosも使用できるより安全なプロトコルについては、<emphasis>NFSv4</emphasis>をチェックしてください。pNFSとの組み合わせで、パフォーマンスのボトルネックをなくすことができます。
+  </para>
+
+  <para>
+   NFSをNISと連携して使用すると、ネットワークをユーザに対して透過的にすることができます。NFSでは、ネットワーク経由で任意のファイルシステムを分散できます。適切なセットアップを行えば、現在どの端末を使用しているかに係わりなく、常に同じ環境で作業できます。
+  </para>
+ </abstract>
+ <important os="osuse;sles">
+  <title>DNSの必要性</title>
+  <para>
+   原則として、すべてのエクスポートはIPアドレスのみを使用して実行できます。タイムアウトを回避するには、機能するDNSシステムが必要です。mountdデーモンは逆引きを行うので、少なくともログ目的でDNSは必要です。
+  </para>
+ </important>
+ <sect1 id="sec.nfs.term">
+  <title>用語集</title>
+
+  <para>
+   以下の用語は、YaSTモジュールで使用されています。
+  </para>
+
+
+
+  <variablelist>
+   <varlistentry>
+    <term>エクスポート</term>
+    <listitem>
+     <para>
+      NFSサーバによって<emphasis>エクスポート</emphasis>され、クライアントがシステムに統合できるディレクトリ。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NFSクライアント</term>
+    <listitem>
+     <para>
+      NFSクライアントは、ネットワークファイルシステムプロトコルを介してNFSサーバからのNFSサービスを使用するシステムです。TCP/IPプロトコルはLinuxカーネルにすでに統合されており、追加ソフトウェアをインストールする必要はありません。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NFSサーバ</term>
+    <listitem>
+     <para>
+      NFSサーバは、NFSサービスをクライアントに提供します。<systemitem class="daemon">nfsd</systemitem>(ワーカー)、<systemitem class="daemon">idmapd </systemitem>(IDへのユーザおよびグループ名のマッピングと、その逆のマッピング)、<systemitem class="daemon">statd</systemitem>(ファイルのロック)、および<systemitem class="daemon">mountd</systemitem> (マウント要求)。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+     <term>pNFS</term>
+     <listitem>
+       <para>パラレル NFS。NFSv4のプロトコル拡張。 任意のpNFSクライアントは、NFSサーバ上のデータに直接アクセスできます。</para>
+     </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nfs.installation">
+  <title>NFSサーバのインストール</title>
+
+  <para>
+   NFSサーバソフトウェアは、デフォルトインストールの一部ではありません。<xref linkend="sec.nfs.configuring-nfs-server"/>に従ってNFSサーバを設定すると、必要なパッケージのインストールを自動的に求められます。別の方法として、YaSTまたはzypperでパッケージ<systemitem class="resource">nfs-kernel-server</systemitem>をインストールします。
+  </para>
+
+  <para>
+   NIS同様、NFSはクライアント/サーバシステムです。ただし、ファイルシステムをネットワーク経由で提供し(エクスポート)、同時に他のホストからファイルシステムをマウントすることができます(インポート)。
+  </para>
+ </sect1>
+ <sect1 id="sec.nfs.configuring-nfs-server">
+  <title>NFSサーバの設定</title>
+
+  <para>
+   NFSサーバの設定は、YaSTを使用するか、または手動で完了できます。認証のため、NFSをKerberosと組み合わせることもできます。
+  </para>
+
+  <sect2 id="sec.nfs.export-yast2" os="osuse;sles">
+   <title>YaSTによるファイルシステムのエクスポート</title>
+   <indexterm> <primary>NFS</primary> <secondary>サーバ</secondary> </indexterm>
+   <para>
+    を使用して、ネットワーク上のホストをNFSサーバに変更し、そのホストへのアクセスを許可されたすべてのホストに、ディレクトリやファイルをエクスポートすることができます。サーバは、ホストごとにローカルにアプリケーションをインストールしなくても、グループの全メンバーにアプリケーションを提供することもできます。 
+   </para>
+   <para>
+    そのようなサーバをセットアップするには、次の手順に従います。
+   </para>
+   <procedure id="pro.nfs.export-yast2.nfsv3">
+     <title>NFSv3サーバの設定</title>
+    <step performance="required">
+     <para>
+      YaSTを起動し、<menuchoice><guimenu>ネットワークサービス</guimenu><guimenu>NFSサーバ</guimenu></menuchoice>の順に選択します(<xref linkend="fig.inst.nfsserver1"/>を参照してください)。追加のソフトウェアをインストールするよう求められることがあります。
+     </para>
+     <figure id="fig.inst.nfsserver1">
+      <title>NFSサーバ設定ツール</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2_inst_nfsserver1.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2_inst_nfsserver1.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>開始</guimenu>ラジオボタンをオンにします。
+     </para>
+    </step>
+    <step performance="required">
+      <para>
+       システム(SuSEfirewall2)でファイアウォールが有効になっている場合は、<guimenu>ファイアウォールでポートを開く</guimenu>をオンにします。YaSTは、<systemitem class="service">nfs</systemitem>サービスを有効にすることによってNFSサーバの設定を適用します。
+      </para>
+    </step>
+    <step performance="required">
+      <para><guimenu>NFSv4を有効にする</guimenu>チェックボックスはオフのままにしてください。</para>
+    </step>
+    <step performance="required">
+     <para>
+      サーバに安全にアクセスするには、<guimenu>GSSセキュリティを有効にする</guimenu>をクリックします。この手順の前提条件として、ドメインにKerberosをインストールし、サーバとクライアントの両方でKerberosを有効にしておく必要があります。<guimenu>次へ</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+      <para>ディレクトリをエクスポートするには、ダイアログの上半分にある<guimenu>ディレクトリの追加</guimenu>をクリックします。</para>
+    </step>
+    <step performance="required">
+       <para>
+         許可されるホストをまだ設定していない場合は、自動的に別のダイアログが表示されるので、クライアント情報およびオプションを入力します。ホストを示すワイルドカードを入力します(通常はデフォルト設定のまま使用できます)。
+       </para>
+       
+      <para>
+        4種類の方法でホストを指定することができます。1台のホスト(名前またはIPアドレス)(single host)、ネットグループ( netgroups)、ワイルドカード(すべてのコンピュータがサーバにアクセスできることを示す<literal>*</literal>など)( wild cards)、およびIPネットワーク(IP networks)です。 
+      </para>
+      
+     </step>
+     <step performance="required">
+       <para><guimenu>完了</guimenu>をクリックして設定を完了します。
+     </para>
+    </step>
+   </procedure>
+   
+   <sect3 id="sec.nfs.exportv4">
+    <title>NFSv4クライアント用のエクスポート</title>
+     <para>
+       NFSv4クライアントに対してエクスポートできるディレクトリには、疑似rootファイルシステムの役割を果たすディレクトリと、疑似ファイルシステムのサブディレクトリにバインドされるディレクトリの2種類があります。疑似ファイルシステムは、同じクライアントに対してエクスポートされたすべてのファイルシステムをまとめる、ルートディレクトリの役割を果たします。クライアントに対しては、サーバ上の1つのディレクトリのみを、エクスポート用の疑似rootディレクトリとして設定できます。このクライアントに複数のディレクトリをエクスポートするには、それらのディレクトリを、疑似root中の既存サブディレクトリにバインドします。
+     </para>
+     <para>
+       たとえば、サーバにアクセスするすべてのクライアントの疑似ディレクトリとして、<filename>/exports</filename>を使用する場合を考えてみましょう。この場合、エクスポートするディレクトリのリストにこのディレクトリを追加して、このディレクトリのオプションに<literal>fsid=0</literal>を指定します。別に<filename>/data</filename>ディレクトリもNFSv4を使ってエクスポートする必要がある場合は、このディレクトリもリストに追加します。このディレクトリに関するオプションを設定する際には、リストに<literal>bind=/exports/data</literal>を指定します。また、<filename>/exports/data</filename>がすでに<filename>/exports</filename>の既存のサブディレクトリとなっていることを確認してください。オプション<systemitem>bind=/target/path</systemitem>に対する変更(値の追加、削除、または変更)はすべて、<guimenu>Bindmountターゲット</guimenu>に反映されます。 
+     </para>
+     <para>サーバでNFSv4を使ったディレクトリのエクスポートを設定するには、<xref linkend="pro.nfs.export-yast2.nfsv3"/>の全般的なガイドラインに従います。ただし、以下の手順を変更します。
+     </para>
+     
+     <procedure>
+       <step performance="required">
+         <para>最初のダイアログで<guimenu>NFSv4を有効にする</guimenu>をオンにします。</para>
+       </step>
+       <step performance="required">
+         <para>最初のダイアログで適切なNFSv4ドメイン名を入力します。</para>
+         <para>ここで指定する名前は、このサーバにアクセスするNFSv4クライアントの<filename>/etc/idmapd.conf</filename>ファイルで指定された名前にする必要があります。このパラメータは、NFSv4サポートに必要な<systemitem class="daemon">idmapd</systemitem>デーモンが使用します(サーバとクライアントの両方で)。特に必要のない限り、そのまま<literal>localdomain</literal>(デフォルト)を使用してください。 </para>
+         <para><guimenu>次へ</guimenu>をクリックした後に表示されるダイアログには、2つのセクションがあります。上部のセクションには、<guimenu>ディレクトリ</guimenu>と<guimenu>Bindmountターゲット</guimenu>の2つの列があります。サービスがただちに利用できるようになります。</para>
+       </step>
+       
+       <step performance="required">
+         <para>ディレクトリをエクスポートするには、ダイアログの上半分にある<guimenu>ディレクトリの追加</guimenu>をクリックし、<guimenu>Ok</guimenu>で確認します。</para>
+       </step>
+       <step performance="required">
+         <para><guimenu>ホストのワイルドカード</guimenu>テキストフィールドのホスト名およびオプションを入力します。</para>
+         <para><guimenu>オプション</guimenu>テキストフィールドに、疑似rootにするディレクトリを設定する場合は、カンマ区切り形式のオプションリストに<literal>fsid=0</literal>を指定します。このディレクトリを、すでに疑似rootとして設定されているディレクトリ下の別のディレクトリにバインドする場合は、オプションリストにターゲットのバインドパスを<literal>bind=/target/path</literal>の形式で指定します。</para>
+         <para><guimenu>Bindmount Targets</guimenu>列は直接編集可能な列ではなく、ディレクトリとその性質を要約している列です。</para>
+       </step>
+       <step performance="required">
+         <para><guimenu>完了</guimenu>をクリックして設定を完了します。</para>
+       </step>
+     </procedure>
+     
+   </sect3>
+   <sect3 id="sec.nfs.exportv23">
+    <title>NFSv3およびNFSv2エクスポート</title>
+    <para>
+     初期ダイアログで<guimenu>NFSv4を有効にする</guimenu>の選択が解除されていることを確認してから、<guimenu>次へ</guimenu>をクリックします。
+    </para>
+    <para>
+     次のダイアログは、2つの部分に分かれています。上部のテキストフィールドに、エクスポートするディレクトリを入力します。下部に、それらのディレクトリへのアクセスを許可するホストを入力します。4種類の方法でホストを指定することができます。1台のホスト(名前またはIPアドレス)(single host)、ネットグループ( netgroups)、ワイルドカード(すべてのコンピュータがサーバにアクセスできることを示す<literal>*</literal>など)( wild cards)、およびIPネットワーク(IP networks)です。
+     
+    </para>
+    <para>
+     に示すダイアログボックスが表示されます。<xref linkend="fig.nfs.export23" xrefstyle="FigureOnPage"/>これらのオプションの詳細は、<command>man exports</command>を実行して表示される、マニュアルページを参照してください。<guimenu>完了</guimenu>をクリックして設定を完了します。
+    </para>
+    <figure pgwide="0" id="fig.nfs.export23">
+     <title>NFSv2およびNFSv3を使ったディレクトリのエクスポート</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata fileref="nfs_002a.png" width="75%" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata fileref="nfs_002a.png" width="75%" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </sect3>
+   <sect3 id="sec.nfs.export.coexisting">
+    <title>NFSv3エクスポートとNFSv4エクスポートの共存</title>
+    <para>
+     1台のサーバ上に、NFSv3エクスポートとNFSv4エクスポートを共存させることができます。初期設定ダイアログでNFSv4サポートを有効にすると、オプションリストに<systemitem>fsid=0</systemitem>と<systemitem>bind=/target/path</systemitem>が指定されていないエクスポートは、NFSv3エクスポートとみなされます。
+    </para>
+    <para><xref linkend="sec.nfs.exportv4"/>の例を参考に説明します。<filename>［ディレクトリの追加］</filename>を使って<guimenu>/data2</guimenu>ディレクトリを追加したけれども、そのオプションに<systemitem>fsid=0</systemitem>や<systemitem>bind=/target/path</systemitem>を指定しなかった場合、このエクスポートはNFSv3エクスポートとして処理されます。
+    </para>
+    <important>
+     <para>
+      自動ファイアウォール設定
+     </para>
+     <para>
+      システムでSuSEfirewall2が有効になっている場合に、<guimenu>ファイアウォールでポートを開く</guimenu>を選択すると、YaSTは<literal>nfs</literal>サービスの有効化により、そのNFSサーバ設定を適応させます。
+     </para>
+    </important>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.nfs.export.manual" os="osuse;sles">
+   <title>ファイルシステムの手動エクスポート</title><indexterm> <primary>NFS</primary> <secondary>エクスポート</secondary> </indexterm>
+   <para>
+    NFSエクスポートサービスの環境設定ファイルは、<filename>/etc/exports</filename>と<filename>/etc/sysconfig/nfs</filename>です。NFSv4サーバ環境設定には、これらのファイルに加えて<filename>/etc/idmapd.conf</filename>も必要です。サービスを起動または再起動するには、<command>rcnfsserver restart</command>を実行します。これにより、NFSv4が<filename>/etc/sysconfig/nfs</filename>で設定されている場合は、<literal>rpc.idmapd</literal>も起動します。NFSサーバは、RPCポートマッパーに依存しています。したがって、<command>rcportmap restart</command>コマンドで、ポートマッパーサービスも起動/再起動してください。
+   </para>
+   <sect3 id="sec.nfs.manexportv4">
+    <title>NFSv4を使ったファイルシステムのエクスポート</title>
+    <para>
+     NFSv4は、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>で利用できる最新版のNFSプロトコルです。NFSv4でエクスポートするディレクトリの設定方法は、以前のNFSバージョンと多少異なっています。
+    </para>
+    <sect4 id="sec.nfs.exports">
+
+
+     <title>/etc/exports</title>
+     <para>
+      <filename>/etc/exports</filename>ファイルには、エントリのリストが含まれています。各エントリはそれぞれ共有するディレクトリと共有方法を示します。<filename>/etc/exports</filename>中の一般的なエントリは、次の項目から成り立っています。
+     </para>
+<screen>/shared/directory   host(option_list)</screen>
+     <para>
+      たとえば、次のような指定内容です。
+     </para>
+<screen>/export   192.168.1.2(rw,fsid=0,sync,crossmnt)
+/export/data   192.168.1.2(rw,bind=/data,sync)
+</screen>
+     <para>
+      ここでは、許可されたクライアントを識別するためにIPアドレス<literal>192.168.1.2</literal>が使われています。ホスト名、ホストを表すワイルドカード、または(<literal>*.abc.com</literal>や<literal>*</literal>など)ネットグループ（<literal>@my-hosts</literal>）を使用できます。
+     </para>
+     <para>
+      <literal>fsid=0</literal>を指定するディレクトリは特別です。このディレクトリは、擬似ルートファイルシステムと呼ばれることのある、エクスポートされるファイルシステムのルートです。また、このディレクトリはNFSv4で正しく動作するために<literal>crossmnt</literal>が必要です。NFSv4 経由でエクスポートされた他のすべてのディレクトリは、これより下の地点にマウントする必要があります。エクスポートされたルートにないディレクトリをエクスポートする場合は、エクスポートされたツリーにバインドする必要があります。これは<literal>bind=</literal>構文を使用して行うことができます。
+     </para>
+     <para>
+      上の例では、<filename>/data</filename>は<filename>/export</filename>にないため、<filename>/export/data</filename>をエクスポートし、<filename>/data</filename>ディレクトリがその名前にバインドされるよう指定します。ディレクトリ<filename>/export/data</filename>が存在し、通常は空である必要があります。
+     </para>
+     <para>
+      クライアントがこのサーバからマウントする場合、<literal>servername:/export</literal>ではなく<literal>servername:/</literal>をマウントするだけです。<literal>servername:/data</literal>は、<literal>servername:/</literal>がマウントされると必ずその下に自動的に表示されるのでマウントする必要はありません。
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.sysconfig">
+     <title>/etc/sysconfig/nfs</title>
+     <para>
+      <filename>/etc/sysconfig/nfs</filename>ファイルには、NFSv4サーバデーモンの動作を決定する小数のパラメータが含まれています。<systemitem>NFS4_SUPPORT</systemitem>パラメータを<literal>yes</literal>に設定することが重要です。<systemitem>NFS4_SUPPORT</systemitem>は、NFSサーバがNFSv4エクスポートとクライアントをサポートするかどうかを決定します。
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.idmapd">
+     <title>/etc/idmapd.conf</title>
+     <para>
+      Linuxコンピュータ上の各ユーザには、ユーザ名とIDがあります。idmapdは、サーバへのNFSv4要求やクライアントへのNFSv4応答用に、名前とID間のマッピングサービスを提供しています。NFSv4はその通信に名前だけを使用するので、idmapdは、NFSv4のサーバとクライアントの両方で実行されている必要があります。
+     </para>
+     <para>
+      NFSを使ってファイルシステムを共有するコンピュータ間では、ユーザへのユーザ名とID (uid)の割り当てには同じ方法を使用してください。そのためには、NIS、LDAP、または他の同一ドメイン認証機構を利用することができます。
+     </para>
+     <para>
+      <filename>/etc/idmapd.conf</filename>ファイルの<literal>Domain</literal>パラメータは、クライアントとサーバの両方に対して同じ値に設定する必要があります。確信のない場合には、クライアントとサーバの両方のファイルで、<literal>localdomain</literal>をそのまま使用してください。環境設定ファイルの例を次に示します。
+     </para>
+<screen>[General] 
+
+Verbosity = 0 
+Pipefs-Directory = /var/lib/nfs/rpc_pipefs
+Domain = localdomain
+
+[Mapping]
+
+Nobody-User = nobody
+Nobody-Group = nobody</screen>
+     <para>
+      詳細は、<literal>idmapd</literal>と<literal>idmapd.conf</literal>のマニュアルページを参照してください。参照するには、<literal>man idmapd</literal>、<literal>man idmapd.conf</literal>を実行します。
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.services">
+     <title>サービスの起動と停止</title>
+     <para>
+      <filename>/etc/exports</filename>または<filename>/etc/sysconfig/nfs</filename>を変更したら、<command>rcnfsserver restart</command>コマンドを実行して、NFSサーバサービスを起動/再起動します。<filename>/etc/idmapd.conf</filename>を変更したら、<command>killall -HUP rpc.idmapd</command>コマンドで、環境設定ファイルを再ロードします。
+     </para>
+     <para>
+      NFSサービスをブート時に開始する必要がある場合は、<command>chkconfig nfsserver on</command>コマンドを実行します。
+     </para>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.nfs.manualexportv23">
+    <title>NFSv2とNFSv3を使ったファイルシステムのエクスポート</title>
+    <para>
+     ここでは、NFSv2エクスポートとNFSv3エクスポートに固有のトピックを取り上げます。NFSv4エクスポートについては、<xref linkend="sec.nfs.exportv4" xrefstyle="HeadingOnPage"/>を参照してください。
+    </para>
+    <para>
+     NFSを使ってファイルシステムをエクスポートする場合、<filename>/etc/exports</filename>と<filename>/etc/sysconfig/nfs</filename>の2つの環境設定ファイルが関わってきます。一般的な<filename>/etc/exports</filename>ファイルには、各エントリが次のような形式で指定されています。
+    </para>
+<screen>/shared/directory   host(list_of_options)</screen>
+    <para>
+     たとえば、次のような指定内容です。
+    </para>
+<screen>/export   192.168.1.2(rw,sync)</screen>
+    <para>
+     ここで、<filename>/export</filename><literal/>ディレクトリはホスト 192.168.1.2と共有されています。オプションリストには、<systemitem>rw,sync</systemitem>が設定されています。このIPアドレスは、特定のクライアント名、ワイルドカードを使った複数のクライアント(<literal>*.abc.com</literal>など)、またはネットグループで置き換えることができます。
+    </para>
+    <para>
+     すべてのオプションとそれらの意味の詳細については、<command>exports</command>のマニュアルページを参照してください(<command>man exports</command>)。
+    </para>
+    <para>
+     <filename>/etc/exports</filename>または<filename>/etc/sysconfig/nfs</filename>を変更したら、<command>rcnfsserver restart</command>コマンドを実行して、NFSサーバを起動/再起動します。
+    </para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.nfs.kerberos">
+   <title>NFSでのKerberosの使用</title>
+   <para>
+    NFSでKerberos認証を使用するには、GSSセキュリティを有効にする必要があります。最初のYaST NFSサーバのダイアログで、<guimenu>GSSセキュリティを有効にする</guimenu>を選択します。ただし、この機能を使用するには、機能するKerberosサーバが必要です。YaSTは、このサーバの設定は行いません。その提供機能を使用するだけです。YaST環境設定に加えて、Kerberos認証も使用する場合は、NFS設定を実行する前に、少なくとも次の手順を完了してください。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      サーバとクライアントの両方が、同じKerberosドメインにあることを確認します。つまり、クライアントとサーバが同じKDC(Key Distribution Center)サーバにアクセスし、<filename>krb5.keytab</filename>ファイル(the default location on any machine is <filename>/etc/krb5.keytab</filename>)を共有していなければなりません。Kerberosの詳細については、<xref linkend="cha.net.kerberos"/>を参照してください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      クライアントで<command>rcgssd start</command>コマンドを実行して、gssdサービスを開始します。
+     </para>
+    </step>
+    <step os="osuse;sles" performance="required">
+     <para>
+      サーバで<command>rcsvcgssd start</command>コマンドを実行して、svcgssdサービスを開始します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Kerberos化されたNFSの設定の詳細については、<xref linkend="sec.nfs.info" xrefstyle="SectTitleOnPage"/>のリンクを参照してください。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.nfs.configuring-nfs-clients">
+  <title>クライアントの設定</title>
+
+  <para>
+   ホストをNFSクライアントとして設定する場合、他のソフトウェアをインストールする必要はありません。必要なすべてのパッケージは、デフォルトでインストールされます。
+  </para>
+
+  <sect2 id="sec.nfs.import-yast2">
+   <title>YaSTによるファイルシステムのインポート</title><indexterm> <primary>NFS</primary> <secondary>クライアント</secondary> </indexterm>
+    <para>認証されたユーザは、YaST NFSクライアントモジュールを使用して、NFSディレクトリをNFSサーバからローカルファイルツリーにマウントできます。次の手順に従います。</para>
+    
+    <procedure id="pro.nfs.import-yast2">
+      <title>NFSディレクトリのインポート</title>
+      <step performance="required">
+        <para>YaST NFSクライアントモジュールを起動します。</para>
+      </step>
+      <step performance="required">
+        <para><guimenu>NFS共有</guimenu>タブで<guimenu>追加</guimenu>をクリックします。NFSサーバのホスト名、インポートするディレクトリ、およびこのディレクトリをマウントするマウントポイントを入力します。 </para>
+      </step>
+      <step performance="required">
+        <para>ファイアウォールを使用しており、リモートコンピュータのサービスにアクセスを許可する場合は、<guimenu>NFS設定</guimenu>タブで<guimenu>ファイアウォールでポートを開く</guimenu>をオンにします。チェックボックスの下には、ファイアウォールのステータスが表示されます。</para>
+      </step>
+      <step performance="required">
+        <para>NFSv4を使用する場合は、<guimenu>NFSv4を有効にする</guimenu>チェックボックスが選択され、<guimenu>NFSv4ドメイン名</guimenu>にNFSv4サーバによって使用される値と同じ値が入力されていることを確認してください。デフォルトドメインは、<literal>localdomain</literal>です。</para>
+      </step>
+      <step performance="required">
+        <para><guimenu>OK</guimenu>をクリックして変更内容を保存します。
+        </para>
+      </step>
+    </procedure>
+   <para>
+    設定は<filename>/etc/fstab</filename>に書かれ、指定されたファイルシステムがマウントされます。後でYaST設定クライアントを起動した時に、このファイルから既存の設定が取得されます。
+   </para>
+
+  </sect2>
+
+  <sect2 id="sec.nfs.import">
+   <title>ファイルシステムの手動インポート</title><indexterm> <primary>NFS</primary> <secondary>インポート</secondary> </indexterm> <indexterm> <primary>NFS</primary> <secondary>マウント</secondary> </indexterm>
+   <para>
+    NFSサーバからファイルシステムを手動でインポートするには、RPCポートマッパーが実行していることが前提条件です。「<command>rcrpcbind <option>start</option></command>」を<systemitem class="username">root</systemitem>として入力してインポートを実行します。次に、<command>mount</command>を使用して、ローカルパーティションと同様に、リモートファイルシステムをファイルシステムにマウントできます。
+   </para>
+<screen>mount <replaceable>host</replaceable>:<replaceable>remote-path</replaceable><replaceable>local-path</replaceable></screen>
+   <para>
+    たとえば、<systemitem>nfs.example.com</systemitem>マシンからユーザディレクトリをインポートするには、次の構文を使用します。
+   </para>
+<screen>mount nfs.example.com:/home /home</screen>
+   <sect3 id="sec.nfs.automount">
+    <title>自動マウントサービスの使用</title>
+    <para>
+     autofsデーモンを使用して、リモートファイルシステムを自動的にマウントすることができます。<filename>/etc/auto.master</filename>ファイルに次のエントリを追加します。
+    </para>
+<screen>/nfsmounts /etc/auto.nfs</screen>
+    <para>
+     これで、<filename>/nfsmounts</filename>ディレクトリがクライアント上のすべてのNFSマウントのルートディレクトリの役割を果たすようになります(<filename>auto.nfs</filename>ファイルが正しく設定されている場合)。ここでは、<filename>auto.nfs</filename>という名前を使用しましたが、任意の名前を選択することができます。<filename>auto.nfs</filename>で、次のようにしてすべてのNFSマウントのエントリを追加します。
+    </para>
+<screen>localdata -fstype=nfs server1:/data
+nfs4mount -fstype=nfs4 server2:/</screen>
+    <para>
+     <systemitem class="username">root</systemitem>として<command>rcautofs start</command>を実行して設定を有効にします。この例で、<systemitem>server1</systemitem>の<filename>/data</filename>ディレクトリの<filename>/nfsmounts/localdata</filename>は、NFSでマウントされ、<systemitem>server2</systemitem>の<filename>/nfsmounts/nfs4mount</filename>はNFSv4でマウントされます。
+    </para>
+    <para>
+     autofsサービスの動作中に<filename>/etc/auto.master</filename>ファイルを編集した場合、変更内容を反映するには、<command>rcautofs restart</command>で自動マウント機能を再起動する必要があります。
+    </para>
+   </sect3>
+   <sect3 id="sec.nfs.fstab">
+    <title><filename>/etc/fstab</filename>の手動編集</title>
+    <para>
+     <filename>/etc/fstab</filename>内の典型的なNFSv3マウントエントリは、次のようになります:
+    </para>
+<screen>nfs.example.com:/data /local/path nfs rw,noauto 0 0</screen>
+    <para>
+     <filename>/etc/fstab</filename>ファイルにNFSv4マウントを追加することもできます。これらのマウントの場合、3列目に<literal>nfs</literal>の代わりに<literal>nfs4</literal>を指定します。また、1列目の<replaceable>nfs.example.com:</replaceable>の後に、リモートファイルシステムを<filename>/</filename>として必ず指定してください。たとえば、<filename>/etc/fstab</filename>内のNFSv4マウント行は、次のようになります。
+    </para>
+<screen>nfs.example.com:/ /local/pathv4 nfs4 rw,noauto 0 0</screen>
+    <para>
+     <literal>noauto</literal>オプションを使用すると、起動時にファイルシステムが自動マウントされません。対応するファイルシステムを手動でマウントする場合は、マウントポイントのみを指定してmountコマンドを短くできます。
+    </para>
+<screen>mount /local/path</screen>
+    <para>
+     ただし、<literal>noauto</literal>オプションを入力しないと、起動時に、システムのインストールスクリプトによって、それらのファイルシステムがマウントされます。
+    </para>
+   </sect3>
+  </sect2>
+   
+   <sect2 id="sec.nfs.pnfs">
+     <title>パラレルNFS(pNFS)</title>
+     <para>NFSは、1980年代に開発された、もっとも古いプロトコルの1つです。そのため、小さなファイルを共有したい場合は、通常、NFSで十分です。しかし、大きなファイルを送信したい場合や多数のクライアントがデータにアクセスしたい場合は、NFSサーバがボトルネックとなり、システムのパフォーマンスに重大な影響を及ぼします。これは、ファイルのサイズが急速に大きくなっているのに対し、Ethernetの相対速度が追い付いていないためです。 </para>
+     <para><quote>通常の</quote>NFSサーバにファイルを要求すると、サーバはファイルのメタデータを検索し、すべてのデータを収集して、ネットワークを介してクライアントに送信します。しかし、ファイルが小さくても大きくてもパフォーマンスのボトルネックが問題になります。
+     </para>
+     
+     <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+         <para>小さいファイルでは、メタデータの収集に時間がかかる</para>
+       </listitem>
+       <listitem>
+         <para>大きいファイルでは、サーバからクライアントへのデータ送信に時間がかかる</para>
+       </listitem>
+     </itemizedlist>
+     
+     <para>pNFS(パラレルNFS)は、ファイルシステムメタデータをデータの場所から分離することによって、この制限を克服します。このため、pNFSには2種類のサーバが必要です。</para>
+      <itemizedlist mark="bullet" spacing="normal">
+        <listitem>
+          <para>データ以外のすべてのトラフィックを扱う<emphasis>メタデータ</emphasis>または<emphasis>制御サーバ</emphasis></para>
+        </listitem>
+        <listitem>
+          <para>データを保持する1台または複数の<emphasis>ストレージサーバ</emphasis></para>
+        </listitem>
+      </itemizedlist>
+     
+     <para>メタデータサーバとストレージサーバによって、単一の論理NFSサーバが構成されます。クライアントが読み込みまたは書き出しを行う場合、メタデータサーバがNFSv4クライアントに対して、ファイルのチャンクにアクセスするにはどのストレージサーバを使用すればよいかを指示します。クライアントはサーバのデータに直接アクセスできます。
+     </para>
+     
+     <para>SUSE Linux Enterpriseはクライアント側でのみpNFSをサポートします。</para>
+     
+     <sect3 id="sec.nfs.pnfs.yast">
+       <title>YaSTを使用したpNFSクライアントの設定</title>
+       <para><xref linkend="pro.nfs.import-yast2"/>に従って進めます。ただし、<guimenu>pNFS (v4.1)</guimenu>チェックボックスをクリックし、オプションで<guimenu>NFSv4共有</guimenu>をクリックします。YaSTが必要な手順をすべて実行し、必要なすべてのオプションを<filename>/etc/exports</filename>ファイルに書き込みます。 </para>
+     </sect3>
+     
+     <sect3 id="sec.nfs.pnfs.manual">
+       <title>pNFSクライアントの手動設定</title>
+       <para><xref linkend="sec.nfs.import"/>を参照して開始します。ほとんどの設定はNFSv4サーバによって行われます。pNFSを使用する場合に異なるのは、<option>minorversion</option>オプションおよびメタデータサーバ<replaceable>MDS_SERVER</replaceable>を<command>mount</command>コマンドに追加することだけです。</para>
+       <screen>mount -t nfs4 -o minorversion=1 <replaceable>MDS_SERVER</replaceable> <replaceable>MOUNTPOINT</replaceable></screen>
+       <para/>
+       <para>デバッグを支援するために、<filename>/proc</filename>ファイルシステムの値を変更します。</para>
+       <screen>echo 32767 &gt; /proc/sys/sunrpc/nfsd_debug
+echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
+     </sect3>
+   </sect2>
+   
+ </sect1>
+ <sect1 id="sec.nfs.info">
+  <title>詳細情報</title>
+
+  <para>
+   NFSサーバとクライアントの設定情報は、<command>exports</command>、<command>nfs</command>、および<command>mount</command>のマニュアルページのほか、<filename>/usr/share/doc/packages/nfsidmap/README</filename>からも入手できます。オンラインドキュメンテーションについては、次のWebサイトを参照してください。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     詳細な技術ヘルプについては、<ulink url="http://nfs.sourceforge.net/">SourceForge</ulink>を参照してください。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     NFSでのKerberosの設定方法は、<ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS Version 4 Open Source Reference Implementation</ulink>を参照してください。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4</ulink>には、NFSv4に関するFAQが用意されています。
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>

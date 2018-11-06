@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_samba.xml" id="cha.samba">
+ <title>Samba</title><indexterm id="idx.Samba" class="startofrange"> <primary>Samba</primary> </indexterm> <indexterm> <primary>SMB</primary> <see>Samba</see> </indexterm> <indexterm> <primary>Mac OS X</primary> <secondary>共享文件</secondary> </indexterm> <indexterm> <primary>Windows</primary> <secondary>共享文件</secondary> </indexterm> <indexterm> <primary>OS/2</primary> <secondary>共享文件</secondary> </indexterm> <indexterm> <primary>Linux</primary> <secondary>与另一种操作系统共享文件</secondary> </indexterm>
+ <abstract>
+  <para>
+   使用 Samba，可以将 Unix 计算机配置为 Mac OS X、Windows 和 OS/2 计算机的文件和打印服务器。Samba 已经发展成为一个功能完备且相当复杂的产品。使用 YaST、SWAT（一种 Web 界面）或通过手动编辑配置文件的方式来配置 Samba。
+  </para>
+ </abstract>
+ <sect1 id="sec.samba.term">
+  <title>术语</title>
+
+  <para>
+   以下是 Samba 文档和 YaST 模块中使用的一些术语。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>SMB 协议</term>
+    <listitem>
+     <para>
+      <indexterm><primary>Samba</primary><secondary>SMB</secondary></indexterm><indexterm><primary>协议</primary><secondary>SMB</secondary></indexterm><indexterm><primary>smbd</primary></indexterm>Samba 使用基于 <phrase role="productname">NetBIOS</phrase> 服务的 SMB（服务器消息块）协议。Microsoft 发布该协议以便其他软件制造商能够与 Microsoft 域网络建立连接。使用 Samba 时，SMB 协议在 TCP/IP 协议之上工作，所以必须在所有客户端上安装 TCP/IP 协议。<indexterm> <primary>Samba</primary> <secondary>TCP/IP</secondary> </indexterm>
+     </para>
+     <tip arch="zseries" os="sles">
+      <title>IBM System z：NetBIOS 支持</title>
+      <para>
+       IBM System z 仅支持通过 TCP/IP 的 SMB。这些系统上不提供 NetBIOS 支持。
+      </para>
+     </tip>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>CIFS 协议</term>
+    <listitem>
+     <para>
+      <indexterm><primary>Samba</primary><secondary>CIFS</secondary></indexterm><indexterm><primary>协议</primary><secondary>CIFS</secondary></indexterm>（常用因特网文件系统）协议是 Samba 支持的另一种协议。CIFS 定义网络中使用的标准远程文件系统访问协议，使用户组能够一起工作并在网络中共享文档。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NetBIOS<indexterm> <primary>Samba</primary> <secondary>名称</secondary> </indexterm></term>
+    <listitem>
+     <para>
+      <indexterm><primary>NetBIOS</primary></indexterm> NetBIOS 是为用于提供名称服务的计算机之间进行通讯而设计的软件接口 (API)。它使连接到网络的计算机能够为自己保留名称。之后便可以根据名称对这些计算机进行寻址。没有任何中心进程来检查这些名称。网络上的任何计算机均可以保留所需数量的名称，前提是这些名称均未使用。可以为不同的网络体系结构实施 NetBIOS 接口。<phrase role="productname">NetBEUI</phrase> 是与网络硬件结合相对密切的一种实施，但它常被称为 <phrase role="productname">NetBIOS</phrase>。使用 NetBIOS 实施的网络协议包括 Novell 的 IPX（通过 TCP/IP 的 NetBIOS）和 TCP/IP。
+     </para>
+     <para>
+      通过 TCP/IP 发送的 NetBIOS 名称与 <filename>/etc/hosts</filename> 中使用的名称或 DNS 定义的名称没有相同之处。NetBIOS 使用它自己的、完全独立的命名约定。但为了方便管理，仍建议您使用与 DNS 主机名对应的名称，或本机使用 DNS。Samba 默认采用这种方式。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Samba 服务器<indexterm> <primary>Samba</primary> <secondary>服务器</secondary> </indexterm></term>
+    <listitem>
+     <para>
+      Samba 服务器向客户端提供 SMB/CIFS 服务和 NetBIOS over IP 命名服务。对于 Linux，Samba 服务器有三个守护程序：smbd 用于 SMB/CIFS 服务，nmbd 用于命名服务，winbind 用于身份验证。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Samba 客户端<indexterm id="idx.Samba_clients" class="startofrange"> <primary>Samba</primary> <secondary>客户端</secondary> </indexterm></term>
+    <listitem>
+     <para>
+      Samba 客户端是一种能够通过 SMB 协议从 Samba 服务器使用 Samba 服务的系统。所有常见操作系统（Mac OS X、Windows 和 OS/2 等）都支持 SMB 协议。必须在所有计算机上安装 TCP/IP 协议。Samba 为多种不同的 UNIX 系统提供客户端。对于 Linux，有一个用于 SMB 的内核模块，它允许在 Linux 系统级别上集成 SMB 资源。不需要对 Samba 客户端运行任何守护程序。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>共享</term>
+    <listitem>
+     <para>
+      <indexterm><primary>Samba</primary><secondary>共享</secondary></indexterm>SMB 服务器通过共享为其客户端提供资源。共享就是服务器上的打印机和目录及其子目录。可以通过名称来导出并访问共享。可以将共享名称设置为任何名称 － 不一定是导出目录的名称。也可以为打印机指派一个名称。客户端可以根据打印机的名称来访问打印机。<indexterm><primary>打印</primary><secondary>Samba</secondary></indexterm><indexterm><primary>Samba</primary><secondary>打印机  </secondary></indexterm><indexterm class="endofrange" startref="idx.Samba_clients"/>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>DC</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>Samba</primary> <secondary>DC</secondary> </indexterm> 域控制器 (DC) 是处理域中的帐户的服务器。为了复制数据，一个域中可有更多域控制器可用。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ 
+ <sect1 id="sec.samba.serv.start" os="osuse;sles">
+  <title>启动和停止 Samba</title>
+
+  <para>
+   （引导时）可以自动启动或停止 Samba 服务器，或者手动执行这两个操作。启动和停止策略是<xref linkend="sec.samba.yast2.conf"/>中所述的 YaST Samba 服务器配置的一部分。
+  </para>
+
+  <para>
+   要使用 YaST 停止或开始运行 Samba 服务，请使用<menuchoice><guimenu>系统</guimenu> <guimenu>系统服务（运行级别）</guimenu></menuchoice>，并检查 winbind、smb 和 nmb。从命令行，使用 <command>rcsmb stop &amp;&amp; rcnmb stop</command> 停止 Samba 所需的服务，然后使用 <command>rcnmb start &amp;&amp; rcsmb start</command> 启动它们；rcsmb 依赖于 winbind（如果需要）。
+  </para><indexterm> <primary>Samba</primary><secondary>启动</secondary></indexterm><indexterm><primary>Samba </primary><secondary>停止</secondary></indexterm>
+ </sect1>
+ <sect1 id="sec.samba.serv.inst">
+  <title>配置 Samba 服务器</title><indexterm> <primary>Samba</primary> <secondary>安装</secondary> </indexterm> <indexterm> <primary>Samba</primary> <secondary>服务器</secondary> </indexterm> <indexterm> <primary>Samba</primary> <secondary>配置</secondary> </indexterm> <indexterm> <primary>配置</primary> <secondary>Samba</secondary> </indexterm>
+
+  <para os="osuse;sles">
+   <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 中的 Samba 服务器可通过两种不同方式进行配置：用 YaST 或手动方式。手工配置可提供更详细的信息，但没有 YaST GUI 方便。
+  </para>
+
+  
+
+  <sect2 id="sec.samba.yast2.conf" os="osuse;sles">
+   <title>使用 YaST 配置 Samba 服务器</title>
+   <para>
+    要配置 Samba 服务器，请启动 YaST 并选择<menuchoice><guimenu>网络服务</guimenu> <guimenu>Samba 服务器</guimenu></menuchoice>。
+   </para>
+   <sect3 id="sec.samba.yast2.conf.inst">
+    <title>初始 Samba 配置</title>
+    <para>
+     第一次启动此模块时，<guimenu>Samba 安装</guimenu>对话框启动，提示您做出一些有关服务器管理的基本决定。配置结束时，系统会提示您输入 Samba 管理员口令（<guimenu>Samba root 口令</guimenu>）。以后启动时，会显示 <guimenu>Samba 配置</guimenu>对话框。
+    </para>
+    <para>
+     <guimenu>Samba 安装</guimenu>对话框包括两个步骤和详细设置（可选）：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>工作组名或域名</term>
+      <listitem>
+       <para>
+        在<guimenu>工作组名或域名</guimenu>中选择一个现有名称或输入一个新的名称，然后单击<guimenu>下一步</guimenu>。
+       </para>
+
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Samba 服务器类型</term>
+      <listitem>
+       <para>
+        在下一步中，指定服务器是应该充当主域控制器 (PDC)、备份域服务器 (BDC) 还是根本不充当域控制器。服务器默认不会配置为域控制器。按<guimenu>下一步</guimenu>继续。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     如果不想再继续详细的服务器配置，请单击<guimenu>确定</guimenu>确认。然后在最后的弹出框中，设置 <guimenu>Samba root 口令</guimenu>。
+    </para>
+    <para>
+     稍后可以在 <guimenu>Samba 配置</guimenu>对话框的<guimenu>启动</guimenu>、<guimenu>共享</guimenu>、<guimenu>身份</guimenu>、<guimenu>可信域</guimenu>和 <guimenu>LDAP 设置</guimenu>选项卡中更改所有设置。
+    </para>
+   </sect3>
+   <sect3 id="sec.samba.yast2.conf.adv">
+    <title>高级 Samba 配置</title>
+    <para>
+     在 Samba 服务器模块第一次启动时，<guimenu>Samba 配置</guimenu>对话框会在两个初始步骤后立即显示，如<xref linkend="sec.samba.yast2.conf.inst"/>所述。使用它调整您的 Samba 服务器配置。
+    </para>
+    <para>
+     编辑配置之后，单击<guimenu>确定</guimenu>保存设置。
+    </para>
+    <sect4>
+     <title>启动服务器</title>
+     <para>
+      在<guimenu>启动</guimenu>选项卡中，配置 Samba 服务器的启动。若想在每次系统引导时启动服务，请选择<guimenu>引导时</guimenu>。要激活手动启动，请选择<guimenu>手动</guimenu>。有关启动 Samba 服务器的更多信息，请参见<xref linkend="sec.samba.serv.start"/>。
+     </para>
+     <para>
+      在此选项卡中，还可以打开防火墙中的端口。为此应选择<guimenu>打开防火墙中的端口</guimenu>。如果有多个网络接口，则请通过单击<guimenu>防火墙细节</guimenu>、选择接口并单击<guimenu>确定</guimenu>来为 Samba 服务选择网络接口。
+     </para>
+
+    </sect4>
+    <sect4>
+     <title>共享</title>
+     <para>
+      在<guimenu>共享</guimenu>选项卡中，确定要激活的 Samba 共享。存在一些预定义的共享，例如主页和打印机。使用<guimenu>切换状态</guimenu>可在<guimenu>活动</guimenu>和<guimenu>不活动</guimenu>之间进行切换。单击<guimenu>添加</guimenu>可添加新共享，单击<guimenu>删除</guimenu>可删除选中共享。
+     </para>
+
+     <para>
+      <guimenu>允许用户共享目录</guimenu>使<guimenu>允许的组</guimenu>中的组成员可以与其他用户共享他们拥有的目录。例如，<systemitem>users</systemitem> 用于本地范围，<systemitem>DOMAIN\Users</systemitem> 用于域范围。该用户必须还确保文件系统权限允许访问。<guimenu>最大共享数</guimenu>可限制可以创建的共享的总数。要允许访问用户共享而无需身份验证，请启用<guimenu>允许来宾访问</guimenu>。
+
+     </para>
+    </sect4>
+    <sect4>
+     <title>身份</title>
+     <para>
+      在<guimenu>身份</guimenu>选项卡中，确定与主机关联的域（<guimenu>基本设置</guimenu>）以及是否在网络中使用备用主机名（<guimenu>NetBIOS 主机名</guimenu>）。可以使用 Microsoft Windows Internet Name Service (WINS) 进行名称解析。在这种情况下，激活<guimenu>使用 WINS 进行主机名解析</guimenu>，并确定是否<guimenu>通过 DHCP 检索 WINS 服务器</guimenu>。要设置专家全局设置或设置用户身份验证源，<phrase os="sles">例如 LDAP 而不是 TDB 数据库，</phrase>请单击<guimenu>高级设置</guimenu>。
+
+     </para>
+
+    </sect4>
+    <sect4>
+     <title>可信域(T)</title>
+     <para>
+      要使其他域的用户能够访问您的域，在<guimenu>可信域</guimenu>选项卡中进行适当的设置。要添加新域，请单击<guimenu>添加</guimenu>。要除去所选的域，请单击<guimenu>删除</guimenu>。
+     </para>
+    </sect4>
+    <sect4>
+     <title>LDAP 设置</title>
+     <para>
+      在选项卡 <guimenu>LDAP 设置</guimenu>中，您可以确定要用于身份验证的 LDAP 服务器。要测试到 LDAP 服务器的连接，请单击<guimenu>测试连接</guimenu>。要设置专家 LDAP 设置或使用默认值，请单击<guimenu>高级设置</guimenu>。
+     </para>
+     <para>
+      有关 LDAP 配置的更多信息，请参见<xref linkend="cha.security.ldap"/>。
+     </para>
+    </sect4>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.samba.serv.inst.swat" os="osuse;sles">
+   <title>使用 SWAT 管理 Web </title>
+   <para>
+    <indexterm><primary>Samba</primary><secondary>swat</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>samba</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>服务</secondary></indexterm> Samba 服务器管理的备用工具是 SWAT（Samba Web 管理工具）。它提供了一个简单的 Web 接口，可用来配置 Samba 服务器。要使用 SWAT，请在 Web 浏览器中打开 <ulink url="http://localhost:901"/> 并以 <systemitem class="username">root</systemitem> 用户身份登录。如果没有特殊的 Samba root 帐户，则请使用系统<systemitem class="username"> root </systemitem>帐户。
+   </para>
+   <note>
+    <title>激活 SWAT</title>
+    <para>
+     Samba 服务器安装完成后，SWAT 将不激活。要激活它，请在 YaST 中打开<menuchoice><guimenu>网络服务</guimenu><guimenu>网络服务 (xinetd)</guimenu></menuchoice>、启用网络服务配置、从表中选择 <guimenu>swat</guimenu>，然后单击<guimenu>切换状态（“开”或“关”）</guimenu>。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.samba.serv.inst.manual" os="osuse;sles">
+   <title>手动配置服务器</title>
+   <para>
+    <indexterm> <primary>Samba</primary> <secondary>配置</secondary> </indexterm> <indexterm> <primary>配置</primary> <secondary>Samba</secondary> </indexterm> <indexterm> <primary>配置文件</primary> <secondary>smb.conf</secondary> </indexterm> 如果想将 Samba 用作服务器，请安装 <systemitem class="resource">samba</systemitem>。Samba 的主配置文件是 <filename>/etc/samba/smb.conf</filename>。可以将此文件分为两个逻辑部分。<literal>[global]</literal> 部分包含中央和全局设置。<literal>[share] </literal>部分包含各个文件和打印机共享。通过这种方式，可以在 <literal>[global]</literal> 部分中有区别地或全局地设置有关共享的详细设置，这样可以提高配置文件的结构透明性。
+   </para>
+   <sect3 id="sec.samba.smb.conf.Erlaeuterung">
+    <title>global 部分</title>
+    <para>
+     需要对 <literal>[global]</literal> 部分的以下参数进行调整以满足网络设置的要求，以便其他计算机能够在 Windows 环境中通过 SMB 访问 Samba 服务器。
+    </para>
+    
+    <variablelist>
+     <varlistentry>
+      <term><literal>workgroup = TUX-NET</literal>
+      </term>
+      <listitem>
+       <para>
+        此行将 Samba 服务器指派到工作组。将 <literal>TUX-NET</literal> 替换为您的网络环境的适当工作组。您的 Samba 服务器将出现在其 DNS 名称下，除非此名称已指派给网络中的其他计算机。如果 DNS 名称不可用，请使用 <literal>netbiosname=<replaceable>MYNAME</replaceable></literal> 设置服务器名称。有关此参数的更多细节，请参见 <systemitem>smb.conf</systemitem> 手册页。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>os level = 20</literal>
+      </term>
+      <listitem>
+       <para>
+        此参数确定您的 Samba 服务器是否会尝试成为其工作组的 LMB（本地主浏览器）。有了 Samba 3 版本系列，就几乎不必再覆盖默认设置 (<literal>20</literal>) 了。为了避免现有 Windows 网络受到配置错误的 Samba 服务器的任何影响，应选择非常低的值，如 <literal>2</literal>。有关此重要主题的更多信息，可以在《Samba 3 操作指南》的“网络浏览”一章中找到；有关《Smaba 3 操作指南》的更多信息，请参见<xref linkend="sec.samba.info"/>。
+       </para>
+       <para>
+        如果网络中没有任何其他 SMB 服务器（如 Windows 2000 服务器），并且您希望 Samba 服务器保留一份本地环境中存在的所有系统的列表，请将 <literal>os level</literal> 设置为一个较高的值（例如 <literal>65</literal>）。然后便可以选择您的 Samba 服务器作为本地网络的 LMB。
+       </para>
+       <para>
+        在更改此设置时，应认真考虑这样做对现有 Windows 网络环境的影响。应该首先在一个孤立网络中或一天中的非重要时间测试这些更改。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal/>wins support 和 wins server<literal/>
+      </term>
+      <listitem>
+       <para>
+        为了将您的 Samba 服务器集成到具有活动 WINS 服务器的现有 Windows 网络中，应启用 <option>wins server</option> 选项并将其值设置为 WINS 服务器的 IP 地址。
+       </para>
+       <para>
+        如果将您的 Windows 计算机连接到单独的子网，同时又需要它们互相通讯，则需要设置一个 WINS 服务器。要将 Samba 服务器转变为这样的 WINS 服务器，请设置选项 <literal>wins support = Yes</literal>。确保网络中只有一个 Samba 服务器启用了此设置。切勿在您的 <filename>smb.conf</filename> 文件中同时启用选项 <literal>wins server</literal> 和 <literal>wins support</literal>。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.samba.smb.conf.shares">
+    <title>共享</title><indexterm> <primary>Samba</primary> <secondary>共享</secondary> </indexterm>
+    <para>
+     以下示例描述了如何使 CD-ROM 驱动器和用户目录 (<literal>homes</literal>) 对 SMB 客户端可用。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>[cdrom]</term>
+      <listitem>
+       <para>
+        为了避免意外地使 CD-ROM 驱动器变得可用，应使用注释标记（在本例中是分号）取消这些行。删除第一列中的分号，以便与 Samba 共享 CD-ROM 驱动器。
+       </para>
+       <example id="dat.cd.rom">
+        <title>CD-ROM 共享（已停用）</title>
+<screen>;[cdrom]
+;       comment = Linux CD-ROM
+;       path = /media/cdrom
+;       locking = No</screen>
+       </example>
+       <variablelist>
+        <varlistentry>
+         <term><option>[cdrom]</option> 和 <option>comment</option>
+         </term>
+         <listitem>
+          <para>
+           <literal>[cdrom]</literal> 部分项是网络上的所有 SMB 客户端均可看到的共享的名称。可以添加一个附加 <literal>comment</literal> 来进一步描述此共享。
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><option>path = /media/cdrom</option>
+         </term>
+         <listitem>
+          <para>
+           <option>path</option> 导出目录 <filename>/media/cdrom</filename>。
+          </para>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+       <para>
+        通过严格限制的默认配置，可使这种共享仅对此系统上存在的用户可用。如果应使此共享对所有用户可用，请向配置中添加一行 <literal>guest ok = yes</literal>。此设置为网络上的所有用户提供读权限。建议您认真处理此参数。在 <literal>[global]</literal> 部分使用此参数时更应如此。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><option>[homes]</option>
+      </term>
+      <listitem>
+       <para>
+        <option>[home]</option> 共享在这里特别重要。如果用户具有 Linux 文件服务器的有效帐户和口令以及自己的主目录，则该用户可以连接到此共享。
+       </para>
+       <example id="dat.homes.frei">
+        <title>[homes] 共享</title>
+<screen>[homes]
+	comment = Home Directories
+	valid users = %S
+	browseable = No
+	read only = No
+	create mask = 0640
+	directory mask = 0750</screen>
+       </example>
+       <variablelist>
+        <varlistentry>
+         <term>[homes]</term>
+         <listitem>
+          <para>
+           只要没有其他共享使用连接到 SMB 服务器的用户的共享名称，就会使用 <literal>[homes]</literal> 共享指令动态生成一个共享。所生成的共享的名称就是用户名。
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><option>valid users = %S</option>
+         </term>
+         <listitem>
+          <para>
+           一旦成功建立连接，就会使用共享的具体名称替换<literal> %S</literal>。对于 <option>[homes]</option> 共享，用户名始终是 %S。这样就可以将用户的共享访问权仅限制于此用户。
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><option>browseable = No</option>
+         </term>
+         <listitem>
+          <para>
+           此设置使共享在网络环境中不可见。
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><option>read only = No</option>
+         </term>
+         <listitem>
+          <para>
+           默认情况下，Samba 通过 <literal>read only = Yes</literal> 参数来禁止对任何已导出共享的写访问。要使共享可写，请设置值 <literal>read only = No</literal>，它与 <literal>writable = Yes</literal> 是等效的。
+          </para>
+         </listitem>
+        </varlistentry>
+        <varlistentry>
+         <term><option>create mask = 0640</option>
+         </term>
+         <listitem>
+          <para>
+           那些不是基于 MS Windows NT 的系统不能理解 UNIX 权限的概念，所以它们在创建文件时不能指派权限。参数 <literal>create mask</literal> 定义了为新创建文件指派的访问权限。这仅适用于可写共享。事实上，此设置意味着拥有者具有读写权限，且拥有者的主组的成员具有读权限。<option>valid users = %S</option> 禁止读访问，即使该组具有读权限。要使该组能够进行读或写访问，应取消 <option>valid users = %S</option> 一行。
+          </para>
+         </listitem>
+        </varlistentry>
+       </variablelist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.samba.rechte">
+    <title>安全性级别</title><indexterm id="idx.Samba_security" class="startofrange"> <primary>Samba</primary> <secondary>安全性</secondary> </indexterm> <indexterm> <primary>安全性</primary> <secondary>Samba</secondary> </indexterm> <indexterm> <primary>Samba</primary> <secondary>许可权限</secondary> </indexterm>
+    <para>
+     要提高安全性，可以使用口令来保护每个共享访问。SMB 提供以下检查许可权限的方式：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>共享级安全性 (<literal>security = share</literal>)</term>
+      <listitem>
+       <para>
+        严格地为一个共享指派一个口令。任何知道此口令的用户都可以访问此共享。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>用户级安全性 (<literal>security = user</literal>)</term>
+      <listitem>
+       <para>
+        此变体将用户的概念引入了 SMB。每个用户都必须使用自己的口令在服务器上注册。注册后，服务器可以根据用户名来授予访问各个已导出共享的权限。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>服务器级安全性 (<literal>security = server</literal>)</term>
+      <listitem>
+       <para>
+        从客户端来看，Samba 好像是在用户级别方式下工作。但它实际将所有口令查询传递到另一个用户级别方式下的服务器来执行身份验证。此设置还需要 <option>password server</option> 参数。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>ADS 级安全性 (<literal>security = ADS</literal>)</term>
+      <listitem>
+       <para>
+        在该模式中，Samba 将在 Active Directory 环境中充当域成员。要在该模式中工作，运行 Samba 的计算机需要安装并配置 Kerberos。必须使用 Samba 将该计算机加入到 ADS 领域。此步骤可通过使用 YaST <guimenu>Windows 域成员资格</guimenu>模块完成。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>域级安全性 (<literal>security = domain</literal>)</term>
+      <listitem>
+       <para>
+        仅当计算机已加入到 Windows NT 域中时，该模式才能正常工作。Samba 将尝试验证用户名和口令，方法是将其传递到 Windows NT 主或备份域控制器。与 Windows NT 服务器所采用的方式相同。它期望将加密口令参数设置为 <literal>yes</literal>。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     选择共享、用户或域级安全性适用于整个服务器。无法既为服务器配置的某些共享提供共享级安全性，同时又为其他共享提供用户级安全性。但是，您可以为系统上每个已配置的 IP 地址运行单独的 Samba 服务器。
+    </para>
+    <para>
+     有关此主题的更多信息，可以在《Samba 3 操作指南》中找到。对于一个系统上的多个服务器，应注意选项 <option>interfaces</option> 和 <option>bind interfaces only</option>。
+    </para><indexterm class="endofrange" startref="idx.Samba_security"/>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.samba.client.inst">
+  <title>配置客户端</title><indexterm> <primary>Samba</primary> <secondary>客户端</secondary> </indexterm>
+
+  <para>
+   客户端只能通过 TCP/IP 访问 Samba 服务器。NetBEUI 和通过 IPX 的 NetBIOS 不能与 Samba 共用。
+  </para>
+
+  <sect2 id="sec.samba.client.inst.yast">
+   <title>使用 YaST 配置 Samba 客户端</title><indexterm> <primary>YaST</primary> <secondary>Samba</secondary> <tertiary>客户端</tertiary> </indexterm> <indexterm> <primary>Samba</primary><secondary>客户端</secondary> </indexterm> <indexterm> <primary>配置</primary> <secondary>Samba</secondary> <tertiary>客户端</tertiary> </indexterm>
+   <para>
+    配置 Samba 客户端来访问 Samba 或 Windows 服务器上的资源（文件或打印机）。在<menuchoice> <guimenu>网络服务</guimenu> <guimenu>Windows 域成员资格</guimenu></menuchoice>对话框中输入 NT 或 Active Directory 域或工作组。如果激活<guimenu>将 SMB 信息也用于 Linux 身份验证</guimenu>，则用户身份验证将在 Samba、NT 或 Kerberos 服务器上运行。
+   </para>
+
+   <para>
+    单击<guimenu>专家设置</guimenu>获取高级配置选项。例如，使用<guimenu>装入服务器目录</guimenu>表启用自动装入服务器用户主目录和身份验证。这样用户就能访问位于 CIFS 上的用户主目录。有关细节，请参见 <systemitem>pam_mount</systemitem> 手册页。
+   </para>
+   <para>
+    完成所有设置后，请确认对话框以完成配置。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.samba.anmeld.serv">
+  <title>将 Samba 用作登录服务器</title><indexterm> <primary>Samba</primary> <secondary>登录</secondary> </indexterm>
+
+  <para>
+   在主要由 Windows 客户端组成的网络中，使用户只能使用有效帐户和口令进行注册通常是最好的选择。在基于 Windows 的网络中，此任务由主域控制器 (PDC) 来处理。您可以使用配置为 PDC 的 Windows NT 服务器，但是此任务也可以借助 Samba 服务器来完成。中显示了必须在 <filename>smb.conf</filename> 的 <literal>[global]</literal> 部分设置的项。<xref linkend="dat.samba.smb.conf.dom"/>
+  </para>
+
+  <example id="dat.samba.smb.conf.dom">
+   <title>smb.conf 中的 global 部分</title>
+<screen>[global]
+    workgroup = TUX-NET
+    domain logons = Yes
+    domain master = Yes</screen>
+  </example>
+
+  <para>
+   如果使用加密口令进行校验，则 Samba 服务器必须能够处理加密口令。<literal>[global]</literal> 部分中的 <literal>encrypt passwords = yes</literal> 项启用了此功能（对于 Samba 版本 3，这是默认设置）。此外，还需要以适合 Windows 的加密格式来准备用户帐户和口令。使用命令 <command>smbpasswd <option>-a name</option></command> 可完成此任务。使用以下命令为计算机创建 Windows 域概念要求的域帐户：
+  </para>
+
+<screen>useradd hostname\$
+smbpasswd -a -m hostname</screen><indexterm> <primary>命令</primary> <secondary>smbpasswd</secondary> </indexterm>
+
+  <para>
+   使用 <command>useradd</command> 命令可添加一个美元符号。命令 <command>smbpasswd</command> 在使用参数 <option>-m</option> 时自动插入此符号。带注释的配置示例 (<filename>/usr/share/doc/packages/samba/examples/smb.conf.SUSE</filename>) 包含自动执行此任务的设置。
+  </para>
+
+<screen>add machine script = /usr/sbin/useradd -g nogroup -c "NT Machine Account" \
+-s /bin/false %m\$
+     </screen>
+
+  <para>
+   要确保 Samba 能够正确执行此脚本，请选择具有必需的管理员权限的 Samba 用户，并将其添加到 <systemitem class="groupname">ntadmin</systemitem> 组中。然后可以使用以下命令为属于此 Linux 组的所有用户指派 <literal>Domain Admin</literal> 状态：
+  </para>
+
+<screen>net groupmap add ntgroup="Domain Admins" unixgroup=ntadmin</screen>
+
+  <para>
+   有关此主题的更多信息，请参见《Samba 3 操作指南》第 12 章，此指南可以在 <filename>/usr/share/doc/packages/samba/Samba3-HOWTO.pdf</filename> 中找到。
+  </para>
+ </sect1>
+ <sect1 id="sec.samba.adnet" os="sles">
+  <title>带有 Active Directory 的网络中的 Samba 服务器</title>
+
+  <para>
+   如果您同时运行 Linux 服务器和 Windows 服务器，则可以构建两个独立的身份验证系统和网络，或者将服务器连接到使用一个中央身份验证系统的网络。由于 Samba 可以与 Active Directory 域协作，因此您可以将 SUSE Linux Enterprise Server 加入 Active Directory（AD）。
+  </para>
+
+  <para>
+   安装期间连接现有的 AD 域或稍后在已安装的系统中使用 YaST 激活 SMB 用户认证。<phrase os="sles"><xref linkend="sec.i.yast2.conf.manual.user_auth"/></phrase>中介绍了安装期间的域连接。
+  </para>
+
+  <para>
+   要在运行系统中连接 AD 域，请按如下所示继续：
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     作为 <systemitem class="username">root</systemitem> 登录并启动 YaST。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     启动<menuchoice> <guimenu>网络服务</guimenu> <guimenu>Windows 域成员资格</guimenu></menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在 <guimenu>Windows 域成员资格</guimenu>屏幕上的<guimenu>域或工作组</guimenu>中输入要加入的域。
+    </para>
+    <figure>
+     <title>确定 Windows 域成员资格</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata fileref="ad_sambaclient.png" width="75%" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata fileref="ad_sambaclient.png" width="75%" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+   <step performance="required">
+    <para>
+     选中<guimenu>同时使用用于 Linux 认证的 SMB 信息</guimenu>，以在 SUSE Linux Enterprise Server 上使用 SMB 源进行 Linux 身份验证。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     单击<guimenu>确定</guimenu>并在提示时确认域连接。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在 AD 服务器上提供 Windows Administrator 的口令，并单击<guimenu>确定</guimenu>。
+    </para>
+    <para>
+     现在您的服务器已经设置了从 Active Directory 域控制器获取认证数据。
+    </para>
+   </step>
+  </procedure>
+  <tip>
+  <para>
+在有多个 Samba 服务器的环境中，将不会采用一致的方式创建 UID 和 GID。指派给用户的 UID 将取决于用户首次登录的顺序，而这会导致在服务器间产生 UID 冲突。要解决此问题，您需要使用身份映射。有关详细信息，请参见<ulink url="https://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/idmapper.html"/>。
+  </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.samba.info">
+  <title>更多信息</title>
+
+  <para>
+   关于 Samba 的详细信息，请参见数字文档。在命令行输入 <command>apropos</command><option>samba</option> 可显示一些手册页；如果安装了 Samba 文档，也可以浏览 <filename>/usr/share/doc/packages/samba</filename> 目录获得更多的联机文档和示例。<filename>examples</filename> 子目录中提供了一个带注释的示例配置 (<filename>smb.conf.SUSE</filename>)。<indexterm> <primary>配置文件</primary> <secondary>smb.conf</secondary> </indexterm>
+  </para>
+
+  <para>
+   Samba 小组提供的《Samba 3 操作指南》中有一节专门介绍查错。此外，文档的第 V 部分提供了检查配置的逐步指南。安装包 <systemitem>samba-doc</systemitem> 后，可以在 <filename>/usr/share/doc/packages/samba/Samba 3-HOWTO.pdf</filename> 中找到《Samba 3 操作指南》。
+  </para>
+
+  <indexterm class="endofrange" startref="idx.Samba"/>
+ </sect1>
+</chapter>

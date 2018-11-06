@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="mobile.xml" id="cha.mobile">
+ <title>Computação móvel com o Linux</title><indexterm id="idx.mobility" class="startofrange"><primary>mobilidade</primary></indexterm>
+ <abstract>
+  <para>
+   A computação móvel é geralmente associada a laptops, PDAs e telefones celulares (e ao intercâmbio de dados entre esses aparelhos). Componentes de hardware móveis, como discos rígidos externos, unidades flash ou câmeras digitais, podem ser conectados a laptops ou sistemas de desktop. Vários componentes de software estão envolvidos em cenários de computação e alguns aplicativos são desenvolvidos para uso móvel.
+  </para>
+ </abstract>
+ <sect1 id="sec.mobile.nbook">
+  <title>Laptops</title><indexterm class="startofrange" id="idx.notebook"> <primary>laptops</primary> </indexterm> <indexterm> <primary>laptops</primary> <secondary>hardware</secondary> </indexterm> <indexterm> <primary>laptops</primary> <secondary>PCMCIA</secondary> </indexterm> <indexterm> <primary>PCMCIA</primary> </indexterm> <indexterm> <primary>mobilidade</primary> <secondary>laptops</secondary> </indexterm>
+
+  <para>
+   O hardware de laptops difere do hardware de um sistema de desktop normal. Isso se deve a critérios como permutabilidade, requisitos de espaço e consumo de energia, que devem ser levados em conta. Os fabricantes de hardware móvel desenvolveram interfaces padrão, como PCMCIA (Personal Computer Memory Card International Association), Mini PCI e Mini PCIe, que podem ser usadas para estender o hardware de laptops. Os padrões abrangem cartões de memória, placas de interface de rede, ISDN (bem como placas de modem) e discos rígidos externos.
+  </para>
+
+  <tip>
+   <title><phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> e tablet PCs</title>
+   <para>
+    O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> também suporta Tablet PCs. Os Tablet PCs incluem um touchpad/digitalizador que permite usar uma caneta digital, ou mesmo as pontas dos dedos, para editar dados diretamente na tela, em vez de usar mouse e teclado. Eles são instalados e configurados de forma semelhante a qualquer outro sistema. Para obter uma introdução detalhada sobre a instalação e configuração de Tablet PCs, consulte o <xref linkend="cha.tablet"/>.
+   </para>
+  </tip>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.powerm">
+   <title>Conservação de energia</title><indexterm> <primary>laptops</primary> <secondary>gerenciamento de energia</secondary> </indexterm> <indexterm> <primary>gerenciamento de energia</primary> </indexterm>
+   <para>
+    A inclusão de componentes de sistema com otimização de energia durante a fabricação de laptops contribui para a sua adequação ao uso sem acesso à rede elétrica. A contribuição desses componentes para a preservação de energia é, ao menos, tão importante quanto a do sistema operacional. O <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> suporta vários métodos que influenciam o consumo de energia de um laptop e possuem diversos efeitos sobre o tempo de operação durante o uso de energia da bateria. A lista a seguir está em ordem decrescente de contribuição para a conservação de energia:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Regulagem da velocidade da CPU.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Desativação da iluminação da tela durante pausas.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Ajuste manual da iluminação da tela.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Desconexão de acessórios não utilizados e habilitados para hotplug (CD-ROM USB, mouse externo, placas PCMCIA sem uso, WLAN etc.).
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Colocação do disco rígido em modo de espera quando inativo.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Você encontra informações detalhadas sobre o gerenciamento de energia do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> no <xref linkend="cha.pmanage"/>. <phrase os="sled">Para obter mais informações sobre gerenciamento de energia específico de área de trabalho, consulte a <xref linkend="sec.gnomeuser.start.power_mgmt"/>, que explica como usar o Gerenciador de Energia do GNOME. Mais informações sobre o applet de gerenciamento de energia do KDE estão disponíveis no <xref linkend="cha.kde.kpowersave"/>.</phrase>
+   </para>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.nbook.change">
+   <title>Integração em ambientes operacionais variáveis</title><indexterm> <primary>laptops</primary></indexterm>
+   <para>
+    Seu sistema precisa se adaptar a ambientes operacionais variáveis quando for usado para a computação móvel. Vários serviços dependem do ambiente, e os clientes subjacentes precisam ser reconfigurados. O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> administra esta tarefa para você.
+   </para>
+   <figure id="fig.mobile.scpm">
+    <title>Integrando um computador móvel em um ambiente existente</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="90%" fileref="mobile_scpm.svg" format="SVG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="75%" fileref="mobile_scpm.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Os serviços afetados no caso de um laptop que transita entre uma pequena rede doméstica e uma rede de escritório são:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Rede</term>
+     <listitem>
+      <para>
+       Inclui a atribuição de endereço IP, a resolução do nome, a conectividade à Internet e a conectividade a outras redes.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Impressão</term>
+     <listitem>
+      <para>
+       Precisam estar presentes um banco de dados atual de impressoras disponíveis e um servidor de impressão disponível, dependendo da rede.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>E-mail e proxies</term>
+     <listitem>
+      <para>
+       Assim como ocorre com a impressão, a lista dos servidores correspondentes precisa ser atual.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>X (ambiente gráfico)</term>
+     <listitem>
+      <para>
+       Se o seu laptop estiver temporariamente conectado a um projetor ou monitor externo, configurações de exibição diferentes precisam estar disponíveis.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> oferece várias maneiras de integrar laptops a ambientes operacionais existentes:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>NetworkManager</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>NetworkManager</primary></indexterm><indexterm><primary>NetworkManager</primary><secondary>laptops</secondary></indexterm> O NetworkManager é desenvolvido especialmente para rede móvel em laptops.  Oferece meios para troca fácil e automática de ambientes de rede ou tipos de rede diferentes como banda larga móvel (por exemplo, GPRS, EDGE ou 3G), LAN wireless e Ethernet. O NetworkManager suporta criptografia WEP e WPA-PSK em LANs wireless. Ele também suporta conexões discadas (com smpppd). Ambos os ambientes de área de trabalho (GNOME e KDE) incluem um front end para o NetworkManager. Para obter mais informações sobre os applets de área de trabalho, consulte a <xref linkend="sec.nm.kde"/> e a <xref linkend="sec.nm.gnome"/>.
+      </para>
+<?dbfo-need height="20em"?>
+
+
+      <table>
+       <title>Casos de uso para o NetworkManager</title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry>
+           <para>
+            Meu computador…
+           </para>
+          </entry>
+          <entry>
+           <para>
+            Usar NetworkManager
+           </para>
+          </entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>
+           <para>
+            é um laptop
+           </para>
+          </entry>
+          <entry>
+           <para>
+            Sim
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            algumas vezes está conectado a redes diferentes
+           </para>
+          </entry>
+          <entry>
+           <para>
+            Sim
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            fornece serviços de rede (como DNS ou DHCP)
+           </para>
+          </entry>
+          <entry>
+           <para>
+            Não
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            usa somente um endereço IP estático
+           </para>
+          </entry>
+          <entry>
+           <para>
+            Não
+           </para>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+      <para>
+       Use as ferramentas do YaST para configurar a rede sempre que o NetworkManager não deve gerenciar a configuração de rede.
+      </para>
+      <tip>
+       <title>configuração DNS e vários tipos de conexões de rede</title>
+       <para>
+        Se você viaja bastante com seu laptop e sempre muda para tipos de conexões de rede diferentes, o NetworkManager funcionará muito bem quando todos os endereços DNS forem atribuídos corretamente com DHCP. Se algumas das suas conexões usarem endereço(s) DNS estático(s), adicione-as à opção <literal>NETCONFIG_DNS_STATIC_SERVERS</literal> em <filename>/etc/sysconfig/network/config</filename>.
+       </para>
+      </tip>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>SLP</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>laptops</primary> <secondary>SLP</secondary> </indexterm> <indexterm> <primary>SLP</primary> </indexterm> O SLP (Service Location Protocol) simplifica a conexão de um laptop a uma rede existente. Sem o SLP, o administrador do laptop normalmente necessita ter conhecimentos detalhados sobre os serviços disponíveis em uma rede. O SLP transmite a disponibilidade de um determinado tipo de serviço a todos os clientes de uma rede local. Os aplicativos que dão suporte ao SLP podem processar as informações despachadas pelo SLP e podem ser configurados automaticamente. O SLP também pode ser usado para instalar um sistema, minimizando o esforço de procurar uma fonte de instalação adequada. Encontre informações detalhadas sobre o SLP no <xref linkend="cha.slp"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.nbook.soft">
+   <title>Opções de software</title>
+   <para>
+    Várias áreas de tarefas especiais no uso móvel ficam a cargo de software dedicado: monitoração do sistema (especialmente a carga da bateria), sincronização de dados e comunicação wireless com periféricos e com a Internet. As seguintes seções apresentam os aplicativos mais importantes que o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> oferece para cada tarefa.
+   </para>
+   <sect3 id="sec.mobile.nbook.soft.mon">
+    <title>Monitoração do sistema</title><indexterm> <primary>monitoração do sistema</primary> </indexterm>
+    <para>
+     Há duas ferramentas de monitoramento de sistema do KDE incluídas no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>:
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>Gerenciamento de Energia</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>monitoramento do sistema</primary> <secondary>Gerenciamento de Energia</secondary> </indexterm> <indexterm> <primary>Gerenciamento de Energia</primary> </indexterm> <guimenu>Gerenciamento de Energia</guimenu> é um aplicativo que permite ajustar o comportamento relacionado à economia de energia da área de trabalho do KDE. Geralmente, é possível acessá-lo pelo ícone <guimenu>Monitor de Bateria</guimenu> na bandeja do sistema, que muda conforme o tipo de fonte de alimentação em uso. Outra maneira de abrir sua caixa de diálogo de configuração é através do <guimenu>Lançador de Aplicativos Kickoff</guimenu>: <menuchoice><guimenu>Aplicativos</guimenu> <guimenu>Configurar a Área de Trabalho</guimenu><guimenu>Avançado</guimenu><guimenu>Gerenciamento de Energia</guimenu></menuchoice>.
+       </para>
+       <para>
+        Clique no ícone <guimenu>Monitor de Bateria</guimenu> na bandeja do sistema para acessar as opções para configurar seu comportamento. Você pode escolher um dos cinco perfis de energia exibidos que melhor atenda a suas necessidades. Por exemplo, o esquema <guimenu>Apresentação</guimenu> desabilita a proteção de tela e o gerenciamento de energia em geral, de modo que a sua apresentação não seja interrompida pelos eventos do sistema. Clique em <guimenu>Mais...</guimenu> para abrir uma tela de configurações mais complexas. Aqui você pode editar perfis individuais e definir opções avançadas de gerenciamento de energia e notificações, como o que fazer quando a tampa do laptop for fechada ou quando a bateria estiver baixa.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Monitor do Sistema</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>monitoramento do sistema</primary> <secondary>Monitor do Sistema</secondary> </indexterm> <guimenu>Monitor do Sistema</guimenu> (também chamado de <guimenu>KSysguard</guimenu>) coleta parâmetros de sistema mensuráveis em um ambiente de monitoramento. Apresenta as informações de saída em 2 guias por padrão. A <guimenu>Tabela de Processos</guimenu> fornece informações detalhadas sobre os processos em execução no momento, como carga de CPU, uso da memória ou número de ID e valor nice do processo. A apresentação e a filtragem dos dados coletados podem ser personalizadas: para adicionar um novo tipo de informação de processo, clique no cabeçalho da tabela de processos e escolha qual coluna ocultar ou adicionar à tela. É possível também monitorar diferentes parâmetros do sistema em diversas páginas de dados ou coletar os dados de diversas máquinas em paralelo na rede. O KSysguard também pode ser executado como um daemon em máquinas desprovidas de um ambiente KDE. Encontre mais informações sobre esse programa na sua função de ajuda integrada ou nas páginas de ajuda do SUSE.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     No ambiente do GNOME, use as <guimenu>Preferências de Energia</guimenu> e o <guimenu>Monitor do Sistema</guimenu>.
+    </para>
+   </sect3>
+   <sect3 id="sec.mobile.nbook.soft.sync">
+    <title>Sincronizando dados</title>
+    <para>
+     Ao alternar entre o trabalho em uma máquina móvel desconectada da rede e o trabalho em uma estação em rede em um escritório, é necessário manter a sincronização dos dados processados em todas as instâncias. Isso pode incluir pastas de e-mail, diretórios e arquivos individuais que precisam estar presentes tanto para o trabalho remoto como para o trabalho no escritório. A solução nos dois casos é a seguinte:
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>Sincronizando e-mail</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>sincronizando dados</primary> <secondary>e-mail</secondary> </indexterm> <indexterm> <primary>e-mail</primary> <secondary>sincronizando</secondary> </indexterm> Use uma conta IMAP para armazenar seus e-mails na rede empresarial. Em seguida, acesse os e-mails da estação de trabalho usando qualquer cliente de e-mail desconectado habilitado para IMAP, como Mozilla Thunderbird Mail, Evolution ou KMail<phrase os="osuse;sled">, conforme descrito em <xref linkend="book.gnomeuser"/> e <xref linkend="book.kdeuser"/></phrase>. O cliente de e-mail precisa ser configurado de tal modo que as <literal>Mensagens enviadas</literal> sejam sempre acessadas da mesma pasta. Isso assegura a disponibilidade de todas as mensagens com informações sobre seu status após a conclusão do processo de sincronização. Use um servidor SMTP implementado no cliente de e-mail para enviar mensagens, em vez do sendmail ou postfix do MTA de todo o sistema para receber um feedback confiável sobre e-mails não enviados.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Sincronizando arquivos e diretórios</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>sincronização de dados</primary></indexterm> Existem diversos utilitários adequados para a sincronização de dados entre um laptop e uma estação de trabalho. Um dos mais usados é uma ferramenta de área de trabalho chamada <command>rsync</command>. <phrase os="sled;sles">Para obter mais informações, consulte a respectiva página de manual (<command>man 1 rsync</command>)</phrase>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.mobile.nbook.soft.wlan">
+    <title>Comunicação sem fio</title><indexterm> <primary>redes</primary> <secondary>wireless</secondary> </indexterm>
+    <para>
+     Além da conexão a redes domésticas ou empresariais por cabo, também é possível fazer uma conexão wireless de um laptop para acessar outros computadores, periféricos, telefones celulares ou PDAs. O Linux oferece suporte a três tipos de comunicação wireless:
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>WLAN</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>redes</primary> <secondary>WLAN</secondary> </indexterm> <indexterm> <primary>WLAN</primary> </indexterm> Com o maior alcance dessas tecnologias wireless, a WLAN é a única adequada para a operação de redes de grande porte e, às vezes, até mesmo de redes virtualmente separadas. Máquinas individuais podem se conectar entre si para formar uma rede wireless independente ou para acessar a Internet. Dispositivos chamados de <emphasis>pontos de acesso</emphasis> atuam como estações de base para dispositivos habilitados para WLAN, além de servir como intermediários para o acesso à Internet. Um usuário móvel pode alternar entre pontos de acesso dependendo do local e de que ponto de acesso ofereça a melhor conexão. Assim como na telefonia celular, uma rede de grande porte está disponível aos usuários da WLAN sem restringi-los a um local específico para o acesso. Encontre informações sobre a WLAN no <xref linkend="cha.wireless.wlan"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Bluetooth</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>redes</primary> <secondary>Bluetooth</secondary> </indexterm> <indexterm> <primary>Bluetooth</primary> </indexterm> Entre todas as tecnologias wireless, o Bluetooth é a que possui o mais amplo espectro de aplicação. Ele pode ser usado na comunicação entre computadores (laptops) e PDAs ou telefones celulares, assim como o IrDA. Também pode ser utilizado para conectar diversos computadores dentro de uma extensão. O bluetooth também é usado para conectar componentes wireless do sistema, como um teclado ou mouse. Entretanto, o alcance dessa tecnologia não é suficiente para conectar sistemas remotos a uma rede. A WLAN é a melhor opção de tecnologia para comunicações em locais com obstáculos físicos, como paredes.
+
+
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>IrDA</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>redes</primary> <secondary>IrDA</secondary> </indexterm> <indexterm> <primary>IrDA</primary> </indexterm> O IrDA é a tecnologia wireless de menor alcance. As duas extremidades da comunicação precisam estar a uma distância visível uma da outra. Não é possível contornar obstáculos como paredes. Uma aplicação possível do IrDA é a transmissão de arquivos de um laptop para um telefone celular. O curto caminho do laptop para o telefone celular é coberto com o uso do IrDA. O transporte de longo alcance do arquivo ao seu destinatário é feito pela rede móvel. Outra aplicação do IrDA é a transmissão wireless de serviços de impressão no escritório.
+
+
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.mobile.nbook.sec">
+   <title>Segurança de dados</title><indexterm> <primary>mobilidade</primary> <secondary>segurança de dados</secondary> </indexterm> <indexterm> <primary>segurança</primary> <secondary>sistema de arquivos criptografados</secondary> </indexterm> <indexterm> <primary>segurança de dados</primary> </indexterm>
+   <para>
+    Em termos ideais, os dados contidos no seu laptop são protegidos de diversas maneiras contra o acesso não autorizado. Possíveis medidas de segurança podem ser tomadas nas seguintes áreas:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Proteção contra roubo</term>
+     <listitem>
+      <para>
+       Sempre que possível proteja a integridade física do seu sistema contra roubo. Diversas ferramentas de segurança (como correntes) podem ser adquiridas em lojas varejistas.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Autenticação avançada</term>
+     <listitem>
+      <para>
+       Use a autenticação biométrica juntamente com a autenticação padrão por meio de login e senha. O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> suporta autenticação por impressão digital. Para obter mais detalhes, consulte o <xref linkend="cha.security.fp"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Protegendo dados no sistema</term>
+     <listitem>
+      <para>
+       Dados importantes devem ser criptografados não apenas durante a transmissão, mas também no disco rígido. Essa medida assegura sua segurança em caso de roubo. A criação de uma partição criptografada com o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> está descrita no <xref linkend="cha.security.cryptofs"/>. Outra possibilidade é criar diretórios pessoais criptografados ao adicionar o usuário com o YaST.
+      </para>
+      <important>
+       <title>segurança de dados e o evento Suspender para Disco</title>
+       <para>
+        As partições criptografadas não são desmontadas durante um evento de suspender para disco. Assim, todos os dados contidos nessas partições ficarão disponíveis para qualquer pessoa que conseguir roubar o hardware e inicializar o disco rígido.
+       </para>
+      </important>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Segurança da rede</term>
+     <listitem>
+      <para>
+       Qualquer transferência de dados deve ser segura, não importando como a transferência é feita. Para obter mais informações sobre problemas gerais de segurança referentes ao Linux e redes, consulte o <xref linkend="cha.security"/>. Medidas de segurança referentes a redes wireless são fornecidas no <xref linkend="cha.wireless.wlan"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist><indexterm class="endofrange" startref="idx.notebook"/>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.mobile.hw">
+  <title>Hardware móvel</title><indexterm> <primary>mobilidade</primary> <secondary>USB</secondary> </indexterm> <indexterm> <primary>mobilidade</primary> <secondary>FireWire (IEEE1394)</secondary> </indexterm> <indexterm> <primary>FireWire (IEEE1394)</primary> <secondary>discos rígidos</secondary> </indexterm> <indexterm> <primary>USB</primary> <secondary>discos rígidos</secondary> </indexterm> <indexterm> <primary>USB</primary> <secondary>unidades flash</secondary> </indexterm> <indexterm> <primary>unidades flash</primary> </indexterm> <indexterm> <primary>mobilidade</primary> <secondary>discos rígidos externos</secondary> </indexterm> <indexterm> <primary>mobilidade</primary> <secondary>câmeras digitais</secondary> </indexterm> <indexterm> <primary>câmeras digitais</primary> </indexterm>
+
+  <para>
+   O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> suporta detecção automática de dispositivos de armazenamento móveis por FireWire (IEEE 1394) ou USB. O termo <emphasis>dispositivo de armazenamento móvel</emphasis> se aplica a qualquer tipo de disco rígido FireWire ou USB, unidade flash USB ou câmera digital. Esses dispositivos são automaticamente detectados e configurados logo após serem conectados ao sistema pela interface correspondente. Os gerenciadores de arquivos do GNOME e do KDE oferecem controle flexível de itens de hardware móveis. Para desmontar qualquer uma dessas mídias com segurança, use o recurso <guimenu>Remover de Modo Seguro</guimenu> (KDE) ou <guimenu>Desmontar Volume</guimenu> (GNOME) dos gerenciadores de arquivos. <phrase os="sled;osuse">O gerenciamento de mídia removível pela área de trabalho é descrito em mais detalhes no <xref linkend="book.gnomeuser"/> e no <xref linkend="book.kdeuser"/>.</phrase>
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Discos rígidos externos (USB e FireWire)</term>
+    <listitem>
+     <para>
+      Assim que o disco rígido externo for corretamente reconhecido pelo sistema, seu ícone aparecerá no gerenciador de arquivos. Clique no ícone para exibir o conteúdo da unidade. É possível criar pastas e arquivos aqui, além de editá-los ou apagá-los. Para mudar o nome que um disco rígido recebeu do sistema, clique o botão direito do mouse no ícone e selecione o item correspondente no menu. Essa mudança de nome é limitada à exibição no gerenciador de arquivos. O descritor através do qual o dispositivo é montado em <filename>/media</filename> permanece não afetado por isso.
+     </para>
+     
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Unidades flash USB</term>
+    <listitem>
+     <para>
+      Esses dispositivos são tratados pelo sistema como discos rígidos externos. Também nesses dispositivos é possível renomear as entradas do gerenciador de arquivos.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry os="osuse;sled">
+    <term>Câmeras digitais (USB e FireWire)</term>
+    <listitem>
+     <para>
+      As câmeras digitais reconhecidas pelo sistema também aparecem como unidades externas na visão geral do gerenciador de arquivos. O KDE permite a leitura e o acesso às imagens no URL <literal>camera:/</literal>. <phrase os="osuse;sled">Essas imagens podem ser processadas com o digiKam ou o f-spot. Para o processamento avançado de fotos, use o GIMP. Para obter uma introdução resumida do digiKam, do f-spot e do GIMP, consulte o <xref linkend="cha.digicam"/>, o <xref linkend="cha.gnome.fspot"/> e o <xref linkend="cha.gimp"/>.</phrase>
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.mobile.comm">
+  <title>Telefones celulares e PDAs</title><indexterm> <primary>mobilidade</primary> <secondary>telefones celulares</secondary> </indexterm> <indexterm> <primary>mobilidade</primary> <secondary>PDAs</secondary> </indexterm> <indexterm> <primary>telefones celulares</primary> </indexterm> <indexterm> <primary>PDAs</primary> </indexterm>
+
+  <para>
+   Tanto um sistema de desktop como um laptop podem se comunicar com um telefone celular via Bluetooth ou IrDA. Alguns modelos dão suporte aos dois protocolos; outros, somente a um dos dois. As áreas de uso dos dois protocolos e a extensa documentação correspondente já foram citadas na <xref linkend="sec.mobile.nbook.soft.wlan"/>. A configuração desses protocolos nos telefones celulares é descrita nos respectivos manuais.
+
+
+  </para>
+
+  <para>
+   <indexterm> <primary>sincronizando dados</primary> <secondary>Evolution</secondary> </indexterm> <indexterm> <primary>sincronizando dados</primary> <secondary>Kontact</secondary> </indexterm> <indexterm> <primary>Evolution</primary> </indexterm> <indexterm> <primary>Kontact</primary> </indexterm> O suporte à sincronização com dispositivos portáteis fabricados pela Palm, Inc. já vem incorporado ao Evolution e ao Kontact. A conexão inicial com o dispositivo é facilmente realizada com um assistente. Após a configuração do suporte para Palm Pilots, é necessário determinar que tipo de dados deve ser sincronizado (endereços, compromissos etc.). <phrase os="osuse;sled"> Para obter mais informações, consulte <xref linkend="book.gnomeuser"/> e <xref linkend="book.kdeuser"/>.</phrase>
+  </para>
+
+  <para os="osuse;sled">
+   Uma solução de sincronização mais sofisticada está disponível com o programa <literal>opensync</literal> (consulte o pacote libopensync e respectivos plug-ins de cada dispositivo).
+  </para>
+ </sect1>
+ <sect1 id="sec.mobile.info">
+  <title>Para obter mais informações</title>
+
+  <para>
+   O ponto central de referência para todas as dúvidas relativas a dispositivos móveis e o Linux é <ulink url="http://tuxmobil.org/"/>. Diversas seções desse site da Web tratam de aspectos de hardware e software de laptops, PDAs, telefones celulares e outros hardwares móveis.
+  </para>
+
+  <para>
+   Uma abordagem semelhante de <ulink url="http://tuxmobil.org/"/> é feita por <ulink url="http://www.linux-on-laptops.com/"/>. Informações sobre laptops e dispositivos portáteis podem ser encontradas nesse local.
+  </para>
+
+  <para>
+   O SUSE mantém uma lista de discussão em alemão dedicada a laptops. Consulte <ulink url="http://lists.opensuse.org/opensuse-mobile-de/"/>. Nesta lista, usuários e desenvolvedores discutem todos os aspectos da computação móvel com <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>. As mensagens em inglês são respondidas, mas a maioria das informações dos arquivos está disponível somente em alemão. Use <ulink url="http://lists.opensuse.org/opensuse-mobile/"/> para ver postagens em inglês.
+  </para>
+
+  <para>
+   As informações sobre o <literal>OpenSync</literal> estão disponíveis em <ulink url="http://opensync.org/"/>.
+  </para><indexterm class="endofrange" startref="idx.mobility"/>
+ </sect1>
+</chapter>

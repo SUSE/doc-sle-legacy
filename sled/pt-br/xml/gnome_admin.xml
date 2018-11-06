@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="gnome_admin.xml" id="cha.gnome.gconf">
+ <title>Configuração do GNOME para administradores</title>
+ <para>
+  Este capítulo introduz as opções de configuração do GNOME que os administradores podem usar para definir ajustes em todo o sistema, como personalização de menus, instalação de temas, configuração de fontes, mudança dos aplicativos preferidos e bloqueio de recursos.
+ </para>
+ <para>
+  Essas opções de configuração estão armazenadas no sistema GConf. Acesse o sistema GConf usando ferramentas como a interface de linha de comando <command>gconftool-2</command> ou a interface gráfica do usuário <command>gconf-editor</command>.
+ </para>
+ <sect1 id="sec.gnome.gconf">
+  <title>O sistema GConf</title>
+
+  <para>
+   A área de trabalho do GNOME gerencia sua própria configuração com o GConf. Trata-se de um banco de dados ou registro de estrutura hierárquica, no qual o usuário pode mudar suas próprias configurações e o administrador do sistema pode definir valores padrão ou obrigatórios para todos os usuários. Especifique caminhos de acesso para acessar as configurações do GConf, como <systemitem>/desktop/gnome/background/picture_filename</systemitem>; por exemplo, essa é a chave que armazena o nome de arquivo da imagem de fundo da área de trabalho.
+  </para>
+
+  <para>
+   Use o <systemitem>gconf-editor</systemitem> gráfico se quiser navegar por todas as opções de forma conveniente. Para obter uma descrição resumida sobre o uso do gconf-editor, consulte a <xref linkend="sec.gnome.gconf-editor"/>. Se você precisar de uma solução baseada em scripts, consulte a <xref linkend="sec.gnome.gconftool2"/>.
+  </para>
+
+  <warning>
+   <title>caixas de diálogo do Centro de Controle GNOME</title>
+   <para>
+    O acesso direto ao Sistema Gconf, se feito de forma descuidada, pode fazer o sistema ficar inutilizável.
+   </para>
+   <para>
+    Para os usuários inexperientes que queiram ajustar apenas alguns recursos comuns da área de trabalho, recomenda-se usar as caixas de diálogo de configuração do Centro de Controle GNOME. Para iniciar o Centro de Controle GNOME, clique em <menuchoice> <guimenu>Computador</guimenu> <guimenu>Centro de Controle</guimenu> </menuchoice>. Para obter mais informações, consulte a <xref linkend="sec.gnome.settings.cc"/>.
+   </para>
+  </warning>
+
+  <sect2 id="sec.gnome.gconf-editor">
+   <title>O gconf-editor gráfico</title>
+   <para>
+    O gconf-editor permite navegar nas configurações do GConf e mudá-las de forma interativa. Para iniciar o gconf-editor na tela padrão da <guimenu>janela Configurações</guimenu>, clique em <menuchoice> <guimenu>Computador</guimenu> <guimenu>Mais Aplicativos</guimenu> </menuchoice> e, no grupo <guimenu>Sistema</guimenu>, clique em <guimenu>Editor de Configuração do GNOME</guimenu>.
+   </para>
+   <para>
+    Por padrão, os usuários podem mudar as configurações de suas próprias áreas de trabalho, e o administrador pode preparar configurações para especificar valores padrão ou obrigatórios. Por exemplo, se você quiser habilitar o recurso de <emphasis>interrupção de digitação</emphasis> como obrigatório para todos os usuários, proceda da seguinte maneira:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Inicie o <command>gconf-editor</command> como <systemitem>root</systemitem> na linha de comando.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      No painel de árvore à esquerda, expanda <systemitem>/desktop/gnome/typing_break</systemitem>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique o botão direito do mouse em <guimenu>habilitado</guimenu> e selecione <guimenu>Definir como Obrigatório</guimenu>. Depois disso, você poderá gerenciar este recurso.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Abra a janela <guimenu>Configurações obrigatórias</guimenu> clicando em <menuchoice> <guimenu>Arquivo</guimenu> <guimenu>Nova Janela Obrigatória</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      No painel de árvore da janela <guimenu>Configurações obrigatórias</guimenu>, expanda <systemitem>/desktop/gnome/typing_break</systemitem> e clique em <guimenu>habilitado</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Feche a janela para gravar as configurações clicando em <menuchoice> <guimenu>Arquivo</guimenu> <guimenu>Fechar Janela</guimenu> </menuchoice>.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Para obter mais informações sobre o gconf-editor, consulte o Manual do Editor de Configurações em <ulink url="http://library.gnome.org/users/gconf-editor/stable/"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconftool2">
+   <title>Interface da linha de comando gconftool-2</title>
+   <para>
+    Para mudar as configurações a partir da linha de comando ou de dentro dos scripts, use <command>gconftool-2</command>. Veja alguns exemplos a seguir:
+   </para>
+   <para>
+    Como <systemitem>root</systemitem>, use o seguinte comando para listar os valores de todas as chaves:
+   </para>
+<screen>gconftool-2 --recursive-list /
+</screen>
+   <para>
+    Se tiver interesse em apenas um subconjunto, especifique um caminho de acesso como <systemitem>/desktop/gnome/typing_break</systemitem>:
+   </para>
+<screen>gconftool-2 --recursive-list /desktop/gnome/typing_break
+</screen>
+   <para>
+    Para listar as configurações obrigatórias:
+   </para>
+<screen>gconftool-2 --recursive-list \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory /
+</screen>
+   <para>
+    Para definir uma configuração obrigatória, como <systemitem>typing_break</systemitem>:
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --type bool \
+  --set /desktop/gnome/typing_break/enabled true
+</screen>
+   <para>
+    Para cancelar a definição de uma configuração obrigatória:
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --unset /desktop/gnome/typing_break/enabled
+</screen>
+   <para>
+    Para acessar as configurações padrão, use <systemitem>/etc/gconf/gconf.xml.default</systemitem>.
+   </para>
+   <para>
+    Para obter mais informações sobre <command>gconftool-2</command>, consulte o Guia de Administração do Sistema do Ambiente de Trabalho GNOME, seção Ferramenta de Linha de Comando GConf em <ulink url="http://help.gnome.org/admin/system-admin-guide/2.32/gconf-6.html.en"/> e a página de manual de <command>gconftool-2</command> (<command>man gconftool-2</command>).
+   </para>
+  </sect2>
+ </sect1>
+ <sect1>
+  <title>Personalizado o menu principal, o painel e o browser de aplicativos</title>
+
+
+
+  <para>
+   Controle os itens padrão mostrados em várias seções do menu principal (<guimenu>Computador</guimenu>) personalizado os seguintes arquivos:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/applications.xbel:</title>
+     <para>
+      lista dos aplicativos padrão favoritos.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/documents.xbel:</title>
+     <para>
+      lista dos documentos padrão favoritos.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/system-items.xbel:</title>
+     <para>
+      itens mostrados na seção do sistema.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Com o <command>gconf-editor</command>, você pode personalizar o número de itens exibidos:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/min_recent_items:</title>
+     <para>
+      número mínimo de itens recentes.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/max_total_items:</title>
+     <para>
+      número máximo do total de itens.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Você pode personalizar o browser de aplicativos de várias maneiras, por exemplo, seu comportamento quando os usuários iniciam itens ou o número de itens exibidos na categoria <guimenu>Novos Aplicativos</guimenu>. Procure as chaves <systemitem>/desktop/gnome/applications/main-menu/ab_*</systemitem> com o <command>gconf-editor</command>.
+  </para>
+
+  <para>
+   Para obter mais informações, consulte a seção Personalizar Menus no Guia de Administração do Sistema do Ambiente de Trabalho GNOME em <ulink url="https://help.gnome.org/admin/system-admin-guide/2.32/menustructure-0.html.en"/>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.autostart">
+  <title>Iniciando aplicativos automaticamente</title>
+
+  <para>
+   Para iniciar aplicativos automaticamente no GNOME, use um dos seguintes métodos:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>Para executar aplicativos para cada usuário:</title>
+     <para>
+      coloque os arquivos <filename>.desktop</filename> em <filename>/usr/share/gnome/autostart</filename>.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>Para executar aplicativos para um único usuário:</title>
+     <para>
+      coloque os arquivos <filename>.desktop</filename> em <filename>~/.config/autostart</filename>.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Para desabilitar um aplicativo que é iniciado automaticamente, adicione <literal>X-Autostart-enabled=false</literal> ao arquivo <filename>.desktop</filename>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.automount">
+  <title>Montando automaticamente e gerenciando dispositivos de mídia</title>
+
+  <para>
+   O Nautilus (<command>nautilus</command>) monitora eventos relacionados a volume e responde com uma política especificada pelo usuário. Você pode usar o Nautilus para montar automaticamente as unidades de hot plug e a mídia removível inserida, executar programas automaticamente e reproduzir CDs de áudio ou DVDs de vídeo. O Nautilus também pode importar automaticamente fotos de uma câmera digital.
+  </para>
+
+  <para>
+   Os administradores do sistema podem definir padrões para todo o sistema. Para obter mais informações, consulte a <xref linkend="sec.gnome.gconf.pref_app"/>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.pref_app">
+  <title>Mudando os aplicativos preferenciais</title>
+
+  <para>
+   Para mudar os aplicativos preferenciais dos usuários, edite <filename>/etc/gnome_defaults.conf</filename>. Mais dicas são encontradas neste arquivo.
+  </para>
+
+  <para>
+   Após editar o arquivo, execute <command>SuSEconfig --module glib2</command>.
+  </para>
+
+  <para>
+   Para obter mais informações sobre tipos MIME, consulte <ulink url="http://www.freedesktop.org/Standards/shared-mime-info-spec"/>.
+  </para>
+ </sect1>
+
+ <sect1 id="sec.gnome.gconf.sabayon">
+  <title>Gerenciando perfis com o Sabayon</title>
+
+  <para>
+   Sabayon é uma ferramenta de administração do sistema para criar e aplicar perfis do ambiente de área de trabalho. Perfil de área de trabalho é uma coleção de restrições e configurações padrão que podem ser aplicadas a usuários individuais ou a grupos de usuários. O Sabayon permite editar os padrões e chaves obrigatórias do GConf usando uma ferramenta gráfica.
+  </para>
+
+  <para>
+   A definição de perfil é feita por meio de uma sessão gráfica semelhante à sessão executada por um usuário, porém dentro de uma janela da área de trabalho. Você pode mudar as propriedades (como o segundo plano da área de trabalho, as barras de ferramentas e os applets disponíveis) normalmente. O Sabayon também detecta mudanças nas configurações padrão de quase todos os aplicativos.
+  </para>
+
+  <para>
+   Os arquivos ou documentos que ficam no diretório pessoal simulado ou na área de trabalho são incluídos no perfil concluído. Entre eles, muitos bancos de dados específicos de aplicativos, como as anotações do Tomboy. Com o uso desse mecanismo, é fácil fornecer anotações introdutórias ou modelos facilmente acessíveis aos novos usuários.
+  </para>
+
+  <para>
+   Um perfil de usuário pode herdar suas configurações de um perfil pai, anulando ou adicionando valores específicos. Isso habilita conjuntos de configurações hierárquicos. Por exemplo, você pode definir um perfil Empregado e derivar dele os perfis Artista e Garantia de Qualidade.
+  </para>
+
+  <para>
+   Além de fornecer padrões, o Sabayon também pode bloquear configurações. Esse recurso protege a configuração contra as mudanças de usuários. Por exemplo, você pode especificar que o segundo plano da área de trabalho não pode ser mudado para algo que não seja o padrão fornecido por você. Isso evita violações casuais das configurações, o que reduz o número de chamadas ao suporte técnico, além de habilitar ambientes tipo quiosque. Contudo, ele não fornece segurança absoluta e não deve ser usado para tal.
+  </para>
+
+  <para>
+   O Sabayon também fornece uma lista de configurações para aplicativos e elementos genéricos da interface do usuário que possuem suporte interno de bloqueio, incluindo o OpenOffice.org e o painel do GNOME. Por exemplo, o painel pode ser configurado de modo a permitir a inclusão apenas de applets específicos e impedir a mudança de seu local ou tamanho na tela. Da mesma maneira, os itens do menu Gravar podem ser desabilitados para todos os aplicativos que o utilizam, impedindo que os usuários gravem documentos.
+  </para>
+
+  <para>
+   Os perfis podem ser transferidos para outros computadores. Eles ficam em <filename>/etc/desktop-profiles/</filename>, sendo que cada perfil é gravado em um arquivo ZIP separado.
+  </para>
+
+  <sect2 id="sec.gnome.gconf.sabayon.create">
+   <title>Criando um perfil</title>
+   <para>
+    Os perfis são gravados em arquivos ZIP localizados em <filename>/etc/desktop-profiles</filename>. Cada perfil que você grava é armazenado em um arquivo ZIP separado, como <filename><replaceable>nome do perfil</replaceable>.zip </filename>. Você pode copiar ou mover os perfis para outros computadores.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Clique em <menuchoice> <guimenu>Computador</guimenu> <guimenu>Mais Aplicativos</guimenu> <guimenu>System</guimenu> <guimenu>Editor de Perfil de Usuário</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você não estiver conectado como <systemitem>root</systemitem>, digite a senha do <systemitem>root</systemitem> e clique em <guimenu>Continuar</guimenu>.
+     </para>
+     <figure id="fig.gnome.gconf.sabayon1">
+      <title>Sabayon: Editor de Perfil de Usuário</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon1.png" width="70%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon1.png" width="70%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Adicionar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Especifique um nome para o perfil e clique em <guimenu>Adicionar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione o perfil e clique em <guimenu>Editar</guimenu>.
+     </para>
+     <para>
+      Uma nova sessão da área de trabalho é aberta em uma janela do Xnest.
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.xnest">
+      <title>Sabayon: nova janela do Xnest</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Na janela do Xnest, faça as mudanças nas configurações de sua escolha.
+     </para>
+     <para>
+      Cada configuração que você muda aparece na janela do Xnest.
+     </para>
+     <para>
+      Você pode optar por tornar obrigatórias todas as configurações (clicando em <menuchoice> <guimenu>Editar</guimenu> <guimenu>Assegurar o Uso Obrigatório</guimenu> </menuchoice>), ignorar uma configuração (clicando em <menuchoice> <guimenu>Editar</guimenu> <guimenu>Mudanças</guimenu> <guimenu>Ignorar</guimenu> </menuchoice>) ou tornar uma configuração o padrão (não selecionando <guimenu>Ignorar</guimenu> nem <guimenu>Obrigatório</guimenu>).
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para bloquear as configurações para os usuários, clique em <menuchoice> <guimenu>Editar</guimenu> <guimenu>Bloqueio</guimenu> </menuchoice> na janela do Xnest.
+     </para>
+     <para>
+      Você pode escolher uma destas opções:
+     </para>
+     <formalpara>
+      <title>Geral:</title>
+      <para>
+       permite desabilitar a linha de comando, a impressão, a configuração de impressão e o recurso de gravação em disco.
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>Painel:</title>
+      <para>
+       permite bloquear os painéis, desabilitar o fechamento forçado, desabilitar o bloqueio de tela, desabilitar o logout e desabilitar qualquer applet da lista <guimenu>Desabilitar Applets</guimenu>.
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>OpenOffice.org:</title>
+      <para>
+       permite definir o nível de segurança de macro para os documentos do OpenOffice.org, opções de carregamento e gravação, e opções da interface do usuário.
+      </para>
+     </formalpara>
+
+
+    </step>
+    <step performance="required">
+     <para>
+      Para gravar o perfil, clique em <menuchoice> <guimenu>Perfil</guimenu> <guimenu>Gravar</guimenu> </menuchoice>.
+     </para>
+     <para>
+      O perfil é gravado em <filename>/etc/desktop-profiles</filename>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <menuchoice> <guimenu>Perfil</guimenu> <guimenu>Sair</guimenu> </menuchoice> para fechar a janela do Xnest e clique em <guimenu>Fechar</guimenu> para sair do Sabayon.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconf.sabayon.apply">
+   <title>Aplicando um perfil</title>
+   <para>
+    Você pode aplicar um perfil a usuários individuais ou a todos os usuários em uma estação de trabalho.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Clique em <menuchoice> <guimenu>Computador</guimenu> <guimenu>Mais Aplicativos</guimenu> <guimenu>System</guimenu> <guimenu>Editor de Perfil de Usuário</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você não estiver conectado como <systemitem>root</systemitem>, digite a senha do <systemitem>root</systemitem> e clique em <guimenu>Continuar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione o perfil que deseja aplicar e clique em <guimenu>Usuários</guimenu>.
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.apply.users">
+      <title>Sabayon: selecionando usuários</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione os usuários que usarão esse perfil.
+     </para>
+     <para>
+      Para aplicar o perfil a todos os usuários da estação de trabalho, clique em <guimenu>Usar esse perfil para todos os usuários</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Fechar</guimenu>.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.templates">
+  <title>Adicionando modelos de documentos</title>
+
+  <para>
+   Para disponibilizar gabaritos de documentos aos usuários, insira-os no diretório <filename>Templates</filename> no diretório pessoal de um usuário. Isso pode ser feito manualmente para cada usuário, copiando-se os arquivos para <filename>~/Templates</filename>, ou para todo o sistema, adicionando-se um diretório <filename>Templates</filename> com documentos a <filename>/etc/skel</filename> antes que o usuário seja criado.
+  </para>
+
+  <para>
+   Um usuário cria um novo documento a partir de um modelo clicando o botão direito do mouse na área de trabalho e selecionando <guimenu>Criar Documento</guimenu>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.lockdown">
+  <title>Recursos de bloqueio da área de trabalho</title>
+
+  <para>
+   Às vezes, convém remover ou desabilitar recursos da área de trabalho ou o acesso do usuário ao sistema operacional subjacente. O GNOME oferece recursos de bloqueio capazes de mudar a área de trabalho conforme a necessidade. Tecnicamente, você define chaves GConf para implementarem essas mudanças.
+  </para>
+
+  <para>
+   Por exemplo, se você abrir o gconf-editor, verá as chaves de bloqueio do menu principal em <systemitem>/desktop/gnome/applications/main-menu/lock-down/application_browser_link_visible</systemitem>. Esse local também contém as descrições de todas as chaves. Outras chaves de bloqueio:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>/desktop/gnome/lockdown/disable_command_line</term>
+    <listitem>
+     <para>
+      Se definida, os terminais não são mostrados no menu principal nem no Browser de Aplicativos.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_log_out</term>
+    <listitem>
+     <para/>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_lock_screen</term>
+    <listitem>
+     <para>
+      Se definidas, o menu principal não mostra esses itens.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+
+
+  <para>
+   As chaves de bloqueio do Firefox estão em <systemitem>/apps/firefox/lockdown</systemitem>.
+  </para>
+
+  <para>
+   Para obter mais informações, consulte o <quote>Desktop Administrators' Guide to GNOME Lockdown and Preconfiguration</quote> (Guia do Administrador da Área de Trabalho para Bloqueio e Pré-configuração do GNOME), escrito por Sayamindu Dasgupta: <ulink url="http://library.gnome.org/admin/deployment-guide/"/>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.info">
+  <title>Para obter mais informações</title>
+
+  <para>
+   Para obter mais informações, consulte <ulink url="http://library.gnome.org/admin/"/>.
+  </para>
+ </sect1>
+</chapter>

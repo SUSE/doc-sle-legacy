@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="grub.xml" id="cha.grub">
+ <title>O carregador de boot GRUB</title><indexterm> <primary>inicializando</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
+ <abstract>
+  <para>
+   Este capítulo descreve como configurar o GRUB (Grand Unified Bootloader), o carregador de boot usado no <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase>. Há um módulo especial do YaST disponível para ajustar todas as configurações. Se você não estiver familiarizado com a ideia de entrar para o Linux, leia as seções a seguir para obter algumas informações de apoio. Este capítulo também descreve alguns problemas frequentemente encontrados quando se inicializa com o GRUB e mostra as soluções para eles.
+  </para>
+ </abstract>
+ <note os="sles;sled">
+  <title>Ausência do GRUB em máquinas que usam UEFI</title>
+  <para>
+   Sistematicamente, o GRUB é instalado em máquinas equipadas com BIOS tradicional e em máquinas com UEFI (Unified Extensible Firmware Interface) que usam um CSM (Compatibility Support Module — Módulo de Suporte de Compatibilidade). Em máquinas com UEFI sem CSM habilitado, o <systemitem>eLILO</systemitem> será instalado automaticamente (desde que o DVD1 tenha sido inicializado com êxito). Consulte a documentação do eLILO em <filename>/usr/share/doc/packages/elilo/</filename> no seu sistema para obter os detalhes.
+  </para>
+ </note>
+ <para>
+  Este capítulo se concentra no gerenciamento de boot e na configuração do carregador de boot do GRUB. O procedimento de boot como um todo é detalhado no <xref linkend="cha.boot"/>. O carregador de boot representa a interface entre a máquina (BIOS) e o sistema operacional (<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>). A configuração do carregador de boot influencia diretamente o boot do sistema operacional.
+ </para>
+ <para>
+  Os termos a seguir aparecem com frequência neste capítulo e talvez precisem de alguma explicação:
+ </para>
+ <variablelist>
+  <varlistentry>
+   <term>MBR (Master Boot Record)<indexterm> <primary>inicializando</primary> <secondary>setores de boot</secondary></indexterm><indexterm> <primary>MBR</primary></indexterm><indexterm> <primary>Master Boot Record</primary> <see>MBR</see></indexterm><indexterm> <primary>partições</primary> <secondary>tabela de partição</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>Master Boot Record (MBR)</secondary></indexterm></term>
+   <listitem>
+    
+    <para>
+     A estrutura do MBR é definida por uma convenção que independe do sistema operacional. Os primeiros 446 bytes são reservados para o código do programa. Normalmente, eles contêm parte de um programa carregador de boot ou um seletor de sistema operacional. Os 64 bytes seguintes fornecem espaço para uma tabela de partição de até quatro entradas. A tabela de partição contém informações sobre o particionamento do disco rígido e sobre os tipos de sistema de arquivos. O sistema operacional precisa dessa tabela para lidar com o disco rígido. Com o código genérico convencional no MBR, exatamente uma partição deve ser marcada como <emphasis>ativa</emphasis>. Os dois últimos bytes do MBR devem conter um <quote>número mágico</quote> estático (<literal>AA55</literal>).  Um MBR que contém um valor diferente é tido como inválido por alguns BIOS, não sendo considerado para o boot.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>Setores de Boot<indexterm><primary>inicialização</primary><secondary>setores de boot</secondary></indexterm><indexterm><primary>GRUB</primary></indexterm><indexterm><primary>MBR</primary><secondary>setores de boot</secondary></indexterm></term>
+   <listitem>
+    <para>
+     Os setores de boot são os primeiros setores das partições do disco rígido, com a execução da partição estendida, que serve meramente como <quote>container</quote> para outras partições. Esses setores de boot têm 512 bytes de espaço para o código usado para inicializar um sistema operacional instalado na partição respectiva. Isso se aplica aos setores de boot das partições DOS, Windows e OS/2 formatadas, que também contêm alguns dados básicos importantes do sistema de arquivos. Os setores de boot das partições Linux, ao contrário, ficam inicialmente vazias após a configuração de um sistema de arquivos diferente do XFS. Portanto, uma partição Linux não é inicializável por si mesma, mesmo que contenha um kernel e um sistema válido de arquivos raiz. Um setor de boot com código válido para inicializar o sistema tem o mesmo número mágico que o MBR em seus dois últimos bytes (<literal>AA55</literal>).
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <sect1 id="sec.grub.basic">
+  <title>Inicializando com o GRUB</title><indexterm> <primary>GRUB</primary> <secondary>inicializando</secondary></indexterm><indexterm> <primary>instalando</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>inicializando</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>configurando</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>comandos</primary> <secondary>grub</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>comandos</secondary></indexterm>
+
+  <para>
+   O GRUB é composto por duas fases. O Estágio 1 consiste em 512 bytes, e sua única tarefa é carregar o segundo estágio do carregador de boot. Consequentemente, a estágio 2 é carregado. Este estágio contém a parte principal do carregador de boot.
+  </para>
+
+  <para>
+   Em algumas configurações, um estágio intermediário 1.5 pode ser usado, que localiza e carrega o estágio 2 de um sistema de arquivos apropriado. Se possível, este método é escolhido por padrão durante a instalação ou durante a configuração inicial do GRUB com o YaST.
+  </para>
+
+  <para>
+   O estágio 2 consegue acessar vários sistemas de arquivos. Atualmente, são suportados o ext2, ext3, ReiserFS, Minix e o sistema de arquivos FAT do DOS usado pelo Windows. Até certo ponto, XFS, e UFS e FFS usados pelos sistemas BSD também são suportados. Desde a versão 0.95, o GRUB também pode ser inicializado de um CD ou DVD que contenha um sistema de arquivos padrão ISO 9660 de acordo com a especificação <quote>El Torito</quote>. Mesmo antes da inicialização do sistema, o GRUB pode acessar os sistemas de arquivos dos dispositivos de disco BIOS suportados (disquetes ou discos rígidos, unidades de CD e unidades de DVD detectados pelo BIOS). Portanto, as mudanças realizadas no arquivo de configuração do GRUB (<filename>menu.lst</filename>) não exigem uma nova instalação do gerenciador de boot. Quando o sistema é inicializado, o GRUB carrega o arquivo de menu com os caminhos e dados de partição válidos do kernel ou do disco RAM inicial (<literal>initrd</literal>) e localiza os arquivos.
+  </para>
+
+  <para>
+   A configuração real do GRUB baseia-se em quatro arquivos, que são descritos a seguir:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>/boot/grub/menu.lst</filename><indexterm><primary>GRUB</primary><secondary>menu.lst</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Este arquivo contém todas as informações sobre partições ou sistemas operacionais que podem ser inicializados com o GRUB. Sem essas informações, a linha de comando do GRUB pergunta ao usuário como proceder (consulte a <xref linkend="sec.grub.menu.change"/> para obter detalhes).
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/boot/grub/device.map</filename><indexterm><primary>GRUB</primary><secondary>device.map</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Esse arquivo traduz os nomes dos dispositivos da notação do GRUB e do BIOS para os nomes de dispositivos do Linux.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/etc/grub.conf</filename><indexterm><primary>GRUB</primary><secondary>grub.conf</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Esse arquivo contém os comandos, os parâmetros e as opções que o shell do GRUB precisa para instalar corretamente o carregador de boot.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/etc/sysconfig/bootloader</filename> <indexterm> <primary>GRUB </primary> <secondary>sysconfig/bootloader</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Esse arquivo é lido pela biblioteca perl-bootloader, que é usada na configuração do carregador de boot com o YaST e sempre que um novo kernel é instalado. Ele inclui opções de configuração (como parâmetros do kernel) que são adicionadas por padrão ao arquivo de configuração do carregador de boot.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   O GRUB pode ser controlado de várias maneiras. As entradas de boot de uma configuração existente podem ser selecionadas no menu gráfico (splash screen). A configuração é carregada a partir do arquivo <filename>menu.lst</filename>.
+  </para>
+
+  <para>
+   No GRUB, todos os parâmetros de boot podem ser alterados antes do boot. Por exemplo, os erros cometidos durante a edição do arquivo de menu podem ser corrigidos desta maneira. Os comandos de boot também podem ser inseridos de forma interativa em um tipo de prompt de entrada. Para obter os detalhes, consulte a <xref linkend="sec.grub.menu.change"/>. O GRUB oferece a possibilidade de determinar a localização do kernel e do  <filename>initrd</filename> antes do boot. Dessa maneira, você pode até inicializar um sistema operacional instalado para o qual não existe entrada na configuração do carregador de boot.
+  </para>
+
+  <para>
+   Na verdade, o GRUB existe em duas versões: como carregador de boot e como programa normal do Linux em <filename>/usr/sbin/grub</filename>. O segundo é conhecido como <emphasis>shell do GRUB</emphasis>. Ele fornece uma emulação do GRUB no sistema instalado e pode ser usado para instalar o GRUB ou testar novas configurações antes de aplicá-las. A funcionalidade para instalar o GRUB como carregador de boot em um disco rígido ou em um disquete é integrada ao GRUB na forma do comando <command>setup</command>. Isso está disponível no shell do GRUB quando o Linux é carregado.
+  </para>
+
+  <sect2 id="sec.grub.menu">
+   <title>O arquivo <filename>/boot/grub/menu.lst</filename></title><indexterm> <primary>arquivos de configuração</primary> <secondary>menu.lst</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>menu de boot</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>menu.lst</secondary></indexterm>
+   <para>
+    A tela de apresentação gráfica com o menu de boot baseia-se no arquivo de configuração do GRUB <filename>/boot/grub/menu.lst</filename>, que contém todas as informações sobre todas as partições ou sistemas operacionais que podem ser inicializados pelo menu.
+   </para>
+   <para>
+    Todas as vezes em que o sistema é inicializado, o GRUB carrega o arquivo de menu a partir do sistema de arquivos. Por essa razão, o GRUB não precisa ser reinstalado depois de todas as modificações no arquivo. Use o carregador de boot YaST para modificar a configuração do GRUB conforme descrito no <xref linkend="sec.boot.yast2.config"/>.
+   </para>
+   <para>
+    O arquivo de menu contém comandos. A sintaxe é muito simples. Cada linha contém um comando seguido de parâmetros opcionais separados por espaços, como ocorre no shell. Por razões históricas, alguns comandos admitem um <literal>=</literal> na frente do primeiro parâmetro. Os comentários são introduzidos por um hash (<literal>#</literal>).
+   </para>
+   <para>
+    Para identificar os itens do menu na visão geral do menu, defina um <literal>título</literal> para cada entrada. O texto (incluindo os espaços) que vem depois da palavra-chave <literal>título</literal> é exibido como opção selecionável no menu. Todos os comandos até o próximo <literal>título</literal> são executados quando se seleciona esse item de menu.
+   </para>
+   <para>
+    O caso mais simples é o redirecionamento para os carregadores de boot de outros sistemas operacionais. O comando é <literal>chainloader</literal> e o argumento é geralmente o bloco de inicialização de outra partição na notação do bloco do GRUB. Por exemplo:
+   </para>
+<screen>chainloader (hd0,3)+1</screen>
+   <para>
+    Os nomes de dispositivo no GRUB são explicados em <xref linkend="sec.grub.devices"/>. Este exemplo especifica o primeiro bloco da quarta partição do primeiro disco rígido.
+   </para>
+   <para>
+    Use o comando <literal>kernel</literal> para especificar uma imagem do kernel. O primeiro argumento é o caminho para a imagem do kernel em uma partição. Os outros argumentos são passados para o kernel na linha de comando.
+   </para>
+   <para>
+    Se o kernel não contiver drivers incorporados para acesso à partição raiz ou um sistema Linux recente com recursos de hotplug avançados for usado, o <filename>initrd</filename> deve ser especificado com um comando separado do GRUB cujo único argumento é o caminho para o arquivo <filename>initrd</filename>. Como o endereço de carregamento do <filename>initrd</filename> é gravado na imagem do kernel carregado, o comando <literal>initrd</literal> deve vir imediatamente após o comando <literal>kernel</literal>.
+   </para>
+   <para>
+    O comando <literal>root</literal> simplifica a especificação do kernel e dos arquivos initrd. O único argumento de <literal>root</literal> é um dispositivo ou uma partição. Esse dispositivo é usado para todos os kernels, <filename>initrd</filename>, ou para outros caminhos de arquivo para os quais não há dispositivos explicitamente especificados até o próximo comando <literal>root</literal>.
+   </para>
+   <para>
+    O comando <literal>boot</literal> está implícito no fim de cada entrada do menu, assim ele não precisa ser gravado no arquivo de menu. No entanto, para usar o GRUB interativamente para o boot, você deve inserir o comando <literal>boot</literal> no final. O comando em si não tem argumentos. Ele meramente inicializa a imagem do kernel carregado ou do carregador de cadeia especificado.
+   </para>
+   <para>
+    Depois de gravar todas as entradas de menu, defina uma delas como entrada <literal>default. </literal> Do contrário, é utilizada a primeira (entrada <literal>0</literal>). Você também pode especificar um tempo de espera em segundos depois do qual a entrada default deve ser inicializada. <literal>timeout</literal> e <literal>default</literal> geralmente precedem as entradas de menu. Um arquivo de exemplo está descrito em <xref linkend="sec.grub.menu.example"/>.
+   </para>
+   <sect3 id="sec.grub.devices">
+    <title>Convenções de nomeação para discos rígidos e partições</title><indexterm> <primary>GRUB</primary> <secondary>nomes de dispositivos</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>nomes de partições</secondary></indexterm>
+    <para>
+     As convenções de nomeação que o GRUB utiliza para discos rígidos e partições diferem daquelas usadas para os dispositivos Linux normais. Elas são mais parecidas com a enumeração de disco simples feita pelo BIOS, além disso, a sintaxe é semelhante à usada em alguns derivativos do BSD. No GRUB, a numeração das partições começa com zero. Isso significa que (<filename>hd0,0</filename>) é a primeira partição do primeiro disco rígido. Em uma máquina desktop comum, com um disco rígido conectado como master principal, o nome do dispositivo Linux correspondente é <filename>/dev/sda1</filename>.
+    </para>
+    <para>
+     As quatro partições principais possíveis são atribuídas aos números de partição de <literal>0</literal> a <literal>3</literal>. As partições lógicas são numeradas a partir de <literal>4</literal>:
+    </para>
+<screen>(hd0,0)   first primary partition of the first hard disk
+(hd0,1)   second primary partition
+(hd0,2)   third primary partition
+(hd0,3)   fourth primary partition (usually an extended partition)
+(hd0,4)   first logical partition
+(hd0,5)   second logical partition</screen>
+    <para>
+     Sendo dependente de dispositivos BIOS, o GRUB não faz distinção entre dispositivos PATA (IDE), SATA, SCSI e RAID de hardware. Todos os discos rígidos reconhecidos pelo BIOS ou por outras controladoras são numerados de acordo com a sequência de boot predefinido no BIOS.
+    </para>
+    <para>
+     Infelizmente, geralmente não é possível mapear os nomes dos dispositivos Linux de forma exata para os nomes dos dispositivos BIOS. Ele gera esse mapeamento com a ajuda de um algoritmo e o grava no arquivo <filename>device.map</filename>, que pode ser editado se necessário. Na <xref linkend="sec.grub.map"/>, há informações sobre o arquivo <filename>device.map</filename>.
+    </para>
+    <para>
+     O caminho completo do GRUB consiste em um nome de dispositivo escrito entre parênteses e no caminho para o arquivo no sistema de arquivos na partição especificada. O caminho começa com uma barra. Por exemplo, o kernel inicializável pode ser especificado como a seguir em um sistema com um único disco rígido PATA (IDE) com o Linux em sua primeira partição:
+    </para>
+<screen>(hd0,0)/boot/vmlinuz</screen>
+   </sect3>
+   <sect3 id="sec.grub.menu.example">
+    <title>Um exemplo de arquivo de menu</title>
+    <para>
+     O exemplo a seguir mostra a estrutura de um arquivo de menu do GRUB. A instalação de exemplo compreende uma partição de boot do Linux em <filename>/dev/sda5</filename>, uma partição raiz em <filename>/dev/sda7</filename> e uma instalação do Windows em <filename>/dev/sda1</filename>.
+    </para>
+    
+<screen>gfxmenu (hd0,4)/boot/message<co id="grub.menu.example.gfxmenu"/>
+color white/blue black/light-gray<co id="grub.menu.example.color"/>
+default 0<co id="grub.menu.example.default"/>
+timeout 8<co id="grub.menu.example.timeout"/>
+
+title linux<co id="grub.menu.example.linux"/>
+   root (hd0,4)
+   kernel /boot/vmlinuz root=/dev/sda7 vga=791 resume=/dev/sda9
+   initrd /boot/initrd
+
+title windows<co id="grub.menu.example.windows"/>
+   rootnoverify (hd0,0)
+   chainloader +1
+
+title floppy<co id="grub.menu.example.floppy"/>
+   rootnoverify (hd0,0)
+   chainloader (fd0)+1
+
+title failsafe<co id="grub.menu.example.failsafe"/>
+   root (hd0,4)
+   kernel /boot/vmlinuz.shipped root=/dev/sda7 ide=nodma \
+   apm=off acpi=off vga=normal nosmp maxcpus=0 3 noresume
+   initrd /boot/initrd.shipped</screen>
+    <para>
+     O primeiro bloco define a configuração da splash screen:
+    </para>
+    <calloutlist>
+     <callout arearefs="grub.menu.example.gfxmenu">
+      <para>
+       A imagem de fundo <literal>message</literal> localiza-se no diretório <filename>/boot</filename> da partição <filename>/dev/sda5</filename>.
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.color">
+      <para>
+       Esquema de cores: branco (primeiro plano), azul (segundo plano), preto (seleção) e cinza claro (segundo plano da seleção). O esquema de cores não tem efeito sobre a tela de apresentação, apenas sobre o menu personalizável do GRUB que você pode acessar saindo da tela de apresentação com <keycap>Esc</keycap>.
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.default">
+      <para>
+       A primeira (<literal>0</literal>) entrada do menu <literal>title linux</literal> é inicializada por padrão.
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.timeout">
+      <para>
+       Após oito segundos sem nenhuma entrada do usuário, o GRUB inicializa automaticamente a entrada default. Para desativar o boot automático, apague a linha <literal>timeout</literal>. Se você definir <literal>timeout 0</literal>, o GRUB inicializa a entrada default imediatamente.
+      </para>
+     </callout>
+    </calloutlist>
+    <para>
+     O segundo e maior bloco lista os vários sistemas operacionais inicializáveis. As seções para os sistemas operacionais individuais são introduzidas pelo <literal>título</literal>.
+    </para>
+    <calloutlist>
+     <callout arearefs="grub.menu.example.linux">
+      <para>
+       A primeira entrada (<literal>title linux</literal>) é responsável por inicializar o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>. O kernel (<literal>vmlinuz</literal>) localiza-se na primeira partição lógica (a partição de boot) do primeiro disco rígido. Os parâmetros do kernel, tais como a partição raiz e o modo VGA, são anexados aqui. A partição raiz é especificada de acordo com a convenção de nomeação do Linux (<filename>/dev/sda7/</filename>), pois essas informações são lidas pelo kernel e não têm nenhuma relação com o GRUB. O <literal>initrd</literal> também se localiza na primeira partição lógica do primeiro disco rígido.
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.windows">
+      <para>
+       A segunda entrada é responsável por carregar o Windows. O Windows é inicializado a partir da primeira partição do primeiro disco rígido (<filename>hd0,0</filename>). O comando <literal>chainloader +1</literal> faz com que o GRUB leia e execute o primeiro setor da partição especificada.
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.floppy">
+      <para>
+       A próxima entrada permite o boot a partir do disco rígido sem modificar as configurações do BIOS.
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.failsafe">
+      <para>
+       A opção de boot <literal>failsafe</literal> inicia o Linux com uma seleção de parâmetros do kernel que permite que o Linux seja inicializado nos sistemas problemáticos.
+      </para>
+     </callout>
+    </calloutlist>
+    <para>
+     O arquivo de menu pode ser mudado sempre que for necessário. O GRUB utiliza, então, as configurações modificadas durante o próximo boot. Edite o arquivo permanentemente usando o YaST ou um editor da sua escolha. Como alternativa, faça as alterações temporárias de forma interativa usando a função de edição do GRUB. Consulte o <xref linkend="sec.grub.menu.change"/>.
+    </para>
+   </sect3>
+   <sect3 id="sec.grub.menu.change">
+    <title>Editando as entradas de menu durante o procedimento de boot</title><indexterm> <primary>GRUB </primary> <secondary>editor de menu</secondary></indexterm>
+    <para>
+     No menu gráfico de boot, selecione o sistema operacional a ser inicializado com as teclas de seta. Se selecionar um sistema Linux, você pode inserir parâmetros extras de boot no prompt de boot. Para editar diretamente as entradas individuais do menu, pressione <keycap>Esc</keycap> para sair da tela de apresentação e entrar no menu baseado em texto do GRUB e depois pressione <keycap>E</keycap>. As mudanças feitas desta maneira só se aplicam ao boot atual, não sendo adotadas permanentemente.
+    </para>
+    <important>
+     <title>layout do teclado durante o procedimento de boot</title>
+     <para>
+      O layout do teclado norte-americano é o único disponível na hora de inicializar. Consulte a <xref linkend="fig.trouble.install.keyboard_us"/>.
+     </para>
+    </important>
+    <para>
+     Editar entradas de menu facilita o reparo de um sistema com defeito que não pode mais ser inicializado, pois o arquivo de configuração defeituoso do carregador de boot pode ser evitado ao se inserir parâmetros manualmente. A inserção manual de parâmetros durante o procedimento de boot também é útil para testar novas configurações sem danificar o sistema nativo.
+    </para>
+    <para>
+     Depois de ativar o modo de edição, use as teclas de seta para selecionar a entrada de menu cuja configuração deve ser editada. Para tornar a configuração editável, pressione <keycap>E</keycap> novamente. Dessa maneira, edite as especificações incorretas das partições ou do caminho antes que tenham um efeito negativo sobre o processo de boot. Pressione <keycap>Enter</keycap> para sair do modo de edição e retornar ao menu. Depois pressione <keycap>B</keycap> para inicializar essa entrada. No texto de ajuda da parte inferior, são mostradas mais ações possíveis.
+    </para>
+    <para>
+     Para inserir permanentemente as opções de boot mudadas e passá-las para o kernel, abra o arquivo <filename>menu.lst</filename> como usuário <systemitem class="username">root</systemitem> e anexe os respectivos parâmetros do kernel à linha existente, separados por espaços:
+    </para>
+<screen>title linux
+   root(hd0,0)
+     kernel /vmlinuz root=/dev/sda3 <replaceable>additional parameter</replaceable>
+   initrd /initrd</screen>
+    <para>
+     O GRUB adota automaticamente os novos parâmetros na próxima vez em que o sistema é inicializado. Como alternativa, essa alteração também pode ser feita com o módulo do carregador de boot YaST. Anexe os novos parâmetros à linha existente, separados por espaços.
+    </para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.grub.map">
+   <title>O arquivo device.map</title><indexterm> <primary>GRUB </primary> <secondary>device.map</secondary></indexterm>
+   <para>
+    O arquivo <filename>device.map</filename> mapeia os nomes de dispositivos do GRUB e do BIOS para os nomes de dispositivos do Linux. Em um sistema misto que contém discos rígidos PATA (IDE) e SCSI, o GRUB deve tentar determinar a sequência de boot por meio de um procedimento especial, pois talvez ele não tenha acesso às informações do BIOS na sequência de boot. O GRUB salva o resultado desta análise no arquivo <filename>/boot/grub/device.map</filename>. Arquivos <filename>device.map</filename> de exemplo para um sistema no qual a sequência de boot no BIOS é definida como PATA antes de SCSI podem ser parecidos com o seguinte:
+   </para>
+<screen>(fd0)  /dev/fd0
+(hd0)  /dev/sda
+(hd1)  /dev/sdb</screen>
+   <para>
+    ou
+   </para>
+<screen>(fd0)  /dev/fd0
+(hd0)  /dev/disk-by-id/<replaceable>DISK1 ID</replaceable>
+(hd1)  /dev/disk-by-id/<replaceable>DISK2 ID</replaceable></screen>
+   <para>
+    Como a ordem de discos rígidos PATA (IDE), SCSI e outros depende de vários fatores, e como o Linux não consegue identificar o mapeamento, a sequência no arquivo <filename>device.map</filename> pode ser definida manualmente. Se você encontrar problemas durante a inicialização, verifique se a sequência neste arquivo corresponde à sequência no BIOS e use o prompt do GRUB para modificá-la temporariamente, se necessário. Depois que o sistema Linux for inicializado, o arquivo <filename>device.map</filename> pode ser permanentemente editado com o módulo do carregador de boot YaST ou com um editor da sua preferência.
+   </para>
+   
+   <para>
+    Depois de alterar manualmente o <filename>device.map</filename>, execute o seguinte comando para reinstalar o GRUB. Este comando faz com que o arquivo <filename>device.map</filename> seja recarregado e os comandos listados em <filename>grub.conf</filename> sejam executados:
+   </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+  </sect2>
+
+  <sect2 id="sec.grub.conf">
+   <title>O arquivo /etc/grub.conf</title><indexterm> <primary>arquivos de configuração</primary> <secondary>grub.conf</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>grub.conf</secondary></indexterm><indexterm> <primary>configurando</primary> <secondary>GRUB</secondary></indexterm>
+   <para>
+    O terceiro arquivo de configuração importante do GRUB, depois do <filename>menu.lst</filename> e do <filename>device.map</filename>, é o <filename>/etc/grub.conf</filename>. Esse arquivo contém os comandos, os parâmetros e as opções que o shell do GRUB precisa para instalar corretamente o carregador de boot:
+   </para>
+<screen>setup --stage2=/boot/grub/stage2 --force-lba (hd0,1) (hd0,1)
+   quit</screen>
+   <para>
+    Esse comando instrui o GRUB a instalar automaticamente o carregador de boot na segunda partição do primeiro disco rígido (hd0,1) usando as imagens de boot localizadas na mesma partição. O parâmetro <option>--stage2=/boot/grub/stage2</option> é necessário para instalar a imagem <filename>stage2</filename> de um sistema de arquivos montado. Alguns BIOS possuem falha na implementação do suporte a LBA. <option>--force-lba</option> proporciona uma solução para ignorá-la.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.grub.sysconfig">
+   <title>O arquivo <filename>/etc/sysconfig/bootloader</filename></title><indexterm> <primary>GRUB</primary> <secondary>sysconfig/bootloader</secondary></indexterm>
+   <para>
+    Esse arquivo de configuração só é usado para configurar o carregador de boot com o YaST e sempre que um novo kernel é instalado. Ele é avaliado pela biblioteca perl-bootloader, que modifica o arquivo de configuração do carregador de boot de acordo (por exemplo, <filename>/boot/grub/menu.lst</filename> para o GRUB). O <filename>/etc/sysconfig/bootloader</filename> não é um arquivo de configuração específico do GRUB, os valores são aplicados a qualquer carregador de boot instalado no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>.
+   </para>
+   <note>
+    <title>Configuração do carregador de boot após atualização do kernel</title>
+    <para>
+     Sempre que um novo kernel é instalado, o perl-bootloader grava um novo arquivo de configuração do carregador de boot (por exemplo, <filename>/boot/grub/menu.lst</filename> para o GRUB) usando os padrões especificados em <filename>/etc/sysconfig/bootloader</filename>. Se você estiver usando um conjunto personalizado de parâmetros de kernel, certifique-se de ajustar os padrões relevantes em <filename>/etc/sysconfig/bootloader</filename> de acordo com as suas necessidades.
+    </para>
+   </note>
+   <variablelist>
+    <varlistentry>
+     <term><literal>LOADER_TYPE</literal>
+     </term>
+     <listitem>
+      <para>
+       Especifica o carregador de boot instalado no sistema (ex. GRUB ou LILO). Não modifique, use o YaST para mudar o carregador de boot, conforme descrito em <xref linkend="pro.boot.yast2.config.loader"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>DEFAULT_VGA/FAILSAFE_VGA / XEN_VGA</literal>
+     </term>
+     <listitem>
+      <para>
+       A resolução de tela e a profundidade de cores do buffer de quadros usadas durante o boot são configuradas com o parâmetro de kernel <literal>vga</literal>. Esses valores definem qual resolução e profundidade de cores usar para as entradas de boot default, failsafe e XEN. Os seguintes valores são válidos:
+      </para>
+      <table>
+       <title>Referência de resolução de tela e profundidade de cores</title>
+       <tgroup cols="6">
+        <thead>
+         <row>
+          <entry>
+           <para/>
+          </entry>
+          <entry>
+           <para>
+            640x480
+           </para>
+          </entry>
+          <entry>
+           <para>
+            800x600
+           </para>
+          </entry>
+          <entry>
+           <para>
+            1024 x 768
+           </para>
+          </entry>
+          <entry>
+           <para>
+            1280x1024
+           </para>
+          </entry>
+          <entry>
+           <para>
+            1600x1200
+           </para>
+          </entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>
+           <para>
+            8bit
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x301
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x303
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x305
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x307
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31C
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            15bit
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x310
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x313
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x316
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x319
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31D
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            16bit
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x311
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x314
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x317
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31A
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31E
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            24bit
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x312
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x315
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x318
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31B
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31F
+           </para>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>DEFAULT_APPEND/FAILSAFE_APPEND/XEN_KERNEL_APPEND</literal>
+     </term>
+     <listitem>
+      <para>
+       Parâmetros do kernel (diferentes do <literal>vga</literal>) que são automaticamente anexados às entradas de boot padrão, de failsafe e do XEN no arquivo de configuração do carregador de boot.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>CYCLE_DETECTION/CYCLE_NEXT_ENTRY</literal>
+     </term>
+     <listitem>
+      <para>
+       Configure se deseja usar a detecção do ciclo de boot e, em caso afirmativo, qual entrada alternativa de <filename>/boot/grub/menu.lst</filename> usar no boot em caso de um ciclo de reinicialização (por exemplo, <systemitem>Failsafe</systemitem>). Consulte <filename>/usr/share/doc/packages/bootcycle/README</filename> para obter informações detalhadas.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.grub.password">
+   <title>Configurando uma senha de boot</title><indexterm> <primary>GRUB </primary> <secondary>senha de boot</secondary></indexterm>
+   <para>
+    Mesmo antes da inicialização do sistema operacional, o GRUB permite acesso aos sistemas de arquivos. Os usuários que não têm permissões raiz podem acessar os arquivos no seu sistema Linux aos quais não têm acesso depois que o sistema é inicializado. Para bloquear esse tipo de acesso ou impedir que os usuários inicializem certos sistemas operacionais, defina uma senha de boot.
+   </para>
+   <important>
+    <title>senha de boot e splash screen</title>
+    <para>
+     Se você usar uma senha de boot para o GRUB, a tela normal de apresentação não será exibida.
+    </para>
+   </important>
+   <para>
+    Como o usuário <literal>root</literal>, proceda da seguinte forma para definir uma senha de boot:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      No prompt do root, criptografe a senha usando grub-md5-crypt:
+     </para>
+<screen># grub-md5-crypt
+Password: ****
+Retype password: ****
+Encrypted: $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Cole a string criptografada na seção global do arquivo <filename>menu.lst</filename>:
+     </para>
+<screen>gfxmenu (hd0,4)/message
+color white/blue black/light-gray
+default 0
+timeout 8
+password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
+     <para>
+      Agora os comandos do GRUB só podem ser executados no prompt raiz depois que se pressionar <keycap>P</keycap> e se inserir a senha. No entanto, os usuários ainda podem inicializar todos os sistemas operacionais a partir do menu de boot.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para impedir que um ou vários sistemas operacionais sejam inicializados a partir do menu de boot, acrescente a entrada <literal>lock</literal> em cada seção no <filename>menu.lst</filename> que não deveria ser inicializada sem se inserir uma senha. Por exemplo:
+     </para>
+<screen>title linux
+   kernel (hd0,4)/vmlinuz root=/dev/sda7 vga=791
+   initrd (hd0,4)/initrd
+   lock</screen>
+     <para>
+      Depois de reiniciar o sistema e selecionar a entrada no Linux no menu de boot, é exibida a seguinte mensagem de erro:
+     </para>
+<screen>Error 32: Must be authenticated</screen>
+     <para>
+      Pressione <keycap>Enter</keycap> para inserir o menu. Depois pressione <keycap>P</keycap> para obter o prompt da senha. Depois de inserir a senha e pressionar <keycap>Enter</keycap>, o sistema operacional selecionado (o Linux, neste caso) não deve inicializar.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_yast_i.xml" parse="xml"/>
+ <sect1 id="sec.grub.entfernen">
+  <title>Desinstalando a controladora de boot do Linux</title><indexterm> <primary>desinstalando</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>desinstalando</primary> <secondary>Linux</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>desinstalando</secondary></indexterm><indexterm> <primary>Linux</primary> <secondary>desinstalando</secondary></indexterm>
+
+  <para>
+   O YaST pode ser usado para desinstalar o carregador de boot do Linux e recuperar o MBR para o estado que ele tinha antes da instalação do Linux. Durante a instalação, o YaST cria automaticamente uma cópia de backup do MBR original e a restaura mediante solicitação.
+  </para>
+
+  <para>
+   Para desinstalar o GRUB, inicie o YaST e clique em <menuchoice> <guimenu>Sistema</guimenu> <guimenu>Carregador de Boot</guimenu> </menuchoice> para iniciar o módulo do carregador de boot. Selecione <menuchoice> <guimenu>Outro</guimenu> <guimenu>Recuperar MBR do Disco Rígido</guimenu> </menuchoice> e confirme com <guimenu>Sim, Regravar</guimenu>.
+  </para>
+ </sect1>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_bootcd_i.xml" parse="xml"/>
+ <sect1 id="sec.boot.screen">
+  <title>A tela gráfica do SUSE</title><indexterm> <primary>inicializando</primary> <secondary>gráfico</secondary> </indexterm> <indexterm> <primary>consoles</primary> <secondary>gráficos</secondary> </indexterm>
+
+  <para>
+   A tela gráfica do SUSE será exibida no primeiro console se a opção <option>vga=<replaceable>valor</replaceable></option> for usada como parâmetro de kernel. Se você fizer a instalação usando o YaST, essa opção é automaticamente ativada de acordo com a resolução e a placa de vídeo selecionadas. Há três maneiras de desativar a tela SUSE, se desejado:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Desabilitando a tela do SUSE quando necessário</term>
+    <listitem>
+     <para>
+      Insira o comando <command>echo 0 &gt;/proc/splash</command> na linha de comando para desativar a tela gráfica. Para ativá-la novamente, insira <command>echo 1 &gt;/proc/splash</command>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Desabilitando a tela do SUSE por padrão.</term>
+    <listitem>
+     <para>
+      Acrescente o parâmetro de kernel <option>splash=0</option> à configuração do seu carregador de boot. O <xref linkend="cha.grub"/> fornece mais informações sobre isso. No entanto, se você preferir o modo de texto (que foi o padrão nas versões anteriores), defina <option>vga=normal</option>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Desativando completamente a tela SUSE</term>
+    <listitem>
+     <para>
+      Compile um novo kernel e desative a opção <guimenu>Usar a splash screen em vez do logotipo de boot</guimenu> no suporte a framebuffer<guimenu>.</guimenu> A desabilitação do suporte a buffer de quadros no kernel também desabilita automaticamente a splash screen. 
+     </para>
+     <warning>
+      <title>Sem suporte</title>
+      <para>
+       O SUSE não pode fornecer suporte ao seu sistema se você o executar com um kernel personalizado.
+      </para>
+     </warning>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.grub.probs">
+  <title>Solução de problemas</title><indexterm> <primary>GRUB</primary> <secondary>solução de problemas</secondary></indexterm>
+
+  <para>
+   Essa seção lista alguns dos problemas frequentemente encontrados na hora de inicializar com o GRUB e uma breve descrição das possíveis soluções. Alguns desses problemas são abordados em artigos da <phrase os="sled;sles">Base de Dados de Conhecimento, em <ulink url="http://www.suse.com/support"/></phrase>. Use a caixa de diálogo de pesquisa para procurar palavras-chave como <emphasis>GRUB</emphasis>, <emphasis>boot</emphasis> e <emphasis>carregador de boot</emphasis>.
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>GRUB e XFS</term>
+    <listitem>
+     <para>
+      O XFS não deixa espaço para o <filename>stage1</filename> no bloco de boot da partição. Portanto, não especifique uma partição XFS como local do carregador de boot. Esse problema pode ser resolvido com a criação de uma partição separada de boot que não é formatada com o XFS.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>O GRUB relata um erro de geometria no GRUB<indexterm><primary>GRUB</primary><secondary>Erro de geometria do GRUB</secondary></indexterm></term>
+    <listitem>
+     <para>
+      O GRUB verifica a geometria dos discos rígidos conectados quando o sistema é inicializado. Às vezes, a BIOS retorna informações inconsistentes e o GRUB cria um erro de geometria do GRUB. Quando isso ocorrer, atualize o BIOS.
+     </para>
+     <para>
+      O GRUB também retorna essa mensagem de erro se o Linux foi instalado em um disco rígido adicional não registrado no BIOS. O <emphasis>stage1</emphasis> do carregador de boot foi encontrado e carregado corretamente, mas o <emphasis>stage2</emphasis> não foi encontrado. Esse problema pode ser remediado registrando-se o novo disco rígido no BIOS.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Sistema contendo vários discos rígidos não é inicializado</term>
+    <listitem>
+     <para>
+      Durante a instalação, o YaST talvez tenha determinado incorretamente a sequência de boot dos discos rígidos. Por exemplo, o GRUB pode considerar o disco PATA (IDE) como <filename>hd0</filename> e o disco SCSI como <filename>hd1</filename>, embora a sequência de boot no BIOS seja invertida (SCSI <emphasis>antes de</emphasis> PATA).
+     </para>
+     <para>
+      Nesse caso, corrija os discos rígidos durante o processo de boot com a ajuda da linha de comando do GRUB. Depois que o sistema for inicializado, edite <filename>device.map</filename> para aplicar o novo mapeamento permanentemente. Depois verifique os nomes de dispositivo do GRUB nos arquivos <filename>/boot/grub/menu.lst</filename> e <filename>/boot/grub/device.map</filename> e reinstale o carregador de boot com o seguinte comando:
+     </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Inicializando o Windows do segundo disco rígido</term>
+    <listitem>
+     <para>
+      Alguns sistemas operacionais, como o Windows, podem ser inicializados apenas do primeiro disco rígido. Se um sistema operacional desse tipo for instalado em um disco rígido que não for o primeiro, você pode efetuar uma mudança lógica na respectiva entrada do menu.
+     </para>
+<screen>...
+title windows
+   map (hd0) (hd1)
+   map (hd1) (hd0)
+   chainloader(hd1,0)+1
+...</screen>
+     <para>
+      Nesse exemplo, o Windows é iniciado a partir do segundo disco rígido. Para essa finalidade, a ordem lógica dos discos rígidos é mudada com <literal>map</literal>. Essa alteração não afeta a lógica dentro do arquivo de menu do GRUB. Portanto, o segundo disco rígido deve ser especificado para <literal>chainloader</literal>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.grub.info">
+  <title>Para obter mais informações</title>
+
+  <para>
+   Em <ulink url="http://www.gnu.org/software/grub/"/>, há informações abrangentes sobre o GRUB Consulte também a página de informações <command>grub</command>. <phrase os="sles;sled">Você também pode pesquisar a palavra-chave <quote>GRUB </quote> na Pesquisa de Informações Técnicas em <ulink url="http://www.novell.com/support"/> para obter informações sobre problemas específicos.</phrase>
+  </para>
+ </sect1>
+</chapter>

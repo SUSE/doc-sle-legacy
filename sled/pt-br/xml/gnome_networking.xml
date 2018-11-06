@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="gnome_networking.xml" id="cha.gnome.network" lang="pt-br">
+ <title>Acessando recursos de rede </title>
+ <para>
+  Na sua área de trabalho, é possível acessar arquivos e diretório ou determinados serviços em hosts remotos ou disponibilizar seus próprios arquivos e diretórios para outros usuários na rede. O <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> oferece as seguintes maneiras de acessar e criar recursos compartilhados na rede.
+ </para>
+ <variablelist>
+  <varlistentry>
+   <term>Pesquisa na rede</term>
+   <listitem>
+    <para>
+     Seu gerenciador de arquivos, o Nautilus, permite que você procure serviços e recursos compartilhados na rede.  Saiba mais sobre isso na <xref linkend="sec.gnome.network.accshare"/>.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>Compartilhando pastas em ambientes mistos</term>
+   <listitem>
+    <para>
+     Use o Nautilus para configurar arquivos e pastas e compartilhá-los com outros membros da rede.  Torne seus dados legíveis ou graváveis para os usuários de qualquer estação de trabalho Windows ou Linux. Saiba mais sobre isso na <xref linkend="sec.gnome.network.smbshare"/>.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>Gerenciando arquivos do Windows</term>
+   <listitem>
+    <para>
+     É possível configurar o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> para integrar-se a qualquer rede existente do Windows. Depois disso, sua máquina Linux se comportará como um cliente Windows. Ela obterá todas as informações sobre a conta do controlador de domínio do Active Directory, da mesma forma que os clientes Windows. Saiba mais sobre isso na <xref linkend="sec.gnome.network.ad.data"/>.
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>Configurando e acessando uma impressora de rede do Windows</term>
+   <listitem>
+    <para>
+     Você pode configurar uma impressora de rede do Windows através do Centro de Controle do GNOME.  Consulte a <xref linkend="sec.gnome.network.ad.printer"/> para saber como fazer essa configuração.
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <sect1 id="sec.gnomeuser.start.network.connect">
+  <title>Conectando-se à rede</title>
+
+  <para>
+   Você pode se conectar a uma rede por meio de conexões com fio ou sem fio. Para ver o status de conexão da rede, clique em <guimenu>Computador</guimenu>. Na área <guimenu>Status</guimenu> do menu principal, o ícone <guimenu>Rede</guimenu> mostra o status da conexão de rede. Clique no ícone para abrir o módulo Configurações de Rede do YaST. Utilize esse módulo para definir o método de configuração de rede ou editar a configuração da placa de rede. Consulte a <xref linkend="sec.basicnet.yast"/> para obter os detalhes.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.network.general">
+  <title>Visão geral sobre compartilhamento de arquivos e pesquisa na rede</title>
+
+  <para>
+   A estrutura da rede e a configuração de sua máquina determinam principalmente se, e até que ponto, você poderá usar os recursos de compartilhamento de arquivos e pesquisa de rede em sua máquina e em sua rede. Antes de configurar qualquer um deles, contate o administrador do sistema para verificar se sua estrutura de rede suporta o recurso e se as políticas de segurança de sua empresa o permitem.
+  </para>
+
+  <para>
+   A pesquisa de rede, seja ela a pesquisa SMB para compartilhamentos Windows ou a pesquisa SLP para serviços remotos, baseia-se principalmente na capacidade da máquina para enviar mensagens de broadcast a todos os clientes da rede. Essas mensagens e as respostas dos clientes permitem que sua máquina detecte quaisquer compartilhamentos ou serviços disponíveis. Para o funcionamento efetivo de broadcasts, sua máquina deve fazer parte da mesma sub-rede de todas as outras máquinas consultadas. Se a pesquisa de rede não funcionar na sua máquina ou os serviços e os compartilhamentos detectados não corresponderem ao esperado, contate o administrador do sistema para verificar se está conectado à sub-rede apropriada.
+  </para>
+
+  <para>
+   Para permitir a pesquisa de rede, é necessário que sua máquina mantenha várias portas de rede abertas para envio e recebimento de mensagens de rede contendo detalhes da rede e da disponibilidade de compartilhamentos e serviços. O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> padrão é configurado para reforçar a segurança e possui um firewall que protege a máquina contra ataques da Internet. Para ajustar a configuração do firewall, você precisa pedir ao administrador do sistema para colocar a interface na zona interna ou desativar o firewall inteiramente (dependendo da política de segurança da sua empresa). Se você tentar pesquisar uma rede com um firewall restritivo em execução na máquina, o Nautilus o avisará que suas restrições de segurança o impedem de consultar a rede.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.network.accshare">
+  <title>Acessando compartilhamentos de rede</title>
+
+  <para>
+   As estações de trabalho de rede podem ser configuradas para compartilhar pastas. Em geral, os arquivos e as pastas são marcados para permitir o acesso remoto dos usuários. Eles se chamam <emphasis>compartilhamentos de rede</emphasis>. Se o seu sistema estiver configurado para acessar compartilhamentos de rede, você poderá usar o gerenciador de arquivos para acessar esses compartilhamentos e pesquisá-los facilmente como se estivessem em sua máquina local. O seu nível de acesso às pastas compartilhadas (acesso somente leitura ou de gravação) depende das permissões concedidas a você pelo proprietário dos compartilhamentos.
+  </para>
+
+  <para>
+   Para acessar compartilhamentos de rede, abra o Nautilus e clique em <guimenu>Rede</guimenu> a partir do painel Lugares. <guimenu/> O Nautilus exibe os servidores e as redes que você pode acessar. Clique duas vezes em um servidor ou rede para acessar seus compartilhamentos. Talvez você receba uma solicitação para se autenticar no servidor fornecendo um nome de usuário e uma senha. Os compartilhamentos de rede comuns são recursos acessíveis por SFTP (Protocolo de Transferência de Arquivo SSH) ou compartilhamentos Windows.
+  </para>
+
+  <figure>
+   <title>Browser de arquivos de rede</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="network_browser.png" width="70%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="network_browser.png" width="70%" format="png"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <sect2 id="sec.gnomeuser.start.network.shares.add">
+   <title>Adicionando um local de rede</title>
+   <procedure>
+    <step performance="required">
+     <para>
+      Clique em <menuchoice> <guimenu>Computador</guimenu> <guimenu>Browser de Arquivos Nautilus</guimenu> <guimenu>Arquivo</guimenu> <guimenu>Conectar ao Servidor</guimenu> </menuchoice>.
+     </para>
+     <figure>
+      <title>Caixa de diálogo Conectar ao Servidor</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="connect_server_a.png" format="PNG" width="50%"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="connect_server_a.png" format="png" width="50%"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione um tipo de serviço e especifique as informações necessárias para o seu tipo de serviço.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para adicionar a conexão como marcador, marque <guimenu>Adicionar marcador</guimenu> e digite o nome.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Conectar</guimenu>.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.gnome.network.smbshare">
+  <title>Compartilhando pastas</title>
+
+  <para>
+   O compartilhamento e a troca de documentos são imprescindíveis em ambientes corporativos. O Nautilus lhe oferece o compartilhamento de arquivos, que torna seus arquivos e pastas disponíveis para usuários do Linux e do Windows.
+  </para>
+
+  <sect2 id="sec.gnome.network.sharingcomputer">
+   <title>Habilitando o compartilhamento no computador</title>
+   <para>
+    Para que você possa compartilhar uma pasta, deve habilitar o compartilhamento no seu computador. Para habilitar o compartilhamento:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Inicie o YaST no menu principal.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Digite a senha do <systemitem class="username">root</systemitem>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Serviços de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Participação no Domínio do Windows</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Permitir aos Usuários Compartilhar seus Diretórios</guimenu> e em <guimenu>OK</guimenu>.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.gnome.network.sharingfolder">
+   <title>Habilitando o compartilhamento para uma pasta</title>
+   <para>
+    Para configurar o compartilhamento de arquivos para uma pasta:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Abra o Nautilus.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique o botão direito do mouse em uma pasta e selecione <guimenu>Opções de Compartilhamento</guimenu> no menu de contexto.
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="folder_sharing_1_a.png" width="35%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="folder_sharing_1_a.png" width="35%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione <guimenu>Compartilhar esta pasta</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se quiser que outras pessoas possam gravar na pasta, selecione <guimenu>Permitir que outras pessoas gravem nesta pasta</guimenu>. Para permitir acesso a pessoas sem conta de usuário, marque <guimenu>Acesso de convidado</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Criar Compartilhamento</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se a pasta ainda não tiver as permissões necessárias para compartilhamento, será exibida uma caixa de diálogo. Clique em <guimenu>Adicionar as permissões automaticamente</guimenu>.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    O ícone de pasta muda para indicar que a pasta está sendo compartilhada agora.
+   </para>
+   <important>
+    <title>Pesquisa no domínio do Samba</title>
+    <para>
+     A pesquisa no domínio do Samba somente funcionará se o firewall do seu sistema estiver configurado de forma apropriada. Desabilite completamente o firewall ou atribua a interface de pesquisa à zona interna de firewall. Pergunte ao administrador do sistema sobre como proceder.
+    </para>
+   </important>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.gnome.network.ad.data">
+  <title>Gerenciando arquivos do Windows</title>
+
+  <para>
+   Com a máquina do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> funcionando como cliente do Active Directory, você poderá procurar, ver e manipular os dados localizados nos servidores Windows. Os exemplos a seguir são apenas os mais proeminentes:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Pesquisando arquivos do Windows com o Nautilus</term>
+    <listitem>
+     <para>
+      Use os recursos de pesquisa na rede do Nautilus para procurar dados do Windows.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Exibindo dados do Windows com o Nautilus</term>
+    <listitem>
+     <para>
+      Use o Nautilus para exibir o conteúdo de sua pasta de usuário do Windows, da mesma forma como faria para exibir um diretório do Linux.  Crie novos arquivos e pastas no servidor Windows.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Manipulando dados do Windows com aplicativos do GNOME</term>
+    <listitem>
+     <para>
+      Muitos aplicativos do GNOME permitem que você abra arquivos no servidor Windows, manipule-os e grave-os de volta no servidor Windows.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Single Sign-On</term>
+    <listitem>
+     <para>
+      Os aplicativos do GNOME, incluindo o Nautilus, suportam Single Sign-On. Isso significa que, para acessar outros recursos do Windows, como servidores Web, servidores proxy ou servidores groupware, como MS Exchange, você não precisa se autenticar novamente. A autenticação nesses itens é administrada silenciosamente em segundo plano, com o uso da senha e do nome de usuário fornecidos no login.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   Para acessar seus dados do Windows com o Nautilus, faça o seguinte:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Abra o Nautilus e clique em <guimenu>Rede</guimenu> no painel Lugares.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Clique duas vezes em <guimenu>Rede do Windows</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Clique duas vezes no ícone do grupo de trabalho que contém o computador que você deseja acessar.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Clique no ícone do computador (e se autentique, se for solicitado a fazer isso); em seguida, navegue para a pasta compartilhada no computador.
+    </para>
+   </step>
+  </procedure>
+
+  <para>
+   Para criar pastas em sua pasta de usuário do Windows com o Nautilus, execute o mesmo procedimento usado para a criação de uma pasta do Linux.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.network.ad.printer">
+  <title>Configurando e acessando uma impressora de rede do Windows</title>
+
+  <para>
+   Ao fazer parte de uma rede corporativa e depois de se autenticar em um servidor do Active Directory no Windows, você poderá acessar os recursos da empresa, como impressoras. O GNOME permite configurar a impressão de seu cliente Linux para uma impressora de rede do Windows.
+  </para>
+
+  <para>
+   Para configurar uma impressora de rede do Windows e utilizá-la em uma estação de trabalho Linux, proceda da seguinte forma:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Inicie o Centro de Controle do GNOME pelo menu principal clicando em <menuchoice> <guimenu>Computador</guimenu> <guimenu>Centro de Controle</guimenu> <guimenu>Hardware</guimenu> <guimenu>Impressão</guimenu> </menuchoice>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Selecione <menuchoice> <guimenu>Novo</guimenu> <guimenu>Impressora</guimenu> </menuchoice>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Selecione <guimenu>Impressora Windows via SAMBA</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Abra o Browser SMB com <guimenu>Procurar</guimenu> e selecione um grupo de trabalho, um servidor e a impressora. Digite as credenciais de autenticação ou opte por receber uma solicitação de autenticação sempre que acessar a impressora. Clique em <guimenu>Encaminhar</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Escolha o fabricante e o modelo da impressora na lista e selecione um driver. A opção marcada com <guimenu>recomendado</guimenu> geralmente produz os melhores resultados. Vá para <guimenu>Encaminhar</guimenu> e especifique um nome, uma descrição e um local para a impressora. Clique em <guimenu>Aplicar</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     A adição de uma impressora requer privilégios de <systemitem class="username">root</systemitem>, portanto, você deve digitar a senha <systemitem class="username">root</systemitem> como a etapa final para adicioná-la.
+    </para>
+   </step>
+  </procedure>
+
+  <para>
+   Para usar a impressora de rede do Windows configurada acima, selecione-a na lista de impressoras disponíveis.
+  </para>
+ </sect1>
+</chapter>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="grub_bootcd_i.xml" id="sec.grub.bootcd">
+ <title>创建引导 CD</title><indexterm><primary>磁盘</primary><secondary>引导</secondary></indexterm>
+
+ <para>
+  如果使用引导管理器引导系统时出现问题或不能将引导管理器安装在硬盘磁盘上，那么还可以创建包含所有必需的 Linux 启动文件的可引导 CD。这需要您的系统中安装有 CD 刻录机。
+ </para>
+
+ <para>
+  用 GRUB 创建可引导 CD-ROM 只需要特殊形式的 <emphasis>stage2</emphasis>（名为 <filename>stage2_eltorito</filename>）以及自定义的 <filename>menu.lst</filename>（可选）。不需要标准文件 <filename>stage1</filename> 和 <filename>stage2</filename>。
+ </para>
+
+ <procedure>
+  <title>创建引导 CD</title>
+  <step performance="required">
+   <para>
+    将目录更改为要创建 ISO 映像的目录，例如：<command>cd</command> <filename>/tmp</filename>
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    创建 GRUB 的子目录，并切换到新创建的 <filename>iso</filename> 目录：
+   </para>
+<screen>mkdir -p iso/boot/grub &amp;&amp; cd iso</screen>
+  </step>
+  <step performance="required">
+   <para>
+    将内核、文件 <filename>stage2_eltorito</filename>、<filename>initrd</filename>、<filename>menu.lst</filename> 和 <filename>message</filename> 复制到 <filename>iso/boot/</filename>：
+   </para>
+<screen>cp /boot/vmlinuz boot/
+cp /boot/initrd boot/
+cp /boot/message boot/
+cp /usr/lib/grub/stage2_eltorito boot/grub
+cp /boot/grub/menu.lst boot/grub</screen>
+   <para>
+    
+    在某些情况下（例如，引导多个操作系统时），将 <filename>//boot/grub/device.map</filename> 复制到 <filename>boot/grub</filename> 也有用。  
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    将 <literal>root (hd<replaceable>x</replaceable>, <replaceable>y</replaceable>)</literal> 项替换为 <literal>root (cd)</literal> 以指向 CD_ROM 设备。您可能还需要调整讯息文件、内核和 initrd 的路径，它们应分别指向 <filename>/boot/message</filename>、<filename>/boot/vmlinuz</filename> 和 <filename>/boot/initrd</filename>。调整好后，<filename>menu.lst</filename> 的显示应与以下示例类似：
+   </para>
+<screen>timeout 8
+default 0
+gfxmenu (cd)/boot/message
+
+title Linux
+   root (cd)
+   kernel /boot/vmlinuz root=/dev/sda5 vga=794 resume=/dev/sda1 \
+   splash=verbose showopts
+   initrd /boot/initrd</screen>
+   <para>
+    使用 <option>splash=silent</option> 代替 <option>splash=verbose</option> 来防止引导过程中出现引导消息。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    用以下命令创建 ISO 映像：
+   </para>
+<screen>genisoimage -R -b boot/grub/stage2_eltorito -no-emul-boot \
+-boot-load-size 4 -boot-info-table -iso-level 2 -input-charset utf-8 \
+-o grub.iso /tmp/iso</screen>
+  </step>
+  <step performance="required">
+   <para>
+    使用您选择的实用程序将最终文件 <filename>grub.iso</filename> 刻录到 CD 上。不要将 ISO 映像作为数据文件刻录，而要使用刻录实用程序中刻录 CD 映像的选项。
+   </para>
+  </step>
+ </procedure>
+</sect1>

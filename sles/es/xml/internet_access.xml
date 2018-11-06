@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="internet_access.xml" id="cha.internet">
+ <title>Acceso a Internet</title><indexterm> <primary>Internet</primary> <secondary>configuración</secondary></indexterm>
+ <abstract>
+  <para>
+   Si ha decidido no configurar el acceso a Internet durante la instalación, puede realizar esta tarea en cualquier otro momento mediante YaST. La forma de configurar el acceso del equipo a Internet depende del entorno. Si el equipo que está instalando forma parte de una red que ya está conectada a Internet, lo único que tiene que hacer es enlazar el equipo a Internet. Si va a instalar un equipo conectado directamente a Internet, habrá que configurar el hardware y el acceso al proveedor de servicios de Internet (ISP).
+  </para>
+
+  <para>
+   Compruebe las listas de verificación siguientes para asegurarse de que dispone de todos los datos necesarios antes de empezar a configurar el acceso a Internet.
+  </para>
+ </abstract>
+ <sect1 id="sec.internet.direct">
+  <title>Conexión directa a Internet</title><indexterm> <primary>Internet</primary> <secondary>conexión directa</secondary></indexterm>
+
+  <para>
+   Si el equipo está directamente conectado a Internet, primero debe configurar el hardware que se usará para esta tarea. Puede tratarse de un dispositivo interno (como una tarjeta RDSI) o externo (por ejemplo, un módem). En la mayoría de los casos, se detecta automáticamente.
+  </para>
+
+  <para>
+   A continuación, debe introducir los datos proporcionados por el ISP (como las credenciales de entrada, la gateway o el nombre del servidor, por ejemplo). Su ISP le habrá enviado una hoja de datos con todos los datos necesarios.
+  </para>
+
+  <para>
+   Si ha configurado correctamente el hardware y los datos del ISP, utilice NetworkManager para gestionar la conexión a Internet. Consulte el <xref linkend="cha.nm"/> para obtener más información.
+  </para>
+
+  <sect2 id="sec.internet.direct.dsl">
+   <title>Lista de verificación de DSL</title><indexterm> <primary>Internet</primary> <secondary>lista de verificación de DSL</secondary></indexterm><indexterm> <primary>Internet</primary> <secondary>DSL</secondary></indexterm>
+   <para>
+    Existen varios tipos de dispositivos DSL disponibles que ofrecen métodos de protocolo punto a punto (PPP) diferentes:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Una tarjeta Ethernet conectada al módem DSL externo usa PPP sobre Ethernet (PPPoE). En Austria se usa el protocolo de túnel punto a punto (PPTP). Con PPTP, el módem externo también tiene una dirección IP estática.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Un módem DSL interno que usa PPP sobre ATM (PPPoATM).
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Una tarjeta ADSL Fritz interna que usa CAPI para ADSL.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    El módulo de configuración de DSL ya incluye los datos de los principales ISP de algunos países. Si el ISP no aparece en la lista, deberá averiguar cómo se gestiona la resolución de nombres (DNS) y la asignación de IP (en la mayoría de los casos, estos datos se reciben automáticamente al conectar). Independientemente de que elija una IP de la lista o de que añada un proveedor personalizado, deberá introducir al menos el nombre de usuario y la contraseña.
+   </para>
+   <para>
+    Para obtener detalles de la configuración, consulte la <xref linkend="sec.basicnet.yast.xdsl"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.internet.direct.isdn">
+   <title>Lista de verificación de RDSI</title><indexterm> <primary>Internet</primary> <secondary>lista de verificación de RDSI</secondary></indexterm><indexterm> <primary>Internet</primary> <secondary>RDSI</secondary></indexterm>
+   <para>
+    En caso de que la tarjeta RDSI interna no se detecte automáticamente, deberá conocer el proveedor y el nombre del dispositivo.
+   </para>
+   <para/>
+   <note>
+    <title>módem o adaptador de terminal RDSI</title>
+    <para>
+     Si utiliza un módem o un adaptador de terminal RDSI externo, consulte la <xref linkend="sec.internet.direct.modem"/>.
+    </para>
+   </note>
+   <para>
+    Para poder configurar el dispositivo RDSI, necesita los datos siguientes:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Protocolo RDSI (depende del país).
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Prefijo telefónico y número de teléfono.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Tipo de interfaz (SyncPPP o RawIP). Si no está seguro, seleccione SyncPPP, ya que RawIP solo se usa en las conexiones con ciertos sistemas telefónicos.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Las direcciones IP local y remota del servidor de acceso telefónico y la gateway, en caso de que el proveedor asigne una dirección IP estática.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      El módulo de configuración de RDSI ya incluye los datos de los principales ISP de algunos países. Si el ISP no aparece en la lista, deberá averiguar cómo se gestiona la resolución de nombres (DNS) y la asignación de IP (en la mayoría de los casos, estos datos se reciben automáticamente al conectar). Independientemente de que elija una IP de la lista o de que añada un proveedor personalizado, deberá introducir al menos el nombre de usuario y la contraseña.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Para obtener detalles de la configuración, consulte la <xref linkend="sec.basicnet.yast.isdn"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.internet.direct.modem">
+   <title>Lista de verificación del módem</title><indexterm> <primary>Internet</primary> <secondary>lista de verificación del módem</secondary></indexterm><indexterm> <primary>Internet</primary> <secondary>módem</secondary></indexterm>
+   <para>
+    Si el módem no se detecta automáticamente, deberá conocer si está conectado a un puerto serie o a un puerto USB. Tenga en cuenta que <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> no es compatible con todos los módems USB o internos.
+   </para>
+   <para>
+    El módulo de configuración del módem ya incluye los datos de los principales ISP de algunos países. Si el ISP no aparece en la lista, deberá averiguar el número de acceso telefónico y cómo se gestiona la resolución de nombres (DNS) y la asignación de IP (en la mayoría de los casos, estos datos se reciben automáticamente al conectar). Independientemente de que elija una IP de la lista o de que añada un proveedor personalizado, deberá introducir al menos el nombre de usuario y la contraseña.
+   </para>
+   <para>
+    Para obtener detalles de la configuración, consulte la <xref linkend="sec.basicnet.yast.modem"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.internet.direct.cablemodem">
+   <title>Lista de verificación del módem de cable</title><indexterm> <primary>Internet</primary> <secondary>lista de verificación del módem de cable</secondary></indexterm><indexterm> <primary>Internet</primary> <secondary>módem de cable</secondary></indexterm>
+   <para>
+    El acceso a Internet a través de un cable de TV requiere un módem de cable. Este tipo de módem se conecta al equipo a través de un cable Ethernet. En consecuencia, solo es necesario configurar la tarjeta de red. Para obtener información detallada, consulte la <xref linkend="sec.basicnet.yast.cablemodem"/>.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.internet.network">
+  <title>Conexión a Internet a través de la red</title><indexterm> <primary>Internet</primary> <secondary>conexión por red</secondary></indexterm>
+
+  <para>
+   Si el equipo forma parte de una red que ya está conectada a Internet, resulta muy fácil obtener acceso a Internet (solo hay que configurar la tarjeta de red y conectar el equipo a la red existente). Esto no solo se aplica a grandes redes corporativas, sino también a las pequeñas redes domésticas. Incluso si el equipo que pretende instalar solo está conectado a un router (por ejemplo, DSL), ya forma parte de una red. Es irrelevante si utiliza un adaptador inalámbrico o con cables.
+  </para>
+
+  <note>
+   <title>enrutamiento y servicios de servicios de nombres</title>
+   <para>
+    A continuación se presupone que la red está conectada a Internet y que proporciona enrutamiento y servicios de nombres. Si estos servicios los proporciona un router, asegúrese de que esté configurado correctamente antes de configurar el cliente.
+   </para>
+  </note>
+
+  <sect2>
+   <title>Lista de verificación de la red</title><indexterm> <primary>Internet</primary> <secondary>lista de verificación de la red</secondary></indexterm>
+   <para>
+    Si la red proporciona DHCP (Dynamic Host Configuration Protocol, protocolo de configuración dinámica de host), lo único que tiene que hacer es marcar las casillas de verificación oportunas a la hora de configurar la tarjeta de red (todos los parámetros necesarios los proporcionará el servidor DHCP).
+   </para>
+   <para>
+    Si DHCP no está disponible, pida al administrador de la red los siguientes datos:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Host
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Servidor de nombres
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Gateway
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Para obtener información sobre la configuración de las tarjetas de red con cables, consulte la <xref linkend="sec.basicnet.yast.netcard"/>; para información sobre tarjetas de red inalámbricas, consulte la <xref linkend="sec.wireless.wlan.yast2"/>.
+   </para>
+  </sect2>
+ </sect1>
+</chapter>

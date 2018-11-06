@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_slp.xml" id="cha.slp">
+ <title>網路中的 SLP 服務</title><indexterm> <primary>網路</primary> <secondary>SLP</secondary> </indexterm> <indexterm> <primary>服務位置通訊協定</primary> <see>SLP</see> </indexterm> <indexterm> <primary>SLP</primary> </indexterm> <indexterm> <primary>通訊協定</primary> <secondary>SLP</secondary> </indexterm>
+ <abstract>
+  <para>
+   <emphasis>服務位置通訊協定</emphasis> (SLP) 是開發用來簡化區域網路內的網路用戶端組態。若要設定網路用戶端 (包含所有必要的服務)，一般而言管理員需要對於網路中可用的伺服器有詳細的瞭解。SLP 可讓區域網路中的所有用戶端，都知道選定服務的可用性。支援 SLP 的應用程式可以使用散佈的資訊並可自動設定。
+  </para>
+ </abstract>
+ <para>
+  <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 支援使用 SLP 所提供的安裝來源進行安裝，並包含許多具有 SLP 整合支援的系統服務。YaST 和 Konqueror 都包含 SLP 適當的前端介面。您可以使用 SLP 以提供主要的功能給網路上的用戶端，例如系統上的安裝伺服器、檔案伺服器或是列印伺服器。
+ </para>
+
+
+ <important>
+  <title><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中的 SLP 支援</title>
+  <para>
+   提供 SLP 支援的服務包含 cupsd、rsyncd、ypserv、openldap2、ksysguardd、saned、kdm、vnc、login、smpppd、rpasswd、postfix 以及 sshd (透過 fish)。
+  </para>
+ </important>
+ <sect1 id="sec.slp.openslpinst">
+  <title>安裝</title>
+
+  
+
+  <para os="sled;sles">
+
+   預設會安裝所有必需的套件。但是，如果要透過 SLP 提供服務，請檢查是否已安裝 <systemitem>openslp-server</systemitem> 套件。
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.act">
+  <title>啟用 SLP</title>
+
+  <para>
+   您系統必須執行 slpd，才能提供 SLP 服務。如果機器僅做為用戶端執行並且不提供服務，則無需執行 slpd。就像 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中的大部份系統服務一樣，slpd 精靈是利用獨立的 <command>init</command> 程序檔來控制。安裝完成後，依預設此精靈將處於非啟動狀態。若要暫時啟動，請以 <systemitem class="username">root</systemitem> 身份執行 <command>rcslpd <option>start</option></command> 或執行 <command>rcslpd <option>stop</option></command> 將其停止。請以 <option>restart</option> 或 <option>status</option> 執行重新啟動或狀態檢查。若 slpd 在開機後應始終處於啟用狀態，請在 YaST<menuchoice><guimenu>系統</guimenu><guimenu>系統服務 (執行層級)</guimenu></menuchoice>中啟用 slpd，或以 <systemitem class="username">root</systemitem> 身份執行 <command>insserv</command> <option>slpd</option> 指令。
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.fend">
+  <title><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中的 SLP 前端</title>
+
+  <para>
+   若要在您的網路中尋找透過 SLP 提供的服務，請使用 SLP 前端，例如 <command>slptool</command> (<systemitem>openslp</systemitem> 套件) 或 YaST：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>slptool</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>SLP</primary> <secondary>slptool</secondary> </indexterm> <indexterm> <primary>指令</primary> <secondary>slptool</secondary> </indexterm>slptool 是一個指令行程式，可以宣告網路中的 SLP 查詢或宣告專用的服務。<command>slptool</command> <option>--help</option> 會列出所有可用的選項與功能。例如，若要在目前網路中尋找所有自我宣告的時間伺服器，請執行以下指令︰
+     </para>
+<screen>slptool findsrvs service:ntp</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>YaST</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>SLP</primary> <secondary>yast</secondary> </indexterm>YaST 還提供了一個 SLP 瀏覽器。不過，在 YaST 控制中心內無法使用此瀏覽器。若要啟動此瀏覽器，請以 <systemitem class="username">root</systemitem> 使用者身分執行 <command>yast2 slp</command>。按一下左側的<guimenu>服務類型</guimenu>，以獲取有關服務的詳細資訊。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.slp.sl.inst" os="osuse;sles">
+  <title>透過 SLP 安裝</title>
+
+  <para>
+
+   如果您的網路中提供了 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安裝媒體的安裝伺服器，就可以使用 SLP 註冊和提供安裝媒體。如需詳細資料，請參閱<xref linkend="sec.deployment.remoteinst.instserver"/>。如果已選取 SLP 安裝，linuxrc 會在系統從選取的開機媒體開機後啟動 SLP 查詢，並顯示所找到的來源。
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.reg">
+  <title>透過 SLP 提供服務</title><indexterm> <primary>SLP</primary> <secondary>登錄服務</secondary> </indexterm> <indexterm> <primary>SLP</primary> <secondary>提供服務</secondary> </indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中的許多應用程式透過使用 <literal>libslp</literal> 程式庫已經具有整合的 SLP 支援。如果尚未使用 SLP 支援來編譯服務，請使用下列方式之一來透過 SLP 進行編譯：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>使用 <filename>/etc/slp.reg.d</filename> 的靜態註冊
+    </term>
+    <listitem>
+     <para>
+      針對每個新的服務建立個別的註冊檔。以下是註冊掃描器服務的範例：
+     </para>
+<screen>## Register a saned service on this system
+## en means english language
+## 65535 disables the timeout, so the service registration does
+## not need refreshes
+service:scanner.sane://$HOSTNAME:6566,en,65535
+watch-port-tcp=6566
+description=SANE scanner daemon</screen>
+     <para>
+      在此檔案中最重要的一行為 <emphasis>service URL</emphasis>，它是以 <literal>service:</literal> 開始。這包含服務類型 (<literal>scanner.sane</literal>) 以及位址 (可在其中找到伺服器可用的服務)。<replaceable>$HOSTNAME</replaceable> 會以完整的主機名稱自動取代。接著可以找到相關服務的 TCP 埠名稱，它們之間是以冒號分隔。然後輸入服務應該出現的語言以及註冊期間的秒數。這些都應該使用逗號與服務 URL 分隔。在 <literal>0</literal> 與 <literal>65535</literal> 之間設定註冊期間的值。<literal>0</literal> 會防止註冊。<literal>65535</literal> 會移除所有的限制。
+     </para>
+     <para>
+      註冊檔另外還包含 <systemitem>watch-port-tcp</systemitem> 與 <systemitem>description</systemitem> 兩個變數。<systemitem>watch-port-tcp</systemitem> 將 SLP 服務宣告連結至由 slpd 檢查到的服務狀態，即相關服務是否啟用。第二個變數是對顯示在適當瀏覽器中的服務，提供更為精確的描述。
+     </para>
+     <tip os="sles">
+      <title>YaST 與 SLP</title>
+      <para>
+       當您在模組對話方塊中啟動 SLP 時，一些由 YaST 所仲介的服務 (例如安裝伺服器或 YOU 伺服器) 會自動執行此註冊。接著 YaST 就會為這些服務建立註冊檔。
+      </para>
+     </tip>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>使用 <filename>/etc/slp.reg</filename> 的靜態註冊
+    </term>
+    <listitem>
+     <para>
+      此方法與使用 <filename>/etc/slp.reg.d</filename> 的程序的唯一區別在於所有服務都會在中心檔案內分組。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>使用 <command>slptool</command> 的動態註冊
+    </term>
+    <listitem>
+     <para>
+      如果要動態註冊服務而不使用組態檔案，請使用 slptool 指令行公用程式。這一公用程式還可用於取消註冊現有服務提供而無需重新啟動 slpd。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.slp.info">
+  <title>更多資訊</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>RFC 2608、2609、2610</term>
+    <listitem>
+     <para>
+      RFC 2608 一般會處理 SLP 的定義。RFC 2609 會處理更加詳細的服務 URL 語法，而 RFC 2610 則會透過 SLP 處理 DHCP。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://www.openslp.org"/>
+    </term>
+    <listitem>
+     <para>
+      OpenSLP 計劃的首頁。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/usr/share/doc/packages/openslp</filename>
+    </term>
+    <listitem>
+     <para>
+      此目錄包含 <systemitem>openslp-server</systemitem> 套件隨附的 SLP 文件，包括 <filename>README.SuSE</filename> (含有 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 詳細資料)、RFC 以及兩個介紹性的 HTML 文件。想要使用 SLP 功能的程式設計師可以在 <systemitem class="resource">openslp-devel</systemitem> 套件隨附的《<emphasis>程式設計師指南</emphasis>》中找到詳細資訊。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+</chapter>

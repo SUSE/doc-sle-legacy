@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="zseries_prep_i.xml" id="sec.zseries.prep">
+ <title>Preparación para la instalación</title>
+
+ <para>
+  Esta sección describe cómo hacer que los datos estén disponibles para la instalación, cómo instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> mediante distintos métodos y cómo preparar y utilizar IPL en el sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. También encontrará información acerca de la configuración de la red y la instalación en red.
+ </para>
+
+ <sect2 id="sec.prep.makeavail">
+  <title>Cómo hacer que estén disponibles los datos de instalación</title><indexterm> <primary>preparación</primary> <secondary>cómo hacer que estén disponibles los datos de instalación</secondary></indexterm><indexterm> <primary>cómo hacer que estén disponibles los datos de instalación</primary></indexterm>
+  <para>
+   Esta sección proporciona información detallada sobre cómo hacer que los datos de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> en IBM System z estén disponibles para la instalación. Dependiendo del equipo y el entorno del sistema, seleccione entre una instalación NFS o FTP. Si utiliza estaciones de trabajo con Microsoft Windows en el entorno, también puede utilizar la red de Windows, incluido el protocolo SMB, para instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> en sistemas IBM System z.
+  </para>
+  <tip>
+   <title>IPL desde el DVD</title>
+   <para>
+    A partir del paquete de servicio 1 de la versión 10 de SUSE Linux Enterprise Server, es posible realizar la IPL desde el DVD y emplear el DVD como medio de instalación, lo que resulta muy útil en el caso de que existan restricciones para configurar un servidor de instalación para proporcionar los medios de instalación a través de la red. El único requisito previo necesario es disponer de una unidad de DVD conectada SCSI.
+   </para>
+  </tip>
+  <note>
+   <title>sin instalación <quote>desde el disco duro</quote></title>
+   <para>
+    No es posible realizar la instalación desde el disco duro colocando el contenido del DVD en una partición de un DASD.
+   </para>
+  </note>
+  <sect3 id="sec.prep.makeavail.linuxws">
+   <title>Uso de una estación de trabajo Linux o el DVD de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></title><indexterm> <primary>cómo hacer que estén disponibles los datos de instalación</primary> <secondary>estación de trabajo Linux</secondary></indexterm>
+   <para>
+    Si dispone de una estación de trabajo Linux en el entorno informático, utilícela para proporcionar los datos de instalación al proceso de instalación de IBM System z desde NFS o FTP. Si la estación de trabajo Linux utiliza <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, puede configurar un servidor de instalación (NFS o FTP) mediante el módulo <guimenu>Servidor de instalación</guimenu> de YaST, tal y como se describe en la <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+   </para>
+   <sect4 id="sec.prep.makeavail.linuxws.nfs">
+    <title>A través de NFS</title>
+    <para>
+     Utilice NFS (sistema de archivos de red) para que el medio de instalación esté disponible.
+    </para>
+    <important>
+     <title>exportación de dispositivos montados mediante NFS</title>
+     <para>
+      La exportación de la raíz del sistema de archivos (<filename>/</filename>) no implica la exportación de los dispositivos montados, como los DVD. Nombre explícitamente el punto de montaje en <filename>/etc/exports</filename>:
+     </para>
+     <screen>/media/dvd  *(ro)</screen>
+     <para>
+      Después de modificar este archivo, reinicie el servidor NFS con el comando <command>rcnfsserver</command> <option>restart</option>.
+     </para>
+    </important>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.linuxws.ftp">
+    <title>A través de FTP</title>
+    <para>
+     La configuración de un servidor FTP en un sistema Linux implica la instalación del propio software de servidor (como wuftpd o proftpd), así como otras posibles tareas de configuración. Con YaST, el proceso de instalación implica un solo paso: seleccionar el paquete que se desea instalar e iniciar el proceso. Omita la configuración del servidor FTP si no se debe utilizar un acceso FTP anónimo para la instalación. En su lugar, utilice un nombre de usuario y una contraseña válidos para entrar en el servidor FTP. Es recomendable crear una cuenta de usuario dedicada exclusivamente a esta tarea. No es necesario iniciar el daemon FTP manualmente. Se puede iniciar desde inetd si se solicita una conexión FTP. Para activar valores de configuración nuevos, introduzca <command>rcinetd</command> <option>restart</option> o <command>rcxinetd</command> <option>restart</option>.
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.linuxws.oncd">
+    <title><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> en DVD</title>
+    <para>
+     El DVD1 de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> para IBM System z contiene una imagen arrancable de Linux para estaciones de trabajo basadas en Intel, así como una imagen para System z.
+    </para>
+    <para>
+     En el caso de las estaciones de trabajo basadas en Intel, arranque desde ese DVD, responda a las preguntas relativas al idioma y la distribución del teclado y seleccione <guimenu>Iniciar sistema de rescate.</guimenu> Necesitará al menos 64 MB de RAM para ello. No necesitará espacio en disco, dado que el sistema de rescate completo reside en la memoria RAM de la estación de trabajo. Este enfoque requiere una cierta experiencia con Linux y con las redes, dado que es necesario establecer la conexión en red de la estación de trabajo manualmente.
+    </para>
+    <para>
+     En el caso de System z, puede utilizar IPL en el invitado LPAR/VM desde este DVD, como se describe en la <xref linkend="sec.prep.ipling.lpar.dvd"/>. Después de introducir los parámetros de la red, el sistema de instalación trata el DVD como origen de los datos de instalación. Debido a que System z no admite que los terminales habilitados para X11 se conecten directamente, debe elegir entre la instalación VNC o SSH. SSH proporciona además una instalación gráfica transfiriendo la conexión X a través de SSH con <command>ssh -X</command>.
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.makeavail.windowsws">
+   <title>Utilización de una estación de trabajo Microsoft Windows</title><indexterm> <primary>cómo hacer que estén disponibles los datos de instalación</primary> <secondary>estación de trabajo Windows</secondary></indexterm>
+   <para>
+    Si hay alguna estación de trabajo con Microsoft Windows disponible en la red, utilice este equipo para que el medio de instalación esté disponible. El modo más sencillo de hacerlo es utilizar el protocolo SMB, ya incluido en el sistema operativo Windows. Asegúrese de activar <guimenu>SMB sobre TCP/IP,</guimenu> dado que esta opción habilita el encapsulamiento de paquetes SMB en paquetes TCP/IP. Puede consultar información detallada en la ayuda en línea de Windows y en otros documentos de Windows que describan el funcionamiento de la red. Otra opción es utilizar el protocolo FTP. Esto también requiere software de otros fabricantes para Windows.
+   </para>
+   <sect4 id="sec.prep.makeavail.windowsws.smb">
+    <title>A través de SMB</title>
+    <para>
+     Para que los medios de instalación estén disponibles a través de SMB, solo tiene que insertar el DVD 1 de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> en la unidad correspondiente de la estación de trabajo Windows. A continuación, cree un nuevo recurso compartido empleando la letra de la unidad de DVD-ROM y póngalo a disposición de todos los usuarios de la red.
+    </para>
+    
+    <para>La vía de instalación en YaST puede ser:</para>
+    <screen>smb://<replaceable>DOMAIN</replaceable>;<replaceable>USER</replaceable>:<replaceable>PW</replaceable>@<replaceable>SERVERNAME</replaceable>/<replaceable>SHAREPATH</replaceable></screen>
+     <para>Donde los espacios reservados significan:</para>
+     <variablelist>
+       <varlistentry>
+         <term><replaceable>DOMAIN</replaceable></term>
+         <listitem>
+           <para>Grupo de trabajo opcional o dominio de directorio activo.</para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><replaceable>USER</replaceable></term><term><replaceable>Contraseña</replaceable></term>
+         <listitem>
+           <para>Nombre de usuario y contraseña opcionales de un usuario que puede acceder al servidor y a su recurso compartido.</para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><replaceable>SERVERNAME</replaceable></term>
+         <listitem>
+           <para>Nombre del servidor que aloja el recurso compartido.</para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><replaceable>SHAREPATH</replaceable></term>
+         <listitem>
+           <para>Vía al recurso compartido.</para>
+         </listitem>
+       </varlistentry>
+     </variablelist>
+     
+     
+     <para/>
+    
+     
+   </sect4>
+   <sect4 id="sec.prep.makeavail.windowsws.nfs">
+    <title>A través de NFS</title>
+    <para>
+     Consulte la documentación proporcionada con el producto de otro fabricante que habilite los servicios del servidor NFS para la estación de trabajo Windows. La unidad de DVD-ROM que contenga los DVD de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> debe encontrarse en la vía NFS disponible.
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.windowsws.ftp">
+    <title>A través de FTP</title>
+    <para>
+     Consulte la documentación proporcionada con el producto de otro fabricante que habilite los servicios del servidor FTP para la estación de trabajo Windows. La unidad de DVD-ROM que contenga los DVD de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> debe encontrarse en la vía FTP disponible.
+    </para>
+    <para>
+     El servidor FTP incluido con algunas versiones de Microsoft Windows solo implementa un subconjunto del conjunto de comandos FTP y no es válido para proporcionar los datos de instalación. No obstante, otros productos, como el servidor FTP que forma parte de Hummingbird Exceed o WAR-FTPD, se consideran funcionales.
+    </para>
+   </sect4>
+   <sect4>
+    <title>Uso de una unidad de DVD SCSI conectada a FCP</title>
+    <para>
+     Tras realizar la IPL desde el DVD SCSI, como se describe en la <xref linkend="sec.info.iplopt.dvd"/>, el sistema de instalación usa el DVD como medio de instalación. En ese caso, no serán necesarios los medios de instalación de un servidor FTP, NFS ni SMB. Sin embargo, sí debe conocer los datos de configuración de red de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, ya que debe configurar la red durante la instalación para realizar la instalación gráfica con VNC o con X con túneles SSH.
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.makeavail.zpxe_cobbler">
+   <title>Uso de un servidor Cobbler para zPXE</title>
+   <para>
+    IPL desde la red requiere un servidor Cobbler que proporcione el núcleo, initrd y los datos de instalación. Para preparar el servidor Cobbler se deben llevar a cabo cuatro pasos:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Importar los datos de instalación
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Añadir una distribución
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Añadir perfiles
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Añadir sistemas
+     </para>
+    </listitem>
+   </itemizedlist>
+   
+   <sect4 id="sec.prep.makeavail.zpxe_cobbler.import">
+    <title>Importar los datos de instalación</title>
+    <para>
+     La importación de los medios requiere que el origen de instalación esté disponible en el servidor Cobbler, ya sea desde el DVD o desde un origen de red. Ejecute el siguiente comando para importar los datos:
+    </para>
+    <screen>cobbler import --path=<replaceable>PATH</replaceable><co id="cobbler.import.path"/> --name=<replaceable>IDENTIFIER</replaceable><co id="cobbler.import.dirname"/> --arch=s390x</screen>
+    <calloutlist>
+     <callout arearefs="cobbler.import.path">
+      <para>
+       Punto de montaje de los datos de instalación.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.import.dirname">
+      <para>
+       Una cadena que identifica el producto importado, por ejemplo <quote>sles11_sp3_s390x</quote>. La cadena se utiliza como nombre del subdirectorio en el que se copian los datos de instalación. En un servidor Cobbler que se ejecute en SUSE Linux Enterprise Server es <filename>/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFICADOR</replaceable></filename>. Esta vía puede ser diferente si Cobbler se ejecuta en otro sistema operativo.
+      </para>
+     </callout>
+    </calloutlist>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.zpxe_cobbler.add_distro">
+    <title>Añadir una distribución</title>
+    <para>
+     Al añadir una distribución, está indicando a Cobbler que proporcione el núcleo y el initrd necesarios para IPL a través de zPXE. Ejecute el comando siguiente en el servidor Cobbler para añadir <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> para IBM System z:
+    </para>
+    <screen>cobbler distro add --arch=s390x --breed=suse --name="<replaceable>IDENTIFIER</replaceable>"<co id="cobbler.add.identifier"/> \
+  --os-version=sles10<co id="cobbler.add.os"/> \
+  --initrd=/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable>/boot/s390x/initrd<co id="cobbler.add.initrd"/> \
+  --kernel=/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable>/boot/s390x/vmrdr.ikr<co id="cobbler.add.kernel"/> \
+  --kopts="install=http://cobbler.example.com/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable>"<co id="cobbler.add.server"/>
+    </screen>
+    <calloutlist>
+     <callout arearefs="cobbler.add.identifier">
+      <para>
+       Identificador personalizado para la distribución; por ejemplo, <quote>SLES <phrase role="productname"><phrase os="sles;sled;slerte">11 SP4</phrase></phrase> System z</quote>. Debe ser único.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.os">
+      <para>
+       Identificador del sistema operativo. Utilice <literal>sles10</literal>.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.initrd">
+      <para>
+       Vía a initrd. La primera parte de la vía (<filename>/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFICADOR</replaceable>/</filename>) depende de la ubicación en la que Cobbler haya importado los datos y el nombre del subdirectorio elegido al importar los datos de instalación.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.kernel">
+      <para>
+       Vía al núcleo. La primera parte de la vía (<filename>/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFICADOR</replaceable>/</filename>) depende de la ubicación en la que Cobbler haya importado los datos y el nombre del subdirectorio elegido al importar los datos de instalación.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.server">
+      <para>
+       URI al directorio de instalación en el servidor Cobbler.  
+      </para>
+     </callout>
+    </calloutlist>
+   </sect4>
+  </sect3>
+  
+  <sect3 id="sec.prep.makeavail.zpxe_cobbler.profile">
+   <title>Añadir perfiles</title>
+   <para>
+    Con un perfil, puede añadir opciones adicionales a una distribución; por ejemplo, añadir un archivo de AutoYaST para realizar una instalación automatizada. Puede especificar varios perfiles por distribución; debe crearse al menos uno.
+   </para>
+   <screen>cobbler profile add
+   --name=<replaceable>PROFILENAME</replaceable><co id="cobbler.profile.name"/> --distro=<replaceable>DISTRIBUTION</replaceable><co id="cobbler.profile.distro"/> --kickstart=<replaceable>PATH_TO_AUTOYAST_FILE</replaceable><co id="cobbler.profile.kickstart"/></screen>
+   <calloutlist>
+    <callout arearefs="cobbler.profile.name">
+     <para>
+      Nombre único para el perfil.
+     </para>
+    </callout>
+    <callout arearefs="cobbler.profile.distro">
+     <para>
+      Distribución a la que debe aplicarse el perfil. Debe usar la cadena especificada con <option>--name=<replaceable>IDENTIFICADOR</replaceable></option> en el paso de importación.
+     </para>
+    </callout>
+    <callout arearefs="cobbler.profile.kickstart">
+     <para>
+      Especifique la vía a un archivo de AutoYaST para realizar una instalación automatizada. Este parámetro es opcional.
+     </para>
+    </callout>
+   </calloutlist>
+  </sect3>
+  
+  <sect3 id="sec.prep.makeavail.zpxe_cobbler.system">
+   <title>Añadir sistemas</title>
+   <para>
+    El último paso necesario es añadir sistemas al servidor Cobbler. Es necesario añadir sistemas por cada invitado de System z que deba arrancar mediante zPXE. Los invitados se identifican mediante su ID de usuario z/VM (en el siguiente ejemplo, se presupone un ID denominado <quote>LINUX01</quote>). Para añadir un sistema, ejecute el siguiente comando:
+   </para>
+
+   <screen>cobbler system add --name=LINUX01 --hostname=linux01.example.com \
+--ip=192.168.2.103 --subnet=192.168.2.255 --netmask=255.255.255.0 \
+--name-servers=192.168.1.116 --name-servers-search=example.com \
+--gateway=192.168.2.1 --kopts="<replaceable>KERNEL_OPTIONS</replaceable>"</screen>
+
+   <para>
+    Con la opción <option>--kopts</option>, puede especificar los parámetros de instalación y del núcleo que normalmente especificaría en el archivo parmfile. Los parámetros se introducen como lista de elementos separados por espacios, con el formato <replaceable>PARÁMETRO1=VALOR1 PARÁMETRO2=VALOR2</replaceable>. El instalador solicitará los parámetros ausentes. Para una instalación totalmente automatizada, deberá especificar todos los parámetros de red, de DASD y proporcionar un archivo de AutoYaST. A continuación se muestra un ejemplo de invitado equipado con una interfaz OSA que emplea los mismos parámetros de red anteriores.
+   </para>
+   <screen>--kopts=" \
+AutoYaST=http://192.168.0.5/autoinst.xml \
+Hostname=linux01.example.com \
+Domain=example.com \
+HostIP=192.168.2.103 \
+Gateway=192.168.2.1 \
+Nameserver=192.168.1.116 \
+Searchdns=example.com \
+InstNetDev=osa; \
+Netmask=255.255.255.0 \
+Broadcast=192.168.2.255 \
+OsaInterface=qdio \
+OsaMedium=eth \
+Layer2=0 \
+PortNo=0 \
+ReadChannel=0.0.0600 \
+WriteChannel=0.0601 \
+DataChannel=0.0.0602 \
+Portname=DT70 \
+DASD=600"</screen>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.inst_types">
+  <title>Tipos de instalación</title><indexterm> <primary>instalación</primary> <secondary>LPAR</secondary></indexterm><indexterm> <primary>instalación</primary> <secondary>z/VM</secondary></indexterm>
+  <para>
+   En esta sección se proporciona información acerca de los pasos necesarios para instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> con cada uno de los modos de instalación y dónde encontrar la información adecuada. Después de llevar a cabo los preparativos mencionados en los capítulos anteriores, siga la descripción general del modo de instalación deseado para instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> en el sistema.
+  </para>
+  <para>
+   Tal y como se describe en la <xref linkend="sec.prep.makeavail"/>, existen dos modos de instalación para Linux en IBM System z:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Instalación en una LPAR
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Instalación en z/VM
+    </para>
+   </listitem>
+  </itemizedlist>
+  <procedure id="pro.prep.inst_types.lpar">
+   <title>Descripción general de la instalación en LPAR</title><indexterm> <primary>instalación en LPAR</primary> <secondary>descripción general</secondary></indexterm>
+   <step performance="required">
+    <para>
+     Prepare los dispositivos necesarios para la instalación. Consulte la <xref linkend="sec.prep.prep_ipl.natlpar"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Realice la carga inicial de programa (IPL) del sistema de instalación. Consulte la <xref linkend="sec.prep.ipling.lpar"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Configure la red. Consulte la <xref linkend="sec.prep.netcfg"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Conéctese al sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Consulte la <xref linkend="sec.prep.connect"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Inicie la instalación mediante YaST y realice la carga de programa inicial (IPL) del sistema instalado. Consulte el <xref linkend="cha.inst"/>.
+    </para>
+   </step>
+  </procedure>
+  <procedure id="pro.prep.inst_types.vm">
+   <title>Descripción general de la instalación en z/VM</title><indexterm> <primary>instalación en z/VM</primary> <secondary>descripción general</secondary></indexterm>
+   <step performance="required">
+    <para>
+     Prepare los dispositivos necesarios para la instalación. Consulte la <xref linkend="sec.prep.prep_ipl.vm"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Realice la carga inicial de programa (IPL) del sistema de instalación. Consulte la <xref linkend="sec.prep.ipling.vm"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Configure la red. Consulte la <xref linkend="sec.prep.netcfg.vm"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Conéctese al sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Consulte la <xref linkend="sec.prep.connect"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Inicie la instalación mediante YaST y realice la carga de programa inicial (IPL) del sistema instalado. Consulte el <xref linkend="cha.inst"/>.
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.prep.prep_ipl">
+  <title>Preparación de la IPL del sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></title>
+  <para/>
+  <sect3 id="sec.prep.prep_ipl.natlpar">
+   <title>Instalación en una LPAR</title><indexterm> <primary>instalación en LPAR</primary><secondary>preparación de IPL</secondary></indexterm><indexterm><primary>instalación en LPAR </primary><secondary>preparación de IPL</secondary></indexterm>
+   <para>
+    Configure el sistema IBM System z para que se inicie en ESA/S390 o en el modo de solo Linux con un perfil de activación adecuado e IOCDS. Consulte la documentación de IBM para obtener información sobre cómo hacerlo.
+   </para>
+   <sect4 id="sec.prep.prep_ipl.natlpar.iocds">
+    <title>IOCDS: conexión y configuración de dispositivos</title>
+    <para>
+     La instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> requiere al menos dos dispositivos: un disco DASD y un dispositivo de conexión de red. Para realizar la carga inicial de programa (IPL) desde cinta, también deberá haber un dispositivo de cinta accesible. Los dispositivos se configuran y conectan a una LPAR en el IOCDS (conjunto de datos de configuración de entrada y salida). En el ejemplo se definen un DASD, un dispositivo de red OSA-2 y un dispositivo de cinta para LPAR Z1. Para obtener información adicional acerca de cómo configurar el IOCDS para Linux, consulte la documentación de hardware de IBM de su equipo.
+    </para>
+    <example id="ex.prep.prep_ipl.natlpar.iocds">
+     <title>Un IOCDS de ejemplo</title>
+     <screen>CHPID PATH=(CSS(0),FD),PCHID=120,TYPE=FC
+CHPID PATH=(CSS(0),FE),PCHID=320,TYPE=OSD
+CHPID PATH=(CSS(0),10),PCHID=3A0,TYPE=CNC
+
+CNTLUNIT CUNUMBR=FD00,PATH=((CSS(0),FD)),UNITADD=((00,1)),UNIT=2105
+IODEVICE ADDRESS=(FD00,1),CUNUMBR=(FD00),UNIT=3390B,UNITADD=00
+
+CNTLUNIT CUNUMBR=FE20,PATH=((CSS(0),FE)),UNIT=OSA
+IODEVICE ADDRESS=(FE20,1),CUNUMBR=(FE20),UNIT=OSA
+IODEVICE ADDRESS=(FEFE,1),CUNUMBR=(FE20),UNIT=OSAD
+
+CNTLUNIT CUNUMBR=100A,PATH=((CSS(0),10)),UNIT=3480,UNITADD=((0A,1))
+IODEVICE ADDRESS=(100A,1),CUNUMBR=(100A),UNIT=3480,UNITADD=00</screen>
+    </example>
+    <para>
+     Pase a la <xref linkend="sec.prep.ipling.lpar"/>.
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.prep_ipl.vm">
+   <title>Instalación en z/VM</title><indexterm> <primary>instalación en z/VM</primary> <secondary>preparación de IPL</secondary></indexterm><indexterm> <primary>preparación de IPL</primary> <secondary>instalación en z/VM</secondary></indexterm>
+   <sect4 id="sec.prep.prep_ipl.vm.linux_guest">
+    <title>Adición de un sistema invitado Linux</title><indexterm> <primary>instalación en z/VM</primary> <secondary>sistema invitado Linux</secondary></indexterm>
+    <para>
+     El primer paso consisten en conectar y formatear uno o varios DASD en el sistema que vaya a utilizar el sistema invitado Linux en z/VM. A continuación, cree un nuevo usuario en z/VM. El ejemplo muestra el directorio de un usuario <literal>LINUX1</literal> con la contraseña <literal>LINPWD</literal>, 256 MB de memoria (ampliables hasta 1024 MB), 32 MB de memoria RAM expandida (XSTORE), algunos minidiscos (MDISK), dos CPU y un dispositivo QDIO OSA.
+    </para>
+    <tip>
+     <title>asignación de memoria a invitados de z/VM</title>
+     <para>
+      Al asignar memoria a un invitado de z/VM, asegúrese de que el tamaño de la memoria se ajusta a las necesidades del tipo de instalación deseado. Consulte la <xref linkend="sec.info_sysreq.sysreq.hw.mem"/>. Para definir el tamaño de memoria con el valor de 512 MB, utilice el comando <command>CP DEFINE STORAGE 512M</command>. Cuando haya finalizado la instalación, cambie el tamaño de la memoria al valor que desee.
+     </para>
+    </tip>
+    <example id="ex.prep.prep_ipl.vm.linux_guest.config">
+     <title>Configuración de un directorio z/VM</title>
+     <screen>USER LINUX1 LINPWD 256M 1024M G 
+*____________________________________________
+* LINUX1 
+*____________________________________________
+* This VM Linux guest has two CPUs defined.
+
+CPU 01 CPUID 111111 
+CPU 02 CPUID 111222 
+IPL CMS PARM AUTOCR 
+IUCV ANY 
+IUCV ALLOW 
+MACH ESA 10 
+OPTION MAINTCCW RMCHINFO 
+SHARE RELATIVE 2000 
+XSTORE 32M 
+CONSOLE 01C0 3270 A 
+SPOOL 000C 2540 READER * 
+SPOOL 000D 2540 PUNCH A 
+SPOOL 000E 3203 A 
+* OSA QDIO DEVICE DEFINITIONS 
+DEDICATE 9A0 9A0 
+DEDICATE 9A1 9A1 
+DEDICATE 9A2 9A2 
+* 
+LINK MAINT 0190 0190 RR 
+LINK MAINT 019E 019E RR 
+LINK MAINT 019D 019D RR 
+* MINIDISK DEFINITIONS 
+MDISK 201 3390 0001 0050 DASD40 MR ONE4ME TWO4ME THR4ME 
+MDISK 150 3390 0052 0200 DASD40 MR ONE4ME TWO4ME THR4ME 
+MDISK 151 3390 0253 2800 DASD40 MR ONE4ME TWO4ME THR4ME</screen>
+    </example>
+    <para>
+     Este ejemplo utiliza el minidisco 201 como disco personal del invitado. El minidisco 150, con 200 cilindros, es el dispositivo swap de Linux. El disco 151, con 2800 cilindros, aloja la instalación de Linux.
+    </para>
+    <para>
+     Ahora añada (como usuario <systemitem class="username">MAINT</systemitem>) el invitado al directorio de usuario con <command>DIRM FOR LINUX1 ADD</command>. Introduzca el nombre del invitado (<literal>LINUX1</literal>) y pulse <keycap>F5</keycap>. Configure el entorno del usuario mediante:
+    </para>
+    <screen>DIRM DIRECT 
+DIRM USER WITHPASS</screen>
+    <para>
+     El último comando devuelve un número de archivo de lector. Necesitará este número para el siguiente comando:
+    </para>
+    <screen>RECEIVE &lt;number&gt; USER DIRECT A (REPL)</screen>
+    <para>
+     Asigne los directorios al sistema invitado con <command>DISKMAP USER DIRECT A</command>. A continuación podrá entrar en el sistema invitado como usuario <systemitem class="username">LINUX1</systemitem>.
+    </para>
+    <para>
+     Si la opción <literal>dirmaint</literal> no está disponible, consulte la documentación de IBM para configurar este usuario.
+    </para>
+    <para>
+     Pase a la <xref linkend="sec.prep.ipling.vm"/>.
+    </para>
+   </sect4>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.ipling">
+  <title>Carga inicial del programa del sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></title>
+  <para/>
+  <sect3 id="sec.prep.ipling.lpar">
+   <title>Instalación en una LPAR</title><indexterm> <primary>instalación en LPAR</primary> <secondary>IPL del sistema de instalación</secondary></indexterm><indexterm> <primary>IPL</primary> <secondary>instalación en LPAR</secondary></indexterm>
+   <para>
+    Hay distintas formas de realizar la carga inicial del programa de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> en una partición lógica. El método más adecuado consiste en utilizar la función de carga desde el CD-ROM o el servidor<guimenu/> del SE o la HMC.
+   </para>
+   <sect4 id="sec.prep.ipling.lpar.cdrom">
+    <title>IPL desde el DVD-ROM</title>
+    <para>
+     Marque la LPAR en la que desee realizar la instalación y seleccione <guimenu>Load from CD-ROM or server</guimenu> (Cargar desde CD-ROM o servidor). Deje en blanco el campo de ubicación de archivos o introduzca la vía al directorio raíz de primer DVD-ROM y seleccione continuar. En la lista de opciones que aparecerá, elija la selección por defecto. <guimenu>Operating system messages</guimenu> (Mensajes del sistema operativo) debería empezar a mostrar los mensajes de arranque del núcleo.
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.lpar.dvd">
+    <title>IPL desde un DVD SCSI conectado a FCP</title>
+    <para>
+     Puede emplear el procedimiento <guimenu>Load</guimenu> (Cargar) seleccionando <guimenu>SCSI</guimenu> en <guimenu>Load type</guimenu> (Tipo de carga) para realizar la IPL desde SCSI. Escriba los valores WWPN (del inglés Worldwide Port Number, número de puerto universal) y LUN (del inglés Logical Unit Number, número de unidad lógica) que proporcione el puente o el dispositivo de almacenamiento SCSI (16 números, sin olvidar los ceros finales). El selector del programa de arranque debe ser 2. Utilice el adaptador FCP como dirección de carga<guimenu/> y realice la IPL.
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.lpar.tape">
+    <title>IPL desde cinta conectada a ESCON o FICON</title>
+    <para>
+     Si no puede realizar la carga de programa inicial (IPL) desde el DVD, cree una cinta conectada a un canal desde la que realizar la IPL de la imagen de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Utilice el botón <guimenu>LOAD</guimenu> (Cargar) en SE o HMC con la dirección del dispositivo de cinta como dirección para cargar el programa inicial del sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>.
+    </para>
+    <para>
+     Hay muchas otras maneras de crear una cinta para la IPL. Una es copiar los archivos:
+    </para>
+    <screen>/boot/s390x/tapeipl.ikr
+/boot/s390x/parmfile
+/boot/s390x/initrd</screen>
+    <para>
+     como archivos binarios desde el DVD 1 (por ejemplo, utilizando FTP desde una estación de trabajo Linux).
+    </para>
+    <para>
+     Nómbrelos
+    </para>
+    <screen>SLES11 IMAGE
+SLES11 PARM
+SLES11 INITRD</screen>
+    <para>
+     y escríbalos en una cinta con el REXX del ejemplo.
+    </para>
+    <important>
+     <title>transferencia de archivos binarios mediante FTP</title>
+     <para>
+      No cargue los archivos como <literal>fixed 80</literal> (registro fijo de 80 caracteres). Almacénelos como <literal>fixed 1024</literal> (registro fijo de 1024 caracteres). Utilice el comando de FTP <command>locsite fix 1024</command>.
+     </para>
+    </important>
+    <example id="sec.prep.ipling.lpar.tape.create">
+     <title>Guion REXX para crear una cinta en la que se pueda realizar la carga inicial de programa (IPL)</title>
+     <screen>'REWIND 181'
+'FILEDEF IN1 DISK' SLES11 IMAGE A
+'FILEDEF IN2 DISK' SLES11 PARM A
+'FILEDEF IN3 DISK' SLES11 INITRD A
+'FILEDEF OUT TAP1 (RECFM F BLOCK 1024 LRECL 1024 PERM'
+say 'Writing: ' left(file1,23)
+'MOVEFILE IN1 OUT'
+say 'Writing: ' left(file2,23)
+'MOVEFILE IN2 OUT'
+say 'Writing: ' left(file3,23)
+'MOVEFILE IN3 OUT'
+say 'Done.'
+'REWIND 181'
+ exit</screen>
+    </example>
+    <para>
+     La cinta de este guion está conectada como 181. Adapte el guion a sus necesidades.
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.ipling.vm">
+   <title>Instalación en z/VM</title><indexterm> <primary>instalación en z/VM</primary> <secondary>sistema de instalación IPL</secondary></indexterm><indexterm> <primary>IPL</primary> <secondary>instalación en z/VM</secondary></indexterm>
+   <para>
+    En esta sección se describe la carga inicial de programa (IPL) para instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> para IBM System z en un sistema z/VM.
+   </para>
+   <sect4 id="sec.prep.ipling.vm.reader">
+    <title>Carga inicial de programa (IPL) desde el lector de z/VM</title>
+    <para>
+     Necesitará una conexión TCP/IP que funcione y un programa cliente FTP dentro del invitado z/VM recién definido para transferir el sistema de instalación a través de FTP. La configuración de TCP/IP para z/VM escapa al alcance de este manual. Consulte la documentación pertinente de IBM.
+    </para>
+    <para>
+     Entre como sistema invitado Linux de z/VM para realizar la IPL. Haga que el contenido del directorio <filename>/boot/s390x</filename> del DVD 1 de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> para IBM System z esté disponible dentro de la red a través de FTP. Obtenga los archivos <filename>vmrdr.ikr</filename>, <filename>initrd</filename>, <filename>parmfile</filename>y <filename>sles11.exec</filename> de ese directorio. Transfiera los archivos con un tamaño de bloque fijo de 80 caracteres. Especifíquelo con el comando FTP <command>locsite fix 80</command>. Es importante copiar <filename>vmrdr.ikr</filename> (el núcleo de Linux) e <filename>initrd</filename> (la imagen de instalación) como archivos binarios, por lo que debe utilizar el modo de transferencia <literal>binario</literal>. Se deben transferir <filename>parmfile</filename> y <filename>sles11.exec</filename> en modo ASCII.
+    </para>
+    <para>
+     El ejemplo muestra los pasos necesarios. En este ejemplo, se puede acceder a los archivos necesarios desde un servidor FTP en la dirección IP <literal>192.168.0.3</literal> y el nombre de inicio de sesión es <systemitem class="username">lininst</systemitem>. Los datos pueden ser diferentes para su red.
+    </para>
+    <example id="ex.prep.ipling.vm.reader.ftp.ftptrans">
+     <title>Transferencia de archivos binarios mediante FTP</title>
+     <screen>FTP 192.168.0.3
+VM TCP/IP FTP Level 530
+Connecting to 192.168.0.3, port 21
+220 ftpserver FTP server (Version wu-2.4.2-academ[BETA-18](1)
+Thu Feb 11 16:09:02 GMT 2010) ready.
+USER
+lininst
+331 Password required for lininst
+PASS
+******
+230 User lininst logged in.
+Command:
+binary
+200 Type set to I
+Command:
+locsite fix 80
+Command:
+get /media/dvd1/boot/s390x/vmrdr.ikr sles11.image
+200 PORT Command successful
+150 Opening BINARY mode data connection for /media/dvd1/boot/s390x/vmrdr.ikr
+(6757376 bytes)
+226 Transfer complete.
+6757376 bytes transferred in 8.826 seconds.
+Transfer rate 766.70 Kbytes/sec.
+Command:
+get /media/dvd1/boot/s390x/initrd sles11.initrd
+200 PORT Command successful
+150 Opening BINARY mode data connection for /media/dvd1/boot/s390x/initrd
+(12654815 bytes)
+226 Transfer complete.
+12194534 bytes transferred in 16.520 seconds.
+Transfer rate 766.70 Kbytes/sec.
+Command:
+ascii
+200 Type set to A
+Command:
+get /media/dvd1/boot/s390x/parmfile sles11.parmfile
+150 Opening ASCII mode data connection for /media/dvd1/boot/s390x/parmfile
+(71 bytes)
+226 Transfer complete.
+71 bytes transferred in 0.092 seconds.
+Transfer rate 0.71 Kbytes/sec.
+Command:
+get /media/dvd1/boot/s390x/sles11.exec sles11.exec
+150 Opening ASCII mode data connection for /media/dvd1/boot/s390x/sles11.exec
+(891 bytes)
+226 Transfer complete.
+891 bytes transferred in 0.097 seconds.
+Transfer rate 0.89 Kbytes/sec.
+Command:
+quit</screen>
+    </example>
+    <para>
+     Utilice el guion REXX sles11.exec que acaba de descargar para realizar la IPL del sistema de instalación de Linux. Este guion cargará el núcleo, el archivo parm y el disco RAM inicial en el lector para realizar la carga inicial de programa (IPL):
+    </para>
+    <example id="sex.prep.ipling.vm.reader.startscript.slesexec">
+     <title>SLES11 EXEC</title>
+     <screen>/* REXX LOAD EXEC FOR SUSE LINUX S/390 VM GUESTS       */
+/* LOADS SUSE LINUX S/390 FILES INTO READER            */
+SAY ''
+SAY 'LOADING SLES11 FILES INTO READER...'
+'CP CLOSE RDR'
+'PURGE RDR ALL'
+'SPOOL PUNCH * RDR'
+'PUNCH SLES11 IMAGE A (NOH'
+'PUNCH SLES11 PARMFILE A (NOH'
+'PUNCH SLES11 INITRD A (NOH'
+'I 00C'</screen>
+    </example>
+    <para>
+     Este guion permite realizar la IPL del sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> con el comando <command>sles11</command>. El núcleo de Linux se iniciará e imprimirá sus mensajes de arranque.
+    </para>
+    <para>
+     Para continuar con la instalación, diríjase a la <xref linkend="sec.prep.netcfg.vm"/>.
+    </para>
+   </sect4>
+   <sect4>
+    <title>IPL desde un DVD SCSI conectado a FCP</title>
+    <para>
+     Para realizar la IPL en z/VM, prepare el proceso de IPL SCSI utilizando el parámetro SET LOADDEV:
+    </para>
+    <screen>SET LOADDEV PORTNAME 200400E8 00D74E00 LUN 00020000 00000000 BOOT 2</screen>
+    <para>
+     Después de configurar el parámetro LOADDEV con los valores adecuados, realice la carga inicial de programa (IPL) en el adaptador FCP. Por ejemplo:
+    </para>
+    <screen>IPL FC00</screen>
+    <para>
+     Para continuar con la instalación, diríjase a la <xref linkend="sec.prep.netcfg.vm"/>.
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.vm.tape">
+    <title>IPL desde cinta conectada a ESCON o FICON</title>
+    <para>
+     Si no puede realizar la carga inicial de programa desde un lector de z/VM, cree una cinta conectada a un canal desde la que cargar el programa inicial de la imagen de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Para obtener instrucciones, consulte la <xref linkend="sec.prep.ipling.lpar.tape"/>.
+    </para>
+    <para>
+     Para continuar con la instalación, diríjase a la <xref linkend="sec.prep.netcfg.vm"/>.
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.vm.zpxe">
+    <title>IPL de un servidor Cobbler con zPXE</title>
+    <para>
+     Para IPL desde un servidor Cobbler con zPXE, deberá transferir el guion <filename>zpxe.exec</filename> mediante FTP del servidor Cobbler al invitado z/VM. El invitado z/VM requiere una conexión TCP/IP en funcionamiento y un cliente de FTP.
+    </para>
+    <para>
+     Entre a la sesión como invitado Linux de z/VM en IPL y transfiera el guion con un tamaño fijo de 80 caracteres en modo ASCII (consulte un ejemplo en <xref linkend="ex.prep.ipling.vm.reader.ftp.ftptrans"/>). El guion <filename>zpxe.exec</filename> está disponible en el servidor Cobbler en ftp://<replaceable>IP_DEL_SERVIDOR_COBBLER</replaceable>/<replaceable>DIRECTORIO_DE_INSTALACIÓN_DE_zSERIES</replaceable>/boot/s390x/zpxe.exec. La ubicación exacta de <replaceable>DIRECTORIO_DE_INSTALACIÓN_DE_zSERIES</replaceable> depende de dónde haya importado los datos de instalación en el servidor Cobbler (consulte la <xref linkend="sec.prep.makeavail.zpxe_cobbler.import"/> para obtener más información).
+    </para>
+    <para>
+     <filename>zpxe.exec</filename> debe reemplazar al archivo <filename>PROFILE EXEC</filename> del invitado. Realice una copia del archivo <filename>PROFILE EXEC</filename> existente y cambie el nombre de <filename>ZPXE EXEC</filename> a <filename>PROFILE EXEC</filename>. Si lo prefiere, puede invocar al archivo <filename>ZPXE EXEC</filename> desde <filename>PROFILE EXEC</filename> mediante una nueva línea con el siguiente contenido: <literal>'ZPXE EXEC'</literal>.
+    </para>
+    <para>
+     El último paso es crear un archivo de configuración, <filename>ZPXE CONF</filename>, que indique a <filename>ZPXE EXEC</filename> con qué servidor de Cobbler debe ponerse en contacto y a qué disco debe aplicarse IPL. Ejecute <command>xedit zpxe conf a</command> y cree <filename>ZPXE CONF</filename> con el siguiente contenido (sustituya los datos de ejemplo según sea preciso):
+    </para>
+    <screen>HOST cobbler.example.com
+IPLDISK 600</screen>
+    <para>
+     Durante la siguiente entrada a la sesión en el invitado z/VM, se establecerá la conexión con el servidor Cobbler. Si hay una instalación programada en el servidor Cobbler, se ejecutará. Para programar la instalación, ejecute el siguiente comando en el servidor Cobbler:
+    </para>
+    <screen>cobbler system edit --name <replaceable>ID</replaceable><co id="cobbler.sysedit.id"/> --netboot-enabled 1<co id="cobbler.sysedit.netboot"/> --profile <replaceable>PROFILENAME</replaceable><co id="cobbler.sysedit.profile"/></screen>
+    <calloutlist>
+     <callout arearefs="cobbler.sysedit.id">
+      <para>
+       ID de usuario de z/VM.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.sysedit.netboot">
+      <para>
+       Habilite IPL desde la red.
+      </para>
+     </callout>
+     <callout arearefs="cobbler.sysedit.profile">
+      <para>
+       Nombre de un perfil existente (consulte la <xref linkend="sec.prep.makeavail.zpxe_cobbler.profile"/>).
+      </para>
+     </callout>
+    </calloutlist>
+   </sect4>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.netcfg">
+  <title>Configuración de la red</title>
+  <para/><indexterm> <primary>instalación en LPAR</primary> <secondary>configuración de la red</secondary></indexterm><indexterm> <primary>configuración de la red</primary> <secondary>instalación en LPAR</secondary></indexterm>
+  <para>
+   Espere hasta que el núcleo haya completado sus rutinas de arranque. Si está realizando la instalación en el modo básico en una LPAR, abra <guimenu>Operating System Messages</guimenu> (Mensajes del sistema operativo) en la HMC o el SE.
+  </para>
+  <para>
+   En primer lugar, elija <guimenu>Iniciar instalación o sistema</guimenu> en el menú principal de linuxrc y después seleccione <guimenu>Iniciar instalación o actualización</guimenu> para comenzar el proceso de instalación. Seleccione <guimenu>Red</guimenu> como medio de instalación y seleccione el tipo de protocolo de red que utilizará para la instalación. En la <xref linkend="sec.prep.makeavail"/> se describe cómo hacer que los datos de instalación estén disponibles para los distintos tipos de conexiones de red. Actualmente, las conexiones compatibles son <guimenu>FTP,</guimenu> <guimenu>HTTP,</guimenu> <guimenu>NFS</guimenu> y <guimenu>SMB/CIFS</guimenu> (uso compartido de archivos de Windows).
+  </para>
+  <para>
+   A continuación, configure el dispositivo de red que desee utilizar para recibir los datos de instalación: <guimenu>OSA-2, OSA Express</guimenu> o <guimenu>HiperSockets.</guimenu> Los siguientes adaptadores de red aún están disponibles y es posible utilizarlos, pero ha dejado de proporcionarse asistencia para ellos: CTC, ESCON y IUCV. A continuación, elija la interfaz de bus CCW y el medio físico (<guimenu>Ethernet</guimenu>). Como resultado del proceso, se instalará el controlador adecuado y se mostrarán los mensajes del núcleo correspondientes.
+  </para>
+  <para>
+   Al continuar la instalación, linuxrc mostrará una lista de canales que se pueden utilizar de lectura, escritura, y si se aplica, de datos. Después de introducir las direcciones para cada canal, es posible que también deba introducir información adicional, como el nombre de puerto para las tarjetas Ethernet OSA.
+  </para>
+  <para>
+   A continuación, deberá decidir si desea utilizar la configuración automática de DHCP para configurar los parámetros de la interfaz de red. Dado que DHCP solo funciona con algunos dispositivos y requiere ajustes especiales de hardware, lo más recomendable es responder <guimenu>NO.</guimenu> Si lo hace, se le solicitarán los parámetros de red del dispositivo de red de instalación:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Dirección IP del sistema que se va a instalar
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Máscara de red correspondiente
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Dirección IP de un gateway para acceder al servidor
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Dirección IP del servidor de nombres de dominios (DNS)
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   Si utiliza una tarjeta de red OSA Express, se le pedirá que introduzca un número de puerto relativo.<guimenu/> Este valor se ha añadido para admitir los nuevos dispositivos de red de 2 puertos OSA Express 3. Si no utiliza un dispositivo OSA Express 3, introduzca el valor <literal>0</literal>. Las tarjetas OSA Express también ofrecen la opción de ejecutarse en un modo de <quote>compatibilidad con la capa 2 de OSI</quote> o de utilizar el modo de <quote>capa 3</quote> más antiguo y más habitual. El modo que se establezca en la tarjeta afectará a todos los sistemas que compartan el dispositivo, incluidos los sistemas que se encuentren en otras LPAR. Si no está seguro, especifique el valor <literal>2</literal> para asegurar la compatibilidad con el modo por defecto que utilizan otros sistemas operativos, como z/VM y z/OS. Consulte con el administrador del hardware si necesita más información acerca de estas opciones.
+  </para>
+  <sect3 id="sec.prep.netcfg.vm">
+   <title>Instalación en z/VM</title><indexterm> <primary>instalación en z/VM</primary> <secondary>configuración de red</secondary></indexterm><indexterm> <primary>configuración de red</primary> <secondary>instalación en z/VM</secondary></indexterm>
+   <para>
+    Después de que el núcleo haya finalizado sus rutinas de arranque, responda a algunas preguntas acerca de la configuración de red. En primer lugar, seleccione el tipo de conexión de red que se debe utilizar: OSA Express o HiperSockets. En la instalación de ejemplo, se utiliza OSA Express.
+   </para>
+   <para>
+    El sistema mostrará a continuación una configuración de OSA posible. Elija primero si desea utilizar QDIO o LCS con OSA. A continuación, seleccione el medio físico que desee utilizar e introduzca la dirección del dispositivo. Si prefiere emplear otra configuración, introduzca la dirección de dispositivo del canal de lectura OSA (0.0.0700 en este ejemplo) y luego la del canal de escritura OSA (0.0.0701) y el canal de control OSA (0.0.0702). Después de introducir los canales, especifique el nombre de puerto al que esté conectada la tarjeta OSA.
+   </para>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> intenta cargar el módulo de red creando una línea de parámetros con la información proporcionada y muestra todos los módulos cargados. La carga es correcta si obtiene un resultado similar al siguiente:
+   </para>
+   <example id="ex.prep.netcfg.vm.param">
+    <title>Parámetros del controlador del dispositivo de red</title>
+    <screen>(portname YSW2)
+(Port 0)
+qdio: 0.0.0702 OSA on SC 3 using AI:1 QEBSM:0 PCI:1 TDD:1 SIGA:RW AO
+qeth.736dae: 0.0.0700: Device is a Guest LAN QDIO card (level: V540)
+with link type GuestLAN QDIO (portname: YSW2)
+qeth.47953b: 0.0.0700: Hardware IP fragmentation not supported on eth0
+qeth.066069: 0.0.0700: Inbound source MAC-address not supported on eth0
+qeth.d7fdb4: 0.0.0700: VLAN enabled
+qeth.e90c78: 0.0.0700: Multicast enabled
+qeth.5a9d02: 0.0.0700: IPV6 enabled
+qeth.184d8a: 0.0.0700: Broadcast enabled
+qeth.dac2aa: 0.0.0700: Using SW checksumming on eth0.
+qeth.9c4c89: 0.0.0700: Outbound TSO not supported on eth0
+</screen>
+   </example>
+   <para>
+    A continuación, introduzca su dirección IP, máscara de red y gateway por defecto. Para realizar la instalación a través de iucv o ctc, proporcione la información adicional, como la dirección del par (si se trata de un adaptador de punto a punto) o el nombre del puerto.
+   </para>
+   <para>
+    Por último, se solicitarán la dirección IP del servidor DNS y el tamaño de MTU. El tamaño de MTU siempre debe coincidir con el utilizado por la red con la que desea establecer la conexión.
+   </para>
+   <para>
+    A continuación aparecerá un resumen. Confirme si los datos introducidos son correctos. Antes de iniciar la red, introduzca una contraseña que solo será válida durante la instalación. Después de realizar la carga inicial de programa (IPL) del sistema instalado, introduzca la contraseña <emphasis>real</emphasis> del usuario Root.
+   </para>
+   <para>
+    Cuando se hayan configurado todos los parámetros básicos, la red se iniciará. Compruebe la salida de ifconfig, que debe incluir dos entradas: una conexión de circuito cerrado (lo) y una conexión (eth0, ctc0, escon0, iucv0 o hsi0) con los valores correctos.
+   </para>
+   <example id="ex.prep.netcfg.vm.ifconfig">
+    <title>Ejemplo de ifconfig</title>
+    <screen>/sbin/ifconfig eth0 : 
+	Link encap:Ethernet  HWaddr 02:00:01:00:00:27  
+        inet addr:192.168.0.1  Bcast:192.168.0.255  Mask:255.255.255.0
+        inet6 addr: fe80::200:100:100:27/64 Scope:Link
+        UP BROADCAST RUNNING MULTICAST  MTU:1492  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:0 (0.0 Mb)  TX bytes:0 (0.0 Mb)</screen>
+   </example>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.connect">
+  <title>Conexión con el sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></title><indexterm> <primary>instalación en LPAR</primary> <secondary>conexión con el sistema de instalación</secondary></indexterm><indexterm> <primary>conexión con el sistema de instalación</primary> <secondary>instalación en LPAR</secondary></indexterm><indexterm> <primary>instalación en z/VM</primary> <secondary>conexión con el sistema de instalación</secondary></indexterm><indexterm> <primary>conexión con el sistema de instalación</primary> <secondary>instalación en z/VM</secondary></indexterm>
+  <para>
+   Cuando haya configurado la conexión de red, linuxrc solicita los detalles del origen de instalación que haya elegido anteriormente en el proceso. Por ejemplo, la dirección IP del servidor y el directorio en el que se encuentran los datos.
+  </para>
+  <para>
+   Por último, Linuxrc solicitará el tipo de pantalla que desea utilizar para controlar el procedimiento de instalación. Las opciones posibles son <literal>X11</literal> (sistema X Window), <literal>VNC</literal> (protocolo de procesamiento en red virtual), <literal>SSH</literal> (modo de texto o instalación X11 mediante shell segura) o <literal>Consola ASCII.</literal>
+  </para>
+  <para>
+   Si se selecciona la última opción (<literal>Consola ASCII</literal>), YaST se iniciará en modo de texto y podrá realizar la instalación directamente desde el terminal. Consulte <xref linkend="cha.yast.text"/> para obtener las instrucciones de uso.
+  </para>
+  <note>
+   <title>simulación de terminal para la consola ASCII</title>
+   <para>
+    Para poder trabajar con YaST en modo de texto, se debe ejecutar en un terminal con simulación VT220/Linux (también denominado <literal>consola ASCII</literal>). No podrá usar YaST en un terminal 3270, por ejemplo.
+   </para>
+  </note>
+  <sect3 id="sec.inst.connect.vnc_inst">
+   <title>Inicio de la instalación en VNC</title><indexterm> <primary>VNC</primary> <secondary>inicio de la instalación</secondary></indexterm>
+   <procedure>
+    <step performance="required">
+     <para>
+      Al seleccionar la opción de instalación <literal>VNC</literal> se inicia el servidor VNC. Una breve nota en la consola proporciona información acerca del número de pantalla y la dirección IP que se necesitan para establecer una conexión con vncviewer. Como alternativa, se proporciona una URL que se puede introducir en un navegador con capacidad Java para establecer la conexión con el sistema de instalación.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Inicie una aplicación cliente VNC en el sistema cliente. Utilice vncviewer o el cliente VNC Java y un navegador Web con capacidad Java.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Introduzca la dirección IP y el número de pantalla del sistema de instalación de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> cuando se le solicite.
+     </para>
+     <para>
+      Si se conecta mediante un navegador con capacidad Java, introduzca una URL con la dirección IP del sistema de instalación y el número de puerto adecuado, empleando el siguiente formato:
+     </para>
+     <screen>http://&lt;IP address of installation system&gt;:5801/</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Después de establecer la conexión, empiece a instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> con YaST.
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+  <sect3 id="sec.inst.connect.x">
+   <title>Inicio de la instalación para el sistema X Window</title><indexterm> <primary>X</primary> <secondary>inicio de la instalación</secondary></indexterm>
+   <important>
+    <title>mecanismo de autenticación X</title>
+    <para>
+     La instalación directa con el sistema X Window depende de un mecanismo de autenticación primitivo basado en nombres de hosts. Este mecanismo está inhabilitado en las versiones actuales de <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Es preferible realizar la instalación mediante SSH o VNC.
+    </para>
+   </important>
+   <procedure>
+    <step performance="required">
+     <para>
+      Asegúrese de que el servidor X permite conectarse al cliente (el sistema que se está instalando). Establezca la variable <command>DISPLAYMANAGER_XSERVER_TCP_PORT_6000_OPEN="yes"</command> en el archivo <filename>/etc/sysconfig/displaymanager</filename>. A continuación, reinicie el servidor X y permita al cliente asociarse al servidor con el comando<command>xhost &lt;dirección IP del cliente&gt;</command>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Cuando el sistema de instalación lo solicite, introduzca la dirección IP del equipo en el que se ejecute el servidor X.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Espere a que YaST se abra e inicie la instalación.
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+<?dbfo-need height="20em"?>
+
+
+  <sect3 id="sec.inst.connect.ssh">
+   <title>Inicio de la instalación en SSH</title><indexterm> <primary>ssh</primary> <secondary>inicio de la instalación</secondary></indexterm>
+   <para>
+    Para establecer la conexión con un sistema de instalación con el nombre earth mediante SSH, ejecute <command>ssh -X earth</command>. Si la estación de trabajo utiliza Microsoft Windows, emplee el emulador de terminal y cliente de ssh y telnet putty, que está disponible en <ulink url="http://www.chiark.greenend.org.uk/~sgtatham/putty/"/>. Defina <guimenu>Enable X11 forwarding</guimenu> (Habilitar reenvío de X11) en putty, dentro de <menuchoice> <guimenu>Connection</guimenu> <guimenu>SSH</guimenu> <guimenu>X11</guimenu> </menuchoice> (Conexión &gt; SSH &gt; X11).
+   </para>
+   <para>
+    Aparecerá un indicador de inicio de sesión. Introduzca <literal>root</literal> e inicie sesión con su contraseña. Introduzca <command>yast2</command> para iniciar YaST.
+   </para>
+   <para>
+    Continúe con el procedimiento de instalación que se describe de forma detallada en el <xref linkend="cha.inst"/>.
+   </para>
+  </sect3>
+ </sect2>
+</sect1>

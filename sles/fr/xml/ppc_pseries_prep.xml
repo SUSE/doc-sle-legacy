@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_pseries_prep.xml" id="sec.prep.pseries">
+ <title>Préparation de l'installation sur les modèles IBM pSeries</title><indexterm> <primary>préparation</primary><secondary>pSeries</secondary> </indexterm>
+ <para>
+  Cette section traite des étapes préparatoires pour l'installation de SUSE® Linux Enterprise Server sur les systèmes IBM pSeries. Elle décrit l'installation à partir d'un lecteur de CD-ROM intégré ou d'une source réseau.
+ </para>
+ <sect3 id="sec.prep.pseries.features6x0">
+  <title>Fonctions spéciales des systèmes IBM pSeries p630, p655, p670 et p690</title>
+  <para>
+   Les systèmes p630, p655, p670 et p690 permettent de partitionner le système de manière statique, tout comme les systèmes eServer p5/System p5 (pour ces derniers, reportez-vous à la <xref linkend="sec.prep.eserver"/>). Ainsi, jusqu'à 16 systèmes d'exploitation peuvent fonctionner simultanément sur un même ordinateur. Ces systèmes d'exploitation sont installés dans les partitions <emphasis>LPAR</emphasis> (partitions logiques). Une ou plusieurs de ces partitions peuvent contenir un environnement SUSE Linux Enterprise Server.
+  </para>
+  <para>
+   Afin de préparer une partition LPAR pour SUSE Linux Enterprise Server, commencez par configurer le système sur <emphasis>HMC</emphasis>. Pour plus d'informations, reportez-vous au Redbook <emphasis>IBM eServer pSeries 690 System Handbook</emphasis> (SG24-7040-00), accessible à la page <ulink url="http://www.redbooks.ibm.com/redbooks/SG247040/"/>.
+  </para>
+  <para>
+   Remarques importantes concernant la configuration :
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Le nombre recommandé maximal de processeurs pour une partition LPAR SUSE Linux Enterprise Server est égal à huit, correspondant au nombre maximal de processeurs que le kernel peut gérer de manière efficace.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Pour l'installation, sélectionnez le mode de démarrage <guimenu>SMS</guimenu> pour la partition concernée.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Le terminal <emphasis>HMC</emphasis> (Hardware Management Console - console de gestion du matériel) utilisé pour entrer les données au cours de l'installation est une émulation VT320. Cette émulation peut réagir de manière inattendue avec certaines applications. Dans la mesure du possible, optez plutôt pour un terminal XTerm pour la communication avec la partition LPAR.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect3>
+ <sect3 id="sec.prep.pseries.diskspace">
+  <title>Espace disque
+</title>
+  <para>
+   Vérifiez que vous disposez d'un espace disque suffisant pour l'installation de SUSE Linux Enterprise Server. Il est recommandé d'utiliser un disque dur à part.
+  </para>
+  <para>
+   SUSE Linux prend également en charge l'installation sur un système de stockage Fibre Channel. Avant de lancer l'installation, configurez l'adaptateur FCHBA (Fiber Channel Host Bus Adapter), le commutateur SAN Fabric et le système de stockage de manière qu'ils fournissent un accès de l'adaptateur FCHBA aux unités logiques (LUN) cibles sur le système de stockage, via le commutateur SAN Fabric.
+  </para>
+  <para>
+   Bien configurés, les périphériques de stockage SAN sont répertoriés parmi les disques durs existants de votre système. L'option <guimenu>Create Custom Partitioning Setup</guimenu> (Créer une configuration de partitionnement personnalisé) ouvre la boîte de dialogue décrite à la <xref linkend="sec.yast2.i_y2_part_expert"/>.
+  </para>
+
+ </sect3>
+ <sect3 id="sec.prep.pseries.netsource">
+  <title>Configuration de la source d'installation</title>
+  <para>
+   Si vous prévoyez d'effectuer l'installation à partir d'un CD-ROM, insérez le CD 1 dans le lecteur. En mode LPAR, le CD-ROM doit être inclus dans le profil de la partition à installer. Créez une source d'installation réseau si SUSE Linux Enterprise Server doit être installé sur plusieurs partitions. Ainsi, vous n'aurez pas besoin de changer de CD-ROM au cours de l'installation. La même source peut également être utilisée pour l'installation simultanée de plusieurs systèmes. Pour plus d'informations sur la configuration de la source d'installation réseau, reportez-vous à la <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+  </para>
+ </sect3>
+ <sect3>
+
+  <title>Démarrage de l'installation</title>
+  <para>
+   Pour lancer l'installation, redémarrez le système. Entrez ensuite dans le microprogramme du système. Pour cela, appuyez sur la touche <keycap>F1</keycap> ou <keycap>1</keycap> lorsque vous utilisez une console série pendant la phase de vérification du système, lors du redémarrage. Reportez-vous à la section <xref linkend="fig.ppc.pseries.start.inst.sms"/>.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.sms">
+   <title>Accès au microprogramme système</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_sms.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_sms.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+
+
+
+
+  <para>
+   Pendant la phase de vérification des périphériques SCSI, appuyez sur la touche <keycap>F1</keycap> ou <keycap>1. </keycap> Sélectionnez <guimenu>6 MultiBoot</guimenu> (Démarrage multiple) pour ouvrir la boîte de dialogue <guimenu>Multiboot</guimenu> (Démarrage multiple). Reportez-vous à la section <xref linkend="fig.ppc.pseries.start.inst.multiboot"/>.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.multiboot">
+   <title>Boîte de dialogue Multiboot (Démarrage multiple)</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_multiboot.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_multiboot.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Sélectionnez <literal>3</literal> pour définir le périphérique d'installation. La liste des périphériques disponibles s'affiche. Reportez-vous à la section <xref linkend="fig.ppc.pseries.start.inst.system"/>.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.system">
+   <title>Installation du système d'exploitation</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_system.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_system.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect3>
+
+ <sect3>
+  <title>Démarrage à partir du lecteur de CD-ROM</title>
+  <para>
+   Sélectionnez le lecteur de CD-ROM concerné (<literal>3</literal> dans le présent exemple). Le système lit les données à partir du lecteur de CD-ROM et affiche la chaîne <emphasis>identstring</emphasis>.
+  </para>
+  
+<screen>
+-&gt;1   SuSE:SLE-11:GA&lt;-
+</screen>
+  <para>
+   Une fois que vous avez sélectionné <keycap>1</keycap>, l'utilitaire yaboot démarre.
+  </para>
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+</screen>
+  <para>
+   Saisissez <guimenu>install</guimenu> et appuyez sur <keycap>Entrée</keycap>. Vous pouvez aussi vous contenter d'appuyer sur <keycap>Entrée</keycap> pour démarrer le programme d'installation (option par défaut).
+  </para>
+  <para>
+   Pour effectuer l'installation à partir d'une source réseau (reportez-vous à la <xref linkend="sec.prep.pseries.netsource"/>), ajoutez <option>manual</option> au kernel dans la commande<command>install</command>. Pour une installation via VNC, ajoutez les paramètres <option>vnc=1</option> et <option>vncpassword=<replaceable>password</replaceable></option> à <command>install</command>. Pour plus d'informations sur VNC, reportez-vous à la <xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>.
+  </para>
+
+  <para>
+   En mode LPAR, le CD-ROM doit être inclus dans le profil de la partition à installer.
+  </para>
+ </sect3>
+ <sect3>
+  <title>Démarrage à partir d'une source réseau</title>
+  <para>
+   Sélectionnez un périphérique Ethernet qui a accès à la source d'installation (<literal>6</literal> dans le présent exemple).
+  </para>
+ </sect3>
+ <sect3>
+  <title>Étapes supplémentaires</title>
+  <para>
+   Procédez comme indiqué au <xref linkend="cha.inst"/> pour lancer l'installation du logiciel avec linuxrc et YaST.
+  </para>
+ </sect3>
+</sect2>

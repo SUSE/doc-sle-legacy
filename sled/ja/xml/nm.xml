@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="nm.xml" id="cha.nm">
+ <title>NetworkManagerの使用</title><indexterm> <primary>インターネット</primary> <secondary>接続</secondary> </indexterm> <indexterm> <primary>NetworkManager</primary> </indexterm>
+ <para>
+  NetworkManagerは、ラップトップなどの携帯用コンピュータのための理想的なソリューションです。NetworkManagerは、802.1x保護ネットワークへの接続など、ネットワーク接続のための最新の暗号化タイプおよび標準をサポートしています。802.1Xは、「IEEE Standard for Local and Metropolitan Area Networks—Port-Based Network Access Control」(ポートごとにネットワークアクセスの制御を行う、ローカル/メトロポリタンエリアネットワーク向け IEEE 標準)です。<quote/>NetworkManagerを使用すると、ネットワークインタフェースの設定および移動時の有線/ワイヤレスネットワーク間の切り替えについて心配する必要がなくなります。NetworkManagerでは、既知のワイヤレスネットワークに自動的に接続するか、または複数のネットワーク接続を並行して管理できます。後者の場合、最も高速な接続がデフォルトとして使用されます。さらに、利用可能なネットワーク間を手動で切り換えたり、システムトレイのアプレットを使用してネットワーク接続を管理できます。
+
+ </para>
+ <para>
+  単一の接続をアクティブにする代わりに、複数の接続を一度にアクティブにできます。これにより、Ethernetからラップトップの接続プラグを抜いても、無線接続により接続が維持されます。
+ </para>
+ <sect1 id="sec.nm.usecase">
+  <title>NetworkManagerの使用</title>
+
+  <para>
+   NetworkManagerは、高度で直感的なユーザインタフェースを提供します。このインタフェースを使用すると、ネットワーク環境を簡単に切り換えることができます。ただし、NetworkManagerは、次の場合には適しません。
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     コンピュータが、DHCPまたはDNSサーバなど、ネットワーク内で他のコンピュータにネットワークサービスを提供している場合。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     コンピュータがXenサーバの場合、またはシステムがXen内の仮想システムの場合。
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+ <sect1 id="sec.nm.activate">
+  <title>NetworkManagerの有効化/無効化</title><indexterm> <primary>NetworkManager</primary> <secondary>有効化</secondary></indexterm>
+
+  <para>
+   ラップトップコンピュータでは、NetworkManagerがデフォルトで有効です。ただし、YaSTネットワーク設定モジュールでいつでも有効または無効にできます。
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     YaSTを実行し、<menuchoice><guimenu>ネットワークデバイス</guimenu><guimenu>ネットワーク設定</guimenu></menuchoice>の順に選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>Network Settings</guimenu>ダイアログが開きます。<guimenu>グローバルオプション</guimenu>タブを開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     NetworkManagerを使用してネットワーク接続を設定および管理する
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       <guimenu>ネットワークのセットアップ方法</guimenu>フィールドで、<guimenu>NetworkManagerを使ってユーザが制御</guimenu>を選択します。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       <guimenu>OK</guimenu>をクリックしてYaSTを閉じます。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       <xref linkend="sec.nm.configure"/>に従って、NetworkManagerを使用してネットワーク接続を設定します。
+      </para>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     NetworkManagerを無効にして従来の方法でネットワークを制御するには、以下の手順を実行します。
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       <guimenu>ネットワークのセットアップ方法</guimenu>フィールドで、<guimenu>ifupを使用した従来の方法</guimenu>
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       <guimenu>OK</guimenu>をクリックします。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       DHCP経由の自動環境設定または静的IPアドレスによる手動設定で、YaSTでネットワークカードを設定します。別の方法として、YaSTを使用してモデムを設定します。
+      </para>
+      <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+        <para>
+         ダイヤルアップ接続の場合は、<menuchoice><guimenu>ネットワークデバイス</guimenu><guimenu>モデム</guimenu></menuchoice>を使用します。
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         内部またはUSB ISDNモデムを設定するには、<menuchoice><guimenu>ネットワークデバイス</guimenu><guimenu>ISDN</guimenu></menuchoice>の順に選択します。
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         内部またはUSB DSLモデムを設定するには、<menuchoice><guimenu>ネットワークデバイス</guimenu><guimenu>DSL</guimenu></menuchoice>の順に選択します。.
+        </para>
+       </listitem>
+      </itemizedlist>
+      <para>
+       YaSTを使用したネットワーク接続の詳細については、<xref linkend="sec.basicnet.yast"/>および<xref linkend="cha.wireless.wlan"/>を参照してください。
+      </para>
+     </step>
+    </substeps>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.nm.configure">
+  <title>ネットワーク接続の設定</title><indexterm> <primary>NetworkManager</primary> <secondary>設定</secondary></indexterm>
+
+  <para>
+   YaSTでNetworkManagerを有効にした後、KDEおよびGNOMEで使用可能なNetworkManagerフロントエンドでネットワーク接続を設定します。両フロントエンドのネットワーク設定ダイアログは非常に似ています。有線、無線、モバイルブロードバンド、DSL、およびVPN接続など、あらゆるタイプのネットワーク接続に対応するタブが表示されます。各タブで、該当するタイプの接続の追加、編集、または削除を行うことができます。KDE設定ダイアログでは、接続タイプがシステムで使用可能であれば(ハードウェアおよびソフトウェアによる)、適切なタブのみがアクティブになります。また、KNetworkManagerではデフォルトで、各タブで使用可能な入力フィールドおよびオプションに対して包括的なツールヒントが表示されます。
+  </para>
+
+
+
+  <note>
+   <title>Bluetooth接続</title>
+   <para>
+    現在、Bluetooth接続は、NetworkManagerでは設定できません。
+   </para>
+  </note>
+
+  <para>
+   GNOMEでネットワーク設定ダイアログを開くには、メインメニューを開き、右側にある<guimenu>ネットワーク</guimenu>エントリをクリックします。その代わり、<keycombo> <keycap function="alt"/> <keycap>F2</keycap> </keycombo>を押して<command>nm-connection-editor</command>を入力するか、GNOMEコントロールセンターで<menuchoice> <guimenu>システム</guimenu><guimenu>ネットワーク接続</guimenu></menuchoice>の順に選択します。
+  </para>
+
+  <figure>
+   <title>GNOMEネットワーク接続のダイアログ</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="nm_gnome_tabs.png" width="70%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="nm_gnome_tabs.png" width="50%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   KDEを使用している場合は、メインメニューを開き、<guimenu>デスクトップの設定</guimenu>をクリックします。<guimenu>個人設定</guimenu>で、<guimenu>一般</guimenu>タブの<guimenu>ネットワークの設定</guimenu>を選択し、ネットワーク設定ダイアログを開きます。
+  </para>
+
+  <figure>
+   <title>KDEネットワーク設定ダイアログ</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="nm_kde_tabs.png" width="70%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="nm_kde_tabs.png" width="50%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   システムトレイにあるNetworkManagerアプレットから設定ダイアログを起動することもできます。KDEでは、アイコンを左クリックし、<guimenu>接続の管理</guimenu>を選択します。GNOMEでは、アイコンを右クリックし、<guimenu>接続の編集</guimenu>を選択します。
+  </para>
+
+  <note>
+   <title>オプションの可用性</title>
+   <para>
+    システムセットアップによっては、接続を設定できない場合があります。保護された環境では、一部のオプションがロックされているか、または<systemitem class="username">root</systemitem>パーミッションを必要とする場合があります。詳細は、システム管理者にお問い合わせください。
+   </para>
+  </note>
+
+  <procedure id="pro.nm.configure">
+   <title>接続の追加または編集</title>
+   <para>
+    NetworkManagerでネットワーク接続を設定する場合、すべてのユーザが共有できる<literal>システム接続</literal>を定義することもできます。<literal>ユーザ接続</literal>とは対照的に、システム接続は、NetworkManagerの起動直後、ユーザがログインする前に使用可能になります。両タイプの接続の詳細については、<xref linkend="sec.nm.sec.types"/>を参照してください。
+   </para>
+   <para>
+    現在、KDEでは<literal>system connection</literal>オプションは使用できません。システム接続を設定するには、この場合はYaSTを使用する必要があります。
+   </para>
+   <note>
+    <title>非表示のネットワーク</title>
+    <para>
+     <quote>隠れた</quote>ネットワーク(サービスをブロードキャストしないネットワーク)に接続するには、そのネットワークのSSID (Service Set Identifier)またはESSID (Extended Service Set Identifier)を知っている必要があります。隠れたネットワークは、自動的に検出できません。
+    </para>
+   </note>
+   <step performance="required">
+    <para>
+     ネットワーク設定のダイアログで、使用したい接続タイプのタブをクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>追加</guimenu>をクリックして新しい接続を作成するか、既存の接続を選択して<guimenu>編集</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>接続名</guimenu>および接続の詳細を入力します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     非表示のネットワークでは、ESSIDおよび暗号化パラメータを入力します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     1つの接続タイプについて複数の物理デバイスが使用可能な場合(たとえば、コンピュータに2つのethernetカードまたは2つの無線カードが取り付けられている場合)、特定のデバイスに接続を関連付けることができます。
+    </para>
+    <para>
+     KDEを使用している場合は、このために<guimenu>インタフェースの制限</guimenu>オプションを使用します。GNOMEを使用する場合は、接続を関連付けるデバイスの<guimenu>MACアドレス</guimenu>を入力し、設定を確認します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     NetworkManagerが自動的に特定の接続を使用するようにするには、この接続に対してオプション<guimenu>自動的に接続</guimenu>(KDEの場合)または<guimenu>Stay connected when possible (可能な場合は接続を維持)</guimenu>(GNOMEの場合)を有効にします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     接続を<literal>システム接続</literal>にするには、<guimenu>すべてのユーザが使用可能</guimenu>を有効にします(GNOME)。システム接続を作成および編集するには、<systemitem class="username">root</systemitem>パーミッションが必要です。
+    </para>
+   </step>
+  </procedure>
+
+  <para>
+   変更を確定した後、NetworkManagerアプレットを左クリックすると、新たに設定されたネットワーク接続が使用可能なネットワークのリストに表示されます。
+  </para>
+
+  <figure>
+   <title>KNetworkManager—設定済みの接続と使用可能な接続</title>
+   <mediaobject>
+    <imageobject role="html">
+     <imagedata fileref="kde_knm_wlan_connections.png" width="40%" format="PNG"/>
+    </imageobject>
+    <imageobject role="fo">
+     <imagedata fileref="kde_knm_wlan_connections.png" width="40%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="nm_kde.xml" parse="xml"/>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="nm_gnome.xml" parse="xml"/>
+ <sect1 id="sec.nm.vpn">
+  <title>NetworkManagerとVPN</title><indexterm> <primary>NetworkManager</primary> <secondary>VPN</secondary> </indexterm> <indexterm> <primary>VPN</primary> </indexterm>
+
+  <para>
+   NetworkManagerは、数種類のVPN (仮想私設網)技術をサポートしています.各技術について、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>には、NetworkManagerに対する一般的なサポートを提供する基本パッケージが付属しています。加えて、アプレットに対応するデスクトップ固有のパッケージをインストールすることも必要です。
+  </para>
+
+
+
+  <variablelist>
+   <varlistentry>
+    <term>NovellVPN</term>
+    <listitem>
+     <para>
+      このVPN技術を使用するには、次のアイテムをインストールします:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-novellvpn</systemitem>および
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-novellvpn-kde4</systemitem>または<systemitem class="resource">NetworkManager-novellvpn-gnome</systemitem>。
+       </para>
+      </listitem>
+     </itemizedlist>
+     <para>
+      NovellVPNサポート(KDE用)はまだ利用できませんが、現在準備中です。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>OpenVPN</term>
+    <listitem>
+     <para>
+      このVPN技術を使用するには、次のアイテムをインストールします:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-openvpn</systemitem>および
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-openvpn-kde4</systemitem>または<systemitem class="resource">NetworkManager-openvpn-gnome</systemitem>。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>vpnc (Cisco)</term>
+    <listitem>
+     <para>
+      このVPN技術を使用するには、次のアイテムをインストールします:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-vpnc</systemitem>および
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+
+        <systemitem class="resource">NetworkManager-vpnc-kde4</systemitem>または<systemitem class="resource">NetworkManager-vpnc-gnome</systemitem>。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>PPTP(ポイントツーポイントトンネリングプロトコル)</term>
+    <listitem>
+     <para>
+      このVPN技術を使用するには、次のアイテムをインストールします:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-pptp</systemitem>および
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-pptp-kde4</systemitem>または<systemitem class="resource">NetworkManager-pptp-gnome</systemitem>。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   パッケージのインストールを完了したら、VPN接続を設定します(<xref linkend="sec.nm.configure"/>を参照してください)。
+  </para>
+ </sect1>
+ <sect1 id="sec.nm.security">
+  <title>NetworkManagerとセキュリティ</title><indexterm> <primary>NetworkManager</primary> <secondary>セキュリティ</secondary></indexterm>
+
+  <para>
+   NetworkManagerは、ワイヤレス接続を「信頼された」と「信頼なし」という2種類で区別します。 「信頼された」接続とは、過去に明示的に選択したネットワークです。 その他は「信頼なし」です。信頼された接続は、アクセスポイントのMACアドレスと名前で識別されます。MACアドレスを使用して、信頼された接続が同じ名前でも、異なるアクセスポイントを使用できないようにすることができます。
+  </para>
+
+  <para>
+   NetworkManagerにより、定期的に、使用可能なネットワークがスキャンされます。信頼されたネットワークが複数検出された場合、最近使用されたものが自動的に選択されます。すべてのネットワークが信頼されないネットワークの場合は、NetworkManagerはユーザがネットワークを選択するまで待機します。
+  </para>
+
+  <para>
+   暗号化設定が変更されても、名前とMACアドレスが同じままの場合は、NetworkManagerは接続を試みますが、まず、新しい暗号化設定の確認とアップデート(新しいキーなど)の提供を求めるプロンプトが表示されます。
+  </para>
+
+  <para>
+   無線接続を使用している状態からオフラインモードに切り替えると、NetworkManagerでSSIDまたはESSIDが空白になります。これにより、カードの接続解除が確保されます。
+  </para>
+
+  <sect2 id="sec.nm.sec.types">
+   <title>ユーザおよびシステムの接続</title>
+   <para>
+    NetworkManagerは、<literal>ユーザ</literal>および<literal>システム</literal>という2種類の接続を認識します。ユーザ接続は、最初のユーザがログインしたとき、NetworkManagerで利用可能になる接続です。ユーザは、必要な資格情報を要求されます。ユーザがログアウトすると、接続は切断され、NetworkManagerから削除されます。システム接続として定義された接続は、すべてのユーザが共有でき、NetworkManagerの起動直後で、どのユーザもまだログインしていないとき、利用可能になります。システム接続の場合、すべての資格情報を接続作成時に提供する必要があります。そのようなシステム接続は、認証を要求するネットワークへの自動接続に使用することができます。NetworkManagerでユーザ接続またはシステム接続を設定する方法については、<xref linkend="sec.nm.configure"/>を参照してください。
+   </para>
+   <para>
+    KDEの場合は、NetworkManagerを使用するシステム接続の設定は、現在サポートされていません(代わりにYaSTを使用)。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.nm.sec.store">
+   <title>パスワードと資格情報の保存</title>
+   <para>
+    暗号化されたネットワークに接続するたびに資格情報を再入力したくない場合は、デスクトップ固有ツールのGNOMEキーリングマネージャまたはKWalletManagerを使用して、資格情報を暗号化してディスク上に保存し、マスタパスワードで安全を確保できます。
+   </para>
+
+
+   <para os="osuse;sled">
+    KDEでは、資格情報を保存するかどうか、どのように保存するかを設定できます。そのためには、NetworkManagerアイコンを左クリックし、<guimenu>接続の管理</guimenu>を選択します。<menuchoice><guimenu>その他</guimenu><guimenu>接続の秘匿</guimenu></menuchoice>の順にクリックし、次のオプションの1つを選択します。
+   </para>
+   <variablelist os="osuse;sled">
+    <varlistentry>
+     <term>保存しない(常にプロンプトを表示)</term>
+     <listitem>
+      <para>
+       資格情報の保存がセキュリティリスクとみなされる環境で作業する場合は、このオプションが役に立ちます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>ファイルに保存 (暗号化なし)</term>
+     <listitem>
+      <para>
+       このオプションを選択すると、パスワードが、暗号化なしで、接続ごとに作成された接続ファイルに保存されます。これらファイルは、<filename>$HOME/.kde4/share/apps/networkmanagement/connections</filename>にあります。
+      </para>
+      <warning>
+       <title>セキュリティリスク</title>
+       <para>
+        ネットワーク資格情報を暗号化なしで保存することには、セキュリティ上のリスクがあります。ご使用のコンピュータにアクセスすれば、誰でも、その接続を再利用したり、ネットワーク接続を傍受できます。
+       </para>
+      </warning>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>セキュアなストレージに保存(暗号化あり)</term>
+     <listitem>
+      <para>
+       このオプションを選択すると、資格情報がKWalletManagerに保存されます。<phrase os="sled">KWalletManagerの詳細については、<xref linkend="cha.kde.kwallet"/>を参照してください。</phrase>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para os="sled;sles">
+    NetworkManagerは、安全な接続(暗号化された有線、ワイヤレス、またはVPNの接続など)のための証明書を証明書ストアから取得することもできます。詳細については、<xref linkend="cha.certstore"/>を参照してください。
+   </para>
+
+
+  </sect2>
+ </sect1>
+ <sect1 id="sec.nm.faq">
+  <title>よくある質問とその回答</title>
+
+  <para>
+   NetworkManagerによる特別なネットワークオプションの設定に関するFAQ (よくある質問と答え)は、次のとおりです。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>特定のデバイスには、どのようにして接続しますか?</term>
+    <listitem>
+     <para>
+      デフォルトでは、NetworkManager内の接続は、デバイスタイプ固有の接続であり、同じタイプのすべての物理デバイスに適用されます。1つの接続タイプについて複数の物理デバイスが使用可能である場合(たとえば、コンピュータに2つのイーサネットカードが取り付けられている場合)、特定のデバイスに接続を関連付けることができます。
+
+     </para>
+     <para>
+      GNOMEでこれを行うには、まずデバイスのMACアドレスを調べます。このために、アプレットから入手できる<guimenu>接続情報</guimenu>か、またはコマンドラインツール(<command>nm-tool</command>または<command>ifconfig</command>など)の出力を使用します。次に、ネットワーク接続を設定するためのダイアログを起動し、変更する接続を選択します。<guimenu>有線</guimenu>タブまたは<guimenu>無線</guimenu>タブで、デバイスの<guimenu>MACアドレス</guimenu>を入力し、変更を確定します。
+     </para>
+     <para>
+      KDEを使用している場合は、ネットワーク接続を設定するためのダイアログを起動し、変更する接続を選択します。<guimenu>Ethernet</guimenu>タブまたは<guimenu>無線</guimenu>タブで、<guimenu>インタフェースの制限</guimenu>オプションを使用し、接続を関連付けるネットワークインタフェースを選択します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>同じESSIDを持つ複数のアクセスポイントが検出された場合、どのようにして特定のアクセスポイントを指定しますか？</term>
+    <listitem>
+     <para>
+      異なる無線帯域(a/b/g/n)を持つ複数のアクセスポイントが利用可能な場合、デフォルトでは、最も強い信号を持つアクセスポイントが自動的に選択されます。このデフォルトを無効にするには、ワイヤレス接続の設定時に<guimenu>BSSID</guimenu>フィールドを使用します。
+     </para>
+     <para>
+      BBSID (Basic Service Set Identifier)は、各Basic Service Setを固有に識別します。インフラストラクチャBasic Service Setでは、BSSIDは、ワイヤレスアクセスポイントのMACアドレスです。独立型(アドホック)Basic Service Setでは、BSSIDは、46ビットの乱数から生成されローカルに管理されるMACアドレスです。
+     </para>
+     <para>
+      <xref linkend="sec.nm.configure"/>に説明されているように、ネットワーク接続を設定するダイアログを開始します。変更したいワイヤレス接続を選択し、<guimenu>編集</guimenu>をクリックします。<guimenu>ワイヤレス</guimenu>タブで、BSSIDを入力します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>どのようにして、ネットワーク接続を他のコンピュータと共用しますか?</term>
+    <listitem>
+     <para>
+      プライマリデバイス(インターネットに接続するデバイス)には、特別な設定は必要ありません。ただし、ローカルハブまたはローカルコンピュータに接続するデバイスは、次の手順で設定する必要があります。
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        <xref linkend="sec.nm.configure"/>に説明されているように、ネットワーク接続を設定するダイアログを開始します。変更したい接続を選択し、<guimenu>編集</guimenu>をクリックします。GNOMEを使用している場合は、<guimenu>IPv4設定</guimenu>タブに切り替えて、<guimenu>方法</guimenu>ドロップダウンリストから<guimenu>他のコンピュータと共有</guimenu>を選択します。KDEを使用している場合は、<guimenu>IPアドレス</guimenu>タブに切り替え、<guimenu>設定</guimenu>ドロップダウンリストから<guimenu>共有</guimenu>を選択します。これで、IPトラフィックの転送が有効になり、デバイス上でDHCPサーバが実行されます。NetworkManagerで変更内容を確認します。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        DCHPサーバは、ポート<literal>67</literal>を使用するので、そのポートがファイアウォールによってブロックされていないことを確認してください。そのためには、接続を共有するマシンで、YaSTを起動して、<menuchoice><guimenu>セキュリティとユーザ</guimenu><guimenu>ファイアウォール</guimenu></menuchoice>の順に選択します。<guimenu>許可されるサービス</guimenu>カテゴリに切り替えます。<guimenu>DCHP Server</guimenu>が<guimenu>許可されるサービス</guimenu>として表示されていない場合は、<guimenu>Services to Allow</guimenu>から<guimenu>DCHP Server</guimenu>を選択し、<guimenu>追加</guimenu>をクリックします。YaSTで変更内容を確認します。
+       </para>
+      </listitem>
+     </orderedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>静的DNSアドレスに、どのようにして自動(DHCP, PPP, VPN)アドレスを提供しますか? </term>
+    <listitem>
+     <para>
+      DHCPサーバが無効なDNS情報(および/またはルート)を提供する場合は、次の手順でそれを無効にできます。<xref linkend="sec.nm.configure"/>に説明されているように、ネットワーク接続を設定するダイアログを開始します。変更したい接続を選択し、<guimenu>編集</guimenu>をクリックします。GNOMEを使用している場合は、<guimenu>IPv4設定</guimenu>タブに切り替えて、<guimenu>方法</guimenu>ドロップダウンリストから<guimenu>自動(DHCP)アドレスのみ</guimenu>を選択します。KDEを使用している場合は、<guimenu>IPアドレス</guimenu>タブに切り替え、<guimenu>設定</guimenu>ドロップダウンリストから<guimenu>自動(DHCP)アドレスのみ</guimenu>を選択します。<guimenu>DNS Servers</guimenu>および<guimenu>Search Domains</guimenu>のフィールドにDNS情報を入力します。<guimenu>自動で取得したルートを無視する</guimenu>場合は、<guimenu>Routes</guimenu>をクリックして該当するチェックボックスをオンにする(GNOME)か、タブの一番下にあるドロップダウンリストから<guimenu>Routes</guimenu>を選択して該当するチェックボックスをオンにします(KDE)。変更内容を確認します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>どのようにしたら、ユーザがログインする前に、パスワード保護されたネットワークにNetworkManagerを接続できますか?</term>
+    <listitem>
+     <para>
+      そのような目的に使用できる<literal>system connection</literal>を定義します。詳細については、<xref linkend="sec.nm.security"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nm.trouble">
+  <title>トラブルシューティング</title><indexterm> <primary>NetworkManager</primary> <secondary>トラブルシューティング</secondary></indexterm>
+
+  <para>
+   場合によっては、接続に関する問題が発生することがあります。NetworkManagerに関してよく発生する問題としては、アプレットが起動しない、VPNオプションがないなどがあります。これらの問題の解決、防止方法は、使用ツールによって異なります。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>NetworkManagerデスクトップアプレットが起動しない</term>
+    <listitem>
+     <para>
+      ネットワークがNetworkManager制御に設定されている場合、GNOMEおよびKDE NetworkManagerアプレットが自動的に起動します。アプレットが起動しない場合は、<xref linkend="sec.nm.activate"/>の説明に従ってYaST内でNetworkManagerが有効になっているかどうかを確認します。次に、デスクトップ環境に適切なパッケージがインストールされていることを確認します。KDE 4を使用する場合、該当するパッケージは<systemitem class="resource">NetworkManager-kde4</systemitem>です。GNOMEを使用する場合、該当するパッケージは<systemitem class="resource">NetworkManager-gnome</systemitem>です。
+     </para>
+     <para>
+      デスクトップアプレットがインストールされているが、何らかの理由で実行されない場合は、手動でアプレットを起動してください。デスクトップアプレットがインストールされているのに、何らかの理由で実行していないときは、コマンド<command>nm-applet</command> (GNOME)または<command>knetworkmanager</command>(KDE)で手動で開始します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NetworkManagerアプレットにVPNオプションが表示されない</term>
+    <listitem>
+     <para>
+      NetworkManager、アプレット、およびNetworkManager用VPNのサポートは、個別のパッケージで配布されます。NetworkManagerアプレットにVPNオプションが表示されない場合は、使用しているVPNテクノロジのNetworkManagerサポートが含まれたパッケージがインストールされているかどうかを確認します。詳細については、<xref linkend="sec.nm.vpn"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ネットワーク接続を使用できない</term>
+    <listitem>
+     <para>
+      ネットワーク接続が正しく設定され、ネットワーク接続の他のすへてのコンポーネントも(ルータなど)、正常に機能している場合は、コンピュータ上でネットワークインタフェースを再起動すると、問題が解決する場合があります。そのためには、コマンドラインに<systemitem class="username">root</systemitem>としてログインし、<command>rcnetwork restart</command>を実行します。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nm.more">
+  <title>その他の情報</title>
+
+  <para>
+   NetworkManagerの詳細については、次のWebサイトおよびディレクトリから入手可能です。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>NetworkManagerプロジェクトページ</term>
+    <listitem>
+     <para>
+      <ulink url="http://projects.gnome.org/NetworkManager/"/>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>KDE NetworkManagerフロントエンド</term>
+    <listitem>
+     <para>
+      <ulink url="http://userbase.kde.org/NetworkManagement"/>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>パッケージのマニュアル</term>
+    <listitem>
+     <para>
+      NetworkManagerおよびGNOMEとKDEのNetworkManagerアプレットの最新情報については、次のディレクトリの情報も参照してください。
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <filename>/usr/share/doc/packages/NetworkManager/</filename>、
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/usr/share/doc/packages/NetworkManager-kde4/</filename>、および
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/usr/share/doc/packages/NetworkManager-gnome/</filename>。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+</chapter>

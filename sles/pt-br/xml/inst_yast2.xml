@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="inst_yast2.xml" id="cha.inst">
+ <title>Instalação com o YaST</title><indexterm id="idx.Installation_YaST2" class="startofrange"> <primary>instalando</primary> <secondary>YaST, com</secondary></indexterm><indexterm id="idx.YaST2_Installation" class="startofrange"> <primary>YaST</primary> <secondary>instalando com</secondary></indexterm><indexterm id="idx.Installation" class="startofrange"> <primary>instalação</primary></indexterm>
+ <abstract>
+  <para os="sles">
+   Após preparar seu hardware para a instalação do <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> conforme descrito na <xref linkend="part.archspec"/> e após estabelecer conexão com o sistema de instalação, você verá a interface do assistente de sistema YaST do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. O YaST guiará você por todo o procedimento de instalação e configuração.
+  </para>
+
+  
+
+  
+ </abstract>
+ 
+ <sect1 id="sec.i.yast2.method">
+  <title>Escolhendo o método de instalação</title><indexterm> <primary>instalação</primary> <secondary>método</secondary> </indexterm>
+
+  <para>
+   Após selecionar a mídia de instalação, determine o método de instalação adequado e a opção de boot que melhor atende a suas necessidades:
+  </para>
+
+  <variablelist>
+   <varlistentry id="sec.i.yast2.source.cd">
+    <term>Instalando da mídia do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> (DVD, CD, USB)</term>
+    <listitem>
+     <para>
+      Escolha essa opção para realizar uma instalação stand-alone e não quiser trabalhar em uma rede para fornecer os dados da instalação ou a infraestrutura de boot. A instalação continuará exatamente conforme descrito na <xref linkend="sec.i.yast2.steps"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term>Instalando por meio de um servidor de rede</term>
+    <listitem>
+     <para>
+      Escolha essa opção se tiver um servidor de instalação disponível na rede ou quiser usar um servidor externo como a fonte dos dados de instalação. Essa configuração pode ser definida para inicializar a partir de mídias físicas (disquete, CD/DVD ou disco rígido) ou por rede usando PXE/BOOTP. Consulte a <xref linkend="sec.i.yast2.source.slp"/>, a <xref linkend="sec.i.yast2.source.network"/> ou o <xref linkend="cha.deployment.remoteinst"/> para obter mais informações.
+     </para>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+
+  <para>
+   O <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> suporta várias opções de boot diferentes para sua escolha, dependendo do hardware disponível e do cenário de instalação preferido. <phrase os="sles;sled">A inicialização pela mídia do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> é a opção mais direta, mas requisitos especiais poderão exigir configurações especiais</phrase>:
+  </para>
+
+  <table id="tab.boot.opt">
+   <title>Opções de Boot</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        Opção de Boot
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Descrição
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        DVD
+       </para>
+      </entry>
+      <entry>
+       <para>
+        É a opção de boot mais fácil. Essa opção poderá ser usada se o sistema tiver uma unidade de DVD-ROM local suportada pelo Linux.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        Dispositivo de Armazenamento em Massa USB
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Caso sua máquina não esteja equipada com uma unidade ótica, será possível inicializar a imagem de instalação de um dispositivo de armazenamento em massa USB, como um pendrive USB. Para criar um dispositivo de armazenamento USB inicializável, você precisa copiar a imagem ISO do DVD ou do Mini CD para o dispositivo usando o comando <command>dd</command> (o dispositivo USB não deve ser montado, todos os dados no dispositivo são apagados):
+       </para>
+<screen>dd if=<replaceable>PATH_TO_ISO_IMAGE</replaceable> of=<replaceable>USB_STORAGE_DEVICE</replaceable> bs=4M</screen>
+       <para>
+        <command>dd</command> está disponível no Linux e no MacOS por padrão. É possível fazer download da versão do Microsoft Windows* em <ulink url="http://www.chrysocome.net/dd"/>.
+       </para>
+       <important>
+        <title>Compatibilidade</title>
+        <para>
+         Observe que a inicialização de um Dispositivo de Armazenamento em Massa USB <emphasis>não</emphasis> é suportada em máquinas UEFI (isso inclui toda a arquitetura ia64) e na arquitetura ppc64.
+        </para>
+       </important>
+      </entry>
+     </row>
+     
+     <row>
+      <entry>
+       <para>
+        PXE ou BOOTP
+       </para>
+      </entry>
+      <entry>
+       <para>
+        A inicialização pela rede deve ser suportada pelo BIOS ou firmware do sistema, e um servidor de boot deve estar disponível na rede. Esta tarefa também pode ser executada por outro sistema <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. <phrase>Consulte <xref linkend="cha.deployment.remoteinst"/> para obter mais informações.</phrase>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        Disco rígido
+       </para>
+      </entry>
+      <entry>
+       <para>
+        É possível inicializar a instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> do disco rígido. Para isso, copie o kernel (<systemitem>linux</systemitem>) e o sistema de instalação (<systemitem>initrd</systemitem>) do diretório <filename>/boot/<replaceable>arquitetura</replaceable>/</filename> na mídia de instalação para o disco rígido e adicione uma entrada apropriada ao carregador de boot existente de uma instalação anterior do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>.
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <tip arch="amd64;em64t">
+   <title>Inicializando do DVD em máquinas UEFI</title>
+   <para arch="amd64;em64t">
+    O DVD1 pode ser usado como meio de boot para máquinas equipadas com UEFI (Unified Extensible Firmware Interface). Consulte a documentação do seu fornecedor para obter informações específicas. Em caso de falha de boot, tente habilitar o CSM (Compatibility Support Module) em seu firmware.
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.source.slp">
+   <title>Instalando por meio de um servidor de rede usando o SLP</title><indexterm> <primary>instalação</primary> <secondary>rede</secondary> <tertiary>SLP</tertiary> </indexterm>
+   <para>
+    Se sua configuração de rede oferecer suporte a OpenSLP e sua fonte de instalação de rede tiver sido configurada para se anunciar via SLP (descrito na <xref linkend="sec.deployment.remoteinst.instserver"/>), inicialize o sistema, pressione <keycap>F4</keycap> na tela de boot e selecione <guimenu>SLP</guimenu> no menu.
+   </para>
+   <para>
+    O programa de instalação configura a conexão de rede com o DHCP e recupera o local da fonte de instalação de rede a partir do servidor OpenSLP. Se houver falha na configuração automática de rede DHCP, você será solicitado a digitar manualmente os parâmetros adequados. A instalação prossegue conforme descrito a seguir, com exceção da etapa de configuração de rede, que deve ser feita antes de adicionar os repositórios extras. Essa etapa não será necessária, pois a rede já estará configurada e ativa nesse ponto.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.source.network">
+   <title>Instalando de uma fonte de rede sem SLP</title><indexterm> <primary>instalação</primary> <secondary>rede</secondary> <tertiary>outra</tertiary> </indexterm>
+   <para>
+    Se sua configuração de rede não oferecer suporte a OpenSLP para a recuperação de fontes de instalação de rede, inicialize o sistema e pressione <keycap>F4</keycap> na tela de boot para selecionar o protocolo de rede desejado (NFS, HTTP, FTP ou SMB/CIFS). Forneça o endereço do servidor e o caminho da mídia de instalação.
+   </para>
+   <para>
+    O programa de instalação configura automaticamente a conexão de rede com o DHCP. Se houver falha nessa configuração, você será solicitado a digitar manualmente os parâmetros adequados. A instalação recupera os dados de instalação a partir da fonte especificada. Em seguida, a instalação continuará conforme descrito abaixo, com exceção da etapa de configuração de rede necessária antes da adição de mais repositórios. Essa etapa não será necessária, pois a rede já estará configurada e ativa nesse ponto.
+   </para>
+  </sect2>
+
+
+
+  
+ </sect1>
+ <sect1 id="sec.i.yast2.steps">
+  <title>O workflow da instalação</title><indexterm> <primary>instalação</primary> <secondary>workflow</secondary> </indexterm>
+
+  <para>
+   A instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> é dividida em três partes principais: preparação, instalação e configuração. Durante a fase de preparação, configure alguns parâmetros básicos como idioma, hora, configuração do disco rígido e escopo da instalação. Na fase de instalação não interativa, o software é instalado e o sistema é preparado para o primeiro boot. Após concluída a instalação, a máquina reinicializará no sistema recém-instalado e iniciará a configuração final do sistema. Nesse estágio, o acesso à rede e à Internet, bem como os componentes de hardware, como impressoras, serão configurados.
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.start.ppc" arch="ipseries" os="sles">
+  <title>IBM POWER: inicialização do sistema para instalação de rede</title>
+
+  <para>
+   No caso das plataformas IBM POWER, o sistema será inicializado (IPL, Initial Program Load — Carga Inicial de Programa) conforme descrito na <xref linkend="cha.ppc.prep"/>. Para instalação de rede, o SUSE Linux Enterprise Server não mostra uma splash screen nem uma linha de comando do carregador de boot nesses sistemas. Durante a instalação, carregue o kernel manualmente. É exibida a tela de instalação do YaST logo que uma conexão é estabelecida com o sistema de instalação via VNC, X ou SSH. Como não há splash screen nem linha de comando do carregador de boot, o kernel ou os parâmetros de boot não podem ser inseridos na tela, mas devem ser incluídos na imagem do kernel usando o utilitário <command>mkzimage_cmdline</command>.
+  </para>
+
+  <tip>
+   <title>IBM POWER: próximas etapas</title>
+   <para>
+    Para iniciar a instalação, siga a descrição do procedimento de instalação com o YaST a partir da <xref linkend="sec.i.yast2.welcome"/>.
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.i.yast2.start.390" arch="zseries" os="sles">
+  <title>IBM System z: inicialização do sistema para instalação</title>
+
+  <para>
+   No caso das plataformas IBM System z, o sistema será inicializado (IPL, Initial Program Load - Carga Inicial de Programa) conforme descrito na <xref linkend="sec.prep.ipling"/>. O <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> não mostra uma splash screen nesses sistemas. Durante a instalação, carregue o kernel, o initrd e o parmfile manualmente. É exibida a tela de instalação do YaST logo que uma conexão é estabelecida com o sistema de instalação via VNC, X ou SSH. Por não haver splash screen, os parâmetros de kernel ou de boot não poderão ser digitados na tela, mas deverão ser especificados em um parmfile (consulte a <xref linkend="sec.appdendix.parm"/>).
+  </para>
+
+  <tip>
+   <title>IBM System z: próximas etapas</title>
+   <para>
+    Para iniciar a instalação, siga a descrição do procedimento de instalação com o YaST a partir da <xref linkend="sec.i.yast2.welcome"/>.
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.i.yast2.start">
+  <title>Inicialização do sistema para instalação</title><indexterm> <primary>YaST</primary> <secondary>inicialização do sistema</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>iniciando</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>inicialização do sistema</secondary></indexterm>
+
+  <para>
+   É possível instalar <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> de fontes de instalação locais, por exemplo, de CDs ou do DVD do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, ou da fonte de rede de um servidor FTP, HTTP, NFS ou SMB. Qualquer uma dessas abordagens requer acesso físico ao sistema para instalação, além de interação do usuário durante a instalação. O procedimento de instalação é basicamente o mesmo, independentemente da fonte de instalação. Qualquer exceção será bem realçada na descrição de workflow a seguir.<phrase os="sles;sled"> Para obter uma descrição de como executar instalações não interativas automatizadas, consulte a <xref linkend="part.autoinstall"/>.</phrase>
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.bootscreen">
+  <title>A tela de boot em máquinas equipadas com BIOS tradicional</title><indexterm> <primary>tela de boot</primary> </indexterm> <indexterm> <primary>instalação</primary> <secondary>tela de boot</secondary> </indexterm>
+
+  <para>
+   A tela de boot exibe várias opções para o procedimento de instalação. <guimenu>Inicializar do Disco Rígido</guimenu> inicializa o sistema instalado e está marcada por padrão, pois o CD é geralmente deixado na unidade. Selecione uma das outras opções com as teclas de seta e pressione <keycap function="enter"/> para inicializá-la. As opções relevantes são:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>Instalação</guimenu>
+    </term>
+    <listitem>
+     <para>
+      O modo de instalação normal. Todas as funções de hardware moderno estão habilitadas. Em caso de falha da instalação, consulte <xref linkend="sec.i.yast2.bootscreen.kernel"/> para obter as opções de boot que desabilitam funções possivelmente problemáticas.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Reparar o Sistema Instalado</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Inicializa no sistema de conserto gráfico. Para obter mais informações sobre como reparar um sistema instalado, consulte a <xref linkend="sec.trouble.data.recover"/>. 
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Sistema de Recuperação</guimenu> <indexterm> <primary>YaST</primary> <secondary>sistema de recuperação</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Inicia um sistema Linux mínimo sem interface gráfica do usuário. Para obter mais informações, consulte a <xref linkend="sec.trouble.data.recover.rescue"/>. 
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><guimenu>Verificar a Mídia de Instalação</guimenu> <indexterm> <primary>YaST</primary> <secondary>verificação de mídia</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>verificação de mídia</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Essa opção só está disponível quando você instala de mídias criadas das ISOs descarregadas. Nesse caso, é recomendável verificar a integridade da mídia de instalação. Essa opção inicia o sistema de instalação antes de verificar a mídia automaticamente. No caso da verificação bem-sucedida, é iniciada a rotina de instalação normal. Se for detectada uma mídia corrompida, a rotina de instalação será interrompida.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+
+    <term><guimenu>Teste de Firmware</guimenu> <indexterm> <primary>teste de firmware</primary> </indexterm></term>
+    <listitem>
+     <para>
+      Inicia um verificador de BIOS que valida a ACPI e outras partes do BIOS.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Teste de Memória</guimenu> <indexterm> <primary>teste de memória</primary> </indexterm></term>
+    <listitem>
+     <para>
+      Testa a RAM do sistema por meio de ciclos repetidos de leitura e gravação. Termine o teste reinicializando.  Para obter mais informações, consulte a <xref linkend="sec.trouble.install.noboot"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>Tela de boot em máquinas com BIOS tradicional</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_boot_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_boot_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   Use as teclas de função indicadas na barra na parte inferior da tela para mudar idioma, resolução da tela, fonte de instalação ou adicionar um driver extra do fornecedor de hardware:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><keycap>F1</keycap><guimenu>Ajuda</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Obtenha ajuda sensível ao contexto referente ao elemento ativo da tela de boot. Use as teclas de seta para navegar, <keycap function="enter"/> para seguir um link, e <keycap function="escape"/> para sair da tela de ajuda.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F2</keycap><guimenu>Idioma</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Selecione o idioma de exibição e um layout de teclado correspondente para a instalação. O idioma padrão é o inglês (EUA).
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F3</keycap><guimenu>Modo de Vídeo</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Selecione vários modos de exibição gráficos para a instalação. Selecione <guimenu>Modo de Texto</guimenu> se a instalação gráfica causar problemas.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F4</keycap><guimenu>Fonte</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Normalmente, a instalação é realizada pela mídia de instalação inserida. Aqui, selecione outras origens, como os servidores FTP ou NFS. Se a instalação for implantada em uma rede com servidor SLP, selecione a fonte de instalação disponível no servidor com essa opção. No <xref linkend="cha.slp"/>, você encontrará informações sobre SLP.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry id="sec.i.yast2.bootscreen.kernel">
+    <term><keycap>F5</keycap><guimenu>Kernel</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Se encontrar problemas com a instalação regular, use esse menu para desabilitar algumas funções que podem ser problemáticas. Se seu hardware não oferecer suporte a ACPI (advanced configuration and power interface — interface de energia e configuração avançada), selecione <guimenu>Sem ACPI</guimenu> para instalar sem suporte a ACPI. A opção <guimenu>Sem APIC local</guimenu> desabilita o suporte a APIC (Advanced Programmable Interrupt Controllers — Controladores de Interrupção Programáveis Avançados) que poderá causar problemas com alguns itens de hardware. A opção <guimenu>Configurações Seguras</guimenu> inicializa o sistema com o modo DMA (para unidades de CD/DVD-ROM) e as funções de gerenciamento de energia desabilitadas.
+     </para>
+     <para>
+      Se você não tiver certeza, tente primeiro as seguintes opções: <guimenu>Instalação—ACPI Desabilitada</guimenu> ou <guimenu>Instalação—Configurações Seguras</guimenu>. Os especialistas também podem usar a linha de comando (<guimenu>Opções de Boot</guimenu>) para digitar ou mudar os parâmetros de kernel.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F6</keycap><guimenu>Driver</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Pressione esta tecla para notificar ao sistema de que há uma atualização de driver opcional para o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Carregue drivers diretamente antes do início da instalação, usando <guimenu>Arquivo</guimenu> ou <guimenu>URL</guimenu>. Se selecionar <guimenu>Sim</guimenu>, você será solicitado a inserir o disco de atualização no ponto apropriado no processo de instalação.
+     </para>
+     <tip os="sles;sled">
+      <title>Obtendo discos de atualização de driver</title>
+      <para>
+       As atualizações de driver para o SUSE Linux Enterprise estão disponíveis em <ulink url="http://drivers.suse.com/"/>. Esses drivers foram criados pelo Partner Linux Driver Program.
+      </para>
+     </tip>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+
+  <tip>
+   <title>Usando IPv6 durante a instalação</title>
+   <para>
+    Por padrão, só é possível atribuir endereços de rede IPv4 à sua máquina. Para habilitar o IPv6 durante a instalação, digite um dos seguintes parâmetros no prompt de boot: <literal>ipv6=1</literal> (aceitar IPv4 e IPv6) ou <literal>ipv6only=1</literal> (aceitar apenas o IPv6).
+   </para>
+  </tip>
+
+  <para>
+   Após o início da instalação, o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> será carregado e configurará um sistema Linux mínimo para executar o procedimento de instalação. Para ver as mensagens de boot e as informações de copyright durante esse processo, pressione <keycap>Esc</keycap>. Após concluído o processo, o programa de instalação do YaST será iniciado e exibirá o instalador gráfico.
+  </para>
+
+  <tip>
+   <title>Instalação sem o mouse</title>
+   <para>
+    Se o instalador não detectar seu mouse corretamente, use <keycap>Tab</keycap> para navegar, as teclas de seta para mover a barra de rolagem e <keycap>Enter</keycap> para confirmar uma seleção. Vários botões ou campos de seleção contêm uma letra com sublinhado. Use <keycombo action="press"><keycap>Alt</keycap><keycap>Letra</keycap></keycombo> para selecionar um botão ou para uma seleção direta, em vez de navegar usando a tecla <keycap>Tab</keycap>.
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.fun.yep" os="sles;sled">
+   <title>Fornecendo dados para acessar um servidor SMT</title>
+   <para>
+    Por padrão, as atualizações para o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> são fornecidas pelo Novell Customer Center. Se a sua rede disponibilizar um servidor SMT para fornecer uma fonte de atualização local, você precisará equipar o cliente com o URL do servidor. O cliente e o servidor se comunicarão somente via protocolo HTTPS, portanto, você também precisará digitar um caminho para o certificado do servidor se o certificado não tiver sido emitido por uma autoridade de certificação. Essas informações podem ser inseridas no prompt de boot (conforme descrito aqui) ou durante o processo de registro, conforme descrito na <xref linkend="sec.i.yast2.conf.manual.cc.local"/>.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>regurl</term>
+     <listitem>
+      <para>
+       URL do servidor SMT. Esse URL tem um formato fixo <literal>https://<replaceable>FQN</replaceable>/center/regsvc/</literal>, <replaceable>FQN</replaceable> deve ser o nome completo do host do servidor SMT. Exemplo:
+      </para>
+<screen>regurl=https://smt.example.com/center/regsvc/</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>regcert</term>
+     <listitem>
+      <para>
+       Local do certificado do servidor SMT. Especifique um dos seguintes locais:
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term>URL</term>
+        <listitem>
+         <para>
+          Local remoto (http, https ou ftp) a partir do qual pode ser feito download do certificado. Exemplo:
+         </para>
+<screen>regcert=http://smt.example.com/smt-ca.crt</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Disquete</term>
+        <listitem>
+         <para>
+          Especifica um local em um disquete. O disquete deve ser inserido na hora do boot, já que não será solicitado que você o insira se ele estiver ausente. O valor deve começar com a string <literal>floppy</literal> seguida do caminho do certificado. Exemplo:
+         </para>
+<screen>regcert=floppy/smt/smt-ca.crt</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Caminho local</term>
+        <listitem>
+         <para>
+          Caminho absoluto do certificado na máquina local. Exemplo:
+         </para>
+<screen>regcert=/data/inst/smt/smt-ca.cert</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Interativo</term>
+        <listitem>
+         <para>
+          Use <literal>ask</literal> para abrir um menu popup durante a instalação que permite especificar o caminho do certificado. Não use esta opção com AutoYaST. Exemplo
+         </para>
+<screen>regcert=ask</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Desativar a instalação do certificado</term>
+        <listitem>
+         <para>
+          Use <literal>done</literal> se o certificado for instalado por um produto complementar ou se estiver usando um certificado emitido por uma autoridade de certificação oficial. Exemplo:
+         </para>
+<screen>regcert=done</screen>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <warning>
+    <title>Cuidado com erros de digitação</title>
+    <para>
+     Verifique se os valores digitados estão corretos. Se <literal>regurl</literal> não tiver sido especificado corretamente, o registro da fonte de atualização falhará. Se um valor incorreto tiver sido digitado para regcert, você será solicitado a fornecer um caminho local para o certificado.
+    </para>
+    <para>
+     Se o regcert não for especificado, será assumido o padrão de <literal>http://<replaceable>FQN</replaceable>/smt.crt</literal> com <literal>FQN</literal> como o nome do servidor SMT.
+    </para>
+   </warning>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.fun.supportconfigurl" os="sles;sled">
+   <title>Configurando um servidor de dados alternativo para <systemitem>supportconfig</systemitem></title>
+   <para>
+    Por padrão, os dados coletados pelo supportconfig (consulte o <xref linkend="cha.adm.support"/> para obter mais informações) são enviados ao Novell Customer Center. Também é possível configurar um servidor local para coletar esses dados. Se esse servidor estiver disponível na rede, será preciso definir o URL do servidor no cliente. Essa informação deve ser digitada no prompt de boot.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>supporturl</term>
+     <listitem>
+      <para>
+       URL do servidor. O URL tem o formato <literal>http://<replaceable>FQN</replaceable>/<replaceable>Caminho</replaceable>/</literal>. <replaceable>FQN</replaceable> deve ser o nome completo de host do servidor e <replaceable>Caminho</replaceable> deve ser substituído pelo local no servidor. Exemplo:
+      </para>
+<screen>supporturl=http://support.example.com/supportconfig/data/</screen>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.bootscreen_uefi">
+  <title>Tela de boot em máquinas equipadas com UEFI</title>
+
+  <para>
+   UEFI (Unified Extensible Firmware Interface) é um novo padrão da indústria que substitui e estende o BIOS tradicional. As mais recentes implementações do UEFI incluem a extensão de <quote>Boot Seguro</quote>, que impede a inicialização de código malicioso, permitindo apenas que carregadores de boot assinados sejam executados. Consulte o <xref linkend="cha.uefi"/> para obter mais informações.
+  </para>
+
+
+
+  <para>
+   O gerenciador de boot GRUB, usado para inicializar máquinas com BIOS tradicional, não suporta UEFI; portanto, o GRUB foi substituído pelo ELILO. Se o Boot Seguro estiver habilitado, um módulo UEFI do GRUB 2 será usado por meio de uma camada de compatibilidade do ELILO. Da perspectiva do administrador e do usuário, as duas implementações do gerenciador de boot têm o mesmo comportamento e são chamadas de <literal>ELILO</literal> a seguir.
+  </para>
+
+  <tip>
+   <title>UEFI e Boot Seguro são suportados por padrão</title>
+   <para>
+    A rotina de instalação do SUSE Linux Enterprise detecta automaticamente se a máquina está equipada com UEFI. Todas as fontes de instalação também suportam Boot Seguro. Se já houver uma partição de sistema EFI nas máquinas de boot duplo (de uma instalação do Microsoft Windows 8, por exemplo), ela será automaticamente detectada e utilizada. As tabelas de partição serão gravadas como GPT em sistemas UEFI.
+   </para>
+  </tip>
+  
+  <warning>
+   <title>Usando drivers que não são de caixa de entrada com boot seguro</title>
+   <para>
+    Não há suporte para adição de drivers que não são de caixa de entrada (isto é, drivers que não vêm com SLE) durante uma instalação com Boot Seguro habilitado. Por padrão, a chave de assinatura usada para SolidDriver/PLDP não é confiável.
+   </para>
+   <para>
+    Para resolver esse problema, é preciso adicionar as chaves necessárias ao banco de dados do firmware por meio de ferramentas de gerenciamento de firmware/sistema antes da instalação ou usar uma ISO inicializável que registre as chaves necessárias na lista MOK na primeira inicialização. Para obter mais informações, consulte a <xref linkend="sec.uefi.secboot"/>.
+   </para>
+  </warning>
+  <para>
+   A tela de boot exibe várias opções para o procedimento de instalação. Mude a opção selecionada com as teclas de setas e pressione <keycap function="enter"/> para inicializar. As opções relevantes são:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>Instalação</guimenu>
+    </term>
+    <listitem>
+     <para>
+      O modo de instalação normal. 
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Sistema de Recuperação</guimenu> <indexterm> <primary>YaST</primary> <secondary>sistema de recuperação</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Inicia um sistema Linux mínimo sem interface gráfica do usuário. Para obter mais informações, consulte a <xref linkend="sec.trouble.data.recover.rescue"/>. 
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><guimenu>Verificar a Mídia de Instalação</guimenu> <indexterm> <primary>YaST</primary> <secondary>verificação de mídia</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>verificação de mídia</secondary></indexterm></term>
+    <listitem>
+     <para>
+      Essa opção só está disponível quando você instala de mídias criadas das ISOs descarregadas. Nesse caso, é recomendável verificar a integridade da mídia de instalação. Essa opção inicia o sistema de instalação antes de verificar a mídia automaticamente. No caso da verificação bem-sucedida, é iniciada a rotina de instalação normal. Se for detectada uma mídia corrompida, a rotina de instalação será interrompida.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure>
+   <title>Tela de boot em máquinas com UEFI</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_boot_uefi.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_boot_uefi.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   O ELILO no <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> não suporta tela de boot gráfica nem prompt de boot. Para adicionar outros parâmetros de boot, você precisa editar a respectiva entrada de boot. Realce-a usando as teclas de setas e pressione <keycap>E</keycap>. Consulte a ajuda na tela para obter dicas sobre edição (observe que apenas o teclado em inglês está disponível no momento). A entrada de <guimenu>Instalação</guimenu> será parecida com a seguinte:
+  </para>
+
+<screen>setparams 'Installation'
+
+  set gfxpayload=keep
+  echo 'Loading kernel ...'
+  linuxefi /boot/x86_64/loader/linux
+  echo 'Loading initial ramdisk ...'
+  initrdefi /boot/x86_64/loader/initrd</screen>
+
+  <para>
+   Adicione parâmetros separados por espaço ao fim da linha que começa com <literal>linuxefi</literal>. Há uma lista dos parâmetros disponíveis em <ulink url="https://en.opensuse.org/Linuxrc"/>. No exemplo a seguir, o idioma de instalação foi definido como alemão:
+  </para>
+
+<screen>linuxefi /boot/x86_64/loader/linux Language=de_DE</screen>
+
+  <para>
+   Para inicializar a entrada editada, pressione <keycap>F10</keycap>. Se você acessar a máquina por um console serial, pressione <keycombo><keycap function="escape"/> <keycap>0</keycap></keycombo>.
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.welcome">
+  <title>Bem-vindo</title><indexterm> <primary>instalação</primary> <secondary>idioma</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>teclado</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>idioma</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>teclado</secondary></indexterm><indexterm> <primary>contrato de licença</primary></indexterm>
+
+  <para>
+   Inicie a instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> escolhendo o idioma. A mudança do idioma selecionará previamente um layout de teclado correspondente. Anule essa proposta, selecionando um layout de teclado diferente no menu suspenso. O idioma selecionado aqui também é usado para considerar um fuso horário para o relógio do sistema. Essa configuração, juntamente com a seleção de idiomas secundários para instalação no sistema, poderá ser modificada posteriormente em <guimenu>Resumo da Instalação</guimenu>, descrito na <xref linkend="sec.i.yast2.proposal"/>. Para obter informações sobre as configurações de idioma no sistema instalado, consulte o <xref linkend="cha.y2.lang"/>.
+  </para>
+
+  <para>
+   Leia todo o contrato de licença exibido abaixo da seleção de idioma e de teclado. Use <guimenu>Traduções da Licença...</guimenu> para acessar as traduções. Se concordar com os termos, <phrase os="sles;sled">marque <guimenu>Aceito os Termos da Licença</guimenu> e</phrase> clique em <guimenu>Avançar</guimenu> para continuar com a instalação. Se você não concordar com o contrato de licença<phrase os="sles;sled">, não poderá instalar o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>.</phrase> Clique em <guimenu>Interromper</guimenu> para terminar a instalação.
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>Bem-vindo</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_welcome_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_welcome_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.i.yast2.s390.part" arch="zseries" os="sles">
+  <title>IBM System z: configuração do disco rígido</title>
+
+  <para>
+   Durante a instalação nas plataformas IBM System z, a caixa de diálogo de seleção de idioma é seguida de uma caixa de diálogo para configuração dos discos rígidos conectados. Selecione DASD, Discos SCSI Conectados a Fibre Channel (zFCP) ou iSCSI para instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Os botões de configuração DASD e zFCP só ficam disponíveis com os dispositivos correspondentes anexados. Para obter instruções sobre como configurar discos iSCSI, consulte a <xref linkend="bj4rqa5"/>.
+  </para>
+
+  <tip>
+   <title>Adicionando discos DASD ou zFCP em um momento posterior</title>
+   <para>
+    A adição de discos DASD ou zFCP não é somente possível durante o workflow de instalação, mas também quando a proposta de instalação é mostrada. Para adicionar discos em um momento posterior, clique em <guimenu>Especialista</guimenu> e mova a barra de rolagem para baixo. As entradas DASD e zFCP são mostradas na parte mais inferior.
+   </para>
+   <para>
+    Após adicionar os discos, leia novamente a tabela de partições. Retorne à tela de proposta de instalação, escolha <guimenu>Particionamento</guimenu> e selecione <guimenu>Reler Tabela de Partições</guimenu>. Atualiza a nova tabela de partição.
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.s390.part.dasd">
+   <title>Configurando discos DASD</title>
+   <para>
+    Depois que você selecionar <guimenu>Configurar Discos DASD</guimenu>, uma visão geral listará todos os DASDs disponíveis. Para obter uma melhor ideia dos dispositivos disponíveis, use o campo de entrada localizado acima da lista para especificar o intervalo de canais a serem exibidos. Para filtrar a lista de acordo com esse intervalo, selecione <guimenu>Filtrar</guimenu>. 
+   </para>
+   <figure id="fig.s390_yast2.i_y2_sel_dasd">
+    <title>IBM System z: selecionando um DASD</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="70%" fileref="s390_i_y2_sel_dasd.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="70%" fileref="s390_i_y2_sel_dasd.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Especifique os DASDs a serem usados para a instalação selecionando as entradas correspondentes na lista. Clique em <guimenu>Selecionar ou desfazer seleção</guimenu>. Ative e disponibilize os DASDs para a instalação selecionando <menuchoice> <guimenu>Executar Ação</guimenu> <guimenu>Ativar</guimenu> </menuchoice>. Para formatar os DASDs, selecione <menuchoice><guimenu>Executar Ação</guimenu><guimenu>Formatar</guimenu> </menuchoice>imediatamente ou use o particionador do YaST posteriormente, conforme descrito na .<xref linkend="sec.yast2.i_y2_part_expert"/>
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.s390.part.zfcp">
+   <title>Configurando discos zFCP</title>
+   <para>
+    Para usar os discos zFCP na instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, selecione <guimenu>Configurar Discos zFCP</guimenu> na caixa de diálogo de seleção. Uma caixa de diálogo é aberta com a lista de discos zFCP disponíveis no sistema. Nessa caixa de diálogo, selecione <guimenu>Adicionar</guimenu> para abrir outra caixa de diálogo na qual inserir os parâmetros zFCP.
+   </para>
+   <para>
+    Para disponibilizar um disco zFCP para instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, escolha um <guimenu>Número de Canal</guimenu> disponível na lista suspensa. As opções <guimenu>Obter WWPNs</guimenu> (World Wide Port Number — Número da Porta Mundial) e <guimenu>Obter LUNs</guimenu> (Logical Unit Number — Número da Unidade Lógica) retornam listas com WWPNs e FCP-LUNs disponíveis, respectivamente, para sua escolha. Ao concluir, saia da caixa de diálogo do zFCP clicando em <guimenu>Avançar</guimenu>, e da caixa de diálogo de configuração geral do disco rígido clicando em <guimenu>Concluir</guimenu> para continuar com o restante da configuração.
+   </para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="sec.i.yast2.mediacheck" os="sles;sled">
+  <title>Verificação de Mídia</title><indexterm> <primary>YaST</primary> <secondary>verificação de mídia</secondary></indexterm>
+
+  <para>
+   A caixa de diálogo de verificação de mídia aparece apenas quando você instala de mídias criadas a partir das ISOs descarregadas. Se você instalar pelo kit de mídias original, a caixa de diálogo será ignorada.
+  </para>
+
+  <para>
+   A verificação de mídia examina a integridade da mídia. Para iniciá-la, selecione a unidade em que está a mídia de instalação e clique em <guimenu>Iniciar Verificação</guimenu>. A verificação pode levar algum tempo.
+  </para>
+
+  <para>
+   Para testar várias mídias, aguarde até aparecer uma mensagem de resultado na caixa de diálogo antes de mudar a mídia. Se a última mídia verificada não for aquela pela qual você iniciou a instalação, o YaST solicitará a mídia apropriada antes de continuar a instalação.
+  </para>
+
+  <para>
+   Se estiver usando imagens ISO (por exemplo, para instalar produtos complementares), clique em <guimenu>Verificar Arquivo ISO</guimenu> e escolha a imagem pela caixa de diálogo do arquivo.
+  </para>
+
+  <warning>
+   <title>Falha na Verificação de Mídia</title>
+   <para>
+    Se houver falha na verificação de mídia, sua mídia está danificada. Não continue a instalação, pois ela poderá falhar ou você poderá perder seus dados. Substitua a mídia danificada e reinicie o processo de instalação.
+   </para>
+  </warning>
+
+  <para>
+   Se o resultado da verificação de mídia for positivo, clique em <guimenu>Avançar</guimenu> para continuar a instalação.
+  </para>
+
+
+ </sect1>
+ <sect1 id="sec.i.yast2.inst_mode">
+  <title>Modo de instalação</title><indexterm> <primary>YaST</primary> <secondary>modo de instalação</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>modo</secondary></indexterm>
+
+  <para>
+   Após uma análise do sistema (em que o YaST investiga os dispositivos de armazenamento e tenta encontrar outros sistemas instalados na máquina), os modos de instalação disponíveis serão exibidos.
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>Nova instalação</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Selecione essa opção para iniciar uma nova instalação do zero.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Atualização</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Selecione essa opção para atualizar uma instalação existente para uma nova versão. <phrase os="sled;sles">Para obter mais informações sobre atualização do sistema, consulte o <xref linkend="cha.update.sle"/>.</phrase>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Reparar o Sistema Instalado</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Escolha essa opção para reparar um sistema danificado já instalado. Encontre mais informações na <xref linkend="sec.trouble.data.recover"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>Modo de instalação</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_inst_mode_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_inst_mode_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  
+
+  <para os="sled;sles;osuse">
+   Marque <guimenu>Incluir Produtos Complementares de Outra Mídia</guimenu> para incluir produtos complementares durante a instalação. Um produto complementar pode incluir extensões, produtos e drivers de terceiros ou software adicional para o seu sistema.
+  </para>
+
+
+
+  <tip>
+   <title>Instalando patches do produto de um servidor SMT na instalação</title>
+   <para>
+    Caso sua organização forneça o canal de atualização do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> via servidor SMT, será possível especificar esse canal como um produto Complementar digitando seu endereço HTTP. Como consequência, o sistema será instalado com os pacotes mais atuais sem precisar aplicar as atualizações ao final da instalação.
+   </para>
+  </tip>
+
+  <para>
+   Clique em <guimenu>Avançar</guimenu> para continuar. Se tiver selecionado para incluir um produto complementar, continue na <xref linkend="sec.i.yast2.inst_mode.addon"/>, caso contrário, ignore a seção seguinte e avance para a <xref linkend="sec.i.yast2.timezone"/>.
+  </para>
+
+  <sect2 id="sec.i.yast2.inst_mode.addon">
+   <title>Produtos acessórios</title><indexterm> <primary>YaST</primary> <secondary>complemento</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>complemento</secondary></indexterm>
+   <para>
+    Os produtos complementares podem ser instalados de uma fonte local (CD, DVD ou diretório) ou de uma fonte de rede (HTTP, FTP, NFS, CIFS,...). Ao instalar de uma fonte de rede, você precisa primeiro configurar a rede (exceto se estiver realizando uma instalação de rede — nesse caso, é usada a configuração de rede existente). Escolha<guimenu>Sim, Executar a Configuração de Rede</guimenu> e continue conforme descrito na <xref linkend="sec.i.yast2.inst_mode.network"/>. Se o produto complementar estiver disponível localmente, selecione <guimenu>Não, Ignorar a Configuração de Rede</guimenu>.
+   </para>
+   <para>
+    Clique em <guimenu>Avançar</guimenu> e especifique a fonte do produto. Os tipos de fontes disponíveis são <guimenu>CD</guimenu>, <guimenu>DVD</guimenu>, <guimenu>Disco Rígido</guimenu>, <guimenu>Armazenamento em Massa USB</guimenu>, um <guimenu>Diretório Local</guimenu> ou uma <guimenu>Imagem ISO Local</guimenu> (se nenhuma rede foi configurada). Se o produto complementar estiver disponível na mídia removível, o sistema montará automaticamente a mídia e lerá seu conteúdo. Se o produto complementar estiver disponível no disco rígido, escolha <guimenu>Disco Rígido</guimenu> para instalar de um disco rígido não montado, ou <guimenu>Diretório Local</guimenu>/<guimenu>Imagem ISO Local</guimenu> para instalar do sistema de arquivos local. Os produtos complementares podem ser entregues como um repositório ou como um conjunto de arquivos RPM. No último caso, marque <guimenu>Diretório RPM Simples</guimenu>. Sempre que houver uma rede disponível, você poderá escolher dentre fontes remotas adicionais como HTTP, SLP, FTP, etc. Também é possível especificar um URL diretamente.
+   </para>
+   <para>
+    Marque <guimenu>Fazer Download dos Arquivos de Descrição de Repositório</guimenu> para fazer download dos arquivos que descrevem o repositório agora. Se essa opção permanecer desmarcada, o download desses arquivos será feito quando a instalação iniciar. Continue com <guimenu>Avançar</guimenu> e insira um CD ou um DVD, se necessário. Dependendo do conteúdo do produto, talvez seja necessário aceitar contratos de licença adicionais.
+   </para>
+   <para>
+    Também é possível configurar produtos complementares posteriormente. O uso de produtos complementares no sistema instalado está descrito no <xref linkend="cha.add-ons"/>.
+   </para>
+   <tip os="sles;sled">
+    <title>Atualizações de driver</title>
+    <para>
+     É possível também adicionar repositórios de atualização de driver pela caixa de diálogo Produtos Complementares. As atualizações de driver para o SUSE Linux Enterprise estão disponíveis em <ulink url="http://drivers.suse.com/"/>. Esses drivers foram criados pelo Partner Linux Driver Program.
+    </para>
+   </tip>
+   <sect3 id="sec.i.yast2.inst_mode.network">
+    <title>Configuração de rede</title><indexterm> <primary>instalação</primary> <secondary>rede</secondary> </indexterm>
+    <para>
+     Quando a configuração de rede é chamada, o YaST explora as placas de rede disponíveis. Se for encontrada mais de uma placa de rede, você deverá escolher a placa para configuração na lista. 
+    </para>
+    <para>
+     Se um adaptador de rede Ethernet ainda não estiver conectado, um aviso será aberto. Verifique se o cabo de rede está conectado e escolha <guimenu>Sim, Usá-lo</guimenu>. Se sua rede estiver equipada com um servidor DHCP, escolha <guimenu>Configuração Automática de Endereço (via DHCP)</guimenu>. Para configurar a rede manualmente, escolha <guimenu>Configuração Estática de Endereço</guimenu> e especifique o <guimenu>Endereço IP</guimenu>, a <guimenu>Máscara de rede</guimenu>, o <guimenu>IP do Gateway Padrão</guimenu> e o <guimenu>IP do Servidor DNS</guimenu>.
+    </para>
+    <para>
+     Algumas redes exigem o uso de um servidor proxy para acessar a Internet. Marque a caixa de seleção <guimenu>Utilizar Proxy para Acessar a Internet</guimenu> e digite as especificações apropriadas. Clique em <guimenu>Aceitar</guimenu> para executar a configuração da rede. O procedimento de instalação continuará com os produtos complementares ou os repositórios configurados, conforme descrito na <xref linkend="sec.i.yast2.inst_mode.addon"/>.
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.timezone">
+  <title>Relógio e Fuso Horário</title><indexterm> <primary>YaST</primary> <secondary>fuso horário</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>relógio</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>fuso horário</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>relógio</secondary></indexterm>
+
+  <para>
+   Nessa caixa de diálogo, selecione sua região e o fuso horário. Ambos são pré-selecionados de acordo com o idioma de instalação escolhido. Para mudar os valores pré-selecionados, use o mapa ou as listas suspensas para <guimenu>Região</guimenu> e <guimenu>Fuso Horário</guimenu>. Ao usar o mapa, aponte o cursor para a direção aproximada de sua região e clique o botão esquerdo do mouse para ampliar. Agora, escolha seu país ou sua região clicando o botão esquerdo do mouse. Clique o botão direito do mouse para retornar ao mapa-múndi.
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>Relógio e Fuso Horário</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_timezone_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_timezone_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   Para configurar o relógio, escolha a opção <guimenu>Relógio de Hardware Definido Para UTC</guimenu>, se desejar. Se outro sistema operacional estiver em execução na sua máquina, como o Microsoft Windows, provavelmente seu sistema usa a hora local. Se você executa somente Linux em sua máquina, defina o relógio de hardware como UTC e faça com que o horário padrão alterne automaticamente para o horário de verão.
+  </para>
+
+  <important>
+   <title>Definir o relógio do hardware como UTC</title>
+   <para>
+    Só é possível alternar do horário padrão para o horário de verão (e vice-versa) automaticamente quando o relógio do hardware (relógio CMOS) está definido como UTC. Isso também se aplica quando você usa a sincronização automática de horário com NTP, pois a sincronização automática só pode ser feita quando a diferença de horário entre o relógio do hardware e do sistema é inferior a 15 minutos.
+   </para>
+   <para>
+    Como o horário incorreto do sistema pode provocar problemas graves (backups ausentes, mensagens de e-mail descartadas, falhas de montagem em sistemas de arquivos remotos, etc.), é altamente recomendado definir <emphasis>sempre</emphasis> o relógio do hardware como UTC.
+   </para>
+  </important>
+
+  <para>
+   Se uma rede já estiver configurada,<phrase os="sles;sled"> você poderá configurar uma sincronização de horário com um servidor NTP.</phrase> Clique em <guimenu>Mudar</guimenu> para alterar as configurações NTP ou para definir <guimenu>Manualmente</guimenu> o horário. Consulte o <xref linkend="cha.netz.xntp"/> para obter mais informações sobre como configurar o serviço NTP. Quando terminar, clique em <guimenu>Aceitar</guimenu> para continuar a instalação.
+  </para>
+  
+  
+
+  <note arch="zseries" os="sles">
+   <title>Não é possível mudar o horário no IBM System z</title>
+   <para>
+    Como não é permitido ao sistema operacional mudar a data e o horário diretamente, a opção <guimenu>Mudar</guimenu> não está disponível no IBM System z.
+   </para>
+  </note>
+ </sect1>
+ 
+ <sect1 id="sec.i.yast2.server" os="sles">
+  <title>Cenário Base do Servidor</title><indexterm> <primary>YaST</primary> <secondary>cenário do servidor</secondary></indexterm>
+
+  <para>
+   No <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, é possível escolher um dos três cenários base O cenário selecionado afeta a seleção do pacote.
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Máquina Física</term>
+    <listitem>
+     <para>
+      Escolha esse cenário ao instalar em uma máquina <quote>real</quote> ou em um convidado completamente virtualizado.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Máquina virtual</term>
+    <listitem>
+     <para>
+      Escolha esse cenário ao instalar um convidado paravirtualizado.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Host de Virtualização XEN</term>
+    <listitem>
+     <para>
+      Escolha este cenário para instalação em uma máquina que atua como host XEN.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure>
+   <title>Cenário Base do Servidor</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_server_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_server_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ 
+ 
+ <sect1 id="sec.i.yast2.proposal">
+  <title>Configurações de instalação</title><indexterm> <primary>YaST</primary> <secondary>configurações de instalação</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>resumo da instalação</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>configurações</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>resumo</secondary></indexterm>
+
+  <para>
+   Na última etapa antes da instalação real, você poderá alterar as configurações de instalação sugeridas pelo YaST e também revisar as configurações feitas até o momento. <phrase os="sles;sled">As configurações básicas podem ser mudadas na guia <guimenu>Visão Geral</guimenu>, e as opções avançadas estão disponíveis na guia <guimenu>Especialistas</guimenu>. </phrase>Para modificar as sugestões, clique em <guimenu>Mudar</guimenu> e selecione a categoria a ser mudada ou clique em um dos cabeçalhos. Após configurar qualquer um dos itens apresentados nessas caixas de diálogo, você retornará sempre à janela Configurações de Instalação, que será atualizada de acordo.
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>Configurações de instalação</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_inst_summary_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_inst_summary_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <tip>
+   <title>Restaurando as configurações padrão</title>
+   <para>
+    Você pode redefinir todas as mudanças para os padrões, clicando em <menuchoice> <guimenu>Mudar</guimenu> <guimenu>Redefinir para Padrão</guimenu> </menuchoice>. Em seguida, o YaST mostra a proposta original novamente.
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.proposal.partitioning">
+   <title><guimenu>Particionamento</guimenu><phrase os="sles;sled"> (visão geral)</phrase></title>
+   <para>
+    Revise e, se necessário, mude a configuração da partição<phrase os="sled;sles"> proposta pelo sistema</phrase>. <phrase os="sled;sles">A mudança da configuração da partição permite particionar um disco específico ou, ao escolher <guimenu>Particionamento Personalizado</guimenu>, aplicar seu próprio esquema de particionamento.</phrase> A modificação da configuração de partição abre o Particionador Técnico descrito na <xref linkend="sec.yast2.i_y2_part_expert"/>.
+   </para>
+   <tip os="sles">
+    <title>Btrfs como o sistema de arquivos padrão</title>
+    <para>
+     O esquema de particionamento padrão está baseado no sistema de arquivos Ext3. Para usar o Btrfs como o sistema de arquivos padrão, clique em <guimenu>Particionamento</guimenu> na guia <guimenu>Visão Geral</guimenu> e marque <guimenu>Usar Btrfs como Sistema de Arquivos Padrão</guimenu>
+    </para>
+   </tip>
+   <note os="sles" arch="zseries">
+
+    <title>Usando minidiscos no z/VM</title>
+    <para>
+     Se o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> estiver instalado em minidiscos no z/VM, que residem no mesmo disco físico, o caminho de acesso dos minidiscos (/dev/disk/by-id/) não será exclusivo, em vez disso, será o ID do disco físico. Portanto, se dois ou mais minidiscos estiverem no mesmo disco físico, todos terão o mesmo ID.
+    </para>
+    <para>
+     Para evitar problemas ao montar os minidiscos, monte-os sempre "por caminho" ou "por UUID".
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.booting">
+   <title><guimenu>Executando Boot</guimenu><phrase os="sles;sled"> (Especialista)</phrase></title>
+   <para os="sles" arch="zseries">
+    Esse módulo não pode ser usado para configurar o carregador de boot (zipl) nas plataformas IBM System z.
+   </para>
+
+
+   <para>
+    O YaST propõe uma configuração de boot para seu sistema. Outros sistemas operacionais encontrados em seu computador, como o Microsoft Windows ou outras instalações do Linux, serão automaticamente detectadas e adicionadas ao carregador de boot. Porém, o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> será inicializado por padrão. Normalmente, você não precisa mudar essas configurações. Se precisar de uma configuração personalizada, modifique a proposta para seu sistema. Para obter informações, consulte a <xref linkend="sec.boot.yast2.config"/>. 
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.sofware">
+   <title><guimenu>Software</guimenu><phrase os="sles;sled"> (visão geral)</phrase></title>
+   <para>
+    O <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> inclui diversos padrões de software para finalidades de aplicação variadas. Clique em <guimenu>Software</guimenu> para iniciar a seleção de padrão e modificar o escopo da instalação de acordo com as suas necessidades. Selecione seu padrão na lista e veja uma descrição dele à direita da janela. Cada padrão inclui um número de pacotes de softwares necessários a funções específicas (ex. <phrase os="sles">servidor Web e LAMP ou servidor de impressão</phrase>). Para obter uma seleção mais detalhada com base nos pacotes de software a serem instalados, escolha <guimenu>Detalhes</guimenu> para alternar para o Gerenciador de Software do YaST.
+   </para>
+   <para>
+    Você também poderá instalar pacotes de software adicionais ou remover pacotes de software do sistema a qualquer momento com o Gerenciador de Software do YaST. Para obter mais informações, consulte o <xref linkend="cha.y2.sw"/>.
+   </para>
+   
+   
+   <figure os="sles">
+    <title>Seleção de software e tarefas do sistema</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="i_y2_software_sles.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="i_y2_software_sles.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <note os="sles">
+    <title>Área de trabalho padrão</title>
+    <para>
+     A área de trabalho padrão do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> é o GNOME. Para instalar o KDE, clique em <guimenu>Software</guimenu> e selecione <guimenu>Ambiente de Área de Trabalho KDE</guimenu> em <guimenu>Ambientes Gráficos</guimenu>.
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.locale">
+   <title><guimenu os="sles;sled">Idioma</guimenu><phrase os="sles;sled"> (visão geral)</phrase></title>
+   <para>
+    Aqui, você pode mudar o <guimenu>Idioma</guimenu> do sistema definido na primeira etapa da instalação. Também é possível adicionar outros idiomas. Para ajustar as configurações de idioma do sistema, selecione <guimenu>Idioma</guimenu>. Selecione um idioma na lista. O idioma primário é usado como idioma do sistema. Você também poderá adaptar o layout do teclado e o fuso horário ao idioma primário se as configurações atuais forem diferentes. <guimenu>Detalhes</guimenu> permite modificar as configurações de idioma para o usuário <systemitem class="username">root</systemitem>, definir suporte a <systemitem>UTF-8</systemitem> ou especificar ainda mais o idioma (ex. seleção de inglês da África do Sul).
+   </para>
+   <para>
+    Escolha idiomas secundários para poder alternar para um deles a qualquer momento sem precisar instalar pacotes adicionais. Para obter mais informações, consulte o <xref linkend="cha.y2.lang"/>.
+   </para>
+   
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.add-on" os="sles;sled">
+   <title><guimenu>Produtos Complementares</guimenu> (Especialista)</title>
+   <para>
+    Se você tiver adicionado uma fonte anteriormente para uma mídia complementar, ela aparecerá aqui. Adicione, remova ou modifique produtos complementares aqui, se necessário. Esta é a mesma caixa de diálogo de configuração abordada anteriormente na <xref linkend="sec.i.yast2.inst_mode.addon"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.keyboard" os="sles;sled">
+   <title><guimenu>Layout do Teclado</guimenu> (Especialista)</title>
+   <para>
+    Para mudar o layout do teclado, selecione <guimenu>Layout do Teclado</guimenu>. Por padrão, o layout corresponde ao idioma escolhido para a instalação. Selecione o layout do teclado na lista. Use o campo <guimenu>Testar</guimenu> na parte inferior da caixa de diálogo para verificar se você pode digitar corretamente os caracteres especiais desse layout. O <guimenu>Modo Especialista</guimenu> contém opções que permitem ajustar várias configurações. Ao terminar, clique em <guimenu>Aceitar</guimenu> para retornar ao resumo da instalação.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.timezone">
+   <title><guimenu>Fuso Horário</guimenu><phrase os="sles;sled">(Especialista)</phrase></title>
+   <para>
+    Ajuste aqui as configurações de fuso horário e relógio. Considerando que uma rede esteja definida, você também poderá configurar um cliente NTP (Network Time Protocol) que sincronize seu computador automaticamente com um servidor de horário. Essa é a mesma configuração mostrada anteriormente na <xref linkend="sec.i.yast2.timezone"/>.
+   </para>
+  </sect2>
+
+  
+
+  <sect2 id="sec.i.yast2.proposal.runlevel">
+   <title><guimenu>Nível de Execução Padrão</guimenu><phrase os="sles;sled"> (Especialista)</phrase></title>
+   <para>
+    O <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> pode ser inicializado em níveis de execução diferentes. Normalmente, nenhuma mudança é necessária aqui, mas, se necessário, defina o nível de execução padrão com essa caixa de diálogo. Consulte a <xref linkend="sec.boot.runlevel.edit"/> para obter mais informações sobre a configuração de nível de execução.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.system">
+   <title><guimenu>Sistema</guimenu><phrase os="sles;sled"> (Especialista)</phrase></title>
+   <para>
+    Esta caixa de diálogo apresenta todas as informações de hardware que o YaST poderia obter sobre o computador. Quando ela é chamada, a rotina de detecção de hardware é iniciada. Dependendo do sistema, isso poderá ser demorado. Selecione qualquer item na lista e clique em <guimenu>Detalhes</guimenu> para ver informações detalhadas sobre o item selecionado. Use <guimenu>Salvar em Arquivo</guimenu> para gravar uma lista detalhada no sistema de arquivos local ou em um disquete. Os usuários avançados também podem mudar a configuração de PCI ID e as Configurações do Kernel escolhendo <guimenu>Configurações do Kernel</guimenu>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.kdump" os="sles">
+   <title><guimenu>Kdump</guimenu> (Especialista)</title>
+   <para>
+    Usando o kdump, é possível gravar um dump do kernel (em caso de falha) para analisar onde foi o erro. Use essa caixa de diálogo para habilitar e configurar o kdump. Para obter informações detalhadas, consulte o <xref linkend="cha.tuning.kexec"/>.
+   </para>
+  </sect2>
+
+  
+
+  
+ </sect1>
+ <sect1 id="sec.i.yast2.perform">
+  <title>Executando a instalação</title><indexterm> <primary>instalação</primary> <secondary>executando</secondary> </indexterm>
+
+  <para>
+   Após configurar todas as configurações de instalação, clique em <guimenu>Instalar</guimenu> na janela Configurações de Instalação para iniciar a instalação. Alguns programas de software exigem confirmação da licença. Se sua seleção de software incluir esse tipo de software, serão exibidas caixas de diálogo de confirmação da licença. Clique em <guimenu>Aceitar</guimenu> para instalar o pacote de software. Se não concordar com a licença, clique em <guimenu>Discordo</guimenu> para que o pacote de software não seja instalado. Na caixa de diálogo seguinte, confirme com <guimenu>Instalar</guimenu> novamente.
+  </para>
+
+  <para>
+   Geralmente, a instalação demora de 15 a 30 minutos, dependendo do desempenho do sistema e do escopo do software selecionado. Depois que você preparar o disco rígido<phrase os="sles;sled"> e gravar e restaurar as configurações de usuário,</phrase> a instalação do software iniciará.
+   
+  </para>
+
+  
+
+  <para>
+   Depois de concluída a instalação do software, o sistema básico será configurado. A opção <quote>Terminando a Instalação Básica</quote> inclui, entre outros procedimentos, a instalação do gerenciador de boot, a inicialização de fontes etc. Em seguida, o YaST é inicializado no novo sistema Linux para iniciar a configuração do sistema.
+  </para>
+
+  <tip>
+
+   <title>Chaves de host SSH existentes</title>
+   <para>
+    Se você instalar o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> em uma máquina com instalações existentes do Linux, a rotina de instalação importará automaticamente a chave de host SSH com o horário de acesso mais recente com base em uma instalação existente.
+   </para>
+  </tip>
+
+  <sect2 id="sec.s390.inst.reipl" arch="zseries" os="sles">
+   <title>IBM System z: reinicializando (IPL) o sistema instalado</title>
+   <para>
+    Na maioria dos casos, o YaST é reinicializado automaticamente no sistema instalado, na plataforma IBM System z. Exceções conhecidas desse cenário são instalações nas quais o carregador de boot reside em um dispositivo FCP em ambientes com LPAR em uma máquina mais antiga que z9 ou com z/VM anterior à versão 5.3. O carregador de boot é gravado no dispositivo que armazena o diretório <filename>/boot</filename>. Se <filename>/boot</filename> não estiver em uma partição separada, ele estará na mesma partição do sistema de arquivos raiz <filename>/</filename>.
+   </para>
+   <para>
+    Nos casos em que não é possível a reinicialização automática, o YaST mostra uma caixa de diálogo com as informações sobre o dispositivo do qual reinicializar (IPL). Aceite a opção de encerramento e reinicialize (IPL) após o encerramento. O procedimento varia de acordo com o tipo de instalação:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Instalação LPAR</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>instalação LPAR</primary> <secondary>IPL</secondary> </indexterm> No IBM System z HMC, selecione <guimenu>Load</guimenu> (Carregar), <guimenu>Clear</guimenu> (Limpar) e digite o endereço de carregamento (o endereço do dispositivo que armazena o diretório <filename>/boot</filename> com o carregador de boot). Se estiver usando um disco ZFCP como dispositivo de boot, escolha <guimenu>Carregar do SCSI</guimenu> e especifique o endereço de carga de seu adaptador FCP, bem como o WWPN e o LUN do dispositivo de boot. Agora, inicie o processo de carregamento.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Instalação z/VM</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>Instalação do z/VM</primary> <secondary>IPL</secondary> </indexterm> Efetue login na máquina virtual como convidado (consulte o <xref linkend="ex.prep.prep_ipl.vm.linux_guest.config"/> para ver a configuração) usando <systemitem class="username">LINUX1</systemitem> e prossiga para preparar a IPL do sistema instalado:
+      </para>
+<screen>IPL 151 CLEAR</screen>
+      <para>
+       <literal>151</literal> é um endereço de exemplo do dispositivo de boot DASD; substitua esse valor pelo endereço correto.
+      </para>
+      <para>
+       Se estiver usando um disco ZFCP como dispositivo de boot, especifique o ZFCP WWPN e o LUN desse dispositivo antes de iniciar o IPL. O tamanho do parâmetro é limitado a oito caracteres. Números mais longos devem ser separados por espaços:
+      </para>
+<screen>SET LOADDEV PORT 50050763 00C590A9 LUN 50010000 00000000 </screen>
+      <para>
+       Por fim, inicie a IPL:
+      </para>
+<screen>IPL FC00</screen>
+      <para>
+       <literal>FC00</literal> é um endereço de exemplo do adaptador ZFCP; substitua esse valor pelo endereço correto.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.s390.inst.reipl.reconnect" arch="zseries" os="sles">
+   <title>IBM System z: conectando-se ao sistema instalado</title>
+   <para>
+    Após executar o IPL no sistema instalado, estabeleça uma conexão com ele para concluir a instalação. As etapas envolvidas nisso variarão de acordo com o tipo de conexão usado no início.
+   </para>
+   <sect3 id="sec.s390.inst.reipl.reconnect.vnc">
+    <title>Usando o VNC para conexão</title>
+    <para>
+     Uma mensagem no terminal 3270 solicita a conexão com o sistema Linux usando um cliente VNC. No entanto, essa mensagem é facilmente perdida, pois, além de estar misturada com mensagens de kernel, o processo do terminal pode ser encerrado antes de você tomar conhecimento da mensagem. Se nada acontecer durante cinco minutos, tente iniciar uma conexão com o sistema Linux usando um viewer do VNC.
+    </para>
+    <para>
+     Se você se conectar usando um browser compatível com Java, digite o URL completo, constituído do endereço IP do sistema instalado, juntamente com o número da porta, da seguinte maneira:
+    </para>
+<screen> http://&lt;IP of installed system&gt;:5801/ </screen>
+   </sect3>
+   <sect3 id="sec.s390.inst.reipl.reconnect.x">
+    <title>Usando o servidor X para conexão</title>
+    <para>
+     Ao preparar a IPL do sistema instalado, verifique se o servidor X usado na primeira fase da instalação está em execução e ainda disponível antes de inicializar pelo DASD. O YaST é aberto no servidor X para concluir a instalação. Poderão surgir complicações se o sistema for inicializado, mas não puder se conectar com o servidor X em tempo hábil.
+    </para>
+   </sect3>
+   <sect3 id="sec.s390.inst.reipl.reconnect.ssh">
+    <title>Usando o SSH para conexão</title>
+    <important>
+     <title>IBM System z: conectando de um sistema Linux ou UNIX</title>
+     <para>
+      Inicie o SSH em um xterm. Outros emuladores de terminal não têm suporte para a interface baseada em texto do YaST.
+     </para>
+    </important>
+    <para>
+     Uma mensagem no terminal 3270 solicita conexão com o sistema Linux por meio de um cliente SSH. No entanto, essa mensagem é facilmente perdida, pois, além de estar misturada com mensagens de kernel, o processo do terminal pode ser encerrado antes de você tomar conhecimento da mensagem. 
+    </para>
+    <para>
+     Após a exibição da mensagem, use SSH para efetuar login no sistema Linux como <systemitem class="username">root</systemitem>. Se a conexão for recusada ou esgotar o tempo de espera, aguarde até expirar o tempo de espera de login, depois tente de novo (esse tempo pode variar de acordo com as configurações do servidor).
+    </para>
+    <para>
+     Quando a conexão estiver estabelecida, execute o comando <command>/usr/lib/YaST2/startup/YaST2.ssh</command>. A execução apenas do comando <command>yast</command> não é suficiente nesse caso.
+    </para>
+    <para>
+     O YaST começa completando a instalação dos pacotes restantes e criando uma configuração de sistema inicial.
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.conf">
+  <title>Configuração do sistema instalado</title>
+
+  <para>
+   O sistema agora está instalado, mas ainda não está configurado para uso. O hardware, a rede e outros serviços ainda não estão configurados.
+  </para>
+
+  
+
+  <sect2 id="sec.i.yast2.conf.manual">
+   <title>Configuração do sistema</title><indexterm> <primary>instalação</primary> <secondary>configuração manual</secondary> </indexterm>
+   <para>
+    Após a reinicialização, o sistema inicia para a configuração manual. Em caso de falha da configuração em uma das etapas desse estágio, ele será reiniciada e continuará a partir da última etapa bem-sucedida.
+   </para>
+   <sect3 id="sec.i.yast2.conf.manual.root" os="sles">
+    <title>Senha para o administrador de sistema <quote>root</quote></title><indexterm> <primary>YaST</primary><secondary>senha de root</secondary></indexterm>
+    <para>
+     <systemitem class="username">root</systemitem> é o nome do superusuário, o administrador do sistema. Diferentemente dos usuários comuns, que podem ou não ter permissão para executar comandos administrativos no sistema, o <systemitem class="username">root</systemitem> tem capacidade de comando ilimitada, por exemplo, para mudar a configuração do sistema, instalar programas e configurar novo hardware. Se os usuários esquecerem suas senhas ou tiverem outros problemas com o sistema, o <systemitem class="username">root</systemitem> poderá ajudá-los. A conta do <systemitem class="username">root</systemitem> só deve ser usada para fins de administração, manutenção e reparo do sistema. Efetuar login como <systemitem class="username">root</systemitem> para realizar o trabalho diário é altamente arriscado, já que um pequeno erro pode causar perdas irrecuperáveis de arquivos do sistema.
+    </para>
+    <para>
+     Para fins de verificação, a senha de <systemitem class="username">root</systemitem> deve ser digitada duas vezes. Não se esqueça da senha de <systemitem class="username">root</systemitem>. Após ser digitada, essa senha não poderá ser recuperada.
+    </para>
+    <para>
+     Quando senhas forem digitadas, os caracteres serão substituídos por pontos, portanto, você não verá a string que estiver digitando. Se não tiver certeza que digitou a string correta, use o campo <guimenu>Testar Layout do Teclado</guimenu> para fins de teste.
+    </para>
+    <para>
+     O <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> pode usar os algoritmos de criptografia DES, MD5 ou Blowfish para senhas. O tipo de criptografia padrão é Blowfish. Para mudar o tipo de criptografia, clique em <menuchoice><guimenu>Opções de Especialista</guimenu><guimenu>Tipo de Criptografia</guimenu></menuchoice> e selecione o novo tipo.
+    </para>
+    <para>
+     É possível mudar o <systemitem class="username">root</systemitem> a qualquer momento no sistema instalado. Para isso, execute o YaST e inicie <menuchoice> <guimenu>Segurança e Usuários</guimenu> <guimenu>Gerenciamento de Usuários e Grupos</guimenu> </menuchoice>.
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.hostname">
+    <title>Nome de host e nome de domínio</title><indexterm> <primary>YaST</primary> <secondary>nome de host</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>nome de domínio</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>nome de host</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>nome de domínio</secondary></indexterm>
+    <para>
+     O nome do host é o nome do computador na rede. O nome de domínio é o nome da rede. Um nome de host e um domínio são propostos, por padrão. Se o seu sistema fizer parte de uma rede, o nome de host deverá ser exclusivo nessa rede, enquanto o nome de domínio deverá ser comum a todos os hosts na rede.
+    </para>
+    <para>
+     Em várias redes, o sistema recebe o nome por DHCP. Nesse caso, não é necessário modificar o nome de host nem o nome de domínio propostos. Selecione <guimenu>Trocar Nome de Host via DHCP</guimenu>. Para acessar seu sistema usando esse nome de host, mesmo quando ele não estiver conectado à rede, selecione <guimenu>Atribuir Nome de Host a IP de Loopback</guimenu>. Não habilite essa opção quando sua máquina incluir serviços de rede. Se você troca de rede com frequência sem reiniciar o ambiente de área de trabalho (por exemplo, ao alternar entre WLANs diferentes), não habilite essa opção também, pois o sistema da área de trabalho pode se confundir quando o nome de host em <filename>/etc/hosts</filename> é modificado.
+    </para>
+    <para>
+     Para mudar as configurações de nome de host a qualquer momento após a instalação, use <menuchoice><guimenu>Dispositivos de Rede</guimenu><guimenu>Configurações de Rede</guimenu></menuchoice> do YaST. Para obter mais informações, consulte a <xref linkend="sec.basicnet.yast.netcard"/>.
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.network">
+    <title>Configuração de rede</title><indexterm> <primary>YaST</primary> <secondary>configuração de rede</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>configuração de rede</secondary></indexterm>
+    <tip arch="zseries" os="sles">
+     <title>IBM System z: configuração de rede</title>
+     <para>
+      Para as plataformas IBM System z, uma conexão de rede ativa é necessária no momento da instalação para a conexão com o sistema de destino, a fonte de instalação e o terminal YaST que controla o processo. As etapas para configuração da rede são discutidas na <xref linkend="sec.prep.netcfg"/>. As plataformas IBM System z oferecem suporte apenas aos tipos de interfaces de rede mencionados nessa seção (OSA Ethernet, OSA Gigabit Ethernet, OSA Express Fast Ethernet, Escon e IUCV). A caixa de diálogo do YaST exibe somente a interface com suas configurações, conforme já definidas. Basta confirmar essa caixa de diálogo para continuar.
+     </para>
+    </tip>
+    
+    <para os="sles">
+     Por padrão, <guimenu>Método Tradicional sem o Applet do NetworkManager</guimenu> está habilitado. Se desejado, você também poderá usar o NetworkManager para gerenciar todos os dispositivos de rede. Entretanto, o método tradicional é a opção preferida para as soluções de servidor. Encontre informações detalhadas sobre o NetworkManager na <xref linkend="cha.nm"/>.
+    </para>
+    <para>
+     A rede também pode ser configurada após a instalação do sistema. Se ignorar isso agora, você deixará seu sistema offline, incapaz de recuperar qualquer atualização disponível. Para configurar sua conexão de rede posteriormente, selecione <guimenu>Ignorar Configuração</guimenu> e clique em <guimenu>Avançar</guimenu>.
+    </para>
+    <para>
+     As configurações de rede a seguir podem ser definidas nessa etapa:
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>Configurações Gerais da Rede</guimenu>
+      </term>
+      <listitem>
+       <para>
+        Habilite ou desabilite o uso do NetworkManager, conforme descrito acima. Mude também o suporte a IPv6 aqui. Por padrão, o suporte a IPv6 está habilitado. Para desabilitá-lo, clique em <guimenu>Desabilitar IPv6</guimenu>. Para obter mais informações sobre IPv6, consulte a <xref linkend="sec.basicnet.ipv6"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>Firewall</guimenu>
+      </term>
+      <listitem>
+       <para>
+        Por padrão, o SuSEfirewall2 está habilitado em todas as interfaces de rede configuradas. Para desabilitar globalmente o firewall para esse computador, clique em <guimenu>Desabilitar</guimenu>. Se o firewall estiver habilitado, você poderá <guimenu>Abrir</guimenu> a porta SSH para permitir conexões remotas através de um shell seguro. Para abrir a caixa de diálogo de configuração detalhada de firewall, clique em <guimenu>Firewall</guimenu>. Consulte a <xref linkend="sec.fire.SuSE.yast"/> para obter informações detalhadas.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>Interfaces de rede</guimenu>
+      </term>
+      <listitem>
+       <para>
+        Todas as placas de rede detectadas pelo YaST estão listadas aqui. Se você já tiver configurado uma conexão de rede durante a instalação (conforme descrito na <xref linkend="sec.i.yast2.inst_mode.network"/>), a placa usada para essa conexão será listada conforme <guimenu>Configurado</guimenu>. Clicar em <guimenu>Interfaces de Rede</guimenu> abre a caixa de diálogo <guimenu>Configurações de Rede</guimenu> que permite mudar as configurações existentes, configurar placas de rede ainda não definidas ou adicionar e configurar placas adicionais. 
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>Conexões DSL</guimenu>, <guimenu>Adaptadores ISDN </guimenu> e <guimenu>Modems</guimenu>
+      </term>
+      <listitem>
+       <para>
+        Se o seu computador estiver equipado com um modem DSL interno, uma placa Fritz ADSL, uma placa ISDN ou um modem, clicar no respectivo cabeçalho abrirá a caixa de diálogo de configuração. Consulte <xref linkend="cha.internet"/> para obter mais informações.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Administração remota do VNC</term>
+      <listitem>
+       <para>
+        Para permitir a administração remota de sua máquina via VNC, clique em <guimenu>Administração Remota do VNC</guimenu>. Escolha <guimenu>Permitir Administração Remota</guimenu> na caixa de diálogo seguinte e ajuste as configurações de seu firewall de forma apropriada.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Proxy</term>
+      <listitem>
+       <para>
+        Se tiver um servidor proxy controlando o acesso à Internet em sua rede, configure os URLs de proxy e os detalhes de autenticação nessa caixa de diálogo.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <tip>
+     <title>Redefinindo a configuração de rede para os valores padrão</title>
+     <para>
+      Redefina as configurações de rede para os valores originais propostos, clicando em <menuchoice> <guimenu>Mudar</guimenu> <guimenu>Redefinir para Padrão</guimenu> </menuchoice>. Isso descartará todas as mudanças feitas.
+     </para>
+    </tip>
+    <sect4 id="sec.i.yast2.conf.manual.network.internet">
+     <title>Testar Conexão com a Internet</title><indexterm> <primary>instalação</primary> <secondary>conexão com a internet</secondary> </indexterm>
+     <para>
+      Após configurar uma conexão de rede, você poderá testá-la. Para isso, o YaST estabelece uma conexão com o servidor do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> e faz download das notas de versão mais atuais. Leia essas notas no final do processo de instalação. Um teste bem-sucedido é também um pré-requisito para a adição automática de repositórios padrão e atualização online.
+     </para>
+     <para>
+      Se tiver várias interfaces de rede, verifique se a placa desejada é usada para a conexão com a Internet. Caso contrário, clique em <guimenu>Mudar Dispositivo</guimenu>.
+     </para>
+     <para>
+      Para iniciar o teste, selecione <guimenu>Sim, Testar Conexão com a Internet</guimenu> e clique em <guimenu>Avançar</guimenu>. Na caixa de diálogo a seguir, veja o andamento do teste e os resultados. As informações detalhadas do processo de teste estão disponíveis através de <guimenu>Ver Registros</guimenu>. Em caso de falha do teste, clique em <guimenu>Voltar</guimenu> para retornar à configuração de rede e corrigir suas entradas.
+     </para>
+     <para>
+      Continue com <guimenu>Avançar</guimenu>. Se o teste foi bem-sucedido, os repositórios do software oficiais do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> e o repositório de atualização serão configurados. O primeiro download dos dados do repositório pode levar algum tempo.
+     </para>
+     <para>
+      Se você não quiser testar a conexão nesse ponto, selecione <guimenu>Não, Pular este Teste</guimenu> e, em seguida, em <guimenu>Avançar</guimenu>. Também ignora o download das notas de versão, <phrase os="sles;sled">a configuração do atendimento do cliente</phrase> e a atualização online. Essas etapas poderão ser executadas a qualquer momento após a configuração inicial do sistema.
+     </para>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.cc" os="sles;sled">
+    <title>Configuração do Novell Customer Center</title>
+    <para>
+     Para obter suporte técnico e atualizações de produto, é necessário registrar-se e ativar seu produto no Novell Customer Center. A <guimenu>Configuração do Novell Customer Center</guimenu> ajuda a fazer isso. Encontre informações detalhadas sobre o Novell Customer Center em <ulink url="http://www.novell.com/documentation/ncc/"/>.
+    </para>
+    <para>
+     Se você estiver offline ou quiser ignorar essa etapa, selecione <guimenu>Configurar Depois</guimenu>. Isso também ignora a atualização online do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>.
+    </para>
+    <para>
+     Em <guimenu>Incluir para Maior Praticidade</guimenu>, selecione se deseja enviar informações adicionais não solicitadas, como seu <guimenu>Perfil de Hardware</guimenu> ou <guimenu>Informações Opcionais</guimenu> ao se registrar. Isso simplifica o processo de registro. Clique em <guimenu>Detalhes</guimenu> para obter informações mais detalhadas sobre como os dados serão coletados. O servidor Novell será conectado para obter informações sobre quais dados serão enviados para seu produto específico. Com esta conexão inicial, somente o ID do seu produto será enviado aos servidores Novell.
+    </para>
+    <para>
+     Para poder oferecer suporte, certifique-se de ter marcado <guimenu>Código de Registro</guimenu>. Você será solicitado a digitar o código após selecionar <guimenu>Avançar</guimenu> para continuar. Você pode obter mais informações sobre o suporte técnico em <ulink url="http://www.suse.com/support/programs/"/>.
+    </para>
+    <note>
+     <title>Privacidade dos dados</title>
+     <para>
+      Nenhuma informação será transmitida para pessoas de fora da Novell. Os dados serão usados para fins estatísticos e para facilitar seu acesso ao suporte a drivers e à sua conta na Web. Ao clicar em <guimenu>Detalhes</guimenu>, você verá um link para informações detalhadas sobre a política de privacidade. Veja as informações transmitidas no arquivo de registro em <filename>/root/.suse_register.log</filename>.
+     </para>
+    </note>
+    <para>
+     Além de explicar como ativar e registrar seu produto, esse módulo também adiciona os repositórios de atualização oficiais à sua configuração. Esses repositórios fornecem correções para bugs ou problemas de segurança conhecidos que podem ser instalados através de uma atualização online.
+    </para>
+    <para>
+     Para manter seus repositórios válidos, selecione <guimenu>Sincronizar Frequentemente com o Atendimento ao Cliente</guimenu>. Essa opção verifica seus repositórios e adiciona os catálogos disponíveis recentemente ou remove os catálogos obsoletos. Ela não afeta os repositórios adicionados manualmente.
+    </para>
+    
+    <para>
+     Continue com <guimenu>Avançar</guimenu>. Uma conexão é estabelecida com o servidor Novell. Siga as instruções na tela para concluir o registro.
+    </para>
+    <tip>
+     <title>Registrando novamente um sistema instalado com outro código de registro</title>
+     <para>
+      Quando você registra um sistema no Novell Customer Center, os dados do registro são armazenados localmente e no banco de dados do Novell Customer Center. Embora isso não seja normalmente necessário, há casos especiais que podem exigir o novo registro de uma máquina já instalada com um código de registro diferente. Faça isso seguindo as etapas abaixo para o sistema instalado:
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        Digite o seguinte comando como usuário <systemitem class="username">root</systemitem> para apagar os dados de instalação da máquina local:
+       </para>
+<screen>suse_register.pl --erase-local-regdata</screen>
+      </listitem>
+      <listitem>
+       <para>
+        Em seguida, remova o sistema registrado do banco de dados do Novell Customer Center. Vá para <ulink url="http://www.suse.com/"/> no browser e clique em <menuchoice> <guimenu>Suporte</guimenu> <guimenu>Customer Center</guimenu></menuchoice>. Efetue login e navegue até <menuchoice> <guimenu>My Systems (Meus Sistemas) </guimenu> <guimenu>System (Sistema)</guimenu></menuchoice>. Selecione o sistema e remova-o clicando no traço na barra inferior da tabela.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Agora é possível registrar novamente a máquina com <command>suse-register</command> ou com o módulo do YaST <guimenu>Configuração de Atualização Online</guimenu>.
+       </para>
+      </listitem>
+     </orderedlist>
+    </tip>
+    <sect4 id="sec.i.yast2.conf.manual.cc.local">
+     <title>Servidor de Registro Local</title>
+     <para>
+      Se a sua organização oferecer um servidor de registro local em vez de usar o Novell Customer Center, será necessário especificar o URL do servidor. O cliente e o servidor se comunicarão somente via protocolo HTTPS, portanto, você também precisará digitar um caminho para o certificado do servidor se o certificado não tiver sido emitido por uma autoridade de certificação. Abra a caixa de diálogo com <menuchoice> <guimenu>Avançado</guimenu> <guimenu>Servidor de Registro Local</guimenu></menuchoice>.
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><guimenu>Servidor de Registro</guimenu>
+       </term>
+       <listitem>
+        <para>
+         URL do servidor de registro. O URL tem o formato fixo <literal>https://<replaceable>FQN</replaceable>/center/regsvc/</literal>, <replaceable>FQN</replaceable> deve ser o nome completo de host do servidor de registro. Exemplo:
+        </para>
+<screen>https://smt.example.com/center/regsvc/</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Localização do certificado de CA do servidor</term>
+       <listitem>
+        <para>
+         Local do certificado do servidor de registro. Especifique um dos seguintes locais:
+        </para>
+        <variablelist>
+         <varlistentry>
+          <term>URL</term>
+          <listitem>
+           <para>
+            Local remoto (http, https ou ftp) a partir do qual pode ser feito download do certificado. Exemplo:
+           </para>
+<screen>http://smt.example.com/smt-ca.crt</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>Disquete</term>
+          <listitem>
+           <para>
+            Especifica um local em um disquete. É necessário deverá ser inserido antes de você continuar. O valor deve começar com a string <literal>floppy</literal> seguida do caminho do certificado. Exemplo:
+           </para>
+<screen>floppy/smt/smt-ca.crt</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>Caminho local</term>
+          <listitem>
+           <para>
+            Caminho absoluto do certificado na máquina local. Exemplo:
+           </para>
+<screen>/data/inst/smt/smt-ca.cert</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>Interativo</term>
+          <listitem>
+           <para>
+            Use <literal>ask</literal> para abrir um menu popup que permite especificar o caminho do certificado. Não use esta opção com AutoYaST. Exemplo
+           </para>
+<screen>ask</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>Desativar a instalação do certificado</term>
+          <listitem>
+           <para>
+            Use <literal>done</literal> se o certificado for instalado por um produto complementar ou se estiver usando um certificado emitido por uma autoridade de certificação oficial. Exemplo:
+           </para>
+<screen>done</screen>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.update">
+    <title>Atualização online</title><indexterm> <primary>YaST</primary> <secondary>atualizações de software</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>atualização online</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>atualização online</secondary></indexterm><indexterm> <primary>instalação</primary> <secondary>atualizações de software</secondary></indexterm>
+    <para>
+     Se uma conexão com a Internet foi estabelecida, e houver atualizações disponíveis, selecione se é para realizar uma atualização online do YaST. Se houver qualquer pacote de patch disponível nos servidores, faça o download e instale-os agora para corrigir erros conhecidos ou problemas de segurança. Para obter instruções detalhadas, consulte o <xref linkend="cha.onlineupdate.you"/>. A <xref linkend="sec.updater"/> ou o <xref linkend="cha.onlineupdate.you"/> contém diretivas sobre como executar uma atualização online no sistema instalado. Esta etapa é ignorada quando não há atualizações disponíveis ou nenhuma conexão estabelecida com a Internet. Os patches que corrigem problemas de segurança e os patches recomendados que se aplicam à sua instalação são automaticamente pré-selecionados. Clique em <guimenu>Aceitar</guimenu> para instalá-los, e em <guimenu>Avançar</guimenu> para prosseguir com a configuração do sistema.
+    </para>
+    <important>
+     <title>Fazendo o download de atualizações de software</title>
+     <para>
+      O download de atualizações pode ser demorado, dependendo da largura de banda da conexão com a Internet e do tamanho dos arquivos de atualização. Caso o próprio sistema de patches seja atualizado, a atualização online será reiniciada e fará download de mais patches depois da reinicialização. Se o kernel foi atualizado, o sistema será reinicializado antes de completar a configuração.
+     </para>
+    </important>
+   </sect3>
+   <sect3 id="sec.i.yast2.servprop" os="sles">
+    <title>Configuração de serviços</title>
+    <para>
+     Após testar a conexão com a Internet e fazer download das primeiras atualizações, é aberta uma caixa de diálogo para habilitar e configurar três serviços de rede.
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>Gerenciamento de CA</term>
+      <listitem>
+       <para>
+        A finalidade de uma CA (certificate authority — autoridade de certificação) é garantir uma relação de confiança entre todos os serviços de rede que se comunicam entre si. Se não houver CA, você poderá proteger a comunicação do servidor com SSL e TLS separadamente para cada serviço individual. Por padrão, uma CA é criada e habilitada durante a instalação. Para obter mais informações sobre a criação de uma CA com o YaST, consulte o <xref linkend="cha.security.yast_ca"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Servidor OpenLDAP</term>
+      <listitem>
+       <para>
+        Você pode executar um serviço LDAP no host para que um recurso central gerencie uma faixa de arquivos de configuração. Geralmente, um servidor LDAP lida com dados de contas de usuário, mas, com o <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>, ele também pode ser usado para dados relacionados a e-mail, DHCP e DNS. Por padrão, um servidor LDAP é configurado durante a instalação. Se você decidir não usar um servidor LDAP, o módulo de servidor de correio eletrônico do YaST não funcionará por depender da funcionalidade LDAP. Contudo, você ainda poderá configurar um servidor de correio no sistema com a ajuda do módulo <guimenu>Mail Transfer Agent — MTA</guimenu>. O <xref linkend="cha.security.ldap"/> fornece detalhes sobre o LDAP e sua configuração com o YaST.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Serviços</term>
+      <listitem>
+       <para>
+        O Servidor CIM (Common Information Model — Modelo de Informação Comum) é iniciado por padrão. Clique em <guimenu>Desabilitar</guimenu> para impedir que o servidor seja iniciado automaticamente na hora do boot. Para obter mais informações sobre serviços CIM, consulte o <xref linkend="cha.wbem"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     Se preferir, você poderá ignorar essa proposta de configuração por enquanto. Após o término da instalação, configure e inicie os mesmos serviços com a ajuda do YaST.
+    </para>
+    <tip>
+     <title>Redefinindo a configuração do serviço para os padrões</title>
+     <para>
+      Restaure os padrões, clicando em <menuchoice> <guimenu>Mudar</guimenu> <guimenu>Redefinir para Padrão</guimenu> </menuchoice>. Isso descartará todas as mudanças feitas.
+     </para>
+    </tip>
+   </sect3>
+   
+   <sect3 id="sec.i.yast2.conf.manual.user_auth" os="sles">
+    <title>Método de Autenticação do Usuário</title><indexterm> <primary>instalação</primary> <secondary>usuário</secondary> <tertiary>configurações de especialista</tertiary> </indexterm>
+    <para>
+     Se o acesso à rede tiver sido configurado com êxito durante as etapas anteriores da instalação, você agora poderá escolher uma das várias opções de gerenciamento de usuários. Se uma conexão de rede não tiver sido configurada, crie contas de usuário local. Se a opção de importação de usuários estiver disponível, você também poderá executar esse procedimento de uma instalação anterior. Mude também o tipo de criptografia de senha nessa caixa de diálogo.
+    </para>
+    <para>
+     Você também pode adicionar outras contas de usuário ou mudar o método de autenticação de usuário no sistema instalado. Para obter informações detalhadas sobre gerenciamento de usuários, consulte o <xref linkend="cha.y2.userman"/>.
+    </para>
+    <para>
+     O método de autenticação padrão é <guimenu>Local (/etc/passwd)</guimenu>. Se uma versão anterior do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> ou um outro sistema que use <filename>/etc/passwd</filename> for detectado, você poderá importar usuários locais. Para isso, marque <guimenu>Ler Dados do Usuário de Instalação Anterior</guimenu> e clique em <guimenu>Escolher</guimenu>. Na caixa de diálogo seguinte, selecione os usuários a serem importados e termine com <guimenu>OK</guimenu>.
+    </para>
+    <para>
+     Digite os usuários locais manualmente clicando em <guimenu>Avançar</guimenu>. A caixa de diálogo Novo Usuário Local será aberta. Após digitar o nome e o sobrenome, aceite a proposta ou especifique um novo <guimenu>Nome de usuário</guimenu> que será usado para efetuar login. Por fim, digite uma senha para o usuário. Digite a senha novamente para confirmação (a fim de garantir que você não digitou algo a mais por engano). Para oferecer segurança efetiva, defina uma senha entre cinco e oito caracteres. O tamanho máximo de uma senha é 72 caracteres. No entanto, se nenhum módulo de segurança especial for carregado, somente os primeiros oito caracteres serão usados para distinguir a senha. As senhas fazem distinção entre maiúsculas e minúsculas. São permitidos caracteres especiais (ASCII de 7 bits) e os dígitos de 0 a 9. Não são permitidos outros caracteres especiais, como tremas ou caracteres acentuados.
+    </para>
+    <para>
+     As senhas digitadas são verificadas para avaliar seu nível de segurança. Ao digitar uma senha fácil de ser adivinhada, como uma palavra de dicionário ou um nome, você verá um aviso. Como prática de segurança recomendada, use senhas fortes.
+    </para>
+    <para>
+     Duas opções adicionais estão disponíveis:
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>Receber Mensagem do Sistema</guimenu>
+      </term>
+      <listitem>
+       <para>
+        A seleção dessa caixa envia para o usuário as mensagens criadas pelos serviços do sistema. Normalmente, elas são enviadas somente para <systemitem class="username">root</systemitem>, que é o administrador do sistema. Essa opção é útil para a conta usada com mais frequência, pois é altamente recomendável que o login como <systemitem class="username">root</systemitem> seja efetuado somente em casos especiais.
+       </para>
+       <para>
+        Os e-mails enviadas pelos serviços do sistema são armazenados em uma caixa de correio local <filename>/var/spool/mail/</filename><replaceable>nome_de_usuário</replaceable>, onde <replaceable>nome_de_usuário</replaceable> é o nome de login do usuário selecionado. Para ler e-mails após a instalação, você poderá usar qualquer cliente de e-mail, por exemplo, KMail ou Evolution.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>Login automático</guimenu>
+      </term>
+      <listitem>
+       <para>
+        Essa opção conecta automaticamente o usuário atual ao sistema no momento da inicialização. Esse recurso é útil principalmente quando o computador é operado por apenas um usuário. <phrase os="sles">Para que o login automático funcione, a opção deverá ser habilitada explicitamente.</phrase>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <warning>
+     <title>Login automático</title>
+     <para>
+      Com o login automático habilitado, o sistema é inicializado diretamente em sua área de trabalho sem nenhuma autenticação. Se você armazenar dados sensíveis no sistema e o computador puder ser acessado por outros usuários, não deverá habilitar esta opção.
+     </para>
+    </warning>
+    <para>
+     Digite mais usuários, chamando o módulo <guimenu>Gerenciamento de Usuários</guimenu> descrito no <xref linkend="cha.y2.userman"/>.
+    </para>
+    <para>
+     Quando você usar um servidor de rede para autenticação do usuário, o acesso aos seguintes serviços poderá ser configurado:
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>LDAP</term>
+      <listitem>
+       <para>
+        Os usuários são administrados centralmente em um servidor LDAP em todos os sistemas da rede. Encontre mais informações na <xref linkend="sec.ldap.yast.client"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>NIS</term>
+      <listitem>
+       <para>
+        Os usuários são administrados centralmente em um servidor NIS em todos os sistemas da rede. Consulte a <xref linkend="sec.nis.client"/> para obter mais informações.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Domínio do Windows</term>
+      <listitem>
+       <para>
+        A autenticação SMB é geralmente usada em redes com Linux e Windows. As informações detalhadas estão disponíveis na <xref linkend="sec.samba.adnet"/> e na <xref linkend="sec.ad.config"/>.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     Além da administração do usuário via <guimenu>LDAP</guimenu> e <guimenu>NIS</guimenu>, você poderá usar a autenticação Kerberos. Para usá-la, selecione <guimenu>Configurar Autenticação Kerberos</guimenu>. Para obter mais informações sobre o Kerberos, consulte o <xref linkend="cha.net.kerberos"/>.
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.relnotes">
+    <title>Notas de versão</title><indexterm> <primary>instalação</primary> <secondary>notas de versão</secondary> </indexterm>
+    <para>
+     Após concluir a configuração de autenticação do usuário, o YaST exibe as notas de versão. É recomendável ler essas notas, pois elas contêm informações atualizadas importantes que não estavam disponíveis no momento em que os manuais foram impressos. Se o teste da conexão com a Internet foi bem-sucedido, leia a versão mais recente das notas de versão, conforme obtida dos servidores do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Use <menuchoice> <guimenu>Diversos</guimenu> <guimenu>Notas de Versão</guimenu> </menuchoice> no YaST ou inicie o Centro de Ajuda do SUSE para ver as notas de versão após a instalação.
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.hardware">
+    <title>Configuração de hardware</title><indexterm> <primary>instalação</primary> <secondary>configuração de hardware</secondary> </indexterm>
+    <para>
+     Ao final da instalação, o YaST abre uma caixa de diálogo para a configuração de <guimenu>Placas Gráficas</guimenu> <guimenu>Impressora</guimenu> <phrase os="sles">e <guimenu>Som</guimenu></phrase>. Clique nos componentes individuais para iniciar a configuração de hardware. Na maioria das vezes, o YaST detecta e configura os dispositivos automaticamente.
+    </para>
+    <tip arch="zseries" os="sles">
+     <title>IBM System z: configuração de hardware</title>
+     <para>
+      No IBM System z, nenhuma tela é suportada pelo XFree. Da mesma maneira, não há uma entrada de <guimenu>Placas Gráficas</guimenu> nesses sistemas.
+     </para>
+    </tip>
+    <para>
+     Você poderá ignorar qualquer dispositivo periférico e configurá-lo posteriormente, conforme descrito no <xref linkend="cha.y2.hw"/>. Para ignorar a configuração, selecione <guimenu>Ignorar Configuração</guimenu> e clique em <guimenu>Avançar</guimenu>.
+    </para>
+    <para>
+     Entretanto, ao configurar um sistema de desktop, defina a placa gráfica imediatamente. Embora as configurações de tela definidas pelo YaST sejam normalmente aceitáveis, a maioria dos usuários tem preferências bem diferentes em termos de resolução, intensidade de cor e outros recursos gráficos. Para mudar essas configurações, selecione o respectivo item e defina os valores como desejar.
+    </para>
+    <tip>
+     <title>Redefinindo a configuração de hardware para os valores padrão</title>
+     <para>
+      Você pode cancelar todas as mudanças feitas na configuração de hardware, clicando em <menuchoice> <guimenu>Mudar</guimenu> <guimenu>Redefinir para Padrão</guimenu> </menuchoice>. Em seguida, o YaST mostra a proposta original novamente.
+     </para>
+    </tip>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.complete">
+    <title>Instalação concluída</title><indexterm> <primary>AutoYaST</primary><secondary>clonando o sistema</secondary></indexterm>
+    <para>
+     Após uma instalação bem-sucedida, o YaST mostra a caixa de diálogo Instalação Completada. Nessa caixa de diálogo, selecione se o sistema recém-instalado do AutoYaST deve ser clonado. Para clonar o sistema, selecione <guimenu>Clonar Sistema para o AutoYaST</guimenu>. O perfil do sistema atual é armazenado em <filename>/root/autoyast.xml</filename>. <phrase os="sles">A clonagem é selecionada por padrão.</phrase>
+    </para>
+    <para>
+     O AutoYaST é um sistema para instalação de um ou mais sistemas <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> de forma automática e sem a intervenção do usuário. As instalações do AutoYaST são feitas com um arquivo de controle que tem dados sobre instalação e configuração.<phrase os="sles">Para obter informações detalhadas, consulte o <xref linkend="cha.deployment.autoinst"/>.</phrase> Conclua a instalação do <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> clicando em <guimenu>Concluir</guimenu> na caixa de diálogo final.
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.conf.dm">
+  <title>Login gráfico</title>
+
+  <tip arch="zseries" os="sles">
+   <title>IBM System z: sem login gráfico</title>
+   <para>
+    O login gráfico não está disponível nas plataformas IBM System z.
+   </para>
+  </tip>
+
+  <para>
+   O <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> agora está totalmente instalado e configurado. A menos que tenha habilitado a função de login automático ou personalizado o nível de execução padrão, você verá o login gráfico na tela em que digitará um nome de usuário e uma senha para efetuar login no sistema. Em sistemas de usuário único com login automático habilitado, o desktop iniciará automaticamente.
+  </para>
+
+  <indexterm class="endofrange" startref="idx.Installation"/><indexterm class="endofrange" startref="idx.Installation_YaST2"/><indexterm class="endofrange" startref="idx.YaST2_Installation"/>
+ </sect1>
+</chapter>

@@ -1,0 +1,976 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_config_files.xml" id="sec.basicnet.manconf">
+ <title>手动配置网络连接</title><indexterm id="idx.networks_configuring" class="startofrange"><primary>网络</primary><secondary>配置</secondary></indexterm><indexterm id="idx.configuring_networks_manually" class="startofrange"><primary>配置</primary><secondary>网络</secondary><tertiary>手动</tertiary></indexterm>
+
+ <para>
+  应该始终将手动配置网络软件作为最后的选择。建议使用 YaST。但是，对网络配置背景信息的了解将对您使用 YaST 有所帮助。
+ </para>
+
+
+
+ <para>
+  当内核检测到某个网卡并创建相应的网络接口时，会根据设备发现的顺序或装载内核模块的顺序为设备指派一个名称。只有在非常简单或严格控制的硬件环境中，才能预测默认内核设备名称。允许在运行时添加或删除硬件的系统或者支持自动配置设备的系统不能期望在各个重引导之间由内核指派稳定的网络设备名称。
+ </para>
+
+ <para>
+  但是，所有系统配置工具均依赖持久性接口名称。该问题通过 udev 解决。udev 永久网络生成器 (<filename>/lib/udev/rules.d/75-persistent-net-generator.rules</filename>) 会生成匹配硬件的规则（默认情况下使用其硬件地址），并为该硬件分配永久唯一接口。网络接口的 udev 数据库储存在文件 <filename>/etc/udev/rules.d/70-persistent-net.rules</filename> 中。文件中的每一行描述一个网络接口并指定其永久名称。系统管理员可通过编辑 <literal>NAME=""</literal> 项来更改指派的名称。也可以使用 YaST 修改永久规则。
+ </para>
+
+ <para>
+  <xref linkend="tab.net.script.conf"/> 总结了网络配置中涉及的最重要脚本。
+ </para>
+
+ <table id="tab.net.script.conf">
+  <title>手动网络配置脚本</title>
+  <tgroup cols="2">
+   <thead>
+    <row>
+     <entry>
+      <para>
+       命令
+      </para>
+     </entry>
+     <entry>
+      <para>
+       功能
+      </para>
+     </entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>
+      <para>
+       <command>ifup、ifdown、ifstatus</command>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       <literal>if</literal> 脚本启动或停止网络接口，或者返回指定接口的状态。有关更多信息，请参见 <systemitem>ifup</systemitem> 手册页。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <command>rcnetwork</command>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       <literal>rcnetwork</literal> 脚本可用于启动、停止或重启动所有网络接口（或某个指定接口）。使用 <command>rcnetwork stop</command>、<command>rcnetwork start</command> 和 <command>rcnetwork restart</command> 可分别停止、启动和重启动网络接口。如果要停止、启动或重启动一个接口，请在命令后加上该接口名称，例如 <command>rcnetwork restart eth0</command>。<command>rcnetwork status</command> 命令显示接口的状态、其 IP 地址以及 DHCP 客户端是否正在运行。通过 <command>rcnetwork stop-all-dhcp-clients</command> 和 <command>rcnetwork restart-all-dhcp-clients</command>，您可停止或重启动运行在网络接口上的 DHCP 客户端。
+      </para>
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+
+ <para>
+  有关 udev 和永久设备名称的更多信息，请参见<xref linkend="cha.udev"/>。
+ </para>
+
+ <sect2 id="sec.basicnet.manconf.files">
+  <title>配置文件</title><indexterm><primary>配置文件</primary></indexterm><indexterm id="idx.networks_configuration_files" class="startofrange"><primary>网络</primary><secondary>配置文件</secondary></indexterm>
+  <para>
+   本节对网络配置文件进行了概述并解释了它们的作用和所使用的格式。
+  </para>
+  <sect3 id="sec.basicnet.manconf.files.ifcfg">
+   <title><filename>/etc/sysconfig/network/ifcfg-*</filename></title>
+   <para>
+    这些文件包含网络接口的配置。它们包含启动方式和 IP 地址等信息。可能的参数在 <systemitem>ifup</systemitem> 的手册页中有所介绍。此外，如果常规设置应只用于一个接口，则 <filename>dhcp</filename> 文件中的大多数变量可用于 <filename>ifcfg-*</filename> 文件。但是，<filename>/etc/sysconfig/network/config</filename> 中的大多数变量是全局变量，不能在 ifcfg-files 中被覆盖。例如，<systemitem>NETWORKMANAGER</systemitem> 或 <systemitem>NETCONFIG_*</systemitem> 变量是全局变量。
+   </para>
+   <para>
+    有关 <filename>ifcfg.template</filename> 的信息，请参见<xref linkend="sec.basicnet.manconf.files.config-etc"/>。
+   </para><indexterm> <primary>配置文件</primary><secondary>ifcfg-*</secondary> </indexterm>
+   
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.files.config-etc">
+   <title><filename>/etc/sysconfig/network/config</filename> 和 <filename>/etc/sysconfig/network/dhcp</filename></title><indexterm> <primary>配置文件</primary> <secondary>网络</secondary></indexterm><indexterm> <primary>配置文件</primary> <secondary>dhcp</secondary></indexterm>
+   <para>
+    文件 <filename>config</filename> 包含 <command>ifup</command>、<command>ifdown</command> 和 <command>ifstatus</command> 行为的常规设置。<filename>dhcp</filename> 包含 DHCP 的设置。这两个配置文件中的变量已注释掉。<filename>/etc/sysconfig/network/config</filename> 中的一些变量也可用于 <filename>ifcfg-*</filename> 文件，在这些文件中它们具有更高优先级。<filename>/etc/sysconfig/network/ifcfg.template</filename> 文件列出可以按接口指定的变量。但是，<filename>/etc/sysconfig/network/config</filename> 中的大多数变量是全局变量，不能在 ifcfg-files 中被覆盖。例如，<systemitem>NETWORKMANAGER</systemitem> 或 <systemitem>NETCONFIG_*</systemitem> 变量是全局变量。
+   </para>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/sysconfig/network/routes</filename> 和 <filename>/etc/sysconfig/network/ifroute-*</filename></title><indexterm id="idx.routing" class="startofrange"> <primary>路由选择</primary></indexterm><indexterm><primary>路由选择</primary><secondary>路由</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>路由</secondary></indexterm><indexterm><primary>配置</primary><secondary>路由选择</secondary></indexterm>
+   <para>
+    在这里确定 TCP/IP 包的静态路由。在 <filename>/etc/sysconfig/network/routes</filename> 文件中输入各种系统任务所需的所有静态路由：主机的路由、主机通过网关的路由以及网络的路由。对于需要个别路由的每个接口，定义另一个配置文件：<filename>/etc/sysconfig/network/ifroute-*</filename>。用接口名称替换 <literal>*</literal>。路由选择配置文件中的项如下所示：<indexterm><primary>路由</primary><secondary>静态</secondary></indexterm>
+   </para>
+<screen># Destination     Dummy/Gateway     Netmask            Device
+#
+127.0.0.0         0.0.0.0           255.255.255.0      lo
+204.127.235.0     0.0.0.0           255.255.255.0      eth0
+default           204.127.235.41    0.0.0.0            eth0
+207.68.156.51     207.68.145.45     255.255.255.255    eth1
+192.168.0.0       207.68.156.51     255.255.0.0        eth1</screen>
+   <para>
+    路由目标位于首列。此列可以包含网络或主机的 IP 地址，或者在有<emphasis>可访问</emphasis>名称服务器时，包含完全限定的网络或主机名。
+   </para>
+   <para>
+    第二列包含默认网关或通过其可访问主机或网络的网关。第三列包含网关后的网络或主机的子网掩码。例如，网关后主机的掩码为 <systemitem class="netmask">255.255.255.255</systemitem>。
+   </para>
+   <para>
+    第四列只与本地主机连接的网络有关，如回写、以太网、ISDN、PPP 和虚设设备。必须在此输入设备名。
+   </para>
+   <para>
+    （可选）可以使用第五列来指定路由的类型。不需要的列中应该包含一个减号 <literal>-</literal>，这样才能确保分析程序正确解析命令。关于详细信息，请参见 <systemitem>routes(5)</systemitem> 手册页。
+   </para>
+   <para>
+    IPv4 和 IPv6 的统一格式现在如下所示：
+   </para>
+<screen><replaceable>prefix</replaceable>/<replaceable>length</replaceable><replaceable>gateway</replaceable> -            [<replaceable>interface</replaceable>]
+</screen>
+   <para>
+    对应的兼容性格式则如下所示：
+   </para>
+<screen><replaceable>prefix</replaceable><replaceable>gateway</replaceable><replaceable>length</replaceable>       [<replaceable>interface</replaceable>]
+</screen>
+   <para>
+    对于 IPv4，仍可使用子网掩码旧格式：
+   </para>
+<screen><replaceable>ipv4-network</replaceable><replaceable>gateway</replaceable><replaceable>ipv4-netmask</replaceable> [<replaceable>interface</replaceable>]
+</screen>
+   <para>
+    以下示例等效：
+   </para>
+<screen>2001:db8:abba:cafe::/64 2001:db8:abba:cafe::dead  -            eth0
+208.77.188.0/24         208.77.188.166            -            eth0
+
+2001:db8:abba:cafe::    2001:db8:abba:cafe::dead 64            eth0
+208.77.188.0            208.77.188.166           24            eth0
+
+208.77.188.0            208.77.188.166           255.255.255.0 eth0
+</screen>
+<indexterm class="endofrange" startref="idx.routing"/>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/resolv.conf</filename></title><indexterm> <primary>配置文件</primary><secondary>resolv.conf</secondary> </indexterm>
+   <para>
+    在此文件中指定主机所属的域（关键字 <systemitem>search</systemitem>）。同时列出的还有要访问的名称服务器地址的状态（关键字 <systemitem>nameserver</systemitem>）。可在文件中指定多个域名。当解析不是完全限定的名称时，将尝试通过附加单独的 <systemitem>search</systemitem> 项生成一个完全限定的名称。可在多行中指定多个名称服务器，每个以 <systemitem>nameserver</systemitem> 开始。注释以 <literal>#</literal> 符号开头。<xref linkend="dat.netz.etc.resolv.conf"/> 显示 <filename>/etc/resolv.conf</filename> 的内容。<indexterm> <primary>DNS</primary> <secondary>域</secondary> </indexterm> <indexterm> <primary>DNS</primary> <secondary>名称服务器</secondary> </indexterm>
+   </para>
+   <para>
+    但是，<filename>/etc/resolv.conf</filename> 不应手动编辑。而是由 <command>netconfig</command> 脚本生成。要定义静态 DNS 配置而不使用 YaST，请手动编辑 <filename>/etc/sysconfig/network/config</filename> 文件中的相应变量：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><systemitem>NETCONFIG_DNS_STATIC_SEARCHLIST</systemitem>
+     </term>
+     <listitem>
+      <para>
+       用于主机名查找的 DNS 域名列表
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>NETCONFIG_DNS_STATIC_SERVERS</systemitem>
+     </term>
+     <listitem>
+      <para>
+       用于主机名查找的名称服务器 IP 地址列表
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>NETCONFIG_DNS_FORWARDER</systemitem>
+     </term>
+     <listitem>
+      <para>
+       定义必须要配置的 DNS 转发器的名称
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    要使用 netconfig 禁用 DNS 配置，请设置 <literal>NETCONFIG_DNS_POLICY=''</literal>。有关 <command>netconfig</command> 的更多信息，请参见 <command>man 8 netconfig</command>。
+   </para>
+   <example id="dat.netz.etc.resolv.conf">
+    <title><filename>/etc/resolv.conf</filename></title>
+<screen># Our domain
+search example.com
+#
+# We use dns.example.com (192.168.1.116) as name server
+nameserver 192.168.1.116</screen>
+   </example>
+  </sect3>
+
+  <sect3 id="sec.basicnet.manconf.netconfig">
+   <title><filename>/sbin/netconfig</filename></title>
+   <para>
+    <command>netconfig</command> 是一个用于管理附加网络配置设置的模块化工具。它合并了静态定义的设置和自动配置机制根据预定义策略以 DHCP 或 PPP 形式提供的设置。通过调用负责修改配置文件和重启动服务或相似操作的 netconfig 模块将所需更改应用于系统。
+   </para>
+   <para>
+    <command>netconfig</command> 识别三种主要操作。<command>netconfig modify</command> 和 <command>netconfig remove</command> 命令由诸如 DHCP 或 PPP 的守护程序用于在 netconfig 中提供设置或从中删除设置。仅 <command>netconfig update</command> 命令可用于用户：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>modify</command>
+     </term>
+     <listitem>
+      <para>
+       <command>netconfig modify</command> 命令修改特定于当前接口和服务的动态设置并更新网络配置。Netconfig 从标准输入或使用 <option>--lease-file <replaceable>filename</replaceable></option> 选项指定的文件中读取设置，并将其储存在内部，直到系统重引导（或者执行下一个修改或删除操作）。已存在的相同接口和服务组合设置将会重写。该接口由 <option>-i <replaceable>interface_name</replaceable></option> 参数指定。该服务由 <option>-s <replaceable>service_name</replaceable></option> 参数指定。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>remove</command>
+     </term>
+     <listitem>
+      <para>
+       <command>netconfig remove</command> 命令为指定接口和服务组合删除由修改操作提供的动态设置并更新网络配置。该接口由 <option>-i <replaceable>interface_name</replaceable></option> 参数指定。该服务由 <option>-s <replaceable>service_name</replaceable></option> 参数指定。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>update</command>
+     </term>
+     <listitem>
+      <para>
+
+       <command>netconfig update</command> 命令使用当前设置更新网络配置。当策略或静态配置更改时，这非常有用。如果要仅更新指定服务（<systemitem>dns</systemitem>、<systemitem>nis</systemitem> 或 <systemitem>ntp</systemitem>），请使用 <option>-m <replaceable>module_type</replaceable></option> 参数。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>
+    netconfig 策略和静态配置设置可手动定义或者使用 YaST 在 <filename>/etc/sysconfig/network/config</filename> 文件中定义。由自动配置工具以 DHCP 或 PPP 形式提供的动态配置设置由这些工具通过 <command>netconfig modify</command> 和 <command>netconfig remove</command> 操作直接递送。NetworkManager 也使用 <command>netconfig modify</command> 和 <command>netconfig remove</command> 操作。启用 NetworkManager 时，netconfig（在策略模式 <literal>auto</literal> 中）仅使用 NetworkManager 设置，忽略使用传统 ifup 方法配置的任何其他接口的设置。如果 NetworkManager 未提供任何设置，将使用静态设置作为后备设置。不支持混合使用 NetworkManager 和传统 ifup 方法。
+   </para>
+   <para>
+    有关 <command>netconfig</command> 的更多信息，请参见 <command>man 8 netconfig</command>。
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.hosts">
+   <title><filename>/etc/hosts</filename></title><indexterm> <primary>配置文件</primary><secondary>主机</secondary> </indexterm>
+   <para>
+    在此文件中，如<xref linkend="dat.netz.etc.hosts"/> 中所示，将为主机名指派 IP 地址。如果未实施名称服务器，则将与其建立 IP 连接的所有主机必须列在此处。在此文件中为每个主机输入一行，包含 IP 地址、完全限定的主机名和主机名。IP 地址必须在每行的开头，各项用空格和制表符隔开。注释总是以 <literal>#</literal> 符号开头。
+   </para>
+   <example id="dat.netz.etc.hosts">
+    <title><filename>/etc/hosts</filename></title>
+<screen>127.0.0.1 localhost
+192.168.2.100 jupiter.example.com jupiter
+192.168.2.101 venus.example.com venus</screen>
+   </example>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/networks</filename></title><indexterm><primary>配置文件</primary><secondary>网络</secondary></indexterm>
+   <para>
+    在这里，网络名称被转换为网络地址。格式类似于 <filename>hosts</filename> 文件的格式，只是网络名称在地址的前面。请参见<xref linkend="dat.netz.networks"/>。
+   </para>
+   <example id="dat.netz.networks">
+    <title><filename>/etc/networks</filename></title>
+<screen>loopback     127.0.0.0
+localnet     192.168.0.0</screen>
+   </example>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/host.conf</filename></title><indexterm> <primary>配置文件</primary><secondary>host.conf</secondary> </indexterm>
+   <para>
+    此文件控制名称解析，即通过<emphasis>解析程序</emphasis>库转换主机名和网络名称。此文件只用于链接到 libc4 或 libc5 的程序。对于当前的 glibc 程序，请参见 <filename>/etc/nsswitch.conf</filename> 中的设置。参数必须始终单独在一行上。注释以 <literal>#</literal> 符号开头。<xref linkend="tab.netz.param.hostconf"/> 显示了可用的参数。<xref linkend="dat.netz.etc.hostconf"/> 中显示了 <filename>/etc/host.conf</filename> 的示例。
+   </para>
+   <table id="tab.netz.param.hostconf">
+    <title>/etc/host.conf 的参数</title>
+    <tgroup cols="2" align="left">
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         order <emphasis>hosts</emphasis>、<emphasis>bind</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         指定访问服务以进行名称解析的顺序。可用参数有（使用空格或逗号隔开）：
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para/>
+       </entry>
+       <entry>
+        <para>
+         <emphasis>hosts</emphasis>：搜索 <filename>/etc/hosts</filename> 文件
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para/>
+       </entry>
+       <entry>
+        <para>
+         <emphasis>bind</emphasis>：访问名称服务器
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para/>
+       </entry>
+       <entry>
+        <para>
+         <emphasis>nis</emphasis>：使用 NIS
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         multi <emphasis>on</emphasis>/<emphasis>off</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         定义 <filename>/etc/hosts</filename> 中输入的主机是否可以具有多个 IP 地址。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         nospoof <emphasis>on</emphasis> spoofalert <emphasis>on</emphasis>/<emphasis>off</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         这些参数影响名称服务器 <emphasis>spoofing</emphasis>，但对网络配置没有任何影响。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         trim <emphasis>domainname</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         在主机名解析后，指定的域名与主机名分开（只要主机名包括域名）。此选项仅当本地域名在 <filename>/etc/hosts</filename> 文件中时才有用，但仍应通过附带的域名进行识别。
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <example id="dat.netz.etc.hostconf">
+    <title><filename>/etc/host.conf</filename></title>
+<screen># We have named running
+order hosts bind
+# Allow multiple address
+multi on</screen>
+   </example>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/nsswitch.conf</filename></title><indexterm> <primary>配置文件</primary> <secondary>nsswitch.conf</secondary> </indexterm>
+   <para>
+    GNU C Library 2.0 的引入与 <emphasis>名称服务转换</emphasis> (NNS) 的引入是同时进行的。有关详细信息，请参见 <systemitem>nsswitch.conf(5)</systemitem> 手册页和《<emphasis>GNU C 库参考手册</emphasis>》。<indexterm> <primary>NSS</primary> </indexterm>
+   </para>
+   <para>
+    查询的顺序是在文件 <filename>/etc/nsswitch.conf</filename> 中定义的。<xref linkend="dat.netz.nsswitchconf"/> 中显示了 <filename>nsswitch.conf</filename> 的示例。注释以 <literal>#</literal> 符号开头。在本例中，<filename>hosts</filename> 数据库下的项意味着通过 DNS 将请求发送到 <filename>/etc/hosts</filename> (<option>files</option>)。
+   </para>
+   <example id="dat.netz.nsswitchconf">
+    <title><filename>/etc/nsswitch.conf</filename></title>
+<screen>passwd:     compat
+group:      compat
+
+hosts:      files dns
+networks:   files dns
+
+services:   db files
+protocols:  db files
+rpc:        files
+ethers:     files
+netmasks:   files
+netgroup:   files nis
+publickey:  files
+
+bootparams: files
+automount:  files nis
+aliases:    files nis
+shadow:     compat
+</screen>
+   </example>
+   <para>
+    <xref linkend="tab.netz.nnswitch.db"/> 中列出了 NSS 上可用的<quote>数据库</quote>。<indexterm><primary>NSS</primary><secondary>数据库</secondary></indexterm><xref linkend="tab.netz.nnswitch.conf"/> 中列出了 NSS 数据库的配置选项。
+   </para>
+   <table id="tab.netz.nnswitch.db">
+    <title>通过 /etc/nsswitch.conf 可用的数据库</title>
+    <tgroup cols="2" align="left">
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>aliases</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>sendmail</filename> 实施的邮件别名；请参见 <command>man</command><option>5 aliases</option>。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>ethers</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         以太网地址。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>netmasks</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         网络及其子网掩码的列表。只有在使用子网划分时才需要。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>group</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         对于 <filename>getgrent</filename> 使用的用户组。另请参见 <command>group</command> 的手册页。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>hosts</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>gethostbyname </filename>和类似函数使用的主机名和 IP 地址。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>netgroup</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         网络中用于控制访问权限的主机和用户列表，请参见 <systemitem>netgroup(5)</systemitem> 手册页。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>networks</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>getnetent </filename>使用的网络名称和地址。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>publickey</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         NFS 和 NIS+ 使用的 Secure_RPC 的公钥和密钥。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>password</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>getpwent</filename> 使用的用户口令；请参见 <systemitem>passwd(5)</systemitem> 手册页。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>protocols</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         网络协议，由 <filename>getprotoent</filename> 使用；请参见 <systemitem>protocols(5)</systemitem> 手册页。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>rpc</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>getrpcbyname </filename>和类似函数使用的远程过程调用名称和地址。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>services</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>getservent </filename>使用的网络服务。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>shadow</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         用户阴影口令，由 <filename>getspnam</filename> 使用；请参见 <option>shadow(5)</option> 手册页。
+        </para>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+   <table id="tab.netz.nnswitch.conf">
+    <title>NSS<quote>数据库</quote>的配置选项</title>
+    <tgroup cols="2" align="left">
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>files</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         直接访问文件，例如 <filename>/etc/aliases</filename>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>db</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         通过数据库访问
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>nis</option>、<option>nisplus</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         NIS，另请参见 <xref linkend="cha.nis"/>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>dns</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         仅可用作 <option>hosts</option> 和 <option>networks</option> 的扩展名
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>compat</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         仅可用作 <option>passwd</option>、<option>shadow</option> 和 <option>group</option> 的扩展名
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/nscd.conf</filename></title><indexterm> <primary>配置文件</primary><secondary>nscd.conf</secondary> </indexterm>
+   <para>
+    此文件用于配置 nscd（名称服务缓存守护程序）。请参见 <systemitem>nscd(8)</systemitem> 和 <systemitem>nscd.conf(5)</systemitem> 手册页。默认情况下，<option>passwd</option> 和 <option>groups</option> 的系统项由 nscd 进行缓存。这对于目录服务（例如 NIS 和 LDAP）的性能很重要，因为如果不是这样，每次访问名称或组都需要网络连接。默认情况下，不对 <option>hosts</option> 进行缓存，因为 nscd 中缓存主机的机制将导致本地系统无法信任正向和反向查找检查。请设置缓存 DNS 服务器，而不是让 nscd 缓存名称。
+   </para>
+   <para>
+    如果激活 <option>passwd</option> 的缓存，则通常需要 15 秒才能识别新添加的本地用户。通过使用命令 <command>rcnscd</command><option>restart</option> 重启动 nscd 可缩短此等待时间。
+   </para>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/HOSTNAME </filename></title><indexterm><primary>配置文件</primary><secondary>主机名</secondary></indexterm>
+   <para>
+    这包含附带了域名的完全限定的主机名。当引导计算机时，此文件将被多个脚本读取。它只能包含一行（在此行中设置主机名）。
+   </para><indexterm class="endofrange" startref="idx.networks_configuration_files"/>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.manconf.testing">
+  <title>测试配置</title>
+  <para>
+   向配置文件写配置之前，可对其进行测试。要设置测试配置，请使用 <command>ip</command> 命令。要测试连接，请使用 <command>ping</command> 命令。也可使用较早的配置工具 <command>ifconfig</command> 和 <command>route</command>。
+  </para>
+  <para>
+   命令 <command>ip</command>、<command>ifconfig</command> 和 <command>route</command> 会直接更改网络配置，而不会在配置文件中保存更改。如果未在正确的配置文件中输入配置，重引导时将丢失已更改的网络配置。
+  </para>
+  <sect3 id="sec.basicnet.manconf.ip">
+   <title>使用 <command>ip</command> 配置网络接口</title><indexterm><primary>命令</primary><secondary>ip</secondary></indexterm>
+   
+   <para>
+    <command>ip</command> 是用来显示和配置网络设备、路由选择、策略路由选择以及隧道的工具。
+   </para>
+   <para>
+    <command>ip</command> 是非常复杂的工具。它的常用语法为 <command>ip</command><option><replaceable>options</replaceable><replaceable>object</replaceable><replaceable>command</replaceable></option>。可使用以下对象：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>link</term>
+     <listitem>
+      <para>
+       此对象表示网络设备。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>address</term>
+     <listitem>
+      <para>
+       此对象表示设备的 IP 地址。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>邻区</term>
+     <listitem>
+      <para>
+       此对象表示 ARP 或 NDISC 缓存项。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>route</term>
+     <listitem>
+      <para>
+       此对象表示路由选择表项。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>rule</term>
+     <listitem>
+      <para>
+       此对象表示路由选择策略数据库中的规则。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>maddress</term>
+     <listitem>
+      <para>
+       此对象表示多路广播地址。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>mroute</term>
+     <listitem>
+      <para>
+       此对象表示多路广播路由缓存项。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>tunnel</term>
+     <listitem>
+      <para>
+       此对象表示 IP 上的隧道。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    如果未提供命令，则将使用默认命令（通常为 <command>list</command>）。
+   </para>
+   <para>
+    使用命令 <command>ip link set</command> <option><replaceable>device_name</replaceable></option> <command><replaceable>command</replaceable></command> 更改设备状态。例如，要停用设备 eth0，请输入 <command>ip link set</command> <option>eth0 down</option>。要重激活它，可使用 <command>ip link set</command> <option>eth0 up</option>。
+   </para>
+   <para>
+    激活设备后，可对设备进行配置。要设置 IP 地址，可使用 <command>ip addr add</command><option><replaceable>ip_address</replaceable> + dev <replaceable>device_name</replaceable></option>。例如，要将接口 eth0 的地址设置为带标准广播（选项 <option>brd</option>）的 192.168.12.154/30，则输入 <command>ip addr</command><option>add 192.168.12.154/30 brd + dev eth0</option>。
+   </para>
+   <para>
+    要拥有活动连接，还必须配置默认网关。要设置系统的网关，请输入 <command>ip route add</command><option>gateway_ip_address</option>。要将一个 IP 地址转换为另一个 IP 地址，请使用 <command>nat</command>: <command>ip route add nat</command> <option>ip_address</option> <command>via</command> <option>other_ip_address</option>。
+   </para>
+   <para>
+    要显示所有设备，可使用 <command>ip link ls</command>。要只显示正在运行的接口，可使用 <command>ip link ls up</command>。要打印设备的接口统计信息，可输入 <command>ip -s link ls</command><option>device_name</option>。要查看设备的地址，请输入 <command>ip addr</command>。在 <command>ip addr</command> 的输出中，还可找到有关设备 MAC 地址的信息。要显示所有路由，可使用 <command>ip route show</command>。
+   </para>
+   <para>
+    有关使用 <command>ip</command> 的更多信息，请输入 <command>ip</command> <option>help</option> 或参见 <systemitem>ip(8)</systemitem> 手册页。<option>help</option> 选项还可用于所有 <command>ip</command> 子命令。例如，如果需要有关 <command>ip</command> <option>addr</option> 的帮助，请输入 <command>ip</command> <option>addr help</option>。可在 <filename>/usr/share/doc/packages/iproute2/ip-cref.pdf</filename> 中找到 <command>ip</command> 手册。
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.testingping">
+   <title>使用 ping 测试连接</title><indexterm> <primary>命令</primary> <secondary>ping</secondary> </indexterm> <indexterm> <primary>ping</primary> </indexterm>
+   <para>
+    <command>ping</command> 命令是用于测试 TCP/IP 连接是否有效的标准工具。它使用 ICMP 协议来将小数据包和 ECHO_REQUEST 数据报文发送到目标主机，并请求即时答复。如果发送有效，<command>ping</command> 将据此显示一条消息，指明网络链接基本有效。
+   </para>
+   <para>
+    <command>ping</command> 不仅能测试两台计算机之间的连接功能：它还能提供关于连接质量的一些基本信息。在<xref linkend="ex.basicnet.manconf.ping"/> 中，可查看 <command>ping</command> 输出示例。倒数第二行包含有关已传输的包数、丢失的包和 <command>ping</command> 的总运行时间的信息。
+   </para>
+   <para>
+    您可以使用主机名或 IP 地址（例如 <command>ping</command> <option>example.com</option> 或 <command>ping</command> <option>192.168.3.100</option>）作为目标。程序会一直发送包，直到您按 <keycombo><keycap>Ctrl</keycap><keycap>C</keycap></keycombo>。
+   </para>
+   <para>
+    如果只需要检查连接功能，则可使用 <option>-c</option> 选项来限制包数。例如，要将 ping 限制为三个包，请输入 <command>ping</command> <option>-c 3 example.com</option>。
+   </para>
+   <example id="ex.basicnet.manconf.ping">
+    <title>命令 ping 的输出</title>
+<screen>ping -c 3 example.com
+PING example.com (192.168.3.100) 56(84) bytes of data.
+64 bytes from example.com (192.168.3.100): icmp_seq=1 ttl=49 time=188 ms
+64 bytes from example.com (192.168.3.100): icmp_seq=2 ttl=49 time=184 ms
+64 bytes from example.com (192.168.3.100): icmp_seq=3 ttl=49 time=183 ms
+--- example.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2007ms
+rtt min/avg/max/mdev = 183.417/185.447/188.259/2.052 ms</screen>
+   </example>
+   <para>
+    两个包之间的默认时间间隔为一秒。ping 提供了选项 <option>-i</option> 来更改间隔。例如，要将 ping 间隔增加到十秒，请输入 <command>ping</command> <option>-i 10 example.com</option>。
+   </para>
+   <para>
+    在带有多个网络设备的系统中，有时通过特定接口地址发送 ping 将会非常有用。要执行此操作，可将 <option>-I</option> 选项结合选定设备名称一起使用，例如 <command>ping</command> <option>-I wlan1 example.com</option>。
+   </para>
+   <para>
+    有关使用 ping 的更多选项和信息，请输入 <command>ping</command><option>-h</option> 或查看 <systemitem>ping (8)</systemitem> 手册页。
+   </para>
+   <tip>
+    <title>Ping IPv6 地址</title>
+    <para>
+     对于 IPv6 地址，请使用 <command>ping6</command> 命令。请注意，要 ping 本地链路地址，必须用 <option>-I</option> 指定接口。如果通过 <literal>eth1</literal> 可获取地址，则以下命令有效：
+    </para>
+<screen>ping6 -I eth1 fe80::117:21ff:feda:a425</screen>
+   </tip>
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.testingifconfig">
+   <title>使用 ifconfig 配置网络</title><indexterm><primary>命令</primary><secondary>ifconfig</secondary></indexterm>
+   <para>
+    <command>ifconfig</command> 是一种网络配置工具。
+   </para>
+   <note>
+    <title><command/>ifconfig 和 ip<command/></title>
+    <para>
+     <command>ifconfig</command> 工具已过时。请改为使用 <command>ip</command>。与 <command>ip</command> 相比，您只能将 <command>ifconfig</command> 用于接口配置。它将接口名称限制为 9 个字符。
+    </para>
+   </note>
+   <para>
+    毫无疑问，<command>ifconfig</command> 可显示当前活动接口的状态。如<xref linkend="ex.basicnet.manconf.ifconfig"/> 中所见，<command>ifconfig</command> 具有非常整齐和详细的输出。输出的第一行中还包含关于设备 MAC 地址的信息（<option>HWaddr</option> 的值）。
+   </para>
+   <example id="ex.basicnet.manconf.ifconfig">
+    <title><command>ifconfig</command> 命令的输出</title>
+<screen>eth0      Link encap:Ethernet  HWaddr 00:08:74:98:ED:51
+          inet6 addr: fe80::208:74ff:fe98:ed51/64 Scope:Link
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:634735 errors:0 dropped:0 overruns:4 frame:0
+          TX packets:154779 errors:0 dropped:0 overruns:0 carrier:1
+          collisions:0 txqueuelen:1000
+          RX bytes:162531992 (155.0 Mb)  TX bytes:49575995 (47.2 Mb)
+          Interrupt:11 Base address:0xec80
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:8559 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:8559 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:533234 (520.7 Kb)  TX bytes:533234 (520.7 Kb)    
+
+wlan1     Link encap:Ethernet  HWaddr 00:0E:2E:52:3B:1D
+          inet addr:192.168.2.4  Bcast:192.168.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::20e:2eff:fe52:3b1d/64 Scope:Link
+          UP BROADCAST NOTRAILERS RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:50828 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:43770 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:45978185 (43.8 Mb)  TX bytes:7526693 (7.1 MB)</screen>
+   </example>
+   <para>
+    有关使用 <command>ifconfig</command> 的更多选项和信息，请输入 <command>ifconfig</command> <option>-h</option> 或参见 <systemitem>ifconfig (8)</systemitem> 手册页。
+   </para>
+  </sect3>
+  <sect3>
+   <title>使用 <command>route</command> 配置路由选择</title><indexterm><primary>命令</primary><secondary>路由</secondary></indexterm>
+   <para>
+    <command>route</command> 是用于操作 IP 路由选择表的程序。可使用它来查看路由选择配置以及添加或删除路由。
+   </para>
+   <note>
+    <title><command/>route 和 ip<command/></title>
+    <para>
+     程序 <command>route</command> 已过时。请改为使用 <command>ip</command>。
+    </para>
+   </note>
+   <para>
+    如果需要有关路由选择配置的快速而又易懂的信息来确定路由选择问题，则 <command>route</command> 将非常有用。要查看当前路由配置，请以 <systemitem class="username">root</systemitem> 身份输入 <command>route <option>-n</option></command>。
+   </para>
+   <example id="ex.basicnet.manconf.route">
+    <title><command>route <option>-n</option></command> 命令的输出</title>
+<screen><?dbsuse-fo font-size="7pt"?>
+
+route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+10.20.0.0       *               255.255.248.0   U         0 0          0 eth0
+link-local      *               255.255.0.0     U         0 0          0 eth0
+loopback        *               255.0.0.0       U         0 0          0 lo
+default         styx.exam.com   0.0.0.0         UG        0 0          0 eth0</screen>
+   </example>
+   <para>
+    有关使用 route 的更多选项和信息，请输入 <command>route</command><option>-h</option> 或参见 <systemitem>route (8)</systemitem> 手册页。
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.manconf.scripts">
+  <title>启动脚本</title><indexterm><primary>脚本</primary><secondary>init.d</secondary></indexterm>
+  <para>
+   除了上面介绍的配置文件之外，还有多个脚本在引导计算机时装载网络程序。只要系统切换到某个<emphasis>多用户运行级别</emphasis>，就将启动这些脚本。中介绍了其中的一些脚本。<xref linkend="tab.netz.start.skripte"/>
+  </para>
+  <table id="tab.netz.start.skripte">
+<?dbsuse-latex tablehead="p{.4\linewidth}p{.55\linewidth}"?>
+
+
+   <title>网络程序的一些启动脚本</title>
+   <tgroup cols="2" align="left">
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/network</filename><indexterm><primary>脚本</primary><secondary>init.d</secondary> <tertiary>network</tertiary></indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        此脚本处理网络接口的配置。如果 <command>network</command> 服务未启动，则不实施任何网络接口。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/xinetd</filename><indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>xinetd</tertiary></indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        启动 xinetd。xinetd 可用于使服务器服务在系统上可用。例如，它可以在初始化 FTP 连接时启动 vsftpd。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/rpcbind</filename> <indexterm> <primary>脚本</primary> <secondary>init.d</secondary> <tertiary>rpcbind</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        启动用于将 RPC 程序号转换为通用地址的 rpcbind 实用程序。它是 RPC 服务所必需的，如 NFS 服务器。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/nfsserver</filename><indexterm><primary>脚本</primary><secondary>init.d</secondary> <tertiary>nfsserver</tertiary></indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        启动 NFS 服务器。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/postfix</filename><indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>postfix</tertiary></indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        控制 postfix 进程。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/ypserv</filename><indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>ypserv </tertiary></indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        启动 NIS 服务器。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/ypbind</filename><indexterm><primary>脚本</primary><secondary>init.d</secondary> <tertiary>ypbind</tertiary></indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        启动 NIS 客户端。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table><indexterm startref="idx.networks_configuring" class="endofrange"/><indexterm startref="idx.configuring_networks_manually" class="endofrange"/>
+ </sect2>
+</sect1>

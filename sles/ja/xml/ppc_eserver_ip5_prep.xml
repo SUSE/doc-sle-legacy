@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_eserver_ip5_prep.xml" id="sec.prep.eserver">
+ <title>IBM eServer /p5モデル、System /pモデル、OpenPowerモデルへのインストールの準備</title><indexterm><primary>準備</primary><secondary>eServer</secondary></indexterm>
+ <para>
+  このセクションでは、IBM eServer p5システムにSUSE® Linux Enterprise Serverをインストールするための準備作業について説明します。ここでは、内蔵されたCD ROMドライブおよびネットワークを使用してインストールする方法について説明します。
+ </para>
+ <para>
+  また、このセクションでは、HMCを設定してシステムに接続していることを前提にします。ウィザードによるHMCの設定方法の詳細については、<quote>Configuring the HMC using the Guided Setup Wizard</quote>を参照してください: <ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphai_p5/confighmcgs.htm?"/>
+ </para>
+ <sect3 id="sec.prep.eserver.features6x0">
+
+  <title>IBM eServer /p5システムの最新機能</title>
+  <para>
+   IBM eServer p5システムでは、システムのパーティショニングが可能です。これにより、1つのコンピュータ上で最大254までのオペレーティングシステムを同時に動作させることができます。これらのオペレーティングシステムは、<emphasis>LPAR</emphasis>(論理パーティション)にインストールされます。これらのパーティションの1つ(または複数)に、SUSE Linux Enterprise Server環境を含めることができます。
+  </para>
+  <para>
+   SUSE Linux Enterprise Server用のLPARを準備するには、最初に<emphasis>HMC</emphasis>を介してシステムを設定します。詳細については、IBMのドキュメント(<ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphbi/iphbikickoff.htm"/>)参照してください。
+  </para>
+
+
+
+
+
+
+
+
+
+ </sect3>
+ <sect3 id="sec.prep.eserver.diskspace">
+  <title>ハードディスクスペース</title>
+  <para>
+   SUSE Linux Enterprise Serverのインストールに使用できる十分なハードディスク容量があることを確認します。標準システムでは、4ギガバイト以上の空きハードディスク容量が必要です。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.netsource">
+
+  <title>インストールデバイスのLPARへの割り当て</title>
+  
+  <para>
+   SUSE Linux Enterprise Serverのインストールは、CD-ROMまたはDVDドライブから、またはネットワークインストールソースから実行できます。LPARでインストール処理に使用可能なCD-ROMドライブ、DVDドライブ、またはネットワークデバイスを作成します。
+  </para>
+  <figure id="fig.ip5.hmc.start.menu">
+   <title>HMC: サーバ管理 —プロパティ</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <procedure id="ip5.hmc.assign.cdrom">
+   <title>CD-ROMドライブまたはDVDドライブのLPARへの割り当て</title>
+   <step performance="required">
+    <para>
+     HMCアプリケーションを起動して、<menuchoice><guimenu>Server and Partition</guimenu><guimenu>Server Management</guimenu></menuchoice>の順に選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用可能なサーバから、インストール先のサーバとパーティションを展開します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     インストールに使用するプロファイルを右クリックして、 <guimenu>プロパティ］ </guimenu>を選択します。詳細については、 <xref linkend="fig.ip5.hmc.start.menu"/>を参照してください。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>論理パーティションプロファイルのプロパティ</guimenu>のダイアログで、<guimenu>Physical I/O</guimenu>タブを選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     
+     
+     
+     <guimenu>管理されたシステム入出力デバイス</guimenu>で、インストール用のバスから<guimenu>Other Mass Storage Controller</guimenu>を選択します。このDVDドライブをパーティションに割り当てるには、<guimenu>Add as required</guimenu>をクリックします。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   結果は、図「<xref linkend="fig.ip5.hmc.assign.cdrom"/>」のようになります。
+  </para>
+  <figure id="fig.ip5.hmc.assign.cdrom">
+   <title>HMC: 管理されたシステム入出力デバイス</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  
+  <para>
+   SUSE Linux Enterprise Server CD1またはDVD1をドライブに挿入します。
+  </para>
+
+  <procedure>
+   <title>ネットワークデバイスのLPARへの割り当て</title>
+   <step performance="required">
+    <para>
+     HMCアプリケーションを起動して、<menuchoice><guimenu>Server and Partition</guimenu><guimenu>Server Management</guimenu></menuchoice>の順に選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用可能なサーバから、インストール先のサーバとパーティションを開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     インストールに使用するプロファイルを右クリックして、 <guimenu>プロパティ］ </guimenu>を選択します。詳細については、 <xref linkend="fig.ip5.hmc.start.menu"/>を参照してください。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>論理パーティションプロファイルのプロパティ</guimenu>のダイアログで、<guimenu>Physical I/O</guimenu>タブを選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>管理されたシステム入出力デバイス</guimenu>で、インストール用のバスから<guimenu>PCI 10/100/1000Mbps Ethernet UTP 2-port</guimenu>を選択します。次に、<guimenu>Add as required</guimenu>をクリックします。
+    </para>
+    <para>
+     仮想Ethernetアダプタを使用してインストールする場合は、IBMのドキュメントを参照してください。
+     
+     
+     
+    </para>
+   </step>
+  </procedure>
+  
+  <para>
+
+   多くのパーティション上にSUSE Linux Enterprise Serverをインストールする必要がある場合は、ネットワークインストールソースを作成します。ネットワークインストールソースの作成により、インストール時にCDを変更する必要がなくなります。さまざまなシステムの同時インストールに、同じソースを使用することもできます。ネットワークインストールソースの設定については、<xref linkend="sec.deployment.remoteinst.instserver.sles9"/>で説明されています。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.startinstall">
+  <title>インストールの開始</title>
+  <para>
+   インストールを開始するには、システムを再起動します。プロファイル名を右クリックして<guimenu>有効化</guimenu>を選択し、次のダイアログで<guimenu>OK</guimenu>をクリックします。
+  </para>
+  
+  <para>
+   IBMのドキュメントで説明されているとおりに、スクリーンコンソールを使用するか、またはシリアルコンソールに接続します。シリアルコンソールを起動する1つの単純な方法として、パーティションを有効にしているときにVTermを開きます。この操作を行うには、<guimenu>Activate Logical Partition</guimenu>ダイアログで<guimenu>Open a terminal window or console session</guimenu>をオンにします。
+  </para>
+  <para>
+   システムファームウェアに入るには、システムを再起動したときのシステムチェック中に、シリアルコンソールまたは仮想コンソールを使用して、<keycap>F1</keycap>または<keycap>1</keycap>のキーを押します。
+
+  </para>
+
+<screen>
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+
+       1 = SMS Menu                          5 = Default Boot List
+       8 = Open Firmware Prompt              6 = Stored Boot List
+
+
+     memory      keyboard     network     scsi     speaker 
+</screen>
+
+  <para>
+   SCSIデバイスがチェックされているときに、<keycap>F1</keycap>または<keycap>1</keycap>を押します。<guimenu>5.  Boot Options</guimenu>を選択して、次のようにブートオプションダイアログを表示します。
+
+  </para>
+
+
+<screen>
+Version SF220_004
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+---------------------------------------------------------------------
+Main Menu
+ 1.  Select Language
+ 2.  Setup Remote IPL (Initial Program Load)
+ 3.  Change SCSI Settings
+ 4.  Select Console
+ 5.  Select Boot Options
+
+
+---------------------------------------------------------------------
+Navigation Keys:
+
+                                  X = eXit System Management Services
+---------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation
+                                                                Key:5
+</screen>
+
+  <para>
+   <guimenu>1. Select Install/Boot Device</guimenu>を選択して、<emphasis>インストールデバイス</emphasis>を設定します。<guimenu>7. .List all Devices </guimenu>を選択すると、次のように使用可能なデバイスのリストが表示されます。
+
+  </para>
+
+<screen>
+Version SF220_011
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Device
+Device  Current  Device
+Number  Position  Name
+ 1.        -      Virtual Ethernet 
+                  ( loc=U9111.520.10D3CCC-V1-C3-T1 )
+ 2.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T5 )
+ 3.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T6 )
+ 4.        -      IDE CD-ROM 
+                  ( loc=U787A.001.DNZ00XG-P4-D3 )
+ 5.        1      SCSI 73407 MB Harddisk
+                  ( loc=U787A.001.DNZ00XG-P1-T10-L8-L0 )
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+ </sect3>
+
+ <sect3 id="sec.prep.eserver.boot.cd">
+  <title>CD ROMドライブからのブート</title>
+  <para>
+   次のように、CD ROMドライブを選択します(この例では<literal>4</literal>)。
+
+  </para>
+  
+
+<screen>SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Task
+
+IDE CD-ROM 
+    ( loc=U787A.001.DNZ00XG-P4-D3 )
+
+ 1.  Information
+ 2.  Normal Mode Boot
+ 3.  Service Mode Boot
+
+
+
+
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+  <para>
+   <guimenu>2. .Normal Mode Boot</guimenu>を選択して、このデバイスからインストールします。次の画面で、<guimenu>1. はい</guimenu>を選択して確定し、<guimenu>システム管理サービス</guimenu>を終了して、デバイスからブートします。
+  </para>
+  <para>
+   システムによってCD-ROMドライブの内容が読み込まれ、次のようにyabootユーティリティが起動します。
+
+  </para>
+  
+
+
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+
+  <para>
+   <guimenu>install</guimenu>と入力して<keycap>Enter</keycap>キーを押します。
+  </para>
+  <para>
+   CD-ROMからのインストールを続行するのではなく、ネットワークインストールソースからインストールデータを読み込む場合( <xref linkend="sec.prep.eserver.netsource"/>を参照)は、オプション <option>manual </option>を、カーネルの名前( <literal>install </literal>)に追加します。
+  </para>
+  <para>
+   VNCを介してインストールする場合は、<option>vnc=1</option>と<option>vncpassword=<replaceable>password</replaceable></option>パラメータを、カーネルの名前(<literal>install</literal>)に追加します。VNCの詳細については、<xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>を参照してください。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.boot.net">
+  <title>ネットワークソースからのブート</title>
+  <para>
+   インストールソースにアクセスできるEthernetデバイスを選択します(この例では<literal>2</literal>)。
+  </para>
+ </sect3>
+ <sect3>
+  <title>その他の手順</title>
+  <para>
+   で説明されているとおりに手順を実行し、linuxrcおよびYaSTによるソフトウェアのインストールを開始します。<xref linkend="cha.inst"/>
+  </para>
+ </sect3>
+</sect2>

@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="gnome_admin.xml" id="cha.gnome.gconf">
+ <title>管理員的 GNOME 組態</title>
+ <para>
+  本章介紹了管理員可用於調整系統層級設定的 GNOME 組態選項，例如自定功能表、安裝主題、設定字型、變更偏好的應用程式以及鎖定功能。
+ </para>
+ <para>
+  這些組態選項儲存在 GConf 系統中。GConf 系統可以使用 <command>gconftool-2</command> 指令行介面或 <command>gconf-editor</command> GUI 等工具進行存取。
+ </para>
+ <sect1 id="sec.gnome.gconf">
+  <title>GConf 系統</title>
+
+  <para>
+   GNOME 桌面使用 GConf 管理其組態。GConf 是一個階層式結構的資料庫或登錄，使用它，使用者可以變更自己的設定，系統管理員可以為所有使用者設定預設值或必要值。GConf 設定可以透過指定存取路徑 (例如 <systemitem>/desktop/gnome/background/picture_filename</systemitem> 用於存放桌面背景圖片之檔案名稱的鍵) 的方式加以存取。
+  </para>
+
+  <para>
+   為了方便地瀏覽所有選項，可使用圖形 <systemitem>gconf-editor</systemitem>。如需有關 gconf-editor 的簡短使用說明，請參閱<xref linkend="sec.gnome.gconf-editor"/>。若您需要可編寫指令解決方案，請參閱<xref linkend="sec.gnome.gconftool2"/>。
+  </para>
+
+  <warning>
+   <title>GNOME 控制中心對話方塊</title>
+   <para>
+    若操作不當，直接存取 Gconf 系統可能會導致系統無法使用。
+   </para>
+   <para>
+    對於那些只是想調整部分一般桌面功能但又缺乏經驗的使用者，建議使用 GNOME 控制中心組態對話方塊。若要啟動 GNOME 控制中心，請按一下<menuchoice><guimenu>電腦</guimenu> <guimenu>控制中心</guimenu></menuchoice>。如需詳細資訊，請參閱<xref linkend="sec.gnome.settings.cc"/>。
+   </para>
+  </warning>
+
+  <sect2 id="sec.gnome.gconf-editor">
+   <title>圖形 gconf-editor</title>
+   <para>
+    gconf-editor 可讓您瀏覽 GConf 設定並以互動方式變更這些設定。若要在預設的<guimenu>設定視窗</guimenu>檢視窗中啟動 gconf-editor，請按一下<menuchoice><guimenu>電腦</guimenu> <guimenu>其他應用程式</guimenu></menuchoice>，然後在<guimenu>系統</guimenu>群組中按一下<guimenu>GNOME 組態編輯器</guimenu>。
+   </para>
+   <para>
+    依預設，使用者可以變更自己桌面的設定，管理員可以準備用於指定預設值或必要值的設定。例如，若要將<emphasis>休息提示</emphasis>功能做為強制功能向所有使用者啟用，請執行下列步驟：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      在指令行中以 <systemitem>root</systemitem> 身分啟動 <command>gconf-editor</command>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      展開左側樹狀窗格中的 <systemitem>/desktop/gnome/typing_break</systemitem>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>已啟用</guimenu>上按一下滑鼠右鍵，選取<guimenu>設定為強制值</guimenu>。完成後，便可以管理此功能。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      透過按一下<menuchoice><guimenu>檔案</guimenu> <guimenu>新強制視窗</guimenu></menuchoice>開啟<guimenu>強制設定</guimenu>視窗。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      展開<guimenu>強制設定</guimenu>視窗之樹狀窗格中的 <systemitem>/desktop/gnome/typing_break</systemitem>，然後按一下<guimenu>已啟用</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      透過按一下<menuchoice><guimenu>檔案</guimenu> <guimenu>關閉視窗</guimenu></menuchoice>關閉視窗以儲存設定。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    如需有關 gconf-editor 的詳細資訊，請參閱位於 <ulink url="http://library.gnome.org/users/gconf-editor/stable/"/> 的《Configuration Editor Manual》(組態編輯器手冊)。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconftool2">
+   <title>gconftool-2 指令行介面</title>
+   <para>
+    若要透過指令行或在程序檔中變更設定，請使用 <command>gconftool-2</command>。以下是一些範例︰
+   </para>
+   <para>
+    以 <systemitem>root</systemitem> 身分使用以下指令列出所有鍵的值：
+   </para>
+<screen>gconftool-2 --recursive-list /
+</screen>
+   <para>
+    如果只對子集感興趣，請指定存取路徑，如 <systemitem>/desktop/gnome/typing_break</systemitem>：
+   </para>
+<screen>gconftool-2 --recursive-list /desktop/gnome/typing_break
+</screen>
+   <para>
+    若要列出強制設定：
+   </para>
+<screen>gconftool-2 --recursive-list \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory /
+</screen>
+   <para>
+    若要設定強制設定 (如 <systemitem>typing_break</systemitem>)：
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --type bool \
+  --set /desktop/gnome/typing_break/enabled true
+</screen>
+   <para>
+    若要取消設定強制設定：
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --unset /desktop/gnome/typing_break/enabled
+</screen>
+   <para>
+    對於預設設定，請使用 <systemitem>/etc/gconf/gconf.xml.default</systemitem>。
+   </para>
+   <para>
+    如需 <command>gconftool-2</command> 的詳細資訊，請參閱位於 <ulink url="http://help.gnome.org/admin/system-admin-guide/2.32/gconf-6.html.en"/> 的《GNOME Desktop System Administration Guide》(GNOME 桌面系統管理指南) 中的「GConf Command Line Tool」(GConf 指令行工具) 一節以及 <command>gconftool-2</command> man 頁面 (<command>man gconftool-2</command>)。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1>
+  <title>自定主功能表、面板與應用程式瀏覽器</title>
+
+
+
+  <para>
+   透過自定以下檔案控制顯示在主功能表 (<guimenu>電腦</guimenu>) 不同區段中的預設項目：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/applications.xbel：</title>
+     <para>
+      預設我的最愛應用程式之清單。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/documents.xbel：</title>
+     <para>
+      預設我的最愛文件之清單。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/system-items.xbel：</title>
+     <para>
+      顯示在系統區段中的項目。
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   您可以使用 <command>gconf-editor</command> 自定顯示的項目數：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/min_recent_items：</title>
+     <para>
+      最近使用之項目的最小數目。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/max_total_items：</title>
+     <para>
+      所有項目的最大數目。
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   您可以透過多種方式自定應用程式瀏覽器，例如當使用者啟動項目或項目數顯示在<guimenu>新應用程式</guimenu>類別中時的應用程式瀏覽器行為。使用 <command>gconf-editor</command> 查詢鍵 <systemitem>/desktop/gnome/applications/main-menu/ab_*</systemitem>。
+  </para>
+
+  <para>
+   如需詳細資訊，請參閱位於 <ulink url="https://help.gnome.org/admin/system-admin-guide/2.32/menustructure-0.html.en"/> 的《GNOME Desktop System Administration Guide》(GNOME 桌面系統管理指南) 中的「Customizing Menus」(自定功能表) 一節。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.autostart">
+  <title>自動啟動應用程式</title>
+
+  <para>
+   若要在 GNOME 中自動啟動應用程式，請使用下列方法之一：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>若要為每位使用者執行應用程式：</title>
+     <para>
+      將 <filename>.desktop</filename> 檔案放在 <filename>/usr/share/gnome/autostart</filename> 中。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>若要讓單一使用者執行應用程式：</title>
+     <para>
+      將 <filename>.desktop</filename> 檔案放在 <filename>~/.config/autostart</filename> 中。
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   若要停用應用程式的自動啟動，請將 <literal>X-Autostart-enabled=false</literal> 新增到 <filename>.desktop</filename> 檔案中。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.automount">
+  <title>自動裝載與管理媒體裝置</title>
+
+  <para>
+   Nautilus (<command>nautilus</command>) 可監控與卷冊相關的事件並依使用者指定的規則進行回應。您可以使用 Nautilus 自動裝載熱插拔磁碟機與插入的抽取式媒體，自動執行程式，播放音訊 CD 或視訊 DVD，以及自動從數位相機輸入相片。
+  </para>
+
+  <para>
+   系統管理員可以設定系統層級的預設值。如需詳細資訊，請參閱<xref linkend="sec.gnome.gconf.pref_app"/>。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.pref_app">
+  <title>變更偏好的應用程式</title>
+
+  <para>
+   若要變更使用者偏好的應用程式，請編輯 <filename>/etc/gnome_defaults.conf</filename>。在此檔案中尋找更多提示。
+  </para>
+
+  <para>
+   編輯完檔案後，執行 <command>SuSEconfig --module glib2</command>。
+  </para>
+
+  <para>
+   如需有關 MIME 類型的詳細資訊，請參閱 <ulink url="http://www.freedesktop.org/Standards/shared-mime-info-spec"/>。
+  </para>
+ </sect1>
+
+ <sect1 id="sec.gnome.gconf.sabayon">
+  <title>使用 Sabayon 管理設定檔</title>
+
+  <para>
+   Sabayon 是系統管理工具，可用來建立並套用桌面環境設定檔。桌面設定檔是預設設定與限制的集合，可套用至個別使用者或使用者群組。Sabayon 可讓您編輯 GConf 預設質，並強制鍵使用圖形工具。
+  </para>
+
+  <para>
+   設定檔定義是透過類似使用者所執行的圖形會期所完成的，只不過位於桌面視窗內。您可以一般方式變更屬性 (如桌面背景、工具列，與可用的 applet)。Sabayon 也會偵測大多數桌面應用程式的預設設定變更。
+  </para>
+
+  <para>
+   檔案與文件都位於類似的主目錄，或包含已完成設定檔的桌面上。這包括許多應用程式特定的資料庫，如 Tomboy notes。使用此機制，可以輕鬆提供介紹性說明或範本，讓新使用者易於存取。
+  </para>
+
+  <para>
+   使用者設定檔可承襲父代設定檔的設定，或覆寫或新增特定值。這種方式可承襲一組設定。例如，您可定義一個「員工」設定檔，並從此衍生出「藝人」與「品保」設定檔。
+  </para>
+
+  <para>
+   除了提供預設值以外，Sabayon 亦可鎖定設定。這樣可避免設定受到使用者變更。例如，您可指定桌面背景不得變更為與您所提供的設定值不同。這樣可避免設定遭到一般竄改，亦可能減少致電服務台的數量，並啟用 kiosk 式環境。然而，這樣並不會提供絕對安全性，您也不應仰賴此方式得到安全性。
+  </para>
+
+  <para>
+   Sabayon 同時會提供具有內建鎖定支援的應用程式與一般使用者介面元素的設定清單，包括 OpenOffice.org 與 GNOME 面板。例如，您可設定面板，僅讓特定 applet 得以加入，避免變更螢幕的大小與位置。同樣的，亦可全面停用所有應用程式的「儲存」功能表項目，避免使用者儲存文件。
+  </para>
+
+  <para>
+   設定檔可轉移到其他電腦。其位於 <filename>/etc/desktop-profiles/</filename> 中，且各設定檔都儲存於個別的 ZIP 檔案中。
+  </para>
+
+  <sect2 id="sec.gnome.gconf.sabayon.create">
+   <title>建立設定檔</title>
+   <para>
+    設定檔儲存於 <filename>/etc/desktop-profiles</filename> 中的 ZIP 檔案中。您所儲存的各設定檔都會位於像 <filename><replaceable>name-of-the-profile</replaceable>.zip</filename> 這樣的獨立 ZIP 檔中。您可將設定檔複製或移動到其他電腦。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      按一下<menuchoice><guimenu>電腦</guimenu> <guimenu>更多應用程式</guimenu> <guimenu>系統</guimenu> <guimenu>使用者設定檔編輯器</guimenu></menuchoice>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果您不是以 <systemitem>root</systemitem> 使用者的身分登入，請輸入 <systemitem>root</systemitem> 密碼，然後按一下<guimenu>繼續</guimenu>。
+     </para>
+     <figure id="fig.gnome.gconf.sabayon1">
+      <title>Sabayon︰使用者設定檔編輯器</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon1.png" width="70%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon1.png" width="70%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>新增</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      指定設定檔名稱，再按一下<guimenu>新增</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選取設定檔，然後按一下<guimenu>編輯</guimenu>。
+     </para>
+     <para>
+      會在 Xnest 視窗中開啟新的桌面會期。
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.xnest">
+      <title>Sabayon︰新的 Xnest 視窗</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      在 Xnest 視窗中，對設定進行您希望的變更。
+     </para>
+     <para>
+      您變更的各個設定都會出現於 Xnest 視窗中。
+     </para>
+     <para>
+      您可選擇讓各設定強制執行 (按一下<menuchoice><guimenu>編輯</guimenu> <guimenu>強制執行</guimenu></menuchoice>)、忽略設定 (按一下<menuchoice><guimenu>編輯</guimenu> <guimenu>變更</guimenu> <guimenu>忽略</guimenu></menuchoice>)，或使用設定預設值 (不選取<guimenu>忽略</guimenu>和<guimenu>強制</guimenu>)。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      若要為使用者鎖定設定，請在 Xnest 視窗中按一下<menuchoice><guimenu>編輯</guimenu><guimenu>鎖定</guimenu></menuchoice>。
+     </para>
+     <para>
+      您可以從下列各選項中選取：
+     </para>
+     <formalpara>
+      <title>一般：</title>
+      <para>
+       讓您停用指令行、列印、列印設定以及儲存至磁碟功能。
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>面板：</title>
+      <para>
+       讓您鎖定面板、停用強制離開、停用鎖定螢幕、停用登出，並停用<guimenu>已停用 Applet</guimenu> 清單中的所有 applet。
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>OpenOffice.org︰</title>
+      <para>
+       讓您定義 OpenOffice.org 文件的巨集安全性層級、載入與儲存設定與使用者介面選項。
+      </para>
+     </formalpara>
+
+
+    </step>
+    <step performance="required">
+     <para>
+      若要儲存變更，請按一下<menuchoice><guimenu>設定檔</guimenu><guimenu>儲存</guimenu></menuchoice>。
+     </para>
+     <para>
+      設定檔儲存於 <filename>/etc/desktop-profiles</filename> 中。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<menuchoice><guimenu>設定檔</guimenu><guimenu>離開</guimenu></menuchoice>，關閉 Xnest 視窗，再按一下<guimenu>關閉</guimenu>離開 Sabayon。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconf.sabayon.apply">
+   <title>套用設定檔</title>
+   <para>
+    您可將設定檔套用至單一使用者或工作站上的所有使用者。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      按一下<menuchoice><guimenu>電腦</guimenu> <guimenu>更多應用程式</guimenu> <guimenu>系統</guimenu> <guimenu>使用者設定檔編輯器</guimenu></menuchoice>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果您不是以 <systemitem>root</systemitem> 使用者的身分登入，請輸入 <systemitem>root</systemitem> 密碼，然後按一下<guimenu>繼續</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選取您要套用的設定檔，再按一下<guimenu>使用者</guimenu>。
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.apply.users">
+      <title>Sabayon︰選取使用者</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      選取您希望使用此設定檔的使用者。
+     </para>
+     <para>
+      若要將此設定檔套用至此工作站上的所有使用者，請按一下<guimenu>將此設定檔用於所有使用者</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>關閉</guimenu>。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.templates">
+  <title>新增文件範本</title>
+
+  <para>
+   若要為使用者新增文件範本，請填入使用者主目錄的「<filename>範本</filename>」目錄。您可將檔案複製至 <filename>~/templates</filename>，手動為每位使用者新增，或在建立使用者之前，將含有文件的「<filename>Templates</filename>」目錄新增至 <filename>/etc/skel</filename>，以進行全系統的套用。
+  </para>
+
+  <para>
+   使用者在桌面上按右鍵，並選取<guimenu>建立文件</guimenu>，就可從範本建立新文件。
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.lockdown">
+  <title>桌面鎖定功能</title>
+
+  <para>
+   有時需要移除或停用桌面功能或使用者對基礎作業系統的存取權限。GNOME 提供了一種鎖定功能來相應變更桌面。從技術上說，您可以設定 GConf 鍵以執行這些變更。
+  </para>
+
+  <para>
+   例如，如果開啟 gconf-editor，您可以在 <systemitem>/desktop/gnome/applications/main-menu/lock-down/application_browser_link_visible</systemitem> 中看到主功能表的鎖定鍵。其中還提供了對所有鍵的描述。其他鎖定鍵包括︰
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>/desktop/gnome/lockdown/disable_command_line</term>
+    <listitem>
+     <para>
+      如果設定，則終端機不會顯示在主功能表與 AppBrowser 中。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_log_out</term>
+    <listitem>
+     <para/>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_lock_screen</term>
+    <listitem>
+     <para>
+      如果設定，則主功能表不會顯示這些項目。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+
+
+  <para>
+   Firefox 的鎖定鍵位於 <systemitem>/apps/firefox/lockdown</systemitem> 中。
+  </para>
+
+  <para>
+   如需詳細資訊，請參閱《Desktop Administrators' Guide to GNOME Lockdown and Preconfiguration》(GNOME 鎖定及預設組態的桌面管理員指南) (作者 Sayamindu Dasgupta)︰<ulink url="http://library.gnome.org/admin/deployment-guide/"/>
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.info">
+  <title>更多資訊</title>
+
+  <para>
+   如需詳細資訊，請參閱<ulink url="http://library.gnome.org/admin/"/>。
+  </para>
+ </sect1>
+</chapter>

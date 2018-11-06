@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="adm_support.xml" id="cha.adm.support">
+ <title>收集系統資訊以供支援所用</title>
+<indexterm> <primary>支援</primary> </indexterm> <indexterm> <primary>系統資訊</primary> </indexterm>
+ <abstract>
+  
+  <para>
+   出現問題時，可以使用 <command>supportconfig</command> 指令行工具或 YaST <guimenu>支援</guimenu>模組建立詳細的系統報告。這兩種方法都會收集系統的相關資訊，包括目前核心版本、硬體、已安裝的套件、分割區設定及其他資訊。最後會產生一個包含多個檔案的 TAR 歸檔。在建立服務要求 (SR) 後，您可以將該 TAR 歸檔上傳至全球技術支援。該歸檔有助於找出您所報告的問題，並可以協助您解決問題。
+  </para>
+  <para>該指令行工具由預設安裝的套件 <systemitem>supportutils</systemitem> 提供。YaST <guimenu>支援</guimenu>模組以該指令行工具為基礎。
+  </para>
+ </abstract>
+ 
+  <sect1 id="sec.admsupport.supportconfig">
+  <title>使用 Supportconfig 收集系統資訊</title>
+
+  <para>
+   若要建立包含詳細系統資訊的 TAR 歸檔以送交全球技術支援，請直接使用 <command>supportconfig</command> 指令行工具，或者使用 YaST <guimenu>支援</guimenu>模組。該指令行工具由預設安裝的套件 <systemitem>supportutils</systemitem> 提供。YaST <guimenu>支援</guimenu>模組也以該指令行工具為基礎。
+  </para>
+
+  <sect2 id="sec.admsupport.supportconfig.sr">
+   <title>建立服務要求號碼</title>
+   <para>
+    系統隨時都可以產生 Supportconfig 歸檔。但是，要將 supportconfig 資料送交全球技術支援，首先需要產生一個服務要求號碼。上傳歸檔以獲得支援時，您需要使用此號碼。
+   </para>
+   <para>
+    若要建立服務要求，請造訪 <ulink url="http://www.novell.com/center/eservice"/> 並依照螢幕上的指示執行操作。記下您的 11 位數服務要求號碼。
+   </para>
+   <note>
+    <title>隱私權聲明</title>
+    <para>
+     SUSE 和 Novell 將系統報告視為機密資料。關於我們在隱私方面所做承諾的詳細資訊，請參閱 <ulink url="http://www.novell.com/company/legal/privacy/"/>。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.admsupport.supportconfig.upload">
+   <title>上傳目標</title>
+   <para>
+    在建立服務要求號碼後，可以依照<xref linkend="pro.admsupport.submit.yast"/>或<xref linkend="pro.admsupport.submit.cli"/>中所述將 supportconfig 歸檔上傳到全球技術支援。使用下列上傳目標之一：
+   </para>
+
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      美國客戶：<ulink url="ftp://ftp.novell.com/incoming"/>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      EMEA (歐洲、中東和非洲)：<ulink url="ftp://support-ftp.suse.com/in"/>
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    或者，可以使用以下服務要求 URL 手動將該 TAR 歸檔附加到您的服務要求：<ulink url="http://www.novell.com/center/eservice"/>。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.admsupport.yast">
+   <title>使用 YaST 建立 Supportconfig 歸檔</title>
+   <para>
+    若要使用 YaST 收集系統資訊，請執行下列步驟：
+    
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      啟動 YaST 並開啟<guimenu>支援</guimenu>模組。
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2-support-main.png" width="70%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2-support-main.png" width="60%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>建立報告 Tar 聚合檔</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在隨後出現的視窗中，從選項圓鈕清單中選取一個 supportconfig 選項。依預設，系統會預先選取<guimenu>使用自定 (進階) 設定</guimenu>。如果要先測試報告功能，請使用<guimenu>僅收集最少量的資訊</guimenu>。關於其他選項的某些背景資訊，請參閱 <command>supportconfig</command> 的 man 頁面。
+     </para>
+     <para>
+      按<guimenu>下一步</guimenu>繼續。
+     </para>
+    </step>
+    <step id="step.supportconfig.contact" performance="required">
+     <para>
+      輸入您的聯絡人資訊。該資訊將寫入名為 <filename>basic-environment.txt</filename> 的檔案，並包含在要建立的歸檔中。
+     </para>
+    </step>
+    <step id="step.supportconfig.upload.target" performance="required">
+     <para>
+      如果要在結束資訊收集程序時將歸檔提交至全球技術支援，則需要指定<guimenu>上傳資訊</guimenu>。YaST 會自動推薦一個上傳伺服器。如果要修改該伺服器，請參閱<xref linkend="sec.admsupport.supportconfig.upload"/>，以詳細瞭解可以使用哪些上傳伺服器。
+     </para>
+     <para>
+      如果希望稍後提交歸檔，則可以暫時將<guimenu>上傳資訊</guimenu>保留空白。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按<guimenu>下一步</guimenu>繼續。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      系統即開始收集資訊。
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2-support-conf.png" width="90%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2-support-conf.png" width="80%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+     <para>
+      該程序完成後，按<guimenu>下一步</guimenu>繼續。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      檢查資料收集：選取記錄檔案的<guimenu>檔案名稱</guimenu>可以在 YaST 中檢視其內容。在將 TAR 歸檔提交至支援人員之前，若要移除您不希望包含在該歸檔中的檔案，請使用<guimenu>從資料移除</guimenu>。按<guimenu>下一步</guimenu>繼續。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      儲存該 TAR 歸檔。如果您以 <systemitem class="username">root</systemitem> 使用者身分啟動了 YaST 模組，則 YaST 預設會建議將該歸檔儲存到 <filename>/var/log</filename> (否則將儲存到您的主目錄)。檔案名稱格式為 <filename>nts_<replaceable>主機</replaceable>_<replaceable>日期</replaceable>_<replaceable>時間</replaceable>.tbz</filename>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果要直接將該歸檔上傳給支援人員，請確定啟用了<guimenu>將記錄檔案 Tar 聚合檔上傳到 URL</guimenu>。這裡顯示的<guimenu>上傳目標</guimenu>是<xref linkend="step.supportconfig.upload.target"/> 中 YaST 建議的上傳目標。如果要修改上傳目標，請在<xref linkend="sec.admsupport.supportconfig.upload"/>中查看關於哪些上傳伺服器可用的詳細資訊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果要跳過上傳步驟，請停用<guimenu>將記錄檔案 Tar 聚合檔上傳到 URL</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      確認變更以關閉 YaST 模組。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.admsupport.cli">
+   <title>從指令行建立 Supportconfig 歸檔</title>
+   <para>
+    以下程序顯示如何建立 supportconfig 歸檔但不將它直接提交給支援人員。要上傳該歸檔，需要依照<xref linkend="pro.admsupport.submit.cli"/>中所述，結合某些選項執行指令。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      開啟外圍程序，切換為 <systemitem class="username">root</systemitem> 身分。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      執行 <command>supportconfig</command>，且不使用任何選項。此操作會收集預設的系統資訊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      等待工具完成操作。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      預設的歸檔位置為 <filename>/var/log</filename>，檔案名稱格式為 <filename>nts_<replaceable>主機</replaceable>_<replaceable>日期</replaceable>_<replaceable>時間</replaceable>.tbz</filename>
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.admsupport.options">
+   <title>Supportconfig 通用選項</title>
+   <para>
+    呼叫 <command>supportconfig</command> 公用程式時通常不會顯示任何選項。請使用 <command>supportconfig</command> <option>-h</option> 顯示所有選項的清單，或參閱 man 頁面。下面的清單簡要概述了一些常見的使用案例︰
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>減少所收集資訊的大小</term>
+     <listitem>
+      <para>
+       使用最少量選項 (<option>-m</option>)：
+      </para>
+<screen>supportconfig -m</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>將資訊限制為特定的主題</term>
+     <listitem>
+      <para>
+       如果您已使用預設的 <command>supportconfig</command> 輸出找到問題原因所在，並發現該問題只與特定的區域或功能集相關，則您在下一次執行 <command>supportconfig</command> 時，可以將收集的資訊限制為特定的區域。例如，如果您偵測到 LVM 出現問題，並想要測試最近對 LVM 組態所做的變更，則合適的做法是僅收集關於 LVM 的最少量 supportconfig 資訊：
+      </para>
+<screen>supportconfig -i LVM</screen>
+      <para>
+       要查看可用來將收集之資訊限制為特定區域的功能關鍵字的完整清單，請執行
+      </para>
+<screen>supportconfig -F</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>在輸出中包含其他聯絡資訊：</term>
+     <listitem>
+<screen>supportconfig -E tux@example.org -N "Tux Penguin" -O "Penguin Inc." ...</screen>
+      <para>
+       (在一行中輸入所有指令)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>收集已輪替的記錄檔案</term>
+     <listitem>
+<screen>supportconfig -l</screen>
+      <para>
+       這對記錄量大的環境，或在重新開機後 syslog 輪替記錄檔案時核心發生當機的情況特別有用。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.admsupport.submit">
+  <title>將資訊提交至全球技術支援</title>
+
+  <para>
+   可以使用 YaST <guimenu>支援</guimenu>模組或 <command>supportconfig</command> 指令行公用程式向全球技術支援提交系統資訊。如果您遇到伺服器問題，想要獲得支援人員的協助，則首先需要建立一個服務要求。如需詳細資料，請參閱<xref linkend="sec.admsupport.supportconfig.sr"/>。
+  </para>
+
+  <para>
+   以下範例使用 <replaceable>12345678901</replaceable> 做為服務要求號碼的預留位置。請以您在<xref linkend="sec.admsupport.supportconfig.sr"/>中建立的服務要求號碼取代 <replaceable>12345678901</replaceable>。
+  </para>
+
+  <procedure id="pro.admsupport.submit.yast">
+   <title>使用 YaST 向支援人員提交資訊</title>
+   <para>
+    以下程序假設您已建立一個 supportconfig 歸檔，但尚未上傳。請確定已按<xref linkend="sec.admsupport.yast"/>中<xref linkend="step.supportconfig.contact" xrefstyle="select:label nopage"/>所述，在歸檔中包含了您的聯絡資訊。關於如何透過一個步驟產生並提交 supportconfig 歸檔的指示，請參閱<xref linkend="sec.admsupport.yast"/>。
+   </para>
+   <step performance="required">
+    <para>
+     啟動 YaST 並開啟<guimenu>支援</guimenu>模組。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>上傳</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>含記錄檔案的套件</guimenu>中，指定現有 supportconfig 歸檔的路徑，或者按一下<guimenu>瀏覽</guimenu>找到該歸檔。
+    </para>
+   </step>
+   <step id="step.supportcfg.submit.upltarget" performance="required">
+    <para>
+     YaST 會自動推薦一個上傳伺服器。如果要修改該伺服器，請參閱<xref linkend="sec.admsupport.supportconfig.upload"/>，以詳細瞭解可以使用哪些上傳伺服器。
+    </para>
+    <informalfigure>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata fileref="yast2-support-conf-upload.png" width="70%" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata fileref="yast2-support-conf-upload.png" width="60%" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </informalfigure>
+    <para>
+     
+     按<guimenu>下一步</guimenu>繼續。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>完成</guimenu>。
+    </para>
+   </step>
+  </procedure>
+
+  <procedure id="pro.admsupport.submit.cli">
+   <title>從指令行向支援人員提交資訊</title>
+   <para>
+    以下程序假設您已建立一個 supportconfig 歸檔，但尚未上傳。關於如何透過一個步驟產生並提交 supportconfig 歸檔的指示，請參閱<xref linkend="sec.admsupport.yast"/>。
+   </para>
+   <step performance="required">
+    <para>
+     伺服器連接至網際網路︰
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       要使用預設上載目標，請執行︰
+      </para>
+<screen>supportconfig -ur <replaceable>12345678901</replaceable></screen>
+     </step>
+     <step performance="required">
+      <para>
+       對於安全上傳目標，請使用以下指令：
+      </para>
+
+<screen>supportconfig -ar <replaceable>12345678901</replaceable></screen>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     伺服器<emphasis>未</emphasis>連接至網際網路
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       執行以下指令︰
+      </para>
+<screen>supportconfig -r <replaceable>12345678901</replaceable></screen>
+     </step>
+     <step performance="required">
+      <para>
+       將 <filename>/var/log/nts_<replaceable>SR12345678901</replaceable>*tbz</filename> 歸檔手動上傳到我們的 FTP 伺服器之一。要使用哪個伺服器取決於您所在的位置。如需綜覽，請參閱<xref linkend="sec.admsupport.supportconfig.upload"/>。
+      </para>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     TAR 歸檔傳輸到我們 FTP 伺服器的內送目錄後，會自動附加到您的服務要求中。
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+
+ <sect1 id="sec.admsupport.kernel">
+  <title>核心模組支援</title>
+  
+  <para>
+   對於任何企業作業系統，一個重要的要求就是您獲得的環境方面的支援層級。核心模組是硬體 (<quote>控制器</quote>) 與作業系統之間最為相關的連接器。SUSE Linux Enterprise 中的每個核心模組都有一個 <literal>supported</literal> 旗標，該旗標可使用以下三個值：
+  </para>
+  
+  <itemizedlist mark="bullet" spacing="normal">
+   
+   <listitem>
+    <para>
+     <quote>是</quote>，相當於 <literal>supported</literal>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <quote>外部</quote>，相當於 <literal>supported</literal>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <quote/> (空白，未設定)，相當於 <literal>unsupported</literal>
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <para>
+   以下規則適用：
+  </para>
+  
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     依預設，自我重新編譯之核心的所有模組會標示為 unsupported。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     SUSE 合作夥伴支援的核心模組以及使用 <literal>SUSE SolidDriver 程式</literal>提供的核心模組會標示為 <quote>external</quote>。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     如果未設定 <literal>supported</literal> 旗標，則載入此模組會污染核心。污染的核心不受支援。不受支援的核心模組包含在一個附加的 RPM 套件 (<systemitem>kernel-<replaceable>FLAVOR</replaceable>-extra</systemitem>) 中，預設不會載入系統 (<replaceable>FLAVOR</replaceable>=<literal>default</literal>|<literal>|xen</literal>|...)。此外，安裝程式中將不提供這些不受支援的模組，並且 <systemitem class="resource">kernel-<replaceable>FLAVOR</replaceable>-extra</systemitem> 套件也不會包含在 SUSE Linux Enterprise 媒體中。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     不是依據與 Linux 核心授權相容之授權提供的核心模組也會污染核心。如需詳細資訊，請參閱 <filename>/usr/src/linux/Documentation/sysctl/kernel.txt</filename> 及 <filename>/proc/sys/kernel/tainted</filename> 的狀態。
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <sect2 id="sec.admsupport.kernel.background">
+   <title>技術背景</title>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux 核心：在 SUSE Linux Enterprise <phrase role="productname"><phrase os="sles;sled;slerte">11 SP4</phrase></phrase> 上，<filename>/proc/sys/kernel/unsupported</filename> 的值預設為 <literal>2</literal> (<literal>載入不受支援的模組時，syslog 中不會產生警告</literal>)。安裝程式以及已安裝的系統中使用此預設值。如需詳細資訊，請參閱 <filename>/usr/src/linux/Documentation/sysctl/kernel.txt</filename>。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <command>modprobe</command>：用於檢查模組相依性及載入模組的 <command>modprobe</command> 公用程式會相應地檢查 <literal>supported</literal> 旗標的值。如果該值為 <quote>yes</quote> 或 <quote>external</quote>，則會載入該模組，否則不會載入。關於如何覆寫此行為的資訊，請參閱<xref linkend="sec.admsupport.kernel.unsupported"/>。
+     </para>
+     <note>
+      <para>
+       SUSE 一般不支援透過 <command>modprobe -r</command> 移除儲存模組。
+      </para>
+     </note>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+  
+  <sect2 id="sec.admsupport.kernel.unsupported">
+   <title>使用不受支援的模組</title>
+   <para>
+    儘管廣泛可支援性非常重要，但有時會發生需要載入不受支援之模組的情況 (例如，要進行測試或除錯，或者硬體供應商提供了 Hotfix)。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      若要覆寫預設行為，請編輯 <filename>/etc/modprobe.d/unsupported-modules.conf</filename>，並將變數
+      <varname>allow_unsupported_modules</varname> 的值變更為 <literal>1</literal>。如果 initrd 中需要一個不受支援的模組，則請記得執行 <command>mkinitrd</command> 以更新 initrd。
+     </para>
+     <para>
+      如果只想嘗試載入模組一次，可將 <option>--allow-unsupported-modules</option> 選項與 <command>modprobe</command> 結合使用。如需詳細資訊，請參閱 <command>modprobe</command> 的 man 頁面。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      在安裝期間，可透過驅動程式更新磁碟新增不受支援的模組，這樣便會載入這些模組。若要在開機期間以及開機後強制載入不受支援的模組，請使用核心指令行選項 <option>oem-modules</option>。安裝和啟始化 <systemitem class="resource">module-init-tools</systemitem> 套件時，系統將評估核心旗標 <literal>TAINT_NO_SUPPORT</literal> (<filename>/proc/sys/kernel/tainted</filename>)。如果核心已污染，將啟用 <literal>allow_unsupported_modules</literal>。這可以防止不受支援的模組在正在安裝的系統中載入失敗。如果安裝期間沒有任何不受支援的模組，並且未使用其他特殊的核心指令行選項 (<option>oem-modules=1</option>)，則預設行為仍是禁止不受支援的模組。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    請記住，載入和執行不受支援的模組會導致 SUSE 不支援該核心和整個系統。
+   </para>
+  </sect2>
+ </sect1>
+ 
+
+ <sect1 id="sec.admsupport.moreinfo">
+  <title>更多資訊</title>
+
+  <para>
+   下列文件提供了關於收集系統資訊的詳細資訊︰
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <command>man supportconfig</command> — <command>supportconfig</command> 的 man 頁面。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <command>man supportconfig.conf</command> — supportconfig 組態檔案的 man 頁面。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.suse.com/communities/conversations/basic-server-health-check-supportconfig/"/> — 使用 Supportconfig 進行的基本伺服器狀態檢查。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="https://www.novell.com/communities/coolsolutions/cool_tools/create-your-own-supportconfig-plugin/"/> — 建立自己的 Supportconfig 外掛程式。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.suse.com/communities/conversations/creating-a-central-supportconfig-repository/"/> — 建立中心 Supportconfig 儲存庫。
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>

@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_nfs.xml" id="cha.nfs">
+ <title>使用 NFS 共享檔案系統</title><indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>網路檔案系統</primary> <see>NFS</see> </indexterm>
+ <abstract>
+  <para>
+   透過網路配送和共享檔案系統在公司環境中極為常見。這種成熟的網路檔案系統 (<emphasis>NFS</emphasis>) 可與 <emphasis>NIS</emphasis> (黃頁通訊協定) 搭配使用。如需可與 <emphasis>LDAP</emphasis> 搭配使用並且還要使用 Kerberos 的更安全通訊協定，請選擇 <emphasis>NFSv4</emphasis>。若與 pNFS 結合使用，可以消除效能瓶頸。
+  </para>
+
+  <para>
+   NFS 與 NIS 攜手能讓使用者對網路有清楚的瞭解。可以使用 NFS 透過網路配送任意檔案系統。如果安裝妥當，使用者將會發現，不論他們目前使用的是哪個終端機，他們始終處於同一個環境中。
+  </para>
+ </abstract>
+ <important os="osuse;sles">
+  <title>DNS 所需</title>
+  <para>
+   原則上，可以只使用 IP 位址來進行所有的輸出。為了避免逾時，您需要有正常運作的 DNS 系統。即使為了記錄目的，DNS 也必不可少，因為掛接的精靈執行的是反向查詢。
+  </para>
+ </important>
+ <sect1 id="sec.nfs.term">
+  <title>術語</title>
+
+  <para>
+   YaST 模組中使用了下列詞彙。
+  </para>
+
+
+
+  <variablelist>
+   <varlistentry>
+    <term>輸出</term>
+    <listitem>
+     <para>
+      由 NFS 伺服器<emphasis>輸出</emphasis>的目錄，用戶端可將該目錄整合到其系統中。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NFS 用戶端</term>
+    <listitem>
+     <para>
+      NFS 用戶端是指透過「網路檔案系統」通訊協定使用 NFS 伺服器提供之 NFS 服務的系統。TCP/IP 通訊協定已整合到 Linux 核心中；不需要安裝任何其他軟體。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NFS 伺服器</term>
+    <listitem>
+     <para>
+      NFS 伺服器向用戶端提供 NFS 服務。執行中的伺服器依賴於下列精靈運作：<systemitem class="daemon">nfsd</systemitem> (工作者)、<systemitem class="daemon">idmapd</systemitem> (使用者及群組名稱至 ID 的映射，反之亦然)、<systemitem class="daemon">statd</systemitem> (檔案鎖定) 及 <systemitem class="daemon">mountd</systemitem> (掛接要求)。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+     <term>pNFS</term>
+     <listitem>
+       <para>平行 NFS，NFSv4 的通訊協定延伸。所有 pNFS 用戶端都可以直接存取 NFS 伺服器上的資料。</para>
+     </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nfs.installation">
+  <title>安裝 NFS 伺服器</title>
+
+  <para>
+   在進行預設安裝時並不會安裝 NFS 伺服器軟體。如果依<xref linkend="sec.nfs.configuring-nfs-server"/> 中所示設定 NFS 伺服器，系統會自動提示您安裝必要的套件。或者，使用 YaST 或 zypper 安裝套件 <systemitem class="resource">nfs-kernel-server</systemitem>。
+  </para>
+
+  <para>
+   NFS 與 NIS 一樣，都是主從式系統。但一台機器可同時扮演這兩種角色 — 它可透過網路提供檔案系統 (輸出)，也可以從其他主機掛接檔案系統 (輸入)。
+  </para>
+ </sect1>
+ <sect1 id="sec.nfs.configuring-nfs-server">
+  <title>設定 NFS 伺服器</title>
+
+  <para>
+   NFS 伺服器可透過 YaST 來設定，也可以手動設定。若要進行驗證，還可以將 NFS 與 Kerberos 結合使用。
+  </para>
+
+  <sect2 id="sec.nfs.export-yast2" os="osuse;sles">
+   <title>以 YaST 輸出檔案系統</title>
+   <indexterm> <primary>NFS</primary> <secondary>伺服器</secondary> </indexterm>
+   <para>
+    使用 YaST，將您網路中的主機轉變為 NFS 伺服器 可將目錄和檔案輸出到所有授與存取權的主機之伺服器。該伺服器還可為群組的所有成員提供應用程式，這樣就不必逐個在每部主機本地安裝這些應用程式。 
+   </para>
+   <para>
+    若要設定這樣的伺服器，請執行下列步驟：
+   </para>
+   <procedure id="pro.nfs.export-yast2.nfsv3">
+     <title>設定 NFSv3 伺服器</title>
+    <step performance="required">
+     <para>
+      啟動 YaST 並選取<menuchoice><guimenu>網路服務</guimenu> <guimenu>NFS 伺服器</guimenu></menuchoice>；請參閱<xref linkend="fig.inst.nfsserver1"/>。系統可能會提示您安裝其他軟體。
+     </para>
+     <figure id="fig.inst.nfsserver1">
+      <title>NFS 伺服器組態工具</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2_inst_nfsserver1.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2_inst_nfsserver1.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      啟用<guimenu>開始</guimenu>選項圓鈕。
+     </para>
+    </step>
+    <step performance="required">
+      <para>
+       如果系統上的防火牆 (SuSEfirewall2) 處於使用中狀態，請核取<guimenu>在防火牆中開啟連接埠</guimenu>。YaST 會啟用 <systemitem class="service">nfs</systemitem> 服務來調整其組態以使其適用於 NFS 伺服器。
+      </para>
+    </step>
+    <step performance="required">
+      <para>保持<guimenu>啟用 NFSv4</guimenu>核取方塊處於停用狀態。</para>
+    </step>
+    <step performance="required">
+     <para>
+      若您需要安全存取伺服器，請按一下<guimenu>啟用 GSS 安全性</guimenu>。先決條件是您的網域中安裝有 Kerberos，且伺服器和用戶端都可進行 Kerberos 驗證。按一下<guimenu>下一步</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+      <para>按一下對話方塊上半部分中的<guimenu>新增目錄</guimenu>以輸出目錄。</para>
+    </step>
+    <step performance="required">
+       <para>
+         如果您尚未設定允許的主機，系統會自動彈出另一個對話方塊，可讓您輸入用戶端資訊及選項。輸入主機萬用字元 (通常您可以保留預設設定不變)。
+       </para>
+       
+      <para>
+        有四種主機萬用字元類型可讓您針對各主機進行設定：單一主機 (名稱或 IP 位址)、網路群組、萬用字元 (例如 <literal>*</literal> 摽是所有機器都可存取伺服器) 以及 IP 網路。 
+      </para>
+      
+     </step>
+     <step performance="required">
+       <para>按一下<guimenu>完成</guimenu>以完成組態。
+     </para>
+    </step>
+   </procedure>
+   
+   <sect3 id="sec.nfs.exportv4">
+    <title>NFSv4 用戶端的輸出</title>
+     <para>
+       對於固定的 NFSv4 用戶端集合來說，能輸出的目錄有兩種類型 — 做為虛擬根檔案系統的目錄，以及結合至虛擬檔案系統之某些子目錄的目錄。虛擬檔案系統可做為基礎點，底下所有為這些用戶端集合而輸出的檔案系統都有其位置。對於用戶端或用戶端集合來說，伺服器上只有一個目錄可以設定為虛擬根部來進行輸出。針對此用戶端，可將多個目錄結合至虛擬根中某些現有子目錄來輸出它們。
+     </para>
+     <para>
+       舉例來說，假設目錄 <filename>/exports</filename> 被選為所有可存取伺服器之用戶端的虛擬根部目錄。然後請將其加入輸出目錄的清單，並確定針對此目錄所輸入的選項包含了 <literal>fsid=0</literal>。如果另一個目錄 (<filename>/data</filename>) 也需要使用 NFSv4 輸出，請將該目錄也新增至清單中。針對此狀況輸入選項時，請確定 <literal>bind=/exports/data</literal> 位於清單中，而且 <filename>/exports/data</filename> 是 <filename>/exports</filename> 的現有子目錄。<systemitem>bind=/target/path</systemitem> 選項中的任何變更 (不論是新增、刪除還是變更值) 都會反映在<guimenu>結合掛接目標</guimenu>中。 
+     </para>
+     <para>若要設定伺服器以輸出 NFSv4 用戶端的目錄，請使用<xref linkend="pro.nfs.export-yast2.nfsv3"/> 中的一般指南，但要變更下列步驟：
+     </para>
+     
+     <procedure>
+       <step performance="required">
+         <para>在第一個對話方塊中核取<guimenu>啟用 NFSv4</guimenu>。</para>
+       </step>
+       <step performance="required">
+         <para>在第一個對話方塊中輸入適當的 NFSv4 網域名稱。</para>
+         <para>請確定該名稱與存取此特定伺服器的 NFSv4 用戶端之<filename> /etc/idmapd.conf</filename> 檔案中的一個名稱相同。此參數適用於 <systemitem class="daemon">idmapd</systemitem> 精靈，而此精靈在支援 (伺服器和用戶端二者的) NFSv4 時是必要的。如果您沒有任何特殊需求，則請讓它維持為 <literal>localdomain</literal> (預設)。 </para>
+         <para>按<guimenu>下一步</guimenu>後出現的對話方塊有兩個區段。上半部有兩欄，分別稱為<guimenu>目錄</guimenu>和<guimenu>結合掛接目標</guimenu>。該服務將立即可用。</para>
+       </step>
+       
+       <step performance="required">
+         <para>按一下對話方塊上半部分中的<guimenu>新增目錄</guimenu>以輸出目錄，然後按一下<guimenu>確定</guimenu>進行確認。</para>
+       </step>
+       <step performance="required">
+         <para>在<guimenu>主機萬用字元</guimenu>文字欄位和選項中輸入您的主機名稱。</para>
+         <para>在<guimenu>選項</guimenu>文字欄位中，將 <literal>fsid=0</literal> 加入逗號分隔的選項清單，以將目錄設為虛擬根目錄。如果此目錄需要繫結至某個已設定之虛擬根部下的目錄，請確定已使用 <literal>bind=/target/path</literal> 在選項清單中提供目標繫結路徑。</para>
+         <para><guimenu>結合掛接目標</guimenu>欄無法直接編輯，只是列出目錄及其屬性。</para>
+       </step>
+       <step performance="required">
+         <para>按一下<guimenu>完成</guimenu>以完成組態。</para>
+       </step>
+     </procedure>
+     
+   </sect3>
+   <sect3 id="sec.nfs.exportv23">
+    <title>NFSv3 和 NFSv2 的輸出</title>
+    <para>
+     請在按一下<guimenu>下一步</guimenu>之前先確定起始對話方塊中的<guimenu>啟用 NFSv4</guimenu>並未勾選。
+    </para>
+    <para>
+     下一個對話方塊包括兩個部分。在上方的文字欄位中，鍵入要輸入的目錄。在下方，輸入可以存取它們的主機。有四種主機萬用字元類型可讓您針對各主機進行設定：單一主機 (名稱或 ip 位址)、網路群組、萬用字元 (例如 <literal>*</literal> 摽是所有機器都可存取伺服器) 以及 IP 網路。
+     
+    </para>
+    <para>
+     在 <xref linkend="fig.nfs.export23" xrefstyle="FigureOnPage"/> 中顯示了此對話方塊。如需這些選項的詳細說明，請參閱 <command>man exports</command>。按一下<guimenu>完成</guimenu>以完成組態。
+    </para>
+    <figure pgwide="0" id="fig.nfs.export23">
+     <title>以 NFSv2 和 v3 輸出目錄</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata fileref="nfs_002a.png" width="75%" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata fileref="nfs_002a.png" width="75%" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </sect3>
+   <sect3 id="sec.nfs.export.coexisting">
+    <title>共存的 v3 和 v4 輸出</title>
+    <para>
+     NFSv3 和 NFSv4 的輸出可共存於同一個伺服器上。在起始組態對話方塊啟用了對 NFSv4 的支援之後，對於選項清單中沒有納入 <systemitem>fsid=0</systemitem> 和 <systemitem>bind=/target/path</systemitem> 的輸出，v3 的輸出作業會予以考慮。
+    </para>
+    <para>請參閱<xref linkend="sec.nfs.exportv4"/> 中的範例。如果您使用<guimenu>新增目錄</guimenu>來加入其他目錄 (例如 <filename>/data2</filename>)，而對應的選項清單並未列出 <systemitem>fsid=0</systemitem> 或 <systemitem>bind=/target/path</systemitem>，則此輸出即屬於 v3 的輸出作業。
+    </para>
+    <important>
+     <para>
+      自動防火牆組態
+     </para>
+     <para>
+      如果您的系統上啟用了 SuSEfirewall2，YaST 會在選取<literal>在防火牆中開啟連接埠</literal>時，啟用 <guimenu>nfs</guimenu> 服務以調整其 NFS 伺服器組態。
+     </para>
+    </important>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.nfs.export.manual" os="osuse;sles">
+   <title>手動輸出檔案系統</title><indexterm> <primary>NFS</primary> <secondary>輸出</secondary> </indexterm>
+   <para>
+    NFS 輸出服務的組態檔案為 <filename>/etc/exports</filename> 和 <filename>/etc/sysconfig/nfs</filename>。除了這些檔案之外，NFSv4 伺服器組態還需要 <filename>/etc/idmapd.conf</filename>。若要啟動或重新啟動服務，請執行 <command>rcnfsserver restart</command> 指令。如果已在 <filename>/etc/sysconfig/nfs</filename> 中設定 NFSv4，還會啟動 <literal>rpc.idmapd</literal>。NFS 伺服器需依賴執行的 RPC 埠對應程式。因此，也請以 <command>rcrpcbind restart</command> 啟動或重新啟動埠對應程式服務。
+   </para>
+   <sect3 id="sec.nfs.manexportv4">
+    <title>以 NFSv4 輸出檔案系統</title>
+    <para>
+     NFSv4 是 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 上可用的最新版 NFS 通訊協定。若要設定以 NFSv4 輸出的目錄，其程序和之前的 NFS 版本會有些許不同。
+    </para>
+    <sect4 id="sec.nfs.exports">
+
+
+     <title>/etc/exports</title>
+     <para>
+      <filename>/etc/exports</filename> 檔案包含一份項目清單。每一個項目都指出一個共享的目錄，並記錄它的共享方式。<filename>/etc/exports</filename> 中的典型項目會包含：
+     </para>
+<screen>/shared/directory   host(option_list)</screen>
+     <para>
+      例如：
+     </para>
+<screen>/export   192.168.1.2(rw,fsid=0,sync,crossmnt)
+/export/data   192.168.1.2(rw,bind=/data,sync)
+</screen>
+     <para>
+      這裡使用了 IP 位址 <literal>192.168.1.2</literal>，以識別允許的用戶端。您也可以使用主機的名稱以及指向一組主機 (<literal>*.abc.com</literal>、<literal>*</literal> 等) 或網路群組 (<literal>@my-hosts</literal>) 的萬用字元。
+     </para>
+     <para>
+      指定 <literal>fsid=0</literal> 的目錄是一個特殊的目錄。它是所輸出檔案系統的根目錄，有時稱為虛擬根檔案系統。此目錄還必須包含 <literal>crossmnt</literal>，以便使用 NFSv4 進行正確操作。透過 NFSv4 輸出的所有其他目錄必須掛接在此掛接點下面。如果要輸出的目錄不在此輸出根目錄下，則需要將該目錄繫結至輸出網路樹。可使用 <literal>bind=</literal> 語法完成此操作。
+     </para>
+     <para>
+      在上面的範例中，<filename>/data</filename> 並不位於 <filename>/export</filename> 之下，因此我們輸出 <filename>/export/data</filename>，並指定 <filename>/data</filename> 目錄應繫結至該名稱。目錄 <filename>/export/data</filename> 必須存在，並且通常應為空白。
+     </para>
+     <para>
+      用戶端從此伺服器進行掛接時，掛接的只是 <literal>servername:/</literal>，而不是 <literal>servername:/export</literal>。<literal>servername:/data</literal> 不必掛接，因為該目錄會在 <literal>servername:/</literal> 掛接後自動顯示在其下方。
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.sysconfig">
+     <title>/etc/sysconfig/nfs</title>
+     <para>
+      <filename>/etc/sysconfig/nfs</filename> 檔案包含一些決定 NFSv4 伺服器精靈行為的參數。<systemitem>NFS4_SUPPORT</systemitem> 參數必須設定為 <literal>yes</literal>。<systemitem>NFS4_SUPPORT</systemitem> 決定 NFS 伺服器是否支援 NFSv4 輸出和用戶端。
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.idmapd">
+     <title>/etc/idmapd.conf</title>
+     <para>
+      Linux 機器的所有使用者都有名稱和 ID。idmapd 會針對伺服器接收的 NFSv4 要求進行名稱和 ID 的對應，然後對用戶端發出回覆。此動作必須同時在 NFSv4 的伺服器和用戶端上執行，因為 NFSv4 的通訊中只使用名稱。
+     </para>
+     <para>
+      對於可能使用 NFS 來共享檔案系統的機器，請確定有一個統一的方式來對各機器之間的使用者指定使用者名稱和 ID (uid)。您可以透過 NIS、LDAP 或您網域中的任何統一網域驗證機制來達成這個目的。
+     </para>
+     <para>
+      在用戶端和伺服器兩端的 <filename>/etc/idmapd.conf</filename> 檔案中，<literal>Domain</literal> 參數必須設定為相同的值。如果您不確定，請讓伺服器和用戶端檔案中的網域保持為 <literal>localdomain</literal>。我們在此提出一個組態檔案的例子，如下所示：
+     </para>
+<screen>[General] 
+
+Verbosity = 0 
+Pipefs-Directory = /var/lib/nfs/rpc_pipefs
+Domain = localdomain
+
+[Mapping]
+
+Nobody-User = nobody
+Nobody-Group = nobody</screen>
+     <para>
+      如需更多參考，請參閱 <literal>idmapd</literal> 和 <literal>idmapd.conf</literal>; <literal>man idmapd</literal>, <literal>man idmapd.conf</literal> 的 man 頁面。
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.services">
+     <title>啟動和停止服務</title>
+     <para>
+      對 <filename>/etc/exports</filename> 或 <filename>/etc/sysconfig/nfs</filename> 進行變更後，請以 <command>rcnfsserver restart</command> 啟動或重新啟動 NFS 伺服器服務。對 <filename>/etc/idmapd.conf</filename> 進行變更後，請使用指令 <command>killall -HUP rpc.idmapd</command> 重新載入組態檔案。
+     </para>
+     <para>
+      如果 NFS 服務需要在開機時啟動，請執行指令 <command>chkconfig nfsserver on</command>。
+     </para>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.nfs.manualexportv23">
+    <title>以 NFSv2 和 NFSv3 輸出檔案系統</title>
+    <para>
+     本節僅適用於 NFSv3 和 NFSv2 的輸出作業。如需以 NFSv4 輸出的詳細資訊，請參閱<xref linkend="sec.nfs.exportv4" xrefstyle="HeadingOnPage"/>。
+    </para>
+    <para>
+     以 NFS 輸出檔案系統時需要兩個組態檔案：<filename>/etc/exports</filename> 和 <filename>/etc/sysconfig/nfs</filename>。典型 <filename>/etc/exports</filename> 檔案項目的格式如下：
+    </para>
+<screen>/shared/directory   host(list_of_options)</screen>
+    <para>
+     例如：
+    </para>
+<screen>/export   192.168.1.2(rw,sync)</screen>
+    <para>
+     這裡的 <filename>/export</filename><literal/> 目錄與主機 192.168.1.2 共享，選項清單為 <systemitem>rw,sync</systemitem>。此 IP 位址可使用萬用字元以用戶端名稱或用戶端集合取代 (例如 <literal>*.abc.com</literal>)，甚至也可以 netgroup 取代。
+    </para>
+    <para>
+     如需所有選項及其意義的詳細說明，請參閱 man 頁面 <command>exports</command> (<command>man exports</command>)。
+    </para>
+    <para>
+     變更了 <filename>/etc/exports</filename> 或 <filename>/etc/sysconfig/nfs</filename> 以後，請以 <command>rcnfsserver restart</command> 指令啟動或重新啟動 NFS 伺服器。
+    </para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.nfs.kerberos">
+   <title>NFS 搭配使用 Kerberos</title>
+   <para>
+    若要為 NFS 使用 Kerberos 驗證，則 GSS 安全性必須啟用。在初始 YaST NFS 伺服器對話方塊中選取<guimenu>啟用 GSS 安全性</guimenu>。您必須有一個工作中的 Kerberos 伺服器才能使用此功能。YaST 不會設定該伺服器，只會使用所提供的功能。如果您要使用 Kerberos 驗證，則除了 YaST 組態之外，還必須要完成以下步驟才能執行 NFS 組態︰
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      請確定伺服器和用戶端位於相同的 Kerberos 領域中。它們必須存取相同的 KDC (金鑰配送中心) 伺服器，並共享它們的 <filename>krb5.keytab</filename> 檔案 (所有機器上的預設位置都是 <filename>/etc/krb5.keytab</filename>)。如需有關 Kerberos 的詳細資訊，請參閱<xref linkend="cha.net.kerberos"/>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      請以 <command>rcgssd start</command> 來啟動用戶端上的 gssd 服務。
+     </para>
+    </step>
+    <step os="osuse;sles" performance="required">
+     <para>
+      請以 <command>rcsvcgssd start</command> 來啟動伺服器上的 svcgssd 服務。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    如需有關設定啟用 Kerberos 之 NFS 的詳細資訊，請參閱<xref linkend="sec.nfs.info" xrefstyle="SectTitleOnPage"/> 中的連結所提供的內容。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.nfs.configuring-nfs-clients">
+  <title>設定用戶端</title>
+
+  <para>
+   您不需安裝其他軟體就能將您的主機設定為 NFS 用戶端。所有需要的套件預設都會安裝。
+  </para>
+
+  <sect2 id="sec.nfs.import-yast2">
+   <title>以 YaST 輸入檔案系統</title><indexterm> <primary>NFS</primary> <secondary>用戶端</secondary> </indexterm>
+    <para>授權使用者可以使用 YaST NFS 用戶端模組將NFS 目錄從 NFS 伺服器掛接到本地檔案樹。請執行下列步驟：</para>
+    
+    <procedure id="pro.nfs.import-yast2">
+      <title>輸入 NFS 目錄</title>
+      <step performance="required">
+        <para>啟動 YaST NFS 用戶端模組。</para>
+      </step>
+      <step performance="required">
+        <para>在<guimenu>NFS 共用</guimenu>索引標籤中按一下<guimenu>新增</guimenu>。輸入 NFS 伺服器的主機名稱、要輸入的目錄和在本地掛接此目錄的掛接點。 </para>
+      </step>
+      <step performance="required">
+        <para>如果您要使用防火牆並希望允許遠端電腦存取服務，請啟用<guimenu>NFS 設定</guimenu>索引標籤中的<guimenu>在防火牆中開啟埠</guimenu>。防火牆的狀態顯示於核取方塊旁。</para>
+      </step>
+      <step performance="required">
+        <para>使用 NFSv4 時，請確定選取了<guimenu>啟用 NFSv4</guimenu>核取方塊，並且<guimenu>NFSv4 網域名稱</guimenu>中的值與 NFSv4 伺服器使用的值相同。預設網域為 <literal>localdomain</literal>。</para>
+      </step>
+      <step performance="required">
+        <para>按一下<guimenu>確定</guimenu>，儲存變更。
+        </para>
+      </step>
+    </procedure>
+   <para>
+    組態將會寫入 <filename>/etc/fstab</filename> 中，並會掛接指定的檔案系統。當您稍後啟動 YaST 組態用戶端時，它也會從這個檔案讀取現有組態。
+   </para>
+
+  </sect2>
+
+  <sect2 id="sec.nfs.import">
+   <title>手動輸入檔案系統</title><indexterm> <primary>NFS</primary> <secondary>輸入</secondary> </indexterm> <indexterm> <primary>NFS</primary> <secondary>裝載</secondary> </indexterm>
+   <para>
+    從 NFS 伺服器手動輸入檔案系統的先決條件是有 RPC 埠對應程式正在執行。若要啟動該程式，請以 <systemitem class="username">root</systemitem> 身分輸入 <command>rcrpcbind <option>start</option></command>。接著，可以像處理本地分割區一樣，使用 <command>mount</command> 指令在檔案系統中掛接遠端檔案系統︰
+   </para>
+<screen>mount <replaceable>host</replaceable>:<replaceable>remote-path</replaceable><replaceable>local-path</replaceable></screen>
+   <para>
+    例如，若要從 <systemitem>nfs.example.com</systemitem> 機器輸入使用者目錄，可以使用︰
+   </para>
+<screen>mount nfs.example.com:/home /home</screen>
+   <sect3 id="sec.nfs.automount">
+    <title>使用自動裝載服務</title>
+    <para>
+     autofs 精靈可用於自動掛接遠端檔案系統。請將下列項目加入您的 <filename>/etc/auto.master</filename> 檔案：
+    </para>
+<screen>/nfsmounts /etc/auto.nfs</screen>
+    <para>
+     如果能正確填入 <filename>auto.nfs</filename> 檔案，<filename>/nfsmounts</filename> 目錄此後便會成為用戶端上所有 NFS 掛接作業的根部。選擇 <filename>auto.nfs</filename> 這個名稱是從方便角度考量，您可以自行選擇任何名稱。使用以下指令在 <filename>auto.nfs</filename> 中為所有 NFS 掛接作業新增項目︰
+    </para>
+<screen>localdata -fstype=nfs server1:/data
+nfs4mount -fstype=nfs4 server2:/</screen>
+    <para>
+     以 <systemitem class="username">root</systemitem> 身分使用 <command>rcautofs start</command> 啟動設定。在此範例中，<systemitem>server1</systemitem> 的 <filename>/data</filename> 目錄 <filename>/nfsmounts/localdata</filename> 會掛接 NFS，而 <systemitem>server2</systemitem> 的 <filename>/nfsmounts/nfs4mount</filename> 會掛接 NFSv4。
+    </para>
+    <para>
+     如果 <filename>/etc/auto.master</filename> 檔案在 autofs 服務的執行過程中被編輯，則必須使用 <command>rcautofs restart</command> 重新啟動自動掛載器，才能使變更生效。
+    </para>
+   </sect3>
+   <sect3 id="sec.nfs.fstab">
+    <title>手動編輯 <filename>/etc/fstab</filename></title>
+    <para>
+     <filename>/etc/fstab</filename> 中典型的 NFSv3 掛接項目如下：
+    </para>
+<screen>nfs.example.com:/data /local/path nfs rw,noauto 0 0</screen>
+    <para>
+     NFSv4 掛接也可以新增至 <filename>/etc/fstab</filename> 檔案。對於這些掛接作業，請在第三欄中使用 <literal>nfs4</literal> (而非使用 <literal>nfs</literal>)，並確定遠端檔案系統在第一欄中的 <replaceable>nfs.example.com:</replaceable> 之後做為 <filename>/</filename> 提供。<filename>/etc/fstab</filename> 中的 NFSv4 掛接範例行如下：
+    </para>
+<screen>nfs.example.com:/ /local/pathv4 nfs4 rw,noauto 0 0</screen>
+    <para>
+     <literal>noauto</literal> 選項可防止在啟動時自動掛載檔案系統。如果要手動掛接各檔案系統，可以縮短掛接指令的長度，僅指定掛接點︰
+    </para>
+<screen>mount /local/path</screen>
+    <para>
+     請注意，如果未輸入 <literal>noauto</literal> 選項，系統的啟始化程序檔會在啟動時處理這些檔案系統的掛接。
+    </para>
+   </sect3>
+  </sect2>
+   
+   <sect2 id="sec.nfs.pnfs">
+     <title>平行 NFS (pNFS)</title>
+     <para>NFS 是最舊的通訊協定之一，開發於八十年代。雖然如此，NFS 對於共用小型檔案還是綽綽有餘的。但是，如果您要傳輸大型檔案或大量用戶端想要存取資料，NFS 伺服器將會成為瓶頸，並對系統效能造成明顯影響。出現這種情況的原因是檔案大小快速變大，而乙太網路的相對速度未能緊隨其後。 </para>
+     <para>當您申請<quote>一般</quote>NFS 伺服器中的檔案時，該伺服器會尋找檔案中繼資料、收集所有資料並透過網路將其傳輸至您的用戶端。但是，不論檔案的大小，效能瓶頸都會變得很明顯：
+     </para>
+     
+     <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+         <para>對於小型檔案，大部分時間都用在收集中繼資料上</para>
+       </listitem>
+       <listitem>
+         <para>對於大型檔案，大部分時間則用在將資料從伺服器傳輸至用戶端上</para>
+       </listitem>
+     </itemizedlist>
+     
+     <para>pNFS (或平行 NFS) 克服了這個局限性，因為它將檔案系統中繼資料與資料位置分隔開來。因此，pNFS 需要兩種類型的伺服器：</para>
+      <itemizedlist mark="bullet" spacing="normal">
+        <listitem>
+          <para><emphasis>中繼資料</emphasis>或<emphasis>控制伺服器</emphasis>，用於處理所有非資料流量</para>
+        </listitem>
+        <listitem>
+          <para>一或多個<emphasis>儲存伺服器</emphasis>，用於存放資料</para>
+        </listitem>
+      </itemizedlist>
+     
+     <para>中繼資料與儲存伺服器構成了一個邏輯 NFS 伺服器。當用戶端想要讀取或寫入時，中繼資料伺服器會告知 NFSv4 用戶端使用哪個儲存伺服器來存取檔案區塊。用戶端可以直接存取伺服器上的資料。
+     </para>
+     
+     <para>SUSE Linux Enterprise 僅支援在用戶端上的 pNFS。</para>
+     
+     <sect3 id="sec.nfs.pnfs.yast">
+       <title>使用 YaST 設定 pNFS 用戶端</title>
+       <para>依<xref linkend="pro.nfs.import-yast2"/> 中所示繼續操作，但要按一下<guimenu>pNFS (v4.1)</guimenu>核取方塊並選擇性地按一下<guimenu>NFSv4 共享</guimenu>。YaST 會執行所有必要的步驟，並將所有需要的選項寫入檔案 <filename>/etc/exports</filename>。 </para>
+     </sect3>
+     
+     <sect3 id="sec.nfs.pnfs.manual">
+       <title>手動設定 pNFS 用戶端</title>
+       <para>請參閱<xref linkend="sec.nfs.import"/> 開始設定。大部分組態均由 NFSv4 伺服器執行。對於 pNFS，唯一的差異是將 <option>minorversion</option> 選項和中繼資料伺服器 <replaceable>MDS 伺服器</replaceable>新增至 <command>mount</command> 指令：</para>
+       <screen>mount -t nfs4 -o minorversion=1 <replaceable>MDS_SERVER</replaceable> <replaceable>MOUNTPOINT</replaceable></screen>
+       <para/>
+       <para>為了協助進行除錯，請在 <filename>/proc</filename> 檔案系統中變更該值：</para>
+       <screen>echo 32767 &gt; /proc/sys/sunrpc/nfsd_debug
+echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
+     </sect3>
+   </sect2>
+   
+ </sect1>
+ <sect1 id="sec.nfs.info">
+  <title>更多資訊</title>
+
+  <para>
+   除了 <command>exports</command>、<command>nfs</command> 和 <command>mount</command> 的 man 頁面以外，<filename>/usr/share/doc/packages/nfsidmap/README</filename> 中也提供了有關設定 NFS 伺服器和用戶端的資訊。如需更多線上文件，請參閱下列網站：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     如需詳細的線上技術文件，請造訪 <ulink url="http://nfs.sourceforge.net/">SourceForge</ulink>。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     如需設定已監督之 NFS 的指示，請參閱 <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS 第 4 版開放原始碼實作參考</ulink>。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     如果您有任何關於 NFSv4 的問題，請參閱 <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4 常見問答集</ulink>。
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>

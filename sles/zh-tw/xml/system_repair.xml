@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="system_repair.xml" id="sec.trouble.data.recover">
+ <title>修復損毀的系統</title><indexterm> <primary>修復系統</primary></indexterm>
+ <para>
+  系統無法啟動並正常運作的原因可能有幾種。最常見的原因是系統當機後檔案系統損毀、組態檔案損毀，或開機載入程式組態損毀。
+ </para>
+
+ <para os="sles;sled">
+  <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 提供兩種不同的方法來解決這些狀況。您可以使用 YaST 系統修復功能，或啟動救援系統。下面幾節會介紹這兩種系統修復方法。
+ </para>
+
+ <sect3 id="sec.trouble.data.recover.yast" os="sles;sled">
+  <title>使用 YaST 系統修復</title><indexterm> <primary>YaST</primary><secondary>修復系統</secondary></indexterm><indexterm><primary>修復系統 </primary></indexterm>
+  <note>
+   <title>鍵盤與語言設定</title>
+   <para>
+    如果您在開機後變更了語言設定，鍵盤也會相應調整。
+   </para>
+  </note>
+  <para>
+   啟動「YaST 系統修復」模組前，請判定要使用哪種模式執行，以符合您的需求。根據嚴重性與系統故障的原因 (以及您的技術水準)，有三種不同的模式可以選擇：
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>自動修復</term>
+    <listitem>
+     <para>
+      若您的系統會因為未知的原因故障，而您基本上不知道系統的哪個部分導致故障，請使用<guimenu>自動修復</guimenu>。這會對所安裝系統的所有元件進行大規模的自動檢查。如需此程序的詳細描述，請參閱<xref linkend="sec.trouble.data.recover.yast.auto"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>自定修復</term>
+    <listitem>
+     <para>
+      若您的系統故障，且您已經知道哪個元件造成故障，請將系統分析的範圍限制在那些元件上，停止<guimenu>自動修復</guimenu>冗長的系統檢查。例如，若故障前的系統訊息指示套件資料庫有錯誤，則您可將分析與修復程序限定於檢查並復原系統的這一部份。如需此程序的詳細描述，請參閱<xref linkend="sec.trouble.data.recover.yast.custom"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>進階工具</term>
+    <listitem>
+     <para>
+      如果您已經清楚瞭解發生故障的元件，且知道該如何修復，則可略過分析步驟，直接套用修復相關元件所需的工具。如需詳細資訊，請參閱<xref linkend="sec.trouble.data.recover.yast.expert"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   如上所述選擇修復模式之一，並如以下章節所述繼續進行系統修復。
+  </para>
+  <sect4 id="sec.trouble.data.recover.yast.auto">
+   <title>自動修復</title>
+   <procedure>
+    <para>
+     若要啟動「YaST 系統修復」的自動修復模式，請如下執行：
+    </para>
+    <step performance="required">
+     <para>
+      將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的安裝媒體插入到 DVD 磁碟機中。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      重新啟動系統。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在開機畫面中，選取<guimenu>修復已安裝的系統</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      確認授權合約並按一下<guimenu>下一步</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選擇<guimenu>自動修復</guimenu>。
+     </para>
+     <para>
+      YaST 會立即啟動已安裝系統的大規模分析。程序的進度會以畫面底部的兩個進度列顯示。上面的進度列顯示目前執行測試的進度。下面的進度列顯示分析程序的整體進度。上方區段的記錄視窗會追蹤目前執行中的測試及其結果。請參閱<xref linkend="fig.trouble.data.recover.yast.auto"/>。
+     </para>
+     <figure id="fig.trouble.data.recover.yast.auto">
+      <title>自動修復模式</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="i_y2_repair_auto.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="i_y2_repair_auto.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+     <para>
+      每次執行時都會執行下列主測試執行。其中包括一些個別的子測試：
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term>檢查分割區表</term>
+       <listitem>
+        <para>
+         對所有偵測到之硬碟的分割區表，進行有效性和連貫性的檢查。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>檢查交換區域</term>
+       <listitem>
+        <para>
+         對所安裝系統的交換分割區進行偵測、測試，並提議啟用 (若適用)。您應接受此提議，以便達到更高的系統修復速度。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>檢查檔案系統</term>
+       <listitem>
+        <para>
+         所有偵測到的檔案系統都會進行專屬的檔案系統檢查。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>檢查 fstab 項目</term>
+       <listitem>
+        <para>
+         針對檔案中的項目進行完整性和一致性的檢查。所有有效分割區都會進行裝載。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>檢查套件資料庫</term>
+       <listitem>
+        <para>
+         檢查是否具有最小安裝作業所需的所有套件。雖然您也可以選擇分析基礎套件，但這很耗時，因為套件的數量十分龐大。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>檢查開機載入器組態</term>
+       <listitem>
+        <para>
+         針對已安裝系統 (GRUB 或 LILO) 的開機載入程式組態，檢查其完整性和一致性。這時會檢查開機和 root 裝置，並檢查 initrd 模組的可用性。
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </step>
+    <step performance="required">
+     <para>
+      發生錯誤時，程序會停止，並開啟對話方塊，說明詳細資訊及可能的解決方法。
+     </para>
+     <para>
+      請仔細閱讀畫面訊息，再接受建議的修復動作。若您決定拒絕建議的解決方案，系統會保留不變。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      修復程序成功完成之後，請按一下<guimenu>確定</guimenu>和<guimenu>完成</guimenu>，並移除安裝媒體。這樣系統就會自動重新開機。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.yast.custom">
+   <title>自定修復</title>
+   <procedure>
+    <para>
+     若要啟動<guimenu>自定修復</guimenu>模式，並選擇性檢查已安裝系統的特定元件，請依照下列步驟執行：
+    </para>
+    <step performance="required">
+     <para>
+      將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的安裝媒體插入到 DVD 磁碟機中。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      重新啟動系統。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在開機畫面中，選取<guimenu>修復已安裝的系統</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      確認授權合約並按一下<guimenu>下一步</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選擇<guimenu>自定修復</guimenu>。
+     </para>
+     <para>
+      選擇<guimenu>自定修復</guimenu>會顯示測試執行清單，這些測試執行最初都會標記為執行。測試的整個範圍會與自動修復相符。如果您已經知道系統沒有受損，請取消相對應測試的標記。按一下<guimenu>下一步</guimenu>，然後啟動範圍較小的測試程序，它所需的執行時間可能短的多。
+     </para>
+     <para>
+      不是所有測試群組都可以個別套用。檔案系統的檢驗一定會結合 fstab 項目的分析，包括現有的交換分割區。YaST 會選擇必要測試的最小執行數量，自動解析這樣的相依性。YaST 不支援加密分割區。如果您有加密分割區，YaST 會通知您這一情況。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      發生錯誤時，程序會停止，並開啟對話方塊，說明詳細資訊及可能的解決方法。
+     </para>
+     <para>
+      請仔細閱讀畫面訊息，再接受建議的修復動作。若您決定拒絕建議的解決方案，系統會保留不變。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      修復程序成功完成之後，請按一下<guimenu>確定</guimenu>和<guimenu>完成</guimenu>，並移除安裝媒體。這樣系統就會自動重新開機。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.yast.expert">
+   <title>進階工具</title>
+   <para>
+    若您對於 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 有充分的認知，且對於系統中需要修復的部分有清楚的概念，請略過系統分析，直接套用工具。
+   </para>
+   <para>
+    若要使用「YaST 系統修復」模組的<guimenu>進階工具</guimenu> 功能，請依照下列步驟執行：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的安裝媒體插入到 DVD 磁碟機中。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      重新啟動系統。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在開機畫面中，選取<guimenu>修復已安裝的系統</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      確認授權合約並按一下<guimenu>下一步</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選取<guimenu>進階工具</guimenu>，然後選擇一個修復選項。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      修復程序成功完成之後，請按一下<guimenu>確定</guimenu>和<guimenu>完成</guimenu>，並移除安裝媒體。這樣系統就會自動重新開機。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    <guimenu>進階工具</guimenu>可提供下列選項來修復故障系統：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>安裝新的開機載入程式
+     </term>
+     <listitem>
+      <para>
+       這會啟動 YaST 開機載入程式組態模組。如需詳細資訊，請參閱<xref linkend="sec.boot.yast2.config"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>將已安裝的系統開機
+     </term>
+     <listitem>
+      <para>
+       嘗試將已安裝的 Linux 系統開機。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>啟動磁碟分割工具
+     </term>
+     <listitem>
+      <para>
+       這會啟動 YaST 裡的進階分割工具。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>修復檔案系統
+     </term>
+     <listitem>
+      <para>
+       這會檢查您已安裝系統中的檔案系統。系統會先提供所有偵測到之分割區的選單，供您選擇一個來進行檢查。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>復原遺失的分割區<indexterm> <primary>復原分割區</primary></indexterm>
+     </term>
+     <listitem>
+      <para>
+       您可以嘗試重建受損的分割區表。首先會提供所偵測到的硬碟清單，供您選擇。按一下<guimenu>確定</guimenu>，啟動檢查。這可能需要一些時間，具體視電腦速度及硬碟的大小和速度而定。
+      </para>
+      <important>
+       <title>重建分割區表</title>
+       <para>
+        重建分割區表有些麻煩。YaST 會分析硬碟的資料磁區，嘗試辨識遺失的分割區。辨識之後，會將遺失的分割區新增至重新建好的分割區表。不過，這個方法並不一定適用於每個所想得到的例子。
+       </para>
+      </important>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>將系統設定儲存至軟碟
+     </term>
+     <listitem>
+      <para>
+       這個選項將重要的系統檔案儲存至軟碟。如果這些檔案中有一個受損，就可以從磁碟還原。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>驗證安裝的軟體
+     </term>
+     <listitem>
+      <para>
+       這會檢查套件資料庫的一致性，和最重要套件的可用性。任何已安裝套件在受損時都可以使用這個工具重新安裝。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect4>
+ </sect3>
+ <sect3 id="sec.trouble.data.recover.rescue">
+  <title>使用救援系統</title><indexterm> <primary>救援系統</primary> </indexterm> <indexterm> <primary>系統</primary> <secondary>救援</secondary> </indexterm>
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 包含救援系統。救援系統是一個小型的 Linux 系統，可以載入到 RAM 磁碟上並裝載為根檔案系統，好讓您從外部存取 Linux 分割區。藉由此救援系統，您可以復原或修改任何重要的系統項目：
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     操作任何類型的組態檔案。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     檢查檔案系統有無缺失並啟動自動修復程序。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     在<quote>變更根目錄</quote>環境中存取已安裝的系統.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     檢查、修改和重新安裝開機載入程式設定.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     從錯誤安裝的裝置驅動程式或無法使用的核心復原。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     使用 Parted 指令來調整分割區大小。如需此工具的詳細資訊，請造訪 GNU Parted 網站 <ulink url="http://www.gnu.org/software/parted/parted.html"/>。
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   救援系統可以從各種來源與位置載入。最簡單的方法就是從原始安裝媒體將救援系統開機：
+  </para>
+  <procedure><indexterm> <primary>救援系統</primary> <secondary>從媒體啟動</secondary></indexterm>
+   <step performance="required">
+    <para>
+     將安裝媒體插入 DVD 光碟機。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     重新啟動系統。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在開機畫面中按 <keycap>F4</keycap>，然後選擇<guimenu>DVD-ROM</guimenu>。之後從主功能表中選擇<guimenu>救援系統</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在 <literal>Rescue:</literal> 提示輸入 <literal>root</literal>。無須輸入密碼。
+    </para>
+   </step>
+  </procedure>
+  <procedure id="proc.trouble.data.recover.rescue.network"><indexterm> <primary>救援系統</primary> <secondary>從網路來源啟動</secondary> </indexterm>
+   <para>
+    如果硬體設定沒有包含 DVD 光碟機，您可以從網路來源將救援系統開機。以下範例適用於遠端開機案例 — 如果使用其他開機媒體 (例如 DVD)，請相應修改 <filename>info</filename> 檔案，並按照一般安裝方式開機。
+   </para>
+   <step performance="required">
+    <para>
+     輸入 PXE 開機設定的組態，然後新增下列行：<literal>install=<replaceable>protocol</replaceable>://<replaceable>instsource</replaceable></literal> 和 <literal>rescue=1</literal>。如果需要啟動系統修復，請使用 <literal>repair=1</literal>。正如一般安裝的情況，<replaceable>protocol</replaceable> 代表任何支援的網路通訊協定 (NFS、HTTP、FTP 等等)，而 <replaceable>instsource</replaceable> 代表網路安裝來源的路徑。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     依照<xref linkend="sec.deployment.remoteinst.boot.wol"/> 中的說明，使用<quote>網路喚醒</quote>啟動系統。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在 <literal>Rescue:</literal> 提示輸入 <literal>root</literal>。無須輸入密碼。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   一旦進入救援系統後，您可以利用 <keycombo><keycap function="alt"/><keycap>F1</keycap></keycombo> 至 <keycombo><keycap function="alt"/><keycap>F6</keycap></keycombo> 來使用虛擬主控台。
+  </para>
+  <para>
+   <filename>/bin</filename> 目錄中提供外圍程序以及其他許多有用的公用程式，例如 mount 程式。<filename>sbin</filename> 目錄中包含重要的檔案與網路公用程式，以便檢視及修復檔案系統。此目錄中也包含最重要的二進位系統維護程式，例如 fdisk、mkfs、mkswap、mount、mount、init 及 shutdown，還有維謢網路的 ifconfig、ip、route 以及 netstat。目錄 <filename>/usr/bin</filename> 包含 vi 編輯器、find、less 以及 ssh。
+  </para>
+  <para>
+   若要檢視系統訊息，請使用指令 <command>dmesg</command> 或檢視檔案 <filename>/var/log/messages</filename>。
+  </para>
+  <sect4 id="sec.trouble.data.recover.rescue.file">
+   <title>檢查和操作組態檔案</title>
+   <para>
+    為了舉例說明使用救援系統如何修正組態檔案，請想像系統由於組態檔案損毀而無法正常開機。您可以使用救援系統來解決這個問題。
+   </para>
+   <procedure>
+    <para>
+     若要操作組態檔案，請執行下列步驟：
+    </para>
+    <step performance="required">
+     <para>
+      使用上述的其中一個方法啟動救援系統。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      若要將 <filename>/dev/sda6</filename> 下的開機檔案系統裝載到救援系統，請使用下列指令：
+     </para>
+<screen>mount /dev/sda6 /mnt</screen>
+     <para>
+      系統的所有目錄現在都存放在 <filename>/mnt</filename> 中
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      將此目錄變更到裝載的開機檔案系統中：
+     </para>
+<screen>cd /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      在 vi 編輯器中開啟有問題的組態檔案。調整並儲存設定。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      從救援系統解除裝載開機檔案系統：
+     </para>
+<screen>umount /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      重新開機。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.filesystem">
+   <title>修復和檢查檔案系統</title><indexterm> <primary>檔案系統</primary> <secondary>修復</secondary> </indexterm>
+   <para>
+    一般而言，檔案系統無法在執行中的系統上修復。如果發生了嚴重的問題，您可能甚至無法裝載開機檔案，而且系統可能會因為<quote>核心異常</quote>而無法開機。在此情況下，唯一的方法就是從外部修復系統。<phrase os="sles;sled">強烈建議您使用 YaST 系統修復來執行這項任務 (請參閱 <xref linkend="sec.trouble.data.recover.yast"/> 以取得詳細資訊)。不過，如果您需要執行手動檔案系統檢查或修復，請啟動救援系統。</phrase>其中包含的公用程式可檢查和修復 <literal>btrfs</literal>、<literal>ext2</literal>、<literal>ext3</literal>、<literal>ext4</literal>、<literal>reiserfs</literal>、<literal>xfs</literal>、<literal>dosfs</literal> 以及 <literal>vfat</literal> 檔案系統。
+   </para>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.access">
+   <title>存取已安裝的系統</title>
+   <para>
+    如果需要從救援系統存取已安裝的系統，您需要在<emphasis>變更根目錄</emphasis>環境中執行此操作。例如，若要修改開機載入程式組態或執行硬體組態公用程式。
+   </para>
+   <para>
+    若要根據已安裝的系統設定變更根目錄環境，請執行下列步驟：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      首先，從已安裝系統與裝置檔案系統掛接根分割區 (將裝置名稱變更為目前設定)：
+     </para>
+<screen>mount /dev/sda6 /mnt
+mount --bind /dev /mnt/dev</screen>
+    </step>
+    <step performance="required">
+     <para>
+      現在您可以<quote>變更根目錄</quote>至新環境：
+     </para>
+<screen>chroot /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      接著裝載 <filename>/proc</filename> and <filename>/sys</filename>：
+     </para>
+<screen>mount /proc
+mount /sys</screen>
+    </step>
+    <step performance="required">
+     <para>
+      最後，從已安裝的系統裝載其餘分割區：
+     </para>
+<screen>mount -a</screen>
+    </step>
+    <step performance="required">
+     <para>
+      現在您可以存取已安裝的系統。重新啟動系統之前，請先使用 <command>umount <option>-a</option></command> 來解除裝載分割區，並以 <command>exit</command> 離開<quote>變更根</quote>目錄環境。
+     </para>
+    </step>
+   </procedure>
+   <warning>
+    <title>限制</title>
+    <para>
+     雖然您可以完全存取已安裝系統的檔案和應用程式，但必須遵守某些限制。執行中的核心是使用救援系統啟動的核心，而不是使用變更根目錄環境啟動的核心。它只支援基本硬體，而且無法從已安裝系統新增核心模組，除非核心版本完全一致。一律使用 <command>uname -r</command> 檢查目前執行的 (救援) 核心，然後確定變更根目錄環境的 <filename>/lib/modules</filename> 目錄中是否有相符的子目錄。如果有，您便可以使用已安裝的模組，否則，需要在其他媒體 (例如 USB 隨身碟) 上提供模組的正確版本。多數情況下，救援核心版本與已安裝的版本並不相同，因此，舉例來說，您便不能像平常一樣存取聲卡。您也無法啟動圖形使用者介面。
+    </para>
+    <para>
+     另外請注意，當您使用 <keycombo><keycap function="alt"/><keycap>F1</keycap></keycombo> 至 <keycombo><keycap function="alt"/><keycap>F6</keycap></keycombo> 來切換主控台時，將會離開<quote>變更根</quote>目錄環境。
+    </para>
+   </warning>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.grub">
+   <title>修改和重新安裝開機載入程式</title>
+   <para>
+    有時候系統無法開機是因為開機載入程式組態已損毀。譬如說，開機載入程式若未執行，啟動常式便無法將實體磁碟機轉譯為 Linux 檔案系統中的實際位置。
+   </para>
+   <para>
+    若要檢查開機載入程式組態和重新安裝開機載入程式，請執行下列步驟：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      執行存取已安裝系統所需的必要步驟，如 <xref linkend="sec.trouble.data.recover.rescue.access"/> 所述。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      根據<xref linkend="cha.grub"/> 中概述的 GRUB 組態原則，檢查下列檔案是否正確設定，並在必要時加以修正。
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <filename>/etc/grub.conf</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/boot/grub/device.map</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/boot/grub/menu.lst</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/etc/sysconfig/bootloader</filename>
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      依序使用下列指令來重新安裝開機載入程式：
+     </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+    </step>
+    <step performance="required">
+     <para>
+      解除裝載分割區，從<quote>變更根目錄</quote>環境登出，並重新啟動系統：
+     </para>
+<screen>umount -a
+exit
+reboot</screen>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.dud">
+   <title>修正核心安裝</title>
+   <para>
+    核心更新可能會帶來新的錯誤，進而會影響系統作業。例如，系統中某個硬體的驅動程式可能有錯誤，致使您無法存取和使用系統。在這種情況下，請復原至上回正常運作的核心 (如果系統中提供的話)，或者從安裝媒體安裝原始核心。
+   </para>
+   <tip>
+    <title>如何在更新後保留之前的核心</title>
+    <para>
+     為了防止在錯誤的核心更新後無法開機，請使用核心多版本功能，並告知 <systemitem>libzypp</systemitem> 您要在更新後保留哪些核心。
+    </para>
+    <para>
+     例如，若要永遠保留最後兩個核心和目前執行中的核心，請新增
+    </para>
+<screen>multiversion.kernels = latest,latest-1,running</screen>
+    <para>
+     至 <filename>/etc/zypp/zypp.conf</filename> 檔案。
+    </para>
+   </tip>
+   <para>
+    另一種類似的情況是，有時您需要重新安裝或更新損毀的驅動程式，但對應的裝置不受 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的支援。例如，當硬體廠商使用特定裝置時，比如使用硬體 RAID 控制器，這就要求作業系統能夠識別二進位驅動程式。廠商一般會發行「驅動程式更新磁碟」，內含所需驅動程式的修正或更新版本。
+   </para>
+   <para>
+    在這兩種情況下，您都需要以救援模式存取安裝的系統，並修正與核心相關的問題，否則系統可能無法正常開機︰
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安裝媒體開機。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果您要在錯誤的核心更新之後復原，請跳過此步驟。如果需要使用驅動程式更新磁碟 (DUD)，請在開機功能表出現之後按 <keycap>F6</keycap> 以載入驅動程式更新，並選擇驅動程式更新的路徑或 URL，然後按一下<guimenu>是</guimenu>確認。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      從開機功能表中選擇<guimenu>救援系統</guimenu>，然後按 <keycap>Enter</keycap>。如果您之前選擇使用 DUD，系統將會要求您指定儲存驅動程式更新的位置。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在 <literal>Rescue:</literal> 提示輸入 <literal>root</literal>。無須輸入密碼。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      手動將目標系統和<quote>變更根目錄</quote>掛接至新環境：如需詳細資訊，請參閱<xref linkend="sec.trouble.data.recover.rescue.access"/>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果要使用 DUD，請安裝/重新安裝/更新錯誤的裝置驅動程式套件。請務必確定已安裝的核心版本與要安裝的驅動程式版本完全相符。
+     </para>
+     <para>
+      如果要修正錯誤的核心更新安裝，可以按照以下程序從安裝媒體安裝原始核心。
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        使用 <command>hwinfo --cdrom</command> 識別 DVD 裝置，並使用 <command>mount /dev/sr0 /mnt</command> 掛接裝置。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        導覽到 DVD 上儲存核心檔案的目錄，例如 <command>cd /mnt/suse/x86_64/</command>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        使用 <command>rpm -i</command> 指令安裝您的產品類別所需的 <systemitem>kernel-*</systemitem>、<systemitem>kernel-*-base</systemitem> 以及 <systemitem>kernel-*-extra</systemitem> 套件。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        安裝完成之後，檢查與新安裝核心相關的新功能表項目是否已新增至開機載入程式組態檔 (<systemitem>grub</systemitem> 對應的組態檔為 <filename>/boot/grub/menu.lst</filename>)。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      根據需要更新組態檔，然後重新啟動開機載入程式。如需詳細資訊，請參閱<xref linkend="sec.trouble.data.recover.rescue.grub"/>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      從系統磁碟機中取出任何可開機的媒體，然後重新開機。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+ </sect3>
+</sect2>

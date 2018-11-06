@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="depl_smt.xml" id="cha.smt">
+ <title>Gestion des abonnements</title>
+
+ <para>
+  Toute machine exécutant SUSE Linux Enterprise Server 11 ou SUSE Linux Enterprise Desktop 11 peut être configurée pour s'enregistrer auprès d'un serveur SMT (Subscription Management Tool) local afin de télécharger les mises à jour logicielles, au lieu de communiquer directement avec Novell Customer Center et les serveurs NU. Pour utiliser un serveur SMT en vue de l'enregistrement des clients et en tant que source locale de mises à jour, vous devez commencer par configurer le serveur SMT de votre réseau. Le logiciel du serveur SMT est distribué sous forme de produit complémentaire pour SUSE Linux Enterprise Server et sa configuration est décrite dans le manuel <emphasis>Subscription Management Tool Guide</emphasis> (Guide de SMT). Aucun produit complémentaire ne doit être installé sur les clients à configurer pour qu'ils s'enregistrent auprès d'un serveur SMT.
+ </para>
+ <para>
+  Pour enregistrer un client auprès d'un serveur SMT, vous devez lui indiquer l'URL du serveur. Puisque le client et le serveur communiquent via le protocole HTTPS pendant l'enregistrement, vous devez également vous assurer que le client approuve le certificat du serveur. Si votre serveur SMT est configuré pour utiliser le certificat par défaut du serveur, le certificat de l'autorité de certification (AC) sera disponible sur le serveur SMT via le protocole HTTP à l'adresse <literal>http://<replaceable>FQDN</replaceable>/smt.crt</literal>. Dans ce cas, vous n'avez pas à vous préoccuper du certificat : le processus d'enregistrement téléchargera automatiquement le certificat AC à partir d'ici, sauf configuration contraire. Vous devez entrer un chemin d'accès au certificat AC du serveur si le certificat a été émis par une autorité de certification externe.
+ </para>
+ <note>
+  <title>enregistrement auprès du sous-domaine <literal>*.novell.com</literal></title>
+  <para>
+   Si vous tentez de vous enregistrer auprès de n'importe quel sous-domaine <literal>*.novell.com</literal>, le certificat ne sera pas téléchargé pendant l'enregistrement (pour des raisons de sécurité) et la gestion des certificats ne sera pas effectuée. Dans de telles circonstances, utilisez un autre nom de domaine ou une adresse IP simple.
+  </para>
+ </note>
+ <para>
+  Il existe plusieurs façons de fournir ces informations et de configurer la machine cliente pour qu'elle utilise le serveur SMT. La première consiste à fournir les informations requises via les paramètres du kernel au moment du démarrage. La seconde consiste à configurer les clients en utilisant un profil AutoYaST. Il existe également un script distribué avec SMT (<command>clientSetup4SMT.sh</command>) qui peut être exécuté sur un client afin que ce dernier s'enregistre auprès d'un serveur SMT spécifié. Ces méthodes sont décrites dans les sections suivantes :
+ </para>
+ <sect1 id="smt.client.parameters">
+  <title>Utilisation des paramètres du kernel pour accéder à un serveur SMT</title>
+
+  <para>
+   Tout client peut être configuré de façon à utiliser SMT en fournissant les paramètres du kernel <literal>regurl</literal> et <literal>regcert</literal> pendant le démarrage de la machine. Le premier paramètre est obligatoire et le second est facultatif.
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>regurl</term>
+    <listitem>
+     <para>
+      URL du serveur SMT. L'URL doit être au format suivant : <literal>https://<replaceable>FQDN</replaceable>/center/regsvc/</literal>, <replaceable>FQDN</replaceable> représentant le nom complet de l'hôte du serveur SMT. Ce nom doit être identique au nom de domaine complet du certificat de serveur utilisé sur le serveur SMT. Exemple :
+     </para>
+<screen>regurl=https://smt.example.com/center/regsvc/</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>regcert</term>
+    <listitem>
+     <para>
+      Emplacement du certificat AC du serveur SMT. Spécifiez l'un des emplacements suivants :
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term>URL</term>
+       <listitem>
+        <para>
+         Emplacement distant (HTTP, HTTPS ou FTP) depuis lequel il est possible de télécharger le certificat. Exemple :
+        </para>
+<screen>regcert=http://smt.example.com/smt.crt</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Disquette</term>
+       <listitem>
+        <para>
+         Spécifie un emplacement sur une disquette. La disquette doit être insérée au moment du démarrage. (Si elle n'est pas dans son lecteur, vous ne serez pas invité à l'insérer). La valeur doit commencer par la chaîne <literal>floppy</literal>, suivie du chemin d'accès au certificat. Exemple :
+        </para>
+<screen>regcert=floppy/smt/smt-ca.crt</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Chemin local</term>
+       <listitem>
+        <para>
+         Chemin complet du certificat sur la machine locale. Exemple :
+        </para>
+<screen>regcert=/data/inst/smt/smt-ca.cert</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Interactif</term>
+       <listitem>
+        <para>
+         Utilisez <literal>ask</literal> pour ouvrir un menu contextuel vous permettant d'indiquer le chemin d'accès au certificat lors de l'installation. N'utilisez pas cette option avec AutoYaST. Exemple :
+        </para>
+<screen>regcert=ask</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Désactivation de l'installation du certificat</term>
+       <listitem>
+        <para>
+         Utilisez <literal>done</literal> si le certificat doit être installé par un produit complémentaire ou si vous utilisez un certificat délivré par une autorité de certification officielle. Exemple :
+        </para>
+<screen>regcert=done</screen>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <warning>
+   <title>attention aux fautes de frappe</title>
+   <para>
+    Assurez-vous d'entrer des valeurs correctes. Si <literal>regurl</literal> n'a pas été saisi correctement, il sera impossible d'enregistrer la source de mise à jour.
+   </para>
+   <para>
+    Si une valeur incorrecte est saisie pour <literal>regcert</literal>, le chemin local d'accès au certificat vous sera demandé. Si le paramètre <literal>regcert</literal> n'est pas précisé, il sera défini par défaut sur <literal>http://<replaceable>FQDN</replaceable>/smt.crt</literal>, <literal>FQDN</literal> représentant le nom du serveur SMT.
+   </para>
+  </warning>
+
+  <warning>
+   <title>modification du certificat du serveur SMT</title>
+   <para>
+    Si le serveur SMT obtient un nouveau certificat auprès d'une nouvelle autorité de certification non approuvée, les clients devront récupérer le fichier du certificat de la nouvelle autorité de certification. Cette étape est automatique dans le cadre du processus d'enregistrement, mais uniquement si une URL a été utilisée au moment de l'installation pour récupérer le certificat ou si le paramètre <literal>regcert</literal> a été ignoré, entraînant ainsi l'utilisation de l'URL par défaut. Si le certificat a été chargé avec une autre méthode (disquette ou chemin local), il ne sera pas mis à jour.
+   </para>
+  </warning>
+ </sect1>
+ <sect1 id="smt.client.autoyast">
+  <title>Configuration des clients via un profil AutoYaST</title>
+
+  <para>
+   Les clients peuvent être configurés pour s'enregistrer auprès du serveur SMT via un profil AutoYaST. Pour obtenir des informations d'ordre général sur la création des profils AutoYaST et la préparation de l'installation automatique, reportez-vous au <xref linkend="cha.deployment.autoinst"/>. Dans cette section, seule la configuration spécifique à SMT est décrite.
+  </para>
+
+  <para>
+   Pour configurer les données spécifiques à SMT à l'aide d'AutoYaST, procédez comme suit :
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Connectez-vous en tant qu'utilisateur <systemitem class="username">root</systemitem>, démarrez YaST et sélectionnez <menuchoice> <guimenu>Divers</guimenu> <guimenu>Installation automatique</guimenu> </menuchoice> pour démarrer l'interface graphique AutoYaST.
+    </para>
+    <para>
+     Vous pouvez ouvrir l'interface graphique AutoYaST depuis une ligne de commande en exécutant <command>yast2 autoyast</command>.
+
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Vous pouvez ouvrir un profil existant en cliquant sur <menuchoice><guimenu>Fichier</guimenu><guimenu>Ouvrir</guimenu></menuchoice>, créer un profil basé sur la configuration système actuelle en cliquant sur <menuchoice><guimenu>Outils</guimenu><guimenu>Créer un profil de référence</guimenu></menuchoice> ou utiliser simplement un profil vide.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Sélectionnez <menuchoice><guimenu>Assistance</guimenu><guimenu>Configuration de Novell Customer Center</guimenu></menuchoice>. Un aperçu de la configuration actuelle s'affiche.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Cliquez sur <guimenu>Éditer</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+
+    <para>
+     Pour effectuer automatiquement l'enregistrement durant l'installation, sélectionnez <guimenu>Exécuter l'enregistrement du produit</guimenu>. Vous pouvez inclure des informations de votre système via les options <guimenu>Profil matériel</guimenu> et <guimenu>Informations facultatives</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Définissez l'URL du <guimenu>serveur SMT</guimenu> et éventuellement l'emplacement du <guimenu>certificat SMT</guimenu>. Les valeurs possibles sont les mêmes que pour les paramètres du kernel <literal>regurl</literal> et <literal>regcert</literal> (voir <xref linkend="smt.client.parameters"/>). La seule exception réside dans le fait que la valeur <literal>ask</literal> du paramètre <literal>regcert</literal> ne fonctionne pas dans AutoYaST, car elle nécessite l'intervention de l'utilisateur. Si vous l'utilisez, le processus d'enregistrement sera ignoré.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Exécutez toutes les autres configurations requises pour les systèmes à déployer.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Sélectionnez <menuchoice> <guimenu>Fichier</guimenu> <guimenu>Enregistrer sous</guimenu> </menuchoice>, puis attribuez un nom de fichier au profil, tel que <filename>autoinst.xml</filename>.
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="smt.client.clientsetupscript">
+  <title>Configuration des clients via le script clientSetup4SMT.sh</title>
+
+  <para>
+   Le script <command>/usr/share/doc/packages/smt/clientSetup4SMT.sh</command> est fourni avec SMT. Il permet de configurer une machine cliente afin qu'elle utilise un serveur SMT ou de la reconfigurer pour qu'elle utilise un autre serveur SMT.
+  </para>
+
+  <para>
+   Pour configurer une machine cliente afin qu'elle utilise SMT à l'aide du script <command>clientSetup4SMT.sh</command>, procédez comme suit :
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Copiez le script <filename>/usr/share/doc/packages/smt/clientSetup4SMT.sh</filename> depuis votre serveur SMT sur la machine cliente.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Connectez-vous en tant qu'utilisateur <systemitem class="username">root</systemitem> et exécutez le script sur la machine cliente. Le script peut s'exécuter de deux façons. Dans le premier cas, le nom du script est suivi de l'URL d'enregistrement : <command>./clientSetup4SMT.sh <replaceable>URL_enregistrement</replaceable></command>, par exemple, <command>./clientSetup4SMT.sh https://smt.exemple.com/center/regsvc</command>. Dans le second cas, le nom du script est suivi de l'option <option>--host</option> et du nom d'hôte du serveur SMT : <command>./clientSetup4SMT.sh --host <replaceable>nom_hôte_server</replaceable></command>, par exemple, <command>./clientSetup4SMT.sh --host smt.exemple.com</command>.
+    </para>
+    
+    <important>
+     <title>paramètre <option>--host</option></title>
+     <para>
+      Le nom d'hôte devant être fourni avec le paramètre <option>--host</option> doit être identique à celui pour lequel le certificat a été émis. Par ailleurs, si le nom spécifié dans le certificat est le nom d'hôte complet (par exemple, smt.exemple.com), il doit être entré tel quel. Si vous spécifiez le nom <quote>court</quote> (smt), l'exécution du script <command>clientSetup4SMT.sh</command> échouera. 
+     </para>
+    </important>
+    
+   </step>
+   <step performance="required">
+    <para>
+     Le script télécharge le certificat AC du serveur. Acceptez-le en appuyant sur <keycap>y</keycap>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Le script exécute toutes les modifications requises sur le client. Toutefois, l'enregistrement en lui-même n'est pas effectué par le script.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Procédez à l'enregistrement en exécutant <command>suse_register</command> ou en lançant le module <command>yast2 inst_suse_register</command> sur le client.
+    </para>
+   </step>
+  </procedure>
+
+
+
+
+ </sect1>
+ <sect1>
+  <title>Enregistrement des clients dans l'environnement de test SMT</title>
+
+  <para>
+   Pour configurer un client de façon à ce qu'il s'enregistre dans l'environnement de test plutôt que dans l'environnement de production, modifiez <filename>/etc/suseRegister.conf</filename> sur la machine cliente en définissant :
+   
+   
+  </para>
+
+<screen>register = command=register&amp;testenv=1</screen>
+
+  <para>
+   Pour plus d'informations sur l'utilisation de SMT dans un environnement de test, reportez-vous au manuel <emphasis>Subscription Management Tool Guide</emphasis> (Guide de SMT).
+  </para>
+ </sect1>
+</chapter>

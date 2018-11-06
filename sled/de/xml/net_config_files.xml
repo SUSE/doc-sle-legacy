@@ -1,0 +1,976 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_config_files.xml" id="sec.basicnet.manconf">
+ <title>Manuelle Netzwerkkonfiguration</title><indexterm id="idx.networks_configuring" class="startofrange"> <primary>Netzwerk</primary> <secondary>Konfigurieren</secondary> </indexterm> <indexterm id="idx.configuring_networks_manually" class="startofrange"> <primary>Konfigurieren</primary> <secondary>Netzwerke</secondary> <tertiary>manuell</tertiary> </indexterm>
+
+ <para>
+  Die manuelle Konfiguration der Netzwerksoftware sollte immer die letzte Alternative sein. Wir empfehlen, YaST zu benutzen. Die folgenden Hintergrundinformationen zur Netzwerkkonfiguration können Ihnen jedoch auch bei der Arbeit mit YaST behilflich sein.
+ </para>
+
+
+
+ <para>
+  Wenn der Kernel eine Netzwerkkarte erkennt und eine entsprechende Netzwerkschnittstelle erstellt, weist er dem Gerät einen Namen zu. Dieser richtet sich nach der Reihenfolge der Geräteerkennung bzw. nach der Reihenfolge, in der die Kernel-Module geladen werden. Die vom Kernel vergebenen Standardgerätenamen lassen sich nur in sehr einfachen oder überaus kontrollierten Hardwareumgebungen vorhersagen. Auf Systemen, auf denen es möglich ist, Hardware während der Laufzeit hinzuzufügen oder zu entfernen, oder die die automatische Konfiguration von Geräten zulassen, können vom Kernel über mehrere Neustarts hinaus keine stabilen Netzwerkgerätenamen erwartet werden.
+ </para>
+
+ <para>
+  Für die Systemkonfigurationstools sind jedoch dauerhafte (persistente) Schnittstellennamen erforderlich. Dieses Problem wird durch udev gelöst. Der udev-persistente Netzgenerator (<filename>/lib/udev/rules.d/75-persistent-net-generator.rules</filename>) generiert eine Regel zum Hardwareabgleich (standardmäßig mit seiner Hardwareadresse) und weist eine dauerhaft eindeutige Schnittstelle für die Hardware zu. Die udev-Datenbank mit den Netzwerkschnittstellen wird in der Datei <filename>/etc/udev/rules.d/70-persistent-net.rules</filename> gespeichert. Pro Zeile dieser Datei wird eine Netzwerkschnittstelle beschrieben und deren persistenter Name angegeben. Die zugewiesenen Namen können vom Systemadministrator im Eintrag <literal>NAME=„“</literal> geändert werden. Die persistenten Regeln können auch mithilfe von YaST geändert werden.
+ </para>
+
+ <para>
+  <xref linkend="tab.net.script.conf"/> zeigt die wichtigsten an der Netzwerkkonfiguration beteiligten Skripten.
+ </para>
+
+ <table id="tab.net.script.conf">
+  <title>Skripten für die manuelle Netzwerkkonfiguration</title>
+  <tgroup cols="2">
+   <thead>
+    <row>
+     <entry>
+      <para>
+       Befehl
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Funktion
+      </para>
+     </entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>
+      <para>
+       <command>ifup, ifdown, ifstatus</command>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Die <literal>if</literal>-Skripten starten oder stoppen Netzwerkschnittstellen oder geben den Status der angegebenen Schnittstelle zurück. Weitere Informationen finden Sie auf der man-Seite <systemitem>ifup</systemitem>. 
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <command>rcnetwork</command>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Mit dem Skript <literal>rcnetwork</literal> können alle Netzwerkschnittstellen (oder nur eine bestimmte Netzwerkschnittstelle) gestartet, gestoppt oder neu gestartet werden. Verwenden Sie <command>rcnetwork stop</command> zum Anhalten, <command>rcnetwork start</command> zum Starten und <command>rcnetwork restart</command> zum Neustart von Netzwerkschnittstellen. Wenn Sie nur eine Netzwerkschnittstelle stoppen, starten oder neu starten möchten, geben Sie nach dem jeweiligen Kommando den Namen der Schnittstelle ein, zum Beispiel <command>rcnetwork restart eth0</command>. Das Kommando <command>rcnetwork status</command> zeigt den Status und die IP-Adressen der Netzwerkschnittstellen an. Außerdem gibt das Kommando an, ob auf den Schnittstellen ein DHCP-Client ausgeführt wird. Mit <command>rcnetwork stop-all-dhcp-clients</command> und <command>rcnetwork restart-all-dhcp-clients</command> können Sie die auf den Netzwerkschnittstellen ausgeführten DHCP-Clients stoppen und wieder starten.
+      </para>
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+
+ <para>
+  Weitere Informationen zu udex und dauerhaften Gerätenamen finden Sie unter <xref linkend="cha.udev"/>.
+ </para>
+
+ <sect2 id="sec.basicnet.manconf.files">
+  <title>Konfigurationsdateien</title><indexterm> <primary>Konfigurationsdateien</primary> </indexterm> <indexterm id="idx.networks_configuration_files" class="startofrange"> <primary>Netzwerke</primary> <secondary>Konfigurationsdateien</secondary> </indexterm>
+  <para>
+   Dieser Abschnitt bietet einen Überblick über die Netzwerkkonfigurationsdateien und erklärt ihren Zweck sowie das verwendete Format.
+  </para>
+  <sect3 id="sec.basicnet.manconf.files.ifcfg">
+   <title><filename>/etc/sysconfig/network/ifcfg-*</filename></title>
+   <para>
+    Diese Dateien enthalten die Konfigurationsdaten für Netzwerkschnittstellen. Sie enthalten Informationen wie den Startmodus und die IP-Adresse. Mögliche Parameter sind auf der man-Seite für den Befehl <systemitem>ifup</systemitem> beschrieben. Wenn eine allgemeine Einstellung nur für eine bestimmte Bedienoberfläche verwendet werden soll, können außerdem alle Variablen aus der Datei <filename>dhcp</filename> in den <filename>ifcfg-*</filename>-Dateien verwendet werden. Jedoch sind die meisten <filename>/etc/sysconfig/network/config</filename>-Variablen global und lassen sich in ifcfg-Dateien nicht überschreiben. Beispielsweise sind die Variablen <systemitem>NETWORKMANAGER</systemitem> oder <systemitem>NETCONFIG_*</systemitem> global.
+   </para>
+   <para>
+    Informationen zu <filename>ifcfg.template</filename> finden Sie unter <xref linkend="sec.basicnet.manconf.files.config-etc"/>.
+   </para><indexterm> <primary>Konfigurationsdateien</primary> <secondary>ifcfg-*</secondary> </indexterm>
+   
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.files.config-etc">
+   <title><filename>/etc/sysconfig/network/config</filename> und <filename>/etc/sysconfig/network/dhcp</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>Netzwerk</secondary></indexterm><indexterm> <primary>Konfigurationsdateien</primary> <secondary>dhcp</secondary></indexterm>
+   <para>
+    Die Datei <filename>config</filename> enthält allgemeine Einstellungen für das Verhalten von <command>ifup</command>, <command>ifdown</command> und <command>ifstatus</command>. <filename>dhcp</filename> enthält Einstellungen für DHCP. Die Variablen in beiden Konfigurationsdateien sind kommentiert. Einige der Variablen von <filename>/etc/sysconfig/network/config</filename> können auch in <filename>ifcfg-*</filename>-Dateien verwendet werden, wo sie eine höherer Priorität erhalten. Die Datei <filename>/etc/sysconfig/network/ifcfg.template</filename> listet Variablen auf, die mit einer Reichweite pro Schnittstelle angegeben werden können. Jedoch sind die meisten <filename>/etc/sysconfig/network/config</filename>-Variablen global und lassen sich in ifcfg-Dateien nicht überschreiben. Beispielsweise sind die Variablen <systemitem>NETWORKMANAGER</systemitem> oder <systemitem>NETCONFIG_*</systemitem> global.
+   </para>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/sysconfig/network/routes</filename> und <filename>/etc/sysconfig/network/ifroute-*</filename></title><indexterm id="idx.routing" class="startofrange"> <primary>Routing</primary> </indexterm> <indexterm> <primary>Routing</primary> <secondary>Routen</secondary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>Routen</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>Routing</secondary> </indexterm>
+   <para>
+    Hier wird das statische Routing von TCP/IP-Paketen festgelegt. Alle statischen Routen, die für verschiedenen Systemaufgaben benötigt werden, können in die Datei <filename>/etc/sysconfig/network/routes</filename> eingegeben werden: Routen zu einem Host, Routen zu einem Host über Gateways und Routen zu einem Netzwerk. Definieren Sie für jede Schnittstelle, die individuelles Routing benötigt, eine zusätzliche Konfigurationsdatei: <filename>/etc/sysconfig/network/ifroute-*</filename>. Ersetzen Sie <literal>*</literal> durch den Namen der Schnittstelle. Die folgenden Einträge werden in die Routing-Konfigurationsdatei aufgenommen: <indexterm> <primary>Routing</primary> <secondary>statisch</secondary> </indexterm>
+   </para>
+<screen># Destination     Dummy/Gateway     Netmask            Device
+#
+127.0.0.0         0.0.0.0           255.255.255.0      lo
+204.127.235.0     0.0.0.0           255.255.255.0      eth0
+default           204.127.235.41    0.0.0.0            eth0
+207.68.156.51     207.68.145.45     255.255.255.255    eth1
+192.168.0.0       207.68.156.51     255.255.0.0        eth1</screen>
+   <para>
+    Das Routenziel steht in der ersten Spalte. Diese Spalte kann die IP-Adresse eines Netzwerks oder Hosts bzw., im Fall von <emphasis>erreichbaren</emphasis> Namenservern, den voll qualifizierten Netzwerk- oder Hostnamen enthalten.
+   </para>
+   <para>
+    Die zweite Spalte enthält das Standard-Gateway oder ein Gateway, über das der Zugriff auf einen Host oder ein Netzwerk erfolgt. Die dritte Spalte enthält die Netzmaske für Netzwerke oder Hosts hinter einem Gateway. Die Maske <systemitem class="netmask">255.255.255.255</systemitem> gilt beispielsweise für einen Host hinter einem Gateway.
+   </para>
+   <para>
+    Die vierte Spalte ist nur für Netzwerke relevant, die mit dem lokalen Host verbunden sind, z. B. Loopback-, Ethernet-, ISDN-, PPP- oder Dummy-Geräte. In diese Spalte muss der Gerätename eingegeben werden.
+   </para>
+   <para>
+    In einer (optionalen) fünften Spalte kann der Typ einer Route angegeben werden. Nicht benötigte Spalten sollten ein Minuszeichen <literal>-</literal> enthalten, um sicherzustellen, dass der Parser den Befehl korrekt interpretiert. Weitere Informationen hierzu finden Sie auf der man-Seite für den Befehl <systemitem>routes(5)</systemitem>.
+   </para>
+   <para>
+    Das vereinheitlichte Format für IPv4 und IPv6 sieht nun wie folgt aus:
+   </para>
+<screen><replaceable>prefix</replaceable>/<replaceable>length</replaceable><replaceable>gateway</replaceable> -            [<replaceable>interface</replaceable>]
+</screen>
+   <para>
+    Das so genannte Kompatibilitätsformat lautet entsprechend:
+   </para>
+<screen><replaceable>prefix</replaceable><replaceable>gateway</replaceable><replaceable>length</replaceable>       [<replaceable>interface</replaceable>]
+</screen>
+   <para>
+    Für IPv4 können Sie noch das alte Format mit Netzmaske verwenden:
+   </para>
+<screen><replaceable>ipv4-network</replaceable><replaceable>gateway</replaceable><replaceable>ipv4-netmask</replaceable> [<replaceable>interface</replaceable>]
+</screen>
+   <para>
+    Die folgenden Beispiele sind Entsprechungen:
+   </para>
+<screen>2001:db8:abba:cafe::/64 2001:db8:abba:cafe::dead  -            eth0
+208.77.188.0/24         208.77.188.166            -            eth0
+
+2001:db8:abba:cafe::    2001:db8:abba:cafe::dead 64            eth0
+208.77.188.0            208.77.188.166           24            eth0
+
+208.77.188.0            208.77.188.166           255.255.255.0 eth0
+</screen>
+<indexterm class="endofrange" startref="idx.routing"/>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/resolv.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>resolv.conf</secondary> </indexterm>
+   <para>
+    In dieser Datei wird die Domäne angegeben, zu der der Host gehört (Schlüsselwort <systemitem>search</systemitem>). Ebenfalls aufgeführt ist der Status des Namenservers, auf den der Zugriff erfolgt (Schlüsselwort <systemitem>nameserver</systemitem>). In der Datei können mehrere Domänennamen angegeben werden. Bei der Auflösung eines Namens, der nicht voll qualifiziert ist, wird versucht, einen solchen zu generieren, indem die einzelnen <systemitem>search</systemitem>-Einträge angehängt werden. Mehrere Namenserver können in mehreren Zeilen angegeben werden, von denen jede mit <systemitem>nameserver</systemitem> beginnt. Kommentaren werden <literal>#</literal>-Zeichen vorangestellt. <xref linkend="dat.netz.etc.resolv.conf"/> zeigt, wie <filename>/etc/resolv.conf</filename> aussehen könnte. <indexterm> <primary>DNS</primary> <secondary>Domänen</secondary> </indexterm> <indexterm> <primary>DNS</primary> <secondary>Namenserver</secondary> </indexterm>
+   </para>
+   <para>
+    Jedoch darf <filename>/etc/resolv.conf</filename> nicht manuell bearbeitet werden. Stattdessen wird es vom Skript <command>netconfig</command> generiert. Um die statische DNS-Konfiguration ohne YaST zu definieren, bearbeiten Sie die entsprechenden Variablen in der Datei <filename>/etc/sysconfig/network/config</filename> manuell:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><systemitem>NETCONFIG_DNS_STATIC_SEARCHLIST</systemitem>
+     </term>
+     <listitem>
+      <para>
+       Liste der DNS-Domänennamen, die für die Suche nach Hostname verwendet wird
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>NETCONFIG_DNS_STATIC_SERVERS</systemitem>
+     </term>
+     <listitem>
+      <para>
+       Liste der IP-Adressen des Nameservers, die für die Suche nach Hostname verwendet wird
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>NETCONFIG_DNS_FORWARDER</systemitem>
+     </term>
+     <listitem>
+      <para>
+       Definiert den Namen des zu konfigurierenden DNS-Forwarders
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    Zum Deaktivieren der DNS-Konfiguration mit netconfig setzen Sie <literal>NETCONFIG_DNS_POLICY=''</literal>. Weitere Informationen über <command>netconfig</command> finden Sie auf <command>man 8 netconfig</command>.
+   </para>
+   <example id="dat.netz.etc.resolv.conf">
+    <title><filename>/etc/resolv.conf</filename></title>
+<screen># Our domain
+search example.com
+#
+# We use dns.example.com (192.168.1.116) as name server
+nameserver 192.168.1.116</screen>
+   </example>
+  </sect3>
+
+  <sect3 id="sec.basicnet.manconf.netconfig">
+   <title><filename>/sbin/netconfig</filename></title>
+   <para>
+    <command>netconfig</command> ist ein modulares Tool zum Verwalten zusätzlicher Netzwerkkonfigurationseinstellungen. Es führt statisch definierte Einstellungen mit Einstellungen zusammen, die von automatischen Konfigurationsmechanismen wie DHCP oder PPP gemäß einer vordefinierten Richtlinie bereitgestellt wurden. Die erforderlichen Änderungen werden dem System zugewiesen, indem die netconfig-Module aufgerufen werden, die für das Ändern einer Konfigurationsdatei und den Neustart eines Service oder eine ähnliche Aktion verantwortlich sind.
+   </para>
+   <para>
+    <command>netconfig</command> erkennt drei Hauptaktionen. Die Kommandos <command>netconfig modify</command> und <command>netconfig remove</command> werden von Daemons wie DHCP oder PPP verwendet, um Einstellungen für netconfig hinzuzufügen oder zu entfernen. Nur das Kommando <command>netconfig update</command> steht dem Benutzer zur Verfügung:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>modify</command>
+     </term>
+     <listitem>
+      <para>
+       Das Kommando <command>netconfig modify</command> ändert die aktuelle Schnittstellen- und Service-spezifischen dynamischen Einstellungen und aktualisiert die Netzwerkkonfiguration. Netconfig liest Einstellungen aus der Standardeingabe oder einer Datei, die mit der Option <option>--lease-file <replaceable>Dateiname</replaceable></option> angegeben wurde, und speichert sie intern bis zu einem System-Reboot oder der nächsten Änderungs- oder Löschaktion). Bereits vorhandene Einstellungen für dieselbe Schnittstellen- und Service-Kombination werden überschrieben. Die Schnittstelle wird durch den Parameter <option>-i <replaceable>Schnittstellenname</replaceable></option> angegeben. Der Service wird durch den Parameter <option>-s <replaceable>Servicename</replaceable></option> angegeben.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Entfernen</command>
+     </term>
+     <listitem>
+      <para>
+       Das Kommando <command>netconfig remove</command> entfernt die dynamischen Einstellungen, die von einer Änderungsaktion für die angegebene Schnittstellen- und Service-Kombination bereitgestellt wurden, und aktualisiert die Netzwerkkonfiguration. Die Schnittstelle wird durch den Parameter <option>-i <replaceable>Schnittstellenname</replaceable></option> angegeben. Der Service wird durch den Parameter <option>-s <replaceable>Servicename</replaceable></option> angegeben.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Aktualisieren</command>
+     </term>
+     <listitem>
+      <para>
+
+       Das Kommando <command>netconfig update</command> aktualisiert die Netzwerkkonfiguration mit den aktuellen Einstellungen. Dies ist nützlich, wenn sich die Richtlinie oder die statische Konfiguration geändert hat. Verwenden Sie den Parameter <option>-m <replaceable>Modultyp</replaceable></option>, wenn nur ein angegebener Dienst aktualisiert werden soll (<systemitem>dns</systemitem>,<systemitem>nis</systemitem> oder <systemitem>ntp</systemitem>).
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+   <para>
+    Die Einstellungen für die netconfig-Richtlinie und die statische Konfiguration werden entweder manuell oder mithilfe von YaST in der Datei <filename>/etc/sysconfig/network/config</filename> definiert. Die dynamischen Konfigurationseinstellungen von Tools zur automatischen Konfiguration wie DHCP oder PPP werden von diesen Tools mit den Aktionen <command>netconfig modify</command> und <command>netconfig remove</command> direkt bereitgestellt. NetworkManager verwendet auch die Aktionen <command>netconfig modify</command> und <command>netconfig remove</command>. Wenn NetworkManager aktiviert ist, verwendet netconfig (im Richtlinienmodus <literal>auto</literal>) nur NetworkManager-Einstellungen und ignoriert Einstellungen von allen anderen Schnittstellen, die mit der traditionellen ifup-Methode konfiguriert wurden. Wenn NetworkManager keine Einstellung liefert, werden als Fallback statische Einstellungen verwendet. Eine gemischte Verwendung von NetworkManager und der traditionellen ifup-Methode wird nicht unterstützt.
+   </para>
+   <para>
+    Weitere Informationen über <command>netconfig</command> finden Sie auf <command>man 8 netconfig</command>.
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.hosts">
+   <title><filename>/etc/hosts</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>Hosts</secondary> </indexterm>
+   <para>
+    In dieser Datei werden, wie in <xref linkend="dat.netz.etc.hosts"/> gezeigt, IP-Adressen zu Hostnamen zugewiesen. Wenn kein Namenserver implementiert ist, müssen alle Hosts, für die IP-Verbindungen eingerichtet werden sollen, hier aufgeführt sein. Geben Sie für jeden Host in die Datei eine Zeile ein, die aus der IP-Adresse, dem voll qualifizierten Hostnamen und dem Hostnamen besteht. Die IP-Adresse muss am Anfang der Zeile stehen und die Einträge müssen durch Leerzeichen und Tabulatoren getrennt werden. Kommentaren wird immer das <literal>#</literal>-Zeichen vorangestellt.
+   </para>
+   <example id="dat.netz.etc.hosts">
+    <title><filename>/etc/hosts</filename></title>
+<screen>127.0.0.1 localhost
+192.168.2.100 jupiter.example.com jupiter
+192.168.2.101 venus.example.com venus</screen>
+   </example>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/networks</filename></title><indexterm> <primary>Konfigurationsdateien</primary><secondary>Netzwerke</secondary> </indexterm>
+   <para>
+    Hier werden Netzwerknamen in Netzwerkadressen umgesetzt. Das Format ähnelt dem der <filename>hosts</filename>-Datei, jedoch stehen hier die Netzwerknamen vor den Adressen. Weitere Informationen hierzu finden Sie unter <xref linkend="dat.netz.networks"/>.
+   </para>
+   <example id="dat.netz.networks">
+    <title><filename>/etc/networks</filename></title>
+<screen>loopback     127.0.0.0
+localnet     192.168.0.0</screen>
+   </example>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/host.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>host.conf</secondary> </indexterm>
+   <para>
+    Das Auflösen von Namen, d. h. das Übersetzen von Host- bzw. Netzwerknamen über die <emphasis>resolver</emphasis>-Bibliothek, wird durch diese Datei gesteuert. Diese Datei wird nur für Programme verwendet, die mit libc4 oder libc5 gelinkt sind. Weitere Informationen zu aktuellen glibc-Programmen finden Sie in den Einstellungen in <filename>/etc/nsswitch.conf</filename>. Jeder Parameter muss in einer eigenen Zeile stehen. Kommentare werden durch ein <literal>#</literal>-Zeichen eingeleitet. Die verfügbaren Parameter sind in <xref linkend="tab.netz.param.hostconf"/> aufgeführt. Ein Beispiel für <filename>/etc/host.conf</filename> wird in <xref linkend="dat.netz.etc.hostconf"/> gezeigt.
+   </para>
+   <table id="tab.netz.param.hostconf">
+    <title>Parameter für /etc/host.conf</title>
+    <tgroup cols="2" align="left">
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         order <emphasis>hosts</emphasis>, <emphasis>bind</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Legt fest, in welcher Reihenfolge die Dienste zum Auflösen eines Namens angesprochen werden sollen. Mögliche Argumente (getrennt durch Leerzeichen oder Kommas):
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para/>
+       </entry>
+       <entry>
+        <para>
+         <emphasis>Hosts</emphasis>: Sucht die <filename>/etc/hosts</filename>-Datei
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para/>
+       </entry>
+       <entry>
+        <para>
+         <emphasis>bind</emphasis>: Greift auf einen Namenserver zu
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para/>
+       </entry>
+       <entry>
+        <para>
+         <emphasis>nis</emphasis>: Verwendet NIS
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         multi <emphasis>on</emphasis>/<emphasis>off</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Legt fest, ob ein in <filename>/etc/hosts</filename> eingegebener Host mehrere IP-Adressen haben kann.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         nospoof <emphasis>on</emphasis> spoofalert <emphasis>on</emphasis>/<emphasis>off</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Diese Parameter beeinflussen das <emphasis>spoofing</emphasis> des Namenservers, haben aber keinen Einfluss auf die Netzwerkkonfiguration.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         trim <emphasis>Domänenname</emphasis>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Der angegebene Domänenname wird vor dem Auflösen des Hostnamens von diesem abgeschnitten (insofern der Hostname diesen Domänennamen enthält). Diese Option ist nur dann von Nutzen, wenn in der Datei <filename>/etc/hosts</filename> nur Namen aus der lokalen Domäne stehen, diese aber auch mit angehängtem Domänennamen erkannt werden sollen.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <example id="dat.netz.etc.hostconf">
+    <title><filename>/etc/host.conf</filename></title>
+<screen># We have named running
+order hosts bind
+# Allow multiple address
+multi on</screen>
+   </example>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/nsswitch.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>nsswitch.conf</secondary> </indexterm>
+   <para>
+    Mit der GNU C Library 2.0 wurde <emphasis>Name Service Switch</emphasis> (NSS) eingeführt. Weitere Informationen hierzu finden Sie auf der man-Seite für <systemitem>nsswitch.conf(5)</systemitem> und im Dokument <emphasis>The GNU C Library Reference Manual. </emphasis> <indexterm> <primary>NSS</primary> </indexterm>
+   </para>
+   <para>
+    In der Datei <filename>/etc/nsswitch.conf</filename> wird festgelegt, in welcher Reihenfolge bestimmte Informationen abgefragt werden. Ein Beispiel für <filename>nsswitch.conf</filename> ist in <xref linkend="dat.netz.nsswitchconf"/> dargestellt. Kommentaren werden <literal>#</literal>-Zeichen vorangestellt. Der Eintrag unter der <filename>hosts</filename>-Datenbank bedeutet, dass Anfragen über DNS an <filename>/etc/hosts</filename> (<option>files</option>) gehen.
+   </para>
+   <example id="dat.netz.nsswitchconf">
+    <title><filename>/etc/nsswitch.conf</filename></title>
+<screen>passwd:     compat
+group:      compat
+
+hosts:      files dns
+networks:   files dns
+
+services:   db files
+protocols:  db files
+rpc:        files
+ethers:     files
+netmasks:   files
+netgroup:   files nis
+publickey:  files
+
+bootparams: files
+automount:  files nis
+aliases:    files nis
+shadow:     compat
+</screen>
+   </example>
+   <para>
+    Die über NSS verfügbaren <quote>Datenbanken</quote> sind in <xref linkend="tab.netz.nnswitch.db"/> aufgelistet. <indexterm><primary>NSS</primary><secondary>Datenbanken</secondary></indexterm> Die Konfigurationsoptionen für NSS-Datenbanken sind in <xref linkend="tab.netz.nnswitch.conf"/> aufgelistet.
+   </para>
+   <table id="tab.netz.nnswitch.db">
+    <title>Über /etc/nsswitch.conf verfügbare Datenbanken</title>
+    <tgroup cols="2" align="left">
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>aliases</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Mail-Aliasse, die von <filename>sendmail</filename> implementiert werden. Siehe <command>man</command><option>5 aliases</option>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>ethers</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Ethernet-Adressen
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>Netzmasken</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Liste von Netzwerken und ihrer Teilnetzmasken. Wird nur benötigt, wenn Sie Subnetting nutzen.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>Gruppe</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Für Benutzergruppen, die von <filename>getgrent</filename> verwendet werden. Weitere Informationen hierzu finden Sie auch auf der man-Seite für den Befehl <command>group</command>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>hosts</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Für Hostnamen und IP-Adressen, die von <filename>gethostbyname</filename> und ähnlichen Funktionen verwendet werden.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>netgroup</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Im Netzwerk gültige Host- und Benutzerlisten zum Steuern von Zugriffsrechten. Weitere Informationen hierzu finden Sie auf der man-Seite für <systemitem>netgroup(5)</systemitem>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>networks</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Netzwerknamen und -adressen, die von <filename>getnetent</filename> verwendet werden.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>publickey</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Öffentliche und geheime Schlüssel für Secure_RPC, verwendet durch NFS and NIS+.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>passwd</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Benutzerpasswörter, die von <filename>getpwent</filename> verwendet werden. Weitere Informationen hierzu finden Sie auf der man-Seite <systemitem>passwd(5)</systemitem>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>protocols</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Netzwerkprotokolle, die von <filename>getprotoent</filename> verwendet werden. Weitere Informationen hierzu finden Sie auf der man-Seite für <systemitem>protocols(5)</systemitem>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>rpc</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Remote Procedure Call-Namen und -Adressen, die von <filename>getrpcbyname</filename> und ähnlichen Funktionen verwendet werden.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>services</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Netzwerkdienste, die von <filename>getservent</filename> verwendet werden.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>shadow</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Shadow-Passwörter der Benutzer, die von <filename>getspnam</filename> verwendet werden. Weitere Informationen hierzu finden Sie auf der man-Seite für <option>shadow(5)</option>.
+        </para>
+       </entry>
+      </row>
+
+     </tbody>
+    </tgroup>
+   </table>
+   <table id="tab.netz.nnswitch.conf">
+    <title>Konfigurationsoptionen für NSS-<quote>Datenbanken</quote></title>
+    <tgroup cols="2" align="left">
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>Dateien</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Direkter Dateizugriff, z. B. <filename>/etc/aliases</filename>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>db</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Zugriff über eine Datenbank
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>nis</option>, <option>nisplus</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         NIS, siehe auch <xref linkend="cha.nis"/>
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>dns</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Nur bei <option>hosts</option> und <option>networks</option> als Erweiterung verwendbar
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>compat</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Nur bei <option>passwd</option>, <option>shadow</option> und <option>group</option> als Erweiterung verwendbar
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/nscd.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary><secondary>nscd.conf</secondary> </indexterm>
+   <para>
+    Mit dieser Datei wird nscd (Name Service Cache Daemon) konfiguriert. Weitere Informationen hierzu finden Sie auf den man-Seiten <systemitem>nscd(8)</systemitem> und <systemitem>nscd.conf(5)</systemitem>. Standardmäßig werden die Systemeinträge von <option>passwd</option> und <option>groups</option> von nscd gecacht. Dies ist wichtig für die Leistung der Verzeichnisdienste, z. B. NIS und LDAP, da anderenfalls die Netzwerkverbindung für jeden Zugriff auf Namen oder Gruppen verwendet werden muss. <option>hosts</option> wird standardmäßig nicht gecacht, da der Mechanismus in nscd dazu führen würde, dass das lokale System keine Trust-Forward- und Reverse-Lookup-Tests mehr ausführen kann. Statt nscd das Cachen der Namen zu übertragen, sollten Sie einen DNS-Server für das Cachen einrichten.
+   </para>
+   <para>
+    Wenn das Caching für <option>passwd</option> aktiviert wird, dauert es in der Regel 15 Sekunden, bis ein neu angelegter lokaler Benutzer dem System bekannt ist. Durch das Neustarten von nscd mit dem Befehl <command>rcnscd</command> <option>restart</option> kann diese Wartezeit verkürzt werden.
+   </para>
+  </sect3>
+  <sect3>
+   <title><filename>/etc/HOSTNAME </filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>HOSTNAME</secondary> </indexterm>
+   <para>
+    Diese Datei enthält den voll qualifizierten Hostnamen mit angehängtem Domänennamen. Diese Datei wird von verschiedenen Skripten beim Booten des Computers gelesen. Sie darf nur eine Zeile enthalten (in der der Hostname festgelegt ist).
+   </para><indexterm class="endofrange" startref="idx.networks_configuration_files"/>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.manconf.testing">
+  <title>Testen der Konfiguration</title>
+  <para>
+   Bevor Sie Ihre Konfiguration in den Konfigurationsdateien speichern, können Sie sie testen. Zum Einrichten einer Testkonfiguration verwenden Sie den Befehl <command>ip</command>. Zum Testen der Verbindung verwenden Sie den Befehl <command>ping</command>. Ältere Konfigurationswerkzeuge, <command>ifconfig</command> und <command>route</command>, sind ebenfalls verfügbar.
+  </para>
+  <para>
+   Die Kommandos <command>ip</command>, <command>ifconfig</command> und <command>route</command> ändern die Netzwerkkonfiguration direkt, ohne sie in der Konfigurationsdatei zu speichern. Wenn Sie die Konfiguration nicht in die korrekten Konfigurationsdateien eingeben, geht die geänderte Netzwerkkonfiguration nach dem Neustart verloren.
+  </para>
+  <sect3 id="sec.basicnet.manconf.ip">
+   <title>Konfigurieren einer Netzwerkschnittstelle mit <command>ip</command></title><indexterm> <primary>Befehle</primary> <secondary>ip</secondary> </indexterm>
+   
+   <para>
+    <command>ip</command> ist ein Werkzeug zum Anzeigen und Konfigurieren von Netzwerkgeräten, Richtlinien-Routing und Tunneln.
+   </para>
+   <para>
+    <command>ip</command> ist ein sehr komplexes Werkzeug. Seine allgemeine Syntax ist <command>ip</command> <option><replaceable>options</replaceable> <replaceable>object</replaceable> <replaceable>command</replaceable></option>. Sie können mit folgenden Objekten arbeiten:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Verbindung</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt ein Netzwerkgerät dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Adresse</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt die IP-Adresse des Geräts dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Nachbar</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt einen ARP- oder NDISC-Cache-Eintrag dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>route</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt den Routing-Tabelleneintrag dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Regel</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt eine Regel in der Routing-Richtlinien-Datenbank dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>maddress</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt eine Multicast-Adresse dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>mroute</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt einen Multicast-Routing-Cache-Eintrag dar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>tunnel</term>
+     <listitem>
+      <para>
+       Dieses Objekt stellt einen Tunnel über IP dar.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    Wird kein Kommando angegeben, wird das Standardkommando verwendet (normalerweise <command>list</command>).
+   </para>
+   <para>
+    Ändern Sie den Gerätestatus mit dem Befehl <command>ip link set</command> <option><replaceable>device_name</replaceable></option> <command><replaceable>command</replaceable></command>. Wenn Sie beispielsweise das Gerät eth0 deaktivieren möchten, geben Sie <command>ip link set</command><option>eth0 down ein</option>. Um es wieder zu aktivieren, verwenden Sie <command>ip link set</command><option>eth0 up</option>.
+   </para>
+   <para>
+    Nach dem Aktivieren eines Geräts können Sie es konfigurieren. Verwenden Sie zum Festlegen der IP-Adresse <command>ip addr add</command><option><replaceable>ip_address</replaceable> + dev <replaceable>device_name</replaceable></option>. Wenn Sie beispielsweise die Adresse der Schnittstelle eth0 mit dem standardmäßigen Broadcast (Option <option>brd</option>) auf 192.168.12.154/30 einstellen möchten, geben Sie <command>ip addr</command> <option>add 192.168.12.154/30 brd + dev eth0</option> ein.
+   </para>
+   <para>
+    Damit die Verbindung funktioniert, müssen Sie außerdem das Standard-Gateway konfigurieren. Geben Sie <command>ip route add</command> <option>gateway_ip_address</option> ein, wenn Sie ein Gateway für Ihr System festlegen möchten. Um eine IP-Adresse in eine andere Adresse zu übersetzen, verwenden Sie <command>nat</command>: <command>ip route add nat</command> <option>ip_address</option> <command>via</command> <option>other_ip_address</option>.
+   </para>
+   <para>
+    Zum Anzeigen aller Geräte verwenden Sie <command>ip link ls</command>. Wenn Sie nur die aktiven Schnittstellen abrufen möchten, verwenden Sie <command>ip link ls up</command>. Um Schnittstellenstatistiken für ein Gerät zu drucken, geben Sie <command>ip -s link ls</command><option>device_name</option> ein. Um die Adressen Ihrer Geräte anzuzeigen, geben Sie <command>ip addr</command> ein. In der Ausgabe von <command>ip addr</command> finden Sie auch Informationen zu MAC-Adressen Ihrer Geräte. Wenn Sie alle Routen anzeigen möchten, wählen Sie <command>ip route show</command>.
+   </para>
+   <para>
+    Weitere Informationen zur Verwendung von <command>ip</command> erhalten Sie, indem Sie <command>ip</command><option>help</option> eingeben oder die man-Seite <systemitem>ip(8)</systemitem> aufrufen. Die Option <option>help</option> ist zudem für alle <command>ip</command>-Unterkommandos verfügbar.  Wenn Sie beispielsweise Hilfe zu <command>ip</command><option>addr</option> benötigen, geben Sie <command>ip</command><option>addr help</option> ein. Suchen Sie die <command>ip</command>-Manualpage in der Datei <filename>/usr/share/doc/packages/iproute2/ip-cref.pdf</filename>.
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.testingping">
+   <title>Testen einer Verbindung mit ping</title><indexterm> <primary>Befehle</primary> <secondary>ping</secondary> </indexterm> <indexterm> <primary>ping</primary> </indexterm>
+   <para>
+    Der <command>ping</command>-Befehl ist das Standardwerkzeug zum Testen, ob eine TCP/IP-Verbindung funktioniert. Er verwendet das ICMP-Protokoll, um ein kleines Datenpaket, das ECHO_REQUEST-Datagram, an den Ziel-Host zu senden. Dabei wird eine sofortige Antwort angefordert. Funktioniert dies, wird von <command>ping</command> eine Meldung angezeigt, die Ihnen bestätigt, dass die Netzwerkverbindung grundsätzlich funktioniert.
+   </para>
+   <para>
+    <command>ping</command> testet nicht nur die Funktion der Verbindung zwischen zwei Computern, es bietet darüber hinaus grundlegende Informationen zur Qualität der Verbindung. In <xref linkend="ex.basicnet.manconf.ping"/> sehen Sie ein Beispiel der <command>ping</command>-Ausgabe. Die vorletzte Zeile enthält Informationen zur Anzahl der übertragenen Pakete, der verlorenen Pakete und der Gesamtlaufzeit von <command>ping</command>.
+   </para>
+   <para>
+    Als Ziel können Sie einen Hostnamen oder eine IP-Adresse verwenden, z. B. <command>ping</command> <option>example.com</option> oder <command>ping</command> <option>192.168.3.100</option>. Das Programm sendet Pakete, bis Sie auf <keycombo><keycap>Strg</keycap><keycap>C</keycap></keycombo> drücken.
+   </para>
+   <para>
+    Wenn Sie nur die Funktion der Verbindung überprüfen möchten, können Sie die Anzahl der Pakete durch die Option <option>-c</option> beschränken. Wenn Sie die Anzahl beispielsweise auf drei Pakete beschränken möchten, geben Sie <command>ping</command> <option>-c 3 example.com</option> ein.
+   </para>
+   <example id="ex.basicnet.manconf.ping">
+    <title>Ausgabe des ping-Befehls</title>
+<screen>ping -c 3 example.com
+PING example.com (192.168.3.100) 56(84) bytes of data.
+64 bytes from example.com (192.168.3.100): icmp_seq=1 ttl=49 time=188 ms
+64 bytes from example.com (192.168.3.100): icmp_seq=2 ttl=49 time=184 ms
+64 bytes from example.com (192.168.3.100): icmp_seq=3 ttl=49 time=183 ms
+--- example.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2007ms
+rtt min/avg/max/mdev = 183.417/185.447/188.259/2.052 ms</screen>
+   </example>
+   <para>
+    Das Standardintervall zwischen zwei Paketen beträgt eine Sekunde. Zum Ändern des Intervalls bietet das ping-Kommando die Option <option>-i</option>. Wenn beispielsweise das Ping-Intervall auf zehn Sekunden erhöht werden soll, geben Sie <command>ping</command> <option>-i 10 example.com</option> ein.
+   </para>
+   <para>
+    In einem System mit mehreren Netzwerkgeräten ist es manchmal nützlich, wenn der ping-Befehl über eine spezifische Schnittstellenadresse gesendet wird. Verwenden Sie hierfür die Option <option>-I</option> mit dem Namen des ausgewählten Geräts. Beispiel: <command>ping</command> <option>-I wlan1 example.com</option>.
+   </para>
+   <para>
+    Weitere Optionen und Informationen zur Verwendung von ping erhalten Sie, indem Sie <command>ping</command><option>-h</option> eingeben oder die man-Seite <systemitem>ping (8)</systemitem> aufrufen.
+   </para>
+   <tip>
+    <title>Ping-Ermittlung für IPv6-Adressen</title>
+    <para>
+     Verwenden Sie für IPv6-Adressen das Kommando <command>ping6</command>. Hinweis: Zur Ping-Ermittlung für Link-Local-Adressen müssen Sie die Schnittstelle mit <option>-I</option> angeben. Das folgende Kommando funktioniert, wenn die Adresse über <literal>eth1</literal> erreichbar ist:
+    </para>
+<screen>ping6 -I eth1 fe80::117:21ff:feda:a425</screen>
+   </tip>
+  </sect3>
+  <sect3 id="sec.basicnet.manconf.testingifconfig">
+   <title>Konfigurieren des Netzwerks mit dem ifconfig-Befehl</title><indexterm> <primary>Befehle</primary> <secondary>ifconfig</secondary> </indexterm>
+   <para>
+    <command>ifconfig</command> ist ein Werkzeug zur Netzwerkkonfiguration.
+   </para>
+   <note>
+    <title><command/>ifconfig und ip<command/></title>
+    <para>
+     Das <command>ifconfig</command>-Werkzeug ist veraltet. Verwenden Sie stattdessen <command>ip</command>. Im Gegensatz zu <command>ip</command> können Sie <command>ifconfig</command> nur für die Schnittstellenkonfiguration verwenden. Schnittstellennamen sind damit auf 9 Zeichen beschränkt.
+    </para>
+   </note>
+   <para>
+    Ohne Argumente zeigt <command>ifconfig</command> den Status der gegenwärtig aktiven Schnittstellen an. Unter <xref linkend="ex.basicnet.manconf.ifconfig"/> sehen Sie, dass <command>ifconfig</command> über eine gut angeordnete, detaillierte Ausgabe verfügt. Die Ausgabe enthält außerdem in der ersten Zeile Informationen zur MAC-Adresse Ihres Geräts (dem Wert von <option>HWaddr</option>).
+   </para>
+   <example id="ex.basicnet.manconf.ifconfig">
+    <title>Ausgabe des <command>ifconfig</command>-Kommandos</title>
+<screen>eth0      Link encap:Ethernet  HWaddr 00:08:74:98:ED:51
+          inet6 addr: fe80::208:74ff:fe98:ed51/64 Scope:Link
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:634735 errors:0 dropped:0 overruns:4 frame:0
+          TX packets:154779 errors:0 dropped:0 overruns:0 carrier:1
+          collisions:0 txqueuelen:1000
+          RX bytes:162531992 (155.0 Mb)  TX bytes:49575995 (47.2 Mb)
+          Interrupt:11 Base address:0xec80
+
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:8559 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:8559 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:533234 (520.7 Kb)  TX bytes:533234 (520.7 Kb)    
+
+wlan1     Link encap:Ethernet  HWaddr 00:0E:2E:52:3B:1D
+          inet addr:192.168.2.4  Bcast:192.168.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::20e:2eff:fe52:3b1d/64 Scope:Link
+          UP BROADCAST NOTRAILERS RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:50828 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:43770 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:45978185 (43.8 Mb)  TX bytes:7526693 (7.1 MB)</screen>
+   </example>
+   <para>
+    Weitere Optionen und Informationen zur Verwendung von <command>ifconfig</command> erhalten Sie, wenn Sie <command>ifconfig</command> <option>-h</option> eingeben oder die man-Seite <systemitem>ifconfig (8)</systemitem> aufrufen.
+   </para>
+  </sect3>
+  <sect3>
+   <title>Konfigurieren des Routing mit <command>route</command></title><indexterm> <primary>Befehle</primary> <secondary>route</secondary> </indexterm>
+   <para>
+    <command>route</command> ist ein Programm zum Ändern der IP-Routing-Tabelle. Sie können damit Ihre Routing-Konfiguration anzeigen und Routen hinzufügen oder entfernen.
+   </para>
+   <note>
+    <title><command/>route und ip<command/></title>
+    <para>
+     Das <command>route</command>-Programm ist veraltet. Verwenden Sie stattdessen <command>ip</command>.
+    </para>
+   </note>
+   <para>
+    <command>route</command> ist vor allem dann nützlich, wenn Sie schnelle und übersichtliche Informationen zu Ihrer Routing-Konfiguration benötigen, um Routing-Probleme zu ermitteln. Sie sehen Ihre aktuelle Routing-Konfiguration unter <command>route</command><option>-n</option> als <systemitem class="username">root</systemitem>.
+   </para>
+   <example id="ex.basicnet.manconf.route">
+    <title>Ausgabe des <command>route <option>-n</option></command>-Kommandos</title>
+<screen><?dbsuse-fo font-size="7pt"?>
+
+route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags   MSS Window  irtt Iface
+10.20.0.0       *               255.255.248.0   U         0 0          0 eth0
+link-local      *               255.255.0.0     U         0 0          0 eth0
+loopback        *               255.0.0.0       U         0 0          0 lo
+default         styx.exam.com   0.0.0.0         UG        0 0          0 eth0</screen>
+   </example>
+   <para>
+    Weitere Optionen und Informationen zur Verwendung von <command>route</command> erhalten Sie, indem Sie <option>-h</option> eingeben oder die man-Seite <systemitem>route (8)</systemitem> aufrufen.
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.manconf.scripts">
+  <title>Startup-Skripten</title><indexterm> <primary>Skripten</primary> <secondary>init.d</secondary> </indexterm>
+  <para>
+   Neben den beschriebenen Konfigurationsdateien gibt es noch verschiedene Skripten, die beim Booten des Computers die Netzwerkprogramme starten. Diese werden gestartet, sobald das System in einen der <emphasis>Mehrbenutzer-Runlevel</emphasis> wechselt. Einige der Skripten sind in <xref linkend="tab.netz.start.skripte"/> beschrieben.
+  </para>
+  <table id="tab.netz.start.skripte">
+<?dbsuse-latex tablehead="p{.4\linewidth}p{.55\linewidth}"?>
+
+
+   <title>Einige Start-Skripten für Netzwerkprogramme</title>
+   <tgroup cols="2" align="left">
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/network</filename> <indexterm> <primary>scripts</primary> <secondary>init.d</secondary> <tertiary>network</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Dieses Skript übernimmt die Konfiguration der Netzwerkschnittstellen. Wenn der <command>Netzwerkdienst</command> nicht gestartet wurde, werden keine Netzwerkschnittstellen implementiert.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/xinetd</filename> <indexterm> <primary>Skripts</primary> <secondary>init.d</secondary> <tertiary>xinetd</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Startet xinetd. Mit xinetd können Sie Serverdienste auf dem System verfügbar machen. Beispielsweise kann er vsftpd starten, sobald eine FTP-Verbindung initiiert wird.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/rpcbind</filename> <indexterm> <primary>scripts</primary> <secondary>init.d</secondary> <tertiary>rpcbind</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Startet das rpcbind-Dienstprogramm, das RPC-Programmnummern in universelle Adressen konvertiert. Es ist für RPC-Dienste wie NFS-Server erforderlich.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/nfsserver</filename> <indexterm> <primary>scripts</primary> <secondary>init.d</secondary> <tertiary>nfsserver</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Startet den NFS-Server.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/postfix</filename> <indexterm> <primary>scripts</primary> <secondary>init.d</secondary> <tertiary>postfix</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Steuert den postfix-Prozess.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/ypserv</filename> <indexterm> <primary>scripts</primary> <secondary>init.d</secondary> <tertiary>ypserv</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Startet den NIS-Server.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/etc/init.d/ypbind</filename> <indexterm> <primary>scripts</primary> <secondary>init.d</secondary> <tertiary>ypbind</tertiary> </indexterm>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Startet den NIS-Client.
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table><indexterm startref="idx.networks_configuring" class="endofrange"/><indexterm startref="idx.configuring_networks_manually" class="endofrange"/>
+ </sect2>
+</sect1>

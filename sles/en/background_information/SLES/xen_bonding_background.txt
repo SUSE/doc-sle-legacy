@@ -1,0 +1,566 @@
+I've written this up which has a bit more info than what's in the tid.
+
+ Bonded Interfaces with VLANs and Bridging on SLES 10 SP2
+
+This is the complete configuration for a host with two network interfaces that will be bonded. We want to build a virtual switch stack and enable access to specific VLANs via bridge interfaces. The bridge interfaces allow us to give network access to virtual machines and the flexibility of putting them on any VLAN.
+
+
+[edit] Driver Configuration
+
+The 8021q driver must be loaded in the kernel in order for VLAN tagging to work. Edit /etc/sysconfig/kernel adding "8021q" like the line below. A restart will be required or you must manually load the driver via "modprobe 8021q"
+[edit] /etc/sysconfig/kernel
+
+ MODULES_LOADED_ON_BOOT="8021q"
+
+[edit] Bond Interface Configuration
+
+Before creating the bond interface make sure that both interfaces are enabled for dhcp. This will create a default configuration file for each interface. Make note of the names of the files. The names should be in the format of ifcfg-eth-id-<MAC ADDR>. You will need everything after the "ifcfg-" for the bond0 configuration. Once you record that information delete or rename both configuration files. If renaming you the name must not begin with "ifcfg" or it will load the interface. Bond0 is the first interface that starts. We have set the option for which type of bond we want to use. We currently use IEEE 802.3ad Dynamic link aggregation. This requires 802.3ad support in the switch and driver support for retrieving the speed and duplex of each slave. Our configururation uses Nortel 5510-48T Switch stacks with LACP configured on the switch ports to support the 802.3ad.
+[edit] /etc/sysconfig/network/ifcfg-bond0
+
+ BOOTPROTO="static"
+ STARTMODE="onboot"
+ BONDING_MASTER="yes"
+ BONDING_MODULE_OPTS="mode=802.3ad miimon=100"
+ BONDING_SLAVE0="eth-id-00:1a:a0:16:01:93"
+ BONDING_SLAVE1="eth-id-00:1a:a0:16:01:94"
+
+[edit] VLAN Interface Configuration
+
+Individual interfaces need to be created for each VLAN id that will be accessed over the bond. The number of the interface should match the VLAN ID tag. We are currently using using 4 VLANs in this configuration. The VLANs are as follows:
+
+    * VLAN 3 (192.68.205.0/24) is used for external facing DMZ services
+    * VLAN 4 (10.1.1.0/24) is used production servers and virtual machines
+    * VLAN 5 (10.1.2.0/23) is used for qa/testing
+    * VLAN 6 (10.1.4.0/23) also used for qa/testing 
+
+[edit] /etc/sysconfig/network/ifcfg-vlan3
+
+ BRIDGE='swtich'
+ BROADCAST=
+ ETHERDEVICE='bond0'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 3 Interface on BOND0'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] /etc/sysconfig/network/ifcfg-vlan4
+
+ BRIDGE='swtich'
+ BROADCAST=
+ ETHERDEVICE='bond0'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 4 Interface on BOND0'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] /etc/sysconfig/network/ifcfg-vlan5
+
+ BRIDGE='swtich'
+ BROADCAST=
+ ETHERDEVICE='bond0'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 5 Interface on BOND0'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] /etc/sysconfig/network/ifcfg-vlan6
+
+ BRIDGE='swtich'
+ BROADCAST=
+ ETHERDEVICE='bond0'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 6 Interface on BOND0'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] Bridge Interface Configuration
+
+Bridge interfaces allow us to access the network work on the far side of the bridge. In this specific case, it creates the fabric for attaching virtual machines to those networks through the dom0 host. Currently bridge interfaces do not support dhcp. We must manually set a static IP address, network mask, broadcast and networking addresses for the bridge interface that will be used for dom0 network access. Currently in our configuration we are assigning an address through br4.
+[edit] /etc/sysconfig/network/ifcfg-br3
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR=
+ NETMASK=
+ NETWORK=
+ BROADCAST=
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan3'
+ NAME='Bridge on VLAN3 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+[edit] /etc/sysconfig/network/ifcfg-br4
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR='10.1.1.185'
+ NETMASK='255.255.255.0'
+ NETWORK='10.1.1.0'
+ BROADCAST='10.1.1.255'
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan4'
+ NAME='Bridge on VLAN4 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+[edit] /etc/sysconfig/network/ifcfg-br5
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR=
+ NETMASK=
+ NETWORK=
+ BROADCAST=
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan5'
+ NAME='Bridge on VLAN5 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+[edit] /etc/sysconfig/network/ifcfg-br6
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR=
+ NETMASK=
+ NETWORK=
+ BROADCAST=
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan6'
+ NAME='Bridge on VLAN6 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+[edit] Additional Network Configuration
+
+To complete the networking configuration some additional files should be configured before using the system. With manual network configuration we must also manually configure a default route. The default route must be configured to route through the br4 interface. Also we should also manually set the hostname. Manually configuration of name resolution is necessary if we want to be able to resolve domain names from the dom0 host.
+
+
+[edit] /etc/sysconfig/network/routes
+
+ default 10.1.1.254 0.0.0.0 br4
+
+[edit] /etc/HOSTNAME
+
+ jil-d-a-01-a.prod.interop.novell.com
+
+[edit] /etc/resolv.conf
+
+ domain prod.interop.novell.com
+ search prod.interop.novell.com novl.interop.novell.com test.interop.novell.com bench.interop.novell.com interop.novell.com
+ nameserver 10.1.1.1
+ nameserver 10.1.1.2
+
+[edit] Switch/Bridge Run Details
+[edit] Network Interfaces
+
+bond0     Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:2444845 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:803974 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:3305376217 (3152.2 Mb)  TX bytes:62690732 (59.7 Mb)
+
+br3       Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:43 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:6 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2354 (2.2 Kb)  TX bytes:468 (468.0 b)
+
+br4       Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet addr:10.1.1.27  Bcast:10.1.1.255  Mask:255.255.255.0
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:2408477 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:709562 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:3248240788 (3097.7 Mb)  TX bytes:50409149 (48.0 Mb)
+
+br5       Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:13867 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:6 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2034742 (1.9 Mb)  TX bytes:468 (468.0 b)
+
+br6       Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:7198 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:6 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:464848 (453.9 Kb)  TX bytes:468 (468.0 b)
+
+eth0      Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          UP BROADCAST RUNNING SLAVE MULTICAST  MTU:1500  Metric:1
+          RX packets:2291220 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:97407 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:3290057837 (3137.6 Mb)  TX bytes:8507706 (8.1 Mb)
+          Interrupt:17  
+
+eth1      Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          UP BROADCAST RUNNING SLAVE MULTICAST  MTU:1500  Metric:1
+          RX packets:153625 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:706567 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:15318380 (14.6 Mb)  TX bytes:54183026 (51.6 Mb)
+          Interrupt:18 
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:35 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:35 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2828 (2.7 Kb)  TX bytes:2828 (2.7 Kb)
+
+vlan3     Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:47 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:22845 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:3134 (3.0 Kb)  TX bytes:1370916 (1.3 Mb)
+
+vlan4     Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:2408492 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:732395 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:3248245381 (3097.7 Mb)  TX bytes:51779258 (49.3 Mb)
+
+vlan5     Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:13885 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:22845 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:2041962 (1.9 Mb)  TX bytes:1370916 (1.3 Mb)
+
+vlan6     Link encap:Ethernet  HWaddr 00:1A:A0:16:01:93  
+          inet6 addr: fe80::21a:a0ff:fe16:193/64 Scope:Link
+          UP BROADCAST RUNNING MASTER MULTICAST  MTU:1500  Metric:1
+          RX packets:7203 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:22845 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:465188 (454.2 Kb)  TX bytes:1370916 (1.3 Mb)
+
+[edit] Bridge
+
+jil-d-a-01-a:~ # brctl show
+bridge name     bridge id               STP enabled     interfaces
+br3             8000.001aa0160193       yes             vlan3
+br4             8000.001aa0160193       yes             vlan4
+br5             8000.001aa0160193       yes             vlan5
+br6             8000.001aa0160193       yes             vlan6
+
+[edit] Single Interface with VLANs and Bridging on SLES 10 SP2
+
+This is the complete configuration for a host with one nic that is going to be used to provide bridge access for virtual machines to multiple VLANs. As with the bonding configuration it is recommended to first enable the interface to use dhcp. All of the following Interface configuration files will be located in "/etc/sysconfig/network". Like the bonding we will also remove the configuration file for our existing interface before utilizing the new configuration. However we will need the information from the "ETHERDEVICE=" field. The name of your interface configuration file will be of the format ifcfg-eth-id-<MAC ADDR>. Make note of that field in the configuration file, it will be used in all the vlan configuration files. Also in order to access VLANs individual interfaces for every VLAN ID that you want to have access to must be created and the 8021q driver must be loaded.
+[edit] Driver Configuration
+
+The 8021q driver must be loaded in the kernel in order for VLAN tagging to work. Edit /etc/sysconfig/kernel adding "8021q" like the line below. Once the system is restarted the module will be loaded.
+[edit] /etc/sysconfig/kernel
+
+ MODULES_LOADED_ON_BOOT="8021q"
+
+[edit] VLAN Interface Configuration
+
+Individual interfaces need to be created for each VLAN id that will be accessed over the bond. The number of the interface should match the VLAN ID tag. We are currently using using 4 VLANs in this configuration. The VLANs are as follows:
+
+    * VLAN 3 (192.68.205.0/24) is used for external facing DMZ services
+    * VLAN 4 (10.1.1.0/24) is used production servers and virtual machines
+    * VLAN 5 (10.1.2.0/23) is used for qa/testing
+    * VLAN 6 (10.1.4.0/23) also used for qa/testing 
+
+[edit] /etc/sysconfig/network/ifcfg-vlan3
+
+ BRIDGE='switch'
+ BROADCAST=
+ ETHERDEVICE='id-00:1b:78:a3:ce:60'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 3 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] /etc/sysconfig/network/ifcfg-vlan4
+
+ BRIDGE='switch'
+ BROADCAST=
+ ETHERDEVICE='id-00:1b:78:a3:ce:60'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 4 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] /etc/sysconfig/network/ifcfg-vlan5
+
+ BRIDGE='switch'
+ BROADCAST=
+ ETHERDEVICE='id-00:1b:78:a3:ce:60'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 5 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] /etc/sysconfig/network/ifcfg-vlan6
+
+ BRIDGE='switch'
+ BROADCAST=
+ ETHERDEVICE='id-00:1b:78:a3:ce:60'
+ ETHTOOL_OPTIONS=
+ MTU=
+ NAME='VLAN 6 Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+
+[edit] Bridge Interface Configuration
+
+Dom0 networking is configured on the brige interface. In this configuration we use the br6 interface for network access. It is configured with a static IP address, network mask, broadcast and networking addresses.
+[edit] /etc/sysconfig/network/ifcfg-br3
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR=
+ NETMASK=
+ NETWORK=
+ BROADCAST=
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan3'
+ NAME='VLAN3 Bridge Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+[edit] /etc/sysconfig/network/ifcfg-br4
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR=
+ NETMASK=
+ NETWORK=
+ BROADCAST=
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan4'
+ NAME='VLAN4 Bridge Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+
+[edit] /etc/sysconfig/network/ifcfg-br5
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR=
+ NETMASK=
+ NETWORK=
+ BROADCAST=
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan5'
+ NAME='VLAN5 Bridge Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+
+[edit] /etc/sysconfig/network/ifcfg-br6
+
+ DEVICE='switch'
+ ONBOOT='yes'
+ TYPE='Bridge'
+ IPADDR='10.1.4.54'
+ NETMASK='255.255.254.0'
+ NETWORK='10.1.4.0'
+ BROADCAST='10.1.5.255'
+ BOOTPROTO='none'
+ BRIDGE='yes'
+ BRIDGE_PORTS='vlan6'
+ NAME='VLAN6 Bridge Interface'
+ REMOTE_IPADDR=
+ STARTMODE='auto'
+ USERCONTROL='no'
+ BRIDGE_AGEINGTIME='300'
+ BRIDGE_FORWARDDELAY='0'
+ BRIDGE_HELLOTIME='2'
+ BRIDGE_MAXAGE='20'
+ BRIDGE_PATHCOSTS='19'
+ BRIDGE_PRIORITIES=
+ BRIDGE_PRIORITY=
+ BRIDGE_STP='on'
+ PREFIXLEN=
+
+[edit] Additional Network Configuration
+
+To complete the networking configuration some additional files should be configured before using the system. With manual network configuration we must also manually configure a default route. The default route must be configured to route through the br6 interface. Also we should also manually set the hostname. Manually configuration of name resolution is necessary if we want to be able to resolve domain names from the dom0 host.
+[edit] /etc/sysconfig/network/routes
+
+ default 10.1.5.254 0.0.0.0 br6
+
+
+
+On Tue, Sep 30, 2008 at 11:01:37AM -0600, Gilson Melo wrote:
+> yep, please, check the below TID:
+> - 3815448: How to set up bonding with YaST2
+> 
+> It's quite simple as long as you have two NICs available. :)
+> 
+> -Gilson
+> 
+> 
+>  
+> >>> "Isaac Hernandez" <ihernandez@novell.com> 9/30/2008 11:01 AM >>> 
+> Yes, bonding is what I meant (translation sometimes betrays me, 8 )   )
+> 
+> Any quick reference on how to do it? I have not done such configuration, yet.
+> 
+> Thanks.
+> --Isaac 
+>  
+> >>> "Gilson Melo" <gmelo@novell.com> 09/30/08 11:45 AM >>> 
+> Isaac,
+> 
+> are you talking about bonding? In case yes, bonding should work fine.
+> 
+> I've used that on the host machine but never on the VM but it should work. 
+> 
+> Please, give it a try.
+> 
+> Regards,
+> 
+> -Gilson
+> 
+> >>> "Isaac Hernandez" <ihernandez@novell.com> 9/30/2008 10:41 AM >>> 
+> Hello everyone,
+> 
+> A customer wants to know if Xen can group 2 or more logical network interfaces forming a virtual single NIC with more capacity and/or for connectivity redundancy?
+> 
+> Thanks.
+> 
+> --Isaac
+> 
+> 
+> _______________________________________________
+> Virtualization-XEN mailing list
+> Virtualization-XEN@lists.novell.com
+> https://lists.innerweb.novell.com/mailman/listinfo/virtualization-xen
+> Search Archives: https://lists.innerweb.novell.com/search
+> 
+> 
+> _______________________________________________
+> Virtualization-XEN mailing list
+> Virtualization-XEN@lists.novell.com
+> https://lists.innerweb.novell.com/mailman/listinfo/virtualization-xen
+> Search Archives: https://lists.innerweb.novell.com/search
+> 
+> 
+> _______________________________________________
+> Virtualization-XEN mailing list
+> Virtualization-XEN@lists.novell.com
+> https://lists.innerweb.novell.com/mailman/listinfo/virtualization-xen
+> Search Archives: https://lists.innerweb.novell.com/search
+> 
+> 
+> _______________________________________________
+> Virtualization-XEN mailing list
+> Virtualization-XEN@lists.novell.com
+> https://lists.innerweb.novell.com/mailman/listinfo/virtualization-xen
+> Search Archives: https://lists.innerweb.novell.com/search
+> 
+_______________________________________________
+Virtualization-XEN mailing list
+Virtualization-XEN@lists.novell.com
+https://lists.innerweb.novell.com/mailman/listinfo/virtualization-xen
+Search Archives: https://lists.innerweb.novell.com/search

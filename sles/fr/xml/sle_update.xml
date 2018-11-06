@@ -1,0 +1,2442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="sle_update.xml" id="cha.update.sle">
+ <title>Mise à jour de SUSE Linux Enterprise</title>
+ <abstract>
+  <para>
+   SUSE® Linux Enterprise (SLE) offre la possibilité de mettre à jour un système existant vers la nouvelle version sans le réinstaller complètement. Aucune installation nouvelle n'est requise. Les données existantes, comme les répertoires personnels et la configuration du système, sont conservées. Au cours du cycle de vie du produit, vous pouvez appliquer des Service Packs afin de renforcer la sécurité du système, de corriger les défauts logiciels et d'avoir accès à de nouvelles fonctionnalités. Effectuez les installations à partir d'un lecteur de CD ou de DVD local ou à partir d'une source d'installation réseau centrale.
+  </para>
+ </abstract>
+ <sect1 id="sec.update.terminology">
+  <title>Terminologie</title>
+
+  <para>
+   Différents termes sont employés dans ce chapitre. Afin de bien comprendre les informations, lisez les définitions ci-après :
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Rétroportage</term>
+    <listitem>
+     <para>
+      Le rétroportage consiste à adapter une modification développée pour une nouvelle version d'un logiciel afin d'en faire bénéficier une version plus ancienne. Le cas le plus courant porte sur la correction des failles de sécurité dans les composants logiciels plus anciens. En règle générale, le rétroportage fait également partie d'un modèle de maintenance visant à fournir des améliorations ou (plus rarement) de nouvelles fonctionnalités.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+
+    <term>Deltarpm</term>
+    <listitem>
+     <para>
+      Correctif ne contenant que les différentiels binaires compris entre deux versions définies d'un paquetage. Il a la taille de téléchargement la plus petite. Avant son installation, l'intégralité du paquetage RPM est reconstruit sur la machine locale.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Downstream (En aval)</term>
+    <listitem>
+     <para>
+      Ce terme est une métaphore utilisée pour qualifier le développement de logiciels dans le monde Open Source (à comparer à <emphasis>Upstream</emphasis> (En amont). Le terme <emphasis>Downstream</emphasis> désigne des personnes ou des entreprises, telles que SUSE, qui intègrent le code source (en amont) dans d'autres logiciels afin de créer une distribution qui sera ensuite utilisée par des utilisateurs finaux. Le flux logiciel s'écoule donc des développeurs vers les utilisateurs finaux en passant pas les intégrateurs.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Migration en ligne</term>
+    <listitem>
+     <para>
+      Méthode qui consiste à mettre à jour un Service Pack (SP) en utilisant les outils de mise à jour en ligne (plutôt que le support d'installation) afin d'installer les correctifs correspondants. Cela met à jour tous les paquetages du système installé vers l'état le plus récent (y compris les mises à jour) de SP3, en plus des mises à jour SP2.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+
+    <term>Paquetage</term>
+    <listitem>
+     <para>
+      Un paquetage est un fichier compressé au format <literal>rpm</literal> qui contient tous les fichiers d'un programme donné, y compris les composants en option tels que la configuration, des exemples et la documentation.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+
+    <term>Correctif</term>
+    <listitem>
+     <para>
+      Un correctif comporte un ou plusieurs paquetages et peut être appliqué via deltarpms. Il peut également introduire des dépendances dans les paquetages qui ne sont pas encore installés.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Service packs (SP)</term>
+    <listitem>
+     <para>
+      Combine plusieurs correctifs sous une forme facile à installer ou à déployer. Les service packs sont numérotés et contiennent généralement des correctifs de sécurité, des mises à jour, des mises à niveau ou des améliorations de programmes.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Upstream (En amont)</term>
+    <listitem>
+     <para>
+      Ce terme est une métaphore utilisée pour qualifier le développement de logiciels dans le monde Open Source (à comparer à <emphasis>Downstream</emphasis>). Le terme <emphasis>upstream</emphasis> désigne le projet d'origine, auteur ou mainteneur d'un logiciel distribué comme code source. Les commentaires, correctifs, améliorations de fonctionnalités ou autres optimisations en provenance des utilisateurs finaux ou des contributeurs parviennent aux développeurs en amont. C'est à eux que revient la décision d'intégrer ou de rejeter la requête.
+     </para>
+     <para>
+      Si les membres du projet décident d'intégrer la requête, elle s'affiche dans les versions plus récentes du logiciel. Une requête acceptée profite à toutes les parties concernées.
+     </para>
+     <para>
+      Le rejet d'une requête peut être motivé par plusieurs raisons. Elle n'est pas conforme aux directives du projet, elle n'est pas valide, elle a déjà été intégrée, elle ne cadre pas avec l'esprit du projet ou elle ne figure pas sur la feuille de route. Une requête rejetée rend plus difficile la tâche des développeurs en amont, dans la mesure où ils doivent faire en sorte que leurs correctifs restent synchronisés avec le code en amont. On évite généralement de recourir à cette méthode. Cependant, elle s'avère parfois nécessaire.
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>Mise à jour</term>
+    <listitem>
+     <para>
+      Installation d'une version plus récente <emphasis>(mineure)</emphasis> d'un paquetage.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Mise à niveau</term>
+    <listitem>
+     <para>
+      Installation d'une version plus récente <emphasis>(majeure)</emphasis> d'un paquetage ou d'une distribution qui offre de <emphasis>nouvelles fonctionnalités</emphasis>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.update.nmm">
+  <title>Modèle de maintenance de SUSE Linux Enterprise 11</title>
+
+  <para>
+   Le modèle de maintenance de SUSE Linux Enterprise 11 permet à la fois de bénéficier d'une grande flexibilité et de contrôler vos service packs. Il présente les avantages suivants :
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Les service packs sont plus légers et plus faciles à tester et à déployer.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Les précédentes versions peuvent être conservées avec une prise en charge pour l'ensemble du système.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Réponse aux besoins du marché entre les service packs par des améliorations sélectives et mises à jour supplémentaires dans le dépôt de mise à jour général. En sélectionnant les améliorations, ce modèle réduit les longues périodes entre les service packs.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <sect2 id="sec.update.background">
+   <title>Informations de base</title>
+   <para>
+    SUSE accorde un grand intérêt aux commentaires de ses clients. Aussi, dans une optique d'amélioration constante, plusieurs changements ont été apportés ces dernières années au mode de diffusion des mises au jour :
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      SLES 9 contenait un seul dépôt où étaient rassemblées toutes les mises à jour ; la version la plus récente de la mise à jour était la seule à être prise en charge.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Depuis SLES 10 SP1, le concept de <quote>dépôt spécifique au service pack</quote> a été introduit. Cela signifie que toutes les mises à jour d'un service pack donné sont distribuées dans un dépôt spécifique. Dès que les utilisateurs migrent vers un service pack plus récent, il leur est impossible d'accéder aux dépôts précédents s'ils se sont enregistrés directement auprès de Novell Customer Center. Les utilisateurs de SMT ou SUSE Manager étaient en mesure de s'abonner gratuitement à tout canal SP (c'est toujours le cas actuellement). Ce changement a principalement été apporté en raison du concept de période de chevauchement de 6 mois (prise en charge de service pack n-1) pour permettre la validation du service pack diffusé et d'une fenêtre de migration pour les clients, selon laquelle ils continuaient à bénéficier d'une maintenance et d'un support complets dans le cadre de l'ancien SP.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      SLES 11 GA et SLES 11 SP1 suivaient le modèle de SLES 10. SLES 11 SP2 marque l'introduction d'un nouveau modèle de dépôt qui se présente comme suit :
+     </para>
+     <orderedlist numeration="lowerroman" spacing="normal">
+      <listitem>
+       <para>
+        Le dépôt des mises à jour de SLES 11 SP1 reste souscrit. Toutes les mises à jour qui s'appliquaient également au SP2 étaient aussi ou uniquement diffusées dans le dépôt des mises à jour de SP1. Cela signifie que toutes les mises à jour compatibles avec ABI et API continuaient à y être distribuées.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Le dépôt des mises à jour de SLES 11 SP2 contient uniquement les dernières mises à jour et les éventuelles mises à jour novatrices qui ne peuvent pas être diffusées dans le dépôt des mises à jour du SP1 (pour diverses raisons). Pour être complet, il convient encore de signaler que nous avons introduit un dépôt central qui comblait un <quote>vide</quote> pour les paquetages qui n'étaient pas diffusés dans le dépôt des mises à jour du SP1, ni dans celui du SP2.
+       </para>
+      </listitem>
+      <listitem>
+        <para>SLES 11 SP4 présentera un modèle de canal similaire à celui de SLES 10. Le modèle a été considéré comme le moyen le plus simple et le plus rapide de fournir des mises à jour pour un service pack spécifique. Toutes les mises à jour seront transmises par le biais d'un canal de mise à jour spécial. Des canaux supplémentaires seront disponibles sur la machine, mais les anciens canaux seront supprimés. </para>
+      </listitem>
+     </orderedlist>
+    </listitem>
+   </itemizedlist>
+   <para>
+    <xref linkend="fig.update.maintenance.evolution"/> représente certains aspects mentionnés ci-dessus.
+   </para>
+   <figure id="fig.update.maintenance.evolution">
+    <title>Évolution de la fourniture de la maintenance (s'applique également à SLED)</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="new-maintenance-model.svg" width="75%"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="new-maintenance-model.png" width="75%"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Nos produits présentent un cycle de vie de 10 ans : 10 ans de support global et 3 ans de support étendu. Les principales versions sont proposées tous les 4 ans et les service packs tous les 18 mois. Le support à long terme au niveau des service packs est une fenêtre de mise à niveau étendue ou un cycle de vie étendu de la version principale (voir <xref linkend="fig.update.maintenance.long-term-service-pack"/>).
+   </para>
+   <figure id="fig.update.maintenance.long-term-service-pack">
+    <title>Support à long terme au niveau des service packs</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="long-term-service-pack-support.svg" width="75%"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="long-term-service-pack-support.png" width="75%"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Le support à long terme au niveau des service packs nécessite un abonnement actif, standard ou prioritaire. Il n'affecte pas les conditions d'abonnement L1 ou L2. Les mises à jour de sécurité sont traitées de façon <quote>proactive</quote> : il s'agit de toute vulnérabilité critique non basée sur l'utilisateur, tout exploit racine local dans le kernel ou tout autre exploit racine directement exécutable sans l'intervention de l'utilisateur.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.update.supportlevel-lifecycle">
+   <title>Niveaux de support</title>
+   <para>
+    Les niveaux de support étendu sont valables entre la huitième année et la dixième année. Ces niveaux de support proposent des diagnostics permanents de niveau technique L3 et des résolutions réactives des bogues critiques. Ils appliquent des mises à jour de sécurité à tout exploit racine banal dans le kernel ou tout autre exploit racine directement exécutable sans l'intervention de l'utilisateur. Ils prennent également en charge les environnements système, les piles logicielles et le matériel avec une liste d'exclusion de paquetage limitée. Voir <xref linkend="tab.security-and-bug-fixes"/> pour découvrir une présentation.
+   </para>
+   <table id="tab.security-and-bug-fixes">
+    <title>Mises à jour de sécurité et résolution des bogues</title>
+    <tgroup cols="6">
+     <colspec colname="c1"/>
+     <colspec colname="c2"/>
+     <colspec colname="c3"/>
+     <colspec colname="c4"/>
+     <colspec colname="c5"/>
+     <colspec colname="c6"/>
+     <thead>
+      <row>
+       <entry/>
+       <entry namest="c2" nameend="c5" align="center">
+        <para>
+         — Support général —
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Support étendu
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Rubrique
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SP actuel
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SP (n-1)
+<?dblinebreak ?>
+
+
+         6 mois
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SP (n-1)
+<?dblinebreak ?>
+
+
+         avec LTSS
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Années 6 et 7
+<?dblinebreak ?>
+
+
+         avec LTSS
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Années 8, 9 et 10
+<?dblinebreak ?>
+
+
+         avec LTSS
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         Services techniques L1/L2
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Maintenance proactive
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry/>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry/>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Mises à jour de pilote via PLDP
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry/>
+       <entry/>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Mises à jour de sécurité proactives
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry/>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Assistance technique L3
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Back-ports disponibles
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry/>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ✓
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect2>
+
+  <sect2 id="sec.update.nmm.channels">
+   <title>Modèle de canaux</title>
+   <para os="sles">
+    Dans l'ancien modèle de maintenance, deux canaux étaient assignés à <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> : <literal>SLES11-SPx-Pool</literal> et <literal>SLES11-SPx-Updates</literal>. Au cours d'une migration en ligne vers SPx+1, ces canaux étaient temporairement remplacés par <literal>SLES11-SPx-Online</literal>.
+   </para>
+   
+   <para>
+    La disposition des canaux a changé avec SUSE Linux Enterprise SP2, de manière à bénéficier des avantages du nouveau modèle de maintenance. <xref linkend="tab.update.nmm.channels.sp2"/> contient la liste de tous les canaux de SP1 à SP3.
+   </para>
+   <table id="tab.update.nmm.channels.sp2">
+    <title>Disposition des canaux pour SUSE Linux Enterprise 11 SP1, SP2 et SP3</title>
+
+    <tgroup cols="3">
+     <colspec colnum="1" colname="c1" colwidth="1.2*"/>
+     <colspec colnum="2" colname="c2" colwidth="3*"/>
+     <colspec colnum="3" colname="c3" colwidth="3*"/>
+     <thead>
+      <row>
+       <entry>
+        <para>
+         Type
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SLES
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SLED
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         Canaux requis
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SP1
+        </para>
+        <simplelist>
+         <member><literal>SLES11-SP1-Pool</literal> </member> <member><literal>SLES11-SP1-Updates</literal> </member>
+        </simplelist>
+        <para>
+         SP2
+        </para>
+        <simplelist>
+         <member><literal>SLES11-SP1-Pool</literal> </member> <member><literal>SLES11-SP1-Updates</literal> </member> <member><literal>SLES11-SP2-Core</literal> </member> <member><literal>SLES11-SP2-Updates</literal> </member>
+        </simplelist>
+        <para>
+         SP3
+        </para>
+        <simplelist>
+         <member><literal>SLES11-SP3-Pool</literal> </member> <member><literal>SLES11-SP3-Updates</literal> </member>
+        </simplelist>
+         <para>SP4</para>
+         <simplelist>
+           <member><literal>SLES11-SP4-Pool</literal> </member> <member><literal>SLES11-SP4-Updates</literal></member>
+         </simplelist>
+       </entry>
+       <entry>
+        <para>
+         SP1
+        </para>
+        <simplelist>
+         <member><literal>SLED11-SP1-Pool</literal> </member> <member><literal>SLED11-SP1-Updates</literal> </member>
+        </simplelist>
+        <para>
+         SP2
+        </para>
+        <simplelist>
+         <member><literal>SLED11-SP1-Pool</literal> </member> <member><literal>SLED11-SP1-Updates</literal> </member> <member><literal>SLED11-SP2-Core</literal> </member> <member><literal>SLED11-SP2-Updates</literal> </member>
+        </simplelist>
+        <para>
+         SP3
+        </para>
+        <simplelist>
+         <member><literal>SLED11-SP3-Pool</literal> </member> <member><literal>SLED11-SP3-Updates</literal> </member>
+        </simplelist>
+        <para>SP4</para>
+         <simplelist>
+           <member><literal>SLED11-SP4-Pool</literal> </member> <member><literal>SLED11-SP4-Updates</literal></member>
+         </simplelist>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Canaux facultatifs
+        </para>
+       </entry>
+       <entry>
+        <para>
+         SP1
+        </para>
+        <simplelist>
+         <member><literal>SLES11-SP1-Debuginfo-Pool</literal> </member> <member><literal>SLES11-SP1-Debuginfo-Updates</literal> </member>
+        </simplelist>
+        <para>
+         SP2
+        </para>
+        <simplelist>
+         <member><literal>SLES11-SP2-Debuginfo-Core</literal> </member> <member><literal>SLES11-SP2-Debuginfo-Updates</literal> </member> <member><literal>SLES11-Extras</literal> </member> <member><literal>SLES11-SP2-Extension-Store</literal> </member>
+        </simplelist>
+        <para>
+         SP3
+        </para>
+        <simplelist>
+         <member><literal>SLES11-SP3-Debuginfo-Core</literal> </member> <member><literal>SLES11-SP3-Debuginfo-Updates</literal> </member> <member><literal>SLES11-SP3-Extension-Store</literal> </member> <member><literal>SLES11-Extra</literal> </member>
+        </simplelist>
+         <para>SP4</para>
+         <simplelist>
+           <member><literal>SLES11-SP4-Debuginfo-Pool</literal> </member> <member><literal>SLES11-SP4-Debuginfo-Updates</literal></member> <member><literal>SLES11-Extra</literal></member> <member><literal>SLES11-Security-Module</literal></member>
+         </simplelist>
+       </entry>
+       <entry>
+        <para>
+         SP1
+        </para>
+        <simplelist>
+         <member><literal>SLED11-SP1-Debuginfo-Pool</literal> </member> <member><literal>SLED11-SP1-Debuginfo-Updates</literal> </member>
+        </simplelist>
+        <para>
+         SP2
+        </para>
+        <simplelist>
+         <member><literal>SLED11-SP2-Debuginfo-Core</literal> </member> <member><literal>SLED11-SP2-Debuginfo-Updates</literal> </member> <member><literal>SLED11-Extras</literal> </member> <member><literal>SLED11-SP2-Extension-Store</literal> </member>
+        </simplelist>
+        <para>
+         SP3
+        </para>
+        <simplelist>
+         <member><literal>SLED11-SP3-Debuginfo-Core</literal> </member> <member><literal>SLED11-SP3-Debuginfo-Updates</literal> </member> <member><literal>SLED11-SP3-Extension-Store</literal> </member> <member><literal>SLED11-Extra</literal> </member>
+        </simplelist>
+         <para>SP4</para>
+         <simplelist>
+           <member><literal>SLED11-SP4-Debuginfo-Pool</literal> </member> <member><literal>SLED11-SP4-Debuginfo-Updates</literal></member>
+         </simplelist>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Spécifique au produit (exemples)
+        </para>
+       </entry>
+       <entry>
+        <simplelist>
+         <member><literal>SLES11-WebYaST-SP2-Pool</literal> </member> <member><literal>SLES11-WebYaST-SP2-Updates</literal> </member>
+        </simplelist>
+       </entry>
+       <entry>
+        <simplelist>
+         <member><literal>SLED11-MSI-Updates</literal> </member>
+        </simplelist>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <variablelist>
+    <title>Description des canaux requis</title>
+    <varlistentry>
+     <term>Noyau</term>
+     <listitem>
+      <para>
+       Ce sous-ensemble du support d'installation décompressé contient uniquement les paquetages considérés comme formant le <quote>noyau</quote> de SPx (environ 30 % du total du paquetage). Les dépôts SP contiennent uniquement les paquetages spécifiques à un SP et ses thèmes (la prise en charge du matériel, par exemple). Il existe uniquement dans SP2.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Mises à jour</term>
+     <listitem>
+      <para>
+       Mises à jour de maintenance dans le dépôt <literal>Noyau</literal> ou <literal>Pool</literal> correspondant.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Pool</term>
+     <listitem>
+      <para>
+       Contient tous les RPM binaires du support d'installation, ainsi que des informations de modèle et des métadonnées d'état du support.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <variablelist>
+    <title>Description des canaux facultatifs</title>
+    <varlistentry>
+     <term>Debuginfo-Pool</term>
+     <term>Debuginfo-Updates</term>
+     <listitem>
+      <para>
+       Ces canaux comprennent du contenu statique. Cependant, seul le canal <literal>Debuginfo-Updates</literal> reçoit des mises à jour. Activez ces canaux si vous devez installer des bibliothèques avec des informations de débogage en cas de problème.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Extension-Store</term>
+     <listitem>
+      <para> Ce canal n'est pas encore utilisé. Il est censé contenir des paquetages destinés à des (futurs) produits complémentaires. Le canal Extension Store sera supprimé à partir de SLES 11 SP4.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>LTSS-Updates</term>
+     <listitem>
+      <para>
+       Mises à jour de maintenance apportées aux paquetages dans le dépôt <literal>Pool</literal> correspondant pour les installations assorties d'un contrat LTSS (Long Term Support Service). Ces canaux spécifiques nécessitent un contrat LTSS.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <sect3 id="sec.update.nmm.channels.origin">
+    <title>Origine des paquetages</title>
+    <formalpara>
+     <title>SUSE Linux Enterprise 11 SP3/SP4</title>
+     <para>Deux canaux seulement sont disponibles avec l'installation de SP3 : SLES11-SP3-Pool et SLES11-SP3-Updates. Tous les canaux précédents provenant de SP2 sont visibles, mais désactivés. Ces canaux désactivés ne sont nécessaires que pour les utilisateurs qui présentent des besoins bien spécifiques. 
+     </para>
+    </formalpara>
+   </sect3>
+   <sect3 id="sec.update.nmm.channels.working">
+    <title>Utilisation des canaux</title>
+    <para>
+     Lors de l'enregistrement, le système reçoit des canaux de Customer Center. Les noms de canaux pointent vers des URI spécifiques de Novell Customer Center (voir <ulink url="http://scc.suse.com"/>). Pour répertorier tous les canaux disponibles sur votre système, utilisez <command>zypper</command> comme suit :
+    </para>
+<screen>zypper repos -u</screen>
+
+    <para>
+     Vous obtenez alors la liste de tous les canaux disponibles sur votre système. L'alias et le nom sont indiqués pour chaque canal. Vous pouvez également savoir si le canal est activé et s'il sera rafraîchi. L'option <option>-u</option> vous permet, en outre, de connaître l'URI d'origine.
+    </para>
+    <para>
+     Si vous souhaitez supprimer d'anciens canaux (de SP1, par exemple), utilisez la commande <command>zypper removerepo</command> et le nom de la ou des chaînes. Par exemple, pour supprimer les anciens canaux SP1 et SP2, utilisez la commande suivante :
+    </para>
+<screen>zypper removerepo SLES11-SP1-Pool SLES11-SP1-Updates \
+  SLE11-SP1-Debuginfo-Pool SLE11-SP1-Debuginfo-Updates \
+  SLES11-SP2-Core SLES11-SP2-Updates \
+  SLE11-SP2-Debuginfo-Core SLES11-SP2-Extension-Store\
+  SLE11-SP2-Debuginfo-Updates</screen>
+    <para>
+     Si vous souhaitez ajouter à nouveau certains de vos canaux, connectez-vous à <ulink url="http://www.novell.com/ncc"/> et sélectionnez <menuchoice> <guimenu>Mes produits</guimenu> <guimenu>Mirror Credentials</guimenu></menuchoice> (Mettre en miroir les références) dans le menu. La liste des URI est alors affichée. Seuls les canaux répertoriés dans cette liste de produits peuvent être ajoutés. Par exemple, pour ajouter SP2 Extension Store, utilisez la commande suivante (une seule ligne, sans barre oblique inverse) :
+    </para>
+<screen>zypper addrepo -n SLES11-SP2-Extension-Store \
+ https://nu.novell.com/repo/$RCE/SLES11-SP2-Extension-Store/nu_novell_com:SLES11-SP2-Extension-Store</screen>
+   </sect3>
+    
+    
+  </sect2>
+ 
+ </sect1>
+  
+ <sect1 id="sec.update.proc.prep.paths">
+  <title>Chemins de mise à niveau pris en charge vers SLE SP4</title>
+
+
+  <variablelist>
+   <varlistentry>
+    <term>Mise à niveau de SLES 8, SLES 9 et NLD 9</term>
+    <listitem>
+     <para>
+      Aucun chemin de mise à niveau direct n'est pris en charge à partir de ces versions. Il est conseillé de procéder à une nouvelle installation.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Mise à niveau à partir de SUSE Linux Enterprise 10 (tout service pack)</term>
+    <listitem>
+      
+     <para>Certaines méthodes prises en charge pour la mise à niveau à partir de SLES 10 GA et SPx ou SLES 11 GA et SP1 vers SLES 11 SP3 peuvent nécessiter des étapes intermédiaires :</para>
+      <itemizedlist mark="bullet" spacing="normal">
+        <listitem>
+          <para>SLES 10 GA -&gt; SLES 10 SP1 -&gt; SLES 10 SP2 -&gt; SLES 10 SP3 -&gt; SLES 10 SP4 -&gt; SLES 11 SP3 ou</para>
+        </listitem>
+        <listitem>
+          <para>SLES 11 GA -&gt; SLES 11 SP1 -&gt; SLES 11 SP2 -&gt; SLES 11 SP3 -&gt; SLES 11 SP4</para>
+        </listitem>
+      </itemizedlist>
+     <para>Il est possible d'effectuer la mise à niveau à partir de SLES 10 SP4 via un support amorçable (y compris le démarrage PXE). À titre de référence, reportez-vous aux Notes de publication à l'adresse <ulink url="https://www.suse.com/releasenotes/x86_64/SUSE-SLES/11-SP4/#Update.General.Sequence"/>.
+       </para>
+      <para>
+        Avertissement pour les utilisateurs SLED : certains paquetages de développement (devel) ont été déplacés du support d'installation <literal>SLED11-SP2</literal> vers le dépôt <literal>SLED11-Extras</literal>. Afin d'éviter des conflits de dépendance au cours de la mise à niveau, activez ce dépôt avant d'effectuer la mise à niveau proprement dite. Exécutez <command>yast2 repositories</command> et activez-y <literal>SLED11-Extras</literal>. Sous SLES, cette étape supplémentaire n'est pas nécessaire.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Mise à niveau à partir de SUSE Linux Enterprise 11 GA</term>
+    <listitem>
+     <para>
+      Aucun chemin de migration direct vers SUSE Linux Enterprise 11 SP3 n'est pris en charge. Vous devez d'abord effectuer une mise à jour de SUSE Linux Enterprise 11 GA vers SP1. Effectuez ensuite les opérations des sections <xref linkend="sec.update.sle11sp1"/> et <xref linkend="sec.update.sle11sp2"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Mise à niveau à partir de SUSE Linux Enterprise 11 SP1</term>
+    <listitem>
+     <para>
+      Reportez-vous au chapitre <xref linkend="sec.update.sle11sp1"/> pour obtenir des informations détaillées.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Mise à niveau à partir de SUSE Linux Enterprise 11 SP2</term>
+    <listitem>
+     <para>
+      Reportez-vous au chapitre <xref linkend="sec.update.sle11sp2"/> pour obtenir des informations détaillées.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Mise à niveau à partir de SUSE Linux Enterprise 11 SP3</term>
+    <listitem>
+     <para>
+      Reportez-vous au chapitre <xref linkend="sec.update.sle11sp3"/> pour obtenir des informations détaillées.
+     </para>
+    </listitem>
+   </varlistentry> 
+  </variablelist>
+
+  <important>
+   <title>les mises à niveau entre architectures différentes ne sont pas prises en charge</title>
+   <para>
+    
+    Les mises à niveau entre architectures différentes (32 bits vers 64 bits et inversement) ne sont pas prises en charge
+   </para>
+  </important>
+  
+ </sect1>
+ <sect1 id="sec.update.prep">
+  <title>Opérations préalables à la mise à jour</title>
+
+  <para>
+   Avant de lancer la procédure de mise à jour, assurez-vous que votre système est prêt. Cette préparation implique notamment la sauvegarde des données et la consultation des notes de version.
+  </para>
+
+  <sect2 id="sec.update.prep.backup">
+   <title>Exécution d'une sauvegarde</title>
+   <para>
+    Avant de procéder à la mise à jour, copiez les fichiers de configuration existants sur un support distinct (comme un périphérique à bande, un disque dur amovible, etc.) pour sauvegarder les données. Cela concerne principalement les fichiers stockés dans <filename>/etc</filename>, ainsi que certains des répertoires et des fichiers de <filename>/var</filename> et de <filename>/opt</filename>. Vous pouvez également écrire les données de l'utilisateur de <filename>/home</filename> (les répertoires <envar>HOME</envar>) dans un support de sauvegarde. Sauvegardez ces données en tant que <systemitem class="username">root</systemitem>. Seul l'utilisateur <systemitem class="username">root</systemitem> a des droits de lecture sur tous les fichiers locaux.
+   </para>
+   <para>
+    Si vous avez sélectionné <guimenu>Mettre à jour un système existant</guimenu> comme mode d'installation dans YaST, vous pouvez choisir d'effectuer une sauvegarde (système) ultérieurement. Vous pouvez inclure tous les fichiers modifiés, ainsi que ceux issus du répertoire <filename>/etc/sysconfig</filename>. Il ne s'agit toutefois pas d'une sauvegarde complète, dans la mesure où il manque tous les autres répertoires importants mentionnés ci-dessus. Recherchez la sauvegarde dans le répertoire <filename>/var/adm/backup</filename>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.update.prep.disks">
+   <title>Partitionnement et espace disque</title>
+   <para>
+    Avant de commencer votre mise à jour, prenez note de la partition root. La commande <command>df /</command> énumère le nom de périphérique de la partition root. Dans l'<xref linkend="aus.update.df"/>, la partition root à écrire est <filename>/dev/sda3</filename> (montée en tant que <filename>/</filename>).
+   </para>
+   <example id="aus.update.df">
+    <title>List with <command>df -h</command></title>
+
+<screen os="sles">Filesystem     Size  Used Avail Use% Mounted on
+     /dev/sda3       74G   22G   53G  29% /
+     tmpfs          506M     0  506M   0% /dev/shm
+     /dev/sda5      116G  5.8G  111G   5% /home
+     /dev/sda1       44G    4G   40G   9% /data</screen>
+   </example>
+   <para>
+    La taille des logiciels tend à <quote>augmenter</quote> de versions en versions. Il convient donc de vérifier l'espace de partition disponible avec <command>df</command> avant d'effectuer la mise à jour. Si vous estimez que vous allez manquer d'espace disque, sécurisez vos données avant d'effectuer la mise à jour, puis repartitionnez votre système. Il n'existe pas de règle précise concernant l'espace de chaque partition. L'espace requis dépend de votre profil particulier de partitionnement et du logiciel sélectionné.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.update.prep.vms">
+   <title>Arrêt des machines virtuelles</title>
+   <para>
+    Si votre machine fait office de serveur hôte de machine virtuelle pour KVM ou Xen, veillez à arrêter correctement tous les invités de machine virtuelle actifs avant de procéder à la mise à jour. Dans le cas contraire, l'accès aux invités peut s'avérer impossible après la mise à jour.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.update.prep.relnotes">
+   <title>Exigences spécifiques à la version</title>
+   <para>
+    Pour connaître les exigences spécifiques à la version, consultez les notes de version qui accompagnent la mise à jour. Les notes de version contiennent des informations supplémentaires sur les procédures de mise à jour.
+   </para>
+   <para>
+    La version actuelle du document contenant les informations les plus récentes sur <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> peut être consultée en ligne, à l'adresse suivante : <ulink url="http://www.suse.com/doc/sles11/#additional"/>.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.update.sle11sp1">
+  <title>Mise à jour de SLE 11 SP1 vers SLE 11 SP2</title>
+
+  <para>
+   Diverses méthodes sont prises en charge pour mettre à jour un système SUSE Linux Enterprise 11 SP1 vers un Service Pack 2. Vous pouvez soit utiliser les outils en ligne appropriés afin d'installer les correctifs correspondants (<quote>Migration en ligne</quote>), soit utiliser le support d'installation du Service Pack. Par ailleurs, les mises à jour peuvent être effectuées via des serveurs qui hébergent les outils SMT ou SUSE Manager.
+  </para>
+
+  <para>
+   La migration en ligne est prise en charge par les outils suivants :
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <guimenu>YaST Wagon</guimenu> (interface utilisateur graphique)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <command>zypper</command> (ligne de commande)
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Il est également possible de télécharger l'intégralité du support Service Pack (image ISO du DVD). Pour lancer la procédure de mise à jour, démarrez le système à partir du support Service Pack physique ou d'une source d'installation réseau.
+  </para>
+
+  <sect2 id="sec.update.sle11spx.online">
+   <title>Migration en ligne</title>
+   <para>
+    Lors d'une migration en ligne, la mise à jour s'effectue depuis le système en cours d'exécution. Il vous suffit d'effectuer un seul redémarrage, une fois la mise à jour terminée.
+   </para>
+   <sect3 id="sec.update.sle11spx.online.requirements">
+    <title>Configuration requise</title>
+    <para>
+     Pour pouvoir effectuer une mise à jour en ligne, les conditions suivantes doivent être réunies. Veuillez également lire la <xref linkend="sec.update.prep"/>.
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>Enregistrement du produit</term>
+      <listitem>
+       <para>
+        Pour qu'il soit possible de se connecter aux canaux de mise à jour, votre produit doit être enregistré. S'il ne l'est pas, vous pouvez exécuter le module <guimenu>Configuration de Novell Customer Center</guimenu> dans YaST ou l'outil de ligne de commande <command>suse_register</command> pour lancer l'enregistrement.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Exécution d'une mise à jour en ligne</term>
+      <listitem>
+       <para>
+        Assurez-vous que les correctifs les plus récents sont installés sur la version actuelle. Effectuez une mise à jour en ligne avant de procéder à une migration en ligne. Si vous utilisez une interface graphique, démarrez le module Mise à jour en ligne de YaST ou l'applet de mise à jour. Exécutez les commandes suivantes sur la ligne de commande (la dernière commande doit être exécutée à deux reprises) :
+       </para>
+<screen>zypper ref -s
+zypper update -t patch
+zypper update -t patch</screen>
+       <para>
+        Redémarrez le système si nécessaire.
+       </para>
+       <para>
+        Reportez-vous au <xref linkend="cha.onlineupdate.you"/> ou à la <xref linkend="sec.zypper.softup"/>. pour plus d'informations. sur les outils de mise à jour en ligne.
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Logiciels tiers</term>
+      <listitem>
+       <para>
+        Si votre configuration implique un logiciel tiers ou supplémentaire, testez cette procédure sur une autre machine pour vous assurer que les dépendances ne sont pas brisées par la mise à jour.
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <important>
+     <title>exécutez toujours une migration en ligne complète.</title>
+     <para>
+      La migration en ligne doit toujours être effectuée du début à la fin. L'interruption de la procédure entraînera une corruption irrécupérable du système. 
+     </para>
+    </important>
+   </sect3>
+   <sect3 id="sec.update.sle11spx.online.wagon">
+    <title>Migration en ligne avec YaST <guimenu>Wagon</guimenu></title>
+     <para>Si vous disposez d'un système SLES 11 SP1, les étapes requises sont indiquées à l'adresse <ulink url="https://www.suse.com/support/kb/doc.php?id=7011872"/>. La procédure ci-après s'applique à une migration en ligne de SP2 vers SP3.</para>     
+    <procedure>
+     <step performance="required">
+      <para>
+       Lorsque toutes les conditions requises sont réunies (voir la <xref linkend="sec.update.sle11spx.online.requirements"/>), l'applet de mise à jour affiche un message dans la barre système qui indique la disponibilité d'une mise à niveau de distribution. Cliquez sur celui-ci pour démarrer YaST <guimenu>Wagon</guimenu>. Une autre solution consiste à exécuter <command>/usr/sbin/wagon</command> en tant qu'utilisateur <systemitem class="username">root</systemitem> à partir de la ligne de commande.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Confirmez la boîte de dialogue <guimenu>Bienvenue</guimenu> en cliquant sur <guimenu>Suivant</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Si <guimenu>Wagon</guimenu> détermine que des conditions requises ne sont pas réunies (des mises à jour de maintenance requises sont disponibles, mais n'ont pas encore été installées), il procède à une mise à jour automatique, ce qui peut nécessiter un redémarrage. Suivez les instructions à l'écran.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Choisissez la méthode de mise à jour dans la boîte de dialogue suivante. Sélectionnez <guimenu>Novell Customer Center</guimenu> pour utiliser la configuration par défaut (recommandé).
+      </para>
+      <para>
+       Cliquez sur <guimenu>URL personnalisée</guimenu> pour choisir manuellement les canaux logiciels utilisés pour la migration en ligne. La liste des canaux est affichée. Vous avez alors la possibilité d'activer, de désactiver, d'ajouter ou de supprimer manuellement des canaux. Ajoutez la ou les sources de mise à jour SP2. Il peut s'agir du support d'installation SP2 ou des canaux <literal>SP2-Core</literal> et <literal>SP2-Updates</literal>. Cliquez sur <guimenu>OK</guimenu> pour revenir à la boîte de dialogue <guimenu>Méthode de mise à jour</guimenu>.
+      </para>
+      <para>
+       Si vous souhaitez passer en revue les modifications apportées à la configuration des canaux par la procédure de mise à jour, sélectionnez <guimenu>Vérifier les modifications de dépôts automatiques</guimenu>.
+      </para>
+      <para>
+       Cliquez ensuite sur <guimenu>Suivant</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Le système va être réenregistré. Au cours de cette procédure, les canaux <literal>SP2-Core</literal> et <literal>SP2-Updates</literal> seront ajoutés au système (pour plus d'informations, reportez-vous à la <xref linkend="sec.update.nmm.channels"/>). Confirmez l'ajout des canaux.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Si vous avez sélectionné l'option <guimenu>Vérifier les modifications de dépôts automatiques</guimenu> dans la boîte de dialogue <guimenu>Méthode de mise à jour</guimenu>, la liste des dépôts s'affiche. Elle vous offre la possibilité d'activer, de désactiver, d'ajouter ou de supprimer manuellement des canaux. Dès que vous avez terminé, appuyez sur <guimenu>OK</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Choisissez le type de migration :
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term><guimenu>Migration complète</guimenu>
+        </term>
+        <listitem>
+         <para>
+          Met à jour tous les paquetages vers le niveau SP2 le plus récent.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><guimenu>Migration minimale</guimenu>
+        </term>
+        <listitem>
+         <para>
+          Met à jour un ensemble minimal de paquetages vers le niveau SP2 le plus récent.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+      <para>
+       Cliquez sur <guimenu>Avancé</guimenu> afin de sélectionner manuellement les dépôts utilisés pour la mise à niveau.
+      </para>
+      <para>
+       Confirmez votre sélection.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       L'écran <guimenu>Paramètres de mise à niveau de la distribution</guimenu> s'ouvre. Il présente un résumé de la configuration de mise à jour. Les sections suivantes sont disponibles :
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term><guimenu>Produits complémentaires</guimenu>
+        </term>
+        <listitem>
+         <para>
+          Cette section permet d'ajouter des produits complémentaires SUSE Linux Enterprise Server ou des produits tiers.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><guimenu>Options de mise à jour</guimenu>
+        </term>
+        <listitem>
+         <para>
+          Cette section affiche la liste des actions qui seront effectuées au cours de la mise à jour. Vous pouvez soit télécharger tous les paquetages avant de les installer (option par défaut recommandée), soit les télécharger et les installer un par un.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><guimenu>Paquetages</guimenu>
+        </term>
+        <listitem>
+         <para>
+          Aperçu statistique de la mise à jour.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Sauvegarde</term>
+        <listitem>
+         <para>
+          Vous pouvez définir les options de sauvegarde.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+      <para>
+       Cliquez sur <guimenu>Suivant</guimenu> et <guimenu>Démarrer la mise à jour</guimenu> pour continuer.
+      </para>
+      <important>
+       <title>Interruption de la migration en ligne</title>
+       <para>
+        Vous pouvez interrompre la procédure de migration en ligne en toute sécurité sur cet écran <emphasis>avant</emphasis> de cliquer sur <guimenu>Démarrer la mise à jour</guimenu>, ainsi que sur tous les écrans précédents. Cliquez sur <guimenu>Interrompre</guimenu> pour abandonner la procédure de mise à jour et rétablir le système dans l'état dans lequel il se trouvait avant le démarrage de YaST Wagon. Suivez les instructions à l'écran et effectuez un réenregistrement avant de quitter Wagon afin de supprimer les canaux SP2 de votre système.
+       </para>
+      </important>
+     </step>
+     <step performance="required">
+      <para>
+       Les opérations suivantes sont effectuées pendant la procédure de mise à jour :
+      </para>
+      <substeps performance="required">
+       <step performance="required">
+        <para>
+         Les paquetages sont mis à jour.
+        </para>
+       </step>
+       <step performance="required">
+        <para>
+         <command>SuSEconfig</command> est exécuté.
+        </para>
+       </step>
+       <step performance="required">
+        <para>
+         Le système est redémarré (appuyez sur <guimenu>OK</guimenu>).
+        </para>
+       </step>
+       <step performance="required">
+        <para>
+         Le système qui vient d'être mis à jour est réenregistré.
+        </para>
+       </step>
+      </substeps>
+     </step>
+     <step performance="required">
+      <para>
+       Votre système a été mis à jour vers le Service Pack 2.
+      </para>
+     </step>
+    </procedure>
+    
+   </sect3>
+   <sect3 id="sec.update.sle11spx.online.zypper">
+    <title>Migration en ligne avec <command>zypper</command></title>
+    <procedure>
+     <step performance="required">
+      <para>
+       Lorsque toutes les conditions requises sont réunies (voir la <xref linkend="sec.update.sle11spx.online.requirements"/>), les <quote>produits</quote> nécessaires pour la migration en ligne sont ajoutés dans <filename>/etc/products.d</filename>. Exécutez la commande suivante pour obtenir la liste de ces produits :
+      </para>
+
+<screen>zypper se -t product | grep -h -- "-migration" | cut -d'|' -f2</screen>
+      <para>
+       Cette commande doit au moins renvoyer <literal os="sles">SUSE_SLES-SP2-migration</literal>. En fonction de l'étendue de l'installation, il se peut que davantage de produits soient répertoriés.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Installez les produits de migration récupérés lors de l'étape précédente à l'aide de la commande <command>zypper in -t product <replaceable>LIST_OF_PRODUCTS</replaceable></command>, par exemple :
+      </para>
+<screen os="sles">zypper in -t product SUSE_SLES-SP2-migration</screen>
+
+     </step>
+     <step performance="required">
+      <para>
+       Enregistrez les produits installés lors de l'étape précédente afin d'obtenir les canaux de mise à jour correspondants :
+      </para>
+<screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+     </step>
+     <step performance="required">
+      <para>
+       Rafraîchissez à nouveau les dépôts et les services :
+      </para>
+<screen>zypper ref -s</screen>
+     </step>
+     <step performance="required">
+      <para>
+       Consultez la liste des dépôts que vous pouvez récupérer avec la commande <command>zypper lr</command>. Il faut, <emphasis>au minimum</emphasis>, que les dépôts suivants soient définis sur <guimenu>Activé</guimenu> :
+      </para>
+      <itemizedlist os="sles" mark="bullet" spacing="normal">
+       <listitem>
+        <para>
+         <literal>SLES11-SP1-Pool</literal>
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>SLES11-SP1-Updates</literal>
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>SLES11-SP2-Core</literal>
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>SLES11-SP2-Updates</literal>
+        </para>
+       </listitem>
+      </itemizedlist>
+      
+      <para>
+       En fonction de l'étendue de votre installation, d'autres dépôts doivent être activés pour des produits complémentaires ou des extensions.
+      </para>
+      <para>
+       Si l'un de ces dépôts n'est pas activé (les dépôts <literal>SP2</literal> ne sont pas activés par défaut lorsque vous suivez ce workflow), activez-le à l'aide de la commande <command>zypper modifyrepo --enable <replaceable>REPOSITORY ALIAS</replaceable></command>, par exemple :
+      </para>
+<screen os="sles">zypper modifyrepo --enable SLES11-SP2-Core SLES11-SP2-Updates</screen>
+
+      <para>
+       Si votre configuration contient des dépôts tiers qui risquent de ne pas être compatibles avec SP2, désactivez-les à l'aide de la commande <command>zypper modifyrepo --disable <replaceable>REPOSITORY ALIAS</replaceable></command>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       À présent, tous les éléments sont réunis pour effectuer la mise à niveau de distribution avec <command>zypper dup --from <replaceable>REPO 1</replaceable> --from <replaceable>REPO 2</replaceable> <replaceable>...</replaceable></command>. Veillez à répertorier tous les dépôts nécessaires avec <option>--from</option>, par exemple :
+      </para>
+<screen os="sles">zypper dup --from SLES11-SP2-Core --from SLES11-SP2-Updates</screen>
+
+      <para>
+       Confirmez avec <guimenu>y</guimenu> pour lancer la mise à niveau.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       La fin de la procédure de mise à niveau de distribution signifie qu'une migration minimale a été effectuée (un ensemble minimal de paquetages a donc été mis à jour vers le niveau SP2 le plus récent). Ignorez cette étape si vous n'avez pas l'intention d'effectuer une migration complète.
+      </para>
+      <para>
+       Pour effectuer une migration complète (mise à jour de tous les paquetages vers le niveau SP2 le plus récent), exécutez la commande suivante :
+      </para>
+<screen>zypper update -t patch</screen>
+     </step>
+     <step performance="required">
+      <para>
+       Une fois la mise à niveau vers SP2 terminée, vous devez réenregistrer votre produit :
+      </para>
+<screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+     </step>
+     <step performance="required">
+      <para>
+       Pour terminer, redémarrez votre système.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Votre système a été mis à jour vers le Service Pack 2.
+      </para>
+     </step>
+    </procedure>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.update.sle11spx.medium">
+   <title>Mise à jour au moyen d'un démarrage à partir d'une source d'installation</title>
+   <para>
+    Au lieu de procéder à une migration en ligne (pour plus de détails à ce sujet, voir la <xref linkend="sec.update.sle11spx.online"/>), vous pouvez mettre à jour votre système en le démarrant à partir d'une source d'installation : soit un DVD, soit une source d'installation réseau. La mise à jour démarre comme une installation normale.
+   </para>
+   <para>
+    Les images ISO du Service Pack 2 sont disponibles à l'adresse suivante : <ulink url="http://download.novell.com/"/>. Vous pouvez soit les graver sur un DVD, soit préparer une source d'installation réseau en suivant la procédure décrite à la <xref linkend="sec.deployment.remoteinst.instserver"/>.
+   </para>
+   <sect3 id="sec.upgrade.install-from-dvd">
+    <title>Mise à jour à partir d'un lecteur de DVD local</title>
+    <para>
+     Avant de procéder à une nouvelle installation d'un service pack SUSE Linux Enterprise, assurez-vous que tous les supports d'installation de service packs (DVD) sont disponibles.
+    </para>
+    <procedure id="upgrade.sp.instsp.fromsp">
+     <title>Démarrage à partir du support du Service Pack</title>
+     <step performance="required">
+      <para>
+       Insérez le premier support de service pack SUSE Linux Enterprise et démarrez votre machine. Un écran de démarrage semblable à celui de l'installation initiale de SUSE Linux Enterprise 11 s'affiche.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Sélectionnez <guimenu>Installation</guimenu> et poursuivez comme indiqué dans les instructions d'installation de YaST au <xref linkend="cha.inst"/>.
+      </para>
+     </step>
+    </procedure>
+   </sect3>
+   <sect3 id="sec.upgrade.install-from-network">
+    <title>Mise à jour à partir d'une source d'installation réseau</title>
+    <para>
+     Avant de lancer la mise à jour d'un service pack SUSE Linux Enterprise à partir d'une source d'installation réseau, veillez à ce que les conditions suivantes soient réunies :
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Une source d'installation réseau est configurée conformément à la <xref linkend="sec.deployment.remoteinst.instserver"/>.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Une connexion réseau est établie sur le serveur d'installation et l'ordinateur cible, avec un service de noms, DHCP (facultatif, mais requis pour le démarrage PXE) et OpenSLP (facultatif).
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Le DVD 1 du service pack SUSE Linux Enterprise permettant de démarrer le système cible <emphasis>ou</emphasis> un système cible configuré pour le démarrage PXE conformément à la <xref linkend="sec.deployment.remoteinst.boot.pxeprep" xrefstyle="HeadingOnPage"/> est présent.
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     Reportez-vous au <xref linkend="cha.deployment.remoteinst"/> pour obtenir des informations détaillées sur le démarrage d'une mise à niveau à partir d'un serveur distant.
+    </para>
+    <sect4 id="sec.upgrade.install-from-network.dvdboot">
+     <title>Installation réseau—Démarrage à partir du DVD</title>
+     <para>
+      Pour effectuer une installation réseau en utilisant le DVD du Service Pack comme support de démarrage, procédez de la façon suivante :
+     </para>
+     <procedure>
+      <step performance="required">
+       <para>
+        Insérez le premier DVD de service pack SUSE Linux Enterprise et démarrez votre machine. Un écran de démarrage semblable à celui de l'installation initiale de SUSE Linux Enterprise 11 s'affiche.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Sélectionnez <guimenu>Installation</guimenu> pour démarrer le kernel du service pack, puis appuyez sur <keycap>F4</keycap> pour sélectionner le type de source d'installation réseau (FTP, HTTP, NFS ou SMB).
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Fournissez les informations appropriées sur les chemins ou sélectionnez <guimenu>SLP</guimenu> comme source d'installation.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Sélectionnez le serveur d'installation approprié parmi ceux proposés ou utilisez l'invite de saisie des options de démarrage pour indiquer le type de source d'installation et son emplacement actuel, comme dans <xref linkend="sec.i.yast2.source.network"/>. YaST se lance.
+       </para>
+       <para>
+        Terminez l'installation conformément aux instructions du <xref linkend="sec.update.sle11spx.medium.update"/>.
+       </para>
+      </step>
+     </procedure>
+    </sect4>
+    <sect4 id="sec.upgrade.install-from-network.pxeboot">
+     <title>Installation réseau—Démarrage de PXE</title>
+     <para>
+      Pour effectuer une installation réseau d'un service pack SUSE Linux Enterprise via le réseau, procédez comme suit :
+     </para>
+     <procedure>
+      <step performance="required">
+       <para>
+        Ajustez la configuration de votre serveur DHCP afin de fournir les informations relatives à l'adresse requises pour le démarrage de PXE, conformément à la <xref linkend="sec.deployment.remoteinst.boot.pxeprep"/>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Configurez le serveur TFTP qui devra contenir l'image de démarrage requise pour le démarrage de PXE.
+       </para>
+       <para>
+        Pour ce faire, utilisez le premier CD ou DVD de votre service pack SUSE Linux Enterprise et suivez les instructions contenues dans la <xref linkend="sec.deployment.remoteinst.boot.tftp"/>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Préparez le démarrage de PXE et Wake-on-LAN sur l'ordinateur cible.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Lancez le démarrage du système cible et utilisez VNC pour vous connecter à distance à la routine d'installation s'exécutant sur cet ordinateur. Pour plus d'informations, reportez-vous à la <xref linkend="sec.deployment.remoteinst.monitor.vnc"/>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Terminez l'installation conformément aux instructions du <xref linkend="sec.update.sle11spx.medium.update"/>.
+       </para>
+      </step>
+     </procedure>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.update.sle11spx.medium.update">
+    <title>Procédure de mise à jour</title>
+    <para>
+     Après avoir démarré le système à partir d'un support d'installation ou du réseau, procédez comme suit pour lancer la mise à jour :
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Sur l'écran <guimenu>Bienvenue</guimenu>, sélectionnez la <guimenu>Langue</guimenu> et le <guimenu>Clavier</guimenu>, puis acceptez l'accord de licence. Cliquez ensuite sur <guimenu>Suivant</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Si vous avez démarré le système à partir d'un support physique, procédez à une <guimenu>Vérification des supports</guimenu> pour en vérifier l'intégrité. N'ignorez cette étape que si vous avez déjà vérifié le support auparavant.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Sélectionnez <guimenu>Mettre à jour</guimenu> dans l'écran <guimenu>Mode d'installation</guimenu>. Cliquez sur <guimenu>Suivant</guimenu> pour lancer la procédure de mise à jour.
+      </para>
+     </step>
+    </procedure>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.update.sle11spx.smt">
+   <title>Mise à jour via l'outil SMT</title>
+   <para>
+    Au lieu de télécharger les mises à jour pour chaque système client à partir du serveur de mise à jour Novell, il est possible d'utiliser l'outil Subscription Management Tool (SMT) pour SUSE Linux Enterprise afin de mettre en miroir les mises à jour sur un serveur local.
+   </para>
+   <para>
+    Cet outil fait office de dépôt de mises à jour logicielles et de proxy Novell Customer Center pour les enregistrements de clients. Vous trouverez, dans la documentation de SMT accessible à l'adresse <ulink url="http://www.suse.com/doc/smt11/"/>, un aperçu de ses fonctionnalités, ainsi que des instructions sur son implémentation.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.update.sle11spx.manager">
+   <title>Mise à jour via SUSE Manager</title>
+   <para>
+    SUSE Manager est une solution serveur pour fournir des mises à jour et des correctifs pour les clients SUSE Linux Enterprise. Il s'accompagne d'un ensemble d'outils et d'une interface utilisateur Web pour les tâches de gestion.
+   </para>
+   <para>
+    La documentation de SUSE Manager accessible à l'adresse <ulink url="http://www.suse.com/doc/suse_manager/"/> fournit un aperçu de ses fonctionnalités, ainsi que des instructions sur la configuration du serveur et des clients.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.update.sle11sp2">
+  <title>Mise à jour de SLE 11 SP2 vers SLE 11 SP3</title>
+
+  
+
+  <para>
+   La migration en ligne est prise en charge par les outils suivants :
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <guimenu>YaST Wagon</guimenu> (interface utilisateur graphique)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <command>zypper</command> (ligne de commande)
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Si vous procédez à la mise à jour de votre système au moyen d'une migration en ligne, elle a lieu alors que le système est en cours d'exécution. Il vous suffit d'effectuer un seul redémarrage, une fois la mise à jour terminée. Les options suivantes vous sont également proposées dans le cadre de la mise à jour :
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <xref linkend="sec.update.sle11spx.medium"/>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <xref linkend="sec.update.sle11spx.smt"/>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <xref linkend="sec.update.sle11spx.manager"/>
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <sect2 id="sec.update.sle11sp2.online.requirements">
+   <title>Configuration requise</title>
+   <para>
+    Pour pouvoir effectuer une mise à jour en ligne, les conditions suivantes doivent être réunies. Veuillez également lire la <xref linkend="sec.update.prep"/>.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Enregistrement du produit</term>
+     <listitem>
+      <para>
+       Pour qu'il soit possible de se connecter aux canaux de mise à jour, votre produit doit être enregistré. S'il ne l'est pas, vous pouvez exécuter le module <guimenu>Configuration de Novell Customer Center</guimenu> dans YaST ou l'outil de ligne de commande <command>suse_register</command> pour lancer l'enregistrement.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Exécution d'une mise à jour en ligne</term>
+     <listitem>
+      <para>
+       Assurez-vous que les correctifs les plus récents sont installés sur la version actuelle. Effectuez une mise à jour en ligne avant de procéder à une migration en ligne. Si vous utilisez une interface graphique, démarrez le module Mise à jour en ligne de YaST ou l'applet de mise à jour. Exécutez les commandes suivantes sur la ligne de commande (la dernière commande doit être exécutée à deux reprises) :
+      </para>
+<screen>zypper ref -s
+zypper update -t patch
+zypper update -t patch</screen>
+      <para>
+       Redémarrez le système si nécessaire.
+      </para>
+      <para>
+       Reportez-vous au <xref linkend="cha.onlineupdate.you"/> ou à la <xref linkend="sec.zypper.softup"/> pour plus d'informations sur les outils de mise à jour en ligne.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Logiciels tiers</term>
+     <listitem>
+      <para>
+       Si votre configuration implique un logiciel tiers ou supplémentaire, testez cette procédure sur une autre machine pour vous assurer que les dépendances ne sont pas brisées par la mise à jour.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <important>
+    <title>exécutez toujours une migration en ligne complète.</title>
+    <para>
+     La migration en ligne doit toujours être effectuée du début à la fin. L'interruption de la procédure entraînera une corruption irrécupérable du système.
+    </para>
+   </important>
+  </sect2>
+
+  <sect2 id="sec.update.sle11sp2.online.wagon">
+   <title>Migration en ligne avec YaST <guimenu>Wagon</guimenu></title>
+   <procedure>
+    <step performance="required">
+     <para>
+      Lorsque toutes les conditions requises sont réunies (voir la <xref linkend="sec.update.sle11spx.online.requirements"/>), l'applet de mise à jour affiche un message dans la barre système qui indique la disponibilité d'une mise à niveau de distribution. Cliquez sur celui-ci pour démarrer YaST <guimenu>Wagon</guimenu>. Une autre solution consiste à exécuter <command>/usr/sbin/wagon</command> en tant qu'utilisateur <systemitem class="username">root</systemitem> à partir de la ligne de commande.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Confirmez la boîte de dialogue <guimenu>Bienvenue</guimenu> en cliquant sur <guimenu>Suivant</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Si <guimenu>Wagon</guimenu> détermine que des conditions requises ne sont pas réunies (des mises à jour de maintenance requises sont disponibles, mais n'ont pas encore été installées), il procède à une mise à jour automatique, ce qui peut nécessiter un redémarrage. Suivez les instructions à l'écran.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Choisissez la méthode de mise à jour dans la boîte de dialogue suivante. Sélectionnez <guimenu>Novell Customer Center</guimenu> pour utiliser la configuration par défaut (recommandé).
+     </para>
+     <para>
+      Cliquez sur <guimenu>URL personnalisée</guimenu> pour choisir manuellement les canaux logiciels utilisés pour la migration en ligne. La liste des canaux est affichée. Vous avez alors la possibilité d'activer, de désactiver, d'ajouter ou de supprimer manuellement des canaux. Ajoutez la ou les sources de mise à jour SP3. Il peut s'agir du support d'installation SP3 ou des canaux <literal>SP3-Pool</literal> et <literal>SP3-Updates</literal>. Cliquez sur <guimenu>OK</guimenu> pour revenir à la boîte de dialogue <guimenu>Méthode de mise à jour</guimenu>.
+     </para>
+     <para>
+      Si vous souhaitez passer en revue les modifications apportées à la configuration des canaux par la procédure de mise à jour, sélectionnez <guimenu>Vérifier les modifications de dépôts automatiques</guimenu>.
+     </para>
+     <para>
+      Cliquez ensuite sur <guimenu>Suivant</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Le système va être réenregistré. Au cours de cette procédure, les canaux <literal>SP3-Pool</literal> et <literal>SP3-Updates</literal> seront ajoutés au système (pour plus d'informations, reportez-vous à la <xref linkend="sec.update.nmm.channels"/>). Confirmez l'ajout des canaux.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Si vous avez sélectionné l'option <guimenu>Vérifier les modifications de dépôts automatiques</guimenu> dans la boîte de dialogue <guimenu>Méthode de mise à jour</guimenu>, la liste des dépôts s'affiche. Elle vous offre la possibilité d'activer, de désactiver, d'ajouter ou de supprimer manuellement des canaux. Dès que vous avez terminé, appuyez sur <guimenu>OK</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      L'écran <guimenu>Paramètres de mise à niveau de la distribution</guimenu> s'affiche. Il présente un résumé de la configuration de mise à jour. Les sections suivantes sont disponibles :
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><guimenu>Produits complémentaires</guimenu>
+       </term>
+       <listitem>
+        <para>
+         Cette section permet d'ajouter des produits complémentaires SUSE Linux Enterprise Server ou des produits tiers.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><guimenu>Options de mise à jour</guimenu>
+       </term>
+       <listitem>
+        <para>
+         Cette section affiche la liste des actions qui seront effectuées au cours de la mise à jour. Vous pouvez soit télécharger tous les paquetages avant de les installer (option par défaut recommandée), soit les télécharger et les installer un par un.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><guimenu>Paquetages</guimenu>
+       </term>
+       <listitem>
+        <para>
+         Aperçu statistique de la mise à jour.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Sauvegarde</term>
+       <listitem>
+        <para>
+         Vous pouvez définir les options de sauvegarde.
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>
+      Cliquez sur <guimenu>Suivant</guimenu> et <guimenu>Démarrer la mise à jour</guimenu> pour continuer.
+     </para>
+     <important>
+      <title>Interruption de la migration en ligne</title>
+      <para>
+       Vous pouvez interrompre la procédure de migration en ligne en toute sécurité sur cet écran <emphasis>avant</emphasis> de cliquer sur <guimenu>Démarrer la mise à jour</guimenu>, ainsi que sur tous les écrans précédents. Cliquez sur <guimenu>Interrompre</guimenu> pour abandonner la procédure de mise à jour et rétablir le système dans l'état dans lequel il se trouvait avant le démarrage de YaST Wagon. Suivez les instructions à l'écran et effectuez un réenregistrement avant de quitter Wagon afin de supprimer les canaux SP2 de votre système.
+      </para>
+     </important>
+    </step>
+    <step performance="required">
+     <para>
+      Les opérations suivantes sont effectuées pendant la procédure de mise à jour :
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        Les paquetages sont mis à jour.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        <command>SuSEconfig</command> est exécuté.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Le système est redémarré (appuyez sur <guimenu>OK</guimenu>).
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Le système qui vient d'être mis à jour est réenregistré.
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      Votre système a été mis à jour vers le Service Pack 3.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.update.sle11sp2.online.zypper">
+   <title>Migration en ligne avec <command>zypper</command></title>
+   <procedure>
+    <step performance="required">
+     <para>
+      Lorsque toutes les conditions requises sont réunies (voir la <xref linkend="sec.update.sle11spx.online.requirements"/>), les <quote>produits</quote> nécessaires pour la migration en ligne sont ajoutés dans <filename>/etc/products.d</filename>. Exécutez la commande suivante pour obtenir la liste de ces produits :
+     </para>
+
+<screen>zypper se -t product | grep -h -- "-migration" | cut -d'|' -f2</screen>
+     <para>
+      Cette commande doit au moins renvoyer <literal os="sles">SUSE_SLES-SP3-migration</literal>. En fonction de l'étendue de l'installation, il se peut que davantage de produits soient répertoriés.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Installez les produits de migration récupérés lors de l'étape précédente à l'aide de la commande <command>zypper in -t product <replaceable>LIST_OF_PRODUCTS</replaceable></command>, par exemple :
+     </para>
+<screen os="sles">zypper in -t product SUSE_SLES-SP3-migration</screen>
+
+    </step>
+    <step performance="required">
+     <para>
+      Enregistrez les produits installés lors de l'étape précédente afin d'obtenir les canaux de mise à jour correspondants :
+     </para>
+<screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Rafraîchissez les dépôts et les services :
+     </para>
+<screen>zypper ref -s</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Consultez la liste des dépôts que vous pouvez récupérer avec la commande <command>zypper lr</command>. 
+     </para>
+     <para>
+      Si l'un de ces dépôts n'est pas activé (les dépôts <literal>SP3</literal> ne sont pas activés par défaut lorsque vous suivez ce workflow), activez-le à l'aide de la commande <command>zypper modifyrepo --enable <replaceable>REPOSITORY ALIAS</replaceable></command>, par exemple :
+     </para>
+<screen os="sles">zypper modifyrepo --enable SLES11-SP3-Core SLES11-SP3-Updates</screen>
+
+     <para>
+      Si votre configuration contient des dépôts tiers qui risquent de ne pas être compatibles avec SP3, désactivez-les à l'aide de la commande <command>zypper modifyrepo --disable <replaceable>REPOSITORY ALIAS</replaceable></command>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      À présent, tous les éléments sont réunis pour effectuer la mise à niveau de distribution avec <command>zypper dup --from <replaceable>REPO 1</replaceable> --from <replaceable>REPO 2</replaceable> <replaceable>...</replaceable></command>. Veillez à répertorier tous les dépôts nécessaires avec <option>--from</option>, par exemple :
+     </para>
+<screen os="sles">zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates</screen>
+
+     <para>
+      Confirmez avec <guimenu>y</guimenu> pour lancer la mise à niveau.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Une fois la mise à niveau de distribution de l'étape précédente terminée, exécutez la commande suivante :
+     </para>
+<screen>zypper update -t patch</screen>
+    </step>
+    <step performance="required">
+     <para>
+      La mise à niveau vers SP3 ayant été effectuée, vous devez réenregistrer votre produit :
+     </para>
+<screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Pour terminer, redémarrez votre système.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Votre système a été mis à jour vers le Service Pack 3.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+  
+ <sect1 id="sec.update.sle11sp3">
+   <title>Mise à jour de SLE 11 SP3 vers SLE 11 SP4</title>
+   <para>Diverses méthodes sont prises en charge pour mettre à jour un système SUSE Linux Enterprise Server 11 SP3 vers un Service Pack 4. Vous pouvez soit utiliser les outils en ligne appropriés afin d'installer les correctifs correspondants (Migration en ligne), soit utiliser le support d'installation du Service Pack. Par ailleurs, les mises à jour peuvent être effectuées via des serveurs qui hébergent les outils SMT ou SUSE Manager.</para>
+   <para>La migration en ligne est prise en charge par les outils suivants :
+     </para>
+       <itemizedlist mark="bullet" spacing="normal">
+         <listitem>
+           <para>YaST Wagon (interface utilisateur graphique) </para>
+         </listitem>
+         <listitem>
+           <para><command>zypper</command> (ligne de commande)</para>
+         </listitem>
+       </itemizedlist>
+     <para>Il est également possible de télécharger l'intégralité du support Service Pack (image ISO du DVD). Pour lancer la procédure de mise à jour, démarrez le système à partir du support Service Pack physique ou d'une source d'installation réseau. </para>
+   
+   <sect2 id="sec.update.sle11sp3.onlinemigration">
+     <title>Migration en ligne</title>
+     <para>Lors d'une migration en ligne, la mise à jour s'effectue depuis le système en cours d'exécution. Il vous suffit d'effectuer un seul redémarrage, une fois la mise à jour terminée.</para>
+     <sect3>
+       <title>Configuration requise</title>
+       <para>Pour pouvoir effectuer une mise à jour en ligne, les conditions suivantes doivent être réunies. Veuillez également lire la <xref linkend="sec.update.prep"/>.
+       </para>
+       
+       <variablelist>
+         <varlistentry>
+           <term>Enregistrement du produit</term>
+           <listitem>
+             <para>Pour qu'il soit possible de se connecter aux canaux de mise à jour, votre produit doit être enregistré. S'il ne l'est pas, vous pouvez exécuter le module Configuration de Novell Customer Center dans YaST ou l'outil de ligne de commande <command>suse_register</command> pour lancer l'enregistrement. </para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term>Exécution d'une mise à jour en ligne</term>
+           <listitem>
+             <para>Assurez-vous que les correctifs les plus récents sont installés sur la version actuelle. Effectuez une mise à jour en ligne avant de procéder à une migration en ligne. Si vous utilisez une interface graphique, démarrez le module Mise à jour en ligne de YaST ou l'applet de mise à jour. Exécutez les commandes suivantes sur la ligne de commande (la dernière commande doit être exécutée à deux reprises) : </para>
+             <screen>zypper ref -s
+zypper update -t patch
+zypper update -t patch</screen>
+             <para>Redémarrez le système si nécessaire.</para>
+             <para>Reportez-vous à la section 1.0, YaST Online Update (Mise à jour en ligne de YaST - ↑Guide d'administration) ou à la section 6.1.3, Updating Software with Zypper (Mise à jour du logiciel avec Zypper - ↑Guide d'administration) pour plus d'informations. sur les outils de mise à jour en ligne.</para>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term>Logiciels tiers</term>
+           <listitem>
+             <para>Si votre configuration implique un logiciel tiers ou supplémentaire, testez cette procédure sur une autre machine pour vous assurer que les dépendances ne sont pas brisées par la mise à jour. </para>
+           </listitem>
+         </varlistentry>
+       </variablelist>
+       
+       <important>
+         <title>exécutez toujours une migration en ligne complète.</title>
+         <para>La migration en ligne doit toujours être effectuée du début à la fin. L'interruption de la procédure entraînera une corruption irrécupérable du système. </para>
+       </important>
+     </sect3>
+   
+   <sect3 id="sec.update.sle11sp3.online.wagon">
+     <title>Migration en ligne avec YaST <guimenu>Wagon</guimenu></title>
+     <para>Si vous disposez d'un système SLES 11 SP1, les étapes requises sont indiquées à l'adresse <ulink url="https://www.suse.com/support/kb/doc.php?id=7011872"/>. La procédure ci-après s'applique à une migration en ligne de SP3 vers SP4.</para>
+     <procedure>
+       <step performance="required">
+         <para>
+           Lorsque toutes les conditions requises sont réunies (voir la <xref linkend="sec.update.sle11spx.online.requirements"/>), l'applet de mise à jour affiche un message dans la barre système qui indique la disponibilité d'une mise à niveau de distribution. Cliquez sur celui-ci pour démarrer YaST <guimenu>Wagon</guimenu>. Une autre solution consiste à exécuter <command>/usr/sbin/wagon</command> en tant qu'utilisateur <systemitem class="username">root</systemitem> à partir de la ligne de commande.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           Confirmez la boîte de dialogue <guimenu>Bienvenue</guimenu> en cliquant sur <guimenu>Suivant</guimenu>.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           Si <guimenu>Wagon</guimenu> détermine que des conditions requises ne sont pas réunies (des mises à jour de maintenance requises sont disponibles, mais n'ont pas encore été installées), il procède à une mise à jour automatique, ce qui peut nécessiter un redémarrage. Suivez les instructions à l'écran.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           Choisissez la méthode de mise à jour dans la boîte de dialogue suivante. Sélectionnez <guimenu>Novell Customer Center</guimenu> pour utiliser la configuration par défaut (recommandé).
+         </para>
+         <para>
+           Cliquez sur <guimenu>URL personnalisée</guimenu> pour choisir manuellement les canaux logiciels utilisés pour la migration en ligne. La liste des canaux est affichée. Vous avez alors la possibilité d'activer, de désactiver, d'ajouter ou de supprimer manuellement des canaux. Ajoutez la ou les sources de mise à jour SP4. Il peut s'agir du support d'installation SP4 ou des canaux <literal>SP4-Pool</literal> et <literal>SP4-Updates</literal>. Cliquez sur <guimenu>OK</guimenu> pour revenir à la boîte de dialogue <guimenu>Méthode de mise à jour</guimenu>.
+         </para>
+         <para>
+           Si vous souhaitez passer en revue les modifications apportées à la configuration des canaux par la procédure de mise à jour, sélectionnez <guimenu>Vérifier les modifications de dépôts automatiques</guimenu>.
+         </para>
+         <para>
+           Cliquez ensuite sur <guimenu>Suivant</guimenu>.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           Le système va être réenregistré. Au cours de cette procédure, les canaux <literal>SP4-Pool</literal> et <literal>SP4-Updates</literal> seront ajoutés au système (pour plus d'informations, reportez-vous à la <xref linkend="sec.update.nmm.channels"/>). Confirmez l'ajout des canaux.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           Si vous avez sélectionné l'option <guimenu>Vérifier les modifications de dépôts automatiques</guimenu> dans la boîte de dialogue <guimenu>Méthode de mise à jour</guimenu>, la liste des dépôts s'affiche. Elle vous offre la possibilité d'activer, de désactiver, d'ajouter ou de supprimer manuellement des canaux. Dès que vous avez terminé, appuyez sur <guimenu>OK</guimenu>.
+         </para>
+       </step>
+       <step performance="required">
+         <para>Choisissez le type de migration :</para>
+         <variablelist>
+           <varlistentry>
+             <term>Migration complète</term>
+             <listitem>
+               <para>Met à jour tous les paquetages vers le niveau SP4 le plus récent.</para>
+             </listitem>
+           </varlistentry>
+           <varlistentry>
+             <term>Migration minimale</term>
+             <listitem>
+               <para>Met à jour un ensemble minimal de paquetages vers le niveau SP4 le plus récent.</para>
+             </listitem>
+           </varlistentry>
+         </variablelist>
+         <para>Cliquez sur <guimenu>Avancé</guimenu> afin de sélectionner manuellement les dépôts utilisés pour la mise à niveau. Confirmez votre sélection.
+         </para>
+       </step>
+       
+       <step performance="required">
+         <para>
+           L'écran <guimenu>Paramètres de mise à niveau de la distribution</guimenu> s'affiche. Il présente un résumé de la configuration de mise à jour. Les sections suivantes sont disponibles :
+         </para>
+         <variablelist>
+           <varlistentry>
+             <term><guimenu>Produits complémentaires</guimenu>
+             </term>
+             <listitem>
+               <para>
+                 Cette section permet d'ajouter des produits complémentaires SUSE Linux Enterprise Server ou des produits tiers.
+               </para>
+             </listitem>
+           </varlistentry>
+           <varlistentry>
+             <term><guimenu>Options de mise à jour</guimenu>
+             </term>
+             <listitem>
+               <para>
+                 Cette section affiche la liste des actions qui seront effectuées au cours de la mise à jour. Vous pouvez soit télécharger tous les paquetages avant de les installer (option par défaut recommandée), soit les télécharger et les installer un par un.
+               </para>
+             </listitem>
+           </varlistentry>
+           <varlistentry>
+             <term><guimenu>Paquetages</guimenu>
+             </term>
+             <listitem>
+               <para>
+                 Aperçu statistique de la mise à jour.
+               </para>
+             </listitem>
+           </varlistentry>
+           <varlistentry>
+             <term>Sauvegarde</term>
+             <listitem>
+               <para>
+                 Vous pouvez définir les options de sauvegarde.
+               </para>
+             </listitem>
+           </varlistentry>
+         </variablelist>
+         <para>
+           Cliquez sur <guimenu>Suivant</guimenu> et <guimenu>Démarrer la mise à jour</guimenu> pour continuer.
+         </para>
+         <important>
+           <title>Interruption de la migration en ligne</title>
+           <para>
+             Vous pouvez interrompre la procédure de migration en ligne en toute sécurité sur cet écran <emphasis>avant</emphasis> de cliquer sur <guimenu>Démarrer la mise à jour</guimenu>, ainsi que sur tous les écrans précédents. Cliquez sur <guimenu>Interrompre</guimenu> pour abandonner la procédure de mise à jour et rétablir le système dans l'état dans lequel il se trouvait avant le démarrage de YaST Wagon. Suivez les instructions à l'écran et effectuez un réenregistrement avant de quitter Wagon afin de supprimer les canaux SP4 de votre système.
+           </para>
+         </important>
+       </step>
+       <step performance="required">
+         <para>
+           Les opérations suivantes sont effectuées pendant la procédure de mise à jour :
+         </para>
+         <orderedlist spacing="normal">
+           <listitem>
+             <para>
+               Les paquetages sont mis à jour.
+             </para>
+           </listitem>
+           <listitem>
+             <para>
+               <command>SuSEconfig</command> est exécuté.
+             </para>
+           </listitem>
+           <listitem>
+             <para>
+               Le système est redémarré (appuyez sur <guimenu>OK</guimenu>).
+             </para>
+           </listitem>
+           <listitem>
+             <para>
+               Le système qui vient d'être mis à jour est réenregistré.
+             </para>
+           </listitem>
+         </orderedlist>
+       </step>
+       <step performance="required">
+         <para>
+           Votre système a été mis à jour vers le Service Pack 4.
+         </para>
+       </step>
+     </procedure>
+   </sect3>
+   
+   <sect3 id="sec.update.sle11sp3.online.zypper">
+     <title>Migration en ligne avec <command>zypper</command></title>
+     <procedure>
+       <step performance="required">
+         <para>
+           Lorsque toutes les conditions requises sont réunies (voir la <xref linkend="sec.update.sle11spx.online.requirements"/>), les <quote>produits</quote> nécessaires pour la migration en ligne sont ajoutés dans <filename>/etc/products.d</filename>. Exécutez la commande suivante pour obtenir la liste de ces produits :
+         </para>
+         
+         <screen>zypper se -t product | grep -h -- "-migration" | cut -d'|' -f2</screen>
+         <para>
+           Cette commande doit au moins renvoyer <literal os="sles">SUSE_SLES-SP4-migration</literal>. En fonction de l'étendue de l'installation, il se peut que davantage de produits soient répertoriés.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           Installez les produits de migration récupérés lors de l'étape précédente à l'aide de la commande <command>zypper in -t product <replaceable>LIST_OF_PRODUCTS</replaceable></command>, par exemple :
+         </para>
+         <screen os="sles">zypper in -t product SUSE_SLES-SP4-migration</screen>
+         
+       </step>
+       <step performance="required">
+         <para>
+           Enregistrez les produits installés lors de l'étape précédente afin d'obtenir les canaux de mise à jour correspondants :
+         </para>
+         <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+       </step>
+       <step performance="required">
+         <para>
+           Rafraîchissez les dépôts et les services :
+         </para>
+         <screen>zypper ref -s</screen>
+       </step>
+       <step performance="required">
+         <para>
+           Consultez la liste des dépôts que vous pouvez récupérer avec la commande <command>zypper lr</command>. Il faut, au minimum, que les dépôts suivants soient activés : 
+         </para>
+         
+         <itemizedlist mark="bullet" spacing="normal">
+           <listitem>
+             <para>SLES11-SP4-Pool</para>
+           </listitem>
+           <listitem>
+             <para>SLES11-SP4-Updates</para>
+           </listitem>
+         </itemizedlist>
+         
+         <para>En fonction de l'étendue de votre installation, d'autres dépôts doivent être activés pour des produits complémentaires ou des extensions. </para>
+         
+         <para>
+           Si l'un de ces dépôts n'est pas activé (les dépôts <literal>SP4</literal> ne sont pas activés par défaut lorsque vous suivez ce workflow), activez-le à l'aide de la commande <command>zypper modifyrepo --enable <replaceable>REPOSITORY ALIAS</replaceable></command>, par exemple :
+         </para>
+         <screen os="sles">zypper modifyrepo --enable SLES11-SP4-Pool --enable SLES11-SP4-Updates</screen>
+         
+         <para>
+           Si votre configuration contient des dépôts tiers qui risquent de ne pas être compatibles avec SP4, désactivez-les à l'aide de la commande <command>zypper modifyrepo --disable <replaceable>REPOSITORY ALIAS</replaceable></command>.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           À présent, tous les éléments sont réunis pour effectuer la mise à niveau de distribution avec <command>zypper dup --from <replaceable>REPO 1</replaceable> --from <replaceable>REPO 2</replaceable> <replaceable>...</replaceable></command>. Veillez à répertorier tous les dépôts nécessaires avec <option>--from</option>, par exemple :
+         </para>
+         <screen os="sles">zypper dup --from SLES11-SP4-Pool --from SLES11-SP4-Updates</screen>
+         
+         <para>
+           Confirmez avec <guimenu>y</guimenu> pour lancer la mise à niveau.
+         </para>
+       </step>
+       <step performance="required">
+         <para>
+           La fin de la procédure de mise à niveau de distribution signifie qu'une migration minimale a été effectuée (un ensemble minimal de paquetages a donc été mis à jour vers le niveau SP4 le plus récent). Ignorez cette étape si vous n'avez pas l'intention d'effectuer une migration complète.
+         </para>
+         <para>Pour effectuer une migration complète (mise à jour de tous les paquetages vers le niveau SP4 le plus récent), exécutez la commande suivante : </para>
+         <screen>zypper update -t patch</screen>
+       </step>
+       <step performance="required">
+         <para>
+           La mise à niveau vers SP4 ayant été effectuée, vous devez réenregistrer votre produit :
+         </para>
+         <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+       </step>
+       <step performance="required">
+         <para>
+           Pour terminer, redémarrez votre système.
+         </para>
+       </step>
+     </procedure>
+     <para>
+       Votre système a été mis à jour vers le Service Pack 4.
+     </para>
+   </sect3>
+    
+    <sect3>
+      <title>Mise à jour au moyen d'un démarrage à partir d'une source d'installation</title>
+      <para>Au lieu de procéder à une migration en ligne, vous pouvez mettre à jour votre système en le démarrant à partir d'une source d'installation : soit un DVD, soit une source d'installation réseau. La mise à jour démarre comme une installation normale. </para>
+      <para>Les images ISO du Service Pack 4 sont disponibles à l'adresse suivante : <ulink url="http://download.suse.com/"/>. Vous pouvez soit les graver sur un DVD, soit préparer une source d'installation réseau en suivant la procédure décrite à la <xref linkend="sec.deployment.remoteinst.instserver"/>.
+      </para>
+    </sect3>
+   </sect2>
+   
+ </sect1>
+ 
+ <sect1 id="sec.update.backports">
+  <title>Code source du rétroportage</title>
+
+  <para>
+   L'utilisation du rétroportage est largement répandue dans SUSE. Comparer les numéros de version afin d'évaluer les problèmes et fonctionnalités d'un logiciel peut s'avérer trompeur. Cette section vous aide à comprendre pourquoi.
+
+  </para>
+
+  <sect2 id="sec.update.backports.why">
+   <title>Pourquoi recourir au rétroportage ?</title>
+   <para>
+    Les développeurs en amont s'intéressent principalement à faire progresser le logiciel qu'ils développent. Bien souvent, ils mènent de front la correction de bogues et l'introduction de nouvelles fonctionnalités qui n'ont pas encore fait l'objet de tests poussés et qui peuvent, à leur tour, provoquer de nouveaux bogues.
+   </para>
+   <para>
+    Dans le cas des développeurs de distribution, il est important de faire la distinction entre :
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      les corrections de bogues avec un potentiel limité en ce qui concerne la perturbation des fonctionnalités et
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      les modifications susceptibles de perturber les fonctionnalités existantes.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Dans la plupart des cas, les développeurs de distribution ne suivent pas toutes les modifications en amont dès qu'un paquetage a intégré une distribution publiée. En règle générale, ils s'en tiennent à la version en amont qu'ils ont publiée initialement et créent des correctifs sur la base des modifications en amont afin de corriger les bogues. Cette technique est connue sous le nom de <emphasis>rétroportage</emphasis> (ou backporting en anglais).
+   </para>
+   <para>
+    Les développeurs de distribution ne lancent généralement une nouvelle version de logiciel que dans deux cas bien précis :
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      lorsque les modifications entre leurs paquetages et les versions en amont sont devenues à ce point importantes que le rétroportage n'est plus possible ;
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      pour les logiciels qui, par nature, vieillissent mal, comme par exemple, les logiciels de lutte contre les programmes malveillants.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.update.backports.reasons-for">
+   <title>Arguments en faveur du rétroportage</title>
+   <para>
+    SUSE fait un usage intensif du rétroportage pour qu'il soit possible de trouver un juste équilibre entre plusieurs préoccupations formulées au sujet des logiciels d'entreprise. Les principales préoccupations sont les suivantes :
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Disposer d'interfaces (API) stables sur lesquelles les éditeurs de logiciels peuvent compter lors de la création de produits à utiliser sur les solutions d'entreprise de SUSE.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      S'assurer que les paquetages utilisés dans la version des produits d'entreprise de SUSE présentent une qualité optimale et ont fait l'objet de tests intensifs, tant en interne que dans le cadre du produit d'entreprise dans son intégralité.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Gérer les différentes certifications des produits d'entreprise de SUSE par d'autres éditeurs, telles que les certifications pour les produits Oracle ou SAP.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Permettre aux développeurs de SUSE de s'atteler au développement d'une nouvelle version du produit qui soit aussi bonne que possible, plutôt que de se disperser sur un grand nombre de versions.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Assurer un suivi clair de ce que contient une version d'entreprise particulière, de manière à ce que notre service de support puisse fournir des informations précises et opportunes.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.update.backports.reasons-against">
+   <title>Arguments contre le rétroportage</title>
+   <para>
+    En règle générale, aucune nouvelle version en amont d'un paquetage n'est introduite dans nos produits d'entreprise. Il ne s'agit toutefois pas d'une règle absolue. Pour une catégorie de paquetages limitée (notamment pour les logiciels anti-virus), les problèmes de sécurité pèsent davantage que l'approche conservatrice qui est préférable sur le plan de l'assurance qualité. Dans ce cas de figure, il arrive que des versions plus récentes soient introduites dans une version publiée d'une gamme de produits d'entreprise.
+   </para>
+   <para>
+    Pour d'autres types de paquetages, il arrive également que l'on opte pour l'introduction d'une nouvelle version plutôt que de recourir au rétroportage. On fait appel à cette méthode lorsque la génération d'un « backport » n'est pas possible d'un point de vue économique ou lorsque l'introduction d'une nouvelle version se justifie pleinement sur le plan technique.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.update.backports.">
+   <title>Implications du rétroportage sur l'interprétation des numéros de version</title>
+   <para>
+    En raison de la pratique du rétroportage, il est tout simplement impossible de comparer des numéros de version pour déterminer si un paquetage SUSE contient un correctif pour un problème spécifique ou si une fonctionnalité donnée y a été ajoutée. Avec le rétroportage, la partie en amont du numéro de version d'un paquetage SUSE indique simplement la version en amont sur laquelle il est basé. Le paquetage peut contenir des correctifs de bogue et des fonctionnalités qui ne figurent pas dans la version en amont correspondante, mais qui ont fait l'objet d'un rétroportage.
+   </para>
+   <para>
+    Les informations relatives à ces correctifs et fonctionnalités sont stockées à divers endroits :
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Journal des modifications du paquetage :
+     </para>
+<screen>rpm -q --changelog name-of-installed-package
+rpm -qp --changelog packagefile.rpm</screen>
+     <para>
+      La sortie documente brièvement l'historique des modifications du paquetage.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Le journal des modifications du paquetage peut contenir des entrées telles que <literal>bnc#1234</literal> faisant référence à des bogues présents dans le système de suivi Bugzilla de Novell ou des liens vers d'autres systèmes de suivi de bogues. (Il se peut que vous ne puissiez pas accéder à l'ensemble de ces informations en raison des politiques de confidentialité en vigueur.)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Un paquetage peut comporter un fichier <filename>/usr/share/doc/packagename/README.SUSE</filename> ou <filename>README.SuSE</filename> contenant des informations générales et de haut niveau spécifiques au paquetage SUSE.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Le paquetage source RPM contient les correctifs qui ont été appliqués lors de la création des RPM binaires ordinaires sous la forme de fichiers distincts qu'il est possible d'interpréter si vous êtes rompu à la lecture de code source. Pour de plus amples informations, consultez le livre <ulink url="http://www.rpm.org/max-rpm/">Maximum RPM</ulink>.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Pour les correctifs des bogues de sécurité, consultez les <ulink url="https://www.suse.com/support/security/#1">Annonces de sécurité de SUSE</ulink>. Les bogues sont généralement désignés par des noms standard, tels que <literal>CAN-2005-2495</literal>, dont la gestion est assurée dans le cadre du projet <ulink url="http://cve.mitre.org">Common Vulnerabilities and Exposures</ulink>.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Lorsque le rétroportage est appliqué, cette valeur limitée de numéros de version peut occasionner des problèmes au niveau des outils d'analyse de la sécurité. Certains outils de recherche des vulnérabilités en matière de sécurité (ou des tests spécifiques réalisés par ces outils) opèrent uniquement sur les informations de version. Ces outils/tests ont donc tendance à générer des <quote>faux positifs</quote> (détection erronée d'un logiciel vulnérable) lorsque le rétroportage est appliqué. Lors de l'analyse de rapports émanant des outils d'analyse de la sécurité, il convient de déterminer si une entrée est basée simplement sur un numéro de version ou sur un test d'existence d'une vulnérabilité réelle.
+   </para>
+  </sect2>
+ </sect1>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="update_split_brain.xml" parse="xml"/>
+ <sect1 id="sec.update.wagonhooks">
+  <title>Points d'insertion (hooks) de migration pour YaST Wagon</title>
+
+
+
+  <para>
+   Les points d'insertion de migration vous permettent d'exécuter un script externe personnalisé à un point du processus de migration. Ces scripts vous offrent la possibilité de traiter des problèmes spécifiques qui ne peuvent pas être gérés au moyen des scripts RPM habituels ou encore d'effectuer d'autres opérations qui peuvent s'avérer nécessaires en cours de migration (et qui ne sont pas requises dans le cadre d'une mise à jour normale du paquetage).
+  </para>
+
+  <para>
+   Les points d'insertion de migration sont exécutés avec des privilèges root. Il est donc possible d'effectuer toute tâche de maintenance dans les scripts (démarrage/arrêt de services, sauvegarde de données, migration de données, etc.). Les scripts ne doivent pas être interactifs ; STDIN et STDOUT sont redirigés vers des tubes en cas d'exécution dans YaST. La session X ne doit pas être utilisée, car il se peut qu'elle ne soit pas disponible dans tous les cas (lors d'une exécution en mode texte, par exemple). N'oubliez pas de définir l'autorisation d'exécutable pour les scripts hook.
+  </para>
+
+  <para>
+   Les points d'insertion de migration sont pris en charge dans le paquetage <systemitem class="resource">yast2-wagon</systemitem> version 2.17.32.1 (fournie en tant que mise à jour pour SLES11-SP2) ou 2.17.34 (incluse dans SLES11-SP3) et versions ultérieures.
+  </para>
+
+  <sect2>
+   <title>Convention d'attribution de noms et emplacement des scripts hook</title>
+   <para>
+    La recherche des scripts s'effectue dans le répertoire <filename>/var/lib/YaST2/wagon/hooks/</filename>. Le nom de script doit être au format <replaceable>step_seq_prefix_name</replaceable>, où :
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><replaceable>procédure</replaceable>
+     </term>
+     <listitem>
+      <para>
+       est un nom d'étape de migration prédéfini qui décrit l'étape de migration en cours.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><replaceable>seq</replaceable>
+     </term>
+     <listitem>
+      <para>
+       est un numéro de séquence compris entre 00 et 99, ce qui permet de définir l'ordre d'exécution des scripts. (Pour garantir un classement correct, il est important de conserver les zéros de gauche.)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><replaceable>prefix</replaceable>
+     </term>
+     <listitem>
+      <para>
+       doit être unique afin d'éviter les conflits (comme un espace de noms). Utilisez un nom de paquetage (s'il fait partie d'un paquetage) ou votre nom de fournisseur, nom de domaine Internet, etc. ; en fait, tout élément pouvant être considéré comme suffisamment unique.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><replaceable>name</replaceable>
+     </term>
+     <listitem>
+      <para>
+       peut être n'importe quelle chaîne de caractères (simplement pour différencier les scripts). Il est conseillé d'utiliser un nom descriptif.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <example>
+    <title>Script hook avec chemin complet</title>
+<screen>/var/lib/YaST2/wagon/hooks/before_package_migration_00_postgresql_backup</screen>
+   </example>
+  </sect2>
+
+  <sect2>
+   <title>Valeur de sortie du script hook</title>
+   <para>
+    Le script doit renvoyer la valeur de sortie 0. En cas d'échec (toute valeur de sortie non nulle), un message d'erreur s'affiche dans Wagon. Il est alors possible de redémarrer le script, d'ignorer l'erreur (et de poursuivre avec d'autres scripts) ou d'annuler complètement les points d'insertion pour l'étape en cours. 
+   </para>
+  </sect2>
+
+  <sect2>
+   <title>Scripts Idempotent</title>
+   <para>
+    Les scripts hook <emphasis>peuvent potentiellement être exécutés à plusieurs reprises</emphasis> (lorsque vous basculez entre les différentes boîtes de dialogue de Wagon, il se peut que ce dernier redémarre automatiquement ou que certaines étapes soient exécutées plusieurs fois dans le workflow de migration). Les scripts doivent donc faire face à ce genre de situation (ils peuvent vérifier, au départ, si l'action doit être exécutée ou si elle l'a déjà été, ou encore créer un simple fichier stamp temporaire ou bien résoudre correctement plusieurs exécutions).
+   </para>
+  </sect2>
+
+  <sect2>
+   <title>Liste des points d'insertion pris en charge</title>
+   <para>
+    Certains points d'insertion sont facultatifs (car ils dépendent des résultats précédents ou de valeurs sélectionnées par l'utilisateur). Certains d'entre eux sont appelés à plusieurs reprises (l'enregistrement, par exemple, est appelé avant et après la migration). Voici la liste des points d'insertion pris en charge (noms des étapes) dans l'ordre d'exécution :
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>before_init</command>
+     </term>
+     <listitem>
+      <para>
+       Démarré en tout début de procédure (remarque : il est de nouveau appelé après le redémarrage de Wagon)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_welcome</command>
+     </term>
+     <term><command>after_welcome</command>
+     </term>
+     <listitem>
+      <para>
+       Démarré avant/après l'affichage de la boîte de dialogue de bienvenue
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_registration_check</command>
+     </term>
+     <term><command>after_registration_check</command>
+     </term>
+     <listitem>
+      <para>
+       Wagon vérifie l'état d'enregistrement (si l'enregistrement de certains produits est arrivé à expiration, il se peut que la migration échoue). Si tout est correct, aucune boîte de dialogue ne s'ouvre et Wagon passe automatiquement à l'étape suivante.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_custom_url</command>
+     </term>
+     <term><command>after_custom_url</command>
+     </term>
+     <listitem>
+      <para>
+       Le gestionnaire de dépôt est démarré(facultatif, en mode CD correctif uniquement).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_self_update</command>
+     </term>
+     <term><command>after_self_update</command>
+     </term>
+     <listitem>
+      <para>
+       Appelé avant/après la migration automatique de Wagon (afin de s'assurer que la version la plus récente est utilisée pour la migration).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_installing_migration_products</command>
+     </term>
+     <term><command>after_installing_migration_products</command>
+     </term>
+     <listitem>
+      <para>
+       Appelé avant/après l'installation des produits de migration.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_selecting_migration_source</command>
+     </term>
+     <term><command>after_selecting_migration_source</command>
+     </term>
+     <listitem>
+      <para>
+       Wagon demande à l'utilisateur de procéder à la migration via des dépôts Novell Customer Center ou à l'aide d'un dépôt personnalisé ; l'étape suivante dépend de la sélection effectuée par l'utilisateur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_registration</command>
+     </term>
+     <term><command>after_registration</command>
+     </term>
+     <listitem>
+      <para>
+       Exécution du registre SUSE (afin d'ajouter des dépôts de migration).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_repo_selection</command>
+     </term>
+     <term><command>after_repo_selection</command>
+     </term>
+     <listitem>
+      <para>
+       Gestion manuelle des dépôts.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_set_migration_repo</command>
+     </term>
+     <term><command>after_set_migration_repo</command>
+     </term>
+     <listitem>
+      <para>
+       Sélection des dépôts de migration (migration complète/minimale en cas d'utilisation de Novell Customer Center) ou sélection du dépôt de mise à jour (migration personnalisée du dépôt).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_package_migration</command>
+     </term>
+     <listitem>
+      <para>
+       Avant le démarrage de la mise à jour du paquetage, et après cette étape, la migration proprement dite démarre et il est impossible de revenir automatiquement à l'état précédent (si vous annulez la migration au cours de cette phase, le système sera inconsistant (mise à niveau partielle) et un retour manuel à la version précédente s'avérera nécessaire).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_registration</command>
+     </term>
+     <term><command>after_registration</command>
+     </term>
+     <listitem>
+      <para>
+       Exécution du registre SUSE (pour enregistrer les produits mis à jour).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_congratulate</command>
+     </term>
+     <term><command>after_congratulate</command>
+     </term>
+     <listitem>
+      <para>
+       Avant/après que Wagon n'affiche la boîte de dialogue Félicitations consécutive à une migration réussie.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_exit</command>
+     </term>
+     <listitem>
+      <para>
+       Appelé juste avant la fermeture de Wagon (systématiquement, quel que soit le résultat de la migration ; également après l'annulation et lors du redémarrage).
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2>
+   <title>Points d'insertion d'abandon</title>
+   <para>
+    Des points d'insertion spéciaux sont appelés lorsque l'utilisateur interrompt la migration. Ils peuvent être appelés à n'importe quelle étape du workflow de migration. L'ordre d'exécution ne peut donc pas être garanti. Les scripts doivent vérifier l'état actuel s'ils dépendent des résultats d'autres points d'insertion.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>before_abort</command>
+     </term>
+     <listitem>
+      <para>
+       Abandon de la migration confirmé par l'utilisateur.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>before_abort_rollback</command>
+     </term>
+     <term><command>after_abort_rollback</command>
+     </term>
+     <listitem>
+      <para>
+       Retour à la version précédente confirmé par l'utilisateur après l'abandon (retour aux anciens produits installés avant le lancement de la migration). Ces points d'insertion sont appelés après before_abort et ignorés si l'utilisateur ne confirme pas le retour à la version précédente.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2>
+   <title>Points d'insertion de redémarrage</title>
+   <para>
+    Ces points d'insertion sont appelés lorsque Wagon effectue un redémarrage automatique.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>before_restart</command>
+     </term>
+     <listitem>
+      <para>
+       Wagon se ferme et va être redémarré.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>after_restart</command>
+     </term>
+     <listitem>
+      <para>
+       Wagon a redémarré et exécute l'étape suivante du workflow de migration.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2>
+   <title>Points d'insertion utilisés généralement</title>
+   <para>
+    La liste des points d'insertion est relativement volumineuse, mais l'utilisation de nombre d'entre eux ne se justifie que dans des cas bien spécifiques. Dans les cas d'utilisation normaux, il est conseillé d'accorder la préférence aux points d'insertion suivants :
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Pour réaliser une action avant la migration du système (en exécutant toujours la version antérieure), utilisez le point d'insertion <command>before_package_migration</command>.
+     </para>
+     <para>
+      À ce stade, il apparaît clairement que la migration est prête et sur le point de démarrer, alors que, dans toutes les étapes précédentes, il était possible de l'annuler.
+
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Pour réaliser une action après la migration du système (le système exécute la nouvelle version migrée, mais certains éléments ne sont peut-être pas encore actifs ; un redémarrage est nécessaire pour le kernel mis à jour, les services mis à jour doivent peut-être être redémarrés, etc.), utilisez le point d'insertion <command>before_congratulate</command> ou <command>after_congratulate</command>.
+     </para>
+     <para>
+      Il peut également être utilisé pour effacer les résultats temporaires du point d'insertion <command>before_package_migration</command>. À ce stade, la migration a été effectuée avec succès.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Pour annuler les modifications en cas d'abandon de la migration, utilisez l'un des points d'insertion d'abandon en fonction du cas. Pour rappel, il est possible d'appeler les points d'insertion d'abandon à tout moment. L'annulation peut donc s'avérer inutile (il se peut que le point d'insertion qui effectue les modifications n'ait pas encore été appelé). Les points d'insertion d'abandon doivent vérifier l'état actuel.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2>
+   <title>Points d'insertion obsolètes</title>
+   <para>
+    Les versions antérieures de Wagon ne prenaient en charge que deux scripts hook, à savoir : <filename>/usr/lib/YaST2/bin/wagon_hook_init</filename> et <filename>/usr/lib/YaST2/bin/wagon_hook_finish</filename>. Le problème était dû au fait qu'un seul script pouvait être exécuté comme point d'insertion et qu'il était impossible de placer directement ces points dans des paquetages RPM.
+   </para>
+   <para>
+    Ces anciens scripts hook sont toujours pris en charge dans les versions plus récentes de Wagon pour des raisons de rétrocompatibilité, mais les nouveaux points d'insertion <command>before_init</command> et <command>before_exit</command> doivent être utilisés au lieu des points obsolètes.
+   </para>
+  </sect2>
+ </sect1>
+</chapter>

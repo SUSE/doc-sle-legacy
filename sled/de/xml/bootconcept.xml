@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="bootconcept.xml" id="cha.boot">
+ <title>Booten und Konfigurieren eines Linux-Systems</title><indexterm> <primary>Booten</primary> </indexterm>
+ <abstract>
+  <para>
+   Das Booten eines Linux-Systems umfasst verschiedene Komponenten. Die Hardware selbst wird vom BIOS initialisiert, das den Kernel mithilfe eines Bootloaders startet. Jetzt wird der Bootvorgang mit <systemitem>init</systemitem> und den Runlevels vollständig vom Betriebssystem gesteuert. Mithilfe des Runlevel-Konzepts können Sie Setups für die tägliche Verwendung einrichten und Wartungsaufgaben am System ausführen.
+  </para>
+ </abstract>
+ <sect1 id="sec.boot.proc">
+  <title>Der Linux-Bootvorgang</title>
+
+  <para>
+   Der Linux-Bootvorgang besteht aus mehreren Phasen, von denen jede einer anderen Komponente entspricht. In der folgenden Liste werden der Bootvorgang und die daran beteiligten Komponenten kurz zusammengefasst.
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>BIOS</title>
+     <para>
+      Nach dem Einschalten des Computers initialisiert das BIOS den Bildschirm und die Tastatur und testet den Hauptspeicher. Bis zu dieser Phase greift der Computer nicht auf Massenspeichergeräte zu. Anschließend werden Informationen zum aktuellen Datum, zur aktuellen Uhrzeit und zu den wichtigsten Peripheriegeräten aus den CMOS-Werten geladen. Wenn die erste Festplatte und deren Geometrie erkannt wurden, geht die Systemkontrolle vom BIOS an den Bootloader über. 
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>Bootloader</title>
+     <para>
+      Der erste physische 512 Byte große Datensektor der ersten Festplatte wird in den Arbeitsspeicher geladen und der <emphasis>Bootloader</emphasis>, der sich am Anfang dieses Sektors befindet, übernimmt die Steuerung. Die vom Bootloader ausgegebenen Befehle bestimmen den verbleibenden Teil des Bootvorgangs. Aus diesem Grund werden die ersten 512 Byte auf der ersten Festplatte als <emphasis>Master Boot Record</emphasis> (MBR) bezeichnet. Der Bootloader übergibt die Steuerung anschließend an das eigentliche Betriebssystem, in diesem Fall an den Linux-Kernel. Weitere Informationen zu GRUB, dem Linux-Bootloader, finden Sie unter <xref linkend="cha.grub"/>.
+      
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>Kernel und <systemitem>initramfs</systemitem></title>
+     <para>
+      Um die Systemsteuerung zu übergeben, lädt der Bootloader sowohl den Kernel als auch ein initiales RAM-basiertes Dateisystem (<systemitem>initramfs</systemitem>) in den Arbeitsspeicher. Die Inhalte der Datei <systemitem>initramfs</systemitem> können direkt vom Kernel verwendet werden. <systemitem>initramfs</systemitem> enthält eine kleine ausführbare Datei namens <systemitem>init</systemitem>, die das Einhängen des Root-Dateisystems übernimmt. Spezielle Hardware-Treiber für den Zugriff auf den Massenspeicher müssen in <systemitem>initramfs</systemitem> vorhanden sein. Weitere Informationen zu <systemitem>initramfs </systemitem>finden Sie unter <xref linkend="sec.boot.initrd"/>.  
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><systemitem>init</systemitem> unter <systemitem>initramfs</systemitem></title>
+     <para>
+      Dieses Programm führt alle für das Einhängen des entsprechenden Root-Dateisystems erforderlichen Aktionen aus, z. B. das Bereitstellen der Kernel-Funktionalität für die erforderlichen Dateisystem- und Gerätetreiber der Massenspeicher-Controller mit <systemitem class="service">udev</systemitem>. Nachdem das Root-Dateisystem gefunden wurde, wird es auf Fehler geprüft und eingehängt. Wenn dieser Vorgang erfolgreich ist, wird das <systemitem>initramfs</systemitem> bereinigt und das <systemitem>init</systemitem>-Programm wird für das Root-Dateisystem ausgeführt. Weitere Informationen zum <systemitem>init</systemitem>-Programm finden Sie in <xref linkend="sec.boot.linuxrc"/>. Weitere Informationen zu <systemitem class="service">udev</systemitem> finden Sie in <xref linkend="cha.udev"/>.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><systemitem>init</systemitem></title>
+     <para>
+      Das <systemitem>init</systemitem>-Programm führt den eigentlichen Boot-Vorgang des Systems über mehrere unterschiedliche Ebenen aus und stellt dabei die unterschiedlichen Funktionalitäten zur Verfügung. Eine Beschreibung des <systemitem>init</systemitem>-Programms finden Sie in <xref linkend="sec.boot.init"/>.
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+
+  <sect2 id="sec.boot.initrd">
+   <title><systemitem>initramfs</systemitem></title>
+   <para>
+    <systemitem>initramfs</systemitem> ist ein kleines cpio-Archiv, das der Kernel auf einen RAM-Datenträger laden kann. Es stellt eine minimale Linux-Umgebung bereit, die das Ausführen von Programmen ermöglicht, bevor das eigentliche Root-Dateisystem eingehängt wird. Diese minimale Linux-Umgebung wird von BIOS-Routinen in den Arbeitsspeicher geladen und hat, abgesehen von ausreichend Arbeitsspeicher, keine spezifischen Hardware-Anforderungen. <systemitem>initramfs</systemitem> muss immer eine Programmdatei namens <systemitem>init</systemitem> zur Verfügung stellen, die das eigentliche <systemitem>init</systemitem>-Programm für das Root-Dateisystem ausführt, damit der Boot-Vorgang fortgesetzt werden kann.
+   </para>
+   <para>
+    Bevor das Root-Dateisystem eingehängt und das Betriebssystem gestartet werden kann, ist es für den Kernel erforderlich, dass die entsprechenden Treiber auf das Gerät zugreifen, auf dem sich das Root-Dateisystem befindet. Diese Treiber können spezielle Treiber für bestimmte Arten von Festplatten oder sogar Netzwerktreiber für den Zugriff auf ein Netzwerk-Dateisystem umfassen. Die erforderlichen Module für das Root-Dateisystem können mithilfe von <systemitem>init</systemitem> oder <systemitem>initramfs</systemitem> geladen werden. Nachdem die Module geladen wurden, stellt <systemitem class="service">udev</systemitem> das <systemitem>initramfs</systemitem> mit den erforderlichen Geräten bereit. Später im Boot-Vorgang, nach dem Ändern des Root-Dateisystems, müssen die Geräte regeneriert werden. Dies erfolgt durch <filename>boot.udev</filename> mit dem Kommando <command>udevtrigger</command>.
+   </para><indexterm> <primary>Booten</primary> <secondary>initramfs</secondary> </indexterm> <indexterm> <primary>Booten</primary> <secondary>initrd</secondary> </indexterm> <indexterm> <primary>Skripten</primary> <secondary>mkinitrd</secondary> </indexterm>
+   <para>
+    Wenn in einem installierten System Hardwarekomponenten (z. B. Festplatten) ausgetauscht werden müssen und diese Hardware zur Boot-Zeit andere Treiber im Kernel erfordert, müssen Sie das <systemitem>initramfs</systemitem> aktualisieren. Sie gehen hierbei genauso vor wie bei der Aktualisierung des Vorgängers <systemitem>init</systemitem>: Rufen Sie <command>mkinitrd</command> auf. Durch das Aufrufen von <command>mkinitrd</command> ohne Argumente wird ein <systemitem>initramfs</systemitem> erstellt. Durch das Aufrufen von <command>mkinitrd <option>-R</option></command> wird ein <systemitem>init</systemitem> erstellt. In <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> werden die zu ladenden Module durch die Variable <systemitem>INITRD_MODULES</systemitem> in <filename>/etc/sysconfig/kernel</filename> angegeben. <indexterm> <primary>Konfigurationsdateien</primary> <secondary>Kernel</secondary> </indexterm> Nach der Installation wird diese Variable automatisch auf den korrekten Wert eingestellt. Die Module werden genau in der Reihenfolge geladen, in der sie in <systemitem>INITRD_MODULES</systemitem> angezeigt werden.  Dies ist nur wichtig, wenn Sie sich auf die korrekte Einstellung der Gerätedateien <filename>/dev/sd?</filename> verlassen. In bestehenden Systemen können Sie jedoch auch die Gerätedateien unter <filename>/dev/disk/</filename> verwenden, die in mehreren Unterverzeichnissen angeordnet sind ( <filename>by-id</filename>, <filename>by-path</filename> und <filename>by-uuid</filename>) und stets dieselbe Festplatte darstellen. Dies ist auch während der Installation durch Angabe der entsprechenden Einhängeoption möglich.
+   </para>
+   <important>
+    <title>Aktualisieren von <systemitem>initramfs</systemitem> oder <systemitem>init</systemitem></title>
+    <para>
+     Der Bootloader lädt <systemitem>initramfs</systemitem> oder <systemitem>init</systemitem> auf dieselbe Weise wie den Kernel. Es ist nicht erforderlich, GRUB nach der Aktualisierung von <systemitem>initramfs</systemitem> oder <systemitem>init</systemitem> neu zu installieren, da GRUB beim Booten das Verzeichnis nach der richtigen Datei durchsucht.
+    </para>
+   </important>
+  </sect2>
+
+  <sect2 id="sec.boot.linuxrc">
+   <title>init unter <systemitem>initramfs</systemitem></title>
+   <para>
+    Der Hauptzweck von <systemitem>init</systemitem> unter <systemitem>initramfs</systemitem> ist es, das Einhängen des eigentlichen Root-Dateisystems sowie die Vorbereitung des Zugriffs darauf. Je nach aktueller Systemkonfiguration ist <systemitem>init</systemitem> für die folgenden Tasks verantwortlich.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Laden der Kernelmodule</term>
+     <listitem>
+      <para>
+       Je nach Hardwarekonfiguration sind für den Zugriff auf die Hardwarekomponenten des Computers (vor allem auf die Festplatte) spezielle Treiber erforderlich. Für den Zugriff auf das eigentliche Root-Dateisystem muss der Kernel die entsprechenden Dateisystemtreiber laden.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Bereitstellen von speziellen Blockdateien</term>
+     <listitem>
+<?dbfo-need height="10em"?>
+
+
+      <para>
+       Der Kernel generiert Geräteereignisse für alle geladenen Module. <systemitem class="service">udev</systemitem> verarbeitet diese Ereignisse und generiert die erforderlichen blockspezifischen Dateien auf einem RAM-Dateisystem im Verzeichnis <filename>/dev</filename>. Ohne diese speziellen Dateien wäre ein Zugriff auf das Dateisystem und andere Geräte nicht möglich.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Verwalten von RAID- und LVM-Setups</term>
+     <listitem>
+      <para>
+       Wenn Ihr System so konfiguriert ist, dass das Root-Dateisystem sich unter RAID oder LVM befindet, richtet <systemitem>init</systemitem> LVM oder RAID so ein, dass der Zugriff auf das Root-Dateisystem zu einem späteren Zeitpunkt erfolgt. Informationen über RAID und LVM finden Sie in <xref linkend="cha.advdisk"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry id="ve.net">
+     <term>Verwalten von Netzwerkkonfigurationen</term>
+     <listitem>
+      <para>
+       Wenn Ihr System für die Verwendung eines Netzwerk-eingehängten Root-Dateisystems (über NFS eingehängt) konfiguriert ist, muss <systemitem>init</systemitem> sicherstellen, dass die entsprechenden Netzwerktreiber geladen und für den Zugriff auf das Root-Dateisystem eingerichtet werden.
+      </para>
+      
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    Wenn <systemitem>init</systemitem> im Rahmen des Installationsvorgangs während des anfänglichen Boot-Vorgangs aufgerufen wird, unterscheiden sich seine Tasks von den oben beschriebenen:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Suchen des Installationsmediums</term>
+     <listitem>
+      <para>
+       Wenn Sie den Installationsvorgang starten, lädt Ihr Computer vom Installationsmedium einen Installationskernel und ein spezielles <systemitem>init</systemitem> mit dem YaST-Installationsprogramm. Das YaST-Installationsprogramm, das in einem RAM-Dateisystem ausgeführt wird, benötigt Daten über den Speicherort des Installationsmediums, um auf dieses zugreifen und das Betriebssystem installieren zu können.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Initiieren der Hardware-Erkennung und Laden der entsprechenden Kernelmodule</term>
+     <listitem>
+      <para>
+       Wie unter <xref linkend="sec.boot.initrd"/> beschrieben, startet der Boot-Vorgang mit einem Mindestsatz an Treibern, die für die meisten Hardwarekonfigurationen verwendet werden können. <systemitem>init</systemitem> startet einen anfänglichen Hardware-Scan-Vorgang, bei dem die für die Hardwarekonfiguration geeigneten Treiber ermittelt werden. Die für den Boot-Vorgang benötigten Namen der Module werden in <systemitem>INITRD_MODULES</systemitem> in das Verzeichnis <filename>/etc/sysconfig/kernel</filename> geschrieben.  Diese Namen werden verwendet, um ein benutzerdefiniertes <systemitem>initramfs</systemitem> zu erstellen, das zum Booten des Systems benötigt wird. Wenn die Module nicht zum Booten, sondern für coldplug benötigt werden, werden die Module in <filename>/etc/sysconfig/hardware/hwconfig-*</filename> geschrieben. Alle Geräte, die durch Konfigurationsdateien in diesem Verzeichnis beschrieben werden, werden beim Boot-Vorgang initialisiert.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Laden des Installations- oder Rettungssystems</term>
+     <listitem>
+      <para>
+       Sobald die Hardware korrekt erkannt wurde, werden die entsprechenden Treiber geladen und <systemitem class="service">udev</systemitem> erstellt die entsprechenden Gerätedateien, <systemitem>init</systemitem> startet das Installationssystem mit dem YaST-Installationsprogramm bzw. das Rettungssystem.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Starten von YaST</term>
+     <listitem>
+      <para>
+       <systemitem>init</systemitem> startet schließlich YaST, das wiederum die Paketinstallation und die Systemkonfiguration startet.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.boot.init">
+  <title>Der <systemitem>init</systemitem>-Vorgang</title><indexterm id="idx.init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
+
+  <para>
+   Das Programm <systemitem>init</systemitem> ist der Prozess mit der ID 1. Er ist verantwortlich für die erforderliche Initialisierung des Systems. <systemitem>init</systemitem> wird direkt durch den Kernel gestartet und ist nicht anfällig für „Signal  9“, das Prozesse normalerweise beendet. Alle anderen Programme werden entweder direkt von <systemitem>init</systemitem> oder von einem seiner untergeordneten Prozesse gestartet.
+  </para>
+
+  <para>
+   <systemitem/>init wird zentral in der Datei <filename>/etc/inittab</filename> konfiguriert, in der auch die <emphasis>Runlevel</emphasis> definiert werden (siehe <xref linkend="sec.boot.runlevel"/>). Diese Datei legt auch fest, welche Dienste und Dämons in den einzelnen Runlevels verfügbar sind. Je nach den Einträgen in <filename>/etc/inittab</filename> werden von <systemitem>init</systemitem> mehrere Skripten ausgeführt. Standardmäßig wird nach dem Booten als erstes Skript <filename>/etc/init.d/boot</filename> gestartet. Nach Abschluss der Systeminitialisierung ändert das System den Runlevel mithilfe des Skripts <filename>/etc/init.d/rc</filename> auf seinen Standard-Runlevel. Diese Skripten, die der Deutlichkeit halber als <emphasis>init-Skripten</emphasis> bezeichnet werden, befinden sich im Verzeichnis <filename>/etc/init.d</filename> (siehe <xref linkend="sec.boot.init.skripte"/>). <indexterm> <primary>Skripten</primary> <secondary>init.d</secondary> </indexterm>
+  </para>
+
+  <para>
+   Der gesamte Vorgang des Startens und Herunterfahrens des Systems wird von <systemitem>init</systemitem> verwaltet. Vor diesem Hintergrund kann der Kernel als Hintergrundprozess betrachtet werden, der alle anderen Prozesse verwaltet und die CPU-Zeit sowie den Hardwarezugriff entsprechend den Anforderungen anderer Programme anpasst.
+  </para><indexterm class="endofrange" startref="idx.init"/>
+
+  <sect2 id="sec.boot.runlevel">
+   <title>Runlevel</title><indexterm id="idx.runlevels" class="startofrange"> <primary>Runlevels</primary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>inittab</secondary> </indexterm>
+   <para>
+    Unter Linux definieren <emphasis>Runlevel</emphasis>, wie das System gestartet wird und welche Dienste im laufenden System verfügbar sind. Nach dem Booten startet das System wie in <filename>/etc/inittab</filename> in der Zeile <literal>initdefault</literal> definiert.  Dies ist in der Regel die Einstellung <literal>3</literal> oder <literal>5</literal>. Weitere Informationen hierzu finden Sie unter <xref linkend="tab.boot.runlevel"/>. Alternativ kann der Runlevel auch zur Boot-Zeit (beispielsweise durch Einfügen der Runlevel-Nummer an der Eingabeaufforderung) angegeben werden. Alle Parameter, die nicht direkt vom Kernel ausgewertet werden können, werden an <systemitem>init</systemitem> übergeben. Zum Booten in Runlevel 3 fügen Sie der Boot-Eingabeaufforderung einfach die Ziffer 3 hinzu.
+   </para>
+   <table id="tab.boot.runlevel">
+    <title>Verfügbare Runlevel</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         Runlevel
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Beschreibung
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         0
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Systemstopp
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         S or 1
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Einzelbenutzer-Modus
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         2
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Lokaler Mehrbenutzer-Modus mit entferntem Netzwerk (NFS usw.)
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         3
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Mehrbenutzer-Vollmodus mit Netzwerk
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         4
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <guimenu>Benutzerdefiniert</guimenu>. Diese Option wird nicht verwendet, es sei denn, der Administrator konfiguriert diesen Runlevel.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         5
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Mehrbenutzer-Vollmodus mit Netzwerk und X-Display-Manager - KDM, GDM oder XDM
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         6
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Systemneustart
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <important>
+    <title>Runlevel 2 mit einer über NFS eingehängten Partition ist zu vermeiden</title>
+    <para>
+     Sie sollten Runlevel 2 nicht verwenden, wenn Ihr System eine Partition, wie <filename>/usr</filename>, über NFS einhängt. Das System zeigt möglicherweise unerwartetes Verhalten, wenn Programmdateien oder Bibliotheken fehlen, da der NFS-Dienst in Runlevel 2 nicht zur Verfügung steht (lokaler Mehrbenutzer-Modus ohne entferntes Netzwerk).
+    </para>
+   </important>
+   <para>
+    Um die Runlevel während des laufenden Systembetriebs zu ändern, geben Sie <command>telinit</command> und die entsprechende Zahl als Argument ein. Dies darf nur von Systemadministratoren ausgeführt werden. In der folgenden Liste sind die wichtigsten Befehle im Runlevel-Bereich aufgeführt.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>telinit 1</command> oder <command>shutdown now</command>
+     </term>
+     <listitem>
+      <para>
+       Das System wechselt in den <emphasis>Einzelbenutzer-Modus</emphasis>. Dieser Modus wird für die Systemwartung und administrative Aufgaben verwendet.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 3</command>
+     </term>
+     <listitem>
+      <para>
+       Alle wichtigen Programme und Dienste (einschließlich Netzwerkprogramme und -dienste) werden gestartet und reguläre Benutzer können sich anmelden und mit dem System ohne grafische Umgebung arbeiten.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 5</command>
+     </term>
+     <listitem>
+      <para>
+       Die grafische Umgebung wird aktiviert. Normalerweise wird ein Display-Manager, wie XDM, GDM oder KDM, gestartet. Wenn Autologin aktiviert ist, wird der lokale Benutzer beim vorausgewählten Fenster-Manager (GNOME, KDE oder einem anderem Fenster-Manager) angemeldet.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 0</command> oder <command>shutdown -h now</command>
+     </term>
+     <listitem>
+      <para>
+       Das System wird gestoppt.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 6</command> oder <command>shutdown -r now</command>
+     </term>
+     <listitem>
+      <para>
+       Das System wird gestoppt und anschließend neu gestartet.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    Runlevel <literal>5</literal> ist der standardmäßige Runlevel bei allen Standardinstallationen von <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>. Die Benutzer werden aufgefordert, sich mit einer grafischen Oberfläche anzumelden, oder der Standardbenutzer wird automatisch angemeldet. 
+   </para>
+   <warning>
+    <title>Fehler in <filename>/etc/inittab</filename> können zu einem fehlerhaften Systemstart führen</title>
+    <para>
+     <indexterm> <primary>Konfigurationsdateien</primary><secondary>inittab</secondary></indexterm> Wenn <filename>/etc/inittab</filename> beschädigt ist, kann das System möglicherweise nicht ordnungsgemäß gebootet werden.  Daher müssen Sie bei der Bearbeitung von <filename>/etc/inittab</filename> extrem vorsichtig sein.  Lassen Sie <systemitem>init</systemitem> stets <filename>/etc/inittab</filename> mit dem Kommando <command>telinit <option>q</option></command> neu lesen, bevor Sie den Computer neu starten.
+    </para>
+   </warning><indexterm id="idx.runlevels_changing" class="startofrange"> <primary>Runlevel</primary> <secondary>ändern</secondary> </indexterm>
+   <para>
+    Beim Ändern der Runlevel geschehen in der Regel zwei Dinge. Zunächst werden Stopp-Skripten des aktuellen Runlevel gestartet, die einige der für den aktuellen Runlevel wichtigen Programme schließen. Anschließend werden die Start-Skripten des neuen Runlevel gestartet. Dabei werden in den meisten Fällen mehrere Programme gestartet. Beim Wechsel von Runlevel 3 zu 5 wird beispielsweise Folgendes ausgeführt:
+   </para>
+   <orderedlist spacing="normal">
+    <listitem>
+     <para>
+      Der Administrator (<systemitem class="username">root</systemitem><systemitem/>) fordert init durch die Eingabe des Befehls <command>telinit <option>5</option></command> auf, zu einem anderen Runlevel zu wechseln.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <indexterm> <primary>Konfigurationsdateien</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>Skripen</primary><secondary>init.d</secondary><tertiary>rc</tertiary> </indexterm><systemitem/>init prüft den aktuellen Runlevel (<command>Runlevel</command>) und stellt fest, dass <filename>/etc/init.d/rc</filename> mit dem neuen Runlevel als Parameter gestartet werden soll.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Jetzt ruft <command>rc</command> die Stopp-Skripten des aktuellen Runlevel auf, für die es im neuen Runlevel keine Start-Skripten gibt. In diesem Beispiel sind dies alle Skripten, die sich in <filename>/etc/init.d/rc3.d</filename> (alter Runlevel war 3) befinden und mit einem <literal>K</literal> beginnen.  Die Zahl nach <literal>K</literal> gibt die Reihenfolge an, in der die Skripten mit dem Parameter <systemitem>stop</systemitem> ausgeführt werden sollen, da einige Abhängigkeiten berücksichtigt werden müssen.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Die Start-Skripten des neuen Runlevel werden zuletzt gestartet. In diesem Beispiel befinden sie sich im Verzeichnis <filename>/etc/init.d/rc5.d</filename> und beginnen mit einem <literal>S</literal>. Auch hier legt die nach dem <literal>S</literal> angegebene Zahl die Reihenfolge fest, in der die Skripten gestartet werden sollen.
+     </para>
+    </listitem>
+   </orderedlist>
+   <para>
+    Bei dem Wechsel in denselben Runlevel wie der aktuelle Runlevel prüft <systemitem>init</systemitem> nur <filename>/etc/inittab</filename> auf Änderungen und startet die entsprechenden Schritte, z. B. für das Starten von <command>getty</command> auf einer anderen Schnittstelle. Dieselbe Funktion kann durch den Befehl <command>telinit q</command> erreicht werden.
+   </para><indexterm class="endofrange" startref="idx.runlevels_changing"/><indexterm class="endofrange" startref="idx.runlevels"/>
+  </sect2>
+
+  <sect2 id="sec.boot.init.skripte">
+   <title>Init-Skripten</title><indexterm id="idx.init_scripts" class="startofrange"> <primary>init</primary> <secondary>Skripten</secondary> </indexterm> <indexterm id="idx.scripts_init.d" class="startofrange"> <primary>Skripten</primary> <secondary>init.d</secondary> </indexterm>
+   <para>
+    Im Verzeichnis <filename>/etc/init.d</filename> gibt es zwei Skripttypen:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Skripte, die direkt von <systemitem>init</systemitem> ausgeführt werden
+     </term>
+     <listitem>
+      <para>
+       <phrase arch="x86;ipf;amd64;em64t;ipseries;ppc"> Dies ist nur während des Boot-Vorgangs der Fall oder wenn das sofortige Herunterfahren des Systems initiiert wird (Stromausfall oder Drücken der Tastenkombination <keycombo> <keycap>Strg</keycap> <keycap>Alt</keycap> <keycap>Entf</keycap> </keycombo>).</phrase> Die Ausführung dieser Skripten ist in <filename>/etc/inittab</filename> definiert.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Skripte, die indirekt von <systemitem>init</systemitem> ausgeführt werden
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>Skripten</primary> <secondary>init.d</secondary> <tertiary>rc</tertiary> </indexterm>Diese werden beim Wechsel des Runlevels ausgeführt und rufen immer das Master-Skript <command>/etc/init.d/rc</command> auf, das die richtige Reihenfolge der relevanten Skripten gewährleistet.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    Sämtliche Skripten befinden sich im Verzeichnis <filename>/etc/init.d</filename>. Skripten, die während des Bootens ausgeführt werden, werden über symbolische Links aus <filename>/etc/init.d/boot.d</filename> aufgerufen.  Skripten zum Ändern des Runlevels werden jedoch über symbolische Links aus einem der Unterverzeichnisse (<filename>/etc/init.d/rc0.d</filename> bis <filename>/etc/init.d/rc6.d</filename>) aufgerufen. Dies dient lediglich der Übersichtlichkeit und der Vermeidung doppelter Skripten, wenn diese in unterschiedlichen Runlevels verwendet werden. Da jedes Skript sowohl als Start- als auch als Stopp-Skript ausgeführt werden kann, müssen sie die Parameter <option>start</option> und <option>stop</option> erkennen.  Die Skripten erkennen außerdem die Optionen <option>restart</option>, <option>reload</option>, <option>force-reload</option> und <option>status</option>. Diese verschiedenen Optionen werden in <xref linkend="tab.boot.initscript.opt"/> erläutert. Die von <systemitem>init</systemitem> direkt ausgeführten Skripte verfügen nicht über diese Links. Sie werden unabhängig vom Runlevel bei Bedarf ausgeführt.
+   </para>
+   <table id="tab.boot.initscript.opt">
+    <title>Mögliche <systemitem>init</systemitem>-Skript-Optionen</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         Option
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Beschreibung
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>start</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Startet den Dienst.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>stop</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Stoppt den Dienst.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>restart</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Wenn der Dienst läuft, wird er gestoppt und anschließend neu gestartet. Wenn der Dienst nicht läuft, wird er gestartet.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>reload</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Die Konfiguration wird ohne Stoppen und Neustarten des Dienstes neu geladen.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>force-reload</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Die Konfiguration wird neu geladen, sofern der Dienst dies unterstützt. Anderenfalls erfolgt dieselbe Aktion wie bei dem Befehl <option>restart</option>.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>status</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         Zeigt den aktuellen Status des Dienstes an.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    Mithilfe von Links in den einzelnen Runlevel-spezifischen Unterverzeichnissen können Skripten mit unterschiedlichen Runleveln verknüpft werden. Bei der Installation oder Deinstallation von Paketen werden diese Links mithilfe des Programms „insserv“ hinzugefügt oder entfernt (oder mithilfe von <filename>/usr/lib/lsb/install_initd</filename>, ein Skript, das dieses Programm aufruft). Unter <command>man 8 insserv</command> finden Sie weitere Einzelheiten.
+   </para>
+   <para>
+    All diese Einstellungen können auch mithilfe des YaST-Moduls geändert werden. Wenn Sie den Status über die Kommandozeile prüfen, verwenden Sie das Werkzeug <systemitem>chkconfig</systemitem>, das auf der man-Seite <command>man 8 chkconfig</command> beschrieben ist.
+   </para>
+   <para>
+    Im Folgenden finden Sie eine kurze Einführung in die zuerst bzw. zuletzt gestarteten Boot- und Stopp-Skripten sowie eine Erläuterung des Steuerskripten.
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><filename>boot</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>Skripte</primary> <secondary>init.d</secondary> <tertiary>boot</tertiary> </indexterm>Werden ausgeführt, wenn das System direkt mit <systemitem>init</systemitem> gestartet wird.  Es wird unabhängig vom gewählten Runlevel und nur einmalig ausgeführt. Dabei werden die Dateisysteme <filename>/proc</filename> und <filename>/dev/pts</filename> eingehängt und <systemitem>blogd</systemitem> (Boot Logging Daemon) wird aktiviert. Wenn das System nach einer Aktualisierung oder einer Installation das erste Mal gebootet wird, wird die anfängliche Systemkonfiguration gestartet.
+      </para>
+      <para>
+       Der <systemitem>blogd</systemitem>-Dämon ist ein Dienst, der von <systemitem>boot</systemitem> und <systemitem>rc</systemitem> vor allen anderen Diensten gestartet wird. Er wird beendet, sobald die von diesen Skripten (die eine Reihe von Unterskripte ausführen, beispielsweise um spezielle Blockdateien verfügbar zu machen) ausgelösten Aktionen abgeschlossen sind. <systemitem/>blogd schreibt alle Bildschirmausgaben in die Protokolldatei <filename>/var/log/boot.msg</filename>, jedoch nur wenn <filename>/var</filename> mit Schreib-/Lesezugriff eingehängt ist. Anderenfalls puffert blogd alle Bildschirmdaten, bis <filename>/var</filename> zur Verfügung steht.  Info <systemitem/> <command>man(-Kommando) </command>
+      </para>
+      <para>
+       Das Skript <filename>boot</filename> ist zudem für das Starten aller Skripten in <filename>/etc/init.d/boot.d</filename> verantwortlich, deren Name mit <literal>S</literal> beginnt. Dort werden die Dateisysteme überprüft und bei Bedarf Loop-Devices konfiguriert. Außerdem wird die Systemzeit festgelegt. Wenn bei der automatischen Prüfung und Reparatur des Dateisystems ein Fehler auftritt, kann der Systemadministrator nach Eingabe des Root-Passworts eingreifen. Das zuletzt ausgeführte Skript ist <command>boot.local</command>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>boot.local</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>Skripte</primary> <secondary>init.d</secondary> <tertiary>boot.local</tertiary> </indexterm>Hier können Sie zusätzliche Kommandos eingeben, die beim Booten ausgeführt werden sollen, bevor Sie zu einem Runlevel wechseln.  Dieses Skript ist mit der <filename>AUTOEXEC.BAT</filename> in DOS-Systemen vergleichbar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>halt</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>Skripte</primary> <secondary>init.d</secondary> <tertiary>halt</tertiary> </indexterm> Dieses Skript wird nur beim Wechsel in Runlevel 0 oder 6 ausgeführt. Hier wird es entweder als <command>init</command> oder als <command>init</command> ausgeführt. Ob das System heruntergefahren oder neu gebootet wird, hängt davon ab, wie <filename>halt</filename> aufgerufen wird. Falls beim Herunterfahren Sonderkommandos benötigt werden, fügen Sie diese dem Skript <command>init</command> hinzu.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>rc</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>Skripten</primary> <secondary>init.d</secondary> <tertiary>rc</tertiary> </indexterm> Dieses Skript ruft die entsprechenden Stopp-Skripten des aktuellen Runlevels und die Start-Skripten des neu gewählten Runlevels auf. Wie das Skript <filename>/etc/init.d/boot</filename> wird auch dieses Skript über <filename>/etc/inittab</filename> mit dem gewünschten Runlevel als Parameter aufgerufen.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist><indexterm> <primary>init</primary> <secondary>Skripten hinzufügen</secondary> </indexterm>
+   <para>
+    Sie können Ihre eigenen Skripten erstellen und diese problemlos in das oben beschriebene Schema integrieren. Anweisungen zum Formatieren, Benennen und Organisieren benutzerdefinierter Skripten finden Sie in den Spezifikationen von LSB und auf den man-Seiten von <systemitem>init</systemitem>, <systemitem>init.d</systemitem>, <systemitem>chkconfig</systemitem> und <systemitem>insserv</systemitem>. Weitere Informationen finden Sie zudem auf den man-Seiten zu <systemitem>startproc</systemitem> und <systemitem>killproc</systemitem>.
+   </para>
+   <warning>
+    <title>Fehlerhafte init-Skripte können das System stoppen</title>
+    <para>
+     Bei fehlerhaften <systemitem>init</systemitem>-Skripten kann es dazu kommen, dass der Computer hängt. Diese Skripten sollten mit großer Vorsicht bearbeitet werden und, wenn möglich, gründlich in der Mehrbenutzer-Umgebung getestet werden. Hilfreiche Informationen zu <systemitem>init</systemitem>-Skripten finden Sie in <xref linkend="sec.boot.runlevel"/>.
+    </para>
+   </warning>
+   <para>
+    Sie erstellen ein benutzerdefiniertes <systemitem>init</systemitem>-Skript für ein bestimmtes Programm oder einen Dienst, indem Sie die Datei <filename>/etc/init.d/skeleton</filename> als Schablone verwenden. Speichern Sie eine Kopie dieser Datei unter dem neuen Namen und bearbeiten Sie die relevanten Programm- und Dateinamen, Pfade und ggf. weitere Details. Sie können das Skript auch mit eigenen Ergänzungen erweitern, sodass die richtigen Aktionen vom <systemitem>init</systemitem>-Prozess ausgelöst werden.
+   </para>
+   <para>
+    Der Block <literal>INIT INFO</literal> oben ist ein erforderlicher Teil des Skripts und muss bearbeitet werden. Weitere Informationen hierzu finden Sie unter <xref linkend="aus.boot.init.skripte.add.initinfo"/>.
+   </para>
+   <example id="aus.boot.init.skripte.add.initinfo">
+    <title>Ein minimaler INIT INFO-Block</title>
+<screen>### BEGIN INIT INFO
+# Provides:          FOO
+# Required-Start:    $syslog $remote_fs
+# Required-Stop:     $syslog $remote_fs
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Description:       Start FOO to allow XY and provide YZ
+### END INIT INFO</screen>
+   </example>
+   <para>
+    Geben Sie in der ersten Zeile des <literal>INFO</literal>-Blocks nach <literal>Provides:</literal> den Namen des Programms oder des Dienstes an, das bzw. der mit diesem Skript gesteuert werden soll. <systemitem/> Geben Sie in den Zeilen <literal>Required-Start:</literal> und <literal>Required-Stop:</literal> alle Dienste an, die weiter ausgeführt werden müssen, wenn der Dienst selbst gestoppt wird. Diese Informationen werden später zum Generieren der Nummerierung der Skriptnamen verwendet, die in den Runlevel-Verzeichnissen enthalten sind. Geben Sie nach <literal>Default-Start:</literal> und <literal>Default-Stop:</literal> die Runlevel an, in denen der Dienst automatisch gestartet oder gestoppt werden soll. Geben Sie für <literal>Description:</literal> schließlich eine kurze Beschreibung des betreffenden Dienstes ein.
+   </para>
+   <para>
+    Um in den Runlevel-Verzeichnissen (<filename>/etc/init.d/rc?.d/</filename>) die Links auf die entsprechenden Skripten in <filename>/etc/init.d/</filename> zu erstellen, geben Sie den Befehl <command>insserv <replaceable>neuer skriptname</replaceable></command> ein.  Das Programm <command>insserv</command> wertet den <literal>INIT INFO</literal>-Header aus, um die erforderlichen Links für die Start- und Stopp-Skripts in den Runlevel-Verzeichnissen (<filename>/etc/init.d/rc?.d/</filename>) zu erstellen. Das Programm sorgt zudem für die richtige Start- und Stopp-Reihenfolge für die einzelnen Runlevel, indem es die erforderlichen Nummern in die Namen dieser Links aufnimmt. Wenn Sie zum Erstellen der Links ein grafisches Werkzeug bevorzugen, verwenden Sie den von YaST zur Verfügung gestellten Runlevel-Editor wie in <xref linkend="sec.boot.runlevel.edit"/> beschrieben.
+   </para>
+   <para>
+    Wenn ein in <filename>/etc/init.d/</filename> bereits vorhandenes Skript in das vorhandene Runlevel-Schema integriert werden soll, erstellen Sie die Links in den Runlevel-Verzeichnissen direkt mit insserv oder indem Sie den entsprechenden Dienst im Runlevel-Editor von YaST aktivieren. <command/> Ihre Änderungen werden beim nächsten Neustart wirksam und der neue Dienst wird automatisch gestartet.
+   </para>
+   <para>
+    Diese Links dürfen nicht manuell festgelegt werden. Wenn der <literal>INFO</literal>-Block Fehler enthält, treten Probleme auf, wenn <command>insserv</command> zu einem späteren Zeitpunkt für einen anderen Dienst ausgeführt wird. Der manuell hinzugefügte Dienst wird bei der nächsten Ausführung von <command>insserv </command> für dieses Skript entfernt.
+   </para><indexterm class="endofrange" startref="idx.init_scripts"/><indexterm class="endofrange" startref="idx.scripts_init.d"/>
+  </sect2>
+
+  <sect2 id="sec.boot.runlevel.edit">
+   <title>Konfigurieren von Systemdiensten (Runlevel) mit YaST</title><indexterm> <primary>YaST</primary> <secondary>Runlevel</secondary> </indexterm> <indexterm> <primary>Runlevel</primary> <secondary>in YaST bearbeiten</secondary> </indexterm>
+   <para>
+    Nach dem Starten dieses YaST-Moduls mit <menuchoice><guimenu>YaST</guimenu> <guimenu>System</guimenu> <guimenu>Systemdienste (Runlevel)</guimenu> </menuchoice> werden ein Überblick über alle verfügbaren Dienste sowie der aktuelle Status der einzelnen Dienste (deaktiviert oder aktiviert) angezeigt. Legen Sie fest, ob das Modul im <guimenu>einfachen Modus</guimenu> oder im <guimenu>Expertenmodus</guimenu> ausgeführt werden soll.  Der vorgegebene <guimenu>einfache Modus</guimenu> sollte für die meisten Zwecke ausreichend sein. In der linken Spalte wird der Name des Dienstes, in der mittleren Spalte sein aktueller Status und in der rechten Spalte eine kurze Beschreibung angezeigt. Der untere Teil des Fensters enthält eine ausführlichere Beschreibung des ausgewählten Dienstes. Um einen Dienst zu aktivieren, wählen Sie ihn in der Tabelle aus und klicken Sie anschließend auf <guimenu>Aktivieren</guimenu>. Führen Sie die gleichen Schritte aus, um einen Dienst zu deaktivieren.
+   </para>
+   <para>
+    Die detaillierte Steuerung der Runlevel, in denen ein Dienst gestartet oder gestoppt bzw. die Änderung des vorgegebenen Runlevel erfolgt im <guimenu>Expertenmodus</guimenu>. Der aktuell vorgegebene Runlevel oder <quote>initdefault</quote> (der Runlevel, in den das System standardmäßig bootet) wird oben angezeigt. Der standardmäßige Runlevel eines <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>-Systems ist in der Regel Runlevel 5 (Mehrbenutzer-Vollmodus mit Netzwerk und X). Eine geeignete Alternative kann Runlevel 3 sein (Mehrbenutzer-Vollmodus mit Netzwerk).
+   </para>
+   <para>
+    In diesem YaST-Dialogfeld können Sie einen Runlevel (wie unter <xref linkend="tab.boot.runlevel"/> aufgeführt) als neuen Standard wählen. Zudem können Sie mithilfe der Tabelle in diesem Fenster einzelne Dienste und Dämonen aktivieren oder deaktivieren. In dieser Tabelle sind die verfügbaren Dienste und Dämonen aufgelistet und es wird angezeigt, ob sie aktuell auf dem System aktiviert sind und wenn ja, für welche Runlevel. Nachdem Sie mit der Maus eine der Zeilen ausgewählt haben, klicken Sie auf die Kontrollkästchen, die die Runlevel (<guimenu>B</guimenu>, <guimenu>0</guimenu>, <guimenu>1</guimenu>, <guimenu>2</guimenu>, <guimenu>3</guimenu>, <guimenu>5</guimenu>, <guimenu>6</guimenu> und <guimenu>S</guimenu>) darstellen, um die Runlevel festzulegen, in denen der ausgewählte Dienst oder Daemon ausgeführt werden sollte. Runlevel 4 ist nicht definiert, um das Erstellen eines benutzerdefinierten Runlevel zu ermöglichen. Unterhalb der Tabelle wird eine kurze Beschreibung des aktuell ausgewählten Dienstes oder Daemons angezeigt.
+   </para>
+   <warning>
+    <title>Fehlerhafte Runlevel-Einstellungen können das System beschädigen</title>
+    <para>
+     Fehlerhafte Runlevel-Einstellungen können ein System unbrauchbar machen. Stellen Sie vor dem Anwenden der Änderungen sicher, dass Sie deren Auswirkungen kennen.
+    </para>
+   </warning>
+   <figure id="fig.yast2.runlevel">
+    <title>Systemdienste (Runlevel)</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_runlevel.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_runlevel.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Legen Sie mit den Optionen <guimenu>Start, Anhalten oder Aktualisieren </guimenu> fest, ob ein Dienst aktiviert werden soll. <guimenu>Status aktualisieren</guimenu> prüft den aktuellen Status. <guimenu>Mit Übernehmen oder Zurücksetzen</guimenu> können Sie wählen, ob die Änderungen für das System angewendet werden sollen, oder ob die ursprünglichen Einstellungen wiederhergestellt werden sollen, die vor dem Starten des Runlevel-Editors wirksam waren. Mit <guimenu>OK</guimenu> speichern Sie die geänderten Einstellungen.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.boot.sysconfig">
+  <title>Systemkonfiguration über <filename>/etc/sysconfig</filename></title><indexterm> <primary>Konfigurieren</primary> </indexterm> <indexterm id="idx.scripts_SuSEconfig" class="startofrange"> <primary>Skripten</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx.configuration_files_sysconfig" class="startofrange"> <primary>Konfigurationsdateien</primary> <secondary>sysconfig</secondary> </indexterm>
+
+  <para>
+   Die Hauptkonfiguration von <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> wird über die Konfigurationsdateien in <filename>/etc/sysconfig</filename> gesteuert. Die einzelnen Dateien in <filename>/etc/sysconfig</filename> werden nur von den Skripten gelesen, für die sie relevant sind. Dadurch wird gewährleistet, dass Netzwerkeinstellungen beispielsweise nur von netzwerkbezogenen Skripten analysiert werden.
+  </para>
+
+  <para>
+   Sie haben zwei Möglichkeiten, die Systemkonfiguration zu bearbeiten. Entweder verwenden Sie den YaST-Editor "sysconfig" oder Sie bearbeiten die Konfigurationsdateien manuell.
+  </para>
+
+  <sect2 id="sec.boot.sysconfig.edit">
+   <title>Ändern der Systemkonfiguration mithilfe des YaST-Editors "sysconfig"</title><indexterm> <primary>YaST</primary> <secondary>sysconfig-Editor</secondary> </indexterm>
+   <para>
+    Der YaST-Editor "sysconfig" bietet ein benutzerfreundliches Frontend für die Systemkonfiguration. Ohne den eigentlichen Speicherort der zu ändernden Konfigurationsvariablen zu kennen, können Sie mithilfe der integrierten Suchfunktion dieses Moduls den Wert der Konfigurationsvariablen wie erforderlich ändern. YaST wendet diese Änderungen an, aktualisiert die Konfigurationen, die von den Werten in <filename>sysconfig</filename> abhängig sind, und startet die Dienste neu.
+   </para>
+   <warning>
+    <title>Das Ändern von <filename>/etc/sysconfig/*</filename>-Dateien kann die Installation beschädigen</title>
+    <para>
+     Sie sollten die Dateien <filename>/etc/sysconfig</filename>-Dateien nur bearbeiten, wenn Sie über ausreichende Sachkenntnisse verfügen. Das unsachgemäße Bearbeiten dieser Dateien kann zu schwerwiegenden Fehlern des Systems führen. Die Dateien in <filename>/etc/sysconfig</filename> enthalten einen kurzen Kommentar zu den einzelnen Variablen, der erklärt, welche Auswirkungen diese tatsächlich haben.
+    </para>
+   </warning>
+   <figure id="fig.yast2.sysconfig">
+    <title>Systemkonfiguration mithilfe des sysconfig-Editors</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="75%" fileref="yast2_sysconfig.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="75%" fileref="yast2_sysconfig.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Das YaST-Dialogfeld "sysconfig" besteht aus drei Teilen. Auf der linken Seite des Dialogfelds wird eine Baumstruktur aller konfigurierbaren Variablen angezeigt. Wenn Sie eine Variable auswählen, werden auf der rechten Seite sowohl die aktuelle Auswahl als auch die aktuelle Einstellung dieser Variable angezeigt. Unten werden in einem dritten Fenster eine kurze Beschreibung des Zwecks der Variable, mögliche Werte, der Standardwert und die Konfigurationsdatei angezeigt, aus der diese Variable stammt. In diesem Dialogfeld werden zudem Informationen dazu zur Verfügung gestellt, welche Konfigurationsskripten nach dem Ändern der Variable ausgeführt und welche neuen Dienste als Folge dieser Änderung gestartet werden. YaST fordert Sie zur Bestätigung der Änderungen auf und zeigt an, welche Skripts ausgeführt werden, wenn Sie <guimenu>Beenden</guimenu> wählen. Außerdem können Sie die Dienste und Skripten auswählen, die jetzt übersprungen und zu einem späteren Zeitpunkt gestartet werden sollen. YaST wendet alle Änderungen automatisch an und startet alle von den Änderungen betroffenen Dienste neu, damit die Änderungen wirksam werden.
+   </para>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.boot.sysconfig.man">
+   <title>Manuelles Ändern der Systemkonfiguration</title>
+   <para>
+    Gehen Sie wie folgt vor, um die Systemkonfiguration manuell zu ändern:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Melden Sie sich als <systemitem class="username">root</systemitem> an.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wechseln Sie mit <command>telinit 1</command> in den Einzelbenutzer-Modus (Runlevel 1).
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Nehmen Sie die erforderlichen Änderungen an den Konfigurationsdateien in einem Editor Ihrer Wahl vor.
+     </para>
+     <para>
+      Wenn Sie die Konfigurationsdateien in <filename>/etc/sysconfig</filename> nicht mit YaST ändern, müssen leere Variablenwerte durch zwei Anführungszeichen (<systemitem>KEYTABLE=</systemitem><literal>""</literal>) gekennzeichnet sein und Werte, die Leerzeichen enthalten, müssen in Anführungszeichen gesetzt werden. Werte, die nur aus einem Wort bestehen, müssen nicht in Anführungszeichen gesetzt werden.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Führen Sie <command>SuSEconfig</command> aus, um sicherzustellen, dass die Änderungen wirksam werden.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Mit einem Kommando wie <command>telinit <replaceable>default_runlevel</replaceable></command> stellen Sie den vorherigen Runlevel des Systems wieder her. Ersetzen Sie <replaceable>default_runlevel</replaceable> durch den vorgegebenen Runlevel des Systems. Wählen Sie <literal>5</literal>, wenn Sie in den Mehrbenutzer-Vollmodus mit Netzwerk und X zurückkehren möchten, oder wählen Sie <literal>3</literal>, wenn Sie lieber im Mehrbenutzer-Vollmodus mit Netzwerk arbeiten möchten.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Dieses Verfahren ist hauptsächlich beim Ändern von systemweiten Einstellungen, z. B. der Netzwerkkonfiguration, relevant. Für kleinere Änderungen ist der Wechsel in den Einzelbenutzer-Modus nicht erforderlich. In diesem Modus können Sie jedoch sicherstellen, dass alle von den Änderungen betroffenen Programme ordnungsgemäß neu gestartet werden.
+   </para>
+   <tip>
+    <title>Konfigurieren der automatisierten Systemkonfiguration</title>
+    <para>
+     <indexterm> <primary>Skripten</primary><secondary>SuSEconfig</secondary><tertiary>Deaktivieren</tertiary></indexterm><indexterm><primary>Konfigurationsdateien</primary><secondary>suseconfig</secondary></indexterm> Um die automatisierte Systemkonfiguration von SuSEconfig zu deaktivieren, setzen Sie die Variable <systemitem>ENABLE_SUSECONFIG</systemitem> in <filename>/etc/sysconfig/suseconfig</filename> auf <literal>no</literal>.  Wenn Sie den SUSE-Support für die Installation nutzen möchten, darf SuSEconfig nicht deaktiviert werden. Es ist auch möglich, die automatisierte Konfiguration teilweise zu deaktivieren.
+    </para>
+   </tip><indexterm class="endofrange" startref="idx.scripts_SuSEconfig"/><indexterm class="endofrange" startref="idx.configuration_files_sysconfig"/>
+  </sect2>
+ </sect1>
+</chapter>

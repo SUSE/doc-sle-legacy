@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_smpppd.xml" id="sec.smpppd">
+ <title>smpppd como Assistente de Discagem</title><indexterm id="idx.Internet_smpppd"> <primary>Internet</primary> <secondary>smpppd</secondary> </indexterm> <indexterm id="idx.Internet_dial-up"> <primary>Internet</primary> <secondary>discagem</secondary> </indexterm>
+
+ <para>
+  Alguns usuários domésticos não possuem uma linha dedicada de conexão à Internet. Em vez disso, usam conexões por discagem. Dependendo da forma de discagem (ISDN ou DSL), a conexão é controlada por ipppd ou pppd. Basicamente, tudo o que precisa ser feito para estabelecer a conexão é iniciar esses programas corretamente.
+ </para>
+
+ <para>
+  Se você tiver uma conexão com tarifa fixa que não gere custos adicionais para a conexão por discagem, basta iniciar o respectivo daemon. Controle a conexão por discagem com um applet de área de trabalho ou uma interface de linha de comando. Se o portal de Internet não for o host que você estiver usando, você poderá controlar a conexão por discagem por intermédio de um host de rede.
+ </para>
+
+ <para>
+  É neste momento que o smpppd (SUSE Meta PPP Daemon) é envolvido. Ele oferece uma interface uniforme para programas auxiliares e funciona nas duas direções. Primeiro, ele programa o pppd ou ipppd necessário e controla suas propriedades de discagem. Em segundo lugar, disponibiliza diversos provedores aos programas do usuário e transmite informações sobre o atual status da conexão. Já que o smpppd também pode ser controlado por meio da rede, é adequado para controlar conexões por discagem à Internet de uma estação de trabalho de uma sub-rede privada.
+ </para>
+
+ <sect2>
+  <title>Configurando o smpppd</title>
+  <para>
+   As conexões fornecidas pelo smpppd são automaticamente configuradas pelo YaST. Os programas por discagem KInternet e cinternet efetivos também são pré-configurados. Configurações manuais somente são necessárias para configurar recursos adicionais do smpppd, como o controle remoto.
+  </para>
+  <para>
+   O arquivo de configuração do smpppd é o <filename>/etc/smpppd.conf</filename>. Por padrão, ele não habilita o controle remoto. As opções mais importantes desse arquivo de configuração são:
+  </para><indexterm> <primary>arquivos de configuração</primary> <secondary>smppd.conf</secondary> </indexterm>
+  <variablelist>
+   <varlistentry>
+    <term>open-inet-socket = <replaceable>yes|no</replaceable>
+    </term>
+    <listitem>
+     <para>
+      Para controlar o smpppd pela rede, defina essa opção como <literal>yes</literal>. O smpppd escuta na porta <literal>3185</literal>. Se esse parâmetro for definido como <literal>yes</literal>, os parâmetros <literal>bind-address</literal>, <literal>host-range</literal> e <literal>password</literal> deverão ser definidos da mesma forma.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>bind-address = <replaceable>endereço ip</replaceable>
+    </term>
+    <listitem>
+     <para>
+      Se um host tiver diversos endereços IP, use esse parâmetro para determinar o endereço IP em que o smpppd deve aceitar conexões. O padrão é escutar em todos os endereços.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>host-range = <replaceable>ip mín.</replaceable><replaceable>ip máx.</replaceable>
+    </term>
+    <listitem>
+     <para>
+      O parâmetro <literal>host-range</literal> define uma faixa de rede. Os hosts cujos endereços IP se situam dentro dessa faixa recebem acesso ao smpppd. O acesso é recusado a todos os hosts localizados fora dessa faixa.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>password = <replaceable>senha</replaceable>
+    </term>
+    <listitem>
+     <para>
+      Ao atribuir uma senha, limite os clientes a hosts autorizados. Como se trata de uma senha de texto simples, não é recomendável superestimar a segurança oferecida. Se nenhuma senha for atribuída, todos os clientes terão permissão para acessar o smpppd.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>slp-register = <replaceable>yes|no</replaceable>
+    </term>
+    <listitem>
+     <para>
+      Com esse parâmetro, o serviço smpppd pode ser anunciado na rede por meio do SLP.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   Mais informações sobre o smpppd estão disponíveis nas páginas do manual <systemitem>smpppd(8)</systemitem> e <systemitem>smpppd.conf(5)</systemitem>.
+  </para>
+ </sect2>
+
+ <sect2>
+  <title>Configurando o <command>cinternet</command> para uso remoto</title><indexterm> <primary>Internet</primary> <secondary>cinternet</secondary></indexterm>
+  <para>
+   É possível usar o cinternet para controlar um smpppd local ou remoto. cinternet é o equivalente de linha de comando ao KInternet gráfico. Para preparar esses utilitários para uso com um smpppd remoto, edite o arquivo de configuração <filename>/etc/smpppd-c.conf</filename> manualmente ou por meio do cinternet. Esse arquivo usa apenas quatro opções:
+  </para><indexterm> <primary>arquivos de configuração</primary> <secondary>smpppd-c.conf</secondary> </indexterm>
+  <variablelist>
+   <varlistentry>
+    <term>sites = <replaceable>lista de locais</replaceable>
+    </term>
+    <listitem>
+     <para>
+      É a <replaceable>lista de locais</replaceable> onde os front ends procuram smpppd. Os front ends testam as opções na ordem especificada. A opção <literal>local</literal> solicita o estabelecimento de uma conexão com o smpppd local. A opção <literal>gateway</literal> aponta para um smpppd no gateway. O <literal>config-file</literal> indica que deve-se estabelecer a conexão com o smpppd especificado nas opções <systemitem>server</systemitem> e <systemitem>port</systemitem> em <filename>/etc/smpppd-c.conf</filename>. O <literal>slp</literal> ordena que os front ends se conectem com um smpppd encontrado por SLP.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>server = <replaceable>servidor</replaceable>
+    </term>
+    <listitem>
+     <para>
+      O host em que o smpppd é executado.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>port = <replaceable>porta</replaceable>
+    </term>
+    <listitem>
+     <para>
+      A porta em que o smpppd é executado.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>password = <replaceable>senha</replaceable>
+    </term>
+    <listitem>
+     <para>
+      Senha selecionada para o smpppd.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   Se o smpppd estiver ativo, tente acessá-lo. Por exemplo, com <command>cinternet</command> <option>--verbose --interface-list</option>. Em caso de dificuldade nesse ponto, consulte as páginas de manual de <systemitem>smpppd-c.conf(5)</systemitem> e de <systemitem>cinternet(8)</systemitem>.
+  </para>
+ </sect2>
+</sect1>

@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_lan.xml" id="sec.basicnet.yast">
+ <title>使用 YaST 配置网络连接</title><indexterm id="idx.networks_integrating" class="startofrange"><primary>网络</primary><secondary>配置</secondary></indexterm><indexterm><primary>网卡</primary><secondary>网络</secondary></indexterm>
+
+ <para>
+  Linux 上有多个支持的联网类型。其中多数使用不同的设备名，配置文件分布在文件系统上的多个位置。关于手动网络配置方面的详细概述，请参见<xref linkend="sec.basicnet.manconf"/>。
+ </para>
+
+ <para>
+  <phrase os="sles;sled">在 NetworkManager 默认处于活动状态的 SUSE Linux Enterprise Desktop 上，所有网卡都会加以配置。</phrase>如果 NetworkManager 不处于活动状态，那么系统只会自动配置使用链路连通的第一个接口（已连接网络电缆）。可随时在已安装系统中配置额外的硬件。以下章节将介绍 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 支持的所有网络连接类型的网络配置。
+ </para>
+
+ <tip arch="zseries" os="sles">
+
+  <title>IBM System z：可热插拔网卡</title>
+  <para>
+   IBM System z 平台支持可热插拔网卡，但不支持通过 DHCP 的自动网络集成（与 PC 情况相同）。检测到网卡后需要手动配置接口。
+  </para>
+ </tip>
+
+ <sect2 id="sec.basicnet.yast.netcard">
+  <title>使用 YaST 配置网卡</title><indexterm> <primary>卡</primary> <secondary>网络</secondary> </indexterm> <indexterm> <primary>网络</primary> <secondary>YaST</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>网卡</secondary> </indexterm> <indexterm/>
+  <para>
+   要在 YaST 中配置有线或无线网卡，请选择<menuchoice><guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>。启动模块后，YaST 将显示<guimenu>网络设置</guimenu>对话框，其中包括四个选项卡：<guimenu>全局选项</guimenu>、<guimenu>概述</guimenu>、<guimenu>主机名/DNS</guimenu> 和<guimenu>路由选择</guimenu>。
+  </para>
+  <para>
+   通过<guimenu>全局选项</guimenu>选项卡可设置常规联网选项，如使用 NetworkManager、IPv6 和常规 DHCP 选项。有关详细信息，请参见<xref linkend="sec.basicnet.yast.netcard.global"/>。
+  </para>
+  <para>
+   <guimenu>概述</guimenu>选项卡包含关于已安装网络接口和配置的信息。会列出已正确检测到的所有网卡及其名称。您可在此对话框中手动配置新卡、删除或更改其配置。如果要手动配置未自动检测到的卡，请参见<xref linkend="sec.basicnet.yast.netcard.man"/>。如果要更改已配置卡的配置，请参见<xref linkend="sec.basicnet.yast.netcard.change"/>。
+  </para>
+  <para>
+   通过<guimenu>主机名/DNS</guimenu> 选项卡可设置计算机的主机名和要使用的服务器名称。有关详细信息，请参见<xref linkend="sec.basicnet.yast.change.host"/>。
+  </para>
+  <para>
+   <guimenu>路由选择</guimenu>选项卡用于配置路由选择。有关更多信息，请参见<xref linkend="sec.basicnet.yast.change.route"/>。
+  </para>
+  <figure id="fig.yast2.neticard">
+   <title>配置网络设置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_net_icard.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_net_icard.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <sect3 id="sec.basicnet.yast.netcard.global">
+   <title>配置全局联网选项</title>
+   <para>
+    通过 YaST <guimenu>网络设置</guimenu>模块的<guimenu>全局选项</guimenu>选项卡，可设置重要的全局联网选项，如使用 NetworkManager、IPv6 和 DHCP 客户端选项。这些设置适用于所有网络接口。
+   </para>
+   <para>
+    在<guimenu>网络设置方法</guimenu>中，选择管理网络连接的方法。如果希望 NetworkManager 桌面小程序管理所有接口的连接，请选择<guimenu>通过 NetworkManager 的用户控制方法</guimenu>。此选项非常适用于在多个有线和无线网络之间切换。如果您没有运行桌面环境（GNOME 或 KDE）或者您的计算机是 Xen 服务器、虚拟系统，又或在网络中提供网络服务（如 DHCP 或 DNS），请使用<guimenu>通过 ifup 的传统方法</guimenu>。如果使用 NetworkManager，则应使用 <command>nm-applet</command> 配置网络选项，并且<guimenu>网络设置</guimenu>模块的<guimenu>概述</guimenu>、<guimenu>主机名/DNS</guimenu>和<guimenu>路由选择</guimenu>选项卡会被禁用。有关 NetworkManager 的更多信息，请参见<xref linkend="cha.nm"/>。
+   </para>
+   <para>
+    在 <guimenu>IPv6 协议设置</guimenu>中，选择是否希望使用 IPv6 协议。可将 IPv6 与 IPv4 一起使用。默认情况下激活 IVv6。但是在不使用 IPv6 协议的网络中，如果禁用 IPv6 协议，响应时间会更快。如果要禁用 IPv6，请取消选中<guimenu>启用 IPv6</guimenu> 选项。这样将为 IPv6 禁用内核模块自动加载。这将在重引导后应用。
+   </para>
+   <para>
+    在 <guimenu>DHCP 客户端选项</guimenu>中，配置 DHCP 客户端的选项。如果希望 DHCP 客户端要求服务器始终广播其响应，则选中<guimenu>请求广播响应</guimenu>。如果您的计算机在不同网络之间移动，则可能需要选中此选项。在单个网络上，每个 DHCP 客户端的 <guimenu>DHCP 客户端标识符</guimenu>必须不同。如果保留为空，会默认为网络接口的硬件地址。但是，如果正在运行若干使用相同网络接口（即相同硬件地址）的虚拟机，则在此处指定唯一的自由格式标识符。
+   </para>
+   <para>
+    <guimenu>要发送的主机名</guimenu>指定 dhcpcd 向 DHCP 服务器发送消息时用于主机名选项的字符串。某些 DHCP 服务器会根据此主机名（动态 DNS）来更新名称服务器区域（转发和反转记录）。此外，有些 DHCP 服务器要求<guimenu>要发送的主机名</guimenu>选项字段包含来自客户端的 DHCP 消息中的特定字符串。选择 <literal>AUTO</literal> 可发送当前主机名（即 <filename>/etc/HOSTNAME</filename> 中所定义的）。将选项字段保留为空即可不发送任何主机名。如果您不希望根据 DHCP 中的信息更改默认路由，则取消选中<guimenu>通过 DHCP 更改默认路由</guimenu>。
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.netcard.change">
+   <title>更改网卡的配置</title>
+   <para>
+    要更改网卡的配置，请在 YaST <menuchoice><guimenu>网络设置</guimenu> <guimenu>概述</guimenu></menuchoice>中已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。将显示<guimenu>网卡设置</guimenu>对话框，可在其中使用<guimenu>常规</guimenu>、<guimenu>地址</guimenu>和<guimenu>硬件</guimenu>选项卡调整网卡配置。有关无线网卡配置的信息，请参见<xref linkend="sec.wireless.wlan.yast2"/>。
+   </para>
+   <sect4 id="sec.basicnet.yast.change.address">
+    <title>配置 IP 地址</title>
+<indexterm><primary>网络</primary><secondary>YaST</secondary><tertiary>IP 地址</tertiary></indexterm>
+    <para>
+     您可在<guimenu>网卡设置</guimenu>对话框的<guimenu>地址</guimenu>选项卡中设置网卡的 IP 地址或 IP 地址的确定方法。同时支持 IPv4 和 IPv6 地址。网卡可设置为<guimenu>无 IP 地址</guimenu>（对于绑定设备很有用）、<guimenu>静态指派的 IP 地址</guimenu>（IPv4 或 IPv6）或通过 <guimenu>DHCP</guimenu>和/或 <guimenu>Zeroconf</guimenu> 指派的<guimenu>动态地址</guimenu> 。
+    </para>
+    <para>
+     如果使用<guimenu>动态地址</guimenu>，则选择是使用<guimenu>仅 DHCP 版本 4</guimenu>（用于 DHCPv4）、<guimenu>DHCP 版本 6</guimenu>（用于 DHCPv6）还是 <guimenu>DHCP 版本 4 和 6</guimenu>。
+    </para>
+    <para>
+     如果可能，安装期间的首个带链接的可用网卡将会通过 DHCP 自动配置为使用自动 IP 地址。<phrase os="sles;sled">在 NetworkManager 默认处于活动状态的 SUSE Linux Enterprise Desktop 上，所有网卡都会加以配置。</phrase>
+     
+    </para>
+    <note arch="zseries" os="sles">
+     <title>IBM System z 和 DHCP</title>
+     <para>
+      在 IBM System z 平台上，只有具备 MAC 地址的网卡才支持基于 DHCP 的地址配置。属于这种情况的只有 OSA 和 OSA Express 网卡。
+     </para>
+    </note>
+    <para>
+     如果使用的是 DSL 线路，但 ISP（因特网服务提供商）没有指派静态 IP，此时还应使用 DHCP。如果决定使用 DHCP，请打开 YaST 网卡配置模块的<guimenu>网络设置</guimenu>对话框，在<guimenu>全局选项</guimenu>选项卡的 <guimenu>DHCP 客户端选项</guimenu>中配置细节。在<guimenu>请求广播响应</guimenu>中指定 DHCP 客户端是否应要求服务器始终广播其响应。如果您的计算机是在不同网络间移动的移动客户端，则可能需要使用此选项。如果您使用虚拟主机设置，其中不同的主机都通过同一接口通信，则需要用 <guimenu>DHCP 客户端标识符</guimenu>来区分。
+    </para>
+    <para>
+     DHCP 比较适合客户端配置，但不太适合服务器配置。要设置静态 IP 地址，请如下继续操作：
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       在 YaST 网卡配置模块的<guimenu>概述</guimenu>选项卡中，于已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       在<guimenu>地址</guimenu>选项卡中，选择<guimenu>静态指派的 IP 地址</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       输入 <guimenu>IP 地址</guimenu>。IPv4 和 IPv6 地址均可使用。在<guimenu>子网掩码</guimenu>中输入子网掩码。如果使用 IPv6 地址，则对于前缀长度使用 <literal>/64</literal> 格式的<guimenu>子网掩码</guimenu>。
+      </para>
+      <para>
+       或者，您可以为此地址输入一个完全限定的<guimenu>主机名</guimenu>，该主机名将写入到 <filename>/etc/hosts</filename> 配置文件。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要激活配置，请单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+    </procedure>
+    <para>
+     如果使用静态地址，则不会自动配置名称服务器和默认网关。要配置名称服务器，请按照<xref linkend="sec.basicnet.yast.change.host"/> 中所述进行。要配置网关，请按照<xref linkend="sec.basicnet.yast.change.route"/> 中所述进行。
+    </para>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.configure.aliases">
+    <title>配置别名</title><indexterm><primary>网络</primary><secondary>YaST</secondary><tertiary>别名</tertiary></indexterm>
+    <para>
+     一个网络设备可以有多个 IP 地址，称为别名。 
+    </para>
+    <note>
+     <title>别名是兼容功能</title>
+     <para>
+      这些所谓的别名表示标签只适用于 IPv4。对于 IPv6 则忽略它们。使用 <command>iproute2</command> 网络接口可以有一个或多个地址。
+     </para>
+    </note>
+    <para>
+     要用 YaST 为网卡设置别名，请执行以下步骤：
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       在 YaST 网卡配置模块的<guimenu>概述</guimenu>选项卡中，于已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       在<menuchoice> <guimenu>地址</guimenu> <guimenu>附加地址</guimenu> </menuchoice>选项卡中，单击<guimenu>添加</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       输入<guimenu>别名</guimenu>、<guimenu>IP 地址</guimenu>和<guimenu>网络掩码</guimenu>。不要在别名中包含接口名称。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要激活配置，请单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.udev">
+    <title>更改设备名称和 Udev 规则</title>
+    <para>
+     可更改网卡在使用时的设备名称。还可确定 udev 是通过网卡的硬件 (MAC) 地址还是通过总线 ID 来标识网卡。在大型服务器中，更偏向于使用后者，以便减少网卡的热交换。要使用 YaST 设置这些选项，请执行以下步骤：
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       在 YaST 网络设置模块的<guimenu>概述</guimenu><guimenu/>选项卡中，于已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       转到<guimenu>硬件</guimenu>选项卡。当前设备名称显示在 <guimenu>Udev 规则</guimenu>中。单击<guimenu>更改</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       选择 udev 应通过网卡的 <guimenu>MAC 地址</guimenu>还是<guimenu>总线 ID</guimenu> 来识别网卡。网卡的当前 MAC 地址和总线 ID 显示在对话框中。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要更改设备名称，请选中<guimenu>更改设备名称</guimenu>选项并编辑名称。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>确定</guimenu>然后单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要激活配置，请单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.driver">
+    <title>更改网卡内核驱动程序</title>
+    <para>
+     对于某些网卡，可能会提供某些内核驱动程序。如果网卡已配置，YaST 允许您从可用的合适驱动程序列表中选择一个要使用的内核驱动程序。还可为内核驱动程序指定选项。要使用 YaST 设置这些选项，请执行以下步骤：
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       在 YaST 网络设置模块的<guimenu>概述</guimenu>选项卡中，于已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       转到<guimenu>硬件</guimenu>选项卡。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       在<guimenu>模块名称</guimenu>中选择要使用的内核驱动程序。在<guimenu>选项</guimenu>中为所选驱动程序输入所有选项，形式为 <command> <replaceable>option</replaceable>=<replaceable>value</replaceable> </command>。如果使用多个选项，应用空格分隔这些选项。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>确定</guimenu>然后单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要激活配置，请单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.start">
+    <title>激活网络设备</title><indexterm> <primary>网络</primary> <secondary>YaST</secondary> <tertiary>激活</tertiary></indexterm>
+    <para>
+     如果您使用通过 ifup 的传统方法，则可以配置为在引导期间、连接电缆后或检测到网卡后启动设备，也可以配置为手动或从不启动设备。要更改设备启动，请如下继续操作：
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       在 YaST 的<menuchoice><guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>中，于已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       在<guimenu>常规</guimenu>选项卡中，从<guimenu>设备激活</guimenu>选择所希望的项。
+      </para>
+      <para>
+       选择<guimenu>在引导时</guimenu>可在系统引导时启动设备。使用<guimenu>在电缆连接时</guimenu>将对任何现有物理连接监视接口。使用<guimenu>在热插拔时</guimenu>将在接口可用时立即设置。这与<guimenu>在引导时</guimenu>选项很相似，唯一区别是如果引导时不存在接口，不会发生错误。选择<guimenu>手动</guimenu>可通过 <command>ifup</command> 手动控制接口。选择<guimenu>从不</guimenu>将不启动设备。<guimenu>通过 NFSroot</guimenu> 与<guimenu>在引导时</guimenu>相似，但使用 <command>rcnetwork stop</command> 命令时接口不会关闭。如果您使用 nfs 或 iscsi root 文件系统，则选择此选项。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要激活配置，请单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+    </procedure>
+    <para>
+     通常，仅系统管理员可以激活或停用网络接口。如果希望任何用户均能通过 KInternet 激活此接口，请选择<guimenu>通过 KInternet 为非 root 用户启用设备控制</guimenu>。
+    </para>
+   </sect4>
+   <sect4>
+    <title>设置最大传输单位大小</title>
+    <para>
+     您可为接口设置最大传输单位 (MTU)。MTU 是指允许的最大包大小（以字节为单位）。更高的 MTU 可带来更高的带宽效率。但是较大的包有时可能会堵塞较慢的接口，从而增加后续包的延迟。
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       在 YaST 的<menuchoice><guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>中，于已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       在<guimenu>常规</guimenu>选项卡中，从<guimenu>设置 MTU</guimenu> 列表中选择所需项。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       要激活配置，请单击<guimenu>确定</guimenu>。
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.fire">
+
+    <title>配置防火墙</title>
+    <para>
+     无须输入详细的防火墙设置（如<xref linkend="sec.fire.SuSE.yast"/>中所述），您就能在设备设置过程中确定设备的基本防火墙设置。按如下所示继续：
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       打开 YaST <menuchoice><guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>模块。在<guimenu>概述</guimenu>选项卡中，从已检测到的网卡列表中选择一个网卡，然后单击<guimenu>编辑</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       进入<guimenu>网络设置</guimenu>对话框的<guimenu>常规</guimenu>选项卡。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       确定应指派接口的防火墙区域。下列选项可用：
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term>防火墙已禁用</term>
+        <listitem>
+         <para>
+          此选项只有在禁用防火墙和防火墙未在运行时才可用。仅当计算机属于受外部防火墙保护的大型网络时才使用此选项。
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>自动指派区域</term>
+        <listitem>
+         <para>
+          此选项只有在启用防火墙后才可用。防火墙正在运行且接口自动指派给防火墙区域。包含关键字 <literal>any</literal> 的区域或外部区域将用于此类接口。
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>内部区域（未保护）</term>
+        <listitem>
+         <para>
+          防火墙正在运行，但不会强制执行任何规则来保护此接口。当计算机属于受外部防火墙保护的大型网络时才使用此选项。当计算机具有多个网络接口时，此选项还可用于连接到内部网络的接口。
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>隔离区域</term>
+        <listitem>
+         <para>
+          隔离区域是位于内部网络和（恶意）因特网之前的附加防线。可从内部网络和因特网访问指派到此区域的主机，但指派到此区域的主机无法访问内部网络。
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>外部区域</term>
+        <listitem>
+         <para>
+          防火墙在此接口上运行，并且全面保护其抵御其他假定有害的网络流量。这是默认选项。
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>下一步</guimenu>。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       单击<guimenu>确定</guimenu>即可激活配置。
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.netcard.man">
+   <title>配置未检测到的网卡</title>
+   <para>
+    可能未正确检测到您的网卡。在此情况下，已检测到网卡列表中不会包含此网卡。如果确定系统包含网卡的驱动程序，则可以手动对其进行配置。还可以配置特殊网络设备类型，例如网桥、绑定、TUN 或 TAP。要配置未检测到的网卡（或特殊设备），请如下操作：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      在 YaST 的<menuchoice><guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu> <guimenu>概述</guimenu></menuchoice>对话框中，单击<guimenu>添加</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      
+      
+      在<guimenu>硬件</guimenu>对话框中，从可用选项中设置接口的<guimenu>设备类型</guimenu>和<guimenu>配置名称</guimenu>。如果网卡为 PCMCIA 或 USB 设备，则激活相应的复选框，并选择<guimenu>下一步</guimenu>退出此对话框。或者，如果需要，您可定义要用于网卡的内核<guimenu>模块名称</guimenu>及其<guimenu>选项</guimenu>。
+     </para>
+     <para>
+      在 <guimenu>Ethtool 选项</guimenu>中，您可以为接口设置 <command>ifup</command> 使用的 <command>ethtool</command> 选项。可用选项请参见 <command>ethtool</command> 手册页。如果选项字符串以 <literal>-</literal> 开始（例如 <literal>-K <replaceable>接口名称</replaceable> rx on</literal>），字符串中的第二项将替换为当前接口名。否则的话（例如 <literal>autoneg off speed 10</literal>）是 <command>ifup</command> 后跟 <literal>-s <replaceable>接口名</replaceable></literal>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>下一步</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>常规</guimenu>、<guimenu>地址</guimenu>和<guimenu>硬件</guimenu>选项卡中，配置所有所需的选项，如接口的 IP 地址、设备激活或防火墙区域。有关配置选项的更多信息，请参见<xref linkend="sec.basicnet.yast.netcard.change"/>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果选择<guimenu>无线</guimenu>作为接口的设备类型，则在下一个对话框中配置无线连接。<phrase os="sles;sled">有关无线设备配置的详细信息可在<xref linkend="cha.wireless.wlan"/> 中获得。</phrase>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>下一步</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      要激活新网络配置，请单击<guimenu>确定</guimenu>。
+     </para>
+    </step>
+   </procedure>
+
+  </sect3>
+  <sect3 id="sec.basicnet.yast.change.host">
+   <title>配置主机名和 DNS</title><indexterm><primary>网络</primary><secondary>YaST</secondary><tertiary>主机名</tertiary></indexterm>
+   <para>
+    如果安装期间没有更改网络配置并且有线网卡已经可用，则已为计算机自动生成主机名并且已激活 DHCP。这同样适用于主机连接到网络环境所需的名称服务信息。如果网络地址设置使用了 DHCP，则会向域名服务器列表自动填充相应数据。如果希望使用静态设置，则手动设置这些值。
+   </para>
+   <para>
+    要更改计算机名称并调整名称服务器搜索列表，则如下继续操作：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      转到 YaST 的<guimenu>网络设备</guimenu>模块中的<menuchoice><guimenu>网络设置</guimenu> <guimenu>主机名/DNS</guimenu></menuchoice>选项卡。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      输入<guimenu>主机名</guimenu>，如果需要，也输入<guimenu>域名</guimenu>。如果此计算机是邮件服务器，则该域特别重要。请注意，主机名是全局性的，应用于所有网络接口。
+     </para>
+     <para>
+      如果使用 DHCP 获取 IP 地址，则计算机的主机名将由 DHCP 自动设置。如果您连接到不同网络，您可能希望禁用此行为，因为它们可能指派不同主机名，而在运行时更改主机名可能会导致图形桌面混乱。要禁用使用 DHCP 获取 IP 地址，请取消选中<guimenu>通过 DHCP 更改主机名</guimenu>。
+     </para>
+     <para>
+      <guimenu>指派主机名给回写 IP</guimenu> 会将您的主机名与 <filename>/etc/hosts</filename> 中的 <literal>127.0.0.2</literal>（回写）IP 地址关联。如果您想让主机名即使在没有活动的网络时也随时可解析，这是有用的选项。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>修改 DNS 配置</guimenu>中，请选择修改 DNS 配置（名称服务器、搜索列表以及 <filename>/etc/resolv.conf</filename> 文件的内容）的方式。
+     </para>
+     <para>
+      如果选择了<guimenu>使用默认策略</guimenu>选项，则配置由 <command>netconfig</command> 脚本处理，该脚本合并了静态定义的数据（通过 YaST 或在配置文件中）与动态获取的数据（来自 DHCP 客户端或 NetworkManager）。在大多数情况下，此默认策略就足够了。
+     </para>
+     <para>
+      如果选择了<guimenu>仅手动</guimenu>选项，则不允许 <command>netconfig</command> 修改 <filename>/etc/resolv.conf</filename> 文件。但是，此文件可手动编辑。
+     </para>
+     <para>
+      如果已选择<guimenu>自定义策略</guimenu>选项，则应指定用于定义合并策略的<guimenu>自定义策略规则</guimenu>字符串。该字符串包含了接口名称的逗号分隔列表，可考虑作为设置的有效源。除完整接口名外，也可使用基本通配符来匹配多个接口。例如，<literal>eth* ppp?</literal> 首先以所有 eth 为目标，然后是 ppp0 到 ppp9 的所有接口。有两个特殊策略值表示如何应用 <filename>/etc/sysconfig/network/config</filename> 文件中定义的静态设置：
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><literal>STATIC</literal>
+       </term>
+       <listitem>
+        <para>
+         静态设置必须与动态设置合并到一起。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><literal>STATIC_FALLBACK</literal>
+       </term>
+       <listitem>
+        <para>
+         仅当动态配置不可用时，才使用静态设置。
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>
+      有关更多信息，请参见 <command>man 8 netconfig</command>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      输入<guimenu>名称服务器</guimenu>并填写<guimenu>域搜索</guimenu>列表。名称服务器必须通过 IP 地址（如 192.168.1.116）指定，不能通过主机名指定。<guimenu>域搜索</guimenu>选项卡中指定的名称是用于解析主机名（无指定域）的域名。如果使用多个<guimenu>域搜索</guimenu>，则使用逗号或空格分隔域。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      要激活配置，请单击<guimenu>确定</guimenu>。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    也可以使用 YaST 从命令行编辑主机名。YaST 所做更改会立即生效（手动编辑 <filename>/etc/HOSTNAME</filename> 文件时则不是这样）。要更改主机名，请使用以下命令：
+   </para>
+   <screen>yast dns edit hostname=<replaceable>hostname</replaceable></screen>
+   <para>
+    要更改名称服务器，请使用以下命令：
+   </para>
+   <screen>yast dns edit nameserver1=<replaceable>192.168.1.116</replaceable></screen>
+   <screen>yast dns edit nameserver2=<replaceable>192.168.1.116</replaceable></screen>
+   <screen>yast dns edit nameserver3=<replaceable>192.168.1.116</replaceable></screen>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.change.route">
+   <title>配置路由选择</title><indexterm><primary>网关</primary><secondary>YaST</secondary><tertiary>网关</tertiary></indexterm>
+   <para>
+    要使计算机能够与其他计算机和其他网络进行通信，必须提供路由选择信息以使网络流量使用正确的路径。如果使用 DHCP，则将自动提供此信息。如果使用静态设置，则必须手动添加此数据。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      在 YaST 中，转到<menuchoice><guimenu>网络设置</guimenu> <guimenu>路由选择</guimenu></menuchoice>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      输入<guimenu>默认网关</guimenu>（如果需要是 IPv4 和 IPv6）的 IP 地址。默认网关与每个可能的目标匹配，但是如果存在任何与所需地址匹配的其他项，则使用该项代替默认路由。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      可在<guimenu>路由选择表</guimenu>中输入多个项。输入<guimenu>目标</guimenu>网络 IP 地址、<guimenu>网关</guimenu> IP 地址和<guimenu>网络掩码</guimenu>。选择将流量路由到定义的网络要经过的<guimenu>设备</guimenu>（减号代表任何设备）。要忽略所有这些值，请使用减号 <literal>-</literal>。要在表中输入默认网关，请在<guimenu>目标</guimenu>字段中使用<literal>默认</literal>。
+     </para>
+     <note>
+      <para>
+       如果使用更多的默认路由，则可以指定用于确定具有更高优先级的路由的度量选项。要指定度量选项，则在<guimenu>选项</guimenu>中输入 <option>-metric<replaceable>number</replaceable></option>。默认情况下使用具有最高度量的路由。如果网络设备已断开连接，则删除其路由并使用下一个路由。但是，当前内核在静态路由选择中不使用度量，仅路由选择守护程序（如 multipathd）才在静态路由中使用度量。
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      如果系统是路由器，则在<guimenu>网络设置</guimenu>中启用 <guimenu>IP 转发</guimenu>选项。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      要激活配置，请单击<guimenu>确定</guimenu>。
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.modem">
+  <title>调制解调器</title><indexterm> <primary>YaST</primary><secondary>调制解调器</secondary></indexterm><indexterm><primary>调制解调器</primary><secondary>YaST</secondary></indexterm><indexterm><primary>配置</primary><secondary>调制解调器 </secondary></indexterm>
+  <tip arch="zseries" os="sles">
+
+   <title>IBM System z：调制解调器</title>
+   <para>
+    IBM System z 平台不支持对这类硬件进行配置。
+   </para>
+  </tip>
+  <para>
+   在 YaST 控制中心中，可以在<menuchoice><guimenu>网络设备</guimenu><guimenu>调制解调器</guimenu></menuchoice>下访问调制解调器配置。如果调制解调器已自动检测到，请转到<guimenu>调制解调器设备</guimenu>选项卡，并通过单击<guimenu>添加</guimenu>打开用于手动配置的对话框。在<guimenu>调制解调器设备</guimenu>下输入调制解调器连接到的接口。
+  </para>
+  <tip>
+   <title>CDMA 和 GPRS 调制解调器</title>
+   <para>
+    与配置普通调制解调器一样，用 YaST <guimenu>调制解调器</guimenu>模块配置支持的 CDMA 和 GPRS 调制解调器。
+   </para>
+  </tip>
+  <figure id="fig.yast2.modem">
+   <title>调制解调器配置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_modem.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_modem.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   如果位于专用交换分机 (PBX) 之后，则可能需要输入拨号前缀。该前缀通常是零。请参考随 PBX 附带的描述了解相关信息。同时还要选择使用音频拨号还是脉冲拨号、是否打开扬声器，以及调制解调器是否应在检测到拨号音之前一直等待。如果调制解调器连接到交换机，则不应启用最后一个选项。
+  </para>
+  <para>
+   在<guimenu>细节</guimenu>之下，设置波特率和调制解调器的初始化字符串。只有在调制解调器不是自动检测到的或者需要特殊设置才能传送数据时，才应更改以上设置。这种情况主要发生在 ISDN 终端适配器上。单击<guimenu>确定</guimenu>可退出此对话框。要将调制解调器的控制权委托给没有 root 许可权限的普通用户，请激活<guimenu>通过 KInternet 为非 root 用户启用设备控制</guimenu>。这样，不具备管理员权限的用户即可激活或停用某个接口。在<guimenu>拨号前缀正则表达式</guimenu>下，指定正则表达式。KInternet 中的<guimenu>拨号前缀</guimenu>（可由普通用户修改）必须符合此正则表达式。如果将此字段留空，用户则无法在不具备管理员权限的情况下设置其他<guimenu>拨号前缀</guimenu>。
+  </para>
+  <para>
+   在下一个对话框中，选择 ISP。要从您所在国家/地区的 ISP 的预定义列表中进行选择，请选择<guimenu>国家/地区</guimenu>。也可以单击<guimenu>新建</guimenu>打开一个对话框，从中为您的 ISP 提供数据。这些数据包括用于拨号连接的名称、ISP 的名称，以及 ISP 提供的登录名和口令。启用<guimenu>始终询问口令</guimenu>，在您每次连接时都提示输入口令。
+  </para>
+  <para>
+   在最后一个对话框中，指定附加连接选项：
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>按需拨号</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果启用<guimenu>按需拨号</guimenu>，请设置至少一个名称服务器。仅当您的因特网连接成本较低时才使用此功能，因为某些程序要求定期从因特网请求数据。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>连接后修改 DNS</guimenu>
+    </term>
+    <listitem>
+     <para>
+      默认情况下启用此选项，其作用是在每次连接因特网时都更新名称服务器地址。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>自动检索 DNS</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果提供者未在连接后传送其域名服务器，则禁用此选项并手动输入 DNS 数据。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>自动重新连接</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果启用了此选项，则连接失败后会自动重新建立连接。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>忽略提示</guimenu>
+    </term>
+    <listitem>
+     <para>
+      此选项将禁用对来自拨号服务器的任何提示检测。如果连接建立速度很慢，或根本不能建立连接，可尝试此选项。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>外部防火墙接口</guimenu>
+    </term>
+    <listitem>
+     <para>
+      选择此选项将激活防火墙并将接口设置为外部的。这样您的系统就可以在连接到因特网期间防范外部攻击。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>空闲超时（秒）</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项可以指定网络不活动的时间，一超过该时间调制解调器即自动断开连接。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>IP 详细信息</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项可打开地址配置对话框。如果您的 ISP 没有为您的主机指派动态 IP 地址，请禁用<guimenu>动态 IP 地址</guimenu>，然后输入主机的本地 IP 地址及远程 IP 地址。请向您的 ISP 询问这些信息。保持<guimenu>默认路由</guimenu>的启用状态，然后通过选择<guimenu>确定</guimenu>关闭该对话框。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   选择<guimenu>下一步</guimenu>可返回初始对话框，其中显示调制解调器配置的概要。单击<guimenu>确定</guimenu>可关闭此对话框。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.isdn">
+  <title>ISDN</title><indexterm> <primary>因特网</primary><secondary>ISDN</secondary></indexterm><indexterm><primary>YaST</primary><secondary>ISDN</secondary></indexterm><indexterm><primary>硬件</primary><secondary>ISDN</secondary></indexterm><indexterm><primary>配置</primary><secondary>ISDN</secondary></indexterm>
+  <tip arch="zseries" os="sles">
+
+   <title>IBM System z：ISDN</title>
+   <para>
+    IBM System z 平台不支持对这类硬件进行配置。
+   </para>
+  </tip>
+  <para>
+   使用此模块可以为系统配置一个或多个 ISDN 网卡。如果 YaST 没有检测到您的 ISDN 卡，请在 <guimenu>ISDN 设备</guimenu>选项卡中单击<guimenu>添加</guimenu>，然后手动选择您的网卡。可以使用多个接口，但您可以为一个接口配置多个 ISP。在随后的对话框中，设置该网卡正常工作所需的 ISDN 选项。
+  </para>
+  <figure id="fig.yast2.isdn">
+   <title>ISDN 配置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_isdn.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_isdn.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   在下一个对话框中（如<xref linkend="fig.yast2.isdn"/> 所示），选择要使用的协议。默认值是 <guimenu>Euro-ISDN (EDSS1)</guimenu>，但是对于旧式或大型交换机，请选择 <guimenu>1TR6</guimenu>。如果是在美国，请选择 <guimenu>NI1</guimenu>。在相关字段中选择您所在的国家/地区。相应的国家/地区代码将显示在该字段旁边的字段中。最后，提供您的<guimenu>区域号码</guimenu>和<guimenu>拨号前缀</guimenu>（如果需要）。如果不希望记录所有 ISDN 流量，则取消选中<guimenu>启动 ISDN 日志</guimenu>选项。
+  </para>
+  <para>
+   <guimenu>激活设备</guimenu>定义应如何启动 ISDN 接口：使用<guimenu>在引导时</guimenu>可以在系统每次引导时初始化 ISDN 驱动程序。<guimenu>手工</guimenu>要求您以 <systemitem class="username">root</systemitem> 的身份使用命令 <command>rcisdn start</command> 装载 ISDN 驱动程序。<guimenu>热插拔</guimenu>，用于 PCMCIA 或 USB 设备，用于在插入设备后加载驱动程序。在完成这些设置后，请选择<guimenu>确定</guimenu>。
+  </para>
+  <para>
+   在下一个对话框中，为您的 ISDN 网卡指定接口类型，并将 ISP 添加到现有接口中。接口的类型可能是 <systemitem>SyncPPP</systemitem> 或 <systemitem>RawIP</systemitem>，但多数 ISP 以 <systemitem>SyncPPP</systemitem> 方式操作，如下文所述。
+  </para>
+  <figure id="fig.yast2.isdn_interface">
+   <title>ISDN 接口配置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_isdn_interface.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_isdn_interface.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   要为<guimenu>我的电话号码</guimenu>输入的值取决于特定的设置：
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>ISDN 网卡直接连接到电话插座</term>
+    <listitem>
+     <para>
+      标准的 ISDN 线路提供三个电话号码（称为多用户号码或 MSN）。如果用户需要更多号码，最多可提供十个号码。必须在此处输入其中一个 MSN，但不要区号。如果输入的号码有误，您的电话运营商将自动退回到为您的 ISDN 线路指派的第一个 MSN。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ISDN 网卡连接到专用交换机<indexterm><primary>专用交换机</primary> </indexterm></term>
+    <listitem>
+     <para>
+      同样，配置可能随安装设备的不同而变化：
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        适用于家庭的小型专用交换机 (PBX) 大多使用 Euro-ISDN (EDSS1) 协议进行内部呼叫。这些交换机具有内部 S0 总线，并对与它们连接的设备使用内部号码。
+       </para>
+       <para>
+        将其中一个内部号码用作您的 MSN。您应该至少能够使用支持直接向外拨号的交换机的 MSN 之一。如果无效，则尝试使用一个零。有关进一步的信息，请参见电话交换机随附的文档。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        为公司设计的大型电话交换机通常使用 1TR6 协议用于内部呼叫。它们的 MSN 称为 EAZ 并且通常对应直拨号码。要在 Linux 中配置，只需输入 EAZ 的最后一位即可。如果各种方法都行不通，可尝试 1 到 9 之间的各位数字。
+       </para>
+      </listitem>
+     </orderedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+
+   要在下一个收费单位开始之前及时终止连接，请启用 <guimenu>ChargeHUP</guimenu>。但要记住，该选项不是对每个 ISP 都奏效。您也可以通过选择相应的选项启用信道绑定（多链接 PPP）。最后，您可以通过选择<guimenu>外部防火墙接口</guimenu>和<guimenu>重启动防火墙</guimenu>为链接启用防火墙。要使不具备管理员权限的普通用户能够激活或停用接口，请选择<guimenu>通过 Kinternet 为非 root 用户启用设备控制</guimenu>。
+  </para>
+  <para>
+   单击<guimenu>细节</guimenu>打开一个对话框，在其中可实施更为复杂的连接模式，这与普通的家庭用户无关。通过选择<guimenu>确定</guimenu>退出<guimenu>细节</guimenu>对话框。
+  </para>
+  <para>
+   在下一个对话框中配置 IP 地址设置。如果您的提供者没有为您指定静态 IP，请选择<guimenu>动态 IP 地址</guimenu>。否则，根据 ISP 指定的信息，使用提供的字段输入您主机的本地 IP 地址及远程 IP 地址。如果接口应该成为与因特网连接的默认路由，请选择<guimenu>默认路由</guimenu>。每台主机都只能有一个接口配置为默认路由。选择<guimenu>下一步</guimenu>可退出此对话框。
+  </para>
+  <para>
+   使用随后的对话框，您可以设置您所在的国家/地区并选择 ISP。列表中的 ISP 都只是 call-by-call（通过呼叫进行呼叫）提供者。如果列表中未列出您的 ISP，请选择<guimenu>新建</guimenu>。随即打开<guimenu>提供者参数</guimenu>对话框，可以在其中输入 ISP 的所有详细信息。输入电话号码时，切勿在数字之间加空格或逗号。最后，输入 ISP 为您提供的登录名和口令。输完之后，请选择<guimenu>下一步</guimenu>。
+  </para>
+  <para>
+   要在独立工作站上使用<guimenu>按需拨号</guimenu>，还需指定名称服务器（DNS 服务器）。多数 ISP 都支持动态 DNS，这意味着每次用户连接时，都由 ISP 发送名称服务器的 IP 地址。不过，对于单个工作站，您仍然需要提供 <systemitem class="ipaddress">192.168.22.99</systemitem> 之类的占位符地址。如果您的 ISP 不支持动态 DNS，请指定 ISP 的名称服务器 IP 地址。如果需要，可以为连接指定超时值，即网络不活动的时间（以秒计），一超过该时间即自动终止连接。选择<guimenu>下一步</guimenu>确认设置。YaST 将显示配置好的接口的摘要。要激活这些设置，请选择<guimenu>确定</guimenu>。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.cablemodem">
+  <title>电缆调制解调器</title><indexterm> <primary>调制解调器</primary><secondary>电缆</secondary></indexterm><indexterm><primary>YaST</primary><secondary>电缆调制解调器</secondary></indexterm><indexterm><primary>配置</primary><secondary>电缆调制解调器 </secondary></indexterm>
+  <tip arch="zseries" os="sles">
+   <title>IBM System z：电缆调制解调器</title>
+
+   <para>
+    IBM System z 平台不支持对这类硬件进行配置。
+   </para>
+  </tip>
+  <para>
+   在某些国家/地区，人们往往通过有线电视网访问因特网。有线电视用户通常将调制解调器一端接在有线电视插座上，另一端与计算机网卡相连（使用 10Base-TG 双绞线）。随后电缆调制解调器就能通过固定 IP 地址提供专用因特网连接。
+  </para>
+  <para>
+   根据您的 ISP 提供的描述，配置网卡时选择<guimenu>动态地址</guimenu>或<guimenu>静态指派的 IP 地址</guimenu>。目前多数提供商都使用 DHCP。通常只有特殊的公司帐户才使用静态 IP 地址。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.xdsl">
+
+  <title>DSL</title><indexterm> <primary>因特网</primary><secondary>DSL</secondary></indexterm><indexterm><primary>YaST</primary><secondary>DSL</secondary> </indexterm><indexterm><primary>配置</primary><secondary>DSL</secondary></indexterm>
+  <tip arch="zseries" os="sles">
+   <title>IBM System z：DSL</title>
+
+   <para>
+    IBM System z 平台不支持对这类硬件进行配置。
+   </para>
+  </tip>
+  <para>
+   要配置 DSL 设备，请从 YaST <guimenu>网络设备</guimenu>部分选择 <guimenu>DSL</guimenu> 模块。这个 YaST 模块包含若干对话框，可以在这些对话框中基于以下协议之一设置 DSL 链接参数。
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     以太网上的 PPP (PPPoE)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     ATM 上的 PPP (PPPoATM)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     用于 ADSL 的 CAPI（Fritz 网卡）
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     点对点隧道协议 (PPTP) － 奥地利
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   
+   
+   在 <guimenu>DSL 配置概述</guimenu>对话框的 <guimenu>DSL 设备</guimenu>选项卡中，您将找到已安装 DSL 设备的列表。要更改 DSL 设备的配置，请在列表中选择该设备，然后单击<guimenu>编辑</guimenu>。如果单击<guimenu>添加</guimenu>，则可手动配置新 DSL 设备。
+  </para>
+  <para>
+   基于 PPPoE 或 PPTP 配置 DSL 连接时，要求正确设置相应的网卡。如果尚未这样做，应首先通过选择<guimenu>配置网卡</guimenu>来配置网卡（请参见<xref linkend="sec.basicnet.yast.netcard"/>）。使用 DSL 链接时，可以自动指派地址但并不通过 DHCP，这就是不应启用<guimenu>动态地址</guimenu>选项的原因。相反，应该为接口输入静态虚设地址，如 <systemitem class="ipaddress">192.168.22.1</systemitem>。在<guimenu>子网掩码</guimenu>中，输入 <systemitem class="netmask">255.255.255.0</systemitem>。如果配置的是独立工作站，则将<guimenu>默认网关</guimenu>留空。
+  </para>
+  <tip>
+   <para>
+    IP 地址<guimenu>字段和</guimenu>子网掩码<guimenu>中的值只是占位符。</guimenu> 它们只用于初始化网卡，而不会将 DSL 链接表示成这样。
+   </para>
+  </tip>
+  <para>
+   在第一个 DSL 配置对话框（请参见<xref linkend="fig.yast2.adsl"/>）中，首先应选择 <guimenu>PPP 方式</guimenu>及 DSL 调制解调器连接到的<guimenu>以太网卡</guimenu>（多数情况下是 <systemitem class="systemname">eth0</systemitem>）。然后使用<guimenu>激活设备</guimenu>指定是否应在引导进程中建立 DSL 链接。单击<guimenu>通过 KInternet 为非 root 用户启用设备控制</guimenu>可授权普通用户无需 root 权限即可使用 KInternet 激活或停用接口。
+  </para>
+  <para>
+   在下一个对话框中，选择您的国家/地区并从该国家/地区运营的众多 ISP 中进行选择。随后的所有 DSL 配置对话框的详细信息都取决于目前已设置的选项，因此下面几段只对这些对话框进行了简要介绍。有关可用选项的详细信息，请阅读这些对话框中提供的详细帮助信息。
+  </para>
+  <figure id="fig.yast2.adsl">
+   <title>DSL 配置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_adsl.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_adsl.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   要在独立工作站上使用<guimenu>按需拨号</guimenu>，还需指定名称服务器（DNS 服务器）。多数 ISP 都支持动态 DNS，即每次用户连接时，都由 ISP 发送名称服务器的 IP 地址。不过，对于单个工作站，应提供 <systemitem class="ipaddress">192.168.22.99</systemitem> 之类的占位符地址。如果您的 ISP 不支持动态 DNS，请输入 ISP 提供的名称服务器 IP 地址。
+  </para>
+  <para>
+   <guimenu>空闲超时（秒）</guimenu>定义网络不活动的时间，一超过该时间即自动终止连接。合理的超时值介于 60 到 300 秒之间。如果禁用了<guimenu>按需拨号</guimenu>，则最好将超时值设置为零以防止自动挂断。
+  </para>
+  <para>
+   <indexterm><primary>因特网</primary><secondary>Tdsl</secondary></indexterm><indexterm><primary>YaST</primary><secondary>T-DSL</secondary></indexterm> <indexterm><primary>配置</primary><secondary>T-DSL</secondary></indexterm>T-DSL 的配置与 DSL 的设置非常相似。 只需将 <guimenu>T-Online</guimenu> 选为您的提供者，YaST 将打开 T-DSL 配置对话框。在此对话框中，提供 T-DSL 所需的一些其他信息（线路 ID、T-Online 号码、用户代码和口令）。所有这些信息都会包含在订阅到 T-DSL 后收到的信息中。
+  </para><indexterm startref="idx.networks_integrating" class="endofrange"/>
+ </sect2>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" arch="zseries" os="sles" href="zseries_net_lan_devices.xml" parse="xml"/>
+</sect1>

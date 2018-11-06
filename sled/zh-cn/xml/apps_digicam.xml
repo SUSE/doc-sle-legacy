@@ -1,0 +1,1290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="apps_digicam.xml" id="cha.digicam">
+ <title>DigiKam：管理您的数字图像收藏</title><indexterm id="idx.digital_cameras" class="startofrange"> <primary>数码相机</primary></indexterm><indexterm><primary>图形</primary><secondary>数码相机 </secondary></indexterm>
+ <abstract>
+  <para>
+   在 Linux 中管理数码照片非常简单。KDE 的 digiKam 可以直接从相机下载图像。它可帮助您组织和处理图像以获得最佳效果。该应用程序包含一些可以将图像转换为各种不同格式的有用插件。图像改进插件还包括删除红眼、删除斑点和删除噪点。各种过滤器和效果插件可以帮助从数码图像创建小的艺术作品。
+  </para>
+ </abstract><indexterm> <primary>digiKam</primary></indexterm><indexterm><primary>数码相机</primary><secondary>digiKam</secondary></indexterm><indexterm><primary>应用程序</primary><secondary>digiKam </secondary><tertiary>图形</tertiary></indexterm>
+ <sect1 id="sec.digikam.intro">
+  <title>关于 DigiKam</title>
+
+  <para>
+   从主菜单启动 digiKam，或按 <keycombo><keycap function="alt"/><keycap>F2</keycap></keycombo> 组合键并输入 <command>digikam</command> 来启动 digiKam。digiKam 将提示您选择一个用于储存图像和相册的位置。启动时，digiKam 显示一个窗口，其中有两个主要区域：左侧是相册列表，右侧是当前相册中的图像。请参见<xref linkend="fig.digikam.mainwin"/>。窗口最右侧有一些选项卡，可用于显示图像的重要信息或用于处理特定图像的相关数据：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>属性</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项卡可以访问指派给图像的属性，如文件属性（许可权限、所有权、修改日期等）、图像属性（尺寸、文件格式等）和照片属性（基本模型、曝光和光圈信息）。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>元数据</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项卡可访问与图像关联的各种元数据，如 EXIF、IPTC 和 XMP 数据。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>颜色</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项卡可以访问颜色管理相关数据，并分析与图像相关的直方图。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>地理位置</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项卡可搜索图片中储存的位置。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>标题/标记</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用此选项卡可以为图像指派注释、标记或评级。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>标记过滤器</guimenu>
+    </term>
+    <listitem>
+     <para>
+      使用<guimenu>标记过滤器</guimenu>可通过标记信息过滤主视图中所显示的图像。关于 digiKam 中的标记的细节，请参见<xref linkend="sec.digikam.tags"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure id="fig.digikam.mainwin">
+   <title>digiKam 的主窗口</title>
+   <mediaobject>
+    <imageobject role="html">
+     <imagedata fileref="digikam_mainwin.png" width="80%" format="PNG"/>
+    </imageobject>
+    <imageobject role="fo">
+     <imagedata fileref="digikam_mainwin.png" width="80%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.digikam.config">
+  <title>配置相机</title><indexterm> <primary>数码相机</primary><secondary>访问</secondary></indexterm><indexterm><primary>数码相机</primary><secondary>PTP 协议 </secondary></indexterm><indexterm><primary>PTP 协议</primary></indexterm>
+
+  <para>
+   要从数码相机下载图像，只需使用相机生产商提供的 USB 线将相机连接到计算机的 USB 端口。根据您的相机型号，您可能需要将相机切换为特殊的数据传输模式。有关此信息，请查阅相机手册。
+  </para>
+
+  <para>
+   访问照相机上的图片时，存在以下四种可能性：
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>USB 大容量储存设备</title>
+     <para>
+      如果您的相机可以切换到 USB 大容量储存设备，请选择此选项。将相机连接到计算机的 USB 端口并打开相机后，会自动检测到该新 USB 设备并挂装。KDE 使您可以选择在挂装任何此类设备的情况下要采取的操作。您可以选择在挂装这种类型的设备时，启动 digiKam 或任何其他图像查看或处理应用程序。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>PTP（图片传输协议，也称为 PictBridge）</title>
+     <para>
+      如果您的照相机可切换为 PTP，请选择此选项。通常，照相机不会自动装入 PTP 模式，但用户可通过 digiKam 访问此模式。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>特殊驱动程序和 Gphoto2</title>
+     <para>
+      如果您的照相机既不支持 USB 大容量储存设备，也不支持 PTP，则请尝试使用由 gphoto2 提供的特殊驱动程序，有关详细信息，请参见<xref linkend="sec.digicam.trouble"/>。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>读卡器</title>
+     <para>
+      如今，照相机可使用各种非易失性储存卡。例如，SD 储存卡、闪存卡 (CF) 和内存条等。一些新型计算机配备带有各种插槽的板上读卡器，可支持上述所有格式。如果您不想处理电缆、协议或驱动程序，请选择此选项来简化操作。通常，系统会将读卡器作为可卸设备检测出来，并自动将其装入 KDE 中。
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+
+  <para>
+   要在 digiKam 中设置照相机，请依次选择<menuchoice> <guimenu>导入</guimenu> <guimenu>照相机</guimenu> <guimenu>添加照相机</guimenu> </menuchoice>。首先，使用<guimenu>自动检测</guimenu>尝试自动检测相机。如果尝试失败，请使用<guimenu>添加</guimenu>在所支持的相机列表中查找您的型号。如果您的相机型号不包含在列表中，请尝试较早的型号或者使用 USB/IEEE 大容量储存相机，然后单击<guimenu>确定</guimenu>确认。
+  </para>
+ </sect1>
+ <sect1 id="sec.digikam.download">
+  <title>从相机下载图片</title>
+
+  <para>
+   要从已正确配置的照相机下载图像，请将照相机连接到计算机，并从<guimenu>照相机</guimenu>菜单选择此照相机。digiKam 打开一个窗口，开始下载缩略图并将其显示为 <xref linkend="fig.digikam.picdownload"/>。右键单击图像以打开包含各种选项的弹出菜单，以便<guimenu>查看</guimenu>图像、<guimenu>下载</guimenu>或<guimenu>删除</guimenu>图像。选择下载窗口右侧的<guimenu>设置</guimenu>选项卡，以使用<guimenu>重命名选项</guimenu>对图像文件进行重命名。使用<guimenu>元数据</guimenu>选项卡可以查看与选定图像相关的 EXIF 数据。
+  </para>
+
+  <figure id="fig.digikam.picdownload">
+   <title>从相机下载图片</title>
+   <mediaobject>
+    <imageobject role="html">
+     <imagedata fileref="digikam_downloadpics.png" width="80%" format="PNG"/>
+    </imageobject>
+    <imageobject role="fo">
+     <imagedata fileref="digikam_downloadpics.png" width="80%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <tip>
+   <title>重命名图像</title>
+   <para>
+    在相机文件名不足够有意义的情况下对图像批量重命名变得简单。提供一个独特的前缀，添加一个日期（可选），并使 digiKam 提供一个顺序号。
+   </para>
+  </tip>
+
+  <para>
+   选择要从照相机下载的所有图像，方法是：在按住 <keycap function="control">Ctrl</keycap> 键的同时按鼠标左键或单击单个图像，或者使用下载窗口底部的<guimenu>图像</guimenu>菜单所提供的某种选择模式。单击<guimenu>下载</guimenu>并从列表中选择目标，或使用<guimenu>新建相册</guimenu>创建一个新相册（这会使用当前日期自动建议一个文件名）。单击<guimenu>确定</guimenu>进行确认，以启动下载进程。
+  </para>
+
+  <tip>
+   <title>从储存媒体下载图像</title>
+   <para>
+    为了节省照相机电池的电能，您也可以将 USB 集线器连接到计算机（具备适用于储存媒体的插槽）上，然后从那里下载文件。将 USB 集线器连接到计算机上后，KDE 媒体处理程序对话框会打开，您可以通过它从所连接的媒体下载图像。
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.digikam.albums">
+  <title>管理相册</title><indexterm><primary>图形</primary><secondary>相册</secondary></indexterm>
+
+  <para>
+   默认情况下，digiKam 将创建名为 <guimenu>My Albums</guimenu> 的文件夹来保存所有 root 相册（称作收藏）。收藏可储存相册，而相册可储存子相册和图像。第一个收藏是在第一次启动“首次运行向导”对话框时创建的。
+  </para>
+
+  <para>
+   相册可按目录布局、在相册属性中设置的收藏名称或首次创建相册的日期（也可在每个相册的属性中更改此日期）进行排序。
+  </para>
+
+  <para>
+   要创建新相册，请使用以下方法之一：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     从照相机上载新图像，并在下载期间创建目标相册。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     创建新相册，方法是：先选择一个收藏文件夹，然后从主菜单或通过右键单击依次选择<menuchoice> <guimenu>相册</guimenu> <guimenu>新建相册</guimenu> </menuchoice>。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     从硬盘导入现有图像文件夹（选择<menuchoice> <guimenu>导入</guimenu> <guimenu>添加文件夹...</guimenu> </menuchoice>）。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     右键单击收藏文件夹并选择<guimenu>新建相册</guimenu>。
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   要创建新收藏，请转到<menuchoice> <guimenu>设置</guimenu> <guimenu>配置 digiKam</guimenu></menuchoice> <guimenu>收藏</guimenu>菜单并选择<guimenu>添加收藏</guimenu>。
+  </para>
+
+  <para>
+   选择创建新相册之后，请提供关于新相册的一些基本管理信息，如相册标题。或者，选择一个类别，插入一些注释，然后选择相册日期。类别是一种用通用标签组织相册的方法。当选择<menuchoice> <guimenu>查看</guimenu> <guimenu>对相册排序</guimenu> <guimenu>按类别</guimenu> </menuchoice>时，将使用此标签。注释显示在主窗口顶部的横幅中。当您选择<menuchoice> <guimenu>视图</guimenu> <guimenu>对相册排序</guimenu> <guimenu>按日期</guimenu> </menuchoice>时，就会用到相册日期。
+  </para>
+
+  <para>
+   digiKam 使用相册中的第一张照片作为<guimenu>我的相册</guimenu>列表中的预览图标。要选择其他照片，请右键单击相应的照片，并从上下文菜单中选择<guimenu>设置相册缩略图</guimenu>。
+  </para>
+ </sect1>
+ <sect1 id="sec.digikam.tags">
+  <title>管理标记</title>
+
+  <para>
+   管理来自各个相册的大量不同图像可能非常困难。为使您能够按自定义类别管理来自不同相册的图像，digiKam 提供了<guimenu>我的标记</guimenu>系统。标记用于将图像分类，并且可以向一个图像指派多个标记。
+  </para>
+
+  <para>
+   例如，假设您为动物拍了一些照片，并将它们放在各个相册中。现在，您要寻找一种简单的方式来生成为动物拍的所有照片的概览。在这种情况下，使用 digiKam 的标记如下操作：
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     在上部菜单栏中依次选择<menuchoice> <guimenu>标记</guimenu> <guimenu>新建标记</guimenu> </menuchoice>，然后为新标记输入名称，在本例中请输入 <literal>animals</literal>。
+    </para>
+    <para>
+     您也可以通过此对话框创建层次标记。例如，要在 <literal>animals</literal> 标记下方创建 <literal>bear</literal> 标记，请将 <literal>animals/bear</literal> 插入到文本字段中。提供一个可选图标，并单击<guimenu>确定</guimenu>退出此对话框。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     转到每个相册，右键单击图像并依次选择<menuchoice> <guimenu>指派标记</guimenu> <guimenu>animals</guimenu> <guimenu>指派此标记</guimenu> </menuchoice>，来标记所有显示动物的图像。如果一次要标记多张照片，请使用 <keycap function="control"/> 键。
+    </para>
+   </step>
+  </procedure>
+
+  <para>
+   如果需要处理大量图像，添加标记的较简单方法是使用主窗口最右边的选项卡栏中的<guimenu>标题/标记</guimenu>选项卡。您可以通过此界面为图像指派标记，输入可选的描述性注释，以及对该图像进行评级。完成对第一个图像的操作后，在此对话框中单击向右箭头按钮，完成后单击<guimenu>应用</guimenu>以应用设置。对此相册中的所有图像重复上述操作。对所有其他相册和图像进行类似处理。
+  </para>
+
+  <para>
+   要在整个收藏中检索包含特定标记（在本例中为 <literal>animals</literal>）的所有图像，请执行以下操作：
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     打开左侧选项卡栏中的<guimenu>标记</guimenu>选项卡。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     展开<guimenu>我的标记</guimenu>项。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     选择 <guimenu>animals</guimenu> 标记。
+    </para>
+    <para>
+     结果，将显示整个相集中包含此标记的所有图像。
+    </para>
+   </step>
+  </procedure>
+
+  <figure id="fig.digikam.tabs">
+   <title>仅显示带标记图像</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="digikam_tabs.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="digikam_tabs.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   主窗口最右侧的<guimenu>标记过滤器</guimenu>可将当前相册显示的图像数限制为带有此处选定的一个或多个标记的图像数。
+  </para>
+ </sect1>
+ <sect1 id="sec.digikam.search">
+  <title>创建强大的搜索过滤器 </title>
+
+  <para>
+   如果没有轻松搜索并找到所需图像的方法，任何图像收藏很快就会变得难以管理。为了帮助您组织影集，digiKam 提供了两个搜索选项：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>简单搜索</term>
+    <listitem>
+     <para>
+      基本搜索。选择<menuchoice> <guimenu>工具</guimenu> <guimenu>搜索</guimenu> </menuchoice>，输入可能与您的图像相关的文本字符串（图像、标记名称或注释），然后单击<guimenu>确定</guimenu>。您可以保存此搜索以供将来使用，并可以编辑 digiKam 窗口最左侧的<guimenu>搜索</guimenu>下方所列的其他现有搜索。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>高级搜索</term>
+    <listitem>
+     <para>
+      复杂搜索过滤器。依次选择<menuchoice> <guimenu>工具</guimenu> <guimenu>高级搜索</guimenu> </menuchoice>，提供各种搜索准则，它们是：
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist>
+   <varlistentry>
+    <term>文件、相册、标记</term>
+    <listitem>
+     <para>
+      搜索相册名称、标记或照片的文件名。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>照片属性</term>
+    <listitem>
+     <para>
+      搜索图像属性，如日期、评级、文件大小、颜色深度等。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>说明、注释、标题</term>
+    <listitem>
+     <para>
+      搜索注释、作者和 IPTC 信息。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>照片信息</term>
+    <listitem>
+     <para>
+      搜索照片信息，如焦距、灵敏度等。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   使用<guimenu>添加搜索组</guimenu>按钮可将若干搜索准则合并起来。<guimenu>搜索</guimenu>.
+  </para>
+
+<?dbfo-need height="15em"?>
+
+
+
+  <para>
+   以下示例说明了如何使用分级或标记信息创建<guimenu>高级搜索</guimenu>以搜索图像：
+  </para>
+
+  <procedure id="proc.digikam.search">
+   <step performance="required">
+    <para>
+     从主菜单中选择<menuchoice> <guimenu>工具</guimenu> <guimenu>高级搜索</guimenu> </menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     选择<guimenu>照片属性</guimenu>准则。现在选择<guimenu>评级</guimenu>（2 颗星到 5 颗星）。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     选择<guimenu>添加搜索组</guimenu>按钮。随即显示另一个搜索板。可将搜索参数与 <guimenu>And</guimenu> 或 <guimenu>Or</guimenu> 及四个选项合并起来。单击<guimenu>满足以下任一条件</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     选择<guimenu>文件、相册、标记</guimenu>准则并从标记列表选择一个标记。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     选择<guimenu>照片属性</guimenu>准则。选择 JPEG 作为文件格式并按<guimenu>确定</guimenu>按钮。搜索结果随即显示在 digiKam 窗口中。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     要保存此搜索以供将来使用，请单击左侧的<guimenu>搜索</guimenu>选项卡。为此搜索指定名称并通过单击“保存”按钮<guimenu>保存当前搜索</guimenu>。通过再次单击<guimenu>搜索</guimenu>选项卡离开<guimenu>高级搜索</guimenu>对话框。
+    </para>
+   </step>
+  </procedure>
+
+  <figure id="fig.digikam.search">
+   <title>创建高级搜索过滤器</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="digikam_search.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="digikam_search.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.digikam.export">
+  <title>导出图像集</title>
+
+  <para>
+   digiKam 提供了多个导出选项，这些选项将帮助您归档和发布个人图像集。它可提供存档到 iPod、HTML 导出以及导出到远程图片库的功能。
+  </para>
+
+  <procedure>
+   <para>
+    digiKam 可针对最著名的联机存档提供一些自定义导出功能和常规导出功能<menuchoice> <guimenu> 导出</guimenu> <guimenu>HTML 图片库</guimenu> </menuchoice>。要为您的图像集创建 HTML 导出，请执行如下操作：
+   </para>
+   <step performance="required">
+    <para>
+     依次选择<menuchoice> <guimenu>导出</guimenu> <guimenu>HTML 图片库</guimenu> </menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     通过选择相册或<guimenu>收藏</guimenu>中的标记并单击<guimenu>下一步</guimenu>，确定应存档的收藏部分。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用<guimenu>主题</guimenu>对话框设置 HTML 图片库的外观，然后单击<guimenu>下一步</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>图像设置</guimenu>中指定要用于图片库导航的缩略图的大小、压缩和文件类型，然后单击<guimenu>下一步</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用<guimenu>输出</guimenu>确定图片库在磁盘上的位置，然后单击<guimenu>完成</guimenu>。
+    </para>
+   </step>
+  </procedure>
+
+  <procedure>
+   <para>
+    要将相集导出到因特网上的外部图像影集，请执行如下操作：
+   </para>
+   <step performance="required">
+    <para>
+     获取一个用于存放影集的外部网站的帐户。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     依次选择<menuchoice> <guimenu>导出</guimenu> <guimenu>导出到图片库</guimenu> </menuchoice>并在系统询问时提供外部站点的 URL、用户名和口令。digiKam 将与指定的站点建立连接，并打开一个名为<guimenu>影集导出</guimenu>的新窗口。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     确定新相册在影集中的位置。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     单击<guimenu>新建相册</guimenu>，然后提供 digiKam 请求的信息。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用<guimenu>添加照片</guimenu>将图像上传到新相册中。
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.digicam.digikam.loc">
+  <title>管理地理位置</title>
+
+  <para>
+   一些照相机在拍照时可在照片内储存 GPS（全球定位系统）坐标。digiKam 利用此信息能够按照片位置说明和搜索照片并将其显示在地球仪上。要利用地理位置，请执行以下操作：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>搜索地图</term>
+    <listitem>
+     <para>
+      单击左侧的<guimenu>地图搜索</guimenu>选项卡。按 <keycap function="shift"/> ctrl 及鼠标左键在地图上选择一个区域。使用鼠标滚轮进行缩放。与区域坐标相匹配的每个图像都将显示在主窗口内。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>显示地理位置</term>
+    <listitem>
+     <para>
+      单击右侧的<guimenu>地理位置</guimenu>选项卡以打开地球仪。使用鼠标左键选择一张或多张图片。每张包含 GPS 信息的图片都将显示在地图上。要放大/缩小，请使用鼠标滚轮。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>添加地理位置</term>
+    <listitem>
+     <para>
+      在主窗口中选择一张图片，然后依次选择<menuchoice><guimenu>图像</guimenu><guimenu>地理位置</guimenu><guimenu>编辑坐标</guimenu></menuchoice>。在地图上选择一个位置，或手动输入坐标并按<guimenu>确定</guimenu>。坐标现已储存在图像的 EXIF 标记中。要一次编辑多张图片，请按 <keycap function="control"/> 键并选择所需图片。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure id="fig.digikam.loc">
+   <title>在地图上查看图片位置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="digikam_location.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="digikam_location.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.digicam.digikam.edit">
+  <title>查看和编辑图像</title><indexterm> <primary>图像</primary><secondary>编辑</secondary></indexterm><indexterm><primary>图像编辑</primary><secondary>digiKam</secondary></indexterm><indexterm><primary>digiKam</primary><secondary>图像编辑 </secondary></indexterm>
+
+  <para>
+   digiKam 带有一组包括各种插件的综合图像查看和编辑套件。要进入 digiKam 的查看或编辑模式，请右键单击图像缩略图并从上下文菜单中选择<guimenu>查看</guimenu>或<guimenu>编辑</guimenu>。要使用插件，请安装 <systemitem class="resource">digikamimageplugins</systemitem> 包。
+  </para>
+
+  <para>
+   要查看一个或多个图像，有以下几个选项可供选择：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     要查看单个图像，请浏览至相册或收藏，然后单击要显示的图像。再次单击会转回前一视图。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     要启动所有图像的幻灯片演示，请使用<menuchoice> <guimenu>查看</guimenu> <guimenu>幻灯片演示</guimenu> <guimenu>所有</guimenu> </menuchoice>。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     要启动所选图像的幻灯片演示，请按住 <keycap function="control"/> 键、选择图像并选择<menuchoice> <guimenu>查看</guimenu> <guimenu>幻灯片演示</guimenu> <guimenu>选择</guimenu> </menuchoice>。
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   要编辑选定图像，请使用主菜单中的<guimenu>编辑</guimenu>。此操作将打开包含一些最常用基本编辑选项的窗口：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     使用后退/前进按钮浏览相册，而无需返回完整相册视图。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     使用撤销/重做菜单可选择性地撤销或重新执行特定操作。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     使用缩放选项可放大或缩小图像视图，或者使其适合您当前所使用的窗口大小。使用放大镜图标可选择性地放大图像的特定区域。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     顺时针或逆时针翻转图像。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     激活选定图像的幻灯片效果或全屏视图。
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <sect2 id="sec.digikam.decorate">
+   <title>应用图像装饰</title>
+   <para>
+    编辑模式包含更多有用功能。使用<guimenu>装饰</guimenu>菜单可以为图像添加各种图形和文本效果，而无需进行过滤和微调：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>应用纹理 </guimenu>
+     </term>
+     <listitem>
+      <para>
+       选择要应用到图像的纹理类型，并确定该纹理的突出程度（<guimenu>浮雕</guimenu>）。digiKam 应用该纹理并将更改应用到图像的原件。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>添加边界</guimenu>
+     </term>
+     <listitem>
+      <para>
+       选择边界类型。根据您选择的边界类型，选择要用于边界的一种或两种颜色，并设置图像周围边界的宽度。digiKam 创建该边界并将更改应用到图像的原件。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>插入文本</guimenu>
+     </term>
+     <listitem>
+      <para>
+       输入要添加到图像上的文本。选择字体、字体样式和大小。选择文本对齐方式，并决定是否应旋转文本（以及旋转的度数）。添加可选边界和半透明。digiKam 向原图像添加文本层。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>模板添加</guimenu>
+     </term>
+     <listitem>
+      <para>
+       就像可以为图像添加任意文本一样，您还可以应用现成的模板来创建有趣的问候卡和明信片等。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.digikam.color">
+   <title>处理颜色设置</title>
+   <para>
+    使用<guimenu>颜色</guimenu>菜单可以管理各种不同的颜色相关设置。此菜单功能丰富，从简单的自动修正机制到通过颜色配置文件实现的全面颜色管理功能一应俱全：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>自动颜色修正</term>
+     <listitem>
+      <para>
+       如果要对图像进行简单的颜色和曝光修正，请使用此选项。从各种预设置模式中选择一种最佳模式加以应用。使用直方图来确定结果是否与您的需求相匹配。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>亮度/对比度/伽玛</term>
+     <listitem>
+      <para>
+       此工具可提供修复过度曝光或曝光不足图像的简单方法。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>色调/饱和度/明暗度</term>
+     <listitem>
+      <para>
+       此工具可帮助您优化在光照过足情况下拍摄的、颜色不够鲜艳的图像的质量。通过操纵色调和饱和度滑块，可以提高这些图像的颜色饱和度。根据颜色级别，您可能还需要调节明暗度，以防止图像显得过暗。当然，如果需要将在光线不足的条件下拍摄的、颜色饱和度过高的图像调亮一些，也可以使用此工具来实现相反的效果。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>颜色平衡</term>
+     <listitem>
+      <para>
+       根据图像拍摄的不同光线条件或不同的图像扫描质量，颜色看上去可能有些失去平衡。借助颜色平衡工具，您可以尝试向色谱另一端移动以改变平衡。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>反转</term>
+     <listitem>
+      <para>
+       反转颜色值。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>黑白</term>
+     <listitem>
+      <para>
+       将您的彩色图像转换为黑白图像。使用<guimenu>胶片</guimenu>、<guimenu>镜头滤镜</guimenu>、<guimenu>色调</guimenu>和<guimenu>明暗度</guimenu>来调整最终产品的质量。<guimenu>胶片</guimenu>选项卡可提供模拟各种黑白胶片效果的选项。要模拟照相机镜头采用的颜色滤镜，请使用<guimenu>镜头滤镜</guimenu>选项卡。请注意，每次只能应用一个滤镜。使用<guimenu>色调</guimenu>选项卡，您可按特定方式（例如，以深褐色）对黑白图像进行微染。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>深度</term>
+     <listitem>
+      <para>
+       确定颜色深度（以位为单位）。可将 8 位图像转换为 16 位图像，反之亦然。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>颜色管理</term>
+     <listitem>
+      <para>
+       通过 ICC 颜色配置文件实现的颜色管理能够帮助您保持多输出设备（照相机、显示器和打印机）之间的颜色保真度。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>级别调整</term>
+     <listitem>
+      <para>
+       使用此选项，只需借助一种工具，就可以控制多个级别并检查所生成的图像。利用它可以保存所选的级别设置，因而使您能够根据需要对多个图像应用相同的修正。如果您事先知道照相机倾向于采用相同的错误颜色设置，并且希望通过一次单击完成所有修正，则使用此选项可轻松达到目的。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>颜色效果</term>
+     <listitem>
+      <para>
+       此工具提供一组可选择的颜色效果，如寻边、曝光等。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>白平衡</term>
+     <listitem>
+      <para>
+       每种光源在数码相机芯片上的着位方式各不相同。根据光源的不同，较之标准日光，色温往往不是偏暖（偏向光谱上的红色一端）就是偏冷（偏向光谱上的蓝色一端）。大多数照相机都具有预设置的白平衡模式，用于补偿上述效果。如果产生的图像着位错误，请使用 digiKam 提供的白平衡调整功能。可以使用开尔文滑块直接调节色温，也可以选择某种预设置的白平衡模式。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>曲线调整</term>
+     <listitem>
+      <para>
+       利用此工具，基本上能够执行可通过<guimenu>亮度/对比度/伽玛</guimenu>和<guimenu>级别调整</guimenu>工具执行的所有操作，但只能在一个工具中并使用自由功能映射执行这些操作。因此，与其他两个工具相比，此工具更强大灵活，但用户可能需要一段时间来熟悉它。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>色频混合器</term>
+     <listitem>
+      <para>
+       色频混合器工具提供将彩色图像转换为黑白图像的另一种方法。使用<guimenu>单色</guimenu>选项和色频滑块，可选择性地确定每个色频在整个图像中所占的比例。与彩色到黑白的标准转换过程相比，色频混合器选项更加灵活，因为您可以分别管理每个色频。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.digikam.fix">
+   <title>修复和调整图像</title>
+   <para>
+    使用<guimenu>增强</guimenu>菜单可修复与数字图像相关的许多常见缺陷：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>模糊</guimenu>、<guimenu>锐化</guimenu>
+     </term>
+     <listitem>
+      <para>
+       调整或消除图像的锐度。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>红眼</guimenu>
+     </term>
+     <listitem>
+      <para>
+       减少或消除由于使用闪光灯导致的红眼。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>清除</guimenu>
+     </term>
+     <listitem>
+      <para>
+       <quote>修缮</quote>图像的缺陷部分。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>降低噪声</guimenu>
+     </term>
+     <listitem>
+      <para>
+       删除假象，例如由于镜头或感光上的灰尘而导致的假象。补偿由于数码相机的高 ISO 设置导致的噪点，降低低质量扫描中的噪声和假象。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>热燥点</guimenu>
+     </term>
+     <listitem>
+      <para>
+       检测和删除由于相机感光的缺陷像素导致的图像问题像素。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><menuchoice><guimenu>镜头</guimenu><guimenu>失真</guimenu></menuchoice>
+     </term>
+     <listitem>
+      <para>
+       补偿由于使用广角或远距镜头导致的桶形和枕形图像失真。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><menuchoice><guimenu>镜头</guimenu><guimenu>暗角修正</guimenu></menuchoice>
+     </term>
+     <listitem>
+      <para>
+       补偿由于使用广角或远距镜头导致的在图像边缘或中心的的环形阴影（<emphasis>黑角</emphasis>）。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><menuchoice><guimenu>镜头</guimenu><guimenu>暗角修正</guimenu></menuchoice>
+     </term>
+     <listitem>
+      <para>
+       补偿由于使用广角或远距镜头导致的在图像边缘或中心的的环形阴影（<emphasis>黑角</emphasis>）。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>恢复</guimenu>
+     </term>
+     <listitem>
+      <para>
+       为具有各种数码瑕疵（如杂点和刮痕）的图像提供一站式处理方法。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    要观察<guimenu>修复</guimenu>选项的功能，请查看<guimenu>清除</guimenu>。假设镜头上的灰尘或划伤毁了一个图像。要删除此类瑕疵，请执行以下操作：
+   </para>
+   <procedure id="proc.dk.tf">
+    <step id="st.dk.tf1" performance="required">
+     <para>
+      打开图像。
+     </para>
+    </step>
+    <step id="st.dk.tf2" performance="required">
+     <para>
+      使用鼠标指针选择要应用修复的区域。
+     </para>
+    </step>
+    <step id="st.dk.tf3" performance="required">
+     <para>
+      选择<menuchoice> <guimenu>增强</guimenu> <guimenu>清除</guimenu> </menuchoice>或按 <keycombo> <keycap function="control"/> <keycap>E</keycap> </keycombo>。
+     </para>
+    </step>
+    <step id="st.dk.tf4" performance="required">
+     <para>
+      确定要用于删除瑕疵的方法：
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        选择一个<guimenu>预设置</guimenu>选项（<guimenu>删除小瑕疵</guimenu>、<guimenu>删除中瑕疵</guimenu>或<guimenu>删除大瑕疵</guimenu>）并按<xref linkend="st.dk.tf6" xrefstyle="select: nopage"/> 继续。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        设置您自己的过滤器参数。进行 <xref linkend="st.dk.tf5" xrefstyle="select: nopage"/>。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step id="st.dk.tf5" performance="required">
+     <para>
+      如果不想使用任何预设置滤镜（<guimenu>预设置</guimenu>选项卡中），则打开<guimenu>常规</guimenu>和<guimenu>高级设置</guimenu>选项卡，并根据需要调整设置。
+     </para>
+    </step>
+    <step id="st.dk.tf6" performance="required">
+     <para>
+      单击<guimenu>确定</guimenu>应用您的设置，并相应修改图像。
+     </para>
+     <tip>
+      <title>创建和重新使用您自己的过滤器设置</title>
+      <para>
+       如果需要多次使用同一组设置（例如，镜头上的刮痕破坏了整个系列的图像），请创建您自己的一组过滤器设置。通过单击<guimenu>另存为</guimenu>并将这些设置保存为一个文本文件，保存它们以供稍后使用。对于之后的图像，打开<guimenu>图像清除</guimenu>对话框，单击<guimenu>装载</guimenu>，然后选择该文本文件，并按<guimenu>确定</guimenu>应用该过滤器设置。
+      </para>
+     </tip>
+    </step>
+   </procedure>
+   <figure id="fig.digikam.inpaint">
+    <title>使用<guimenu>清除</guimenu>删除假象</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="digikam_inpaint.png" width="65%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="digikam_inpaint.png" width="65%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+
+  <sect2 id="sec.digikam.transform">
+   <title>应用图像转换</title>
+   <para>
+    要缩放或旋转图像，请使用<guimenu>转换</guimenu>菜单：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>旋转、翻转、自由旋转</term>
+     <listitem>
+      <para>
+       将图像旋转到一个特定角度。<guimenu>旋转</guimenu>可旋转 90 度的倍数。使用<guimenu>自由旋转</guimenu>，指定您想要的任何角度。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>修剪，高宽比修剪</term>
+     <listitem>
+      <para>
+       修剪图像。<guimenu>修剪</guimenu>在图像的基础上剪切为任何矩形选择。<guimenu>高宽比修剪</guimenu>按照各种复杂设计原则修剪图像。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>透视调整</guimenu>
+     </term>
+     <listitem>
+      <para>
+       调整图像的透视。例如，如果您在镜头中注意到一些包含垂直线或水平线的奇怪角度，请使用此工具进行修正。将四个手柄中的任何一个拖动到图像的角，并根据需要移动它们。使用<guimenu>修剪</guimenu>工具删除产生的图像黑边并将其修整掉。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>倾斜</guimenu>
+     </term>
+     <listitem>
+      <para>
+       将图像的一部分倾斜为某个方向，另一部分倾斜到相反方向（水平或垂直）。指定垂直或水平倾斜的角度，并使用<guimenu>修剪</guimenu>修整产生的图像。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>调整大小</guimenu>
+     </term>
+     <listitem>
+      <para>
+       按比例缩放您的图像。<guimenu>调整大小</guimenu>有一个简单的界面，允许您按像素或百分比操作图像大小。选择是否保留高宽比。如果选择<guimenu>恢复照片</guimenu>，您可以微调将用于调整大小后的图像的算法，以提高最终产品的质量。请注意，使用此选项进行调整的速度可能会比只调整大小的操作要慢得多。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    假设您有一个本来已经很好的图像，但是对合成不完全满意，或您需要修剪图像以符合特定的纸张格式以重显。使用<guimenu>纵横比修剪</guimenu>并执行以下操作：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      打开图像。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      选择<menuchoice><guimenu>转换</guimenu><guimenu>高宽比修剪</guimenu></menuchoice>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      确定要使用的方向和高宽比：
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><guimenu>无</guimenu>
+       </term>
+       <listitem>
+        <para>
+         使用 <guimenu>X</guimenu>、<guimenu>宽度</guimenu> 和 <guimenu/>、<guimenu>高度</guimenu> 滑块指定对图像的自由修剪。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><guimenu>自定义</guimenu>
+       </term>
+       <listitem>
+        <para>
+         选择自定义高宽比而不是使用预置值。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><guimenu>X:Y 比例</guimenu>
+       </term>
+       <listitem>
+        <para>
+         这些比符合用于打印照片的多数常见纸张尺寸。选取最适合您的目的的比例。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><guimenu>黄金比例</guimenu>
+       </term>
+       <listitem>
+        <para>
+         传统上由艺术家和设计师用于创建和谐的结果的比例 (1:1.618)。
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>
+      使用<guimenu>最大 纵横比</guimenu>按钮可将修剪区域设置为指定比率的最大大小。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      确定修剪选择的大小之后，可以选择向其应用合成规则。<guimenu>合成指南</guimenu>可帮助创建产生可视性非常好的图像的修剪选择。显示的虚线可指导您更好地合成图像。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果修剪的位置不符合您满意的合成规则，则移动它。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>确定</guimenu>应用您的修剪选择并修整图像。
+     </para>
+    </step>
+   </procedure>
+   <figure id="fig.digikam.acrop">
+    <title>使用高宽比修剪创建自定义修剪</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="digikam_acrop.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="digikam_acrop.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+
+  <sect2 id="sec.digikam.filters">
+   <title>应用过滤器和效果</title>
+   <para>
+    您可以从各种基本效果和过滤器中进行选择以应用于图像，使图像外观更具艺术性且与众不同：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>雨滴</guimenu>
+     </term>
+     <listitem>
+      <para>
+       向图像应用雨滴效果。确定雨滴的大小和数目，并指定雨滴引起的失真度（<guimenu>鱼眼</guimenu>）。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>红外胶片</guimenu>
+     </term>
+     <listitem>
+      <para>
+       模拟使用红外胶片实现一种稍带超现实主义色彩的效果。结果会与原始图像截然不同。增加胶片增益和扭曲灵敏度 (ISO) 可更有艺术感。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>油画</guimenu>
+     </term>
+     <listitem>
+      <para>
+       模拟油画。确定适用于图像的画笔大小和平滑度。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>压纹</guimenu>
+     </term>
+     <listitem>
+      <para>
+       模拟图像已压纹为一张纸。选择相应深度。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>失真效果</guimenu>
+     </term>
+     <listitem>
+      <para>
+       向图像应用各种奇怪的失真效果，如鱼眼。确定类型、程度和重复性。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>增加胶片增益</guimenu>
+     </term>
+     <listitem>
+      <para>
+       向图像增加胶片增益以使其外观粗糙。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>模糊效果</guimenu>
+     </term>
+     <listitem>
+      <para>
+       使图像模糊以模拟图像没有焦点，或模仿制作图像时不存在的任何种类的运动。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>素描</guimenu>
+     </term>
+     <listitem>
+      <para>
+       将图像转换为黑白素描。选择相应的铅笔大小，并确定适用于图像的平滑度。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <figure id="fig.digikam.ir">
+    <title>模拟红外照片</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="digikam_ir.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="digikam_ir.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.digikam.tools">
+  <title>有用的工具</title>
+
+  <para>
+   digiKam 提供了一些小的用于组织图像集和处理图像的帮助程序。您可以在<guimenu>工具</guimenu>菜单中找到这些选项。其他特色工具：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>查找重复图像</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果怀疑收藏中包含大量重复图像，请使用此选项来查找和删除它们。受限确定在搜索范围中要包含的相册或标记。单击<guimenu>确定</guimenu>开始搜索。如果收藏中包含任何重复图像，则将出现一个分屏，同时显示这两个图像，用户可选择其中一个图像以删除。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>创建日历</guimenu>
+    </term>
+    <listitem>
+     <para>
+      通过选择要使用的图像并选择纸张大小和字体，可使用标准布局创建一个简单的日历。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.digikam.batch">
+  <title>批处理</title>
+
+  <para>
+   如果需要对大量文件同时执行特定操作，可以使用批处理功能。添加边界、编辑颜色、应用各种效果和过滤器、重命名图像和调整图像大小、重新压缩图像或执行 RAW 转换。
+  </para>
+
+  <para>
+   要确定 digiKam 转换器插件是否支持照相机的 RAW 格式，请选择<menuchoice><guimenu>帮助</guimenu> <guimenu>支持的 RAW 照相机</guimenu></menuchoice>。使用<menuchoice><guimenu>批处理</guimenu> <guimenu>转换图像</guimenu></menuchoice>可将图像从一种格式转换为另一种格式，例如从 jpg 转换为 png。
+  </para>
+
+  <para>
+   批处理图像的一个示例是对大量图像应用曝光效果。要将图像排队以进行批处理并执行实际处理，请执行如下操作：
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     选择<menuchoice> <guimenu>批</guimenu> <guimenu>图像效果</guimenu> </menuchoice>，或右键单击相册名称并选择<menuchoice> <guimenu>批处理</guimenu> <guimenu>图像效果</guimenu> </menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     将效果设置为<guimenu>曝光</guimenu>并单击<guimenu>选项</guimenu>，确定要应用的效果的程度并显示一个预览（可选）。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     确定是重命名还是重写原始图像，或者在转换完成后删除它们。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     设置用于存放产生的图像的目标文件夹。如果不想将新图像写入原文件夹，请选择<guimenu>新建</guimenu>并添加一个新文件夹或子文件夹。使用鼠标指针选择新文件夹。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     接受排队以进行转换的图像列表或进行修改。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     单击<guimenu>开始</guimenu>开始转换。
+    </para>
+    <para>
+     digiKam 可通知您转换的进度和成功。
+    </para>
+   </step>
+  </procedure>
+
+  <figure id="fig.digikam.batch">
+   <title>批处理：曝光图像</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="digikam_batch.png" width="65%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="digikam_batch.png" width="65%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.digicam.trouble">
+  <title>查错</title>
+
+  <para>
+   尽管 <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 和 digiKam 支持许多种类的相机，但在将数码相机与 <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 结合使用时仍可能会遇到以下问题之一：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>从相机下载图像失败</term>
+    <listitem>
+     <para>
+      <indexterm><primary>gphoto2</primary></indexterm> 如果无论选择的协议（PTP 或 USB）如何，下载图像都失败，则尝试使用命令行而不是 digiKam。如果 gphoto2 支持此相机，<command>gphoto2 <option>-P</option></command> 命令可初始化相机并下载图像。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>您的相机不受 digiKam 官方支持。</term>
+    <listitem>
+     <para>
+      尝试 <command>gphoto2 <option>--list-cameras</option></command> 和<ulink url="http://www.gphoto.org/"/>的信息以获取关于 Linux 对您的相机的支持的更多信息。
+     </para>
+     <para>
+      如果该相机在此处未列出，从相机中删除储存媒体，并使用一个读卡设备（外部读卡设备或内部读卡设备）。检测到媒体后，系统会自动装入，您可以使用<menuchoice> <guimenu>导入</guimenu> <guimenu>添加图像</guimenu> </menuchoice>或<menuchoice> <guimenu>导入</guimenu> <guimenu>添加文件夹</guimenu> </menuchoice>将图像导入到 digiKam 收藏中。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.digicam.info">
+  <title>有关更多信息</title>
+
+  <para>
+   有关对 Linux 使用数码相机的更多信息，请参见以下网站：
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <ulink url="http://www.digikam.org"/>&gt;—digiKam 的官方主页
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.digikam.org/drupal/docs"/> — 官方 digiKam 手册
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     <ulink url="http://www.gphoto.org"/>－关于 gPhoto2 的信息
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.gphoto.org/proj/libgphoto2/support.php"/>－受支持相机的详细列表
+    </para>
+   </listitem>
+  </itemizedlist><indexterm class="endofrange" startref="idx.digital_cameras"/>
+ </sect1>
+</chapter>

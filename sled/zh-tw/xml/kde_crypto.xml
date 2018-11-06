@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="kde_crypto.xml" id="cha.crypto">
+ <title>KGpg︰簽署和加密資料</title><indexterm class="startofrange" id="idx.encryption"> <primary>加密</primary> </indexterm> <indexterm class="startofrange" id="idx.kgpg"> <primary>KGpg</primary> </indexterm> <indexterm> <primary>KDE</primary> <secondary>KGpg</secondary> </indexterm>
+ <para>
+  您可以使用 GPG 的圖形使用者介面 KGpg 來簽署或加密資料。本程式可幫助您產生和管理所有必需的金鑰。使用其編輯器功能可快速建立和加密檔案，或使用面板中的 Applet 以拖曳方式加密或解密檔案。其他程式如郵件程式 (Kontact 或 Evolution) 等都需要金鑰資料來處理已簽署或加密的資料。後續幾節將介紹在使用 KGpg 簽署及加密資料時如何執行下列必要步驟：
+ </para>
+ <orderedlist spacing="normal">
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.keygen" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.export" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.import" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.applet" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+ </orderedlist>
+ <sect1 id="sec.crypto.kgpg.why">
+  <title>為何要簽署和加密？</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>簽署</term>
+    <listitem>
+     <para>
+      簽署是指在郵件甚至是軟體中附加電子簽名，以檢驗其來源。為了避免他人冒用您的名義撰寫郵件以及保護您和收件者的安全，您應當對自己的郵件進行簽署。借助簽名，您可以輕鬆地檢查所收到之郵件的寄件者，並區分可信郵件和惡意郵件。
+     </para>
+     <para>
+      軟體開發人員會在其軟體上進行簽署，以便您能夠檢查軟體的完整性。即使軟體並非來自正式伺服器，您也可以使用簽章來驗證套件。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist>
+   <varlistentry>
+    <term>加密</term>
+    <listitem>
+     <para>
+      您可能有一些機密資訊不希望他人獲悉。加密可以幫助您轉換這些資料，使其他人無法讀取。這對於必須保護內部資訊以及員工隱私的公司而言尤為重要。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.keygen">
+  <title>產生新的金鑰組合</title><indexterm> <primary>KGpg</primary> <secondary>建立金鑰</secondary> </indexterm>
+
+
+
+  <para>
+   若要和其他使用者交換加密的訊息，首先要產生您自己的金鑰配對。其中一部份 (<emphasis>公用金鑰</emphasis>) -- 是配送給您的通訊夥伴，以便使用這個金鑰來加密他們傳送的檔案或電子郵件訊息。金鑰組合的另一個部分 (<emphasis>私密金鑰</emphasis>) -- 是用來解密加密的內容。
+  </para>
+
+  <important>
+   <title>私密金鑰與公開金鑰</title>
+   <para>
+    只有您能夠存取私密金鑰。請勿授權其他使用者存取此資料。
+   </para>
+   <para>
+    私密金鑰受密碼片語的保護。請謹慎選擇密碼片語：不要使用字典中的單字，要將字母與非字母字元組合使用。
+   </para>
+  </important>
+
+  <para>
+   若要建立新的金鑰配對，請執行以下步驟：
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     <indexterm><primary>KGpg</primary><secondary>啟動</secondary></indexterm> 從主功能表啟動 KGPG 或按 <keycombo> <keycap function="alt"/> <keycap>F2</keycap> </keycombo> 並輸入<command>kgpg</command>。第一次啟動程式時，將會有精靈引導您完成組態設定。請依照指示在提示您的地方建立金鑰。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     若要建立新的金鑰配對，請選取<menuchoice><guimenu>金鑰</guimenu> <guimenu>產生金鑰配對</guimenu> </menuchoice>。
+    </para>
+    <figure id="fig.kgpg_keygen">
+     <title>KGpg：建立金鑰</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="40%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="35%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+   <step performance="required">
+    <para>
+     輸入名稱、電子郵件地址，並選擇性輸入註解。如果您不喜歡提供的預設設定，請同時設定金鑰的到期時間、金鑰大小以及所使用的加[密演算法。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     若要產生標準金鑰，請按一下<guimenu>確定</guimenu>確認您的設定。按一下<guimenu>確定</guimenu>之後，會有一個對話方塊提示您輸入密碼片語兩次。密碼片語會保護您的私密金鑰。<guimenu>密碼強度計量器 (Password Strength Meter)</guimenu>會測量並顯示您所選的密碼的相對長度。此時會產生金鑰配對。這個過程可能需要一些時間。
+    </para>
+    <note>
+     <title>進階模式</title>
+     <para>
+      如果您經驗豐富，可以使用<guimenu>專家模式</guimenu>定義其他選項。此操作會開啟終端機視窗，您可以在其中設定要產生的金鑰類型、金鑰大小 (以位元計) 以及過期日。輸入名稱與電子郵件地址後，系統會提示您輸入用於保護私密金鑰的密碼片語。
+     </para>
+    </note>
+   </step>
+   <step performance="required">
+    <para>
+     金鑰產生過程結束後，會顯示一個摘要。儲存並列印註銷憑證，然後將其保存在安全的位置。當您忘記密碼片語時，需要使用此證書來廢止該密碼片語。在您按<guimenu>確定</guimenu>確認後，KGpg 會顯示其主視窗，表示您已完成操作。
+    </para>
+    <figure id="fig.kgpg_manager">
+     <title>KGpg 視窗：金鑰管理</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="90%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="70%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+  </procedure>
+
+  <para>
+   主視窗顯示您的金鑰圈中所包含的金鑰：您自己的金鑰以及您匯入的其他人的金鑰。GPG 使用一種較為複雜的金鑰配對實作，因此每個使用者名稱均會對應顯示多個子金鑰，但這一點與本章關係不大，所以未在此處予以說明。除了金鑰與 ID 的過期日或建立日期等詳細資料之外，主視窗還會顯示每個金鑰的信任等級，並以不同的色彩表示。白色表示信任等級未知，藍色表示信任等級高。如需詳細資訊，請參閱<xref linkend="sec.crypto.kgpg.mng.trust"/>。
+  </para>
+
+  <note>
+   <title>KGpg 圖示與主視窗</title>
+   <para>
+    在稍後的工作階段中啟動 KGpg 時，系統匣中只會顯示包含掛鎖的小圖示。按一下該圖示可在桌面上顯示 KGpg 主視窗。
+   </para>
+  </note>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1 id="sec.crypto.kgpg.mng.export">
+  <title>輸出公用金鑰</title><indexterm> <primary>KGpg</primary><secondary>輸出公用金鑰</secondary> </indexterm>
+
+  <para>
+   在產生金鑰配對之後，要讓其他使用者使用公開金鑰。這樣可讓他們使用金鑰來加密或簽署傳送給您的訊息或檔案。例如，您利用使用者 tux 的公用金鑰來加密傳送給他的郵件。tux 則使用自己的私密金鑰來解密郵件。如果 tux 要向您傳送郵件，他會使用您的公用金鑰加密郵件，而您要使用您的私密金鑰來解密該郵件。
+  </para>
+
+  <para>
+   若要讓其他人可以使用公開金鑰，請選取<menuchoice><guimenu>金鑰</guimenu> <guimenu>匯出公開金鑰</guimenu></menuchoice>。開啟的對話方塊提供四個選項：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>電子郵件</guimenu>
+    </term>
+    <listitem>
+     <para>
+      您的公共金鑰會傳送電子郵件給您所選擇的收件者。如果您啟動此選項並按一下<guimenu>確定</guimenu>予以確認，則會出現以您預設的郵件程式建立一封新電子郵件的對話方塊。請輸入收件者並按一下<guimenu>傳送</guimenu>。收件者將收到您的金鑰並用來傳送加密內容給您。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>剪貼簿</guimenu>
+    </term>
+    <listitem>
+     <para>
+      您可以在繼續處理之前先將公開金鑰放置在此處。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>預設金鑰伺服器</guimenu>
+    </term>
+    <listitem>
+     <para>
+      若要讓大量的使用者使用您的公開金鑰，請將它匯出到網際網路上其中一個金鑰伺服器。若需更多資訊，請參閱<xref linkend="sec.crypto.kgpg.serv"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>檔案</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果您想要以檔案而非以電子郵件在資料媒體中配送您的金鑰，請按一下此選項來確認或變更檔案路徑與名稱，再按一下 <guimenu>確定</guimenu>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.mng.import">
+  <title>輸入其他人的公用金鑰</title><indexterm> <primary>KGpg</primary> <secondary>輸入金鑰</secondary> </indexterm>
+
+  <para>
+   如果您在檔案中收到金鑰 (例如，電子郵件附件)，可以使用<guimenu>輸入金鑰</guimenu>將它整合到您的金鑰環中，用來和傳送者進行加密通訊。如果您要與其通訊的人已將其公開金鑰儲存在公用伺服器中，則您還可以從該伺服器匯入金鑰。如需詳細資訊，請參閱<xref linkend="sec.crypto.kgpg.serv"/>。這個程序和上述的匯出金鑰相似。
+  </para>
+
+  <sect2 id="sec.crypto.kgpg.mng.sign">
+   <title>簽署金鑰</title><indexterm> <primary>KGpg</primary> <secondary>簽署金鑰</secondary> </indexterm>
+   <para>
+    金鑰可以像任何其他檔案一樣簽署，以保證驗證性與完整性。如果您十分確定匯入的金鑰屬於擁有者指定的個人，您可以用簽章來表達您對金鑰驗證性的信任。
+   </para>
+   <important>
+    <title>建立信任網路</title>
+    <para>
+     加密的通訊僅可保障在特定使用者之間流通的公開金鑰之延伸。藉由交叉確認以及簽署這些金鑰，便可促成信任網路的建立。鑒於這些原因，請確定只簽署您親自檢查過的金鑰。
+    </para>
+   </important>
+   <para>
+    使用金鑰之前，您需要自行對其進行簽署。
+   </para>
+   <procedure>
+    <title>簽署金鑰</title>
+    <step performance="required">
+     <para>
+      在<guimenu>金鑰管理</guimenu>視窗中，選取金鑰清單中要簽署的金鑰。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選取<menuchoice><guimenu>金鑰</guimenu> <guimenu>簽署金鑰</guimenu></menuchoice>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在以下對話方塊中，選取要用於簽名的私密金鑰。簽署之前會出現警示，提醒您檢查這個金鑰的驗證性。在下拉式清單中，選取您在檢查金鑰是否屬於您要通訊的人時的仔細程度。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>繼續</guimenu>並在下一步中輸入密碼片語。輸入密碼片語亦即使用自己的私密金鑰簽署金鑰。完成之後，經簽署的金鑰便會以綠色顯示在信任欄中。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    其他使用者現在可以藉由您的公開金鑰來檢查簽章。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.mng.trust">
+   <title>信任金鑰</title><indexterm> <primary>KGpg</primary> <secondary>信任金鑰</secondary> </indexterm>
+   <para>
+    通常，對應的程式將詢問您是否信任該金鑰，也即您是否認為它確實由其授權擁有者使用。這在每次需要加密郵件或檢查簽名時都會發生。要避免這種情況，可以編輯新匯入金鑰的信任等級。若要信任金鑰並設定某個信任等級，請執行以下操作：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      在金鑰上按一下滑鼠右鍵，然後選取<guimenu>金鑰內容</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>擁有者信任</guimenu>下拉式清單中，調整信任等級。此值表示您對此金鑰擁有者能正確驗證其簽署之金鑰身分的信任程度。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      關閉內容對話方塊。如果將信任等級設定為<guimenu>完全</guimenu>或<guimenu>最高</guimenu>，則信任欄中的金鑰會立即顯示為藍色。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    信任程度越低，表示您信任金鑰簽署者已經檢查簽署金鑰身分的程度也越低。有時，您可能完全信任某位簽署者的身分，但該使用者在簽署他人的金鑰時，或許並未適當檢查過其身分。請注意，信任等級不會觸發 KGpg 執行的任何自動動作。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.serv">
+  <title>金鑰伺服器對話方塊</title><indexterm> <primary>KGpg</primary> <secondary>金鑰伺服器</secondary> </indexterm>
+
+  <para>
+   數個以網際網路為基礎的金鑰伺服器，提供許多使用者的公開金鑰。若想要與大量使用者進行加密通訊，請使用這些伺服器來配送您的公開金鑰。基於此原因，請將您的公開金鑰匯出至其中一個伺服器。同樣地，KGpg 可供您在這些伺服器其中之一搜尋一些人的金鑰，並從伺服器匯入他們的公開金鑰。請從<menuchoice><guimenu>檔案</guimenu> <guimenu>金鑰伺服器對話方塊</guimenu></menuchoice>來開啟金鑰伺服器對話方塊。
+  </para>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.crypto.kgpg.serv.import">
+   <title>從金鑰伺服器匯入金鑰</title><indexterm> <primary>KGpg</primary> <secondary>金鑰伺服器</secondary> <tertiary>輸入金鑰</tertiary> </indexterm>
+   <para>
+    利用金鑰伺服器對話方塊中的<guimenu>匯入</guimenu>分頁，可從其中一個網際網路為基礎的金鑰伺服器匯入公開金鑰。選取其中一個預先設定的金鑰伺服器，並輸入搜尋字串 (通訊夥伴的電子郵件地址) 或要尋找的金鑰 ID。當您按一下<guimenu>搜尋</guimenu>時，系統會連接至網際網路，搜尋指定的金鑰伺服器以尋找符合您規格的金鑰。
+   </para>
+   <figure id="fig.kgpg_servimp">
+    <title>匯入金鑰的搜尋畫面</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    如果您在金鑰伺服器上的搜尋成功，取回的所有伺服器項目清單會顯示在新視窗中。選取想要包括在您金鑰環中的金鑰並按一下<guimenu>匯入</guimenu>。按一下<guimenu>確定</guimenu>確認以下訊息，然後按一下<guimenu>關閉</guimenu>結束金鑰伺服器對話框。然後匯入的金鑰會出現在金鑰管理員的主要概觀中，並且可供使用。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.serv.export">
+   <title>將您的金鑰匯出至金鑰伺服器</title><indexterm> <primary>KGpg</primary> <secondary>金鑰伺服器</secondary> <tertiary>輸出金鑰</tertiary> </indexterm>
+   <para>
+    若要將您的金鑰匯出到網際網路上可自由存取的金鑰伺服器，請選取金鑰伺服器對話方塊中的<guimenu>匯出</guimenu>分頁。利用兩個下拉式功能表指定目標伺服器和要匯出的金鑰。然後按<guimenu>匯出</guimenu>來開始匯出。
+   </para>
+   <figure id="fig.kgpg_servexp">
+    <title>將金鑰匯出至金鑰伺服器</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.applet">
+  <title>加密資料</title><indexterm> <primary>KGpg</primary> <secondary>文字加密</secondary> </indexterm> <indexterm> <primary>KGpg</primary> <secondary>檔案加密</secondary> </indexterm> <indexterm> <primary>檔案</primary> <secondary>加密</secondary> </indexterm>
+
+  <para>
+   產生金鑰配對、匯出您的公開金鑰並從其他人處匯入公開金鑰之後，您還可以傳送或接收加密郵件。請參閱<xref linkend="sec.kontact.mail.crypto"/> 瞭解如何使用 KMail 中的這些選項。
+  </para>
+
+  <para>
+   KGpg 還能加密文字。若要開啟整合的編輯器，請選擇<menuchoice><guimenu>檔案</guimenu> <guimenu>開啟編輯器</guimenu></menuchoice>。
+  </para>
+
+  
+
+
+
+  <sect2 id="sec.crypto.kgpg.dnd">
+   <title>從檔案管理員加密與解密</title>
+   <para>
+    KGpg 也已整合到 Dolphin 或 Konqueror 等檔案管理員中。通常，PGP 加密的檔案會帶有字尾 <filename>asc</filename>。系統提供了多個在檔案管理員中加密或解密檔案的選項。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>加密檔案</guimenu>
+     </term>
+     <listitem>
+      <para>
+       若要在檔案管理員中加密檔案，請在檔案上按一下滑鼠右鍵，然後選取<menuchoice><guimenu>動作</guimenu> <guimenu>加密檔案</guimenu></menuchoice>。在對話框中選擇其中一個信任的金鑰。按一下對話框中的<guimenu>確定</guimenu>，即會在同一個目錄下建立一個字尾為 <filename>asc</filename> 的新檔案。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>即時解密檔案</guimenu>
+     </term>
+     <listitem>
+      <para>
+       若要即時對加密的檔案進行解密，請在檔案上按一下滑鼠右鍵，然後選取<menuchoice><guimenu>用 KGpg 開啟</guimenu></menuchoice>。如果原始的檔案名稱已經存在，系統會開啟對話方塊以詢問您如何命名檔案或者要覆寫檔案。KGpg 會提示您輸入私密金鑰的密碼，並將解密檔案儲存在同一目錄下。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>使用編輯器解密</guimenu>
+     </term>
+     <listitem>
+      <para>
+       若要使用編輯器對加密的檔案進行解密，請在檔案管理員中以右鍵按一下檔案，然後選取<menuchoice><guimenu>動作</guimenu> <guimenu>檢視解密後檔案</guimenu></menuchoice>。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+
+
+
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.edit">
+   <title>KGpg 編輯器</title><indexterm> <primary>KGpg</primary> <secondary>編輯器</secondary> </indexterm>
+   <para>
+    如果不想先在外部編輯器中建立加密內容，然後再用上述方法之一加密檔案，可以使用 KGpg 的整合編輯器。若要開啟編輯器，請選取<menuchoice><guimenu>檔案</guimenu> <guimenu>開啟編輯器</guimenu></menuchoice>。在編輯器中，輸入所需文字 (或從剪貼簿或任何檔案複製到編輯器中)，然後按一下<guimenu>加密</guimenu>。接著選取要使用的金鑰，並完成加密程序。若要解密檔案，請使用 <guimenu>解密</guimenu>，並輸入與金鑰相關的密碼。
+   </para>
+   <para>
+    產生並檢查簽名與直接從編輯器加密一樣簡單。移至<menuchoice><guimenu>簽名</guimenu> <guimenu>產生簽名</guimenu></menuchoice>，接著從檔案對話方塊中選取要簽名的檔案。選取要使用的私密金鑰，並輸入相關密碼。KGpg 會通知您成功產生簽名。檔案也可從編輯器產生簽章，僅需按一下<guimenu>簽署/確認</guimenu>。若要檢查已簽署的檔案，請移至<menuchoice><guimenu>簽名</guimenu> <guimenu>確認簽名</guimenu></menuchoice>，然後從以下對話方塊中選取要檢查的檔案。確認選擇後，KGpg 將檢查簽名並報告作業結果。其他可能性是將簽名檔案載入編輯器並按一下<guimenu>簽名/確認</guimenu>。
+   </para>
+  </sect2>
+ </sect1>
+<?dbfo-need height="15em"?>
+
+
+ <sect1 id="sec.crypto.basics">
+  <title>如需更多資訊</title>
+
+  <para>
+   如需加密方法的所有背景資訊，請參閱 <ulink url="http://www.gnupg.org/documentation/index.en.html"/> 上的 GPG 專案頁面。<indexterm class="endofrange" startref="idx.encryption"/><indexterm class="endofrange" startref="idx.kgpg"/>
+  </para>
+ </sect1>
+</chapter>

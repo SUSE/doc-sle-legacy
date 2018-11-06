@@ -1,0 +1,965 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="wlan.xml" id="cha.wireless.wlan">
+ <title>Rede local sem fio</title><indexterm> <primary>WLAN</primary></indexterm><indexterm> <primary>rede local wireless</primary></indexterm>
+ <abstract>
+  <para>
+   As WLANs (Wireless Local Area Networks — redes locais wireless) passaram a ser um item indispensável na computação móvel. Atualmente, a maioria dos laptops tem placas WLAN embutidas. Este capítulo descreve como configurar uma placa WLAN com o YaST, criptografar transmissões e usar dicas. <phrase os="osuse;sled">Se preferir, você poderá configurar e gerenciar o acesso a WLAN com o NetworkManager. Para obter informações detalhadas, consulte o <xref linkend="cha.nm"/>.</phrase>
+  </para>
+ </abstract>
+ <sect1 id="sec.wireless.wlan.standards">
+  <title>Padrões de WLAN</title>
+
+  <para>
+   As placas de WLAN comunicam-se usando o padrão 802.11, preparado pela organização IEEE. Originalmente, esse padrão fornecia uma taxa de transmissão máxima de 2 MBit/s. Enquanto isso, vários suplementos foram adicionados para aumentar a taxa de dados. Esses suplementos definem detalhes como modulação, saída de transmissão e taxas de transmissão (consulte a <xref linkend="tab.wireless.std.overview"/>). Além disso, muitas empresas implementam hardware com recursos proprietários ou preliminares.
+  </para>
+
+  <table id="tab.wireless.std.overview">
+   <title>Visão geral de vários padrões de WLAN</title>
+   <tgroup cols="4">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        Nome
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Banda (GHz)
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Taxa de transmissão máxima (MBit/s)
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Nota
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        802.11 Legado
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Desatualizado; praticamente nenhum dispositivo final disponível
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11a
+       </para>
+      </entry>
+      <entry>
+       <para>
+        5
+       </para>
+      </entry>
+      <entry>
+       <para>
+        54
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Menos sujeito a interferência
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11b
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        11
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Menos comum
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11g
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        54
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Disseminado, compatível retroativamente com 11b
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11n
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4 e/ou 5
+       </para>
+      </entry>
+      <entry>
+       <para>
+        300
+        
+        
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Comum
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11 ad
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4/5/60
+       </para>
+      </entry>
+      <entry>
+       <para>
+        até 7000
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Lançado em 2012, menos comum atualmente
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   As placas 802.11 legadas não são suportadas pelo <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase>. A maioria das placas que usa 802.11a, 802.11b, 802.11g e 802.11n é suportada. As placas novas geralmente são compatíveis com o padrão 802.11n, mas as placas que usam 802.11g ainda estão disponíveis.
+  </para>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.modes">
+  <title>Modos de funcionamento</title>
+
+  <para>
+   Nas redes sem fio, várias técnicas e configurações são usadas para assegurar conexões rápidas, seguras e com alta qualidade. Tipos operacionais diferentes adaptam-se a configurações diferentes. Pode ser difícil escolher o método de autenticação correto. Os métodos de criptografia disponíveis possuem diferentes vantagens e armadilhas.
+  </para>
+
+  <para>
+   Basicamente, as redes wireless podem ser classificadas em três modos de rede:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Modo Gerenciado (Modo Infraestrutura), via Ponto de Acesso </term>
+    <listitem>
+     <para>
+      As redes gerenciadas têm um elemento de gerenciamento: o ponto de acesso. Nesse modo (também conhecido como modo de infraestrutura), todas as conexões das estações WLAN na rede passam pelo ponto de acesso, que também pode servir como uma conexão para uma ethernet. Para verificar se apenas as estações autorizadas poderão se conectar, vários mecanismos de autenticação (WPA, etc) são usados.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Modo Ad-hoc (Rede Ponto a Ponto)</term>
+    <listitem>
+     <para>
+      Redes ad-hoc não possuem um ponto de acesso. As estações se comunicam diretamente entre si, portanto, uma rede ad-hoc geralmente é mais rápida do que uma rede gerenciada. Entretanto, a faixa de transmissão e o número de estações participantes são muito limitados nas redes ad-hoc. Elas também não suportam autenticação WPA. Se você pretende usar a segurança WPA, não utilize o Modo Ad-Hoc.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Modo Mestre</term>
+    <listitem>
+     <para>
+      No modo master, a sua placa de rede é usada como ponto de acesso. Esse modo só funciona se a sua placa WLAN tiver suporte. Os detalhes sobre a sua placa WLAN encontram-se em <ulink url="http://linux-wless.passys.nl"/>.
+      
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.func.auth">
+  <title>Autenticação</title>
+
+  <para>
+   Como uma rede sem fio é muito mais fácil de interceptar e comprometer do que uma rede com fio, os vários padrões incluem métodos de autenticação e criptografia. Na versão original do padrão IEEE 802.11, esses métodos são descritos sob o termo WEP (Wired Equivalent Privacy — privacidade equivalente à das redes com fio). Porém, como o WEP se demonstrou inseguro (consulte a <xref linkend="sec.wireless.wlan.tant.sec"/>), o setor de WLAN (unificado sob o nome <emphasis>Wi-Fi Alliance</emphasis>) definiu uma extensão denominada WPA, que supostamente elimina os pontos fracos do WEP. O último padrão IEEE 802.11i inclui WPA e alguns outros métodos de autenticação e criptografia. O IEEE 802.11i também é chamado de WPA2, pois o WPA é baseado em uma versão de rascunho do 802.11i.
+  </para>
+
+  <para>
+   Para garantir que apenas as estações autorizadas possam se conectar, vários mecanismos de autenticação são usados em redes gerenciadas:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Nenhum (aberto)</term>
+    <listitem>
+     <para>
+      Um sistema aberto é um sistema que não precisa de autenticação. Qualquer estação pode se juntar à rede. Entretanto, a criptografia WEP pode ser usada, consulte a <xref linkend="sec.wireless.wlan.func.encr"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Chave compartilhada (de acordo com o padrão IEEE 802.11)</term>
+    <listitem>
+     <para>
+      Nesse procedimento, a chave WEP é usada para autenticação. Porém, esse procedimento não é recomendado, porque torna a chave WEP mais suscetível a ataques. Tudo o que um invasor precisa fazer é escutar durante tempo suficiente a comunicação entre a estação e o ponto de acesso. Durante o processo de autenticação, ambos os lados trocam as mesmas informações, uma vez de forma criptografada e outra de forma não criptografada. Isso possibilita a reconstrução da chave com as ferramentas adequadas. Como esse método utiliza a chave WEP para a autenticação e para a criptografia, ele não melhora a segurança da rede. Uma estação com a chave WEP correta pode ser autenticada, criptografada e descriptografada. Uma estação que não tem a chave não pode descriptografar os pacotes recebidos. Da mesma maneira, ela não pode se comunicar, mesmo que tenha que se autenticar.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>WPA-PSK (ou WPA-Personal, de acordo com o IEEE 802.1x)</term>
+    <listitem>
+     <para>
+      O WPA-PSK (PSK corresponde a preshared key — chave pré-compartilhada) funciona de maneira semelhante ao procedimento Chave compartilhada. Todas as estações participantes, assim como o ponto de acesso, precisam da mesma chave. A chave tem 256 bits de tamanho e normalmente é digitada como uma frase secreta. Esse sistema não precisa de um gerenciamento de chave complexo como o WPA-EAP e é mais adequado para uso privado. Portanto, o WPA-PSK é às vezes conhecido como WPA <quote>Home</quote>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>WPA-EAP (ou WPA-Enterprise, de acordo com o IEEE 802.1x)</term>
+    <listitem>
+     <para>
+      Na verdade, o WPA-EAP (Extensible Authentication Protocol) não é um sistema de autenticação, e sim um protocolo para transporte de informações de autenticação. O WPA-EAP é usado para proteger redes sem fio em empresas. Em redes privadas, ele é raramente usado. Por esse motivo, o WPA-EAP é às vezes conhecido como WPA <quote>Enterprise</quote>.
+     </para>
+     <para>
+      O WPA-EAP precisa de um servidor Radius para autenticar os usuários. O EAP oferece três métodos diferentes de conexão e autenticação no servidor:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        TLS (Transport Layer Security) (EAP-TLS): A autenticação TLS utiliza o intercâmbio mútuo de certificados para o servidor e o cliente. Primeiro, o servidor apresenta o seu certificado para o cliente, onde ele é avaliado. Se o certificado for considerado válido, o cliente, por sua vez, apresenta o seu certificado para o servidor. Embora o TLS seja seguro, ele exige uma infraestrutura de gerenciamento de certificação que funcione em sua rede. Essa infraestrutura é raramente encontrada em redes particulares.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Tunneled Transport Layer Security (EAP-TTSL)
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Protected Extensible Authentication Protocol (EAP-PEAP): Ambos TTLS e PEAP são protocolos de dois estágios. No primeiro estágio, uma conexão segura é estabelecida e, no segundo, os dados de autenticação do cliente são trocados. Eles exigem muito menos overhead de gerenciamento de certificação do que o TLS, se houver.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.func.encr">
+  <title>Criptografia</title>
+
+  <para>
+   Existem vários métodos de criptografia para assegurar que pessoas não autorizadas não possam ler os pacotes de dados que são trocados em uma rede sem fio nem obter acesso à rede:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>WEP (definido no padrão IEEE 802.11)</term>
+    <listitem>
+     <para>
+      Esse padrão utiliza o algoritmo de criptografia RC4, originalmente com um tamanho de chave de 40 bits, posteriormente também com 104 bits. Muitas vezes, o tamanho é declarado como 64 bits ou 128 bits, dependendo da inclusão ou não dos 24 bits do vetor de inicialização. Porém, esse padrão tem algumas fraquezas. Os ataques contra as chaves geradas por esse sistema podem ser bem-sucedidos. Contudo, é melhor usar o WEP do que não criptografar a rede de maneira alguma.
+     </para>
+     <para>
+      Alguns fornecedores implementaram o <quote>WEP Dinâmico</quote> não padrão. Ele funciona exatamente como o WEP e compartilha os mesmos pontos fracos, exceto pelo fato de que a chave é mudada periodicamente por um serviço de gerenciamento de chave.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>TKIP (definido no padrão WPA/IEEE 802.11i)</term>
+    <listitem>
+     <para>
+      Esse protocolo de gerenciamento de chave definido no padrão WPA utiliza o mesmo algoritmo de criptografia do WEP, mas elimina sua fraqueza. Como uma nova chave é gerada para cada pacote de dados, os ataques contra essas chaves são infrutíferos. O TKIP é usado junto com o WPA-PSK.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>CCMP (definido no padrão IEEE 802.11i)</term>
+    <listitem>
+     <para>
+      O CCMP descreve o gerenciamento de chave. Normalmente, ele é usado na conexão com o WPA-EAP, mas também pode ser usado com o WPA-PSK. A criptografia acontece de acordo com o AES e é mais forte do que a criptografia RC4 do padrão WEP.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.yast2">
+  <title>Configuração com o YaST</title>
+
+  <important>
+   <title>Riscos à segurança em redes wireless</title>
+   <para>
+    As conexões de WLAN não criptografadas permitem que terceiros interceptem todos os dados da rede. Proteja o tráfego de sua rede usando um dos métodos de autenticação e criptografia suportados.
+   </para>
+   <para>
+    Use o melhor método de criptografia possível que o seu hardware permitir. No entanto, para usar determinado método de criptografia, todos os dispositivos na rede devem suportar esse método; do contrário, eles não poderão se comunicar. Por exemplo, se o seu roteador suporta tanto WEP quanto WPA, mas o driver da sua placa WLAN só suporta WEP, WEP será o mínimo denominador comum que você poderá usar. Mesmo assim, uma criptografia fraca com WEP é melhor que nada. Consulte a <xref linkend="sec.wireless.wlan.func.encr"/> e a <xref linkend="sec.wireless.wlan.tant.sec"/> para obter mais informações.
+   </para>
+  </important>
+
+  <para>
+   Para configurar uma LAN wireless com o YaST, defina os seguintes parâmetros:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Endereço IP</term>
+    <listitem>
+     <para>
+      Use o endereço IP estático ou permita que um servidor DHCP atribua dinamicamente um endereço IP à interface.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Modo de funcionamento</term>
+    <listitem>
+     <para>
+      Define como integrar sua máquina à WLAN, de acordo com a topologia de rede. Para obter mais informações de apoio sobre o , consulte a <xref linkend="sec.wireless.wlan.modes"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Nome da Rede (ESSID)</term>
+    <listitem>
+     <para>
+      String exclusiva que identifica a rede.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Detalhes da Autenticação e da Criptografia</term>
+    <listitem>
+     <para>
+      Dependendo do método de autenticação e criptografia usado pela sua rede, você precisará inserir uma ou mais chaves e/ou certificados.
+     </para>
+     <para>
+      Várias opções de entrada estão disponíveis para inserir as respectivas chaves: <guimenu>Passphrase</guimenu>, <guimenu>ASCII</guimenu> (disponível apenas para os métodos de autenticação WEP) e <guimenu>Hexadecimal</guimenu>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <sect2 id="sec.wireless.wlan.yast2.nm">
+   <title>Desativando o NetworkManager</title>
+   <para>
+    Uma placa WLAN geralmente é detectada durante a instalação. Se a sua máquina for um computador móvel, o NetworkManager normalmente será ativado por padrão. Para configurar a placa WLAN com o YaST, você precisa primeiro desativar o NetworkManager:
+   </para>
+   <procedure>
+    <step id="st.wireless.wlan.start" performance="required">
+     <para>
+      Inicie o YaST como usuário <systemitem class="username">root</systemitem>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      No Centro de Controle do YaST, selecione <menuchoice> <guimenu>Dispositivos de Rede</guimenu> <guimenu>Configurações de Rede</guimenu> </menuchoice> para abrir a caixa de diálogo <guimenu>Configurações de Rede</guimenu>.
+     </para>
+     <para>
+      Se a sua rede for controlada pelo NetworkManager, você verá uma mensagem de aviso explicando que as configurações de rede não podem ser editadas pelo YaST.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para habilitar a edição com o YaST, saia da mensagem clicando em <guimenu>OK</guimenu> e, na guia <guimenu>Opções Globais</guimenu>, ative <guimenu>Método Tradicional com ifup</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para saber mais sobre a configuração, vá para a <xref linkend="sec.wireless.wlan.yast2.accesspoint"/> ou a <xref linkend="sec.wireless.wlan.yast2.adhocnet"/>.
+     </para>
+     <para>
+      Do contrário, confirme as suas mudanças clicando em <guimenu>OK</guimenu> para gravar a configuração de rede.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.accesspoint">
+   <title>Configuração para pontos de acesso</title>
+   <para>
+    Nesta seção, saiba como configurar a placa WLAN para conexão (externa) com um ponto de acesso ou como usar a placa WLAN como um ponto de acesso, se a sua placa WLAN suportar esse recurso. Para ver a configuração de redes sem um ponto de acesso, consulte a <xref linkend="sec.wireless.wlan.yast2.adhocnet"/>.
+   </para>
+   <procedure id="pro.wlan.yast2.accesspoint">
+    <title>Configurando a placa WLAN para usar um ponto de acesso</title>
+    <step performance="required">
+     <para>
+      Inicie o YaST e abra a caixa de diálogo <guimenu>Configurações de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Passe para a guia <guimenu>Visão Geral</guimenu>, na qual são listadas todas as placas de rede que foram detectadas pelo sistema. Se você precisar de mais informações sobre a configuração geral da rede, consulte a <xref linkend="sec.basicnet.yast"/>.
+     </para>
+    </step>
+    <step id="st.wireless.wlan.card" performance="required">
+     <para>
+      Escolha sua placa wireless na lista e clique em <guimenu>Editar</guimenu> para abrir a caixa de diálogo Configuração da Placa de Rede.<guimenu/>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na guia <guimenu>Endereço</guimenu>, configure se será usado um endereço IP dinâmico ou estático para a máquina. Normalmente, <guimenu>Endereço Dinâmico</guimenu> com <guimenu>DHCP</guimenu> é o ideal.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Avançar</guimenu> para prosseguir para a caixa de diálogo <guimenu>Configuração de Placa de Rede Wireless</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para usar a placa WLAN para conexão com um ponto de acesso, defina o <guimenu>Modo de Operação</guimenu> como <guimenu>Gerenciado</guimenu>.
+     </para>
+     <para>
+      Mas para usar a placa WLAN como ponto de acesso, defina o <guimenu>Modo de Operação</guimenu> como <guimenu>Mestre</guimenu>. Observe que nem todas as placas WLAN suportam esse modo.
+     </para>
+     <note>
+      <title>Usando WPA-PSK ou WPA-EAP</title>
+      <para>
+       Para usar os modos de autenticação WPA-PSK ou WPA-EAP, o modo de operação deve ser definido como <guimenu>Gerenciado</guimenu>.
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      Para conectar-se a determinada rede, digite o <guimenu>Nome de Rede (ESSID)</guimenu>. Se preferir, clique em <guimenu>Verificar Rede</guimenu> e selecione uma rede na lista de redes wireless disponíveis.
+     </para>
+     <para>
+      Todas as estações em uma rede sem fio precisam do mesmo ESSID para se comunicar umas com as outras. Se nenhum ESSID for especificado, sua placa WLAN será associada automaticamente ao ponto de acesso que tiver a melhor intensidade de sinal.
+     </para>
+     <note>
+      <title>A autenticação WPA requer um ESSID</title>
+      <para>
+       Se você selecionar a autenticação <guimenu>WPA</guimenu>, será preciso definir um nome de rede (ESSID).
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione um <guimenu>Modo de Autenticação</guimenu> para a rede. O modo adequado depende do driver da placa WLAN e da capacidade dos outros dispositivos na rede.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você definiu o <guimenu>Modo de Autenticação</guimenu> como <guimenu>Sem Criptografia</guimenu>, termine a configuração clicando em <guimenu>Avançar</guimenu>. Confirme a mensagem sobre esse possível risco à segurança e saia da guia <guimenu>Visão Geral</guimenu> (que mostra a placa WLAN recém-configurada) clicando em <guimenu>OK</guimenu>.
+     </para>
+     <para>
+      Se escolheu qualquer um dos outros modos de autenticação, proceda com <xref linkend="pro.wlan.yast2.enryption"/>.
+     </para>
+    </step>
+   </procedure>
+   <figure id="fig.wireless.wlan.yast">
+    <title>YaST: configurando a placa de rede wireless</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="75%" fileref="yast2_wlan.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="55%" fileref="yast2_wlan.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <procedure id="pro.wlan.yast2.enryption">
+    <title>Inserindo os detalhes da criptografia</title>
+    <para>
+     Os métodos de autenticação a seguir requerem uma chave criptográfica: <guimenu>WEP - Aberto</guimenu>, <guimenu>WEP - Chave Compartilhada</guimenu> e <guimenu>WPA-PSK</guimenu>.
+    </para>
+    <para>
+     Para WEP, em geral, apenas uma chave é necessária; porém, até 4 chaves WEP diferentes podem ser definidas na estação. Uma delas deve ser definida como a chave padrão e deve ser usada para a criptografia. As outras são usadas para a decodificação. Por padrão, o tamanho da chave de 128 bits é usado, mas também é possível definir o tamanho como 64 bits.
+    </para>
+    <para>
+     Para maior segurança, o WPA-EAP usa o servidor RADIUS para autenticar os usuários. Para autenticação no servidor, três métodos diferentes estão disponíveis: TLS, TTLS e PEAP. As credenciais e os certificados necessários para o WPA-EAP dependem do método de autenticação usado no servidor RADIUS. Peça ao administrador do sistema para fornecer as informações e credenciais necessárias. O YaST procura por certificados em <filename>/etc/cert</filename>. Portanto, grave os certificados concedidos a você nesse local e restrinja o acesso a esses arquivos para <literal>0600</literal> (leitura e gravação pelo proprietário). 
+    </para>
+    <step performance="required">
+     <para>
+      Para digitar a chave para <guimenu>WEP - Aberto</guimenu> ou <guimenu>WEP - Chave Compartilhada</guimenu>:
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        Defina o <guimenu>Tipo de Chave de Entrada</guimenu> como <guimenu>Passphrase</guimenu>, <guimenu>ASCII</guimenu> ou <guimenu>Hexadecimal</guimenu>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Digite a respectiva <guimenu>Chave de Criptografia</guimenu> (geralmente, uma única chave é usada):
+       </para>
+       <para>
+        Se você selecionou <guimenu>Passphrase</guimenu>, digite uma palavra ou uma string de caracteres da qual a chave será gerada de acordo com o tamanho de chave especificado (por padrão, 128 bits) .
+       </para>
+       <para>
+        <guimenu>O </guimenu>ASCII exige uma entrada de 5 caracteres para uma chave de 64 bits e 13 caracteres para uma chave de 128 bits. 
+       </para>
+       <para>
+        Para a opção <guimenu>Hexadecimal</guimenu>, digite 10 caracteres para uma chave de 64 bits ou 26 caracteres para uma chave de 128 bits em notação hexadecimal.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Para ajustar o tamanho da chave a uma taxa de bits menor (o que pode ser necessário para hardware mais antigo), clique em <guimenu>Chaves WEP</guimenu> e defina o <guimenu>Tamanho de Chave</guimenu> como <guimenu>64</guimenu> bits. A caixa de diálogo <guimenu>Chaves WEP</guimenu> também mostra as chaves WEP que foram inseridas até o momento. A menos que outra chave seja explicitamente definida como padrão, o YaST sempre usará a primeira chave como padrão.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Para digitar mais chaves para o WEP ou modificar uma das chaves, selecione a respectiva entrada e clique em <guimenu>Editar</guimenu>. Selecione o <guimenu>Tipo de Chave de Entrada</guimenu> e digite a chave.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Confirme as mudanças clicando em <guimenu>OK</guimenu>.
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      Para digitar a chave para <guimenu>WPA-PSK</guimenu>:
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        Selecione o método de entrada <guimenu>Passphrase</guimenu> ou <guimenu>Hexadecimal</guimenu>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Digite a respectiva <guimenu>Chave de Criptografia</guimenu>.
+       </para>
+       <para>
+        No modo <guimenu>Frase Secreta</guimenu>, a entrada deve ser de 8 a 63 caracteres. No modo <guimenu>Hexadecimal</guimenu>, digite 64 caracteres.
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      Se você escolheu a autenticação <guimenu>WPA-EAP</guimenu>, clique em <guimenu>Avançar</guimenu> para alternar para a caixa de diálogo <guimenu>WPA-EAP</guimenu>, na qual você insere as credenciais e os certificados recebidos pelo administrador de rede.
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        Selecione o <guimenu>Modo EAP</guimenu> que o servidor RADIUS usa para autenticação. Os detalhes necessários para inserir os dados a seguir dependem do <guimenu>Modo EAP</guimenu> selecionado.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Para TLS, especifique <guimenu>Identidade</guimenu>, <guimenu>Certificado de Cliente</guimenu>, <guimenu>Chave do Cliente</guimenu> e <guimenu>Senha da Chave do Cliente</guimenu>. Para aumentar a segurança, é possível configurar um <guimenu>Certificado de Servidor</guimenu> usado para validar a autenticidade do servidor.
+       </para>
+       <para>
+        TTLS e PEAP requerem <guimenu>Identidade</guimenu> e <guimenu>Senha</guimenu>, enquanto <guimenu>Certificado de Servidor</guimenu> e <guimenu>Identidade Anônima</guimenu> são opcionais.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Para acessar a caixa de diálogo de autenticação avançada para a configuração do WPA-EAP, clique em <guimenu>Detalhes</guimenu>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Selecione o <guimenu>Método de Autenticação</guimenu> para o segundo estágio da comunicação EAP-TTLS ou EAP-PEAP (autenticação interna). A escolha dos métodos depende do método de autenticação para o servidor RADIUS selecionado na caixa de diálogo anterior.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Se a configuração determinada automaticamente não funcionar para você, escolha uma <guimenu>Versão PEAP</guimenu> específica para forçar o uso de determinada implementação PEAP.
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      Confirme as mudanças clicando em <guimenu>OK</guimenu>. A guia <guimenu>Visão Geral</guimenu> mostra os detalhes da sua placa WLAN recém-configurada.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>OK</guimenu> para finalizar a configuração e sair da caixa de diálogo.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.adhocnet">
+   <title>Estabelecendo uma rede ad-hoc</title>
+   <para>
+    Em alguns casos, é útil conectar dois computadores equipados com uma placa WLAN. Para estabelecer uma rede ad hoc usando o YaST, faça o seguinte:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Inicie o YaST e abra a caixa de diálogo <guimenu>Configurações de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Mude para a guia <guimenu>Visão Geral</guimenu>, escolha sua placa wireless na lista e clique em <guimenu>Editar</guimenu> para abrir a caixa de diálogo <guimenu>Configuração da Placa de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Escolha <guimenu>Endereço IP Atribuído Estaticamente</guimenu>￼ e digite os seguintes dados:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <guimenu>Endereço IP</guimenu>: <systemitem class="ipaddress">192.168.1.1</systemitem>. Mude esse endereço no segundo computador para <systemitem class="ipaddress">192.168.1.2</systemitem>, por exemplo.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <guimenu>Máscara da Sub-rede</guimenu>: <systemitem class="ipaddress">/24</systemitem>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <guimenu>Nome de Host</guimenu>: escolha qualquer nome que desejar.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      Continue com <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Defina o <guimenu>Modo de Operação</guimenu> como <guimenu>Ad-hoc</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Escolha um <guimenu>Nome da Rede (ESSID)</guimenu>. Pode ser qualquer nome, mas deve ser usado em todos os computadores na rede ad-hoc.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione um <guimenu>Modo de Autenticação</guimenu> para a rede. O modo adequado depende do driver da placa WLAN e da capacidade dos outros dispositivos na rede.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você definiu o <guimenu>Modo de Autenticação</guimenu> como <guimenu>Sem Criptografia</guimenu>, termine a configuração clicando em <guimenu>Avançar</guimenu>. Confirme a mensagem sobre esse possível risco à segurança e saia da guia <guimenu>Visão Geral</guimenu>, que mostra a placa WLAN recém-configurada, clicando em <guimenu>OK</guimenu>.
+     </para>
+     <para>
+      Se escolheu qualquer um dos outros modos de autenticação, proceda com o <xref linkend="pro.wlan.yast2.enryption"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Caso não tenha o <systemitem class="resource">smpppd</systemitem> instalado, o YaST pedirá para você fazer isso.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Configure outras placas WLAN na rede de acordo, usando o mesmo <guimenu>Nome de Rede (ESSID)</guimenu>, o mesmo <guimenu>Modo de Autenticação</guimenu>, mas endereços IP diferentes.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.advanced">
+   <title>Definindo parâmetros de configuração adicionais</title>
+   <para>
+    Normalmente, não é necessário mudar as configurações predefinidas durante a configuração da placa WLAN. Porém, se você precisa de uma configuração detalhada da sua conexão WLAN, o YaST permite ajustar as seguintes configurações:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Canal</term>
+     <listitem>
+      <para>
+       A especificação de um canal em que a estação WLAN deve trabalhar. Isso é necessário apenas nos modos <guimenu>Ad-hoc</guimenu> e <guimenu>Mestre</guimenu>. No modo <guimenu>Gerenciado</guimenu>, a placa pesquisa automaticamente os canais disponíveis para pontos de acesso. 
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Taxa de Bits</term>
+     <listitem>
+      <para>
+       Dependendo do desempenho da sua rede, você pode definir uma determinada taxa de bits para a transmissão de um ponto para outro. Na configuração padrão <guimenu>Automático</guimenu>, o sistema tenta usar a taxa de transmissão de dados mais alta possível. Algumas placas WLAN não suportam a configuração da taxa de bits.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Access Point (Ponto de Acesso)</term>
+     <listitem>
+      <para>
+       Em um ambiente com vários pontos de acesso, um deles pode ser pré-selecionado especificando-se o endereço MAC.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Gerenciamento de energia</term>
+     <listitem>
+      <para>
+       Quando você estiver em trânsito, as tecnologias de economia de energia poderão ajudá-lo a maximizar o tempo de operação da sua bateria. <phrase os="sles;sled">Mais informações sobre o gerenciamento de energia estão disponíveis no <xref linkend="cha.pmanage"/>.</phrase> O uso do gerenciamento de energia pode afetar a qualidade da conexão e aumentar a latência da rede.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <procedure>
+    <para>
+     Para acessar as opções avançadas:
+    </para>
+    <step performance="required">
+     <para>
+      Inicie o YaST e abra a caixa de diálogo <guimenu>Configurações de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Mude para a guia <guimenu>Visão Geral</guimenu>, escolha sua placa wireless na lista e clique em <guimenu>Editar</guimenu> para abrir a caixa de diálogo <guimenu>Configuração da Placa de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Avançar</guimenu> para prosseguir para a caixa de diálogo <guimenu>Configuração de Placa de Rede Wireless</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Configurações de Especialista</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      No modo <guimenu>Ad-hoc</guimenu>, selecione um dos canais oferecidos (11 a 14, dependendo do seu país)  para a comunicação da sua estação com as outras estações. No modo <guimenu>Mestre</guimenu>, determine em que <guimenu>Canal</guimenu> a placa deve oferecer a funcionalidade de ponto de acesso. A configuração padrão para esta opção é <guimenu>Auto</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione a <guimenu>Taxa de Bits</guimenu> a ser usada.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Digite o endereço MAC do <guimenu>Ponto de Acesso</guimenu> ao qual deseja se conectar.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Escolha se vai <guimenu>Usar Gerenciamento de Energia</guimenu> ou não.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Confirme as suas mudanças clicando em <guimenu>OK</guimenu> e clique em <guimenu>Avançar</guimenu> e em <guimenu>OK</guimenu> para concluir a configuração.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.tant">
+  <title>Dicas sobre a configuração de uma WLAN</title>
+
+  <para>
+   As seguintes ferramentas e dicas o ajudam a monitorar e melhorar a velocidade, a estabilidade e os aspectos de segurança da WLAN.
+  </para>
+
+  <sect2 id="sec.wireless.wlan.tant.tools">
+   <title>Utilitários</title>
+
+   <para>
+    O pacote <systemitem class="resource">wireless-tools</systemitem> contém utilitários que permitem definir parâmetros específicos para WLAN e obter estatísticas. Consulte <ulink url="http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html"/> para obter mais informações.
+   </para>
+   
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.tant.stab">
+   <title>Estabilidade e velocidade</title>
+   <para>
+    O desempenho e a confiabilidade de uma rede wireless dependem principalmente do fato de as estações participantes receberem um sinal sem criptografia das outras estações. Obstruções como paredes podem enfraquecer grandemente o sinal. Quanto menor a força do sinal, mais lenta fica a transmissão. Durante a operação, verifique a intensidade do sinal com o utilitário <command>iwconfig</command> na linha de comando (campo <literal>Qualidade do Link</literal>) ou com os applets do NetworkManager fornecidos pelo KDE ou GNOME. Se tiver problemas com a qualidade do sinal, tente configurar os dispositivos em outro lugar ou ajuste a posição das antenas do seu ponto de acesso. Antenas auxiliares que melhoram substancialmente a recepção estão disponíveis para várias placas PCMCIA WLAN. A taxa especificada pelo fabricante, como 54 MBit/s, é um valor nominal que representa o máximo teórico. Na prática, o throughput máximo de dados não passa da metade desse valor.
+   </para>
+   <para>
+    O comando <command>iwspy</command> exibe as estatísticas da WLAN:
+   </para>
+<screen>iwspy wlan0
+wlan0      Statistics collected:
+    00:AA:BB:CC:DD:EE : Quality:0  Signal level:0  Noise level:0
+    Link/Cell/AP      : Quality:60/94  Signal level:-50 dBm   Noise level:-140 dBm (updated)
+    Typical/Reference : Quality:26/94  Signal level:-60 dBm   Noise level:-90 dBm</screen>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.tant.sec">
+   <title>Segurança</title>
+   <para>
+    Se você desejar configurar uma rede sem fio, lembre-se de que qualquer pessoa dentro da faixa de transmissão poderá acessá-la facilmente se não forem implementadas medidas de segurança. Portanto, certifique-se de ativar o método de criptografia. Todas as placas WLAN e pontos de acesso suportam a criptografia WEP. Embora não seja completamente segura, ela representa um obstáculo para um invasor em potencial. 
+   </para>
+   <para>
+    Para uso particular, use WPA-PSK, se disponível. Embora o Linux suporte WPA na maioria dos componentes de hardware, alguns drivers não oferecem suporte a WPA. É possível também que ele não esteja disponível em pontos de acesso e roteadores mais antigos com a funcionalidade WLAN. Para esses dispositivos, verifique se o WPA pode ser implementado por meio de uma atualização de firmware. Se o WPA não estiver disponível, é melhor utilizar a criptografia WEP do que nenhum tipo de criptografia. Em empresas com requisitos de segurança avançados, as redes sem fio devem ser operadas somente com WPA.
+   </para>
+   <para>
+    Use senhas avançadas para o seu método de autenticação. Por exemplo, a página na Web <ulink url="https://www.grc.com/passwords.htm"/> gera senhas aleatórias de 64 caracteres.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.probs">
+  <title>Solução de problemas</title>
+
+  
+
+  <para>
+   Se a sua placa WLAN não responder, verifique os seguintes pré-requisitos:
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     Você sabe o nome do dispositivo da placa WLAN? Geralmente é <systemitem>wlan0</systemitem>. Verifique com a ferramenta <command>ifconfig</command>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Você verificou o firmware necessário? Consulte <filename>/usr/share/doc/packages/wireless-tools/README.firmware</filename> para obter mais informações.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     O ESSID do seu roteador é transmitido e está visível (não está oculto)?
+    </para>
+   </listitem>
+  </orderedlist>
+
+  <sect2 id="sec.wireless.wlan.probs.iwconfi">
+   <title>Verificar o status da rede</title>
+   <para>
+    O comando <command>iwconfig</command> pode fornecer informações importantes sobre a sua conexão wireless. Por exemplo, a linha a seguir exibe o ESSID, o modo wireless, a frequência, se o sinal está criptografado, a qualidade do link e muito mais:
+   </para>
+<screen><command>iwconfig</command> wlan0
+wlan0  IEEE 802.11abg  ESSID:"guest"
+       Mode:Managed   Frequency:5.22GHz  Access Point: 00:11:22:33:44:55
+       Bit Rate:54 Mb/s   Tx-Power=13 dBm
+       Retry min limit:7   RTS thr:off   Fragment thr:off
+       Encryption key:off
+       Power Management:off
+       Link Quality:62/92   Signal level:-48 dBm  Noise level:-127 dBm
+       Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+       Tx excessive retries:10  Invalid misc:0   Missed beacon:0</screen>
+   <para>
+    Você também pode obter as informações anteriores com o comando <command>iwlist</command>. Por exemplo, a linha a seguir exibe a taxa de bits atual:
+   </para>
+<screen><command>iwlist</command> wlan0 rate
+wlan0    unknown bit-rate information.
+         Current Bit Rate=54 Mb/s</screen>
+   <para>
+    Se desejar uma visão geral de quantos pontos de acesso estão disponíveis, use o comando <command>iwlist</command>. Ele mostra uma lista das <quote>células</quote> com a seguinte aparência:
+   </para>
+<screen><command>iwlist</command> wlan0 scanning
+wlan0   Scan completed:
+   Cell 01 - Address: 00:11:22:33:44:55
+             Channel:40
+             Frequency:5.2 GHz (Channel 40)
+             Quality=67/70  Signal level=-43 dBm
+             Encryption key: off
+             ESSID:"Guest"
+             Bit Rates: 6 Mb/s; 9 Mb/s; 12 Mb/s; 18 Mb/s;
+                        24 Mb/s; 36 Mb/s; 48 Mb/s
+             Mode: Master
+             Extra:tsf=0000111122223333
+             Extra: Last beacon: 179ms ago
+             IE: Unknown: ...</screen>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.probs.multi">
+   <title>Vários dispositivos de rede</title>
+   <para>
+    Laptops modernos geralmente têm uma placa de rede e uma placa WLAN. Se você configurar ambos os dispositivos com DHCP (atribuição de endereço automática), poderá encontrar problemas com a resolução de nome e o gateway padrão. Isso fica evidente quando você pode efetuar ping no roteador, mas não pode navegar na Internet. O Banco de Dados de Suporte no endereço <ulink url="http://old-en.opensuse.org/SDB:Name_Resolution_Does_Not_Work_with_Several_Concurrent_DHCP_Clients"/> apresenta um artigo sobre o assunto.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.probs.prism">
+   <title>Problemas com placas Prism2</title>
+   <para>
+    Vários drivers estão disponíveis para dispositivos com chips <phrase role="productname">Prism2. </phrase> As várias placas funcionam mais ou menos adequadamente com os vários drivers. Com essas placas, a criptografia WPA somente pode ser usada com o driver hostap. Se tal placa não funcionar adequadamente ou não funcionar ou se você desejar usar a criptografia WPA, leia <filename>/usr/share/doc/packages/wireless-tools/README.prism2</filename>.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.info">
+  <title>Para obter mais informações</title>
+
+  <para>
+   Mais informações encontram-se nas seguintes páginas:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><ulink url="http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Wireless.html"/>
+    </term>
+    <listitem>
+     <para>
+      As páginas da Internet de Jean Tourrilhes, que desenvolveu as <emphasis>Ferramentas Sem Fio</emphasis> para o Linux, apresentam uma grande variedade de informações sobre dispositivos sem fio. 
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://tuxmobil.org"/>
+    </term>
+    <listitem>
+     <para>
+      Informações práticas úteis sobre computadores móveis com Linux.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://www.linux-on-laptops.com"/>
+    </term>
+    <listitem>
+     <para>
+      Mais informações sobre Linux em laptops.
+     </para>
+    </listitem>
+   </varlistentry>
+   
+   
+  </variablelist>
+ </sect1>
+</chapter>

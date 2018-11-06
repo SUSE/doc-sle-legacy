@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="adm_support.xml" id="cha.adm.support">
+ <title>Reunindo informações do sistema para suporte</title>
+<indexterm> <primary>suporte</primary> </indexterm> <indexterm> <primary>informações do sistema</primary> </indexterm>
+ <abstract>
+  
+  <para>
+   Em caso de problemas, é possível criar um relatório detalhado do sistema com a ferramenta de linha de comando <command>supportconfig</command> ou o módulo de <guimenu>Suporte</guimenu> do YaST. Os dois coletam informações sobre o sistema, como a versão atual do kernel, o hardware, os pacotes instalados, a configuração da partição, etc. O resultado é um armazenamento de arquivos TAR. Após abrir uma Solicitação de Serviço (SS), você poderá fazer upload do armazenamento TAR para o Suporte Técnico Global. Ele ajuda a localizar o problema que você relatou e a orientá-lo para uma solução.
+  </para>
+  <para>A ferramenta de linha de comando está incluída no pacote <systemitem>supportutils</systemitem>, que é instalado por padrão. O módulo de <guimenu>Suporte</guimenu> do YaST é baseado na ferramenta de linha de comando.
+  </para>
+ </abstract>
+ 
+  <sect1 id="sec.admsupport.supportconfig">
+  <title>Coletando informações do sistema com o supportconfig</title>
+
+  <para>
+   Para criar um armazenamento TAR com informações detalhadas do sistema que você possa enviar ao Suporte Técnico Global, use a ferramenta de linha de comando <command>supportconfig</command> diretamente ou o módulo de <guimenu>Suporte</guimenu> do YaST. A ferramenta de linha de comando está incluída no pacote <systemitem>supportutils</systemitem>, que é instalado por padrão. O módulo de <guimenu>Suporte</guimenu> do YaST também é baseado na ferramenta de linha de comando.
+  </para>
+
+  <sect2 id="sec.admsupport.supportconfig.sr">
+   <title>Criando um número de solicitação de serviço</title>
+   <para>
+    É possível gerar armazenamentos do supportconfig a qualquer momento. No entanto, para enviar os dados do supportconfig ao Suporte Técnico Global, é necessário gerar primeiro um número de solicitação de serviço. Você precisa dele para fazer upload do armazenamento para o suporte.
+   </para>
+   <para>
+    Para criar uma solicitação de serviço, acesse <ulink url="http://www.novell.com/center/eservice"/> e siga as instruções na tela. Anote o seu número de solicitação de serviço de 11 dígitos.
+   </para>
+   <note>
+    <title>Declaração de Privacidade</title>
+    <para>
+     A SUSE e a Novell tratam os relatórios do sistema como dados confidenciais. Para ver detalhes do nosso compromisso de privacidade, acesse <ulink url="http://www.novell.com/company/legal/privacy/"/>.
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.admsupport.supportconfig.upload">
+   <title>Destinos de upload</title>
+   <para>
+    Após criar um número de solicitação de serviço, você poderá fazer upload dos armazenamentos supportconfig para o Suporte Técnico Global, conforme descrito no <xref linkend="pro.admsupport.submit.yast"/> ou no <xref linkend="pro.admsupport.submit.cli"/>. Use um dos seguintes destinos de upload:
+   </para>
+
+
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Clientes nos EUA: <ulink url="ftp://ftp.novell.com/incoming"/>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      EMEA, Europa, Oriente Médio e África: <ulink url="ftp://support-ftp.suse.com/in"/>
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Você também pode anexar o armazenamento TAR manualmente à sua solicitação de serviço usando o URL da solicitação de serviço: <ulink url="http://www.novell.com/center/eservice"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.admsupport.yast">
+   <title>Criando um armazenamento supportconfig com o YaST</title>
+   <para>
+    Para usar o YaST para coletar informações do sistema, faça o seguinte:
+    
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Inicie o YaST e abra o módulo de <guimenu>Suporte</guimenu>.
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2-support-main.png" width="70%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2-support-main.png" width="60%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Criar relatório em arquivo tarball</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na janela seguinte, selecione uma das opções de supportconfig na lista de botões de opção. Por padrão, a opção <guimenu>Usar Configurações (Técnicas) Personalizadas</guimenu> está pré-selecionada. Para testar primeiro a função de relatório, use <guimenu>Reunir apenas uma quantidade mínima de informações</guimenu>. Para obter algumas informações básicas sobre outras opções, consulte a página de manual de <command>supportconfig</command>.
+     </para>
+     <para>
+      Continue com <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step id="step.supportconfig.contact" performance="required">
+     <para>
+      Digite suas informações de contato. Elas são gravadas em um arquivo chamado <filename>basic-environment.txt</filename> e incluídas no armazenamento que será criado.
+     </para>
+    </step>
+    <step id="step.supportconfig.upload.target" performance="required">
+     <para>
+      Para submeter o armazenamento ao Suporte Técnico Global no fim do processo de coleta de informações, a opção <guimenu>Informações de Upload</guimenu> é obrigatória. O YaST propõe um servidor de upload automaticamente. Para modificá-lo, consulte a <xref linkend="sec.admsupport.supportconfig.upload"/> para saber os detalhes de quais servidores de upload estão disponíveis.
+     </para>
+     <para>
+      Para submeter o armazenamento mais tarde, deixe a opção <guimenu>Informações de Upload</guimenu> vazia por enquanto.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Continue com <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      A coleta de informações é iniciada.
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2-support-conf.png" width="90%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2-support-conf.png" width="80%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+     <para>
+      Quando o processo for concluído, continue com <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Revise a coleta de dados: Selecione o <guimenu>Nome do Arquivo</guimenu> de um registro para ver seu conteúdo no YaST. Para remover arquivos do armazenamento TAR antes de submetê-lo ao suporte, use <guimenu>Remover dos Dados</guimenu>. Continue com <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Grave o armazenamento TAR. Se você iniciar o módulo do YaST como usuário <systemitem class="username">root</systemitem>, por padrão, o YaST vai propor gravar o armazenamento em <filename>/var/log</filename> (ou em seu diretório pessoal). O formato do nome de arquivo é <filename>nts_<replaceable>HOST</replaceable>_<replaceable>DATA</replaceable>_<replaceable>HORÁRIO</replaceable>.tbz</filename>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para fazer upload do armazenamento diretamente para o suporte, verifique se a opção <guimenu>Fazer upload do tarball com arquivos de registro para o URL</guimenu> está ativada. O <guimenu>Destino do Upload</guimenu> mostrado aqui é aquele proposto pelo YaST no <xref linkend="step.supportconfig.upload.target"/>. Para modificar o destino do upload, encontre as informações detalhadas sobre quais servidores de upload estão disponíveis na <xref linkend="sec.admsupport.supportconfig.upload"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para ignorar o upload, desative a opção <guimenu>Fazer upload do tarball com arquivos de registro para o URL</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Confirme as mudanças para fechar o módulo do YaST.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.admsupport.cli">
+   <title>Criando um armazenamento supportconfig da linha de comando</title>
+   <para>
+    O seguinte procedimento mostra como criar um armazenamento supportconfig, mas sem o submeter diretamente ao suporte. Para fazer seu upload, é necessário executar o comando com algumas opções, conforme descrito no <xref linkend="pro.admsupport.submit.cli"/>.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Abra um shell e torne-se <systemitem class="username">root</systemitem>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Execute <command>supportconfig</command> sem nenhuma opção. Isso reúne as informações padrão do sistema.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Aguarde a ferramenta concluir a operação.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      O local padrão do armazenamento é <filename>/var/log</filename>, com o formato de nome de arquivo <filename>nts_<replaceable>HOST</replaceable>_<replaceable>DATA</replaceable>_<replaceable>HORÁRIO</replaceable>.tbz</filename>
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.admsupport.options">
+   <title>Opções comuns do supportconfig</title>
+   <para>
+    O utilitário <command>supportconfig</command> é geralmente chamado sem nenhuma opção. Exiba uma lista de todas as opções com <command>supportconfig</command> <option>-h</option> ou consulte a página de manual. A seguinte lista apresenta uma breve visão geral de alguns casos de uso comuns:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>Reduzindo o tamanho das informações coletadas</term>
+     <listitem>
+      <para>
+       Usar a opção mínima (<option>-m</option>):
+      </para>
+<screen>supportconfig -m</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Limitando as informações a determinado tópico</term>
+     <listitem>
+      <para>
+       Se você já localizou um problema com a saída padrão do <command>supportconfig</command> e descobriu que ele está relacionado apenas a determinada área ou conjunto de recursos, convém limitar as informações coletadas à área específica na próxima execução do <command>supportconfig</command>. Por exemplo, se você detectar problemas com o LVM e quiser testar uma recente mudança feita na configuração do LVM, convém coletar o mínimo de informações do supportconfig apenas sobre o LVM:
+      </para>
+<screen>supportconfig -i LVM</screen>
+      <para>
+       Para ver a lista completa de palavras-chave de recursos que você pode usar para limitar as informações coletadas a determinada área, execute
+      </para>
+<screen>supportconfig -F</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Incluindo informações de contato adicionais na saída</term>
+     <listitem>
+<screen>supportconfig -E tux@example.org -N "Tux Penguin" -O "Penguin Inc." ...</screen>
+      <para>
+       (tudo em uma linha)
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Coletando arquivos de registro já rotacionados</term>
+     <listitem>
+<screen>supportconfig -l</screen>
+      <para>
+       Isso é útil principalmente em ambientes de alto registro ou após uma falha do kernel quando o syslog gira os arquivos de registro após uma reinicialização.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.admsupport.submit">
+  <title>Submetendo informações ao suporte técnico global</title>
+
+  <para>
+   Use o módulo de <guimenu>Suporte</guimenu> do YaST ou o utilitário de linha de comando <command>supportconfig</command> para submeter as informações do sistema ao Suporte Técnico Global. Se você tiver um problema com o servidor e quiser a ajuda do suporte, precisará abrir primeiro uma solicitação de serviço. Para obter os detalhes, consulte a <xref linkend="sec.admsupport.supportconfig.sr"/>.
+  </para>
+
+  <para>
+   Os seguintes exemplos usam <replaceable>12345678901</replaceable> como marcador para o número da sua solicitação de serviço. Substitua <replaceable>12345678901</replaceable> pelo número da solicitação de serviço que você criou na <xref linkend="sec.admsupport.supportconfig.sr"/>.
+  </para>
+
+  <procedure id="pro.admsupport.submit.yast">
+   <title>Submetendo informações ao suporte com o YaST</title>
+   <para>
+    O seguinte procedimento considera que você já tenha criado um armazenamento supportconfig, mas ainda não tenha feito upload dele. Verifique se você incluiu suas informações de contato no armazenamento, conforme descrito na <xref linkend="sec.admsupport.yast"/>, <xref linkend="step.supportconfig.contact" xrefstyle="select:label nopage"/>. Para ver instruções de como gerar e submeter de uma só vez um armazenamento supportconfig, consulte a <xref linkend="sec.admsupport.yast"/>.
+   </para>
+   <step performance="required">
+    <para>
+     Inicie o YaST e abra o módulo de <guimenu>Suporte</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Clique em <guimenu>Fazer Upload</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Em <guimenu>Pacote com arquivos de registro</guimenu>, especifique o caminho para o armazenamento supportconfig existente ou use <guimenu>Pesquisar</guimenu>.
+    </para>
+   </step>
+   <step id="step.supportcfg.submit.upltarget" performance="required">
+    <para>
+     O YaST propõe um servidor de upload automaticamente. Para modificá-lo, consulte a <xref linkend="sec.admsupport.supportconfig.upload"/> para saber os detalhes de quais servidores de upload estão disponíveis.
+    </para>
+    <informalfigure>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata fileref="yast2-support-conf-upload.png" width="70%" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata fileref="yast2-support-conf-upload.png" width="60%" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </informalfigure>
+    <para>
+     
+     Continue com <guimenu>Avançar</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Clique em <guimenu>Concluir</guimenu>.
+    </para>
+   </step>
+  </procedure>
+
+  <procedure id="pro.admsupport.submit.cli">
+   <title>Submetendo informações ao suporte por linha de comando</title>
+   <para>
+    O seguinte procedimento considera que você já tenha criado um armazenamento supportconfig, mas ainda não tenha feito upload dele. Para ver instruções de como gerar e submeter de uma só vez um armazenamento supportconfig, consulte a <xref linkend="sec.admsupport.yast"/>.
+   </para>
+   <step performance="required">
+    <para>
+     Servidores com conectividade à Internet:
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       Para usar o destino de upload padrão, execute:
+      </para>
+<screen>supportconfig -ur <replaceable>12345678901</replaceable></screen>
+     </step>
+     <step performance="required">
+      <para>
+       Para o destino de upload seguro, use o seguinte:
+      </para>
+
+<screen>supportconfig -ar <replaceable>12345678901</replaceable></screen>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     Servidores <emphasis>sem</emphasis> conectividade à Internet
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       Execute o seguinte:
+      </para>
+<screen>supportconfig -r <replaceable>12345678901</replaceable></screen>
+     </step>
+     <step performance="required">
+      <para>
+       Faça upload do armazenamento <filename>/var/log/nts_<replaceable>SR12345678901</replaceable>*tbz</filename> manualmente para um de nossos servidores FTP. O servidor que deverá ser usado depende da sua localização global. Para uma visão geral, consulte a <xref linkend="sec.admsupport.supportconfig.upload"/>.
+      </para>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     Depois que o armazenamento TAR estiver no diretório de entrada do nosso servidor FTP, ele será automaticamente anexado à sua solicitação de serviço.
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+
+ <sect1 id="sec.admsupport.kernel">
+  <title>Suporte aos módulos do Kernel</title>
+  
+  <para>
+   Um requisito importante para todo sistema operacional empresarial é o nível de suporte que você recebe do ambiente. Os módulos do Kernel são o conector mais relevante entre o hardware (<quote>controladoras</quote>) e o sistema operacional. Cada módulo do Kernel no SUSE Linux Enterprise possui um flag <literal>supported</literal> (suportado) que pode ter três valores:
+  </para>
+  
+  <itemizedlist mark="bullet" spacing="normal">
+   
+   <listitem>
+    <para>
+     <quote>yes</quote> (sim), portanto, <literal>supported</literal>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <quote>external</quote> (externo), portanto, <literal>supported</literal>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <quote/> (vazio, não definido), portanto <literal>unsupported</literal> (não suportado)
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <para>
+   As seguintes regras são válidas:
+  </para>
+  
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Por padrão, todos os módulos de um Kernel autorrecompilado são marcados como não suportados.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Os módulos do Kernel suportados pelos parceiros do SUSE e distribuídos pelo <literal>SUSE SolidDriver Program</literal> são marcados como <quote>externos</quote>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Se o flag <literal>supported</literal> não estiver definido, o carregamento do módulo contaminará o Kernel. Kernels contaminados não são suportados. Os módulos do Kernel não suportados são incluídos em um pacote RPM adicional (<systemitem>kernel-<replaceable>TIPO</replaceable>-extra</systemitem>) e não são carregados por padrão (<replaceable>TIPO</replaceable>=<literal>default</literal>|<literal>xen</literal>|...). Esses módulos não suportados também não estão disponíveis no instalador, e o pacote <systemitem class="resource">kernel-<replaceable>TIPO</replaceable>-extra</systemitem> não faz parte da mídia do SUSE Linux Enterprise.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Os módulos do Kernel não incluídos em uma licença compatível com a licença do Kernel do Linux também contaminarão o Kernel. Para obter detalhes, consulte <filename>/usr/src/linux/Documentation/sysctl/kernel.txt</filename> e o estado de <filename>/proc/sys/kernel/tainted</filename>.
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <sect2 id="sec.admsupport.kernel.background">
+   <title>Informações técnicas</title>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Kernel do Linux: O valor de <filename>/proc/sys/kernel/unsupported</filename> usa o padrão <literal>2</literal> no SUSE Linux Enterprise <phrase role="productname"><phrase os="sles;sled;slerte">11 SP4</phrase></phrase> (<literal>do not warn in syslog when loading unsupported modules</literal>). Esse padrão é usado no instalador e no sistema instalado. Consulte <filename>/usr/src/linux/Documentation/sysctl/kernel.txt</filename> para obter mais informações.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <command>modprobe</command>: O utilitário <command>modprobe</command> de verificação de dependências de módulos e carregamento dos módulos apropriados confirma se o valor do flag é <literal>supported</literal> (suportado). Se o valor for <quote>sim</quote> ou <quote>externo</quote>, o módulo será carregado, do contrário, não. Para obter informações sobre como anular este comportamento, consulte a <xref linkend="sec.admsupport.kernel.unsupported"/>.
+     </para>
+     <note>
+      <para>
+       Em geral, o SUSE não suporta a remoção de módulos de armazenamento por <command>modprobe -r</command>.
+      </para>
+     </note>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+  
+  <sect2 id="sec.admsupport.kernel.unsupported">
+   <title>Trabalhando com módulos não suportados</title>
+   <para>
+    Embora a capacidade de suporte geral seja importante, algumas situações podem exigir o carregamento de um módulo não suportado (por exemplo, para fins de teste ou depuração, ou se o fornecedor de hardware disponibilizar um hotfix).
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Para anular o padrão, edite <filename>/etc/modprobe.d/unsupported-modules.conf</filename> e mude o valor da variável
+      <varname>allow_unsupported_modules</varname> para <literal>1</literal>. Se for necessário um módulo não suportado no initrd, lembre-se de executar <command>mkinitrd</command> para atualizar o initrd.
+     </para>
+     <para>
+      Para apenas tentar carregar um módulo uma vez, é possível usar a opção <option>--allow-unsupported-modules</option> com <command>modprobe</command>. Para obter mais informações, consulte a página de manual de <command>modprobe</command>.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Durante a instalação, módulos não suportados podem ser adicionados por meio de discos de atualização de driver, e eles serão carregados. Para impor o carregamento de módulos não suportados durante a inicialização e posteriormente, use a opção de linha de comando do Kernel <option>oem-modules</option>. Durante a instalação e inicialização do pacote <systemitem class="resource">module-init-tools</systemitem>, o flag do Kernel <literal>TAINT_NO_SUPPORT</literal> (<filename>/proc/sys/kernel/tainted</filename>) será avaliado. Se o Kernel já foi contaminado, <literal>allow_unsupported_modules</literal> será habilitado. Isso impede que módulos não suportados acessem o sistema que está sendo instalado. Se não houver nenhum módulo não suportado durante a instalação e não for usada a outra opção de linha de comando especial do Kernel (<option>oem-modules=1</option>), o padrão ainda será de não permitir módulos não suportados.
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Lembre-se de que carregar e executar módulos não suportados tornam o Kernel e todo o sistema não suportados pelo SUSE.
+   </para>
+  </sect2>
+ </sect1>
+ 
+
+ <sect1 id="sec.admsupport.moreinfo">
+  <title>Para obter mais informações</title>
+
+  <para>
+   Obtenha mais informações sobre a coleta de informações do sistema nos seguintes documentos:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <command>man supportconfig</command>: A página de manual de <command>supportconfig</command>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <command>man supportconfig.conf</command>: A página de manual do arquivo de configuração supportconfig.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.suse.com/communities/conversations/basic-server-health-check-supportconfig/"/>: Uma verificação da saúde básica do servidor com o supportconfig.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="https://www.novell.com/communities/coolsolutions/cool_tools/create-your-own-supportconfig-plugin/"/>: Criar seu próprio plug-in Supportconfig.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://www.suse.com/communities/conversations/creating-a-central-supportconfig-repository/"/>: Criar um repositório central do Supportconfig.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>

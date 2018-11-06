@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_fonts.xml" id="sec.x11.fontconfig">
+ <title>Instalando e configurando fontes</title><indexterm> <primary>X</primary> <secondary>Fontes TrueType</secondary> </indexterm> <indexterm> <primary>fontes</primary> <secondary>TrueType</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>fontes</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xft</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>conjuntos de caracteres</secondary> </indexterm>
+
+ <para>
+  A instalação de fontes adicionais no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> é muito fácil. Simplesmente copie as fontes para qualquer diretório localizado no caminho da fonte X11 (consulte a <xref linkend="sec.x11.fontconfig.fontsys.x11core"/>). Para habilitar o uso das fontes, o diretório de instalação deve ser um subdiretório dos diretórios configurados em <filename>/etc/fonts/fonts.conf</filename> (consulte a <xref linkend="sec.x11.fontconfig.fontsys.xft"/>) ou inclusos neste arquivo com <filename>/etc/fonts/suse-font-dirs.conf</filename>.
+ </para>
+
+ <para>
+  O arquivo a seguir é um exemplo de <filename>/etc/fonts/fonts.conf</filename>. Esse é o arquivo de configuração padrão que deve ser apropriado para a maioria das configurações. Define também o diretório incluso <filename>/etc/fonts/conf.d</filename>. Nesse diretório, todos os arquivos ou links simbólicos que começam com um número de dois dígitos são carregados pelo fontconfig. Para obter uma explicação mais detalhada dessa funcionalidade, consulte <filename>/etc/fonts/conf.d/README</filename>.
+ </para>
+
+<screen>&lt;!-- Font directory list --&gt;
+&lt;dir&gt;/usr/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/X11R6/lib/X11/fonts&lt;/dir&gt; 
+&lt;dir&gt;/opt/kde3/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+&lt;dir&gt;~/.fonts&lt;/dir&gt;
+</screen>
+
+ <para>
+  <filename>/etc/fonts/suse-font-dirs.conf</filename> é gerado automaticamente para extrair fontes que acompanham aplicativos (em sua maioria, de terceiros) como LibreOffice, Java ou Adobe Reader. Uma entrada típica seria semelhante ao seguinte:
+ </para>
+
+<screen>&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font&lt;/dir&gt;
+&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font/PFM&lt;/dir&gt;
+ </screen>
+
+ <para>
+  Para instalar outras fontes em todo o sistema, copie manualmente os arquivos de fontes para o diretório adequado (como <systemitem class="username">root</systemitem>); por exemplo, <filename>/usr/share/fonts/truetype</filename>. Alternativamente, a tarefa pode ser realizada com o instalador de fontes do KDE no Centro de Controle do KDE. O resultado é o mesmo.
+ </para>
+
+ <para>
+  Em vez de copiar as fontes reais, você também pode criar links simbólicos. Por exemplo, é recomendável fazer isso se você tiver fontes licenciadas em uma partição do Windows montada e desejar usá-las. Em seguida, execute <command>SuSEconfig <option>--module fonts</option> </command>.
+ </para>
+
+ <para>
+  <command>SuSEconfig <option>--module fonts</option></command> executa o script <filename>/usr/sbin/fonts-config</filename>, que lida com a configuração das fontes. Para obter mais informações sobre esse script, consulte sua página de manual (<command>man <option>fonts-config</option> </command>).
+ </para><indexterm> <primary>comandos</primary><secondary>fontes-configuração</secondary> </indexterm>
+
+ <para>
+  O procedimento é o mesmo para fontes de bitmap, fontes TrueType e OpenType, e fontes Type1 (PostScript). Todos esses tipos de fonte podem ser instalados em qualquer diretório. <indexterm> <primary>X</primary><secondary>sistemas de fontes</secondary> </indexterm> <indexterm> <primary>fontes</primary> </indexterm>
+ </para>
+
+ <para>
+  O X.Org contém dois sistemas de fontes completamente diferentes: o antigo <guimenu>sistema de fontes centrais X11</guimenu> e o recém-criado sistema <guimenu>Xft e fontconfig</guimenu>. As seções a seguir descrevem brevemente esses dois sistemas.
+ </para>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.x11core">
+  <title>Fontes centrais X11</title><indexterm> <primary>X</primary><secondary>fontes centrais X11</secondary> </indexterm> <indexterm> <primary>fontes</primary> <secondary>centrais X11</secondary> </indexterm>
+  <para>
+   Atualmente, o sistema de fontes centrais X11 suporta não apenas fontes de bitmap, mas também fontes escaláveis, como fontes Type1, TrueType e OpenType. Fontes escaláveis só são suportadas sem suavização e renderização de subpixel, e o carregamento de fontes escaláveis grandes com glifos para muitos idiomas pode levar bastante tempo. As fontes Unicode também são suportadas, mas seu uso pode ser lento e exigir mais memória.
+  </para>
+  <para>
+   O sistema de fontes centrais X11 tem algumas fraquezas inerentes. Ele está desatualizado e não pode mais ser estendido de forma significativa. Embora ele possa ser mantido por motivos de compatibilidade retroativa, o sistema Xft e fontconfig mais moderno deve ser usado se for possível.
+  </para>
+  <para>
+   Para sua operação, o servidor X precisa saber quais fontes estão disponíveis e onde ele pode encontrá-las no sistema. Isso é tratado por uma variável <literal>FontPath</literal>, que contém o caminho para todos os diretórios de fontes de sistemas válidos. Em cada um desses diretórios, um arquivo chamado <filename>fonts.dir</filename> lista as fontes disponíveis nesse diretório. O <literal>FontPath</literal> é gerado pelo servidor X na inicialização. Ele procura um arquivo <filename>fonts.dir</filename> válido em cada uma das entradas <literal>FontPath</literal> no arquivo de configuração <filename>/etc/X11/xorg.conf</filename>. Essas entradas são encontradas na seção <literal>Files</literal>. Exiba o <literal>FontPath</literal> real com <command>xset</command> <option>q</option>. Esse caminho também pode ser modificado no tempo de execução com <command>xset</command>. Para adicionar outro caminho, use <command>xset</command> <option>+fp &lt;caminho&gt;</option>. Para remover um caminho indesejado, use <command>xset</command> <option>-fp &lt;caminho&gt;</option>. 
+  </para>
+  <para>
+   Se o servidor X já estiver ativo, fontes recém-instaladas em diretórios montados poderão ser disponibilizadas com o comando <command>xset</command><option>fp rehash</option>. Esse comando é executado por <command>SuSEconfig</command> <option>--module fonts</option>. Como o comando <command>xset</command> precisa de acesso ao servidor X em execução, isso funciona apenas se <command>SuSEconfig</command> <option>--module fonts</option> for iniciado de um shell com acesso ao servidor X em execução. A maneira mais fácil de conseguir isso é adquirir permissões de <systemitem class="username">root</systemitem> digitando <command>su</command> e a senha de <systemitem class="username">root</systemitem>. <command>su</command> transfere as permissões de acesso do usuário que iniciou o servidor X para o shell do <systemitem class="username">root</systemitem>. Para verificar se as fontes foram instaladas corretamente e estão disponíveis por meio do sistema de fontes centrais X11, use o comando <command>xlsfonts</command> para listar todas as fontes disponíveis.
+  </para>
+  <para>
+   Por padrão, o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> usa idiomas UTF-8. Dessa forma, fontes Unicode devem ser preferidas (nomes de fontes terminados com <literal>iso10646-1</literal> na saída <command>xlsfonts</command>). Todas as fontes Unicode disponíveis podem ser relacionadas com <command>xlsfonts</command> <option>| grep iso10646-1</option>. Praticamente todas as fontes Unicode disponíveis no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> contêm pelo menos os glifos necessários para idiomas europeus (antes codificados como <literal>iso-8859-*</literal>).
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.xft">
+  <title>Xft</title><indexterm> <primary>X</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>fontes</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Xft</primary> </indexterm>
+  <para>
+   Desde o início, os programadores do Xft verificaram se as fontes escaláveis com suavização eram bem suportadas. Se o Xft for usado, as fontes serão exibidas pelo aplicativo usando as fontes, não pelo servidor X como no sistema de fontes central X11. Dessa forma, o respectivo aplicativo tem acesso aos arquivos de fontes reais e controle total sobre como os glifos são exibidos. Isso constitui a base para a exibição correta do texto em vários idiomas. Acesso direto aos arquivos de fontes é bastante útil para embutir fontes para impressão para garantir que a impressão tenha a mesma aparência da saída da tela.
+  </para>
+  <para>
+   No <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>, os dois ambientes de área de trabalho (KDE e GNOME), o Mozilla e vários outros aplicativos já usam o Xft por padrão. O Xft já é usado por mais aplicativos do que o sistema de fontes central X11 antigo.
+  </para>
+  <para>
+   O Xft usa a biblioteca fontconfig para localizar fontes e influenciar a maneira como elas são exibidas. As propriedades do fontconfig são controladas pelo arquivo de configuração global <filename>/etc/fonts/fonts.conf</filename>. Configurações especiais devem ser adicionadas a <filename>/etc/fonts/local.conf</filename> e ao arquivo de configuração específico do usuário <filename>~/.fonts.conf</filename>. Cada um desses arquivos de configuração fontconfig deve iniciar com
+  </para>
+<screen>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+&lt;fontconfig&gt;</screen>
+  <para>
+   e terminar com
+  </para>
+<screen>&lt;/fontconfig&gt;</screen>
+  <para>
+   Para adicionar diretórios para pesquisar fontes, acrescente linhas como as seguintes:
+  </para>
+<screen>&lt;dir&gt;/usr/local/share/fonts/&lt;/dir&gt;</screen>
+  <para>
+   Porém, isso geralmente não é necessário. Por padrão, o diretório específico do usuário <filename>~/.fonts</filename> já está inserido em <filename>/etc/fonts/fonts.conf</filename>. Da mesma maneira, tudo o que você precisa fazer para instalar fontes adicionais é copiá-las para <filename>~/.fonts</filename>.
+  </para>
+  <para>
+   Você também pode inserir regras que influenciam a aparência das fontes. Por exemplo, digite
+  </para>
+<screen>
+&lt;match target="font"&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+  &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   para desabilitar a suavização de todas as fontes ou
+  </para>
+<screen>&lt;match target="font"&gt;
+ &lt;test name="family"&gt;
+  &lt;string&gt;Luxi Mono&lt;/string&gt;
+  &lt;string&gt;Luxi Sans&lt;/string&gt;
+ &lt;/test&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+ &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   para desabilitar a suavização de fontes específicas.
+  </para>
+  <para>
+   Por padrão, a maioria dos aplicativos usa os nomes de fontes <literal>sans-serif</literal> (ou o equivalente <literal>sans</literal>), <literal>serif</literal> ou <literal>monospace</literal>. Essas não são fontes reais, mas somente aliás que são resolvidos para uma fonte adequada, dependendo da configuração de idioma.
+  </para>
+  <para>
+   Usuários podem facilmente adicionar regras para <filename>~/.fonts.conf</filename> a fim de resolver esses aliás para suas fontes favoritas:
+  </para>
+<screen>&lt;alias&gt;
+ &lt;family&gt;sans-serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSans&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSerif&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;monospace&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeMono&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;</screen>
+  <para>
+   Como quase todos os aplicativos usam esses aliás por padrão, isso afeta praticamente todo o sistema. Dessa forma, você pode facilmente usar suas fontes favoritas praticamente em qualquer local, sem precisar modificar as configurações de fontes nos aplicativos individuais.
+  </para>
+  <para>
+   Use o comando <command>fc-list</command> para encontrar as fontes instaladas e disponíveis para uso. Por exemplo, o comando <command>fc-list</command> retorna uma lista de todas as fontes. Para descobrir quais das fontes escaláveis disponíveis (<option>:scalable=true</option>) contêm todos os glifos exigidos para hebraico (<option>:lang=he</option>), os nomes de fontes (<option>family</option>), o estilo (<option>style</option>), o peso (<option>weight</option>) e o nome dos arquivos que contêm as fontes, digite o seguinte comando:
+  </para>
+<screen>fc-list ":lang=he:scalable=true" family style weight</screen>
+  <para>
+   A saída do comando pode ter a seguinte aparência:
+  </para>
+<screen>
+Lucida Sans:style=Demibold:weight=200
+DejaVu Sans:style=Bold Oblique:weight=200
+Lucida Sans Typewriter:style=Bold:weight=200
+DejaVu Sans:style=Oblique:weight=80
+Lucida Sans Typewriter:style=Regular:weight=80
+DejaVu Sans:style=Book:weight=80
+DejaVu Sans:style=Bold:weight=200
+Lucida Sans:style=Regular:weight=80</screen>
+  <para>
+   Parâmetros importantes podem ser consultados com <command>fc-list</command>:
+  </para>
+  <table id="tab.x11.fonts.fclist">
+   <title>Parâmetros de <command>fc-list</command></title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        Parâmetro
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Significado e valores possíveis
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <option>family</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Nome da família da fonte, por exemplo, <literal>FreeSans</literal>.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>foundry</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Nome do fabricante da fonte, por exemplo, <literal>urw</literal>.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>style</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        O estilo da fonte, como <literal>Medium</literal>, <literal>Regular</literal>, <literal>Bold</literal>, <literal>Italic</literal> ou <literal>Heavy</literal>.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>lang</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        O idioma que a fonte suporta, por exemplo, <literal>de</literal> para alemão, <literal>ja</literal> para japonês, <literal>zh-TW</literal> para chinês tradicional ou <literal>zh-CN</literal> para chinês simplificado.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>weight</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        O peso da fonte, como <literal>80</literal> para normal ou <literal>200</literal> para negrito.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>slant</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        A inclinação, geralmente <literal>0</literal> para nenhum e <literal>100</literal> para itálico.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>SETUP.ISS</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        O nome do arquivo que contém a fonte.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>outline</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> para fontes de bordas ou <literal>false</literal> para outras fontes.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>scalable</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> para fontes escaláveis ou <literal>false</literal> para outras fontes.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>bitmap</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> para fontes de bitmap ou <literal>false</literal> para outras fontes.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>pixelsize</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Tamanho de fonte em pixels. Em conexão com a fc-list, essa opção só faz sentido para fontes de bitmap.
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </sect2>
+</sect1>

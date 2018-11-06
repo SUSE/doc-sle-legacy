@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_addon_creator.xml" id="cha.addon_creator">
+ <title>Add-on Creatorを使用したアドオン製品の作成</title>
+ <abstract>
+  <para>
+   アドオンは製品の拡張用に特別に設計されたメディアで、通常はＣＤまたはＤＶＤです。Add-on Creatorは、すべてのSUSE製品で顧客や提携先をサポートし、それらの製品でサードパーティソフトウェアの配布を簡素化する目的で開発されました。
+  </para>
+ </abstract>
+ <sect1 id="sec.addon_creator.creating">
+  <title>イメージの作成</title>
+
+  <para>
+   アドオンCDを作成するには、次の手順に従います。
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     YaSTを起動して<guimenu>Add-On Creator</guimenu>モジュールを開きます。ウィンドウが開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     このモジュールを以前に実行したことがない場合は、<guimenu>Create an Add-On from the Beginning</guimenu>をクリックして起動します。アドオンがすでに作成されている場合は、作成済みのすべてのアドオンがウィンドウに一覧表示されます。<guimenu>追加</guimenu>をクリックして起動します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     アドオンの製品名とバージョン、詳細オプションを入力します。
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       ベースにする必要な製品を選択します。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       追加のアドオンパッケージへのパスを選択します。ベース製品に含まれていない追加のRPMパッケージが必要な場合、これを選択する必要があります(このステップはオプションです)。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       必要な製品パッケージを含むパスを選択します(このステップはオプションです)。
+      </para>
+      
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     製品定義を修正し、ベンダ名を入力します。ほかのキーワードを表示するには、<guimenu>Show Only Required Keywords</guimenu>を無効にします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     パッケージの説明を変更します。新しい言語を挿入し、翻訳された説明を追加するには、<guimenu>言語を追加する</guimenu>を使用します。
+    </para>
+    
+   </step>
+   <step performance="required">
+    <para>
+     新しいパターンを追加します。パターンを使用してRPMパッケージをグループ化できます。<guimenu>新規</guimenu>を使用すると、新しいパターン名を追加し、次のリスト内の個々の属性を変更できます(このステップはオプションです)。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     出力設定を変更します。出力ディレクトリへのパスを入力し、ISO名を変更します(ISO名の変更はオプションです)。また、詳細な機能を変更できます。
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       製品ワークフローをカスタマイズするには、<guimenu>ワークフローの設定</guimenu>でファイルを入力します。
+      </para>
+      
+     </listitem>
+     <listitem>
+      <para>
+       アドオン製品にファイルを追加するには、<guimenu>オプションファイル</guimenu>を使用します。アドオンに関する情報を<filename>info.txt</filename>ファイルに挿入するには、最初の部分を使用できます。ライセンスファイルを使用して、インストール開始前に<guimenu>同意します</guimenu>と<guimenu>同意しません</guimenu>ボタンのあるウィンドウを表示します。READMEセクションでさらにファイルを追加できます。
+      </para>
+      <para>
+       2番目の部分では<filename>COPYRIGHT</filename>ファイルと<filename>COPYING</filename>ファイルをさまざまな言語で保存できます。
+      </para>
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     アドオン製品にGPGキーで署名します。製品にGPGキーで署名しておくと、製品の出自の証明となります。キーがない場合は、キーを作成してからそれぞれのパスフレーズを2回入力します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     概要で製品を確認し、<guimenu>完了</guimenu>をクリックして続行します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>ビルド</guimenu>ボタンをクリックしてプロセスを開始します。<guimenu>完了</guimenu>をクリックしてウィンドウを閉じます。
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.addon_creator.structure">
+  <title>アドオンの構造</title>
+
+  <para>
+   アドオン製品を作成すると、次の概要にファイルとディレクトリの構造が含まれます。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>ARCHIVES.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      すべてのRPMファイルのgzip済みコンテンツが格納されています。これは実際には<command>rpm</command>コマンドのリストで、各RPMファイル用の<option>-qil</option>オプションを含みます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>Changelog</filename>
+    </term>
+    <listitem>
+     <para>
+      RPMファイルのすべての変更が格納されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content</filename>
+    </term>
+    <listitem>
+     <para>
+      お使いのアドオン製品に関する情報が格納されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      GPGからの署名ファイルが格納されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.key</filename>, <filename>gpg-pubkey-<replaceable>NUMBER</replaceable>.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      GPG公開鍵
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>INDEX.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      すべてのRPMファイルのリストが格納され、<command>gzip</command>コマンドが含まれています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>ls-lR.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      ご使用のアドオン製品メディアのファイルとディレクトリすべてのリストが格納されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>media.<replaceable>N</replaceable>/</filename>
+    </term>
+    <listitem>
+     <para>
+      アドオンメディアセットの基本情報を含むファイルが格納されています。ディレクトリには番号が付けられており、<filename>media.1/</filename>は1つ目のアドオンメディアです。他にもメディアがある場合はこれに続く番号が付けられます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>suse/</filename>
+    </term>
+    <listitem>
+     <para>
+      アーキテクチャ固有の情報を格納するサブディレクトリを含みます。例外は、アーキテクチャに依存しないパッケージ用の<filename>noarch/</filename>と、ソースパッケージ用の<filename>src/</filename>です。専有ソフトウェアパッケージは<filename>nosrc/</filename>に格納されています。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.addon_creator.moreinfo">
+  <title>その他の情報</title>
+
+  <para>
+   KIWIポータル(<ulink url="http://en.opensuse.org/Portal:KIWI"/>)のドキュメントで、詳しい情報を参照してください。
+  </para>
+ </sect1>
+</chapter>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_pseries_prep.xml" id="sec.prep.pseries">
+ <title>Preparando a instalação em modelos IBM pSeries</title><indexterm> <primary>preparação</primary> <secondary>pSeries</secondary> </indexterm>
+ <para>
+  Esta seção apresenta as etapas preparatórias para instalação do SUSE® Linux Enterprise Server nos sistemas pSeries. Ela explica a instalação a partir de uma unidade de CD-ROM interna ou de uma fonte de rede.
+ </para>
+ <sect3 id="sec.prep.pseries.features6x0">
+  <title>Recursos especiais do IBM pSeries p630, p655, p670 e p690</title>
+  <para>
+   Os sistemas IBM p630, p655, p670 e p690 oferecem o recurso de particionamento estático do sistema, como no eServer p5/System p5 (descrito na <xref linkend="sec.prep.eserver"/>). Isso permite a operação simultânea de até 16 sistemas operacionais em uma só máquina. Esses sistemas operacionais são instalados em <emphasis>LPARs</emphasis> (logical partitions — partições lógicas). Uma ou várias dessas partições podem incluir um ambiente do SUSE Linux Enterprise Server.
+  </para>
+  <para>
+   Para preparar um LPAR para o SUSE Linux Enterprise Server, primeiro configure o sistema no <emphasis>HMC</emphasis>. Consulte o Redbook <emphasis>IBM eServer pSeries 690 System Handbook</emphasis> (SG24-7040-00) (Manual do Sistema IBM eServer pSeries 690) para obter os detalhes (<ulink url="http://www.redbooks.ibm.com/redbooks/SG247040/"/>).
+  </para>
+  <para>
+   Notas importantes referentes à configuração:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     O número máximo de processadores recomendável para um LPAR do SUSE Linux Enterprise Server é oito, pois o kernel só pode gerenciar oito processadores de forma eficiente.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Para a instalação, selecione <guimenu>SMS</guimenu> como o modo de boot da respectiva partição.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     O terminal <emphasis>HMC</emphasis> usado para a entrada durante a instalação é uma emulação VT320. Esta emulação pode levar a resultados desconhecidos em alguns aplicativos. Se possível, use um XTerm para a comunicação com o LPAR.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect3>
+ <sect3 id="sec.prep.pseries.diskspace">
+  <title>Espaço em disco rígido
+</title>
+  <para>
+   Verifique se há espaço suficiente em disco para instalar o SUSE Linux Enterprise Server. É recomendável usar um disco rígido separado.
+  </para>
+  <para>
+   O SUSE Linux também suporta instalação em Fibre Channel: armazenamento conectado. Antes do início da instalação, o FCHBA (Fiber Channel Host Bus Adapter — Adaptador de Barramento de Host Fiber Channel), o SAN fabric e o sistema de armazenamento devem estar configurados para permitir acesso por meio do FCHBA, através do SAN Fabric, às LUNs (Logical Units — Unidades Lógicas) de destino no sistema de armazenamento.
+  </para>
+  <para>
+   Os dispositivos de armazenamento SAN, se estiverem configurados de forma adequada, estarão listados entre os discos rígidos existentes em seu sistema. A opção <guimenu>Criar Configuração Personalizada de Particionamento</guimenu> abre a caixa de diálogo, conforme descrito na <xref linkend="sec.yast2.i_y2_part_expert"/>.
+  </para>
+
+ </sect3>
+ <sect3 id="sec.prep.pseries.netsource">
+  <title>Configurando a fonte da instalação</title>
+  <para>
+   Se você planeja fazer a instalação por meio de CD-ROM, insira o CD1 na unidade. No modo LPAR, a partição a ser instalada deve ter o CD-ROM em seu perfil de partição. Crie uma fonte de instalação de rede se o SUSE Linux Enterprise Server tiver que ser instalado em várias partições. Desse modo, não será necessário mudar os CDs durante a instalação. Também é possível usar a mesma fonte para a instalação simultânea de vários sistemas. A configuração da fonte da instalação de rede é descrita na <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+  </para>
+ </sect3>
+ <sect3>
+
+  <title>Iniciando a instalação</title>
+  <para>
+   Para iniciar a instalação, reinicialize o sistema. Em seguida, acesse o firmware do sistema pressionando <keycap>F1</keycap> ou <keycap>1</keycap> ao usar o console serial durante a verificação do sistema quando o sistema é reinicializado. Consulte a <xref linkend="fig.ppc.pseries.start.inst.sms"/>.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.sms">
+   <title>Entrando no firmware do sistema</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_sms.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_sms.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+
+
+
+
+  <para>
+   Pressione <keycap>F1</keycap> ou <keycap>1</keycap> durante a verificação dos dispositivos SCSI. Selecione <guimenu>6 Multi-inicialização</guimenu> para acessar a caixa de diálogo <guimenu>Multi-inicialização</guimenu>. Consulte a <xref linkend="fig.ppc.pseries.start.inst.multiboot"/>.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.multiboot">
+   <title>Caixa de diálogo Multi-inicialização</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_multiboot.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_multiboot.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Selecione <literal>3</literal> para definir o dispositivo de instalação. É exibida uma lista de dispositivos disponíveis. Consulte o <xref linkend="fig.ppc.pseries.start.inst.system"/>.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.system">
+   <title>Instalando o sistema operacional</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_system.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_system.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect3>
+
+ <sect3>
+  <title>Inicializando da unidade de CD-ROM</title>
+  <para>
+   Selecione a respectiva unidade de CD-ROM (<literal>3</literal> nesse exemplo). O sistema lê a unidade de CD-ROM e exibe a <emphasis>identstring</emphasis>.
+  </para>
+  
+<screen>
+-&gt;1   SuSE:SLE-11:GA&lt;-
+</screen>
+  <para>
+   Depois que você selecionar <keycap>1</keycap>, o utilitário yaboot será iniciado.
+  </para>
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+</screen>
+  <para>
+   Digite <guimenu>install</guimenu> e pressione <keycap>Enter</keycap>. Se preferir, pressione apenas <keycap>Enter</keycap> para iniciar o instalador, a opção padrão.
+  </para>
+  <para>
+   Para instalar de uma fonte de rede (consulte a <xref linkend="sec.prep.pseries.netsource"/>), anexe <option>manual</option> ao kernel para <command>install</command>. Para uma instalação por VNC, anexe os parâmetros <option>vnc=1</option> e <option>vncpassword=<replaceable>senha</replaceable></option> para <command>install</command>. Leia mais sobre o VNC na <xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>.
+  </para>
+
+  <para>
+   No modo LPAR, a partição a ser instalada deve ter o CD-ROM em seu perfil de partição.
+  </para>
+ </sect3>
+ <sect3>
+  <title>Inicializando da fonte de rede</title>
+  <para>
+   Selecione um dispositivo Ethernet que tenha acesso à fonte de instalação (<literal>6</literal> nesse exemplo).
+  </para>
+ </sect3>
+ <sect3>
+  <title>Etapas adicionais</title>
+  <para>
+   Proceda conforme descrito no <xref linkend="cha.inst"/> para iniciar a instalação do software com o linuxrc e o YaST.
+  </para>
+ </sect3>
+</sect2>

@@ -1,0 +1,965 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="wlan.xml" id="cha.wireless.wlan">
+ <title>无线 LAN</title><indexterm> <primary>WLAN</primary></indexterm><indexterm> <primary>无线 LAN</primary></indexterm>
+ <abstract>
+  <para>
+   无线 LAN（无线局域网，WLAN）是移动计算不可或缺的一部分。当今，大多数笔记本电脑都配有内置 WLAN 卡。 本章介绍如何用 YaST 设置 WLAN 卡，加密传输，以及使用提示和诀窍。<phrase os="osuse;sled">或者您可以使用 NetworkManager 配置和管理 WLAN 访问。有关详细信息，请参见<xref linkend="cha.nm"/>。</phrase>
+  </para>
+ </abstract>
+ <sect1 id="sec.wireless.wlan.standards">
+  <title>WLAN 标准</title>
+
+  <para>
+   WLAN 卡用 IEEE 组织提供的 802.11 标准通讯。最初，此标准实现的最大传送速率是 2 Mbit/s。此后，此标准进行了多次补充以提高数据传送速率。 这些补充定义了调制、传送输出和传送速率等细节（请参见<xref linkend="tab.wireless.std.overview"/>）。此外，许多公司实施了带专有或设计功能的硬件。
+  </para>
+
+  <table id="tab.wireless.std.overview">
+   <title>各种 WLAN 标准的概述</title>
+   <tgroup cols="4">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        名称
+       </para>
+      </entry>
+      <entry>
+       <para>
+        频带 (GHz)
+       </para>
+      </entry>
+      <entry>
+       <para>
+        最大传送速率 (MBit/s)
+       </para>
+      </entry>
+      <entry>
+       <para>
+        记事
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        802.11 旧
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2
+       </para>
+      </entry>
+      <entry>
+       <para>
+        已过时；目前市场上不销售采用此标准的最终设备
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11a
+       </para>
+      </entry>
+      <entry>
+       <para>
+        5
+       </para>
+      </entry>
+      <entry>
+       <para>
+        54
+       </para>
+      </entry>
+      <entry>
+       <para>
+        不易受干扰
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11b
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        11
+       </para>
+      </entry>
+      <entry>
+       <para>
+        较少使用
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11g
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        54
+       </para>
+      </entry>
+      <entry>
+       <para>
+        广泛采用，向后兼容 11b
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11n
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4 和/或 5
+       </para>
+      </entry>
+      <entry>
+       <para>
+        300
+        
+        
+       </para>
+      </entry>
+      <entry>
+       <para>
+        常用
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11ad
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4/5/60
+       </para>
+      </entry>
+      <entry>
+       <para>
+        最多 7000
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2012 年发布，当前较少使用
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> 不支持 802.11 旧式卡。使用 802.11a、802.11b、802.11g 和 802.11n 的大多数卡受支持。新卡通常符合 802.11n 标准，但是使用 802.11g 的卡仍然可用。
+  </para>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.modes">
+  <title>操作方式</title>
+
+  <para>
+   在无线联网中，会使用各种技术和配置来确保连接的快速、高质量和安全。不同的操作类型适合不同的设置。很难选择正确的身份验证方法。各种可用加密方法有各自的优点和缺陷。
+  </para>
+
+  <para>
+   无线网络基本上可以分为三种网络模式：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>通过接入点的受管模式（基础结构模式） </term>
+    <listitem>
+     <para>
+      受管网络具有一个管理元素，即接入点。在这种模式（也称为基础结构模式）中，网络中的 WLAN 站的全部连接都通过接入点运行，接入点也充当以太网的连接点。为了确保只有经过授权的工作站才能连接，使用了多种身份验证机制（WPA 等）。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>专用模式（对等网络）</term>
+    <listitem>
+     <para>
+      特殊网络没有接入点。各站之间直接通讯，因此专用网络通常比受管网络速度更快。但是，在专用网络中，传送范围和参与工作站的数目都受到很大限制。它们也不支持 WPA 身份验证。如果打算使用 WPA 安全性，不应使用专用模式。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>主模式</term>
+    <listitem>
+     <para>
+      在主模式中您的网卡用作接入点。它只在您的 WLAN 卡支持此模式时起作用。 <ulink url="http://linux-wless.passys.nl"/> 上有您的 WLAN 卡的细节。
+      
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.func.auth">
+  <title>身份验证</title>
+
+  <para>
+   与使用缆线连接的网络相比，无线网络中的数据更容易被截获，无线网络更容易受到攻击，所以各标准都包括了身份验证和加密方法。IEEE 802.11 标准最初的版本在术语 WEP（有线等效隐私）下对这些方法进行了描述。但是，WEP 经证明是不安全的（请参见<xref linkend="sec.wireless.wlan.tant.sec"/>），因此 WLAN 行业（组织名为 <emphasis>Wi-Fi 联盟</emphasis>）制订了一个名为 WPA 的扩展，用以弥补 WEP 的缺陷。后来的 IEEE 802.11i 标准包含了 WPA 和一些其他的身份验证及加密方法。IEEE 802.11i 也称为 WPA2，因为 WPA 基于 802.11i 的草稿版本。
+  </para>
+
+  <para>
+   为了确保只有经过授权的工作站才能连接，受管网络中使用了多种身份验证机制：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>无（开放）</term>
+    <listitem>
+     <para>
+      开放系统是不要求身份验证的系统。任何工作站都可以加入网络。不过，可以使用 WEP 加密；请参见<xref linkend="sec.wireless.wlan.func.encr"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>共享密钥（按照 IEEE 802.11）</term>
+    <listitem>
+     <para>
+      在此过程中，使用 WEP 密钥进行身份验证。但不建议采用此过程，因为它使 WEP 密钥容易受到攻击。攻击者所要做的一切就是侦听工作站和接入点之间的通讯足够长时间。在身份验证过程中，双方将交换相同的信息，一次使用的是加密形式，一次使用的是未加密形式。这使得可以使用适当的工具来重构建密钥。由于方法使用 WEP 密钥来进行身份验证和加密，因此不能提高网络的安全性。具有正确 WEP 密钥的工作站可以进行身份验证、加密和解密。不具有密钥的工作站无法解密接收到的包。因此，无论它是否必须对本身进行身份验证都不能进行通讯。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>WPA-PSK（或称为 WPA-Personal，根据 IEEE 802.1x）</term>
+    <listitem>
+     <para>
+      WPA-PSK（PSK 代表“预共享密钥”）的工作方式与共享密钥过程类似。所有参与工作站和接入点需要相同的密钥。该密钥长度为 256 位，通常以口令短语形式输入。此系统不需要像 WPA-EAP 那样的复杂密钥管理，并且更适合个人使用。因此，有时将 WPA-PSK 称为 WPA<quote>家庭</quote>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>WPA-EAP（或称为 WPA-Enterprise，根据 IEEE 802.1x）</term>
+    <listitem>
+     <para>
+      实际上，WPA-EAP（扩展身份验证协议）不是一个身份验证系统，而是一个传输身份验证信息的协议。WPA-EAP 用于保护企业中的无线网络。在个人网络中，很少使用 WPA-EAP。因此，WPA-EAP 有时称为 WPA<quote>企业</quote>。
+     </para>
+     <para>
+      WPA-EAP 需要 Radius 服务器来验证用户。EAP 提供三种不同的方法用于连接和身份验证服务器：
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        传输层安全 (EAP-TLS)：TLS 身份验证依赖于服务器和客户端的证书互换。首先，服务器为客户端（客户端会评估服务器）提供其证书。如果证书被认为有效，则接下来客户端会对服务器提供其证书。当 TLS 是安全的，它要求在网络中具有运转的认证管理基础结构。此基础结构在专用网络中很少见。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        隧道传输层安全 (EAP-TTSL)
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        受保护的可扩展身份验证协议 (EAP-PEAP)：TTLS 和 PEAP 都是两阶段协议。在第一个阶段，将建立安全连接，在第二个阶段，将交换客户端身份验证数据。在需要认证管理的情况下，它们所需的认证管理费用比 TLS 要少得多。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.func.encr">
+  <title>加密</title>
+
+  <para>
+   有多种加密方法可确保所有未授权用户不能读取无线网络中交换的数据包并且不能访问网络：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>WEP（在 IEEE 802.11 中定义）</term>
+    <listitem>
+     <para>
+      此标准使用 RC4 加密算法，最初密钥长度为 40 位，后来也使用 104 位的密钥。通常，将此长度声明为 64 位或 128 位，这取决于是否包括初始化矢量的 24 位。但是，此标准有一些缺陷。攻击者能够成功攻击此系统生成的密钥。不过，使用 WEP 总比根本不加密网络要好。
+     </para>
+     <para>
+      某些供应商实施了非标准的<quote>动态 WEP</quote>。它与 WEP 的工作完全相同，也具有相同弱点，不同之处在于密钥管理设备会定期更改密钥。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>TKIP（在 WPA/IEEE 802.11i 中定义）</term>
+    <listitem>
+     <para>
+      WPA 标准中定义的这一密钥管理协议使用与 WEP 相同的加密算法，但弥补了其缺陷。由于为每个数据包生成一个新密钥，从而有效阻止了对这些密钥的攻击。TKIP 与 WPA-PSK 一起使用。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>CCMP（在 IEEE 802.11i 中定义）</term>
+    <listitem>
+     <para>
+      CCMP 对密钥管理进行了描述。通常，它用于与 WPA-EAP 连接，但也可以与 WPA-PSK 一起使用。加密依照 AES 进行，该加密比 WEP 标准的 RC4 加密更强大。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.yast2">
+  <title>使用 YaST 进行配置</title>
+
+  <important>
+   <title>无线网络中的安全风险</title>
+   <para>
+    如果未加密 WLAN 连接，则第三方便可以截获所有网络数据。务必使用某种受支持的身份验证和加密方法保护您的网络通讯。
+   </para>
+   <para>
+    使用您的硬件允许的最佳的可行加密方法。但是，要使用某种加密方法，网络中的所有设备都必须支持这种方法，否则它们无法相互通讯。例如，如果路由器支持 WEP 和 WPA，但 WLAN 卡的驱动程序仅支持 WEP，则 WEP 是您可以使用的加密方法。即便使用 WEP 进行弱加密，也比根本不加密要好。相关信息请参考<xref linkend="sec.wireless.wlan.func.encr"/> 和<xref linkend="sec.wireless.wlan.tant.sec"/>。
+   </para>
+  </important>
+
+  <para>
+   要用 YaST 配置无线 LAN，需要定义以下参数：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>IP 地址</term>
+    <listitem>
+     <para>
+      使用静态 IP 地址或让 DHCP 服务器动态将 IP 地址指派给接口。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>操作方式</term>
+    <listitem>
+     <para>
+      定义如何将计算机集成到 WLAN，具体取决于网络拓扑。有关 的背景信息，请参见<xref linkend="sec.wireless.wlan.modes"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>网络名称 (ESSID)</term>
+    <listitem>
+     <para>
+      标识网络的唯一字符串。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>身份验证和加密细节</term>
+    <listitem>
+     <para>
+      根据网络使用的身份验证和加密方法，需要输入一个或多个密钥和/或证书。
+     </para>
+     <para>
+      有多个输入选项可用于输入对应的密钥：<guimenu>通行口令</guimenu>、<guimenu>ASCII</guimenu>（仅适用于 WEP 身份验证方法）和<guimenu>十六进制</guimenu>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <sect2 id="sec.wireless.wlan.yast2.nm">
+   <title>停用 NetworkManager</title>
+   <para>
+    安装过程中常常会检测到 WLAN 卡。如果您的计算机是移动计算机，默认情况下，NetworkManager 通常处于激活状态。如果要用 YaST 配置 WLAN 卡，需要先停用 NetworkManager：
+   </para>
+   <procedure>
+    <step id="st.wireless.wlan.start" performance="required">
+     <para>
+      以 <systemitem class="username">root</systemitem> 身份启动 YaST。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在 YaST 控制中心中，选择<menuchoice><guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>打开<guimenu>网络设置</guimenu>对话框。
+     </para>
+     <para>
+      如果网络当前正由 NetworkManager 控制，您会看到一条警告讯息，指出 YaST 无法编辑网络设置。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      要启用通过 YaST 进行编辑的功能，请单击<guimenu>确定</guimenu>关闭这条讯息，然后在<guimenu>全局选项</guimenu>选项卡上激活<guimenu>通过 ifup 的传统方法</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如需进一步配置，请继续<xref linkend="sec.wireless.wlan.yast2.accesspoint"/> 或<xref linkend="sec.wireless.wlan.yast2.adhocnet"/> 中的操作。
+     </para>
+     <para>
+      否则，单击<guimenu>确定</guimenu>确认您的更改，以写入网络配置。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.accesspoint">
+   <title>接入点配置</title>
+   <para>
+    在此部分，可了解如何配置能连接到（外部）接入点的 WLAN 卡，或如何在 WLAN 卡支持的情况下使用 WLAN 卡作为接入点。有关无接入点的网络配置，请参见<xref linkend="sec.wireless.wlan.yast2.adhocnet"/>。
+   </para>
+   <procedure id="pro.wlan.yast2.accesspoint">
+    <title>配置 WLAN 卡以使用接入点</title>
+    <step performance="required">
+     <para>
+      启动 YaST，打开<guimenu>网络设置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      切换到<guimenu>概述</guimenu>选项卡，其中列出了系统检测到的所有网卡。如果您需要常规网络配置的更多信息，请参见<xref linkend="sec.basicnet.yast"/>。
+     </para>
+    </step>
+    <step id="st.wireless.wlan.card" performance="required">
+     <para>
+      从列表中选择无线网卡并单击<guimenu>编辑</guimenu>以打开“网卡设置”对话框。<guimenu/>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>地址</guimenu>选项卡上，配置是对计算机使用动态还是静态 IP 地址。一般 <guimenu>DHCP</guimenu> 最好使用<guimenu>动态地址</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>下一步</guimenu>继续到<guimenu>无线网卡配置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      要使用 WLAN 卡连接到接入点，请将<guimenu>操作方式</guimenu>设置为<guimenu>受管</guimenu>。
+     </para>
+     <para>
+      但是如果要使用 WLAN 卡作为接入点，请将<guimenu>操作方式</guimenu>设置为<guimenu>主管</guimenu>。请注意，并非所有 WLAN 卡都支持这种方式。
+     </para>
+     <note>
+      <title>使用 WPA-PSK 或 WPA-EAP</title>
+      <para>
+       如果要使用 WPA-PSK 或 WPA-EAP 身份验证模式，操作方式必须设置为<guimenu>受管</guimenu>。
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      要连接到某个网络，请输入<guimenu>网络名称 (ESSID)</guimenu>。也可以单击<guimenu>扫描网络</guimenu>，并从可用无线网络列表中选择网络。
+     </para>
+     <para>
+      为实现相互通讯，无线网络中的所有工作站都需要相同的 ESSIDu163。如果未指定任何 ESSID，则 WLAN 卡会自动与具有最佳信号强度的接入点关联。
+     </para>
+     <note>
+      <title>WPA 身份验证需要 ESSID</title>
+      <para>
+       如果选择 <guimenu>WPA</guimenu> 身份验证，必须设置网络名称 (ESSID)。
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      为您的网络选择<guimenu>身份验证方式</guimenu>。哪个方式适合，取决于 WLAN 卡的驱动程序和网络中其他设备的能力。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果选择将<guimenu>身份验证方式</guimenu>设置为<guimenu>不加密</guimenu>，请单击<guimenu>下一步</guimenu>完成配置。确认有关可能存在的安全风险的消息，单击<guimenu>确定</guimenu>关闭<guimenu>概述</guimenu>选项卡（显示新配置的 WLAN 卡）。
+     </para>
+     <para>
+      如果选择任何其他身份验证方式，则继续<xref linkend="pro.wlan.yast2.enryption"/> 中的操作。
+     </para>
+    </step>
+   </procedure>
+   <figure id="fig.wireless.wlan.yast">
+    <title>YaST：配置无线网卡</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="75%" fileref="yast2_wlan.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="55%" fileref="yast2_wlan.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <procedure id="pro.wlan.yast2.enryption">
+    <title>输入加密细节</title>
+    <para>
+     以下身份验证方法需要加密密钥：<guimenu>WEP － 打开</guimenu>、<guimenu>WEP － 共享密钥</guimenu>和 <guimenu>WPA-PSK</guimenu>。
+    </para>
+    <para>
+     对于 WEP，通常只需要一个密钥，但是最多可以为工作站定义 4 个不同的 WEP 密钥。需要将其中一个密钥设置为默认密钥，并用于加密。其他密钥用于解密。默认情况下，使用 128 位的密钥长度，但也可以选择将长度设置为 64 位。
+    </para>
+    <para>
+     为了更加安全，WPA-EAP 使用 RADIUS 服务器验证用户身份。在服务器上进行身份验证有三种不同的方法：TLS、TTLS 和 PEAP。WPA-EAP 所需的身份凭证和证书取决于对 RADIUS 服务器使用的身份验证方法。请向系统管理员索取所需的信息和身份凭证。YaST 会在 <filename>/etc/cert</filename> 下搜索有无任何证书。因此，请将为您提供的证书保存在这个位置，并将对这些文件的访问限制为 <literal>0600</literal>（拥有者读写权限）。
+    </para>
+    <step performance="required">
+     <para>
+      要为 <guimenu>WEP － 打开</guimenu>或 <guimenu>WEP － 共享密钥</guimenu>输入密钥：
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        将<guimenu>密钥输入类型</guimenu>设置为<guimenu>通行口令</guimenu>、<guimenu>ASCII</guimenu> 或<guimenu>十六进制</guimenu>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        输入对应的<guimenu>加密密钥</guimenu>（一般只使用一个密钥）：
+       </para>
+       <para>
+        如果选择了<guimenu>通行口令</guimenu>，请输入从中按照指定密钥长度（默认 128 位）生成密钥的短语或字符串。
+       </para>
+       <para>
+        <guimenu>ASCII</guimenu> 要求为 64 位密钥输入 5 个字符，为 128 位密钥输入 13 个字符。
+       </para>
+       <para>
+        如果选择的是<guimenu>十六进制</guimenu>，则按照十六进制表示法为 64 位密钥输入 10 个字符，或为 128 位密钥输入 26 个字符。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        要将密钥长度调整为较少的位数（可能旧硬件需要这样做），请单击 <guimenu>WEP 密钥</guimenu>并将<guimenu>密钥长度</guimenu>设置为 <guimenu>64</guimenu> 位。<guimenu>WEP 密钥</guimenu>对话框还会显示目前为止已输入的 WEP 密钥。除非明确将另一个密钥设置为默认密钥，否则 YaST 将始终使用第一个密钥作为默认密钥。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        要为 WEP 输入更多的密钥，或要修改某个密钥，请选择对应项并单击<guimenu>编辑</guimenu>。选择<guimenu>密钥输入类型</guimenu>并输入密钥。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        单击<guimenu>确定</guimenu>确认更改。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      为 <guimenu>WPA-PSK</guimenu> 输入密钥：
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        选择输入方法<guimenu>通行口令</guimenu>或<guimenu>十六进制</guimenu>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        输入相应的<guimenu>加密密钥</guimenu>。
+       </para>
+       <para>
+        在<guimenu>通行口令</guimenu>方式下，输入必须为 8 到 63 个字符。在<guimenu>十六进制</guimenu>方式下，请输入 64 个字符。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      如果选择了 <guimenu>WPA-EAP</guimenu> 身份验证，请单击<guimenu>下一步</guimenu>切换到 <guimenu>WPA-EAP</guimenu> 对话框，在那里输入网络管理员给您的身份凭证和证书。
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        选择 RADIUS 服务器用于验证身份的 <guimenu>EAP 方式</guimenu>。接下来需要输入的细节取决于所选的 <guimenu>EAP 方式</guimenu>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        对于 TLS，提供<guimenu>身份</guimenu>、<guimenu>客户端证书</guimenu>、<guimenu>客户端密钥</guimenu>和<guimenu>客户端密钥口令</guimenu>。为了增强安全性，还可以配置用于验证服务器的身份的<guimenu>服务器证书</guimenu>。
+       </para>
+       <para>
+        TTLS 和 PEAP 都需要<guimenu>身份</guimenu>和<guimenu>口令</guimenu>，而<guimenu>服务器证书</guimenu>和<guimenu>匿名身份</guimenu>是可选的。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        要进入 WPA-EAP 设置的高级身份验证对话框，请单击<guimenu>细节</guimenu>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        选择 EAP-TTLS 或 EAP-PEAP 通讯第二阶段的<guimenu>身份验证方法</guimenu>（内部身份验证）。方法的选择取决于您在上一个对话框中为 RADIUS 服务器选择的身份验证方法。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        如果自动确定设置不起作用，请选择特定的 <guimenu>PEAP 版本</guimenu>以强制使用某个 PEAP 实施。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>确定</guimenu>确认更改。<guimenu>概述</guimenu>选项卡显示新配置的 WLAN 卡的细节。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>确定</guimenu>完成配置并离开该对话框。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.adhocnet">
+   <title>建立专用网络</title>
+   <para>
+    在某些情况下连接两台装有 WLAN 卡的计算机很有用。要用 YaST 建立专用网络，请执行以下操作：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      启动 YaST，打开<guimenu>网络设置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      切换到<guimenu>概述</guimenu>选项卡，从列表中选择无线网卡，然后单击<guimenu>编辑</guimenu>打开<guimenu>网卡设置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      选择<guimenu>静态指派 IP 地址</guimenu>，输入以下数据：
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <guimenu>IP 地址</guimenu>：<systemitem class="ipaddress">192.168.1.1</systemitem>。将第二台计算机上的该地址改为 <systemitem class="ipaddress">192.168.1.2</systemitem>（举例）。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <guimenu>子网掩码</guimenu>：<systemitem class="ipaddress">/24</systemitem>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <guimenu>主机名</guimenu>：选择您喜欢的任何名称。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      按<guimenu>下一步</guimenu>继续。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      将<guimenu>操作方式</guimenu>设置为<guimenu>专用</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      选择<guimenu>网络名称 (ESSID)</guimenu>。它可以是任何名称，但必须用于专用网络的每台计算机。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      为您的网络选择<guimenu>身份验证方式</guimenu>。哪个方式适合，取决于 WLAN 卡的驱动程序和网络中其他设备的能力。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果选择将<guimenu>身份验证方式</guimenu>设置为<guimenu>不加密</guimenu>，请单击<guimenu>下一步</guimenu>完成配置。确认有关可能存在的安全风险的消息，单击<guimenu>确定</guimenu>关闭显示新配置的 WLAN 卡的<guimenu>概述</guimenu>选项卡。
+     </para>
+     <para>
+      如果选择任何其他身份验证方式，则继续<xref linkend="pro.wlan.yast2.enryption"/> 中的操作。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果没有安装 <systemitem class="resource">smpppd</systemitem>，YaST 会要求您安装。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用相同的<guimenu>网络名称 (ESSID)</guimenu>、相同的<guimenu>身份验证方式</guimenu>和不同的 IP 地址，相应地配置网络中的其他 WLAN 卡。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.advanced">
+   <title>设置其他配置参数</title>
+   <para>
+    配置 WLAN 卡时，一般不需要更改预配置的设置。但是，如果需要详细地配置 WLAN 连接，YaST 允许您调整以下设置：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>通道</term>
+     <listitem>
+      <para>
+       指定应运行 WLAN 站的通道。只有在<guimenu>专用</guimenu>和<guimenu>主管</guimenu>模式下才需要此设置。在<guimenu>受控</guimenu>方式下，网卡将自动搜索接入点的可用通道。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>位速率</term>
+     <listitem>
+      <para>
+       根据网络的性能，您可能要为从一点到另一点之间的传送设置特定位速率。在默认设置<guimenu>自动</guimenu>中，系统会尽可能地使用最高数据传送速率。一些 WLAN 卡不支持比特率设置。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>接入点</term>
+     <listitem>
+      <para>
+       在具有多个接入点的环境中，通过指定 MAC 地址可以预先选择多个接入点中的一个。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>电源管理</term>
+     <listitem>
+      <para>
+       当您在旅途中时，使用节能技术有助于最大限度地提高电池的运行时间。<phrase os="sles;sled">有关电源管理的详细信息，请参考 <xref linkend="cha.pmanage"/>。</phrase>使用电源管理可能影响连接质量并增加网络延迟。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <procedure>
+    <para>
+     访问高级选项：
+    </para>
+    <step performance="required">
+     <para>
+      启动 YaST，打开<guimenu>网络设置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      切换到<guimenu>概述</guimenu>选项卡，从列表中选择无线网卡，单击<guimenu>编辑</guimenu>打开<guimenu>网卡设置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>下一步</guimenu>继续到<guimenu>无线网卡配置</guimenu>对话框。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>专家设置</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>专用</guimenu>方式下，可以选择提供的一个通道（11 到 14，具体取决于您所在国家/地区），用于在您的工作站和其他工作站之间进行通信。在<guimenu>主管</guimenu>方式下，确定您的网卡应该在哪个<guimenu>通道</guimenu>上提供接入点功能。此选项的默认设置是<guimenu>自动</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      选择要使用的<guimenu>位率</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      输入要连接到的<guimenu>接入点</guimenu>的 MAC 地址。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      选择是否<guimenu>使用电源管理</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击<guimenu>确定</guimenu>确认您的更改，单击<guimenu>下一步</guimenu>，再单击<guimenu>确定</guimenu>完成配置。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.tant">
+  <title>建立 WLAN 的提示和技巧</title>
+
+  <para>
+   以下工具和提示可以帮助您监视和提高 WLAN 的速度、稳定性以及安全性。
+  </para>
+
+  <sect2 id="sec.wireless.wlan.tant.tools">
+   <title>实用程序</title>
+
+   <para>
+    包 <systemitem class="resource">wireless-tools</systemitem> 中包含可用于设置无线 LAN 特定参数和获取统计数字的实用程序。有关更多信息，请参见 <ulink url="http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html"/>。
+   </para>
+   
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.tant.stab">
+   <title>稳定性和速度</title>
+   <para>
+    无线网络的性能和可靠性主要取决于参与的工作站是否能够清楚地接收到来自其他工作站的信号。障碍物（例如，墙壁）极大地削弱了信号。信号强度越低，传送速率就越慢。在操作过程中，可以在命令行上使用 <command>iwconfig</command> 实用程序检查信号强度（<literal>Link Quality</literal> 字段），也可以使用 KDE 或 GNOME 提供的 NetworkManager 小程序进行检查。如果信号质量存在问题，可尝试将设备放在其他位置，或调整接入点天线的位置。很多 PCMCIA WLAN 卡都配有辅助天线，可充分提高接收效果。制造商指定的速率（例如 54Mbit/s）是一个额定值，它表示理论最大值。实际上，最大数据吞吐量不大于该值的一半。
+   </para>
+   <para>
+    <command>iwspy</command> 命令可用于显示 WLAN 统计数字：
+   </para>
+<screen>iwspy wlan0
+wlan0      Statistics collected:
+    00:AA:BB:CC:DD:EE : Quality:0  Signal level:0  Noise level:0
+    Link/Cell/AP      : Quality:60/94  Signal level:-50 dBm   Noise level:-140 dBm (updated)
+    Typical/Reference : Quality:26/94  Signal level:-60 dBm   Noise level:-90 dBm</screen>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.tant.sec">
+   <title>安全性</title>
+   <para>
+    如果要建立一个无线网络，则一定要记住，如果不实施任何安全措施，则传送范围内的任何人都可以方便地访问此网络。因此，一定要激活某种加密方法。所有 WLAN 卡和接入点都支持 WEP 加密。虽然这并非完全安全，但还是对潜在攻击者设置了一道屏障。
+   </para>
+   <para>
+    对于私用，可使用 WPA-PSK（如果可用）。尽管 Linux 在大多数硬件组件上支持 WPA，但某些驱动程序不提供 WPA 支持。在启用 WLAN 功能的旧接入点和路由器上可能也无法使用 WPA。对于此类设备，请确认是否可以通过固件更新实现 WPA。如果 WPA 不可用，则使用 WEP 要好过不加密。在具有高级安全要求的企业中，无线网络工作时必须采用 WPA。
+   </para>
+   <para>
+    为您的身份验证方式使用强口令。例如，网页 <ulink url="https://www.grc.com/passwords.htm"/> 能生成随机的 64 个字符的口令。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.probs">
+  <title>查错</title>
+
+  
+
+  <para>
+   如果 WLAN 卡没有响应，请检查以下先决条件是否满足：
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     您是否知道 WLAN 卡的设备名称？通常它是 <systemitem>wlan0</systemitem>。请用工具 <command>ifconfig</command> 进行检查。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     您检查了需要的固件吗？请参见 <filename>/usr/share/doc/packages/wireless-tools/README.firmware</filename> 以获取更多信息。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     路由器的 ESSID 是否已广播并可见（未隐藏）？
+    </para>
+   </listitem>
+  </orderedlist>
+
+  <sect2 id="sec.wireless.wlan.probs.iwconfi">
+   <title>检查网络状态</title>
+   <para>
+    用命令 <command>iwconfig</command> 可得到您的无线连接的重要信息。例如，以下行会显示 ESSID、无线模式、频率、信号是否加密、链接质量等等：
+   </para>
+<screen><command>iwconfig</command> wlan0
+wlan0  IEEE 802.11abg  ESSID:"guest"
+       Mode:Managed   Frequency:5.22GHz  Access Point: 00:11:22:33:44:55
+       Bit Rate:54 Mb/s   Tx-Power=13 dBm
+       Retry min limit:7   RTS thr:off   Fragment thr:off
+       Encryption key:off
+       Power Management:off
+       Link Quality:62/92   Signal level:-48 dBm  Noise level:-127 dBm
+       Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+       Tx excessive retries:10  Invalid misc:0   Missed beacon:0</screen>
+   <para>
+    您也可以用 <command>iwlist</command> 命令获得上述信息。例如，以下行显示当前的比特率：
+   </para>
+<screen><command>iwlist</command> wlan0 rate
+wlan0    unknown bit-rate information.
+         Current Bit Rate=54 Mb/s</screen>
+   <para>
+    如果您想大致了解当前有多少接入点可用，也可以用 <command>iwlist</command> 命令实现。它会提供<quote>cells</quote>列表，外观如下：
+   </para>
+<screen><command>iwlist</command> wlan0 scanning
+wlan0   Scan completed:
+   Cell 01 - Address: 00:11:22:33:44:55
+             Channel:40
+             Frequency:5.2 GHz (Channel 40)
+             Quality=67/70  Signal level=-43 dBm
+             Encryption key: off
+             ESSID:"Guest"
+             Bit Rates: 6 Mb/s; 9 Mb/s; 12 Mb/s; 18 Mb/s;
+                        24 Mb/s; 36 Mb/s; 48 Mb/s
+             Mode: Master
+             Extra:tsf=0000111122223333
+             Extra: Last beacon: 179ms ago
+             IE: Unknown: ...</screen>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.probs.multi">
+   <title>多个网络设备</title>
+   <para>
+    现在的便携式计算机通常都有网卡和 WLAN 卡，如果使用 DHCP（自动地址指派）来配置这两个设备，则您可能会遇到名称解析和默认网关的问题。可以 Ping 路由器但不能浏览因特网就是这方面问题的典型示例。位于 <ulink url="http://old-en.opensuse.org/SDB:Name_Resolution_Does_Not_Work_with_Several_Concurrent_DHCP_Clients"/> 的支持数据库提供了一篇有关这一主题的文章。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.probs.prism">
+   <title>有关 Prism2 卡的问题</title>
+   <para>
+    采用 <phrase role="productname">Prism2</phrase> 芯片的设备有多个驱动程序可用。不同的卡与不同的驱动程序之间的适用性是不一样的。使用这些卡时，只有在使用 hostap 驱动程序时，才能实施 WPA。如果这样的卡不能正常工作或根本不工作，或者您要使用 WPA，请参见 <filename>/usr/share/doc/packages/wireless-tools/README.prism2</filename>。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.info">
+  <title>更多信息</title>
+
+  <para>
+   可在以下页面中找到更多信息：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><ulink url="http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Wireless.html"/>
+    </term>
+    <listitem>
+     <para>
+      Jean Tourrilhes 开发了用于 Linux 的<emphasis>无线工具</emphasis>，他的因特网网页上有很多关于无线网络的有用信息。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://tuxmobil.org"/>
+    </term>
+    <listitem>
+     <para>
+      有关 Linux 下的移动计算机的实用信息。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://www.linux-on-laptops.com"/>
+    </term>
+    <listitem>
+     <para>
+      有关便携式计算机上 Linux 的更多信息。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+   
+  </variablelist>
+ </sect1>
+</chapter>

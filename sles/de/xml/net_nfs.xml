@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_nfs.xml" id="cha.nfs">
+ <title>Verteilte Nutzung von Dateisystemen mit NFS</title><indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>Netzwerkdateisystem</primary> <see>NFS</see> </indexterm>
+ <abstract>
+  <para>
+   Das Verteilen und Freigeben von Dateisystemen über ein Netzwerk ist eine Standardaufgabe in Unternehmensumgebungen. Das bewährte Netzwerkdateisystem <emphasis>NFS</emphasis> arbeitet mit dem Verzeichnisdienst <emphasis>NIS</emphasis> zusammen. Wenn Sie ein sichereres Protokoll wünschen, das mit <emphasis>LDAP</emphasis> zusammenarbeitet und auch Kerberos nutzen kann, aktivieren Sie <emphasis>NFSv4</emphasis>. Zusammen mit pNFS können Sie so Engpässe bei der Leistung beseitigen.
+  </para>
+
+  <para>
+   NFS mit NIS macht ein Netzwerk für den Benutzer transparent. Mit NFS ist es möglich, arbiträre Dateisysteme über das Netzwerk zu verteilen. Bei entsprechendem Setup befinden sich Benutzer in derselben Umgebung, unabhängig vom gegenwärtig verwendeten Terminal.
+  </para>
+ </abstract>
+ <important os="osuse;sles">
+  <title>DNS-Bedarf</title>
+  <para>
+   Im Prinzip können alle Exporte allein mit IP-Adressen vorgenommen werden. Es ist ratsam, über ein funktionierendes DNS-System zu verfügen, um Zeitüberschreitungen zu vermeiden. DNS ist zumindest für die Protokollierung erforderlich, weil der mountd-Daemon Reverse-Lookups ausführt.
+  </para>
+ </important>
+ <sect1 id="sec.nfs.term">
+  <title>Terminologie</title>
+
+  <para>
+   Die folgenden Begriffe werden im YaST-Modul verwendet.
+  </para>
+
+
+
+  <variablelist>
+   <varlistentry>
+    <term>Exporte</term>
+    <listitem>
+     <para>
+      Ein von einem NFS-Server <emphasis>exportiertes</emphasis> Verzeichnis, das von Clients in ihr System integriert werden kann.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NFS-Client</term>
+    <listitem>
+     <para>
+      Der NFS-Client ist ein System, das NFS-Dienste eines NFS-Servers über das NFS-Protokoll verwendet. Das TCP/IP-Protokoll ist bereits in den Linux-Kernel integriert, weshalb keine zusätzliche Software installiert werden muss.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>NFS-Server</term>
+    <listitem>
+     <para>
+      Der NFS-Server stellt NFS-Dienste für Clients bereit. Die Ausführung eines Servers hängt von folgenden Daemons ab: <systemitem class="daemon">nfsd</systemitem> (Worker), <systemitem class="daemon">idmapd</systemitem> (Zuordnung von Benutzer- und Gruppennamen zu IDs und umgekehrt), <systemitem class="daemon">statd</systemitem> (Dateisperrung) und <systemitem class="daemon">mountd</systemitem> (Einhängen-Anforderungen).
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+     <term>pNFS</term>
+     <listitem>
+       <para>Parallel NFS, eine Protokollerweiterung für NFSv4. Alle pNFS-Clients können direkt auf die Daten auf einem NFS-Server zugreifen.</para>
+     </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nfs.installation">
+  <title>Installieren des NFS-Servers</title>
+
+  <para>
+   Die NFS-Server-Software ist kein Bestandteil der Standardinstallation. Wenn Sie einen NFS-Server gemäß den Anweisungen unter <xref linkend="sec.nfs.configuring-nfs-server"/> konfigurieren, werden Sie automatisch aufgefordert, die erforderlichen Pakete zu installieren. Alternativ installieren Sie das Paket <systemitem class="resource">nfs-kernel-server</systemitem> mit YaST oder Zypper.
+  </para>
+
+  <para>
+   Wie NIS ist NFS ein Client-Server-System. Ein Rechner kann jedoch beides gleichzeitig sein – er kann Dateisysteme im Netzwerk zur Verfügung stellen (exportieren) und Dateisysteme anderer Hosts mounten (importieren).
+  </para>
+ </sect1>
+ <sect1 id="sec.nfs.configuring-nfs-server">
+  <title>Konfigurieren des NFS-Servers</title>
+
+  <para>
+   Die Konfiguration eines NFS-Servers kann über YaST oder manuell erfolgen. NFS kann für die Authentifizierung auch mit Kerberos kombiniert werden.
+  </para>
+
+  <sect2 id="sec.nfs.export-yast2" os="osuse;sles">
+   <title>Exportieren von Dateisystemen mit YaST</title>
+   <indexterm> <primary>NFS</primary> <secondary>Server</secondary> </indexterm>
+   <para>
+    Mit YaST können Sie einen Rechner Ihres Netzwerks zu einem NFS-Server machen. Dies ist ein Server, der Verzeichnisse und Dateien an alle Hosts exportiert, die ihm Zugriff gewähren. Der Server kann außerdem Anwendungen für alle Mitglieder einer Gruppe bereitstellen, ohne dass die Anwendungen auf allen Hosts lokal installiert sein müssen. 
+   </para>
+   <para>
+    Verfahren Sie wie folgt, um einen solchen Server einzurichten:
+   </para>
+   <procedure id="pro.nfs.export-yast2.nfsv3">
+     <title>Einrichten eines NFSv3-Servers</title>
+    <step performance="required">
+     <para>
+      Starten Sie YaST, und wählen Sie <menuchoice> <guimenu>Netzwerkdienste</guimenu> <guimenu>NFS-Server</guimenu> </menuchoice> (siehe <xref linkend="fig.inst.nfsserver1"/>). Sie werden ggf. aufgefordert, weitere Software zu installieren.
+     </para>
+     <figure id="fig.inst.nfsserver1">
+      <title>Konfiguration des NFS-Servers</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="yast2_inst_nfsserver1.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="yast2_inst_nfsserver1.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Aktivieren Sie das Optionsfeld <guimenu>Start</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+      <para>
+       Wenn eine Firewall im System aktiv ist (SuSEfirewall2), aktivieren Sie die Option <guimenu>Firewall-Ports öffnen</guimenu>. YaST aktiviert den <systemitem class="service">nfs</systemitem>-Service und passt so die Konfiguration für den NFS-Server an.
+      </para>
+    </step>
+    <step performance="required">
+      <para>Lassen Sie das Kontrollkästchen <guimenu>NFSv4 aktivieren</guimenu> deaktiviert.</para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>GSS-Sicherheit aktivieren</guimenu>, wenn Sie einen sicheren Zugriff auf den Server benötigen. Als Voraussetzung hierfür muss Kerberos in der Domäne installiert sein und sowohl der Server als auch der Client müssen kerberisiert sein. Klicken Sie auf <guimenu>Weiter</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+      <para>Klicken Sie im oberen Bereich des Dialogfelds auf <guimenu>Verzeichnis hinzufügen</guimenu>. Das Verzeichnis wird exportiert.</para>
+    </step>
+    <step performance="required">
+       <para>
+         Falls Sie die zulässigen Hosts nicht bereits konfiguriert haben, wird automatisch ein weiteres Dialogfeld geöffnet, in dem Sie die Client-Informationen und Optionen angeben. Geben Sie den Platzhalter für den Host ein. (In der Regel können Sie die Standardeinstellungen beibehalten).
+       </para>
+       
+      <para>
+        Es gibt vier mögliche Typen von Platzhalterzeichen für den Host, die für jeden Host festgelegt werden können: ein einzelner Host (Name oder IP-Adresse), Netzgruppen, Platzhalterzeichen (wie <literal>*</literal>, womit angegeben wird, dass alle Computer auf den Server zugreifen können) und IP-Netzwerke. 
+      </para>
+      
+     </step>
+     <step performance="required">
+       <para>Klicken Sie zum Beenden der Konfiguration auf <guimenu>Beenden</guimenu>.
+     </para>
+    </step>
+   </procedure>
+   
+   <sect3 id="sec.nfs.exportv4">
+    <title>Exportieren für NFSv4-Clients</title>
+     <para>
+       Bei einer festen Gruppe von NFSv4-Clients gibt es zwei Arten von Clients, die exportiert werden können – Verzeichnisse, die als Pseudo-Root-Dateisysteme fungieren, und solche, die an ein Unterverzeichnis eines Pseudo-Dateisystems gebunden sind. Dieses Pseudo-Dateisystem stellt den Basispunkt dar, unter dem alle Dateisysteme angeordnet werden, die für dieselbe Gruppe von Clients exportiert wurden. Bei einem Client oder einer Gruppe von Clients kann nur ein Verzeichnis auf dem Server als Pseudo-Root-Verzeichnis für den Export konfiguriert werden. Exportieren Sie für diesen Client mehrere Verzeichnisse, indem Sie sie an vorhandene Unterverzeichnisse im Pseudo-Root-Verzeichnis binden.
+     </para>
+     <para>
+       Nehmen Sie beispielsweise an, dass das Verzeichnis <filename>/exports</filename> als Pseudo-Root-Verzeichnis für alle Clients ausgewählt wurde, die auf den Server zugreifen können. Fügen Sie dies der Liste der exportierten Verzeichnisse hinzu und stellen Sie sicher, dass die für dieses Verzeichnis eingebenen Optionen <literal>fsid=0</literal> einschließen. Wenn Sie über ein anderes Verzeichnis, <filename>/data</filename>, verfügen, das auch mit NFSv4 exportiert werden muss, fügen Sie dieses Verzeichnis ebenfalls der Liste hinzu. Stellen Sie beim Eingeben von Optionen für dieses Verzeichnis sicher, dass <literal>bind=/exports/data</literal> in der Liste enthalten ist und dass es sich bei <filename>/exports/data</filename> um ein bereits bestehendes Unterverzeichnis von <filename>/exports</filename> handelt. Alle Änderungen an der Option <systemitem>bind=/target/path</systemitem> werden unter <guimenu>Einhängeziele binden</guimenu> angezeigt, unabhängig davon, ob ein Wert hinzugefügt, gelöscht oder geändert wurde.  
+     </para>
+     <para>Richten Sie den Server für das Exportieren von Verzeichnissen für NFSv4-Clients gemäß den allgemeinen Anweisungen unter <xref linkend="pro.nfs.export-yast2.nfsv3"/> ein; ändern Sie dabei jedoch die folgenden Schritte:
+     </para>
+     
+     <procedure>
+       <step performance="required">
+         <para>Aktivieren Sie im ersten Dialogfeld die Option <guimenu>NFSv4 aktivieren</guimenu>.</para>
+       </step>
+       <step performance="required">
+         <para>Geben Sie den entsprechenden NFSv4-Domänennamen in das erste Dialogfeld ein.</para>
+         <para>Stellen Sie sicher, dass der eingegebene Name dem Namen in der Datei <filename>/etc/idmapd.conf</filename> eines beliebigen NFSv4-Client enspricht, der auf diesen speziellen Server zugreift. Dieser Parameter wird für den <systemitem class="daemon">idmapd</systemitem>-Dienst verwendet, der für die NFSv4-Unterstützung (auf dem Server und dem Client) erforderlich ist. Behalten Sie den Wert <literal>localdomain</literal> (der Standardwert) bei, wenn Sie keine speziellen Anforderungen haben. </para>
+         <para>Klicken Sie auf <guimenu>Weiter</guimenu>. Ein Dialogfeld mit zwei Bereichen wird geöffnet. Die obere Hälfte besteht aus zwei Spalten mit den Namen <guimenu>Verzeichnisse</guimenu> und <guimenu>Bindmount-Ziele</guimenu>. Der Dienst wird sofort verfügbar.</para>
+       </step>
+       
+       <step performance="required">
+         <para>Klicken Sie im oberen Bereich des Dialogfelds auf <guimenu>Verzeichnis hinzufügen</guimenu> und bestätigen Sie mit <guimenu>OK</guimenu>. Das Verzeichnis wird exportiert.</para>
+       </step>
+       <step performance="required">
+         <para>Geben Sie die Hostnamen in das Textfeld <guimenu>Rechner-Wildcard</guimenu> ein und legen Sie die Optionen fest.</para>
+         <para>Schließen Sie dann im Textfeld <guimenu>Optionen</guimenu> die Zeichenfolge <literal>fsid=0</literal> in die kommagetrennte Liste der Optionen ein, um das Verzeichnis als Pseudo-Root-Verzeichnis zu konfigurieren. Wenn dieses Verzeichnis an ein anderes Verzeichnis unter einem bereits konfigurierten Pseudo-Root-Verzeichnis gebunden werden soll, stellen Sie sicher, dass zum Binden ein Zielpfad mit der Struktur <literal>bind=/target/path</literal> in der Optionsliste angegeben ist. </para>
+         <para>Bei der Spalte <guimenu>Bindmount-Ziele</guimenu> handelt es sich nicht um eine direkt bearbeitbare Spalte. In ihr werden stattdessen Verzeichnisse und deren Ursprung zusammengefasst.</para>
+       </step>
+       <step performance="required">
+         <para>Klicken Sie zum Beenden der Konfiguration auf <guimenu>Beenden</guimenu>.</para>
+       </step>
+     </procedure>
+     
+   </sect3>
+   <sect3 id="sec.nfs.exportv23">
+    <title>NFSv3- und NFSv2-Exporte</title>
+    <para>
+     Stellen Sie vor dem Klicken auf <guimenu>Weiter</guimenu> sicher, dass <guimenu>NFSv4 aktivieren</guimenu> im ersten Dialogfeld nicht aktiviert ist.
+    </para>
+    <para>
+     Das nächste Dialogfeld besteht aus zwei Bereichen. Geben Sie im oberen Textfeld die zu exportierenden Verzeichnisse an. Legen Sie darunter Hosts fest, die darauf Zugriff erhalten sollen. Es können vier Arten von Host-Platzhalterzeichen für jeden Host festgelegt werden: ein einzelner Host (Name oder IP-Adresse), Netzwerkgruppen, Platzhalterzeichen (z. B. <literal>*</literal>, womit angegeben wird, dass alle Rechner auf den Server zugreifen können) und IP-Netzwerke.
+     
+    </para>
+    <para>
+     Dieses Dialogfeld ist in <xref linkend="fig.nfs.export23" xrefstyle="FigureOnPage"/> abgebildet. Eine ausführlichere Erläuterung dieser Optionen finden Sie unter <command>man exports</command>. Klicken Sie zum Abschließen der Konfiguration auf <guimenu>Beenden</guimenu>.
+    </para>
+    <figure pgwide="0" id="fig.nfs.export23">
+     <title>Exportieren von Verzeichnissen mit NFSv2 und v3</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata fileref="nfs_002a.png" width="75%" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata fileref="nfs_002a.png" width="75%" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </sect3>
+   <sect3 id="sec.nfs.export.coexisting">
+    <title>Gleichzeitig vorhandene v3-Exporte und v4-Exporte</title>
+    <para>
+     NFSv3-Exporte und NFSv4-Exporte können gleichzeitig auf einem Server vorhanden sein. Nach dem Aktivieren der Unterstützung für NFSv4 im ersten Konfigurationsdialogfeld werden diese Exporte, für die <systemitem>fsid=0</systemitem> und <systemitem>bind=/target/path</systemitem> nicht in der Optionsliste enthalten sind, als v3-Exporte angesehen.
+    </para>
+    <para>Sehen Sie sich das Beispiel in <xref linkend="sec.nfs.exportv4"/> an. Wenn Sie ein weiteres Verzeichnis (z. B. <filename>/data2</filename>) mit <guimenu>Hinzufügen: Verzeichnis</guimenu> hinzufügen und anschließend weder <systemitem>fsid=0</systemitem> noch <systemitem>bind=/target/path</systemitem> in der entsprechenden Optionsliste aufgeführt wird, fungiert dieser Export als v3-Export.
+    </para>
+    <important>
+     <para>
+      Automatische Firewall-Konfiguration
+     </para>
+     <para>
+      Wenn SuSEfirewall2 auf Ihrem System aktiviert ist, wird deren Konfiguration von YaST für den NFS-Server angepasst, indem der <literal>nfs</literal>-Dienst aktiviert wird, wenn <guimenu>Firewall-Ports öffnen</guimenu> ausgewählt ist.
+     </para>
+    </important>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.nfs.export.manual" os="osuse;sles">
+   <title>Manuelles Exportieren von Dateisystemen</title><indexterm> <primary>NFS</primary> <secondary>exportieren</secondary> </indexterm>
+   <para>
+    Die Konfigurationsdateien für den NFS-Exportdienst lauten <filename>/etc/exports</filename> und <filename>/etc/sysconfig/nfs</filename>. Zusätzlich zu diesen Dateien ist <filename>/etc/idmapd.conf</filename> für die NFSv4-Serverkonfiguration erforderlich. Führen Sie zum Starten bzw. Neustarten der Dienste das Kommando <command>rcnfsserver restart</command> aus. Dies startet auch <literal>rpc.idmapd</literal>, wenn NFSv4 in <filename>/etc/sysconfig/nfs</filename> konfiguriert ist. Der NFS-Server ist von einem laufenden RPC-Portmapper abhängig. Starten Sie aus diesem Grund mit <command>rcrpcbind restart</command> auch den Portmapper-Dienst bzw. starten Sie ihn neu.
+   </para>
+   <sect3 id="sec.nfs.manexportv4">
+    <title>Exportieren von Dateisystemen mit NFSv4</title>
+    <para>
+     NFSv4 ist die aktuelle Version des NFS-Protokolls für <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>. Das Konfigurieren der Verzeichnisse für den Export mit NFSv4 unterscheidet sich geringfügig von den früheren NFS-Versionen.
+    </para>
+    <sect4 id="sec.nfs.exports">
+
+
+     <title>/etc/exports</title>
+     <para>
+      Die Datei <filename>/etc/exports</filename> enthält eine Liste mit Einträgen. Mit jedem Eintrag wird ein Verzeichnis angegeben, das freigegeben wird. Zudem wird angegeben, wie das Verzeichnis freigegeben wird. Ein typischer Eintrag in <filename>/etc/exports</filename> besteht aus:
+     </para>
+<screen>/shared/directory   host(option_list)</screen>
+     <para>
+      Beispiel:
+     </para>
+<screen>/export   192.168.1.2(rw,fsid=0,sync,crossmnt)
+/export/data   192.168.1.2(rw,bind=/data,sync)
+</screen>
+     <para>
+      Hier wird die IP-Adresse <literal>192.168.1.2</literal> verwendet, um den erlaubten Client zu identifizieren. Sie können auch den Namen des Hosts, ein Platzhalterzeichen, mit dem mehrere Hosts angegeben werden (<literal>*.abc.com</literal>, <literal>*</literal> usw.) oder Netzwerkgruppen (<literal>@my-hosts</literal>) verwenden).
+     </para>
+     <para>
+      Das Verzeichnis, das <literal>fsid=0</literal> spezifiziert, ist besonders. Es ist das Stammverzeichnis des exportierten Dateisystems und wird teilweise auch als Pseudo-Root-Dateisystem bezeichnet. Dieses Verzeichnis muss für den fehlerfreien Betrieb mit NFSv4 auch über <literal>crossmnt</literal> verfügen. Alle anderen Verzeichnisse, die über NFSv4 exportiert wurden, müssen unterhalb dieser Position eingehängt werden. Wenn Sie ein Verzeichnis exportieren möchten, das sich nicht innerhalb des exportierten Roots befindet, muss es in den exportierten Baum eingebunden werden. Das ist über die Syntax <literal>bind=</literal> möglich.
+     </para>
+     <para>
+      Im obigen Beispiel befindet sich <filename>/data</filename> nicht im Verzeichnis <filename>/export</filename>. Daher exportieren wir <filename>/export/data</filename> und geben an, dass das Verzeichnis <filename>/data</filename> an diesen Namen gebunden werden soll. Das Verzeichnis <filename>/export/data</filename> muss existieren und sollte normalerweise leer sein.
+     </para>
+     <para>
+      Beim Einhängen von diesem Server hängen die Clients nur <literal>servername:/</literal>, nicht <literal>servername:/export</literal> ein. <literal>servername:/data</literal> muss nicht eingehängt werden, da dieses Verzeichnis automatisch unter dem Einhängepunkt von <literal>servername:/</literal> erscheint.
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.sysconfig">
+     <title>/etc/sysconfig/nfs</title>
+     <para>
+      Die Datei <filename>/etc/sysconfig/nfs</filename> enthält einige Parameter, die das Verhalten des NFSv4-Server-Daemon bestimmen. Es ist wichtig, dass der Parameter <systemitem>NFS4_SUPPORT</systemitem> auf <literal>yes</literal> gesetzt wird. Der Parameter <systemitem>NFS4_SUPPORT</systemitem> bestimmt, ob der NFS-Server NFSv4-Exporte und -Clients unterstützt.
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.idmapd">
+     <title>/etc/idmapd.conf</title>
+     <para>
+      Jeder Benutzer eines Linux-Rechners verfügt über einen Namen und eine ID. idmapd führt die Name-zu-ID-Zuordnung für NFSv4-Anforderungen an den Server aus und sendet Antworten an den Client. Diese Datei muss auf dem Server und dem Client für NFSv4 ausgeführt werden, da NFSv4 nur Namen für die eigene Kommunikation verwendet.
+     </para>
+     <para>
+      Stellen Sie sicher, dass Benutzernamen und IDs (uid) Benutzern auf eine einheitliche Weise auf allen Rechnern zugewiesen werden, auf denen möglicherweise Dateisysteme mit NFS freigegeben werden. Dies kann mit NIS, LDAP oder einem beliebigen einheitlichen Domänenauthentifizierungsmechanismus in Ihrer Domäne erreicht werden.
+     </para>
+     <para>
+      Der Parameter <literal>Domain</literal> muss in der Datei <filename>/etc/idmapd.conf</filename> für den Client und den Server identisch festgelegt sein. Wenn Sie sich nicht sicher sind, belassen Sie die Domäne in den Server- und den Clientdateien als <literal>localdomain</literal>. Eine Beispielkonfigurationsdatei sieht folgendermaßen aus:
+     </para>
+<screen>[General] 
+
+Verbosity = 0 
+Pipefs-Directory = /var/lib/nfs/rpc_pipefs
+Domain = localdomain
+
+[Mapping]
+
+Nobody-User = nobody
+Nobody-Group = nobody</screen>
+     <para>
+      Weitere Informationen finden Sie auf der man-Seite zu <literal>idmapd</literal> und <literal>idmapd.conf</literal>; <literal>man idmapd</literal>, <literal>man idmapd.conf</literal>.
+     </para>
+    </sect4>
+    <sect4 id="sec.nfs.services">
+     <title>Starten und Beenden von Apache</title>
+     <para>
+      Starten Sie den NFS-Serverdienst nach dem Ändern von <filename>/etc/exports</filename> oder <filename>/etc/sysconfig/nfs</filename> mit <command>rcnfsserver restart</command> bzw. starten Sie den Dienst neu. Wenn Sie <filename>/etc/idmapd.conf</filename> geändert haben, laden Sie die Konfigurationsdatei erneut mit dem Kommando <command>killall -HUP rpc.idmapd</command>.
+     </para>
+     <para>
+      Wenn der NFS-Dienst beim Booten gestartet werden soll, führen Sie das Kommando <command>chkconfig nfsserver on</command> aus.
+     </para>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.nfs.manualexportv23">
+    <title>Exportieren von Dateisystemen mit NFSv2 und NFSv3</title>
+    <para>
+     In diesem Abschnitt finden Sie Informationen speziell für NFSv3- und NFSv2-Exporte. Informationen zum Exportieren mit NFSv4 finden Sie unter <xref linkend="sec.nfs.exportv4" xrefstyle="HeadingOnPage"/>.
+    </para>
+    <para>
+     Beim Exportieren von Dateisystemen mit NFS werden zwei Konfigurationsdateien verwendet: <filename>/etc/exports</filename> und <filename>/etc/sysconfig/nfs</filename>. Ein typischer <filename>/etc/exports</filename>-Dateieintrag weist folgendes Format auf:
+    </para>
+<screen>/shared/directory   host(list_of_options)</screen>
+    <para>
+     Beispiel:
+    </para>
+<screen>/export   192.168.1.2(rw,sync)</screen>
+    <para>
+     Hier wird das Verzeichnis <filename>/export</filename><literal/> gemeinsam mit dem Host 192.168.1.2 mit der Optionsliste <systemitem>rw,sync</systemitem> verwendet. Diese IP-Adresse kann durch einen Clientnamen oder mehrere Clients mit einem Platzhalterzeichen (z. B. <literal>*.abc.com</literal>) oder auch durch Netzwerkgruppen ersetzt werden.
+    </para>
+    <para>
+     Eine detaillierte Erläuterung aller Optionen und der entsprechenden Bedeutungen finden Sie auf der man-Seite zu <command>exports</command> (<command>man exports</command>).
+    </para>
+    <para>
+     Starten Sie den NFS-Server nach dem Ändern von <filename>/etc/exports</filename> oder <filename>/etc/sysconfig/nfs</filename> mit dem Befehl <command>rcnfsserver restart</command> bzw. starten Sie ihn neu.
+    </para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.nfs.kerberos">
+   <title>NFS mit Kerberos</title>
+   <para>
+    Wenn die Kerberos-Authentifizierung für NFS verwendet werden soll, muss die GSS-Sicherheit aktiviert werden. Wählen Sie im ersten YaST-NFS-Server-Dialogfeld die Option <guimenu>GSS-Sicherheit aktivieren</guimenu>. Zur Verwendung dieser Funktion muss ein funktionierender Kerberos-Server zur Verfügung stehen. YaST richtet diesen Server nicht ein, sondern nutzt lediglich die über den Server bereitgestellten Funktionen. Wenn Sie die Authentifizierung mittels Kerberos verwenden möchten, müssen Sie zusätzlich zur YaST-Konfiguration mindestens die nachfolgend beschriebenen Schritte ausführen, bevor Sie die NFS-Konfiguration ausführen:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Stellen Sie sicher, dass sich Server und Client in derselben Kerberos-Domäne befinden. Beide müssen auf denselben KDC-Server (Key Distribution Center) zugreifen und die Datei <filename>krb5.keytab</filename> gemeinsam verwenden (der Standardspeicherort auf allen Rechnern lautet <filename>/etc/krb5.keytab</filename>). Weitere Informationen zu Kerberos finden Sie unter <xref linkend="cha.net.kerberos"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Starten Sie den gssd-Dienst auf dem Client mit <command>rcgssd start</command>.
+     </para>
+    </step>
+    <step os="osuse;sles" performance="required">
+     <para>
+      Starten Sie den svcgssd-Dienst auf dem Server mit <command>rcsvcgssd start</command>.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Weitere Informationen zum Konfigurieren eines kerberisierten NFS finden Sie über die Links in <xref linkend="sec.nfs.info" xrefstyle="SectTitleOnPage"/>.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.nfs.configuring-nfs-clients">
+  <title>Konfigurieren der Clients</title>
+
+  <para>
+   Wenn Sie Ihren Host als NFS-Client konfigurieren möchten, müssen Sie keine zusätzliche Software installieren. Alle erforderlichen Pakete werden standardmäßig installiert.
+  </para>
+
+  <sect2 id="sec.nfs.import-yast2">
+   <title>Importieren von Dateisystemen mit YaST</title><indexterm> <primary>NFS</primary> <secondary>Clients</secondary> </indexterm>
+    <para>Autorisierte Benutzer können NFS-Verzeichnisse eines NFS-Servers über das YaST-NFS-Clientmodul in den lokalen Dateibaum einhängen. Führen Sie dazu die folgenden Schritte aus:</para>
+    
+    <procedure id="pro.nfs.import-yast2">
+      <title>Importieren von NFS-Verzeichnissen</title>
+      <step performance="required">
+        <para>Starten Sie das YaST-NFS-Client-Modul.</para>
+      </step>
+      <step performance="required">
+        <para>Klicken Sie auf dem Karteireiter <guimenu>NFS-Freigaben</guimenu> auf <guimenu>Hinzufügen</guimenu>. Geben Sie den Hostnamen des NFS-Servers, das zu importierende Verzeichnis und den Einhängepunkt an, an dem das Verzeichnis lokal eingehängt werden soll. </para>
+      </step>
+      <step performance="required">
+        <para>Wenn Sie eine Firewall nutzen und den Zugriff auf den Dienst von Ferncomputern aus zulassen möchten, aktivieren Sie auf dem Karteireiter <guimenu>NFS-Einstellungen</guimenu> die Option <guimenu>Firewall-Port öffnen</guimenu>. Der Status der Firewall wird neben dem Kontrollkästchen angezeigt.</para>
+      </step>
+      <step performance="required">
+        <para>Wenn Sie NFSv4 verwenden, vergewissern Sie sich, dass das Kontrollkästchen für <guimenu>NFSv4 aktivieren</guimenu> aktiviert ist und dass der <guimenu>NFSv4-Domänenname</guimenu> denselben Wert enthält, den der NFSv4-Server verwendet. Die Standarddomäne ist <literal>localdomain</literal>.</para>
+      </step>
+      <step performance="required">
+        <para>Klicken Sie zum Speichern der Änderungen auf <guimenu>OK</guimenu>.
+        </para>
+      </step>
+    </procedure>
+   <para>
+    Die Konfiguration wird in <filename>/etc/fstab</filename> geschrieben und die angegebenen Dateisysteme werden eingehängt. Wenn Sie den YaST-Konfigurationsclient zu einem späteren Zeitpunkt starten, wird auch die vorhandene Konfiguration aus dieser Datei gelesen.
+   </para>
+
+  </sect2>
+
+  <sect2 id="sec.nfs.import">
+   <title>Manuelles Importieren von Dateisystemen</title><indexterm> <primary>NFS</primary> <secondary>Importieren</secondary> </indexterm> <indexterm> <primary>NFS</primary> <secondary>Einhängen</secondary> </indexterm>
+   <para>
+    Voraussetzung für den manuellen Import eines Dateisystems von einem NFS-Server ist ein aktiver RPC-Port-Mapper. Diesen starten Sie durch Ausführung von <command>rcrpcbind <option>start</option></command> als <systemitem class="username">Root</systemitem>. Danach können ferne Dateisysteme mit <command>mount</command> wie lokale Partitionen in das Dateisystem eingehängt werden:
+   </para>
+<screen>mount <replaceable>host</replaceable>:<replaceable>remote-path</replaceable><replaceable>local-path</replaceable></screen>
+   <para>
+    Geben Sie zum Beispiel zum Import von Benutzerverzeichnissen vom <systemitem>nfs.example.com</systemitem>-Rechner folgendes Kommando ein:
+   </para>
+<screen>mount nfs.example.com:/home /home</screen>
+   <sect3 id="sec.nfs.automount">
+    <title>Verwenden des Diensts zum automatischen Einhängen</title>
+    <para>
+     Ferne Dateisysteme können mit dem autofs-Daemon automatisch eingehängt werden. Fügen Sie den folgenden Eintrag in der Datei <filename>/etc/auto.master</filename> hinzu:
+    </para>
+<screen>/nfsmounts /etc/auto.nfs</screen>
+    <para>
+     Nun fungiert das Verzeichnis <filename>/nfsmounts</filename> als Root-Verzeichnis für alle NFS-Einhängungen auf dem Client, sofern die Datei <filename>auto.nfs</filename> entsprechend ausgefüllt wurde. Der Name <filename>auto.nfs</filename> wurde nur der Einfachheit halber ausgewählt – Sie können einen beliebigen Namen auswählen. Fügen Sie der Datei <filename>auto.nfs</filename> wie folgt Einträge für alle NFS-Einhängungen hinzu:
+    </para>
+<screen>localdata -fstype=nfs server1:/data
+nfs4mount -fstype=nfs4 server2:/</screen>
+    <para>
+     Aktivieren Sie die Einstellungen durch Ausführung von <command>rcautofs start </command> als <systemitem class="username">root</systemitem>. In diesem Beispiel wird <filename>/nfsmounts/localdata</filename>, das Verzeichnis <filename>/data</filename> von <systemitem>server1</systemitem>, mit NFS eingehängt und <filename>/nfsmounts/nfs4mount</filename> von <systemitem>server2</systemitem> wird mit NFSv4 eingehängt. 
+    </para>
+    <para>
+     Wenn die Datei <filename>/etc/auto.master</filename> während der Ausführung des Diensts autofs bearbeitet wird, muss die automatische Einhängung mit <command>rcautofs restart</command> erneut gestartet werden, damit die Änderungen wirksam werden.
+    </para>
+   </sect3>
+   <sect3 id="sec.nfs.fstab">
+    <title>Manuelles Bearbeiten von <filename>/ect/fstab</filename></title>
+    <para>
+     Ein typischer NFSv3-Einhängeeintrag in <filename>/etc/fstab</filename> sieht folgendermaßen aus:
+    </para>
+<screen>nfs.example.com:/data /local/path nfs rw,noauto 0 0</screen>
+    <para>
+     Auch NFSv4-Einhängungen können der Datei <filename>/etc/fstab</filename> hinzugefügt werden. Verwenden Sie für diese Einhängungen in der dritten Spalte <literal>nfs4</literal> statt <literal>nfs</literal> und stellen Sie sicher, dass das entfernte Dateisystem in der ersten Spalte nach <replaceable>nfs.example.com:</replaceable> als <filename>/</filename> angegeben ist. Eine typische Zeile für eine NFSv4-Einhängung in <filename>/etc/fstab</filename> sieht zum Beipsiel wie folgt aus:
+    </para>
+<screen>nfs.example.com:/ /local/pathv4 nfs4 rw,noauto 0 0</screen>
+    <para>
+     Mit der Option <literal>noauto</literal> wird verhindert, dass das Dateisystem beim Starten automatisch eingehängt wird. Wenn Sie das jeweilige Dateisystem manuell einhängen möchten, können Sie das Einhängekommando auch kürzen, indem Sie nur den Einhängepunkt angeben:
+    </para>
+<screen>mount /local/path</screen>
+    <para>
+     Beachten Sie, dass das Einhängen dieser Dateisysteme beim Start durch die Initialisierungsskripte des Systems geregelt wird, wenn die Option <literal>noauto</literal> nicht angegeben ist.
+    </para>
+   </sect3>
+  </sect2>
+   
+   <sect2 id="sec.nfs.pnfs">
+     <title>pNFS (paralleles NFS)</title>
+     <para>NFS wurde in den 1980er-Jahren entwickelt und gehört damit zu den ältesten Protokollen. Zum Freigeben kleinerer Dateien ist NFS völlig ausreichend. Wenn Sie dagegen große Dateien übertragen möchten oder wenn zahlreiche Clients auf die Daten zugreifen sollen, wird ein NFS-Server rasch zu einer Engstelle, die die Systemleistungen erheblich beeinträchtigt. Dies liegt daran, dass die Dateien rasch größer werden, wobei die relative Ethernet-Geschwindigkeit nicht ganz mithalten kann. </para>
+     <para>Wenn Sie eine Datei von einem <quote>normalen</quote> NFS-Server anfordern, werden die Metadaten der Datei nachgeschlagen, die Daten dieser Datei werden zusammengestellt und die Datei wird schließlich über das Netzwerk an den Client übertragen. Der Leistungsengpass wird jedoch in jedem Fall ersichtlich, unabhängig davon, wie groß oder klein die Dateien sind:
+     </para>
+     
+     <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+         <para>Bei kleinen Dateien dauert das Sammeln der Metadaten am längsten.</para>
+       </listitem>
+       <listitem>
+         <para>Bei großen Dateien dauert das Übertragen der Daten vom Server auf den Client am längsten.</para>
+       </listitem>
+     </itemizedlist>
+     
+     <para>pNFS (paralleles NFS) trennt die Metadaten des Dateisystems vom Speicherort der Daten und überwindet so diese Einschränkungen. Für pNFS sind dabei zwei Arten von Servern erforderlich:</para>
+      <itemizedlist mark="bullet" spacing="normal">
+        <listitem>
+          <para>Ein <emphasis>Metadaten-</emphasis> oder <emphasis>Steuerungsserver</emphasis>, der den gesamten verbleibenden Verkehr (nicht den Datenverkehr) abwickelt</para>
+        </listitem>
+        <listitem>
+          <para>Mindestens ein <emphasis>Speicherserver</emphasis>, auf dem sich die Daten befinden</para>
+        </listitem>
+      </itemizedlist>
+     
+     <para>Der Metadatenserver und die Speicherserver bilden gemeinsam einen einzigen logischen NFS-Server. Wenn ein Client einen Lese- oder Schreibvorgang startet, teilt der Metadatenserver dem NFSv4-Client mit, auf welchem Speicherserver der Client auf die Dateiblöcke zugreifen soll. Der Client kann direkt auf dem Server auf die Daten zugreifen.
+     </para>
+     
+     <para>SUSE Linux Enterprise unterstützt pNFS nur auf der Clientseite.</para>
+     
+     <sect3 id="sec.nfs.pnfs.yast">
+       <title>Konfigurieren eines pNTP-Clients mit YaST</title>
+       <para>Befolgen Sie die Anweisungen unter <xref linkend="pro.nfs.import-yast2"/>; aktivieren Sie jedoch das Kontrollkästchen <guimenu>pNFS (v4.1)</guimenu> und (optional) <guimenu>NFSv4-Freigabe</guimenu>. YaST führt alle erforderlichen Schritte aus und schreibt die erforderlichen Optionen in die Datei <filename>/etc/exports</filename>. </para>
+     </sect3>
+     
+     <sect3 id="sec.nfs.pnfs.manual">
+       <title>Manuelles Konfigurieren eines pNTP-Clients</title>
+       <para>Beginnen Sie gemäß <xref linkend="sec.nfs.import"/>. Der Großteil der Konfiguration wird durch den NFSv4-Server ausgeführt. Der einzige Unterschied für pNFS besteht darin, dass die Option <option>minorversion</option> und der Metadatenserver <replaceable>MDS_SERVER</replaceable> in das Kommando <command>mount</command> eingefügt werden:</para>
+       <screen>mount -t nfs4 -o minorversion=1 <replaceable>MDS_SERVER</replaceable> <replaceable>MOUNTPOINT</replaceable></screen>
+       <para/>
+       <para>Als Hilfe für die Fehlersuche ändern Sie den Wert im Dateisystem <filename>/proc</filename>:</para>
+       <screen>echo 32767 &gt; /proc/sys/sunrpc/nfsd_debug
+echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
+     </sect3>
+   </sect2>
+   
+ </sect1>
+ <sect1 id="sec.nfs.info">
+  <title>Weiterführende Informationen</title>
+
+  <para>
+   Außer auf den man-Seiten zu <command>exports</command>, <command>nfs</command> und <command>mount</command> stehen Informationen zum Konfigurieren eines NFS-Servers und -Clients unter <filename>/usr/share/doc/packages/nfsidmap/README</filename> zur Verfügung. Weitere Online-Dokumentation finden Sie auf folgenden Websites:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Die detaillierte technische Dokumentation finden Sie online unter <ulink url="http://nfs.sourceforge.net/">SourceForge</ulink>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Anweisungen zum Einrichten eines kerberisierten NFS finden Sie unter <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS Version 4 Open Source Reference Implementation</ulink>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Falls Sie Fragen zu NFSv4 haben, lesen Sie die <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4-FAQ</ulink>.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>

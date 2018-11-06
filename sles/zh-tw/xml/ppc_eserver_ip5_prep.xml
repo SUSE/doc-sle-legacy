@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_eserver_ip5_prep.xml" id="sec.prep.eserver">
+ <title>在 IBM eServer p5、System p 與 OpenPower 型號上安裝的準備動作</title><indexterm> <primary>準備</primary><secondary>eServer</secondary> </indexterm>
+ <para>
+  本節介紹在執行 IBM eServer p5 系統上安裝 SUSE® Linux Enterprise Server 之前的準備步驟。我們會說明從內建 CD-ROM 磁碟機和從網路上安裝的方法。
+ </para>
+ <para>
+  本節假設您已設定 HMC 並將其連接至您的系統。在<quote>使用引導式設定精靈設定 HMC</quote>中提供了使用精靈設定 HMC 的詳細資訊：<ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphai_p5/confighmcgs.htm?"/>
+ </para>
+ <sect3 id="sec.prep.eserver.features6x0">
+
+  <title>IBM eServer p5 系統的最新功能</title>
+  <para>
+   IBM eServer p5 系統具備分割系統的能力。這樣可在一個機器上同時運作多達 254 個作業系統。這些作業系統都會安裝於 <emphasis>LPAR</emphasis> (邏輯分割區) 中。這些分割區中的一個或多個可能包含 SUSE Linux Enterprise Server 環境。
+  </para>
+  <para>
+   若要為 SUSE Linux Enterprise Server 準備 LPAR，首先在 <emphasis>HMC</emphasis> 上設定系統。請參閱 IBM 文件以取得詳細資訊：<ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphbi/iphbikickoff.htm"/>
+  </para>
+
+
+
+
+
+
+
+
+
+ </sect3>
+ <sect3 id="sec.prep.eserver.diskspace">
+  <title>硬碟空間</title>
+  <para>
+   請確定您有足夠的硬碟空間可用於安裝 SUSE Linux Enterprise Server。標準系統至少需要 4 GB 的可用硬碟空間。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.netsource">
+
+  <title>將安裝裝置指定到 LPAR</title>
+  
+  <para>
+   您可以從 CD-ROM 或 DVD 磁碟機或使用網路安裝來源安裝 SUSE Linux Enterprise Server。使 LPAR 可使用 CD-ROM、DVD 光碟機或網路裝置進行安裝。
+  </para>
+  <figure id="fig.ip5.hmc.start.menu">
+   <title>HMC：伺服器管理 — 內容</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <procedure id="ip5.hmc.assign.cdrom">
+   <title>將 CD-ROM 或 DVD 光碟機指定到 LPAR</title>
+   <step performance="required">
+    <para>
+     開啟 HMC 應用程式，然後移至<menuchoice><guimenu>伺服器與分割區</guimenu> <guimenu>伺服器管理</guimenu></menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在可用的伺服器中，展開要安裝的伺服器與分割區。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在要用於安裝的設定檔上按一下滑鼠右鍵，然後選取<guimenu>內容</guimenu> (請參閱<xref linkend="fig.ip5.hmc.start.menu"/>)。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>邏輯分割區設定檔內容</guimenu>對話方塊中，選取<guimenu>實體 I/O</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     
+     
+     
+     在<guimenu>管理的系統 I/O 裝置</guimenu>中，從要從中安裝的匯流排中選取<guimenu>其他大量儲存控制器</guimenu>。若要將此 DVD 光碟機指派給分割區，請按一下<guimenu>依需要新增</guimenu>。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   結果應該類似於<xref linkend="fig.ip5.hmc.assign.cdrom"/>。
+  </para>
+  <figure id="fig.ip5.hmc.assign.cdrom">
+   <title>HMC：管理的系統 I/O 裝置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  
+  <para>
+   現在將 SUSE Linux Enterprise Server CD1 或 DVD1 插入到磁碟機中。
+  </para>
+
+  <procedure>
+   <title>將網路裝置指定到 LPAR</title>
+   <step performance="required">
+    <para>
+     開啟 HMC 應用程式，然後移至<menuchoice><guimenu>伺服器與分割區</guimenu> <guimenu>伺服器管理</guimenu></menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在可用的伺服器中，開啟要安裝的伺服器與分割區。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在要用於安裝的設定檔上按一下滑鼠右鍵，然後選取<guimenu>內容</guimenu> (請參閱<xref linkend="fig.ip5.hmc.start.menu"/>)。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>邏輯分割區設定檔內容</guimenu>對話方塊中，選取<guimenu>實體 I/O</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>管理的系統 I/O 裝置</guimenu>中，從要從中安裝的匯流排中選取<guimenu>PCI 10/100/1000Mbps 乙太網路 UTP 2-埠</guimenu>。然後按一下 <guimenu>依需要新增</guimenu>。
+    </para>
+    <para>
+     若您計劃使用虛擬乙太網路介面卡安裝，請參閱 IBM 文件。
+     
+     
+     
+    </para>
+   </step>
+  </procedure>
+  
+  <para>
+
+   若 SUSE Linux Enterprise Server 要安裝於多個分割區上，請建立網路安裝來源。這樣在安裝過程中就不需要更換 CD 了。使用相同來源還可讓您同時安裝多個系統。網路安裝來源組態的詳細資訊，請參閱 <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.startinstall">
+  <title>啟動安裝</title>
+  <para>
+   若要啟動安裝，請重新啟動系統。在設定檔名稱上一下滑鼠右鍵，選取<guimenu>啟用</guimenu>並在下面的對話方塊中按<guimenu>確定</guimenu>。
+  </para>
+  
+  <para>
+   使用螢幕主控台，或如 IBM 文件所述連接至序列主控台。啟動序列主控台的簡單方式之一，就是在啟動分割區的時候開啟 VTerm。若要這樣做，請在<guimenu>啟動邏輯分割區</guimenu>對話方塊中啟用<guimenu>開啟終端機視窗或主控台工作階段</guimenu>。
+  </para>
+  <para>
+   系統重新開機過程中使用序列主控台或虛擬主控台進行系統檢查的話，請按 <keycap>F1</keycap> 或 <keycap>1</keycap> 輸入系統韌體：
+
+  </para>
+
+<screen>
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+
+       1 = SMS Menu                          5 = Default Boot List
+       8 = Open Firmware Prompt              6 = Stored Boot List
+
+
+     memory      keyboard     network     scsi     speaker 
+</screen>
+
+  <para>
+   檢查 SCSI 裝置時，按 <keycap>F1</keycap> 或 <keycap>1</keycap>。選取<guimenu>5. Select Boot Options</guimenu>(選取開機選項) 以進入開機選項對話方塊：
+
+  </para>
+
+
+<screen>
+Version SF220_004
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+---------------------------------------------------------------------
+Main Menu
+ 1.  Select Language
+ 2.  Setup Remote IPL (Initial Program Load)
+ 3.  Change SCSI Settings
+ 4.  Select Console
+ 5.  Select Boot Options
+
+
+---------------------------------------------------------------------
+Navigation Keys:
+
+                                  X = eXit System Management Services
+---------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation
+                                                                Key:5
+</screen>
+
+  <para>
+   選取<guimenu>1. Select Install/Boot Device</guimenu>(選取安裝/開機裝置) 設定<emphasis>安裝裝置</emphasis>。移至<guimenu>7. List all Devices</guimenu>(列出所有裝置) 檢視可用裝置清單：
+
+  </para>
+
+<screen>
+Version SF220_011
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Device
+Device  Current  Device
+Number  Position  Name
+ 1.        -      Virtual Ethernet 
+                  ( loc=U9111.520.10D3CCC-V1-C3-T1 )
+ 2.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T5 )
+ 3.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T6 )
+ 4.        -      IDE CD-ROM 
+                  ( loc=U787A.001.DNZ00XG-P4-D3 )
+ 5.        1      SCSI 73407 MB Harddisk
+                  ( loc=U787A.001.DNZ00XG-P1-T10-L8-L0 )
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+ </sect3>
+
+ <sect3 id="sec.prep.eserver.boot.cd">
+  <title>從 CD-ROM 光碟機開機</title>
+  <para>
+   選取光碟機 (本範例中為 <literal>4</literal>)：
+
+  </para>
+  
+
+<screen>SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Task
+
+IDE CD-ROM 
+    ( loc=U787A.001.DNZ00XG-P4-D3 )
+
+ 1.  Information
+ 2.  Normal Mode Boot
+ 3.  Service Mode Boot
+
+
+
+
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+  <para>
+   選擇<guimenu>2. Normal Mode Boot</guimenu>(一般模式開機) 從此裝置安裝。在下一個畫面中，確認 <guimenu>1. 是</guimenu>並離開<guimenu>系統管理服務</guimenu>，從裝置開機。
+  </para>
+  <para>
+   系統會讀取光碟機，並啟動 yaboot 公用程式：
+
+  </para>
+  
+
+
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+
+  <para>
+   輸入<guimenu>install</guimenu>，然後按 <keycap>Enter</keycap>。
+  </para>
+  <para>
+   若要從網路安裝來源讀取安裝資料，而不是繼續從 CD-ROM 進行安裝 (請參閱<xref linkend="sec.prep.eserver.netsource"/>)，請將 <option>manual</option> 選項附加至核心名稱 (<literal>install</literal>)。
+  </para>
+  <para>
+   若要透過 VNC 安裝，請將參數 <option>vnc=1</option> 與 <option>vncpassword=<replaceable>密碼</replaceable></option> 附加至核心名稱 (<literal>install</literal>)。若要深入瞭解 VNC，請參閱<xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.boot.net">
+  <title>從網路來源開機</title>
+  <para>
+   選取可存取安裝來源的乙太網路裝置 (本範例中為 <literal>2</literal>)。
+  </para>
+ </sect3>
+ <sect3>
+  <title>其他步驟</title>
+  <para>
+   如<xref linkend="cha.inst"/>中所述繼續開始以 linuxrc 和 YaST 安裝軟體。
+  </para>
+ </sect3>
+</sect2>

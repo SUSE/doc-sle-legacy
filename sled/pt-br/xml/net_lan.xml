@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_lan.xml" id="sec.basicnet.yast">
+ <title>Configurando uma conexão de rede com o YaST</title><indexterm id="idx.networks_integrating" class="startofrange"> <primary>redes</primary> <secondary>configurando</secondary> </indexterm> <indexterm> <primary>placas</primary> <secondary>rede</secondary> </indexterm>
+
+ <para>
+  Há muitos tipos de redes suportadas no Linux. A maioria delas usa nomes de dispositivos diferentes e os arquivos de configuração se espalham por vários locais no sistema de arquivos. Para obter uma visão geral detalhada dos aspectos da configuração manual de rede, consulte a <xref linkend="sec.basicnet.manconf"/>.
+ </para>
+
+ <para>
+  <phrase os="sles;sled">No SUSE Linux Enterprise Desktop, em que o NetworkManager está ativo por padrão, todas as placas de rede estão configuradas.</phrase> Se o NetworkManager não estiver ativo, apenas a primeira interface com link ativo (com cabo de rede conectado) será configurada automaticamente. Hardwares adicionais podem ser configurados a qualquer momento no sistema instalado. As seguintes seções descrevem a configuração de rede para todos os tipos de conexões de rede suportadas pelo <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>.
+ </para>
+
+ 
+
+ <sect2 id="sec.basicnet.yast.netcard">
+  <title>Configurando a placa de rede com o YaST</title><indexterm> <primary>placas</primary> <secondary>rede</secondary> </indexterm> <indexterm> <primary>redes</primary> <secondary>YaST</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>placa de rede</secondary> </indexterm> <indexterm/>
+  <para>
+   Para configurar sua placa de rede wireless ou não no YaST, selecione <menuchoice> <guimenu>Dispositivos de Rede</guimenu> <guimenu>Configurações de Rede</guimenu> </menuchoice>. Após iniciar o módulo, o YaST exibirá a caixa de diálogo <guimenu>Configurações de Rede</guimenu> com quatro guias: <guimenu>Opções Globais</guimenu>, <guimenu>Visão Geral</guimenu>, <guimenu>Nome de host/DNS</guimenu> e <guimenu>Roteamento</guimenu>.
+  </para>
+  <para>
+   A guia <guimenu>Opções Globais</guimenu> permite definir opções gerais de rede, como o uso do NetworkManager, o IPv6 e opções gerais de DHCP. Para obter mais informações, consulte a <xref linkend="sec.basicnet.yast.netcard.global"/>.
+  </para>
+  <para>
+   A guia <guimenu>Visão Geral</guimenu> contém informações sobre interfaces de rede instaladas e configurações. Ela lista os nomes de todas as placas de rede detectadas corretamente. Nessa caixa de diálogo, você pode configurar manualmente novas placas, bem como remover ou mudar suas configurações. Se você quiser configurar manualmente uma placa que não foi detectada automaticamente, consulte a <xref linkend="sec.basicnet.yast.netcard.man"/>. Se você quiser mudar a configuração de uma placa que já está configurada, consulte <xref linkend="sec.basicnet.yast.netcard.change"/>.
+  </para>
+  <para>
+   A guia <guimenu>Nome de Host/DNS</guimenu> permite definir o nome de host da máquina e nomear os servidores que serão usados. Para obter mais informações, consulte <xref linkend="sec.basicnet.yast.change.host"/>.
+  </para>
+  <para>
+   A guia <guimenu>Roteamento</guimenu> é usada para a configuração do roteamento. Consulte a <xref linkend="sec.basicnet.yast.change.route"/> para obter mais informações.
+  </para>
+  <figure id="fig.yast2.neticard">
+   <title>Definindo as configurações da rede</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_net_icard.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_net_icard.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <sect3 id="sec.basicnet.yast.netcard.global">
+   <title>Configurando opções globais de rede</title>
+   <para>
+    A guia <guimenu>Opções Globais</guimenu> do módulo <guimenu>Configurações de Rede</guimenu> do YaST permite definir opções globais de rede importantes, como o uso do NetworkManager, o IPv6 e opções de cliente DHCP. Essas configurações são aplicáveis a todas as interfaces de rede.
+   </para>
+   <para>
+    Em <guimenu>Método de Configuração da Rede</guimenu>, escolha o modo como as conexões de rede são gerenciadas. Para que um applet de área de trabalho do NetworkManager gerencie as conexões de todas as interfaces, escolha <guimenu>Controlado por Usuário com o NetworkManager</guimenu>. Essa opção é ideal para fazer a alternância entre várias redes wireless ou não. Se você não tem um ambiente de área de trabalho (GNOME ou KDE) em execução, ou se o seu computador for um servidor Xen, um sistema virtual ou fornecer serviços de rede como DHCP ou DNS na rede em que se encontra, use o <guimenu>Método Tradicional com ifup</guimenu>. Se o NetworkManager for usado, o <command>nm-applet</command> deverá ser usado para configurar opções de rede, e as guias <guimenu>Visão Geral</guimenu>, <guimenu>Nome de host/DNS</guimenu> e <guimenu>Roteamento</guimenu> do módulo <guimenu>Configurações de Rede</guimenu> estarão desabilitadas. Para obter mais informações sobre o NetworkManager, consulte o <xref linkend="cha.nm"/>.
+   </para>
+   <para>
+    Nas <guimenu>Configurações do Protocolo IPv6</guimenu>, escolha entre usar ou não o protocolo IPv6. É possível usar o IPv6 juntamente com o IPv4. Por padrão, o IPv6 fica ativado. Contudo, nas redes que não usam o protocolo IPv6, os tempos de resposta podem ser acelerados com o protocolo IPv6 desabilitado. Para desabilitar o IPv6, desmarque a opção <guimenu>Habilitar IPv6</guimenu>. Isso desabilita o carregamento automático do módulo de kernel do IPv6. Essa ação será aplicada após a reinicialização.
+   </para>
+   <para>
+    Nas <guimenu>Opções do Cliente DHCP</guimenu>, configure as opções do cliente DHCP. Se você quiser que o cliente DHCP peça ao servidor para sempre transmitir suas respostas, marque <guimenu>Requerer Resposta a Broadcast</guimenu>. Isso pode ser necessário se houver o costume de mover a sua máquina entre redes diferentes. O <guimenu>Identificador de Cliente DHCP</guimenu> deve ser diferente para cada cliente DHCP na mesma rede. Se ficar vazio, assumirá como padrão o endereço de hardware da interface da rede. Entretanto, se você tiver várias máquinas virtuais em execução na mesma interface de rede e, portanto, com o mesmo endereço de hardware, especifique aqui um identificador exclusivo.
+   </para>
+   <para>
+    O <guimenu>Nome do Host a Enviar</guimenu> especifica uma string usada no campo da opção de nome de host quando o dhcpcd envia mensagens ao servidor DHCP. Alguns servidores DHCP atualizam as zonas do servidor de nomes (registros diretos e reversos) de acordo com esse nome de host (DNS Dinâmico). Além disso, alguns servidores DHCP exigem que o campo da opção <guimenu>Nome do Host a Enviar</guimenu> contenha uma string específica nas mensagens DHCP dos clientes. Mantenha <literal>AUTO</literal> para enviar o nome de host atual (ou seja, o que está definido em <filename>/etc/HOSTNAME</filename>). Deixe o campo da opção vazio para não enviar nenhum nome de host. Se você não quiser mudar a rota padrão de acordo com as informações do DHCP, desmarque <guimenu>Mudar Rota Padrão via DHCP</guimenu>.
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.netcard.change">
+   <title>Mudando a configuração de uma placa de rede</title>
+   <para>
+    Para mudar a configuração de uma placa de rede, selecione-a na lista de placas detectadas em <menuchoice> <guimenu>Configurações de Rede</guimenu> <guimenu>Visão Geral</guimenu> </menuchoice> no YaST e clique em <guimenu>Editar</guimenu>. A caixa de diálogo <guimenu>Configuração da Placa de Rede</guimenu> é exibida, na qual é possível ajustar a configuração da placa usando as guias <guimenu>Geral</guimenu>, <guimenu>Endereço</guimenu> e <guimenu>Hardware</guimenu>. Para obter informações sobre a configuração de placas wireless, consulte a <xref linkend="sec.wireless.wlan.yast2"/>.
+   </para>
+   <sect4 id="sec.basicnet.yast.change.address">
+    <title>Configurando endereços IP</title>
+<indexterm> <primary>redes</primary><secondary>YaST</secondary><tertiary>endereço IP</tertiary></indexterm>
+    <para>
+     Você pode definir o endereço IP da placa de rede ou o modo como seu endereço IP é determinado na guia <guimenu>Endereço</guimenu> da caixa de diálogo <guimenu>Configuração da Placa de Rede</guimenu>. Há suporte para endereços IPv4 e IPv6. A placa de rede pode ser <guimenu>Sem Endereço IP</guimenu> (útil para dispositivos de vinculação), ter um <guimenu>Endereço IP Atribuído Estaticamente</guimenu> (IPv4 ou IPv6) ou um <guimenu>Endereço Dinâmico</guimenu> atribuído por <guimenu>DHCP</guimenu>, <guimenu>Zeroconf</guimenu> ou ambos.
+    </para>
+    <para>
+     Ao usar um <guimenu>Endereço Dinâmico</guimenu>, selecione se deseja usar <guimenu>Apenas DHCP Versão 4</guimenu> (para IPv4), <guimenu>Apenas DHCP Versão 6</guimenu> (para IPv6) ou <guimenu>DHCP Versões 4 e 6</guimenu>.
+    </para>
+    <para>
+     Se possível, a primeira placa de rede com link que estiver disponível durante a instalação será configurada automaticamente para usar a configuração automática de endereço via DHCP. <phrase os="sles;sled">No SUSE Linux Enterprise Desktop, em que o NetworkManager está ativo por padrão, todas as placas de rede estão configuradas.</phrase>
+     
+    </para>
+    
+    <para>
+     Também será necessário usar o DHCP se você estiver usando uma linha DSL sem nenhum IP estático atribuído pelo ISP (Internet Service Provider — Provedor de Serviços de Internet). Se você decidir usar o DHCP, configure os detalhes em <guimenu>Opções do Cliente DHCP</guimenu> na guia <guimenu>Opções Globais</guimenu> da caixa de diálogo <guimenu>Configurações de Rede</guimenu> do módulo de configuração de placa de rede do YaST. Especifique se o cliente DHCP deve pedir que o servidor sempre transmita suas respostas em <guimenu>Requerer Resposta a Broadcast</guimenu>. Essa opção pode ser necessária se a sua máquina for um cliente móvel que costuma trocar de rede. Se você tiver uma configuração de host virtual, em que hosts diferentes se comunicam pela mesma interface, será necessário um <guimenu>Identificador de Cliente DHCP</guimenu> para diferenciá-las.
+    </para>
+    <para>
+     O DHCP é uma boa opção para a configuração de clientes, mas não é a ideal para a configuração de servidores. Para definir um endereço IP estático, faça o seguinte:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Selecione uma placa na lista de placas detectadas na guia <guimenu>Visão Geral</guimenu> do módulo de configuração de placa de rede do YaST e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Na guia <guimenu>Endereço</guimenu>, escolha <guimenu>Endereço IP Atribuído Estaticamente</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Digite o <guimenu>Endereço IP</guimenu>. Podem ser usados endereços IPv4 e IPv6. Digite a máscara de rede em <guimenu>Máscara de Sub-rede</guimenu>. Se for usado o endereço IPv6, use <guimenu>Máscara de Sub-rede</guimenu> para um comprimento do prefixo no formato <literal>/64</literal>.
+      </para>
+      <para>
+       Como opção, você pode digitar um <guimenu>Nome de Host</guimenu> completo para esse endereço, que será gravado no arquivo de configuração <filename>/etc/hosts</filename>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+    <para>
+     Se você usa o endereço estático, os servidores de nomes e o gateway padrão não são configurados automaticamente. Para configurar servidores de nomes, proceda conforme descrito em <xref linkend="sec.basicnet.yast.change.host"/>. Para configurar um gateway, proceda conforme descrito em <xref linkend="sec.basicnet.yast.change.route"/>.
+    </para>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.configure.aliases">
+    <title>Configurando álias</title><indexterm> <primary>redes</primary> <secondary>YaST</secondary> <tertiary>álias</tertiary></indexterm>
+    <para>
+     Um dispositivo de rede pode ter vários endereços IP chamados álias. 
+    </para>
+    <note>
+     <title>álias são um recurso de compatibilidade</title>
+     <para>
+      Esses supostos álias ou rótulos funcionam apenas com IPv4. Com IPv6, eles serão ignorados. O uso das interfaces de rede <command>iproute2</command> pode ter um ou mais endereços.
+     </para>
+    </note>
+    <para>
+     Ao usar o YaST para definir um álias para a placa de rede, faça o seguinte:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Selecione uma placa na lista de placas detectadas na guia <guimenu>Visão Geral</guimenu> do módulo de configuração de placa de rede do YaST e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Na guia <menuchoice> <guimenu>Endereço</guimenu> <guimenu>Endereços Adicionais</guimenu> </menuchoice>, clique em <guimenu>Adicionar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Insira o <guimenu>Nome de Apelido</guimenu>, o <guimenu>Endereço IP</guimenu> e a <guimenu>Máscara de Rede</guimenu>. Não inclua o nome da interface no nome do álias.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.udev">
+    <title>Mudando o nome de dispositivo e as regras de udev</title>
+    <para>
+     É possível mudar o nome de dispositivo da placa de rede quando ela for usada. Também é possível determinar se a placa de rede deve ser identificada pelo udev usando o endereço (MAC) de hardware ou o ID do barramento. A segunda opção é preferível em grandes servidores para facilitar o intercâmbio das placas. Para definir essas opções com o YaST, faça o seguinte:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Selecione uma placa na lista de placas detectadas na guia <guimenu>Visão Geral</guimenu><guimenu/> do módulo Configurações de Rede do YaST e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Vá até a guia <guimenu>Hardware</guimenu>. O nome de dispositivo atual é mostrado em <guimenu>Regras do Udev</guimenu>. Clique em <guimenu>Mudar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Selecione se o udev deve identificar a placa por seu <guimenu>Endereço MAC</guimenu> ou <guimenu>ID do Bus</guimenu>. O endereço MAC e o ID do barramento atuais da placa são mostrados na caixa de diálogo.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para mudar o nome de dispositivo, marque a opção <guimenu>Mudar Nome do Dispositivo</guimenu> e edite o nome.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>OK</guimenu> e em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.driver">
+    <title>Mudando o driver do kernel da placa de rede</title>
+    <para>
+     Para algumas placas de rede, pode haver vários drivers de kernel disponíveis. Se a placa já estiver configurada, o YaST permitirá selecionar um driver do Kernel para uso na lista de drivers compatíveis disponíveis. Também é possível especificar opções para o driver de kernel. Para definir essas opções com o YaST, faça o seguinte:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Selecione uma placa na lista de placas detectadas na guia <guimenu>Visão Geral</guimenu> do módulo Configurações de Rede do YaST e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Vá até a guia <guimenu>Hardware</guimenu>. 
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Selecione o driver de kernel a ser usado em <guimenu>Nome de Módulo</guimenu>. Digite qualquer opção para o driver selecionado em <guimenu>Opções</guimenu>, usando o formato <command> <replaceable>opção</replaceable>=<replaceable>valor</replaceable> </command>. Se forem usadas mais opções, elas deverão ser separadas por espaços.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>OK</guimenu> e em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.start">
+    <title>Ativando o dispositivo de rede</title><indexterm> <primary>redes</primary> <secondary>YaST</secondary> <tertiary>ativando</tertiary></indexterm>
+    <para>
+     Se você usa o método tradicional com ifup, poderá configurar seu dispositivo para ser iniciado em uma das seguintes situações: durante o boot, na conexão a cabo, ao detectar a placa, manualmente ou nunca. Para mudar a inicialização do dispositivo, faça o seguinte:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       No YaST, selecione uma placa na lista de placas detectadas em <menuchoice> <guimenu>Dispositivos de Rede</guimenu> <guimenu>Configurações de Rede</guimenu> </menuchoice> e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Na guia <guimenu>Geral</guimenu>, selecione a entrada desejada em <guimenu>Ativação de Dispositivo</guimenu>.
+      </para>
+      <para>
+       Escolha <guimenu>Em Tempo de Boot</guimenu> para iniciar o dispositivo durante o boot do sistema. Com a opção <guimenu>Em Conexão Cabo</guimenu>, a interface é monitorada quanto a qualquer conexão física existente. Com a opção <guimenu>Em Hotplug</guimenu>, a interface é definida tão logo fique disponível. Ela se assemelha à opção <guimenu>Em Tempo de Boot</guimenu>, a única diferença é que não ocorre nenhum erro quando a interface não está presente no momento do boot. Escolha <guimenu>Manualmente</guimenu> para controlar a interface manualmente com <command>ifup</command>. Escolha <guimenu>Nunca</guimenu> para não iniciar o dispositivo. A opção <guimenu>Em NFSroot</guimenu> se assemelha a <guimenu>Em Tempo de Boot</guimenu>, porém, a interface não é encerrada com o comando <command>rcnetwork stop</command>. Use-a se você estiver usando um sistema de arquivos raiz nfs ou iscsi.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+    <para>
+     Geralmente, apenas o administrador do sistema pode ativar e desativar as interfaces de rede. Para que qualquer usuário seja capaz de ativar essa interface via KInternet, selecione <guimenu>Habilitar Controle de Dispositivo para Usuário Não Root Via KInternet</guimenu>.
+    </para>
+   </sect4>
+   <sect4>
+    <title>Configurando o tamanho da unidade máxima de transferência</title>
+    <para>
+     Você pode definir uma unidade máxima de transferência (MTU) para a interface. A MTU refere-se ao maior tamanho de pacote permitido, em bytes. Uma MTU maior proporciona melhor eficiência da largura de banda. No entanto, pacotes grandes podem bloquear uma interface lenta por algum tempo, aumentando a latência dos pacotes seguintes.
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       No YaST, selecione uma placa na lista de placas detectadas em <menuchoice> <guimenu>Dispositivos de Rede</guimenu> <guimenu>Configurações de Rede</guimenu> </menuchoice> e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Na guia <guimenu>Geral</guimenu>, selecione a entrada desejada na lista <guimenu>Definir MTU</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.fire">
+
+    <title>Configurando o firewall</title>
+    <para>
+     Sem precisar inserir a configuração de firewall detalhada como descrito na <xref linkend="sec.fire.SuSE.yast"/>, você pode determinar a configuração de firewall básica para seu dispositivo como parte da configuração dele. Proceda da seguinte maneira:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Abra o módulo <menuchoice> <guimenu>Dispositivos de Rede</guimenu> <guimenu>Configurações de Rede</guimenu> </menuchoice> do YaST. Na guia <guimenu>Visão Geral</guimenu>, selecione uma placa na lista de placas detectadas e clique em <guimenu>Editar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Acesse a guia <guimenu>Geral</guimenu> da caixa de diálogo <guimenu>Configurações de Rede</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Determine a zona de firewall à qual sua interface deve ser designada. As seguintes opções estão disponíveis:
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term>Firewall Desabilitado</term>
+        <listitem>
+         <para>
+          Essa opção fica disponível apenas quando o firewall está desabilitado, sem entrar em execução. Use esta opção apenas se a sua máquina pertencer a uma rede maior protegida por um firewall externo.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Zona Atribuída Automaticamente</term>
+        <listitem>
+         <para>
+          Essa opção fica disponível apenas quando o firewall está habilitado. O firewall está em execução e a interface é atribuída automaticamente a uma zona de firewall. Para uma interface como essa, será usada a zona que contiver a palavra-chave <literal>any</literal> ou a zona externa.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Zona Interna (Desprotegida)</term>
+        <listitem>
+         <para>
+          O firewall está em execução, mas não assegura o uso obrigatório de nenhuma regra para proteger a interface. Use esta opção se a sua máquina pertencer a uma rede maior protegida por um firewall externo. Ela também é útil para as interfaces conectadas à rede interna, quando a máquina possui mais interfaces de rede.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Zona Desmilitarizada</term>
+        <listitem>
+         <para>
+          Zona desmilitarizada é uma linha de defesa adicional situada na frente de uma rede interna e da Internet (hostil). Os hosts designados a essa zona podem ser acessados a partir da rede interna e a Internet, mas não podem acessar a rede interna.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Zona Externa</term>
+        <listitem>
+         <para>
+          O firewall está em execução nesta interface e a protege totalmente contra outros tráfegos de rede (provavelmente hostis). Ela é a opção padrão.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </step>
+     <step performance="required">
+      <para>
+       Clique em <guimenu>Avançar</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Ative a configuração clicando em <guimenu>OK</guimenu>.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.netcard.man">
+   <title>Configurando uma placa de rede não detectada</title>
+   <para>
+    Sua placa pode ser detectada incorretamente. Nesse caso, ela não será incluída na lista de placas detectadas. Se você tiver certeza de que o sistema contém um driver para sua placa, poderá configurá-la manualmente. Se for possível, configure também tipos especiais de dispositivos de rede, como ponte, ligação, TUN ou TAP. Para configurar uma placa de rede não detectada (ou um dispositivo especial), faça o seguinte:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Na caixa de diálogo <menuchoice> <guimenu>Dispositivos de Rede</guimenu> <guimenu>Configurações de Rede</guimenu> <guimenu>Visão Geral</guimenu> </menuchoice> no YaST, clique em <guimenu>Adicionar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      
+      
+      Na caixa de diálogo <guimenu>Hardware</guimenu>, defina o <guimenu>Tipo de Dispositivo</guimenu> da interface entre as opções disponíveis e o <guimenu>Nome de Configuração</guimenu>. Se a placa de rede for um dispositivo PCMCIA ou USB, ative a respectiva caixa de seleção e saia dessa caixa de diálogo com <guimenu>Avançar</guimenu>. Caso contrário, você pode definir o <guimenu>Nome de Módulo</guimenu> do kernel para ser usado para a placa e as respectivas <guimenu>Opções</guimenu>, se necessário.
+     </para>
+     <para>
+      Em <guimenu>Opções do Ethtool</guimenu>, você pode definir as opções de <command>ethtool</command> usadas pelo <command>ifup</command> para a interface. Consulte a página de manual de <command>ethtool</command> para conhecer as opções disponíveis. Se a string opcional iniciar com um <literal>-</literal> (por exemplo <literal>-K <replaceable>nome_da_interface</replaceable> rx on</literal>), a segunda palavra da string será substituída pelo nome da interface atual. Caso contrário (por exemplo <literal>autoneg off speed 10</literal>), <command>ifup</command> precederá <literal>-s <replaceable>nome_da_interface</replaceable></literal>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Configure quaisquer opções que forem necessárias, como o endereço IP, a ativação do dispositivo ou a zona de firewall da interface nas guias <guimenu>Geral</guimenu>, <guimenu>Endereço</guimenu> e <guimenu>Hardware</guimenu>. Para obter mais informações sobre as opções de configuração, consulte <xref linkend="sec.basicnet.yast.netcard.change"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você selecionou <guimenu>Wireless</guimenu> como o tipo de dispositivo da interface, configure a conexão wireless na próxima caixa de diálogo. <phrase os="sles;sled">Informações detalhadas sobre a configuração do dispositivo wireless estão disponíveis no <xref linkend="cha.wireless.wlan"/>.</phrase>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Clique em <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para ativar a nova configuração de rede, clique em <guimenu>OK</guimenu>.
+     </para>
+    </step>
+   </procedure>
+
+  </sect3>
+  <sect3 id="sec.basicnet.yast.change.host">
+   <title>Configurando o nome do host e o DNS</title><indexterm> <primary>redes</primary> <secondary>YaST</secondary> <tertiary>nome de host</tertiary></indexterm>
+   <para>
+    Se você não mudou a configuração da rede durante a instalação e a placa com fio já estava disponível, um nome de host foi gerado automaticamente para o seu computador e o DHCP foi ativado. O mesmo se aplica às informações de serviço de nomes de que o host necessita para se integrar a um ambiente de rede. Se o DHCP for usado para a configuração de endereços de rede, a lista de servidores de nomes de domínio será preenchida automaticamente com os dados adequados. Se uma configuração estática for preferencial, defina esses valores manualmente.
+   </para>
+   <para>
+    Para mudar o nome do seu computador e ajustar a lista de pesquisa do servidor de nomes, faça o seguinte:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Vá para a guia <menuchoice> <guimenu>Configurações de Rede</guimenu> <guimenu>Nome de host/DNS</guimenu> </menuchoice> no módulo <guimenu>Dispositivos de Rede</guimenu> no YaST.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Digite o <guimenu>Nome de Host</guimenu> e, se necessário, o <guimenu>Nome de Domínio</guimenu>. O domínio é especialmente importante quando a máquina é um servidor de correio eletrônico. Observe que o nome de host é global e se aplica a todas as interfaces de rede definidas.
+     </para>
+     <para>
+      Se você estiver usando o DHCP para obter um endereço IP, o nome de host do seu computador será definido automaticamente pelo DHCP. Pode ser que você queira desabilitar esse comportamento ao conectar-se a outras redes, visto que elas podem atribuir nomes de host diferentes, e a mudança de nome de host em tempo de execução pode confundir a área de trabalho gráfica. Para desabilitar o uso do DHCP para obter um endereço IP, desmarque <guimenu>Trocar Nome de Host via DHCP</guimenu>.
+     </para>
+     <para>
+      <guimenu>Atribuir Nome de Host a IP de Loopback</guimenu> associa seu nome de host ao endereço IP <literal>127.0.0.2</literal> (loopback) em <filename>/etc/hosts</filename>. Trata-se de uma opção útil quando você deseja que o nome de host seja sempre resolvível, mesmo sem uma rede ativa.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Em <guimenu>Modificar Configuração do DNS</guimenu>, selecione o modo como a configuração do DNS (servidores de nomes, lista de pesquisa, o conteúdo do arquivo <filename>/etc/resolv.conf</filename>) é modificada.
+     </para>
+     <para>
+      Se a opção <guimenu>Usar Política Padrão</guimenu> for selecionada, a configuração será gerenciada pelo script <command>netconfig</command>, que funde os dados definidos estaticamente (com o YaST ou nos arquivos de configuração) com os dados obtidos dinamicamente (do cliente DHCP ou do NetworkManager). Essa política padrão é suficiente na maioria dos casos.
+     </para>
+     <para>
+      Se a opção <guimenu>Apenas Manualmente</guimenu> for selecionada, <command>netconfig</command> não terá permissão para modificar o arquivo <filename>/etc/resolv.conf</filename>. Entretanto, esse arquivo pode ser editado manualmente.
+     </para>
+     <para>
+      Se a opção <guimenu>Política Personalizada</guimenu> for selecionada, deverá ser especificada uma string de <guimenu>Regra de Política Personalizada</guimenu> definindo a política de fusão. A string consiste em uma lista de nomes de interface separados por vírgula, considerada como fonte válida de configurações. Além dos nomes completos de interface, também são permitidos curingas básicos para corresponder a várias interfaces. Por exemplo, <literal>eth* ppp?</literal> primeiramente encontrará todas as interfaces eth, depois, todas as interfaces de ppp0 a ppp9. Existem dois valores de política especiais que indicam como aplicar as configurações estáticas definidas no arquivo <filename>/etc/sysconfig/network/config</filename>:
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><literal>STATIC</literal>
+       </term>
+       <listitem>
+        <para>
+         É preciso que haja a fusão das configurações estáticas com as configurações dinâmicas.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><literal>STATIC_FALLBACK</literal>
+       </term>
+       <listitem>
+        <para>
+         As configurações estáticas são usadas apenas quando não há nenhuma configuração dinâmica disponível.
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>
+      Para obter mais informações, consulte <command>man 8 netconfig</command>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Digite os <guimenu>Servidores de Nome</guimenu> e preencha a lista <guimenu>Pesquisa de Domínio</guimenu>. Servidores de nomes devem ser especificados por endereços IP, como 192.168.1.116, não por nomes de host. Os nomes especificados na guia <guimenu>Pesquisa de Domínio</guimenu> são nomes de domínio usados para resolver nomes de host sem um domínio especificado. Se for usada mais de uma <guimenu>Pesquisa de Domínio</guimenu>, separe os domínios por vírgulas ou espaços.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    É possível também editar o nome de host usando o YaST da linha de comando. As mudanças feitas pelo YaST entram em vigor imediatamente (o que não acontece quando se edita o arquivo <filename>/etc/HOSTNAME</filename> manualmente). Para mudar o nome de host, use o seguinte comando:
+   </para>
+   <screen>yast dns edit hostname=<replaceable>hostname</replaceable></screen>
+   <para>
+    Para mudar os servidores de nomes, use os seguintes comandos:
+   </para>
+   <screen>yast dns edit nameserver1=<replaceable>192.168.1.116</replaceable></screen>
+   <screen>yast dns edit nameserver2=<replaceable>192.168.1.116</replaceable></screen>
+   <screen>yast dns edit nameserver3=<replaceable>192.168.1.116</replaceable></screen>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.change.route">
+   <title>Configurando o roteamento</title><indexterm> <primary>redes</primary> <secondary>YaST</secondary> <tertiary>gateway</tertiary></indexterm>
+   <para>
+    Para que sua máquina se comunique com outras máquinas e redes, é necessário fornecer informações de roteamento para que o tráfego de rede siga o caminho correto. Se o DHCP for usado, essas informações serão fornecidas automaticamente. Se uma configuração estática for usada, esses dados deverão ser adicionados manualmente.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      No YaST, vá para <menuchoice> <guimenu>Configurações de Rede</guimenu> <guimenu>Roteamento</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Digite o endereço IP do <guimenu>Gateway Padrão</guimenu> (IPv4 e IPv6, se necessário). O gateway padrão corresponde a todos os destinos possíveis, mas se houver qualquer outra entrada que corresponda ao endereço requerido, use-o em vez da rota padrão.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      É possível digitar mais entradas na <guimenu>Tabela de Roteamento</guimenu>. Digite o endereço IP do <guimenu>Destino</guimenu>, o endereço IP do <guimenu>Gateway</guimenu> e a <guimenu>Máscara de Rede</guimenu>. Selecione o <guimenu>Dispositivo</guimenu> pelo qual será roteado o tráfego para a rede definida (o sinal de menos significa qualquer dispositivo). Para omitir qualquer um desses valores, use o sinal de menos <literal>-</literal>. Para digitar um gateway padrão na tabela, use <literal>padrão</literal> no campo <guimenu>Destino</guimenu>.
+     </para>
+     <note>
+      <para>
+       Se forem usadas mais rotas padrão, será possível especificar a opção métrica para determinar qual rota possui a prioridade mais alta. Para especificar a opção métrica, digite <option>- metric <replaceable>número</replaceable></option> em <guimenu>Opções</guimenu>. A rota com a métrica mais alta será usada como padrão. Se o dispositivo de rede for desconectado, sua rota será removida e o dispositivo seguinte será usado. Entretanto, o kernel atual não usa métrica no roteamento estático, apenas os daemons de roteamento, como multipathd, podem fazê-lo.
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      Se o sistema for um roteador, habilite a opção <guimenu>Encaminhamento IP</guimenu> nas <guimenu>Configurações de Rede</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para ativar a configuração, clique em <guimenu>OK</guimenu>.
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.modem">
+  <title>Modem</title><indexterm> <primary>YaST</primary> <secondary>modems</secondary></indexterm><indexterm> <primary>modems</primary> <secondary>YaST</secondary></indexterm><indexterm> <primary>configurando</primary> <secondary>modems</secondary></indexterm>
+  
+  <para>
+   No Centro de Controle do YaST, acesse a configuração do modem em <menuchoice><guimenu>Dispositivos de Rede</guimenu><guimenu>Modem</guimenu> </menuchoice>. Se o seu modem não foi detectado automaticamente, vá até a guia <guimenu>Dispositivos de Modem</guimenu> e abra a caixa de diálogo da configuração manual clicando em <guimenu>Adicionar</guimenu>. Digite a interface para a qual o modem está conectado em <guimenu>Dispositivo de Modem</guimenu>.
+  </para>
+  <tip>
+   <title>modems GPRS e CDMA</title>
+   <para>
+    Configure os modems CDMA e GPRS suportados com o módulo <guimenu>Modem</guimenu> do YaST, do mesmo modo como são configurados os modems comuns.
+   </para>
+  </tip>
+  <figure id="fig.yast2.modem">
+   <title>Configuração do modem</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_modem.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_modem.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Se você estiver usando um PBX, talvez precise digitar um prefixo de discagem. Normalmente, é um zero. Consulte as instruções que acompanham o PBX para descobrir. Selecione também se usará a discagem por tom ou pulso, se o alto-falante estará ligado e se o modem aguardará até detectar um tom de discagem. A última opção não deve ser habilitada se o modem estiver conectado a um intercâmbio.
+  </para>
+  <para>
+   Em <guimenu>Detalhes</guimenu>, configure a taxa de transmissão e as strings de inicialização do modem. Somente mude essas configurações se seu modem não tiver sido detectado automaticamente ou se ele requerer configurações especiais para o funcionamento da transmissão de dados. Esse é basicamente o caso dos adaptadores do terminal ISDN. Saia dessa caixa de diálogo clicando em <guimenu>OK</guimenu>. Para delegar o controle do modem ao usuário comum sem permissões de root, ative <guimenu>Habilitar Controle de Dispositivo para Usuário Não Root Via KInternet</guimenu>. Dessa forma, um usuário sem permissões de administrador poderá ativar ou desativar uma interface. Em <guimenu>Dial Prefix Expressão Regular</guimenu>, especifique uma expressão regular. O <guimenu>Prefixo de Discagem</guimenu> no KInternet, que pode ser modificado por um usuário normal, precisa corresponder a essa expressão regular. Se esse campo for deixado vazio, o usuário não poderá configurar um <guimenu>Prefixo de Discagem</guimenu> diferente sem as permissões de administrador.
+  </para>
+  <para>
+   Na caixa de diálogo a seguir, selecione o ISP. Para escolher a partir de uma lista de ISPs predefinida operacional em seu país, selecione <guimenu>País</guimenu>. Ou então, clique em <guimenu>Novo</guimenu> para abrir uma caixa de diálogo em que você fornecerá os dados do seu ISP. Isso inclui um nome para a conexão de discagem e o ISP, assim como o login e a senha fornecidos pelo seu ISP. Habilite <guimenu>Sempre Solicitar Senha</guimenu> para que a senha seja solicitada sempre que você se conectar.
+  </para>
+  <para>
+   Na última caixa de diálogo, especifique as opções de conexão adicionais:
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>Discagem sob Demanda</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Se você habilitar a <guimenu>Discagem sob Demanda</guimenu>, defina pelo menos um servidor de nomes. Use esse recurso apenas se a sua conexão de Internet for econômica, pois existem programas que solicitam dados da Internet periodicamente.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Modificar DNS Quando Conectado</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Essa opção é habilitada por padrão, com o efeito de que o endereço do servidor de nomes é atualizado sempre que você se conectar à Internet.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Receber DNS Automaticamente</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Se o provedor não transmitir seu servidor de nomes de domínio após a conexão, desabilite essa opção e digite os dados do DNS manualmente.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Reconectar Automaticamente</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Se essa opção estiver habilitada, a conexão será restabelecida automaticamente após uma falha.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Ignorar Prompts</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Essa opção desabilita a detecção de quaisquer prompts do servidor de discagem. Se a conexão for lenta ou não funcionar, tente essa opção.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Interface Externa do Firewall</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Selecionar essa opção ativa o firewall e define a interface como externa. Desse modo, você fica protegido contra ataques externos enquanto durar a sua conexão de Internet.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Tempo Ocioso (segundos)</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Com essa opção, especifique um período de inatividade da rede depois do qual o modem se desconectará automaticamente.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Detalhes IP</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Essa opção abre a caixa de diálogo de configuração de endereço. Se o ISP não designar um endereço IP dinâmico ao host, desabilite <guimenu>Endereço IP Dinâmico</guimenu> e, depois, digite o endereço IP local do host e o endereço IP remoto. Peça essa informação ao ISP. Habilite <guimenu>Rota Padrão</guimenu> e feche a caixa de diálogo, selecionando <guimenu>OK</guimenu>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   Selecionando <guimenu>Avançar</guimenu>, você retorna à caixa de diálogo original, que exibirá um resumo da configuração do modem. Feche essa caixa de diálogo com <guimenu>OK</guimenu>.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.isdn">
+  <title>ISDN</title><indexterm> <primary>Internet</primary> <secondary>ISDN</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>ISDN</secondary></indexterm><indexterm> <primary>hardware</primary> <secondary>ISDN</secondary></indexterm><indexterm> <primary>configurando</primary> <secondary>ISDN</secondary></indexterm>
+  
+  <para>
+   Use esse módulo para configurar uma ou várias placas ISDN para o seu sistema. Se o YaST não detectar sua placa ISDN, clique em <guimenu>Adicionar</guimenu> na guia <guimenu>Dispositivos ISDN</guimenu> e selecione a placa manualmente. É possível haver várias Interfaces, mas diversos ISPs podem ser configurados para uma única interface. Nas caixas de diálogo subsequentes, configure as opções de ISDN necessárias para o funcionamento adequado da placa.
+  </para>
+  <figure id="fig.yast2.isdn">
+   <title>Configuração ISDN</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_isdn.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_isdn.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Na caixa de diálogo a seguir, mostrada na <xref linkend="fig.yast2.isdn"/>, selecione o protocolo a ser usado. O padrão é <guimenu>Euro-ISDN (EDSS1)</guimenu>, mas para intercâmbios mais antigos ou maiores, selecione <guimenu>1TR6</guimenu>. Se você estiver nos E.U.A., selecione <guimenu>NI1</guimenu>. Selecione seu país no campo relevante. O código de país correspondente aparecerá no campo próximo a ele. Por fim, forneça seu <guimenu>Código de Área</guimenu> e o <guimenu>Prefixo de Discagem</guimenu>, se necessário. Se você não quiser registrar todo o seu tráfego ISDN, desmarque a opção <guimenu>Iniciar Registro ISDN</guimenu>.
+  </para>
+  <para>
+   <guimenu>Ativar Dispositivo</guimenu> define como a interface ISDN deve ser iniciada: <guimenu>Em tempo de Boot</guimenu> faz o driver ISDN ser inicializado a cada boot do sistema. <guimenu>Manualmente</guimenu> exige que você carregue o driver do ISDN como <systemitem class="username">root</systemitem> com o comando <command>rcisdn start</command>. <guimenu>Em Hotplug</guimenu>, usado para dispositivos PCMCIA ou USB, carrega o driver depois que o dispositivo é conectado. Ao concluir essas configurações, selecione <guimenu>OK</guimenu>.
+  </para>
+  <para>
+   Na caixa de diálogo a seguir, especifique o tipo de interface para a placa ISDN e adicione ISPs a uma interface existente. As interfaces podem ser do tipo <systemitem>SyncPPP</systemitem> ou <systemitem>RawIP</systemitem>, mas a maioria dos ISPs opera no modo <systemitem>SyncPPP</systemitem>, descrito abaixo.
+  </para>
+  <figure id="fig.yast2.isdn_interface">
+   <title>Configuração da interface ISDN</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_isdn_interface.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_isdn_interface.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   O número a ser digitado para <guimenu>Meu Número Telefônico</guimenu> dependerá da sua configuração específica:
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>Placa ISDN conectada diretamente à saída do fone</term>
+    <listitem>
+     <para>
+      Uma linha ISDN padrão fornece três números telefônicos (chamados MSNs ou multiple subscriber numbers). Se o assinante pediu mais números, poderá ter até 10. Um desses MSNs precisa ser digitado aqui, mas sem o código de área. Se você digitar o número errado, o operador de fone retornará automaticamente ao primeiro MSN designado à sua linha ISDN.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Placa ISDN conectada a um PBX<indexterm> <primary>PBX</primary> </indexterm></term>
+    <listitem>
+     <para>
+      Novamente, a configuração poderá variar de acordo com o equipamento instalado:
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        PBX menores, criados para fins domésticos, normalmente usam o protocolo Euro-ISDN (EDSS1) para chamadas internas. Esses intercâmbios possuem um barramento S0 interno e usam números internos para o equipamento conectado a eles.
+       </para>
+       <para>
+        Use um dos números internos como o seu MSN. Você deveria usar, pelo menos, um dos MSNs de intercâmbio habilitados para discagem direta para fora. Se não funcionar, tente um único zero. Para obter mais informações, consulte a documentação fornecida com a central telefônica.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Centrais telefônicas maiores, criadas para empresas, normalmente usam o protocolo 1TR6 para chamadas internas. Seus MSNs são chamados EAZ e, geralmente, correspondem ao número de discagem direta. Para a configuração no Linux, deverá ser suficiente digitar o último dígito de EAZ. Como última opção, tente cada um dos dígitos de 1 a 9.
+       </para>
+      </listitem>
+     </orderedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+
+   Para que a conexão seja encerrada pouco antes de terminar a próxima unidade de carga, habilite <guimenu>ChargeHUP</guimenu>. Entretanto, lembre-se de que talvez não funcione com todos os ISPs. Você também pode habilitar o agrupamento de canais (multilink PPP) selecionando a opção correspondente. Por fim, você pode habilitar o firewall para o link selecionando <guimenu>Interface Externa do Firewall</guimenu> e <guimenu>Reiniciar Firewall</guimenu>. Para habilitar o usuário comum, sem permissões de administrador, a ativar ou desativar a interface, selecione <guimenu>Habilitar Controle de Dispositivo para Usuário Não Root Via KInternet</guimenu>.
+  </para>
+  <para>
+   <guimenu>Detalhes</guimenu> abre uma caixa de diálogo em que se implementa esquemas de conexão mais complexos, não relevantes para usuários domésticos comuns. Saia da caixa de diálogo <guimenu>Detalhes</guimenu> selecionando <guimenu>OK</guimenu>.
+  </para>
+  <para>
+   Na caixa de diálogo seguinte, ajuste as configurações de endereços IP. Se o provedor não tiver fornecido um IP estático, selecione <guimenu>Endereço IP Dinâmico</guimenu>. Caso contrário, use os campos fornecidos para digitar o endereço IP local e o remoto do seu host, de acordo com as especificações do ISP. Se a interface for a rota padrão para a Internet, selecione <guimenu>Rota Padrão</guimenu>. Cada host só pode ter uma interface configurada como a rota padrão. Saia dessa caixa de diálogo selecionando <guimenu>Avançar</guimenu>.
+  </para>
+  <para>
+   A caixa de diálogo a seguir permite que você defina seu país e selecione um ISP. Os ISPs incluídos na lista são apenas provedores do tipo chamada-por-chamada. Se seu ISP não estiver na lista, selecione <guimenu>Novo</guimenu>. A caixa de diálogo <guimenu>Parâmetros do Provedor</guimenu> será aberta para que você digite todos os detalhes do seu ISP. Ao digitar o número telefônico, não inclua espaços vazios nem vírgulas entre os dígitos. Por fim, digite seu login e senha, conforme fornecido pelo ISP. Ao terminar, selecione <guimenu>Avançar</guimenu>.
+  </para>
+  <para>
+   Para usar <guimenu>Discagem sob Demanda</guimenu> em uma estação de trabalho independente, especifique também o servidor de nomes (servidor DNS). A maioria dos ISPs suporta DNS dinâmico, o que significa que o endereço IP de um servidor de nomes é enviado pelo ISP toda vez que você se conecta. Entretanto, para uma única estação de trabalho, é preciso fornecer um endereço marcador, como <systemitem class="ipaddress">192.168.22.99</systemitem>. Se o ISP não suportar um DNS dinâmico, especifique os endereços IP do servidor de nomes do ISP. Se desejar, especifique um tempo de espera para a conexão — o período de inatividade da rede (em segundos) após o qual a conexão deve ser automaticamente encerrada. Confirme as configurações com <guimenu>Avançar</guimenu>. O YaST exibe um resumo das interfaces configuradas. Para ativar essas configurações, selecione <guimenu>OK</guimenu>.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.cablemodem">
+  <title>Modem a cabo</title><indexterm> <primary>modems</primary> <secondary>cabo</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>modem a cabo</secondary></indexterm><indexterm> <primary>configurando</primary> <secondary>modem a cabo</secondary></indexterm>
+  
+  <para>
+   Em alguns países, é comum acessar a Internet por rede de TV a cabo. O assinante de TV a cabo normalmente recebe um modem, que é conectado à saída do cabo da TV em uma ponta e à placa de rede do computador na outra (usando um cabo de par trançado 10Base-TG). O modem a cabo então fornece uma conexão dedicada à Internet com um endereço IP fixo.
+  </para>
+  <para>
+   Dependendo as instruções fornecidas pelo seu ISP, ao configurar a placa de rede, selecione <guimenu>Endereço Dinâmico</guimenu> ou <guimenu>Endereço IP Atribuído Estaticamente</guimenu>. A maioria dos provedores usa atualmente o DHCP. Um endereço IP estático frequentemente vem como parte de uma conta comercial especial.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.xdsl">
+
+  <title>DSL</title><indexterm> <primary>Internet</primary> <secondary>DSL</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>DSL</secondary></indexterm><indexterm> <primary>configurando</primary> <secondary>DSL</secondary></indexterm>
+  
+  <para>
+   Para configurar o dispositivo DSL, selecione o módulo <guimenu>DSL</guimenu> na seção <guimenu>Dispositivos de Rede</guimenu> do YaST. O módulo YaST consiste em várias caixas de diálogo nas quais configura-se os parâmetros de links DSL com base em um dos seguintes protocolos:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     PPPoE (PPP sobre Ethernet)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     PPPoATM (PPP sobre ATM)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     CAPI para ADSL (Placas Fritz)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     PPTP (Point-to-Point Tunneling Protocol ) — Áustria
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   
+   
+   Na guia <guimenu>Dispositivos DSL</guimenu> da caixa de diálogo <guimenu>Resumo de Configuração DSL</guimenu>, há uma lista de dispositivos DSL instalados. Para mudar a configuração de um dispositivo DSL, selecione-o na lista e clique em <guimenu>Editar</guimenu>. Se você clicar em <guimenu>Adicionar</guimenu>, poderá configurar manualmente um novo dispositivo DSL.
+  </para>
+  <para>
+   A configuração de uma conexão DSL baseada em PPPoE ou PPTP exige que a placa de rede correspondente esteja configurada de forma correta. Se isso ainda não foi feito, primeiro configure a placa, selecionando <guimenu>Configurar Placas de Rede</guimenu> (consulte a <xref linkend="sec.basicnet.yast.netcard"/>). No caso de um link DSL, os endereços podem ser atribuídos automaticamente, mas não via DHCP, e é por isso que você não deve habilitar a opção <guimenu>Endereço Dinâmico</guimenu>. Em vez disso, digite um endereço estático simulado para a interface, como <systemitem class="ipaddress">192.168.22.1</systemitem>. Em <guimenu>Máscara de Sub-rede</guimenu>, digite <systemitem class="netmask">255.255.255.0</systemitem>. Se estiver configurando uma estação de trabalho independente, deixe a opção <guimenu>Gateway Padrão</guimenu> vazia.
+  </para>
+  <tip>
+   <para>
+    Os valores em <guimenu>Endereço IP</guimenu> e <guimenu>Máscara de Sub-rede</guimenu> são apenas marcadores. Eles são necessários apenas para inicializar a placa de rede e não representam o link DSL.
+   </para>
+  </tip>
+  <para>
+   Na primeira caixa de diálogo de configuração do DSL (consulte a <xref linkend="fig.yast2.adsl"/>), selecione o <guimenu>Modo PPP</guimenu> e a <guimenu>Placa Ethernet</guimenu> à qual se conecta o modem DSL (na maioria dos casos é <systemitem class="systemname">eth0</systemitem>). Em seguida, use <guimenu>Ativar Dispositivo</guimenu> para especificar se o link DSL deve ser estabelecido durante o processo de boot. Clique em <guimenu>Habilitar Controle de Dispositivo para Usuário Não Root Via KInternet</guimenu> para autorizar o usuário comum, sem permissões de root, a ativar ou desativar a interface com KInternet.
+  </para>
+  <para>
+   Na caixa de diálogo seguinte, selecione o seu país e escolha um dos ISPs que operam na região. Os detalhes de quaisquer caixas de diálogo subsequentes da configuração DSL dependem das opções configuradas até agora. É por essa razão que eles são apenas rapidamente mencionados nos parágrafos a seguir. Para obter os detalhes sobre as opções disponíveis, leia a ajuda detalhada disponível nas caixas de diálogo.
+  </para>
+  <figure id="fig.yast2.adsl">
+   <title>Configuração DSL</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_adsl.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_adsl.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Para usar <guimenu>Discagem sob Demanda</guimenu> em uma estação de trabalho independente, especifique também o servidor de nomes (servidor DNS). A maioria dos ISPs suporta DNS dinâmico. O endereço IP de um servidor de nomes é enviado pelo ISP toda vez que você estabelece conexão. Entretanto, para uma única estação de trabalho, é preciso fornecer um endereço marcador, como <systemitem class="ipaddress">192.168.22.99</systemitem>. Se o ISP não suportar um DNS dinâmico, especifique o endereço IP do servidor de nomes fornecido pelo ISP.
+  </para>
+  <para>
+   <guimenu>Tempo Ocioso (em segundos)</guimenu> define um período de inatividade da rede depois do qual a conexão é encerrada automaticamente. Um valor de tempo de espera razoável fica entre 60 e 300 segundos. Se a opção <guimenu>Discagem sob Demanda</guimenu> estiver desabilitada, talvez seja útil configurar o tempo de espera como zero para evitar um desligamento automático.
+  </para>
+  <para>
+   <indexterm> <primary>Internet</primary><secondary>TDSL</secondary></indexterm><indexterm><primary>YaST</primary><secondary>configurando</secondary></indexterm> A configuração do T-DSL é muito parecida com a do DSL. <indexterm><primary>T-DSL</primary><secondary>T-DSL</secondary></indexterm> Basta selecionar <guimenu>T-Online</guimenu> como seu provedor e o YaST abrirá a caixa de diálogo de configuração do T-DSL. Nessa caixa de diálogo, forneça algumas informações adicionais necessárias para T-DSL: o ID da linha, o número T-Online, o código do usuário e a senha. Tudo isso deve estar incluído nas informações que você recebeu após se inscrever no T-DSL.
+  </para><indexterm startref="idx.networks_integrating" class="endofrange"/>
+ </sect2>
+
+ 
+</sect1>

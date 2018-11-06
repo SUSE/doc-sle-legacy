@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_fonts.xml" id="sec.x11.fontconfig">
+ <title>Installation und Konfiguration von Schriften</title><indexterm> <primary>X</primary> <secondary>TrueType-Schriften</secondary> </indexterm> <indexterm> <primary>Schriften</primary> <secondary>TrueType</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>Schriften</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xft</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>Zeichensätze</secondary> </indexterm>
+
+ <para>
+  Die Installation zusätzlicher Schriften unter <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> ist sehr einfach. Kopieren Sie einfach die Schriften in ein beliebiges Verzeichnis im X11-Pfad für Schriften (siehe <xref linkend="sec.x11.fontconfig.fontsys.x11core"/>). Damit die Schriften verwendet werden können, sollte das Installationsverzeichnis ein Unterverzeichnis der Verzeichnisse sein, die in <filename>/etc/fonts/fonts.conf </filename> konfiguriert sind (siehe <xref linkend="sec.x11.fontconfig.fontsys.xft"/>), oder es sollte über <filename>/etc/fonts/suse-font-dirs.conf </filename> in diese Datei eingefügt worden sein.
+ </para>
+
+ <para>
+  Nachfolgend ein Ausschnitt aus der Datei <filename>/etc/fonts/fonts.conf</filename>. Diese Datei ist die Standard-Konfigurationsdatei, die für die meisten Konfigurationen geeignet ist. Sie definiert auch das eingeschlossene Verzeichnis <filename>/etc/fonts/conf.d</filename>. Alle Dateien und symbolischen Links in diesem Verzeichnis, die mit einer zweistelligen Zahl beginnen, werden von fontconfig geladen. Ausführliche Erläuterungen zu dieser Funktion finden Sie in der Datei <filename>/etc/fonts/conf.d/README</filename>.
+ </para>
+
+<screen>&lt;!-- Font directory list --&gt;
+&lt;dir&gt;/usr/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/X11R6/lib/X11/fonts&lt;/dir&gt; 
+&lt;dir&gt;/opt/kde3/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+&lt;dir&gt;~/.fonts&lt;/dir&gt;
+</screen>
+
+ <para>
+  <filename>/etc/fonts/suse-font-dirs.conf</filename> wird automatisch generiert, um Schriften abzurufen, die mit Anwendungen (meist von anderen Herstellern) wie LibreOffice.org, Java oder Adobe Reader geliefert werden. Ein typischer Eintrag würde wie folgt aussehen:
+ </para>
+
+<screen>&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font&lt;/dir&gt;
+&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font/PFM&lt;/dir&gt;
+ </screen>
+
+ <para>
+  Kopieren Sie zur systemweiten Installation zusätzlicher Schriften die Schriftdateien manuell (als <systemitem class="username">root </systemitem>) in ein geeignetes Verzeichnis, beispielsweise  <filename>/usr/share/fonts/truetype</filename>. Alternativ kann diese Aktion auch mithilfe des KDE-Schrift-Installationsprogramms im KDE-Kontrollzentrum durchgeführt werden. Das Ergebnis ist dasselbe.
+ </para>
+
+ <para>
+  Anstatt die eigentlichen Schriften zu kopieren, können Sie auch symbolische Links erstellen. Beispielsweise kann dies sinnvoll sein, wenn Sie lizenzierte Schriften auf einer gemounteten Windows-Partition haben und diese nutzen möchten. Führen Sie anschließend <command>SuSEconfig <option>--module fonts</option></command> aus.
+ </para>
+
+ <para>
+  <command>SuSEconfig <option>--module fonts</option> </command> startet das für die Schriftenkonfiguration zuständige Skript <filename>/usr/sbin/fonts-config</filename>. Weitere Informationen zu diesem Skript finden Sie auf der man-Seite <command>man <option>fonts-config</option></command>.
+ </para><indexterm> <primary>Befehle</primary> <secondary>fonts-config</secondary> </indexterm>
+
+ <para>
+  Die Vorgehensweise ist für Bitmap-, TrueType- und OpenType-Schriften sowie Type1-Schriften (PostScript) dieselbe. Alle diese Schriften können in einem beliebigen Verzeichnis installiert werden. <indexterm> <primary>X</primary> <secondary>Schriftsysteme</secondary> </indexterm> <indexterm> <primary>Schriften</primary> </indexterm>
+ </para>
+
+ <para>
+  X.Org enthält zwei komplett unterschiedliche Schriftsysteme: das alte <guimenu>X11-Core-Schriftsystem</guimenu> und das neu entwickelte System <guimenu>Xft und fontconfig</guimenu>. In den folgenden Abschnitten wird kurz auf diese beiden Systeme eingegangen.
+ </para>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.x11core">
+  <title>X11 Core-Schriften</title><indexterm> <primary>X</primary> <secondary>X11-Core-Schriften</secondary> </indexterm> <indexterm> <primary>Schriften</primary> <secondary>X11-Core</secondary> </indexterm>
+  <para>
+   Heute unterstützt das X11 Core-Schriftsystem nicht nur Bitmap-Schriften, sondern auch skalierbare Schriften wie Type1-, TrueType- und OpenType-Schriften. Skalierbare Schriften werden nur ohne Antialiasing und Subpixel-Rendering unterstützt und das Laden von großen skalierbaren Schriften mit Zeichen für zahlreiche Sprachen kann sehr lange dauern. Unicode-Schriften werden ebenfalls unterstützt, aber ihre Verwendung kann mit erheblichem Zeitaufwand verbunden sein und erfordert mehr Speicher.
+  </para>
+  <para>
+   Das X11 Core-Schriftsystem weist mehrere grundsätzliche Schwächen auf. Es ist überholt und kann nicht mehr sinnvoll erweitert werden. Zwar muss es noch aus Gründen der Abwärtskompatibilität beibehalten werden, doch das modernere System „Xft/fontconfig“ sollte immer verwendet werden, wenn es möglich ist.
+  </para>
+  <para>
+   Der X-Server muss die verfügbaren Schriften und deren Speicherorte im System kennen. Dies wird durch Verwendung der Variablen <literal>FontPath</literal> erreicht, in der die Pfade zu allen gültigen Schriftverzeichnissen des Systems vermerkt sind. In jedem dieser Verzeichnisse sind die dort verfügbaren Schriften in einer Datei mit dem Namen <filename>fonts.dir</filename> aufgeführt. Der <literal>FontPath</literal> wird vom X Server beim Systemstart erzeugt. Der Server sucht an jedem Speicherort, auf den die <filename>FontPath</filename>-Einträge der Konfigurationsdatei <literal>/etc/X11/xorg.conf</literal> verweisen, nach einer gültigen <filename>fonts.dir</filename>-Datei. Diese Einträge befinden sich im Abschnitt <literal>Files</literal>. Der <literal>FontPath</literal> lässt sich mit dem Befehl <command>xset</command> <option>q</option> anzeigen. Dieser Pfad kann auch zur Laufzeit mit dem Befehl <command>xset</command> geändert werden. Zusätzliche Pfade werden mit <command>xset</command><option>+fp &lt;Pfad&gt;</option> hinzugefügt. Unerwünschte Pfade können mit <command>xset</command><option>-fp &lt;Pfad&gt;</option> gelöscht werden.
+  </para>
+  <para>
+   Wenn der X-Server bereits aktiv ist, können Sie neu installierte Schriften in eingehängten Verzeichnissen mit dem Befehl <command>xset</command><option>fp rehash</option> verfügbar machen. Dieser Befehl wird von <command>SuSEconfig</command><option>--module fonts</option> ausgeführt. Da zur Ausführung des Befehls <command>xset</command> der Zugriff auf den laufenden X-Server erforderlich ist, ist dies nur möglich, wenn <command>SuSEconfig</command><option>--module fonts</option> von einer Shell aus gestartet wird, die Zugriff auf den laufenden X-Server hat. Am einfachsten erreichen Sie dies, indem Sie <command>su</command> und das <systemitem class="username">root</systemitem>-Passwort eingeben und dadurch <systemitem class="username">root</systemitem>-Berechtigungen erlangen. <command>su</command> überträgt die Zugriffsberechtigungen des Benutzers, der den X Server gestartet hat, auf die <systemitem class="username">root</systemitem>-Shell. Wenn Sie überprüfen möchten, ob die Schriften ordnungsgemäß installiert wurden und über das X11 Core-Schriftsystem verfügbar sind, geben Sie den Befehl <command>xlsfonts</command> ein, um alle verfügbaren Schriften aufzulisten.
+  </para>
+  <para>
+   Standardmäßig arbeitet <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> mit UTF-8-Gebietsschemata. Daher sollten nach Möglichkeit Unicode-Schriften verwendet werden (Schriftnamen, die in der von <command>xlsfonts</command> ausgegebenen Liste auf <literal>iso10646-1</literal> enden). Alle verfügbaren Unicode-Schriften lassen sich über den Befehl <command>xlsfonts</command> <option>| grep iso10646-1</option> auflisten. Praktisch alle Unicode-Schriften, die unter <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> zur Verfügung stehen, umfassen zumindest die für europäische Sprachen erforderlichen Schriftzeichen (früher als <literal>iso-8859-*</literal> kodiert).
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.xft">
+  <title>Xft</title><indexterm> <primary>X</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Schriften</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Xft</primary> </indexterm>
+  <para>
+   Die Programmierer von Xft haben von Anfang an sichergestellt, dass auch skalierbare Schriften, die Antialiasing nutzen, problemlos unterstützt werden. Bei Verwendung von Xft werden die Schriften von der Anwendung, die die Schriften nutzt, und nicht vom X-Server gerendert, wie es beim X11 Core-Schriftsystem der Fall ist. Auf diese Weise hat die jeweilige Anwendung Zugriff auf die eigentlichen Schriftdateien und kann genau steuern, wie die Zeichen gerendert werden. Dies bildet eine optimale Basis für die ordnungsgemäße Textdarstellung für zahlreiche Sprachen. Direkter Zugriff auf die Schriftdateien ist sehr nützlich, wenn Schriften für die Druckausgabe eingebettet werden sollen. So lässt sich sicherstellen, dass der Ausdruck genau der Bildschirmdarstellung entspricht.
+  </para>
+  <para>
+   Unter <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> nutzen die beiden Desktopumgebungen (KDE und GNOME) sowie Mozilla und zahlreiche andere Anwendungen bereits standardmäßig Xft. Xft wird inwischen von mehr Anwendungen genutzt als das alte X11 Core-Schriftsystem.
+  </para>
+  <para>
+   Xft greift für die Suche nach Schriften und für deren Darstellung auf die fontconfig-Bibliothek zurück. Die Eigenschaften von fontconfig werden durch die globale Konfigurationsdatei <filename>/etc/fonts/fonts.conf</filename> gesteuert. Spezielle Konfigurationen sollten zu <filename>/etc/fonts/local.conf</filename> und der benutzerspezifischen Konfigurationsdatei <filename>~/.fonts.conf</filename> hinzugefügt werden. Jede dieser fontconfig-Konfigurationsdateien muss folgendermaßen beginnen:
+  </para>
+<screen>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+&lt;fontconfig&gt;</screen>
+  <para>
+   Enden müssen die Dateien wie folgt:
+  </para>
+<screen>&lt;/fontconfig&gt;</screen>
+  <para>
+   Wenn Sie möchten, dass weitere Verzeichnisse nach Schriften durchsucht werden sollen, fügen Sie Zeilen in der folgenden Weise hinzu:
+  </para>
+<screen>&lt;dir&gt;/usr/local/share/fonts/&lt;/dir&gt;</screen>
+  <para>
+   Dies ist jedoch in der Regel nicht erforderlich. Standardmäßig ist das benutzerspezifische Verzeichnis <filename>~/.fonts</filename> bereits in die Datei <filename>/etc/fonts/fonts.conf</filename> eingetragen. Entsprechend müssen Sie die zusätzlichen Schriften einfach nur nach <filename>~/.fonts</filename> kopieren, um sie zu installieren.
+  </para>
+  <para>
+   Außerdem können Sie Regeln angeben, die die Darstellung der Schriften beeinflussen. Geben Sie beispielsweise Folgendes ein:
+  </para>
+<screen>
+&lt;match target="font"&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+  &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   Hierdurch wird das Antialiasing für alle Schriften aufgehoben. Wenn Sie hingegen
+  </para>
+<screen>&lt;match target="font"&gt;
+ &lt;test name="family"&gt;
+  &lt;string&gt;Luxi Mono&lt;/string&gt;
+  &lt;string&gt;Luxi Sans&lt;/string&gt;
+ &lt;/test&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+ &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   eingeben, wird das Antialiasing nur für bestimmte Schriften aufgehoben.
+  </para>
+  <para>
+   Standardmäßig verwenden die meisten Anwendungen die Schriftbezeichnungen <literal>sans-serif</literal> (bzw. <literal>sans</literal>), <literal>serif</literal> oder <literal>monospace</literal>. Hierbei handelt es sich nicht um eigentliche Schriften, sondern nur um Aliasnamen, die je nach Spracheinstellung in eine passende Schrift umgesetzt werden.
+  </para>
+  <para>
+   Benutzer können problemlos Regeln zur Datei <filename>~/.fonts.conf</filename> hinzufügen, damit diese Aliasnamen in ihre bevorzugten Schriften umgesetzt werden:
+  </para>
+<screen>&lt;alias&gt;
+ &lt;family&gt;sans-serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSans&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSerif&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;monospace&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeMono&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;</screen>
+  <para>
+   Da fast alle Anwendungen standardmäßig mit diesen Aliasnamen arbeiten, betrifft diese Änderung praktisch das gesamte System. Daher können Sie nahezu überall sehr einfach Ihre Lieblingsschriften verwenden, ohne die Schrifteinstellungen in den einzelnen Anwendungen ändern zu müssen.
+  </para>
+  <para>
+   Mit dem Befehl <command>fc-list</command> finden Sie heraus, welche Schriften installiert sind und verwendet werden können. Der Befehl <command>fc-list</command> gibt eine Liste aller Schriften zurück. Wenn Sie wissen möchten, welche der skalierbaren Schriften (<option>:scalable=true</option>) alle erforderlichen Zeichen für Hebräisch (<option>:lang=he</option>) enthalten und Sie deren Namen (<option>family</option>), Schnitt (<option>style</option>) und Stärke (<option>weight</option>) sowie die Namen der entsprechenden Schriftdateien anzeigen möchten, geben Sie folgendes Kommando ein:
+  </para>
+<screen>fc-list ":lang=he:scalable=true" family style weight</screen>
+  <para>
+   Auf diesen Befehl kann beispielsweise Folgendes zurückgegeben werden:
+  </para>
+<screen>
+Lucida Sans:style=Demibold:weight=200
+DejaVu Sans:style=Bold Oblique:weight=200
+Lucida Sans Typewriter:style=Bold:weight=200
+DejaVu Sans:style=Oblique:weight=80
+Lucida Sans Typewriter:style=Regular:weight=80
+DejaVu Sans:style=Book:weight=80
+DejaVu Sans:style=Bold:weight=200
+Lucida Sans:style=Regular:weight=80</screen>
+  <para>
+   In der folgenden Tabelle finden Sie wichtige Parameter, die mit dem Befehl <command>fc-list</command> abgefragt werden können:
+  </para>
+  <table id="tab.x11.fonts.fclist">
+   <title>Parameter zur Verwendung mit <command>fc-list</command></title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        Parameter
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Bedeutung und zulässige Werte
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <option>family</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Der Name der Schriftamilie, z. B. <literal>FreeSans</literal>.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>foundry</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Der Hersteller der Schrift, z. B. <literal>urw</literal>.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>style</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Der Schriftschnitt, z. B. <literal>Medium</literal>, <literal>Regular</literal>, <literal>Bold</literal>, <literal>Italic</literal> oder <literal>Heavy</literal>.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>lang</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Die Sprache, die von dieser Schrift unterstützt wird, z. B. <literal>de</literal> für Deutsch, <literal>ja</literal> für Japanisch, <literal>zh-TW</literal> für traditionelles Chinesisch oder <literal>zh-CN</literal> für vereinfachtes Chinesisch.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>weight</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Die Schriftstärke, z. B. <literal>80</literal> für normale Schrift oder <literal>200</literal> für Fettschrift.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>slant</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Die Schriftneigung, in der Regel <literal>0</literal> für gerade Schrift und <literal>100</literal> für Kursivschrift.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>geschrieben werden</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Der Name der Schriftdatei.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>outline</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> für Konturschriften oder <literal>false</literal> für sonstige Schriften.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>scalable</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> für skalierbare Schriften oder <literal>false</literal> für sonstige Schriften.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>bitmap</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> für Bitmap-Schriften oder <literal>false</literal> für sonstige Schriften.
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>pixelsize</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Schriftgröße in Pixel. In Verbindung mit dem Befehl „fc-list“ ist diese Option nur bei Bitmap-Schriften sinnvoll.
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </sect2>
+</sect1>

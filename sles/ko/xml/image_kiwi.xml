@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_kiwi.xml" id="cha.kiwi">
+ <title>KIWI</title>
+ <abstract>
+  <para>
+   KIWI는 운영 체제 이미지를 생성하는 시스템입니다. 이미지는 파일이 있는 디렉토리로, 운영 체제, 응용 프로그램 및 구성, OS의 파일 시스템 구조, 가능한 추가 메타 데이터 및 이미지 유형에 따라 디스크 기호와 파티션 테이블 데이터도 포함합니다. KIWI를 사용하여 LiveCD 및 LiveDVD, USB 스틱, VMware처럼 전체 가상 시스템에서 재생할 가상 디스크, Hypervisor에서 반가상화할 XEN 이미지 및 네트워크에서 부팅할 PXE 환경을 생성할 수 있습니다.
+  </para>
+
+ </abstract>
+
+
+ <sect1 id="sec.kiwi.prereq">
+  <title>KIWI의 전제 조건</title>
+
+  <para>
+   KIWI를 사용하여 이미지를 작성하려면 다음과 같은 사전 조건이 필요합니다.
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     이 작업에 필요한 충분한 디스크 공간을 확보합니다.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     KIWI는 다양한 이미지 유형을 대상으로 하여 여러 개의 패키지로 분할됩니다. 어떤 경우든 기본 패키지 <systemitem class="resource">kiwi</systemitem>가 필요합니다. 대상 이미지에 따라 다음과 같은 패키지가 필요합니다.
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>
+         <para>
+          이미지 유형
+         </para>
+        </entry>
+        <entry>
+         <para>
+          패키지 이름
+         </para>
+        </entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          설치 미디어
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-oemboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          가상화
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-xenboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          USB 스틱
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-usbboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          네트워크 클라이언트
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-netboot</systemitem>
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </listitem>
+   <listitem>
+    <para>
+     <systemitem class="resource">kiwi-doc</systemitem> 패키지를 설치합니다. 일부 구성 예에서 구조 및 컨텐트에 대한 아이디어를 얻을 수 있습니다.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     KIWI 구성 파일과 해당 구조를 파악합니다. 이는 RELAX NG 스키마를 기반으로 하며 <filename>/usr/share/doc/packages/kiwi/kiwi.html</filename> 아래에 있는 <systemitem class="resource">kiwi</systemitem> 패키지에서 문서로 작성됩니다. 이 문서는 처음부터 구성 파일을 생성할 경우 또는 요소나 특성을 삽입할 경우 필요합니다.
+    </para>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.kiwi.process">
+  <title>KIWI의 작성 프로세스 이해</title>
+
+  <para>
+   KIWI의 작성 프로세스는 3단계로 구분됩니다.
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>물리적 확장(준비)</title>
+     <para>
+      이 단계에서는 새 파일 시스템의 컨텐트를 준비합니다. 이 단계 중에 루트 디렉토리가 생성되고, 이미지에서 설치된 패키지와 포함된 사용자 구성 파일을 결정합니다.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>논리적 확장(생성)</title>
+     <para>
+      이 단계에서는 성공적인 준비 단계가 필요합니다. 논리적 확장 단계는 첫 번째 단계를 기반으로 운영 체제 이미지를 생성합니다.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>배포</title>
+     <para>
+      결과 이미지 유형은 하드 디스크에 설치되거나 가상화 시스템(VMware, Qemu, VirtualBox)에서 재생된 것처럼 다양한 방법으로 배포할 수 있습니다.
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.kiwi.imagedesc">
+  <title>이미지 설명</title>
+
+  <para>
+   KIWI에서 이미지 유형을 작성하려면 이미지 설명이 필요합니다. 이미지 설명은 <filename>config.xml</filename> 파일이 있거나, 아니면 확장자 <filename>*.kiwi</filename>가 포함된 파일이 있는 디렉토리입니다.
+  </para>
+
+  <sect2 id="sec.kiwi.imagedescr.contents">
+   <title>이미지 설명 컨텐트</title>
+   <para>
+    다음 테이블에는 옵션 정보가 추가로 포함되어 있습니다. 그러나 대부분의 정보는 이후 운영 체제의 기능에서 반드시 필요합니다.
+   </para>
+   <table id="tab.kiwi.imagedesc">
+    <title>이미지 설명에 대한 추가 파일 및 디렉토리</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         파일/디렉토리
+        </para>
+       </entry>
+       <entry>
+        <para>
+         설명
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <filename>config/</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         옵션 하위 디렉토리. 모든 이미지 패키지가 설치된 후에 실행된 Bash 스크립트가 포함됩니다.
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         물리적 확장을 생성하는 동안 옵션 구성 스크립트
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <xref linkend="sec.kiwi.config.xml" xrefstyle="select:label"/>에서 설명된 각 이미지 설명에 대한 구성 파일
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-cdroot.tgz</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         아카이브, ISO 이미지에만 사용됨
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-cdroot.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <filename>config-cdroot.tgz</filename>에서 추출된 데이터 조작
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-yast-autoyast.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         AutoYaST에서 생성되는 구성 파일
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-yast-firstboot.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         YaST 처음 부팅 서비스를 제어하는 구성 파일
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>images.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         준비 단계를 생성하는 동안 옵션 구성 스크립트
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>root/</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         모든 이미지 패키지를 설치한 <emphasis>후에</emphasis> 변경된 기타 디렉토리, 특수 파일 및 스크립트가 포함됩니다.
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect2>
+
+  <sect2 id="sec.kiwi.config.xml">
+   <title><filename>config.xml</filename> 파일</title>
+   <para>
+    이미지 설명에 대한 모든 정보는 중앙 구성 XML 파일 <filename>config.xml</filename>에 저장됩니다. KIWI가 실행될 때마다 <filename>config.xml</filename>은 RELAX NG 스키마에 대해 검증됩니다(이 스키마 언어에 대한 자세한 내용은 <ulink url="http://www.relaxng.org"/> 참조). 따라서 RELAX NG가 지원되는 XML 편집기를 사용하거나 HTML 파일 <filename>/usr/share/doc/packages/kiwi/schema/kiwi.xsd.html</filename>에서 스키마에 대한 설명서를 사용하는 것이 좋습니다.
+   </para>
+   <para>
+    구성 파일은 여러 부분으로 구성됩니다.
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+
+     <para>
+      작성자, 연락처 정보 및 간단한 설명에 대한 일부 설명
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      논리적 확장 단계에 필요한 기본 설정 옵션
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      사용자, 이름, 홈 디렉토리 및 비밀번호에 대한 정보
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      리포지토리에 대한 링크
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      정의된 이미지 유형에 사용된 패키지 목록
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      RELAX NG 스키마 설명서의 위의 HTML 파일에서 볼 수 있는 중요도가 낮은 기타 정보
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    파일의 기본사항은 다음 예와 같습니다.
+   </para>
+   <example id="ex.kiwi.config">
+    <title>KIWI 구성 파일</title>
+<screen>&lt;image schemeversion="2.0" name="..."&gt; <co id="co.kiwi.config.image"/>
+  &lt;description type="system"&gt; <co id="co.kiwi.config.description"/>
+    &lt;author&gt;...&lt;/author&gt;
+    &lt;contact&gt;...&lt;/contact&gt;
+    &lt;specification&gt;...&lt;/specification&gt;
+  &lt;/description&gt;
+  &lt;preferences&gt; <co id="co.kiwi.config.preferences"/>
+    &lt;type primary="true" boot="..." flags="..."&gt;iso&lt;/type&gt;
+    &lt;type boot="..." filesystem="ext3" format="vmdk"&gt;vmx&lt;/type&gt;
+    &lt;type boot="..." filesystem="ext3"&gt;xen&lt;/type&gt;
+    &lt;type boot="..." filesystem="squashfs" flags="unified"&gt;oem&lt;/type&gt;
+    &lt;version&gt;2.7.0&lt;/version&gt;
+    &lt;size unit="M"&gt;780&lt;/size&gt;
+    &lt;packagemanager&gt;zypper&lt;/packagemanager&gt;
+    &lt;rpm-check-signatures&gt;False&lt;/rpm-check-signatures&gt;
+    &lt;rpm-force&gt;False&lt;/rpm-force&gt;
+    &lt;locale&gt;en_US.UTF-8&lt;/locale&gt;
+    &lt;oem-swap&gt;no&lt;/oem-swap&gt;
+    &lt;oem-boot-title&gt;USB&lt;/oem-boot-title&gt;
+  &lt;/preferences&gt;
+  &lt;users group="users"&gt; <co id="co.kiwi.config.users"/>
+    &lt;user name="root" pwd="" home="/root"/&gt;
+  &lt;/users&gt;
+  &lt;repository type="rpm-md"&gt; <co id="co.kiwi.config.repository"/>
+    &lt;source path="/home/rpmdir"/&gt;
+  &lt;/repository&gt;
+  &lt;packages type="image" patternPackageType="onlyRequired"&gt; <co id="co.kiwi.config.packages"/>
+    &lt;package name="yast2-live-installer"/&gt;
+    &lt;package name="pam"/&gt;
+    &lt;!-- List of packages reduced --&gt;
+  &lt;/packages&gt;</screen>
+   </example>
+   <calloutlist>
+    <callout arearefs="co.kiwi.config.image">
+     <para>
+      모든 KIWI 구성 파일의 루트 요소. 각 파일에는 버전 번호가 필요합니다. 선택적 <literal>kiwirevision</literal> 특성은 KIWI의 SVN 버전을 지정하는 데 사용할 수 있습니다KIWI
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.description">
+     <para>
+      이 이미지 설명의 작성자에 대한 정보가 들어 있는 필수 설명과, 연락처 주소 및 일부 간단한 설명이 포함됩니다.
+     </para>
+    </callout>
+
+    <callout arearefs="co.kiwi.config.preferences">
+     <para>
+      이 이미지의 버전에 대한 정보가 들어 있는 필수 기본 설정과, 사용된 패키지 관리자, 지원되는 이미지 유형 및 기타 설정이 포함됩니다.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.users">
+     <para>
+      선택적 <literal>users</literal> 요소에는 이미지에 추가된 모든 사용자의 목록이 포함됩니다. <literal>user</literal> 요소에는 이름, 홈 디렉토리에 대한 경로, 비밀번호와 셸이 포함됩니다.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.repository">
+     <para>
+      패키지 관리자가 사용한 리포지토리의 필수 목록이 포함됩니다.
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.packages">
+     <para>
+      이미지에 포함된 패키지의 필수 목록이 포함됩니다.
+     </para>
+    </callout>
+   </calloutlist>
+   <para>
+    구성 파일에 대한 자세한 내용은 위의 HTML 페이지에 표시됩니다.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.kiwi.creating">
+  <title>KIWI를 사용하여 기기 생성</title>
+
+  <para>
+   이 절에서는 KIWI를 사용하여 기기를 생성하는 방법에 대해 설명합니다. 어플라이언스는 특정 작업에 대해 특수 설계된 운영 체제입니다. 예를 들어, Office 프로그램에 중점을 두고 기기를 생성할 수 있습니다.
+  </para>
+
+  <sect2 id="sec.kiwi.img.createrepo">
+   <title>로컬 설치 원본 생성</title>
+   <para>
+    <systemitem class="resource">kiwi-doc</systemitem> 패키지의 모든 예에서 이미지를 생성하려면 유효한 설치 원본이 필요합니다. 일반적으로 이러한 예는 네트워크 리소스에 연결됩니다. 네트워크 대역폭이 높을수록 이미지 생성 속도가 빨라집니다. 빠른 네트워크가 없거나 이러한 네트워크를 사용하지 않으려면 로컬 설치 리소스를 생성합니다. 다음을 수행하십시오.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      설치 DVD를 수집합니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      셸을 열고 <systemitem class="username">root</systemitem>가 됩니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      로컬 설치 디렉토리에 디렉토리를 생성합니다. 예에서는 일반적으로 <filename>/image/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable></filename> 경로를 사용합니다. <replaceable>VERSION</replaceable> 및 <replaceable>ARCH</replaceable> 자리 표시자를 각각의 값으로 바꿉니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      매체를 탑재합니다. <replaceable>DRIVE</replaceable> 자리 표시자를 각 장치(일반적으로 <filename>dvd</filename>, <filename>cdrom</filename> 등)로 바꿉니다.
+     </para>
+<screen>mount -o loop /dev/<replaceable>DRIVE</replaceable> /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      매체의 모든 컨텐트를 설치 디렉토리로 복사합니다.
+     </para>
+<screen>cp -a /mnt/* /images/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable></screen>
+    </step>
+   </procedure>
+   <para>
+    로컬 설치 원본을 사용하려면 <literal>repository</literal> 요소에서 이 설치 원본을 활성화하기만 하면 됩니다.
+   </para>
+<?dbfo-need height="6em"?>
+
+
+<screen>&lt;repository type="..."&gt;
+  &lt;!-- Remove the comment markers in the next line --&gt;
+  &lt;!-- &lt;source path="/image/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable>" --&gt;
+  &lt;source path="opensuse://openSUSE:11.0/standard"/&gt; 
+&lt;/repository&gt;</screen>
+  </sect2>
+
+  <sect2 id="sec.kiwi.img">
+   <title>이미지 생성</title>
+   <para>
+    이미지는 실제 디스크에 상주하면서 모든 파티션, 부팅 로더 정보 및 패키지가 포함된 가상 디스크 이미지입니다. ISO 이미지를 생성하려면 다음을 수행하십시오.
+   </para>
+   <procedure id="pr.kiwi.img">
+
+    <step performance="required">
+     <para>
+      <systemitem class="resource">kiwi</systemitem> 및 <systemitem class="resource">kiwi-doc</systemitem> 패키지를 설치하고 종속성을 모두 해결합니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      셸을 열고 <systemitem class="username">root</systemitem>가 됩니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <filename>/usr/share/doc/packages/kiwi/examples/suse-11.0/suse-oem-preload</filename> 디렉토리를 현재 디렉토리에 복사합니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <filename>config.xml</filename> 파일을 열고 <literal>repository</literal> 요소를 찾습니다. 로컬 설치 원본을 사용할 경우 자세한 내용은 <xref xrefstyle="select: label" linkend="sec.kiwi.img.createrepo"/>을 참조하십시오.
+     </para>
+    </step>
+    <step id="st.kiwi.prep" performance="required">
+     <para>
+      첫 번째 단계(<quote>물리적 확장</quote>)를 준비하려면 다음 명령을 사용하여 KIWI를 실행합니다.
+     </para>
+<screen>kiwi --prepare suse-oem-preload --root oem</screen>
+    </step>
+    <step performance="required">
+     <para>
+      ISO 이미지를 작성합니다.
+     </para>
+<screen>kiwi --create oem --type iso --destdir /tmp/myoem</screen>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.kiwi.img.nfs">
+   <title>NFS를 사용하여 사전 로드 이미지 생성</title>
+   <para>
+    NFS 기능을 사용하여 이미지를 생성하려면 다음을 수행하십시오.
+   </para>
+   <procedure id="pr.kiwi.img.nfs">
+    <step performance="required">
+     <para>
+      셸을 열고 <systemitem class="username">root</systemitem>가 됩니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <filename>/usr/share/doc/packages/kiwi/examples/suse-11.1/suse-oem-preload</filename> 디렉토리를 현재 디렉토리로 복사합니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <filename>suse-oem-preload/config.xml</filename> 파일을 열고 <literal>type="image"</literal> 특성이 있는 <literal>packages</literal> 요소를 찾습니다.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <literal>&lt;packages type="image"&gt;</literal>와 <literal>&lt;/packages&gt;</literal> 사이에 다음 줄을 삽입하고 파일을 저장합니다.
+     </para>
+<screen>&lt;package name="nfs-client"/&gt;</screen>
+    </step>
+    <step performance="required">
+     <para>
+      <xref linkend="st.kiwi.prep"/>에서 설명한 대로 이미지를 재작성합니다.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.kiwi.moreinfo">
+  <title>추가 정보</title>
+  <para>
+   자세한 내용은 KIWI 포털의 <ulink url="http://en.opensuse.org/Portal:KIWI"/> 문서를 참조하십시오.
+  </para>
+ </sect1>
+</chapter>

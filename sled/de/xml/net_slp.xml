@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_slp.xml" id="cha.slp">
+ <title>SLP-Dienste im Netzwerk</title><indexterm> <primary>Netzwerke</primary> <secondary>SLP</secondary> </indexterm> <indexterm> <primary>Service Location Protocol</primary> <see>SLP</see> </indexterm> <indexterm> <primary>SLP</primary> </indexterm> <indexterm> <primary>Protokolle</primary> <secondary>SLP</secondary> </indexterm>
+ <abstract>
+  <para>
+   Das <emphasis>Service Location Protocol</emphasis> (SLP) wurde entwickelt, um die Konfiguration vernetzter Clients innerhalb eines lokalen Netzwerks zu vereinfachen. Zur Konfiguration eines Netzwerk-Clients inklusive aller erforderlichen Dienste benötigt der Administrator traditionell detailliertes Wissen über die im Netzwerk verfügbaren Server. SLP teilt allen Clients im lokalen Netzwerk die Verfügbarkeit ausgewählter Dienste mit. Anwendungen mit SLP-Unterstützung können diese Informationen verarbeiten und können automatisch konfiguriert werden.
+  </para>
+ </abstract>
+ <para>
+  <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> unterstützt die Installation von per SLP bekannt gegebenen Installationsquellen und beinhaltet viele Systemdienste mit integrierter Unterstützung für SLP. YaST und Konqueror verfügen beide über SLP-fähige Frontends. Nutzen Sie SLP, um vernetzten Clients zentrale Funktionen wie Installationsserver, YOU-Server, Dateiserver oder Druckserver auf Ihrem System zur Verfügung zu stellen.
+ </para>
+
+
+ <important>
+  <title>SLP-Unterstützung in <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase></title>
+  <para>
+   Dienste, die SLP-Unterstützung bieten, sind u. a. cupsd, rsyncd, ypserv, openldap2, ksysguardd, saned, kdm, vnc, login, smpppd, rpasswd, postfix und sshd (über fish).
+  </para>
+ </important>
+ <sect1 id="sec.slp.openslpinst">
+  <title>Installation</title>
+
+  
+
+  <para os="sled;sles">
+
+   Alle erforderlichen Pakete werden standardmäßig installiert. Falls Sie jedoch Dienste via SLP bereitstellen möchten, müssen Sie sicherstellen, dass auch das Paket <systemitem>openslp-server</systemitem> installiert wird.
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.act">
+  <title>SLP aktivieren</title>
+
+  <para>
+   slpd muss auf Ihrem System ausgeführt werden, damit Dienste mit SLP angeboten werden können. Wenn der Computer nur als Client fungieren soll und keine Dienste anbietet, ist es nicht erforderlich, slpd auszuführen. Wie die meisten Systemdienste unter <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> wird der slpd-Daemon über ein separates <command>init</command>-Skript gesteuert. Nach der Installation ist der Dämon standardmäßig inaktiv. Wenn Sie ihn temporär aktivieren möchten, führen Sie <command>rcslpd <option>start</option></command> als <systemitem class="username">root</systemitem> aus. Zum Stoppen führen Sie <command>rcslpd <option>stop</option></command> aus. Mit <option>restart</option> oder <option>status</option> lösen Sie einen Neustart oder eine Statusabfrage aus. Wenn slpd nach dem Booten immer aktiv sein soll, aktivieren Sie slpd in YaST <menuchoice> <guimenu>System</guimenu> <guimenu>Systemdienste (Runlevel)</guimenu> </menuchoice> oder führen Sie das Kommando <command>insserv</command> <option>slpd</option> als <systemitem class="username">root</systemitem> aus. 
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.fend">
+  <title>SLP-Frontends in <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase></title>
+
+  <para>
+   Verwenden Sie für die Suche nach Diensten, die über SLP bereitgestellt werden, in Ihrem Netzwerk ein SLP-Frontend wie <command>slptool</command> (<systemitem>openslp</systemitem>-Paket) oder YaST:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>slptool</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>SLP</primary> <secondary>slptool</secondary> </indexterm> <indexterm> <primary>Kommandos</primary> <secondary>slptool</secondary> </indexterm> slptool ist ein Kommandozeilenprogramm, mit dem SLP-Abfragen im Netzwerk oder proprietäre Dienste bekannt gegeben werden können. Mit <command>slptool</command> <option>--help</option> werden alle verfügbaren Optionen und Funktionen aufgelistet. Um beispielsweise alle Zeitserver zu finden, die sich selbst im aktuellen Netzwerk bekannt geben, führen Sie folgendes Kommando aus:
+     </para>
+<screen>slptool findsrvs service:ntp</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>YaST</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>SLP</primary> <secondary>yast</secondary> </indexterm> YaST stellt außerdem einen SLP-Browser zur Verfügung. Dieser Browser ist jedoch nicht über das YaST-Kontrollzentrum verfügbar. Führen Sie zum Starten dieses Browsers <command>yast2 slp</command> als <systemitem class="username">root</systemitem>-Benutzer aus. Klicken Sie auf <guimenu>Dienstarten</guimenu> auf der linken Seite, um weitere Informationen zu einem Dienst zu erhalten.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ 
+ <sect1 id="sec.slp.sl.reg">
+  <title>Bereitstellen von Diensten über SLP</title><indexterm> <primary>SLP</primary> <secondary>Registrieren von Diensten</secondary> </indexterm> <indexterm> <primary>SLP</primary> <secondary>Bereitstellen von Diensten</secondary> </indexterm>
+
+  <para>
+   Viele Anwendungen unter <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> verfügen durch die <literal>libslp</literal>-Bibliothek über eine integrierte SLP-Unterstützung. Falls ein Dienst ohne SLP-Unterstützung kompiliert wurde, können Sie ihn mit einer der folgenden Methoden per SLP verfügbar machen:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Statische Registrierung über <filename>/etc/slp.reg.d</filename>
+    </term>
+    <listitem>
+     <para>
+      Legen Sie für jeden neuen Dienst eine separate Registrierungsdatei an. Das folgende Beispiel veranschaulicht die Registrierung eines Scanner-Diensts:
+     </para>
+<screen>## Register a saned service on this system
+## en means english language
+## 65535 disables the timeout, so the service registration does
+## not need refreshes
+service:scanner.sane://$HOSTNAME:6566,en,65535
+watch-port-tcp=6566
+description=SANE scanner daemon</screen>
+     <para>
+      Die wichtigste Zeile dieser Datei ist die <emphasis>Dienst-URL</emphasis>, die mit <literal>service:</literal> beginnt. Sie enthält den Diensttyp (<literal>scanner.sane</literal>) und die Adresse, unter der der Dienst auf dem Server verfügbar ist. <replaceable>$HOSTNAME</replaceable> wird automatisch durch den vollständigen Hostnamen ersetzt. Abgetrennt durch einen Doppelpunkt folgt nun der Name des TCP-Ports, auf dem der entsprechende Dienst gefunden werden kann. Geben Sie nun die Sprache an, in der der Dienst angekündigt werden soll, und die Gültigkeitsdauer der Registrierung in Sekunden. Diese Angaben müssen durch Kommas von der Dienst-URL getrennt werden. Wählen Sie für die Registrierungsdauer einen Wert zwischen <literal>0</literal> und <literal>65535</literal>. <literal>0</literal> verhindert die Registrierung. <literal>Mit </literal>65535 werden alle Einschränkungen aufgehoben.
+     </para>
+     <para>
+      Die Registrierungsdatei enthält außerdem die beiden Variablen <systemitem>watch-port-tcp</systemitem> und <systemitem>description</systemitem>. <systemitem>watch-port-tcp</systemitem> koppelt die SLP-Dienstankündigung daran, ob der entsprechende Dienst aktiv ist, indem slpd den Status des Diensts überprüft.  Die zweite Variable enthält eine genauere Beschreibung des Diensts, die in den entsprechenden Browsern angezeigt wird.
+     </para>
+     
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Statische Registrierung über <filename>/etc/slp.reg</filename>
+    </term>
+    <listitem>
+     <para>
+      Der einzige Unterschied zwischen dieser Methode und der Prozedur mit <filename>/etc/slp.reg.d</filename> besteht darin, dass alle Dienste in einer zentralen Datei gruppiert sind.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Dynamische Registrierung über <command>slptool</command>
+    </term>
+    <listitem>
+     <para>
+      Wenn ein Dienst dynamisch ohne Verwendung von Konfigurationsdateien registriert werden soll, verwenden Sie das Kommandozeilenprogramm slptool. Dasselbe Programm kann auch die Registrierung eines bestehenden Dienstangebots aufheben, ohne slpd neu zu starten.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.slp.info">
+  <title>Weiterführende Informationen</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>RFC 2608, 2609, 2610</term>
+    <listitem>
+     <para>
+      RFC 2608 befasst sich mit der Definition von SLP im Allgemeinen. RFC 2609 geht näher auf die Syntax der verwendeten Dienst-URLs ein und RFC 2610 thematisiert DHCP über SLP.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://www.openslp.org"/>
+    </term>
+    <listitem>
+     <para>
+      Die Homepage des OpenSLP-Projekts.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/usr/share/doc/packages/openslp</filename>
+    </term>
+    <listitem>
+     <para>
+      Dieses Verzeichnis enthält die Dokumentation für SLP, die im Lieferumfang des <systemitem>openslp-server</systemitem>-Pakets enthalten ist, einschließlich einer <filename>README.SuSE</filename>-Datei mit den <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>-Details, den RFCs und zwei einführenden HTML-Dokumenten. Programmierer, die an den SLP-Funktionen interessiert sind, finden weitere Informationen im <emphasis>Programmierhandbuch</emphasis>, das im Paket <systemitem class="resource">openslp-devel</systemitem> enthalten ist.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+</chapter>

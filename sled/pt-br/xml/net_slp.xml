@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="net_slp.xml" id="cha.slp">
+ <title>Serviços SLP na rede</title><indexterm> <primary>redes</primary> <secondary>SLP</secondary> </indexterm> <indexterm> <primary>Service Location Protocol</primary> <see>SLP</see> </indexterm> <indexterm> <primary>SLP</primary> </indexterm> <indexterm> <primary>protocolos</primary> <secondary>SLP</secondary> </indexterm>
+ <abstract>
+  <para>
+   O <emphasis>SLP</emphasis> foi criado para simplificar a configuração dos clientes em rede dentro de uma rede local. Para configurar um cliente em rede, inclusive todos os serviços necessários, o administrador normalmente precisa ter conhecimento detalhado dos servidores disponíveis na rede. O SLP divulga a disponibilidade de serviços selecionados a todos os clientes da rede local. Os aplicativos que dão suporte ao SLP podem usar as informações distribuídas e podem ser configurados automaticamente.
+  </para>
+ </abstract>
+ <para>
+  O <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> suporta a instalação com o uso de fontes de instalação fornecidas via SLP e contém diversos serviços de sistema com suporte integrado a SLP. O YaST e o Konqueror possuem front ends apropriados para SLP. Você pode usar o SLP para oferecer funções centrais aos clientes em rede, como servidor de instalação, servidor de arquivos ou servidor de impressão no sistema.
+ </para>
+
+
+ <important>
+  <title>Suporte a SLP no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase></title>
+  <para>
+   Serviços que oferecem suporte ao SLP: cupsd, rsyncd, ypserv, openldap2, ksysguardd, saned, kdm, vnc, login, smpppd, rpasswd, postfix e sshd (via fish).
+  </para>
+ </important>
+ <sect1 id="sec.slp.openslpinst">
+  <title>Instalação</title>
+
+  
+
+  <para os="sled;sles">
+
+   Todos os pacotes necessários são instalados por padrão. No entanto, se você quiser fornecer serviços via SLP, verifique se o pacote <systemitem>openslp-server</systemitem> está instalado.
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.act">
+  <title>Ativando o SLP</title>
+
+  <para>
+   O slpd deve ser executado no sistema para oferecer serviços pelo SLP. Se a máquina pode operar apenas como cliente a não oferece serviços, não é necessário ter slpd em execução nela. Assim como a maioria dos serviços de sistema no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>, o daemon slpd é controlado por um script <command>init</command> separado. Após a instalação, o daemon fica inativo por padrão. Para ativá-lo temporariamente, execute <command>rcslpd <option>start</option></command> enquanto usuário <systemitem class="username">root</systemitem> ou <command>rcslpd <option>stop</option></command> para pará-lo. Efetue uma verificação de reinicialização ou status com <option>restart</option> ou <option>status</option>. Se for necessário que o slpd fique sempre ativo após a inicialização, habilite o slpd no YaST <menuchoice> <guimenu>Sistema</guimenu> <guimenu>Serviços do Sistema (Nível de Execução)</guimenu> </menuchoice> ou execute o comando <command>insserv</command> <option>slpd</option> como <systemitem class="username">root</systemitem>.
+  </para>
+ </sect1>
+ <sect1 id="sec.slp.sl.fend">
+  <title>Front ends SLP no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase></title>
+
+  <para>
+   Para localizar os serviços fornecidos por SLP em sua rede, use um front end SLP como <command>slptool</command> (pacote <systemitem>openslp</systemitem>) ou o YaST:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>slptool</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>SLP</primary> <secondary>slptool</secondary> </indexterm> <indexterm> <primary>comandos</primary> <secondary>slptool</secondary> </indexterm> slptool é um programa de linha de comando capaz de anunciar perguntas SLP na rede ou serviços proprietários. <command>slptool</command> <option>--help</option> lista todas as opções e funções disponíveis. Por exemplo, para encontrar todos os servidores de horário que se anunciam na rede atual, execute o comando:
+     </para>
+<screen>slptool findsrvs service:ntp</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>YaST</term>
+    <listitem>
+     <para>
+      <indexterm> <primary>SLP</primary> <secondary>yast</secondary> </indexterm> O YaST também oferece um browser SLP. Porém, esse browser não está disponível no Centro de Controle do YaST. Para iniciá-lo, execute <command>yast2 slp</command> como usuário <systemitem class="username">root</systemitem>. Clique em um <guimenu>Tipo de Serviço</guimenu> na lateral esquerda para ver mais informações sobre o serviço.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ 
+ <sect1 id="sec.slp.sl.reg">
+  <title>Fornecendo serviços por SLP</title><indexterm> <primary>SLP</primary> <secondary>registrando serviços</secondary> </indexterm> <indexterm> <primary>SLP</primary> <secondary>fornecendo serviços</secondary> </indexterm>
+
+  <para>
+   Muitos aplicativos no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> já têm suporte integrado ao SLP com o uso da biblioteca <literal>libslp</literal>. Se um serviço não tiver sido compilado com o suporte ao SLP, use um dos métodos a seguir para disponibilizá-lo por SLP:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Registro estático com <filename>/etc/slp.reg.d</filename>
+    </term>
+    <listitem>
+     <para>
+      Crie um arquivo de registro separado para cada novo serviço. Este é um exemplo de registro do serviço de scanner:
+     </para>
+<screen>## Register a saned service on this system
+## en means english language
+## 65535 disables the timeout, so the service registration does
+## not need refreshes
+service:scanner.sane://$HOSTNAME:6566,en,65535
+watch-port-tcp=6566
+description=SANE scanner daemon</screen>
+     <para>
+      A linha mais importante desse arquivo é a linha <emphasis>URL do serviço</emphasis>, que começa com <literal>service:</literal>. Essa linha contém o tipo de serviço (<literal>scanner.sane</literal>) e o endereço em que o serviço está disponível no servidor. <replaceable>$HOSTNAME</replaceable> é automaticamente substituída pelo nome completo do host. Em seguida, vem o nome da porta TCP em que o serviço em questão pode ser encontrado, separado por dois-pontos. A seguir, especifique o idioma em que o serviço deve ser exibido e a duração do registro em segundos. Esses dados devem ser separados do URL do serviço por vírgulas. Defina o valor da duração do registro entre <literal>0</literal> e <literal>65535</literal>. <literal>O valor </literal>0 impede o registro. <literal>O valor </literal>65535 elimina todas as restrições.
+     </para>
+     <para>
+      O arquivo de registro também contém as duas variáveis <systemitem>watch-port-tcp</systemitem> e <systemitem>description</systemitem>. <systemitem>watch-port-tcp</systemitem> vincula o anúncio do serviço SLP à atividade do serviço em questão fazendo com que o slpd verifique o status do serviço. A segunda variável contém uma descrição mais precisa do serviço que é exibido nos browsers apropriados.
+     </para>
+     
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Registro estático com <filename>/etc/slp.reg</filename>
+    </term>
+    <listitem>
+     <para>
+      A única diferença entre esse método e o procedimento de <filename>/etc/slp.reg.d</filename> é que todos os serviços são agrupados em um arquivo central.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Registro dinâmico com <command>slptool</command>
+    </term>
+    <listitem>
+     <para>
+      Se um serviço precisar ser registrado dinamicamente sem a necessidade de arquivos de configuração, use o utilitário de linha de comando slptool. O mesmo utilitário também pode ser usado para cancelar o registro de uma oferta de serviço existente sem reiniciar o slpd.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.slp.info">
+  <title>Para obter mais informações</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>RFC 2608, 2609, 2610</term>
+    <listitem>
+     <para>
+      O RFC 2608 geralmente trata da definição de SLP. O RFC 2609 trata da sintaxe dos URLs de serviço usados em maior detalhe e o RFC 2610 trata do DHCP via SLP.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://www.openslp.org"/>
+    </term>
+    <listitem>
+     <para>
+      A home page do projeto OpenSLP.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/usr/share/doc/packages/openslp</filename>
+    </term>
+    <listitem>
+     <para>
+      Este diretório apresenta a documentação do SLP que acompanha o pacote <systemitem>openslp-server</systemitem>, incluindo o <filename>README.SuSE</filename> com detalhes do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>, os RFCs e dois documentos HTML de introdução. Os programadores que desejarem usar as funções do SLP podem obter mais informações no <emphasis>Programmers Guide</emphasis> (Guia do programador), incluído no pacote <systemitem class="resource">openslp-devel</systemitem>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+</chapter>

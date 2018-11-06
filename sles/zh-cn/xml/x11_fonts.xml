@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_fonts.xml" id="sec.x11.fontconfig">
+ <title>安装和配置字体</title><indexterm> <primary>X</primary><secondary>TrueType 字体</secondary></indexterm><indexterm><primary>字体</primary><secondary>TrueType</secondary></indexterm><indexterm><primary>X</primary><secondary>字体</secondary></indexterm><indexterm><primary>X</primary><secondary>xft</secondary></indexterm><indexterm><primary>X</primary><secondary>字符集</secondary></indexterm>
+
+ <para>
+  在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中安装附加字体非常简单。只需要将字体复制到位于 X11 字体路径中的任何目录即可（请参见 <xref linkend="sec.x11.fontconfig.fontsys.x11core"/>）。要启用字体，安装目录应是 <filename>/etc/fonts/fonts.conf</filename> 中配置的目录的子目录（请参见<xref linkend="sec.x11.fontconfig.fontsys.xft"/>），或用 <filename>/etc/fonts/suse-font-dirs.conf</filename> 包含到此文件中。
+ </para>
+
+ <para>
+  以下是 <filename>/etc/fonts/fonts.conf</filename> 中的摘录。该文件是标准的配置文件，应适合大多数配置。它还定义包含的目录 <filename>/etc/fonts/conf.d</filename>。在此目录中，以两位数字开头的所有文件或符号链接均由 fontconfig 装载。有关此功能的更详细描述，请参见 <filename>/etc/fonts/conf.d/README</filename>。
+ </para>
+
+<screen>&lt;!-- Font directory list --&gt;
+&lt;dir&gt;/usr/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/X11R6/lib/X11/fonts&lt;/dir&gt; 
+&lt;dir&gt;/opt/kde3/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+&lt;dir&gt;~/.fonts&lt;/dir&gt;
+</screen>
+
+ <para>
+  <filename>/etc/fonts/suse-font-dirs.conf</filename> 会自动生成，以引入（多为第三方）应用程序（如 LibreOffice、Java 或 Adobe Reader）附带的字体。以下是典型项：
+ </para>
+
+<screen>&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font&lt;/dir&gt;
+&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font/PFM&lt;/dir&gt;
+ </screen>
+
+ <para>
+  要在整个系统安装其他字体，请手动将字体文件复制到适当的目录（如 <systemitem class="username">root</systemitem>），例如 <filename>/usr/share/fonts/truetype</filename>。或者，可以使用 KDE 控制中心中的 KDE 字体安装程序来执行此任务。结果是一样的。
+ </para>
+
+ <para>
+  您还可以创建符号链接，而不复制实际字体。例如，如果已装入的 Windows 分区上的字体已获得许可并要使用，则可能要执行此操作。随后，运行 <command>SuSEconfig <option>--module fonts</option></command>。
+ </para>
+
+ <para>
+  <command>SuSEconfig <option>--module fonts</option> </command> 执行脚本 <filename>/usr/sbin/fonts-config</filename>，该脚本处理字体的配置。有关此脚本的更多信息，请参见其手册页 (<command>man <option>fonts-config</option></command>)。
+ </para><indexterm> <primary>命令</primary> <secondary>fonts-config</secondary> </indexterm>
+
+ <para>
+  上面的过程同样适用于位图字体、TrueType 和 OpenType 字体以及 Type1 (PostScript) 字体。可以将所有这些字体类型安装在任何目录中。<indexterm> <primary>X</primary><secondary>字体系统</secondary></indexterm><indexterm><primary>字体</primary></indexterm>
+ </para>
+
+ <para>
+  X.Org 包含两个完全不同的字体系统：旧的 <guimenu>X11 核心字体系统</guimenu>和新设计的 <guimenu>Xft 及 fontconfig</guimenu> 系统。下面几节简要介绍这两种系统。
+ </para>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.x11core">
+  <title>X11 核心字体</title><indexterm> <primary>X</primary> <secondary>X11 核心字体</secondary> </indexterm> <indexterm> <primary>字体</primary> <secondary>X11 核心</secondary> </indexterm>
+  <para>
+   目前，X11 核心字体系统不仅支持位图字体，还支持可缩放字体（例如 Type1 字体）、TrueType 以及 OpenType 字体。X11 核心字体系统只在没有消除锯齿处理和子像素显示的情况下支持可缩放字体，并且对许多语言而言，装载具有字形的大型可缩放字体可能需要较长的时间。也支持 Unicode 字体，但使用它们的速度比较慢，而且需要更多内存。
+  </para>
+  <para>
+   X11 核心字体系统带有一些固有缺陷。它已经过时，而且不再能以有意义的方式扩展。虽然为了实现向后兼容而不得不保留 X11 核心字体系统，但应尽可能使用更先进的 Xft 和 fontconfig 系统。
+  </para>
+  <para>
+   为了执行相应的操作，X 服务器需要知道它可使用的字体以及在系统中的哪些位置可找到这些字体。这由 <literal>FontPath</literal> 变量来处理，该变量包含所有有效系统字体目录的路径。在其中每个目录中，一个名为 <filename>fonts.dir</filename> 的文件会列出此目录中的可用字体。<literal>FontPath</literal> 由 X 服务器在启动时生成。它将在配置文件 <filename>/etc/X11/xorg.conf</filename> 的每个 <literal>FontPath</literal> 项中搜索有效的 <filename>fonts.dir</filename>文件。这些项位于 <literal>Files</literal> 部分。使用 <command>xset</command> <option>q</option> 可显示实际的 <literal>FontPath</literal>。运行时也可以使用<command> xset</command> 更改该路径。要添加其他路径，请使用 <command>xset</command><option>+fp &lt;path&gt;</option>。要删除不需要的路径，请使用 <command>xset</command><option>-fp &lt;path&gt;</option>。
+  </para>
+  <para>
+   如果 X 服务器已经处于活动状态，则可以使用命令 <command>xset</command><option>fp rehash</option> 使装入的目录中新安装的字体可用。通过 <command>SuSEconfig</command><option>--module fonts </option>执行此命令。因为命令 <command>xset</command> 需要访问正在运行的 X 服务器，所以只有当从可以访问正在运行的 X 服务器的外壳启动 <command>SuSEconfig</command><option>---module fonts</option> 时，此命令才能发挥作用。实现此目的最简单的方法是通过输入 <command>su</command> 和 <systemitem class="username">root</systemitem> 口令获得 <systemitem class="username">root</systemitem> 许可权限。<command>su</command> 会将启动 X 服务器的用户的访问权限转移到 <systemitem class="username">root</systemitem> 外壳。要检查是否正确安装了字体以及是否可以通过 X11 核心字体系统使用字体，请使用命令 <command>xlsfonts</command> 列出所有可用字体。
+  </para>
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 默认使用 UTF-8 区域设置。因此，应首选 Unicode 字体（<command>xlsfonts</command> 输出中以 <literal>iso10646-1</literal> 结尾的字体名称）。可以使用 <command>xlsfonts</command><option>| grep iso10646-1</option> 列出所有可用的 Unicode 字体。几乎所有在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中可用的 Unicode 字体都至少包括欧洲语言所需的字形（以前编码为 <literal>iso-8859-*</literal>）。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.xft">
+  <title>Xft</title><indexterm> <primary>X</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>字体</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Xft</primary> </indexterm>
+  <para>
+   从一开始，Xft 的编程人员就确保该系统可以很好地支持可缩放字体（包括消除锯齿）。如果使用 Xft，则是由使用字体的应用程序显示字体，而不是像 X11 核心字体系统中由 X 服务器显示字体。采用这种方式，相应的应用程序能够访问实际字体文件并完全控制如何显示字形。这就为正确显示多种语言的文本奠定了基础。直接访问字体文件对于用于打印的嵌入字体非常有用，因为这样可以确保打印输出与屏幕输出看上去完全一样。
+  </para>
+  <para>
+   在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中，两个桌面环境（KDE 和 GNOME）、Mozilla 和许多其他应用程序均已默认使用 Xft。使用 Xft 的应用程序在数目上已经超过了使用以前的 X11 核心字体系统的应用程序。
+  </para>
+  <para>
+   Xft 使用 fontconfig 库来查找字体并影响字体的显示方式。fontconfig 的属性由全局配置文件 <filename>/etc/fonts/fonts.conf</filename> 控制。应向 <filename>/etc/fonts/local.conf</filename> 和用户特定的配置文件 <filename>~/.fonts.conf</filename> 添加特殊配置。所有这些 fontconfig 配置文件的开头必须是
+  </para>
+<screen>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+&lt;fontconfig&gt;</screen>
+  <para>
+   并且结尾必须是
+  </para>
+<screen>&lt;/fontconfig&gt;</screen>
+  <para>
+   要添加用于搜索字体的目录，请追加类似下面内容的一行：
+  </para>
+<screen>&lt;dir&gt;/usr/local/share/fonts/&lt;/dir&gt;</screen>
+  <para>
+   但通常没有必要这样做。默认情况下，已经在 <filename>/etc/fonts/fonts.conf</filename> 中输入了用户特定的目录 <filename>~/.fonts</filename>。因此，要安装附加字体，只需将它们复制到 <filename>~/.fonts</filename> 即可。
+  </para>
+  <para>
+   您还可以插入用来确定字体外观的规则。例如，输入
+  </para>
+<screen>
+&lt;match target="font"&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+  &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   来禁用所有字体的消除锯齿处理，或输入
+  </para>
+<screen>&lt;match target="font"&gt;
+ &lt;test name="family"&gt;
+  &lt;string&gt;Luxi Mono&lt;/string&gt;
+  &lt;string&gt;Luxi Sans&lt;/string&gt;
+ &lt;/test&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+ &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   来禁用特定字体的消除锯齿处理。
+  </para>
+  <para>
+   默认情况下，大多数应用程序使用字体名称 <literal>sans-serif</literal>（或等效的 <literal>sans</literal>）、<literal>serif</literal> 或 <literal>monospace</literal>。它们不是真正的字体，而只是可解析为合适的字体（取决于语言设置）的别名。
+  </para>
+  <para>
+   用户可以方便地将规则添加到 <filename>~/.fonts.conf</filename> 中，以将这些别名解析为他们喜欢的字体：
+  </para>
+<screen>&lt;alias&gt;
+ &lt;family&gt;sans-serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSans&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSerif&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;monospace&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeMono&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;</screen>
+  <para>
+   因为几乎所有应用程序都默认使用这些别名，所以这几乎影响到整个系统。这样，您可以方便地在几乎所有位置都使用自己喜欢的字体，而无需在各个应用程序中修改字体设置。
+  </para>
+  <para>
+   使用 <command>fc-list</command> 命令可以查看已安装了哪些字体以及哪些字体可用。例如，命令 <command>fc-list</command> 返回所有字体的列表。要找出可用的可缩放字体 (<option>:scalable=true</option>) 中有哪些包含希伯来语 (<option>:lang=he</option>) 所需的所有字形、它们的字体名称 (<option>family</option>)、字型 (<option>style</option>)、粗细 (<option>weight</option>) 以及包含这些字体的文件的名称，请输入以下命令：
+  </para>
+<screen>fc-list ":lang=he:scalable=true" family style weight</screen>
+  <para>
+   此命令的输出类似于下面：
+  </para>
+<screen>
+Lucida Sans:style=Demibold:weight=200
+DejaVu Sans:style=Bold Oblique:weight=200
+Lucida Sans Typewriter:style=Bold:weight=200
+DejaVu Sans:style=Oblique:weight=80
+Lucida Sans Typewriter:style=Regular:weight=80
+DejaVu Sans:style=Book:weight=80
+DejaVu Sans:style=Bold:weight=200
+Lucida Sans:style=Regular:weight=80</screen>
+  <para>
+   可以使用 <command>fc-list</command> 查询的重要参数包括：
+  </para>
+  <table id="tab.x11.fonts.fclist">
+   <title>fc-list<command> 的参数</command></title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        参数
+       </para>
+      </entry>
+      <entry>
+       <para>
+        含义和可能值
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <option>family</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字体系列的名称，如 <literal>FreeSans</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>foundry</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字体的制造商，如 <literal>urw</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>style</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型，如 <literal>Medium</literal>、<literal>Regular</literal>、<literal>Bold</literal>、<literal>Italic</literal> 或 <literal>Heavy</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>lang</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字体支持的语言，例如 <literal>de</literal> 表示德语、<literal>ja</literal> 表示日语、<literal>zh-TW</literal> 表示繁体中文、<literal>zh-CN</literal> 表示简体中文。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>weight</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字体粗细，例如 <literal>80</literal> 表示常规粗细，<literal>200</literal> 表示粗体。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>slant</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        倾斜，通常 <literal>0</literal> 表示不倾斜，<literal>100</literal> 表示斜体。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>file</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        包含字体的文件的名称。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>outline</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> 表示外框字体，<literal>false</literal> 表示其他字体。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>scalable</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> 表示可缩放字体，<literal>false</literal> 表示其他字体。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>bitmap</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true</literal> 表示位图字体，<literal>false</literal> 表示其他字体。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>pixelsize</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        以像素为单位表示的字体大小。与 fc-list 一起使用时，此选项仅对位图字体有意义。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </sect2>
+</sect1>

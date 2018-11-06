@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="mobile.xml" id="cha.mobile">
+ <title>Linux 中的移动计算</title><indexterm id="idx.mobility" class="startofrange"> <primary>移动能力</primary> </indexterm>
+ <abstract>
+  <para>
+   移动计算主要与便携式计算机、PDA 和手提电话（以及它们之间的数据交换）关联。移动硬件部件（如外部硬盘、闪存盘或数码相机）可连接到便携式计算机或台式机。移动计算方案中涉及了许多软件组件，一些应用程序是专门为移动定制的。
+  </para>
+ </abstract>
+ <sect1 id="sec.mobile.nbook">
+  <title>便携式计算机</title><indexterm class="startofrange" id="idx.notebook"> <primary>便携式计算机</primary></indexterm><indexterm><primary>便携式计算机</primary><secondary>硬件</secondary></indexterm><indexterm><primary>便携式计算机</primary><secondary>PCMCIA</secondary></indexterm><indexterm><primary>PCMCIA</primary></indexterm><indexterm><primary>移动能力</primary><secondary>便携式计算机 </secondary></indexterm>
+
+  <para>
+   便携式计算机的硬件不同于普通台式机的硬件。这是因为必须考虑可交换性、空间要求和能耗等条件。移动硬件的制造商已开发了标准接口，如可用于扩展便携式计算机硬件的 PCMCIA（个人计算机内存卡国际协会）、迷你 PCI 和迷你 PCIe。此标准涉及内存卡、网络接口卡、ISDN 卡（和调制解调器卡）以及外部硬盘。
+  </para>
+
+  <tip>
+   <title><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 和平板电脑</title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 还支持平板电脑。平板电脑附带触摸板/数字转换器，使您可以使用数字笔甚至指尖代替鼠标和键盘直接在屏幕上编辑数据。它们的安装和配置与其他任何系统类似。有关平板电脑安装和配置的详细介绍，请参见<xref linkend="cha.tablet"/>。
+   </para>
+  </tip>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.powerm">
+   <title>省电</title><indexterm> <primary>便携式计算机</primary><secondary>电源管理</secondary></indexterm> <indexterm><primary>电源管理</primary></indexterm>
+   <para>
+    由于在制造便携式计算机时加入了能量优化系统组件，这使得不必连接电源线即可使用便携式计算机。这些部件在省电方面所起的作用并不亚于操作系统。<phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 支持各种影响便携式计算机能耗的方法，在使用电池供电时，这些方法对计算机运行时间的影响各不相同。下面的列表按照省电方面作用从大到小排列：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      节制 CPU 流速。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      在暂停期间关闭显示器。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      手动调节显示器亮度。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      断开不使用的支持热插拔的附件（USB CD-ROM、外部鼠标、不使用的 PCMCIA 卡、WLAN 等）。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      在硬盘闲置时降低其转速。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    有关 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 电源管理的详细背景信息，请参见<xref linkend="cha.pmanage"/>。 
+   </para>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.nbook.change">
+   <title>在变化的操作环境中集成</title><indexterm> <primary>便携式计算机</primary></indexterm>
+   <para>
+    在用于移动计算时，您的系统需要适应变化的操作环境。很多服务都依赖于环境，而且必须重配置底层客户端。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 将为您处理这项任务。
+   </para>
+   <figure id="fig.mobile.scpm">
+    <title>在现有环境中集成移动计算机</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="90%" fileref="mobile_scpm.svg" format="SVG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="75%" fileref="mobile_scpm.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    对于在小型家庭网络和办公网络之间往来通讯的便携式计算机，受影响的服务包括：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>网络</term>
+     <listitem>
+      <para>
+       这包括 IP 地址分配、名称解析、因特网连接以及与其他网络的连接。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>打印</term>
+     <listitem>
+      <para>
+       必须存在可用打印机的当前数据库和可用的打印服务器（具体取决于网络）。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>电子邮件和代理</term>
+     <listitem>
+      <para>
+       就像在打印中那样，当前必须存在一组相应的服务器。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>X（图形环境）</term>
+     <listitem>
+      <para>
+       如果您的便携式计算机暂时连接到投影仪或外部监视器，则需要有其他显示配置。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 提供了多种将便携式计算机集成到现有操作环境的方法：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>NetworkManager</term>
+     <listitem>
+      <para>
+       <indexterm><primary>NetworkManager</primary></indexterm><indexterm><primary>NetworkManager</primary> <secondary>便携式计算机</secondary></indexterm>NetworkManager 特别为在便携式计算机上联网移动而设计。它让您能够轻松地在网络环境之间或不同网络类型之间进行自动切换，例如，移动宽带（如 GPRS、EDGE 或 3G）、无线 LAN 和以太网。NetworkManager 在无线 LAN 中支持 WEP 和 WPA-PSK 加密。它也支持拨号连接（使用 smpppd）。这两种桌面环境（GNOME 和 KDE）均包含 NetworkManager 的前端。关于桌面小程序的更多信息，请参见<xref linkend="sec.nm.kde"/> 和<xref linkend="sec.nm.gnome"/>。
+      </para>
+<?dbfo-need height="20em"?>
+
+
+      <table>
+       <title>NetworkManager 的用例</title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry>
+           <para>
+            我的计算机…
+           </para>
+          </entry>
+          <entry>
+           <para>
+            使用 NetworkManager
+           </para>
+          </entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>
+           <para>
+            是便携式计算机
+           </para>
+          </entry>
+          <entry>
+           <para>
+            是
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            有时与不同网络连接
+           </para>
+          </entry>
+          <entry>
+           <para>
+            是
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            提供网络服务（例如 DNS 或 DHCP）
+           </para>
+          </entry>
+          <entry>
+           <para>
+            否
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            仅使用静态 IP 地址
+           </para>
+          </entry>
+          <entry>
+           <para>
+            否
+           </para>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+      <para>
+       只要不应该使用 NetworkManager 来处理网络配置，便使用 YaST 工具配置联网。
+      </para>
+      <tip>
+       <title>DNS 配置和各种类型的网络连接</title>
+       <para>
+        如果您经常携带便携式计算机出行并需要更改不同类型的网络连接，NetworkManager 将是您的好助手，只要所有 DNS 地址均已使用 DHCP 正确指派。如果一些连接使用静态 DNS 地址，请将其添加到 <filename>/etc/sysconfig/network/config</filename> 中的 <literal>NETCONFIG_DNS_STATIC_SERVERS</literal> 选项。
+       </para>
+      </tip>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>SLP</term>
+     <listitem>
+      <para>
+       <indexterm><primary>便携式计算机</primary> <secondary>SLP</secondary></indexterm><indexterm> <primary>SLP</primary></indexterm> 服务位置协议 (SLP) 简化了便携式计算机与现有网络的连接。没有 SLP，便携式计算机的管理员通常需要详细了解网络中可用的服务。使用 SLP 则可以向本地网络中的所有客户端广播某种服务是否可用。支持 SLP 的应用程序可以处理 SLP 发送的信息，并进行自动配置。SLP 还可用于安装系统，从而最大限度地减少搜索合适安装源的工作量。有关 SLP 的更多详细信息，请参见<xref linkend="cha.slp"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.nbook.soft">
+   <title>软件选择</title>
+   <para>
+    在移动使用中有不同的特殊任务领域，它们由专用软件实现：系统监视（特别是电池充电）、数据同步和与外围设备及因特网的无线通讯。以下章节介绍了 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 为各项任务提供的最为重要的应用程序。
+   </para>
+   <sect3 id="sec.mobile.nbook.soft.mon">
+    <title>系统监视</title><indexterm> <primary>系统监视</primary> </indexterm>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 提供了两个 KDE 系统监视工具：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>电源管理</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>系统监视</primary> <secondary>电源管理</secondary> </indexterm> <indexterm> <primary>电源管理</primary> </indexterm> <guimenu>电源管理</guimenu>是一个允许您调整 KDE 桌面的节能行为的应用程序。一般来说，您可以通过<guimenu>电池监视器</guimenu>托盘图标访问电源管理，该图标根据当前的电源类型而变化。打开电源管理配置对话框的另一种方式是通过 <guimenu>Kickoff 应用程序起动器</guimenu>：<menuchoice><guimenu>应用程序</guimenu> <guimenu>配置桌面</guimenu><guimenu>高级</guimenu><guimenu>电源管理</guimenu></menuchoice>。
+       </para>
+       <para>
+        单击<guimenu>电池监视器</guimenu>托盘图标访问配置节能行为的选项。可以从显示的五个电源配置文件中选择一个最适合您需要的配置文件。例如，<guimenu>演示文稿</guimenu>模式通常将禁用屏幕保护程序和电源管理，从而使您的演示不会被系统事件中断。单击<guimenu>更多...</guimenu> 打开更加复杂的配置屏幕。在此可以编辑各个配置文件和设置高级电源管理选项及通知，比如，便携式计算机盖闭合或电池电量不足时应执行的操作。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>系统监视程序</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>系统监视</primary> <secondary>系统监视器</secondary> </indexterm> <guimenu>系统监视器</guimenu>（也称为 <guimenu>KSysguard</guimenu>）将可测量的系统参数收集到一个监视环境中。它默认情况下将输出信息显示在 2 个选项卡中。<guimenu>进程表</guimenu>提供有关当前正在运行的进程的详细信息，比如，CPU 负载、内存使用情况或进程 ID 号和 nice 值。您可以自定义所收集数据的显示和过滤 — 要添加新类型的进程信息，请左键单击进程表标题，并选择要隐藏或要添加到视图中的列。也可以监视不同数据页中的不同系统参数，或跨网络并行收集不同计算机上的数据。KSysguard 还可以在不具备 KDE 环境的计算机上作为守护程序运行。有关此程序的详细信息，请参见此程序中集成的帮助功能或 SUSE 帮助页。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     在 GNOME 环境中，使用<guimenu>电源管理自选设置</guimenu>和<guimenu>系统监视器</guimenu>。
+    </para>
+   </sect3>
+   <sect3 id="sec.mobile.nbook.soft.sync">
+    <title>同步数据</title>
+    <para>
+     如果要在以下两种工作方式（在与网络断开的移动计算机上工作和在办公室中的联网工作站上工作）之间切换，则需要在所有实例间保持同步处理数据。这可能包括电子邮件文件夹、目录和单个文件，这些数据需要保持最新，以便在途中和办公室中处理。适用于这两种情况的解决方案如下：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>同步电子邮件</term>
+      <listitem>
+       <para>
+        <indexterm><primary>同步数据</primary><secondary>电子邮件</secondary></indexterm><indexterm><primary>电子邮件</primary><secondary>同步</secondary></indexterm> 在办公室网络中使用 IMAP 帐户储存电子邮件。如此，您便可以从工作站使用任一断开连接但支持 IMAP 的电子邮件客户端（如 Mozilla Thunderbird Mail、Evolution 或 KMail）来访问这些电子邮件。必须对电子邮件客户端进行配置，以便始终从同一文件夹访问<literal>已发送邮件</literal>。这样能确保在完成同步过程之后可以提供所有信件及其状态信息。使用邮件客户端中实施的 SMTP 服务器（而非系统范围的 MTA Postfix 或 Sendmail）来发送邮件，从而可收到有关未发送邮件的可靠反馈。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>同步文件和目录</term>
+      <listitem>
+       <para>
+        <indexterm><primary>同步数据</primary> </indexterm> 有若干实用程序适合在便携式计算机和工作站之间同步数据。使用最广泛的一种实用程序是称为 <command>rsync</command> 的命令行工具。<phrase os="sled;sles">有关更多信息，请参见其手册页 (<command>man 1 rsync</command>)</phrase>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.mobile.nbook.soft.wlan">
+    <title>无线通讯</title><indexterm><primary>网络</primary><secondary>无线的</secondary></indexterm>
+    <para>
+     便携式计算机不仅可以通过电缆连接到家庭或办公网络，而且还可以使用无线连接访问其他计算机、外设、手提电话或 PDA。Linux 支持三种类型的无线通讯：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>WLAN</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>网络</primary> <secondary>WLAN</secondary> </indexterm> <indexterm> <primary>WLAN</primary> </indexterm> WLAN 在这三种无线技术中覆盖范围最广，是唯一一种适用于大型网络（有时甚至是在空间上分离的网络）的操作技术。单独的计算机可以通过互连形成独立的无线网络或访问因特网。称为<emphasis>接入点</emphasis>的设备充当支持 WLAN 设备的基站，并作为访问因特网的中介。移动用户可以在多个接入点之间切换，这取决于所在位置以及哪个接入点提供的连接最佳。类似移动电话的情况，WLAN 用户可以访问一个大型网络，而不必被集中到某个位置来访问这个网络。有关 WLAN 的详细信息请参见<xref linkend="cha.wireless.wlan"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>蓝牙</term>
+      <listitem>
+       <para>
+        <indexterm><primary>网络</primary><secondary>蓝牙</secondary></indexterm><indexterm><primary>蓝牙</primary></indexterm> 蓝牙技术是所有无线技术中应用范围最广的技术。与 IrDA 一样，蓝牙技术可用于计算机（便携式计算机）和 PDA 或手提电话之间的通信。它还可用于连接一定范围内的多台计算机。蓝牙技术还可用于连接键盘或鼠标之类的无线系统组件。但这种技术的覆盖范围还不够大，无法将远程系统连接到网络中。WLAN 是穿越墙壁之类的有形障碍物进行通讯的首选技术。
+
+
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>IrDA</term>
+      <listitem>
+       <para>
+        <indexterm><primary>网络</primary> <secondary>IrDA</secondary></indexterm><indexterm> <primary>IrDA</primary></indexterm> IrDA 是覆盖范围最小的无线技术。通讯双方必须在彼此的视线范围之内。无法穿越墙壁这样的障碍物。将文件从便携式计算机传送到手提电话就是 IrDA 的一种应用方式。使用 IrDA 即可覆盖由便携式计算机到手提电话之间的较短路径。要在较大范围内将文件传输给接收方，则需要通过移动网络来处理。IrDA 的另一种应用方式就是在办公室中无线传送打印任务。
+
+
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.mobile.nbook.sec">
+   <title>数据安全性</title><indexterm><primary>移动性</primary><secondary>数据安全性</secondary></indexterm><indexterm><primary>安全性</primary><secondary>加密文件系统</secondary></indexterm><indexterm><primary>数据安全性</primary></indexterm>
+   <para>
+    要防止他人未经授权访问您的便携式计算机上的数据，您最好同时采用多种方式。可以在以下方面采取各种可能的安全措施：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>防止被盗</term>
+     <listitem>
+      <para>
+       始终尽可能地利用实物来防止您的系统被盗。零售店中就出售各种防盗工具，如锁链。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>强大的身份验证</term>
+     <listitem>
+      <para>
+       除了通过登录名和口令的标准身份验证外，还使用生物特征身份验证。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 支持指纹身份验证。有关细节，请参见<xref linkend="cha.security.fp"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>保护系统中的数据</term>
+     <listitem>
+      <para>
+       重要数据不仅要在传送过程中加密，而且要在硬盘上加密。这样即使被盗也能保证数据不外泄。<xref linkend="cha.security.cryptofs"/>中介绍了如何使用 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 创建加密分区。在使用 YaST 添加用户时还可以创建加密的主目录。
+      </para>
+      <important>
+       <title>数据安全性和暂挂到磁盘</title>
+       <para>
+        在发生暂挂到磁盘事件期间，不会卸装加密的分区。因此，任何人只需窃取硬件然后对硬盘发出 resume 命令就可以获取这些分区上的所有数据。
+       </para>
+      </important>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>网络安全</term>
+     <listitem>
+      <para>
+       不管使用的方式如何，任何数据传输都应该是安全的。有关 Linux 和网络的常见安全性问题，请参见<xref linkend="cha.security"/>。有关无线联网的安全措施，请参见 <xref linkend="cha.wireless.wlan"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist><indexterm class="endofrange" startref="idx.notebook"/>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.mobile.hw">
+  <title>移动硬件</title><indexterm> <primary>移动能力</primary><secondary>USB</secondary></indexterm><indexterm><primary>移动能力</primary><secondary>防火墙 (IEEE1394)</secondary></indexterm><indexterm><primary>防火墙 (IEEE1394)</primary><secondary>硬盘</secondary></indexterm><indexterm><primary>USB</primary><secondary>硬盘</secondary></indexterm><indexterm><primary>USB</primary><secondary>闪存盘</secondary></indexterm><indexterm><primary>闪存盘</primary></indexterm><indexterm><primary>移动能力</primary><secondary>外部硬盘</secondary></indexterm><indexterm><primary>移动能力</primary><secondary>数码相机</secondary></indexterm><indexterm><primary>数码相机</primary></indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 支持自动检测 FireWire (IEEE 1394) 或 USB 上的移动储存设备。术语<emphasis>移动储存设备</emphasis>适用于任何种类的防火墙或 usb 硬盘、USB 闪存驱动器，或数码相机。这些设备在经相应的接口和系统连接之后，将立刻被检测到并配置。GNOME 和 KDE 的文件管理器均可灵活操作移动硬件项目。要安全卸载这些媒体的任何一项，请使用任意文件管理器的<guimenu>安全删除</guimenu> (KDE) 或<guimenu>卸载卷</guimenu> (GNOME) 功能。
+   
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>外部硬盘（USB 和火线）</term>
+    <listitem>
+     <para>
+      一旦系统正确识别外部硬盘，其图标即会显示在文件管理器中。单击该图标将显示该驱动器的内容。可以在此创建文件夹和文件，并执行编辑或删除操作。要将系统指定的硬盘名称重命名，请右击该图标，从打开的菜单中选择相应的菜单项。只有在文件管理器中才能显示这种名称更改。将设备装入 <filename>/media</filename> 中的描述符将不受影响。
+     </para>
+     
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>USB 闪存盘</term>
+    <listitem>
+     <para>
+      系统会按照处理外部硬盘的方式来处理这些设备。同样也可以重命名文件系统中的项。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.mobile.comm">
+  <title>手提电话和 PDA</title><indexterm><primary>移动能力</primary><secondary>手提电话</secondary></indexterm><indexterm><primary>移动能力</primary><secondary>PDA</secondary></indexterm><indexterm><primary>手提电话</primary></indexterm><indexterm><primary>PDA</primary></indexterm>
+
+  <para>
+   台式计算机系统或便携式计算机可以通过蓝牙或 IrDA 与手提电话进行通信。有些手提电话型号两种协议都支持，另一些则只支持其中的一种。这两种协议的使用范围以及相应的展开文档都已在<xref linkend="sec.mobile.nbook.soft.wlan"/> 中描述。手提电话自带的手册中对如何在手提电话上配置这些协议进行了描述。
+
+
+  </para>
+
+  <para>
+   <indexterm><primary>同步数据</primary> <secondary>Evolution</secondary></indexterm><indexterm> <primary>同步数据</primary> <secondary>Kontact</secondary></indexterm><indexterm> <primary>Evolution</primary></indexterm><indexterm> <primary>Kontact</primary></indexterm> Evolution 和 Kontact 中已内置与 Palm, Inc. 制造的手持设备进行同步的支持功能。与设备的第一次连接可以借助向导轻松执行。一旦配置了针对 Palm Pilots 的支持，则需要确定应该同步哪种数据（地址、约会等）。 
+  </para>
+
+  
+ </sect1>
+ <sect1 id="sec.mobile.info">
+  <title>更多信息</title>
+
+  <para>
+   <ulink url="http://tuxmobil.org/"/> 是与移动设备和 Linux 有关的所有问题的集中参考来源。此网站的各个部分讨论了便携式计算机、PDA、手提电话和其他移动硬件的软硬件问题。
+  </para>
+
+  <para>
+   <ulink url="http://www.linux-on-laptops.com/"/> 中也提供了与 <ulink url="http://tuxmobil.org/"/> 类似的参考资源。可以在此站点中找到有关便携式计算机和手持设备的信息。
+  </para>
+
+  <para>
+   SUSE 维护着一个德文邮件列表，专门讨论便携式计算机这一主题。参见<ulink url="http://lists.opensuse.org/opensuse-mobile-de/"/>。在此列表中，用户和开发人员讨论了有关 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中移动计算的各方面问题。用英文发送的邮件都有答复，但存档信息中大部分都只有德文信息。请使用 <ulink url="http://lists.opensuse.org/opensuse-mobile/"/> 用英文发送邮件。
+  </para>
+
+  <para>
+   关于 <literal>OpenSync</literal> 的信息可以在 <ulink url="http://opensync.org/"/> 上找到。
+  </para><indexterm class="endofrange" startref="idx.mobility"/>
+ </sect1>
+</chapter>

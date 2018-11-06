@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="zypper_upgrade.xml" id="sec.update.zypper">
+ <title>用 zypper 升级分发包</title><indexterm> <primary>zypper</primary> <secondary>升级</secondary></indexterm><indexterm> <primary>升级</primary> <secondary>zypper</secondary></indexterm>
+ <para>
+  用 <command>zypper</command> 命令行实用程序，可以将分发包升级到下一个版本。最为重要的是，您可以在正在运行的系统中启动系统升级过程。
+ </para>
+ <para>
+  此功能适用于要运行远程升级或在多数配置类似的系统上运行升级的高级用户。
+ </para>
+ <sect3>
+  <title>开始用 zypper 升级前</title>
+  <para>
+   为了避免在用 <command>zypper</command> 升级过程中出现意外错误，请尽可能减少有风险的操作。
+  </para>
+  
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     尽量关闭应用程序和不必要的服务，并注销所有普通用户。
+    </para>
+   </listitem>
+   
+   <listitem os="sled;sles">
+    <para>
+     在开始升级前禁用第三方储存库，或降低这些储存库的优先级，以确保来自默认系统储存库的包具有优先权。完成升级后再次启用它们，并编辑其版本字符串，使其与已升级的运行中系统的分发包版本号匹配。
+    </para>
+   </listitem>
+   <listitem os="sled;sles">
+    <para>确保系统已注册。如果系统尚未注册，可以使用 YaST 中的 <guimenu>Novell Customer Center 配置</guimenu>模块或 <command>suse_register</command> 命令行工具来注册。如此会将更新源添加到系统中。
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <warning>
+    <title>通过重引导进行升级</title>
+    <para>升级过程必须在从开始到重引导这段时间全部执行完毕。还原更改的机会很有限。此外，在整个过程中，服务器必须处于联机状态。
+</para>
+  </warning>
+ </sect3>
+ <sect3>
+  <title>升级过程</title>
+  <warning>
+   <title>检查系统备份</title>
+   <para>
+    在真正开始升级过程前，请检查系统备份是否为最新且可恢复。因为以下许多步骤都必须手动输入，所以这一点尤其重要。
+   </para>
+  </warning>
+  <para>
+   <command>zypper</command> 程序支持长命令名和短命令名。例如，您可以将 <command>zypper install</command> 缩写为 <command>zypper in</command>。下文中使用的是短命令名。
+  </para> 
+  <para>以 <systemitem class="username">root</systemitem> 身份登录，然后执行以下步骤：</para>
+ 
+  <procedure>
+    
+    <step performance="required">
+      <para>刷新所有服务和储存库：</para>
+      <screen>zypper ref -s</screen>
+    </step>
+    <step id="st.update.zypper.proc.softwarestack" performance="required">
+      <para>安装包管理更新：</para>
+      <screen>zypper up -t patch</screen>
+      <para>有关详细信息，请参见<xref linkend="cha.onlineupdate.you"/>。</para>
+    </step>
+    <step performance="required">
+    <para>重复<xref linkend="st.update.zypper.proc.softwarestack"/>为系统安装所有可用的更新。
+    </para>
+    <para>提示：如果您要在脚本中使用上面的命令来进行无人照管的升级，请使用以下命令： </para>
+    <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
+   </step>
+    <step performance="required">
+      <para>从 <filename>/etc/products.d/*.prod</filename> 中读取迁移产品信息。安装的产品中包含有关发行套件升级和应安装哪些迁移产品来执行迁移的信息。使用以下命令安装它们：
+      </para>
+      <substeps performance="required">
+        <step performance="required">
+          <para>提取产品信息：</para>
+          <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
+          <para>输出示例如下：</para>
+          <screen>SUSE_SLES-SP3-migration
+sle-sdk-SP3-migration</screen>
+        </step>
+        <step performance="required">
+          <para>安装这些迁移产品（示例）：</para>
+          <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
+        </step>
+        <step performance="required">
+          <para>注册产品以获取相应的更新储存库：</para>
+          <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+          <warning>
+            <title>为 SLED 用户启用其他储存库</title>
+            <para>部分 devel 包已从 <literal>SLED11-SP2</literal> 安装媒体转移至 <literal>SLED11-Extras</literal> 储存库。为了避免在升级期间发生依赖性冲突，请在实际升级之前启用此储存库。执行 <command>yast2 repositories</command> 并就地启用 <literal>SLED11-Extras</literal>。在 SLES 上无需另外再执行该步骤。 </para>
+          </warning>
+        </step>
+      </substeps>      
+    </step>
+    
+    <step performance="required">
+      <para>刷新服务和储存库：</para>
+      <screen>zypper ref -s</screen>
+    </step>
+    <step performance="required">
+        <para>使用 <command>zypper lr</command> 检查储存库。如果需要，请手动禁用 SP1/SP2 <systemitem>Pool/Core/Updates</systemitem> 储存库，并启用新的 SP3 储存库（<systemitem>SP3-Pool</systemitem>、<systemitem>SP3-Updates</systemitem>）：</para>
+      <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
+zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
+    </step>
+    <step performance="required">
+      <para>使用以下命令执行 dist 升级（例如，如果更新了 SLED，则对 SLES 调整目录名称）：</para>
+      <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
+      <para>如果需要，您可以在此处添加更多目录，例如当安装了外接式附件产品时。Zypper 会报告它将删除迁移产品并更新主产品。确认该讯息以继续更新 RPM 包。</para>
+    </step>
+    <step performance="required">
+      <para>升级完成后，再次注册新产品：</para>
+      <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
+    </step>
+    <step performance="required">
+      <para>重引导系统：</para>
+      <screen>shutdown -r</screen>
+    </step>
+  </procedure>
+   
+ </sect3>
+</sect2>

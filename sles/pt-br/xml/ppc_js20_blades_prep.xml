@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_js20_blades_prep.xml" id="sec.prep.js20blades">
+ <title>Preparando uma instalação no IBM JSxx BladeCenter</title><indexterm> <primary>preparação</primary> <secondary>JSxx BladeCenter</secondary> </indexterm>
+ <para>
+  Esta seção descreve as etapas preparatórias para instalação do SUSE® Linux Enterprise Server no JSxx Blades. Ela aborda a instalação usando a unidade de CD-ROM do BladeCenter e usando a rede.
+ </para>
+ <sect3 id="sec.prep.js20blades.netsource">
+  <title>Criando uma fonte de instalação de rede</title>
+  <para>
+   Crie uma fonte de instalação de rede se o SUSE Linux Enterprise Server tiver que ser instalado em várias partições. Isso é vantajoso, pois nenhum CD precisa ser mudado durante a instalação. A mesma fonte também pode ser usada para a instalação simultânea de vários sistemas. A configuração de uma fonte de instalação de rede está descrita na <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.js20blades.hd-storage">
+  <title>Espaço de armazenamento em disco rígido</title>
+  <para>
+   Verifique se há espaço de armazenamento suficiente em disco rígido disponível para instalação do SUSE Linux Enterprise Server. É recomendável usar um disco rígido dedicado.
+  </para>
+ </sect3>
+
+ <sect3>
+  <title>Preparando o sistema para inicialização</title>
+  <para/>
+  <sect4>
+   <title>Preparando a inicialização por meio da unidade de CD-ROM</title>
+   <para>
+    Execute as etapas descritas nesta seção se desejar fazer uma instalação por meio de CD-ROM.
+   </para>
+   <para>
+    Atribua a unidade de CD-ROM ao Blade escolhido para instalação conectando-se (por um browser da Web) a um Módulo de Gerenciamento do BladeCenter e efetuando login. Após o login, selecione a função <guimenu>Remote Control</guimenu> (Controle Remoto) no menu <guimenu>Blade Tasks</guimenu> (Tarefas do Blade) e ative <guimenu>Start Remote Control</guimenu> (Iniciar Controle Remoto). Designe a unidade de CD-ROM para o blade desejado no menu <guimenu>Change Media Tray Owner</guimenu> (Alterar o Proprietário da Bandeja de Mídia) da nova janela.
+   </para>
+   <para>
+    Configure a unidade de CD-ROM como um dispositivo de boot. Faça isso selecionando <guimenu>Blade Tasks</guimenu> (Tarefas do Blade) e, em seguida, <guimenu>Configuration</guimenu> (Configuração) enquanto estiver no Módulo de Gerenciamento do BladeCenter. Selecione o JSxx Blade na seção <guimenu>Boot Sequence</guimenu> (Sequência de Boot). Defina a entrada para <guimenu>1st Device</guimenu> (1o. Dispositivo) na página de <guimenu>Blade Boot Sequence</guimenu> (Sequência de Inicialização do Blade) como <guimenu>CDROM</guimenu>.
+   </para>
+   <para>
+    Insira o CD 1 na unidade de CD-ROM e reinicie o blade.
+   </para>
+  </sect4>
+  <sect4>
+   <title>Preparando a inicialização pela rede</title>
+   <para>
+    Execute as etapas como descritas nesta seção se desejar fazer uma instalação pela rede.
+   </para>
+   <para>
+    Conecte-se ao Módulo de Gerenciamento do BladeCenter usando um browser da Web e efetue login. Defina o dispositivo de boot para a rede, acessando o menu <guimenu>Configuration</guimenu> (Configuração) na página <guimenu>Blade Tasks</guimenu> (Tarefas do Blade). Selecione o JSxx Blade na seção <guimenu>Boot Sequence</guimenu> (Sequência de Boot) e defina <guimenu>1st Boot Device</guimenu> (Primeiro Dispositivo de Boot) como <guimenu>Network — BOOTP</guimenu> (Rede — BOOTP) em <guimenu>Blade Boot Sequence</guimenu> (Sequência de Boot do Blade).
+   </para>
+  </sect4>
+  <sect4>
+   <title>Reinicializando e conectando ao console do JSxx Blade</title>
+   <para>
+    Reinicialize o JSxx Blade no item <guimenu>Power/Restart</guimenu> (Alimentar/Reiniciar) do menu <guimenu>Blade Tasks</guimenu> (Tarefas do Blade) no Módulo de Gerenciamento do BladeCenter. Uma tabela é exibida e mostra o status de alimentação dos blades na coluna <guimenu>Pwr</guimenu> (Alim.). Marque a caixa de seleção do blade desejado e reinicie-o com <guimenu>Power On Blade</guimenu> (Ligar Blade).
+   </para>
+   <para>
+    Conecte-se ao BladeCenter com o comando <command>telnet <replaceable>bladecenter</replaceable></command> e efetue login.
+   </para>
+<screen>
+username: <replaceable>user</replaceable>
+password: ********
+system&gt;
+</screen>
+   <para>
+    O comando <command>env -T system:blade[<replaceable>número do compartimento</replaceable>]</command> determina a que JSxx Blade os comandos subsequentes se destinam. Os blades instalados no BladeCenter são listados por meio do comando <command>list -l 3</command>.
+   </para>
+<screen>
+system&gt; list -l 3
+system
+        mm[1]    primary
+        power[1]
+        power[2]
+        power[3]
+        power[4]
+        blower[1]
+        blower[2]
+        switch[1]
+        switch[3]
+        blade[1]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[3]
+                sp
+        blade[4]
+                sp
+        blade[6]
+                sp
+        blade[8]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[9]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[10]
+                sp
+        blade[11]
+                sp
+        blade[13]
+                sp
+        mt
+system&gt; 
+</screen>
+   <para>
+    Em seguida, o <emphasis>destino do comando</emphasis> é determinado. Para trabalhar, por exemplo, com o blade número <literal>9</literal>, digite <command>env -T system:blade[9]</command>. Conecte-se ao console do JSxx Blade pelo <emphasis>Serial over LAN (SOL)</emphasis> com o comando <command>console</command>.
+   </para>
+<screen>
+system&gt; env -T system:blade[9]
+OK
+system:blade[9]&gt; console
+</screen>
+  </sect4>
+  <sect4>
+   <title>Iniciando a instalação</title>
+   <para>
+    O carregador de boot do SUSE Linux Enterprise Server é iniciado após o término da verificação do sistema.
+   </para>
+   
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+   <para>
+    Selecione <guimenu>install</guimenu> (instalar) no menu e pressione <keycap>Enter</keycap>.
+   </para>
+   <para>
+    No caso de uma instalação por meio do VNC, anexe os parâmetros <option>vnc=1</option> e <option>vncpassword=<replaceable>senha</replaceable></option> à linha de comando para o kernel (install).
+   </para>
+  </sect4>
+  <sect4>
+   <title>Etapas adicionais</title>
+   <para>
+    Proceda conforme descrito no <xref linkend="cha.inst"/> para iniciar a instalação do software com o linuxrc e o YaST.
+   </para>
+  </sect4>
+ </sect3>
+</sect2>

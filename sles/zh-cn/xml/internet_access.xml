@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="internet_access.xml" id="cha.internet">
+ <title>访问因特网</title><indexterm><primary>因特网</primary><secondary>配置</secondary></indexterm>
+ <abstract>
+  <para>
+   如果您在安装期间没有选择配置因特网访问，可以随时使用 YaST 执行此任务。配置计算机以访问因特网的方法取决于您的环境。如果正在安装的计算机属于已连接到因特网的网络部分，则您要做的只是将计算机链接到该网络。如果您正在安装直接连接到因特网的计算机，则需要设置硬件和对因特网服务提供商 (ISP) 的访问。
+  </para>
+
+  <para>
+   请参见下面的核对清单，确保在配置因特网访问之前，您已拥有所有必需数据。
+  </para>
+ </abstract>
+ <sect1 id="sec.internet.direct">
+  <title>直接连接因特网</title><indexterm><primary>因特网</primary><secondary>直接连接</secondary></indexterm>
+
+  <para>
+   当您的计算机是直接连接到因特网时，首先需要配置要用于此任务的硬件。这可以是内部设备（如 ISDN 卡），也可以是外部设备（如调制解调器）。多数情况下，会自动进行检测。
+  </para>
+
+  <para>
+   下一步，您需要输入 ISP 提供的数据（例如，登录身份凭证、网关或名称服务器）。您应从 ISP 那里收到了一张数据表，其中列出了所有必需数据。
+  </para>
+
+  <para>
+   如果您已成功配置硬件和 ISP 数据，请使用 NetworkManager 来管理因特网连接。有关详细信息，请参见<xref linkend="cha.nm"/>。
+  </para>
+
+  <sect2 id="sec.internet.direct.dsl">
+   <title>DSL 核对清单</title><indexterm><primary>因特网</primary> <secondary>dsl 核对清单</secondary></indexterm><indexterm><primary>因特网</primary> <secondary>dsl</secondary></indexterm>
+   <para>
+    可使用不同类型的 DSL 设备，这些设备使用不同的点对点协议 (PPP) 方法：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      连接到外部 DSL 调制解调器的常用以太网卡使用 PPP over Ethernet (PPPoE)。在奥地利，使用点对点隧道协议 (PPTP)。使用 PPTP 时，外部调制解调器也有静态 IP 地址。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      内部 DSL 调制解调器使用 PPP over ATM (PPPoATM)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      内部 ADSL Fritz 卡对 ADSL 使用 CAPI
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    DSL 配置模块已包含一些国家/地区的主要 ISP 的数据。如果没有列出您的 ISP，您需要了解名称解析 (DNS) 和 IP 分配的处理方法（多数情况下，连接时会自动接收到该数据）。无论您是从列表中选择 ISP，还是添加自定义提供商，都至少需要输入登录名和口令。
+   </para>
+   <para>
+    有关配置信息，请参见<xref linkend="sec.basicnet.yast.xdsl"/>。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.internet.direct.isdn">
+   <title>ISDN 核对清单</title><indexterm><primary>因特网</primary> <secondary>isdn 核对清单</secondary></indexterm><indexterm><primary>因特网</primary> <secondary>isdn</secondary></indexterm>
+   <para>
+    如果没有自动检测到内部 ISDN 卡，则您需要了解该设备的供应商和名称。
+   </para>
+   <para/>
+   <note>
+    <title>ISDN 调制解调器或终端适配器</title>
+    <para>
+     如果使用外部 ISDN 调制解调器或终端适配器，请改为参见<xref linkend="sec.internet.direct.modem"/>。
+    </para>
+   </note>
+   <para>
+    为了配置 ISDN 设备，您需要以下数据：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      ISDN 协议（根据您的国家/地区）
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      区域代码和电话号码。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      接口类型（SyncPPP 或 RawIP）。如果不能确定，请选择 SyncPPP，因为 RawIP 只能用于连接特定电话系统。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      拨入服务器和网关的本地和远程 IP 地址（如果提供商为您提供了静态 IP 地址）。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      ISDN 配置模块已包含一些国家/地区用于主 ISP 的数据。如果没有列出您的 ISP，则需要了解名称解析 (DNS) 和 IP 分配的处理方法（多数情况下，连接时会自动接收到该数据）。无论您是从列表中选择 ISP 还是添加自定义提供商，都至少需要输入您的登录名和口令。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    有关配置信息，请参见<xref linkend="sec.basicnet.yast.isdn"/>。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.internet.direct.modem">
+   <title>调制解调器核对清单</title><indexterm><primary>因特网</primary><secondary>调制解调器核对清单</secondary></indexterm><indexterm><primary>因特网</primary><secondary>调制解调器</secondary></indexterm>
+   <para>
+    如果没有自动检测到您的调制解调器，则需要了解该调制解调器是否已连接到串行端口或 USB 端口。请注意，并非所有 USB 调制解调器和内部调制解调器都受 <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 的支持。
+   </para>
+   <para>
+    调制解调器配置模块已包含一些国家/地区的主要 ISP 的数据。如果未列出您的 ISP，则需要了解其拨号号码及名称解析 (DNS) 和 IP 分配的处理方式（多数情况下，该数据是在连接时自动接收的）。无论您是从列表中选择 ISP 还是添加自定义提供商，都至少需要输入您的登录名和口令。
+   </para>
+   <para>
+    有关配置信息，请参见<xref linkend="sec.basicnet.yast.modem"/>。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.internet.direct.cablemodem">
+   <title>电缆调制解调器核对清单</title><indexterm><primary>因特网</primary><secondary>电缆调制解调器核对清单</secondary></indexterm><indexterm><primary>因特网</primary><secondary>电缆调制解调器</secondary></indexterm>
+   <para>
+    通过有线电视电缆访问因特网需要电缆调制解调器。此类调制解调器通过以太网电缆连接到计算机。因此，只需相应配置网卡即可。有关详细信息，请参见<xref linkend="sec.basicnet.yast.cablemodem"/>。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.internet.network">
+  <title>通过网络连接因特网</title><indexterm><primary>因特网</primary><secondary>网络连接</secondary></indexterm>
+
+  <para>
+   如果您的计算机属于已连接到因特网的网络部分，则要访问因特网十分简便（只需配置网卡并将计算机连接到现有网络即可）。这不仅适用于大型公司网络，也能用于小型家庭网络。即使您正在安装的计算机只连接到路由器（例如，DSL 路由器），它也已成为网络的一部分。使用的是无线还是有线网络适配器并不重要。
+  </para>
+
+  <note>
+   <title>路由和名称服务</title>
+   <para>
+    在以下情况中，假设网络已连接到因特网并提供了路由和名称服务。如果这些服务都由路由器提供，请确保在设置客户端前，该路由器已正确配置。
+   </para>
+  </note>
+
+  <sect2>
+   <title>网络核对清单</title><indexterm><primary>因特网</primary><secondary>网络核对清单</secondary></indexterm>
+   <para>
+    如果您的网络提供了 DHCP（动态主机配置协议），请在设置网卡时选中相应复选框（所有所需的参数将由 DHCP 服务器提供）。
+   </para>
+   <para>
+    如果 DHCP 不可用，请向网络管理员询问以下细节：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      主机名
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      名称服务器
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      网关
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    有关有线网卡的配置细节，请参见<xref linkend="sec.basicnet.yast.netcard"/>；有关无线网卡的配置细节，请参见<xref linkend="sec.wireless.wlan.yast2"/>。
+   </para>
+  </sect2>
+ </sect1>
+</chapter>

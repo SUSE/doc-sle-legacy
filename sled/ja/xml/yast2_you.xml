@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="yast2_you.xml" id="cha.onlineupdate.you">
+ <title>YaSTオンラインアップデート</title><indexterm> <primary>アップデート</primary> <secondary>オンライン</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>オンラインアップデート</secondary></indexterm>
+ <para>
+  <phrase os="sles;sled">Novellは製品に対して、継続的にソフトウェアセキュリティアップデートを提供しています。</phrase>デフォルトでは、システムを最新の状態に維持するために更新アプレットが使用されます。アップデートアプレットの詳細については、<xref linkend="sec.updater"/>を参照してください。この章では、ソフトウェアパッケージをアップデートする代替ツールとして、YaSTオンラインアップデートを紹介します。
+ </para>
+ <para>
+  <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase>の現在のパッチは、アップデートソフトウェアリポジトリから入手できます。<phrase os="sles;sled;">インストール時に製品を登録した場合、アップデートリポジトリはすでに設定されています。<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>を登録しなかった場合は、YaSTで、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>オンラインアップデートの設定</guimenu></menuchoice>の順にクリックし、<menuchoice><guimenu>詳細</guimenu><guimenu>Register for Support and Get Update Repository</guimenu></menuchoice>の順に選択します。</phrase>または、信頼できるソースから、手動でアップデートリポジトリを追加することもできます。リポジトリを追加または削除するには、YaSTで、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>ソフトウェアリポジトリ</guimenu></menuchoice>の順に選択して、リポジトリマネージャを起動します。リポジトリマネージャの詳細については、<xref linkend="sec.y2.sw.instsource"/>を参照してください。
+ </para>
+ <note os="sles;sled">
+  <title>アップデートカタログのアクセス時のエラー</title>
+  <para>
+   
+   アップデートカタログにアクセスできない場合、登録の期限が切れている場合があります。通常、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>には1年または3年の登録期間があり、この期間内はアップデートカタログにアクセスできます。このアクセスは登録期間が切れると拒否されます。
+  </para>
+  <para>
+   アップデートカタログへのアクセスが拒否される場合は、ノベルカスタマセンターにアクセスして登録を確認することを推奨する警告メッセージが表示されます。ノベルカスタマセンターには、<ulink url="http://www.novell.com/center/"/>でアクセスできます。
+  </para>
+ </note>
+ <para>
+  
+  は、各種の関連性レベルを持つアップデートを提供します。
+ </para>
+ <variablelist>
+  <varlistentry>
+   <term>セキュリティアップデート</term>
+   <listitem>
+    <para>
+     セキュリティアップデートは、重大なセキュリティハザードを修復するので、必ずインストールする必要があります。
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>推奨アップデート</term>
+   <listitem>
+    <para>
+     コンピュータに損害を与える可能性のある問題を修復します。
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>オプションアップデート</term>
+   <listitem>
+    <para>
+     セキュリティに関連しない問題を修復したり、拡張機能を提供します。
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <sect1 id="sec.onlineupdate.you.overview">
+  <title>オンライン更新ダイアログ</title>
+
+  <para>
+   YaSTの<guimenu>オンライン更新</guimenu>ダイアログは、2つのツールキットタイプで使用できます(GNOMEの場合はGTK、KDEの場合はQt)。両方のインタフェースは、ルックアンドフィールで異なりますが、基本的に同じ機能を提供します。以降の項では、各インタフェースについて手短に説明します。このダイアログを開くには、YaSTを起動し、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>オンライン更新</guimenu></menuchoice>の順に選択します。または、<command>yast2 online_update</command>で、コマンドラインからオンラインアップデートを開始します。
+  </para>
+
+  <sect2 id="sec.onlineupdate.you.overview.qt">
+   <title>KDEインタフェース(Qt)</title>
+   <para>
+    <guimenu>オンラインアップデート</guimenu>ウィンドウは、4つのセクションから成り立っています。
+   </para>
+   <figure>
+    <title>YaSTオンライン更新—Qtインタフェース</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_you.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_you.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    左側の<guimenu>概要</guimenu>セクションには、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>の使用可能なパッチの一覧が示されされます。パッチはセキュリティの関連性によってソートされます(<literal>security</literal>、<literal>recommended</literal>、および<literal>optional</literal>)。<guimenu>概要</guimenu>セクションのビューは、<guimenu>パッチのカテゴリを表示</guimenu>から、以下のオプションの1つを選択することによって変更できます。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>Needed Patches</guimenu>(デフォルトビュー)</term>
+     <listitem>
+      <para>
+       システムにインストールされたパッケージに適用される、インストールされなかったパッチ。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Unneeded Patches</guimenu>
+     </term>
+     <listitem>
+      <para>
+       システムにインストールされていないパッケージに適用されるパッチか、または(該当するセキュリティがすでに別のソースで更新されたので)要件がすでに満たされているパッチ。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>すべてのパッチ</guimenu>
+     </term>
+     <listitem>
+      <para>
+       <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>で使用可能なすべてのパッチ。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    <guimenu>概要</guimenu>セクションの各リストエントリは、記号とパッチ名で構成されています。可能な記号とそれらの意味の概要については、<keycombo><keycap function="shift"/><keycap>F1</keycap></keycombo>を押してください。<literal>Security</literal>パッチおよび<literal>Recommended</literal>パッチで要求されるアクションは、自動的に設定されます。アクションは、<guimenu>自動インストール</guimenu>、<guimenu>自動更新</guimenu>、および<guimenu>自動削除</guimenu>です。
+   </para>
+   <para>
+    アップデートリポジトリ以外のリポジトリから最新のパッケージをインストールする場合、そのパッケージのパッチ要件はそのインストールで満たされる場合があります。この場合、パッチ概要の前にチェックマークが表示されます。パッチは、インストール用にマークするまでリストに表示されます。これによってパッチは実際にはインストールされませんが(パッチはすでに最新であるため)、インストール済みとしてパッチをマークします。
+   </para>
+   <para>
+    <guimenu>概要</guimenu>セクションでエントリを選択すると、ダイアログの左下隅に短い<guimenu>パッチの説明</guimenu>が表示されます。左上のセクションには、選択されたパッチに含まれているパッケージが一覧されます(パッチは複数のパッケージから成ることがあります)。右上のセクションでエントリをクリックすると、パッチに含まれている各パッケージの詳細が表示されます。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.onlineupdate.you.overview.gtk">
+   <title>GNOMEインタフェース(GTK)</title>
+   <para>
+    <guimenu>オンライン更新</guimenu>ウィンドウは、4つの主要セクションから成り立っています。
+   </para>
+   <figure>
+    <title>YaSTオンライン更新—GTKインタフェース</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_you_gtk.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_you_gtk.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    右上のセクションに、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>の使用可能な(またはインストール済みの)パッチが一覧されます。パッチをそのセキュリティ関連性に従ってフィルタするには、ウィンドウの右上のセクションで対応する<guimenu>優先度</guimenu>エントリをクリックします(<literal>Security</literal>、<literal>Recommended</literal>、<literal>Optional</literal>、または <literal>All patches</literal>)。
+   </para>
+   <para>
+    すべての使用可能なパッチがすでにインストール済みの場合は、右上のセクションの<guimenu>パッケージリスト </guimenu>にエントリが表示されません。左下セクションのボックスには、使用可能なパッチとインストール済みパッチの両方の数が表示されます。このビューは、<guimenu>利用可能</guimenu>と<guimenu>インストール済み</guimenu>間でトグルできます。
+   </para>
+   <para>
+    <guimenu>パッケージリスト</guimenu>セクションでエントリを選択すると、ダイアログの右下隅にパッチの説明と詳細が表示されます。パッチは複数のパッケージから成ることがあるので、右下のセクションで<guimenu>適用項目</guimenu>をクリックすると、各パッチにどのパッケージが含まれているか見ることができます。
+   </para>
+   <para>
+    ウィンドウの下側にあるパッチについて詳細情報を表示するには、パッチのエントリをクリックして行を開きます。ここにはパッチの詳細な説明と使用可能なバージョンが表示されます。オプションのパッチを<guimenu>インストールする</guimenu>ことも選択できます。［セキュリティ］パッチおよび［推奨］パッチはすでにインストール用に事前選択されています。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.onlineupdate.you.install">
+  <title>パッチのインストール</title>
+
+  <para>
+   YaSTオンラインアップデートのダイアログでは、すべての利用可能なパッチを一度にインストールしたり、システムに適用したいパッチを手動で選択したりできます。システムに適用済みのパッチを元に戻すこともできます。
+  </para>
+
+  <para>
+   デフォルトでは、お使いのシステムで現在使用できる新しいパッチ(ただし、<literal>optional</literal>以外) はすべて、すでにインストール用にマークされています。<guimenu>受諾</guimenu>または<guimenu>適用</guimenu>をクリックすると、これらのパッチが自動的に適用されます。
+  </para>
+
+  <procedure>
+   <title>YaSTオンラインアップデートによるパッチの適用</title>
+   <step performance="required">
+    <para>
+     YaSTを起動して、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>オンライン更新</guimenu></menuchoice>の順に選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     システムで現在使用可能なすべての新しいパッチ(ただし、<literal>optional</literal>以外)を自動的に適用するには、<guimenu>適用</guimenu>または<guimenu>受諾</guimenu>のクリックで続行して事前選択されているパッチのインストールを開始します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     適用したいパッチの選択を変更するには:
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       GTKインタフェースとQtインタフェースが提供するフィルタとビューをそれぞれ使用します。詳細については、<xref linkend="sec.onlineupdate.you.overview.qt"/>と<xref linkend="sec.onlineupdate.you.overview.gtk"/>を参照してください。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       ニーズと好みに従ってパッチを選択または選択解除するには、各チェックボックスを有効または無効にするか(GNOME)、またはパッチを右クリックしてコンテキストメニューから各アクションを選択します(KDE)。
+      </para>
+      <important>
+       <title>セキュリティアップデートは必ず適用する</title>
+       <para>
+        十分な理由がない限り、<literal>security</literal>関係のパッチは選択解除しないでください。これらのパッチは、重大なセキュリティハザードを修復し、システムの悪用を防ぎます。
+       </para>
+      </important>
+     </step>
+     <step performance="required">
+      <para>
+       大部分のパッチには、複数のパッケージのアップデートが含まれています。単一パッケージに対するアクションを変更する場合は、パッケージビューでパッケージを右クリックしてアクションを選択します(KDE)。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       選択内容を確認し、選択したパッチを適用するには、<guimenu>適用</guimenu>または<guimenu>受諾</guimenu>をクリックして続行します。
+      </para>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     インストールの完了後、<guimenu>完了</guimenu>をクリックして、YaSTの<guimenu>オンライン更新</guimenu>を終了します。これで、システムが最新の状態になりました。
+    </para>
+   </step>
+  </procedure>
+
+  <tip>
+   <title>deltarpmの無効化</title>
+   <para>
+    
+    デフォルトでは、アップデートは、deltarpmとしてダウンロードされます。deltarpmからのrpmパッケージの再構築は、メモリとプロセッサの容量を消費するので、セットアップまたはハードウェア構成によっては、パフォーマンス上の理由によりdeltarpmの使用を無効にする必要があります。
+   </para>
+   <para>
+    deltarpmの使用を無効にするには、ファイル<filename>/etc/zypp/zypp.conf</filename>を編集して<literal>download.use_deltarpm</literal>を<option>false</option>に設定します。
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.onlineupdate.you.automatically">
+  <title>自動オンラインアップデート</title>
+
+  <para>
+   YaSTでは、毎日、毎週、または毎月のスケジュールで自動アップデートを設定することもできます。各モジュールを使用するには、まず、<systemitem class="resource">yast2-online-update-configuration</systemitem>パッケージをインストールする必要があります。
+  </para>
+
+  <procedure>
+   <title>自動オンラインアップデートの設定</title>
+   <step performance="required">
+    <para>
+     インストール後、YaSTを起動し、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>オンラインアップデートの設定</guimenu></menuchoice>の順に選択します。
+    </para>
+    <para>
+     または、コマンドラインから、<command>yast2 online_update_configuration</command>を使用してモジュールを起動します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>自動オンラインアップデート</guimenu>を有効にします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>毎日</guimenu>、<guimenu>毎週</guimenu>、または<guimenu>毎月</guimenu>のどれで更新するか選択します。
+    </para>
+    <para>
+     一部のパッチ(カーネルの更新やライセンス契約を必要とするパッケージなど)は、自動アップデート手順を停止させるユーザ介入を必要とします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     更新手順を完全に自動的に進行させたい場合は、<guimenu>インタラクティブパッチをスキップする</guimenu>を選択します。
+    </para>
+    <important>
+     <title>パッチのスキップ</title>
+     <para>
+      介入を必要とするパッケージのスキップを選択した場合は、時折、<guimenu>オンライン更新</guimenu>を手動で実行して、それらのパッチもインストールしてください。さもないと、重要なパッチをインストールできないことがあります。
+     </para>
+    </important>
+   </step>
+   <step performance="required">
+    <para>
+     ライセンス契約を自動的に受諾するには、<guimenu>ライセンスに同意する</guimenu>を有効にします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     アップデートパッケージによって推奨されるすべてのパッケージを自動的にインストールするには、<guimenu>Include Recommended Packages</guimenu>を有効にします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     セキュリティや推奨など、カテゴリ別にパッチをフィルタリングするには、<guimenu>Filter by Category</guimenu>を有効にしてリストから適切なカテゴリを追加します。選択したカテゴリのパッチのみがインストールされます。それ以外はスキップされます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     入力した設定を確認して、<guimenu>OK </guimenu>をクリックします。
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+</chapter>

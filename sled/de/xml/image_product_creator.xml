@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_product_creator.xml" id="cha.productcreator">
+ <title>Erstellen von Images mit der YaST-Produkterstellung</title>
+ <abstract>
+  <para>
+   Die YaST-Produkterstellung ist ein vereinheitlichtes grafisches Front-End für KIWI und das Programm zur Erstellung von Add-ons. Er wurde entwickelt, um die Funktionalität zur Image-Erstellung an einer Stelle zusammenzufassen. Alle in der YaST-Produkterstellung integrierten Werkzeuge stehen auch als separate YaST-Module oder -Anwendungen zur Verfügung.
+  </para>
+ </abstract>
+ <sect1 id="sec.pc.prereq">
+  <title>Voraussetzungen für die YaST-Produkterstellung</title>
+
+  <para>
+   Bevor Sie mit der YaST-Produkterstellung Images erstellen, vergewissern Sie sich, dass die folgenden Voraussetzungen erfüllt sind:
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     Installieren Sie das Paket <systemitem class="resource">yast2-product-creator</systemitem> aus dem SUSE Linux Enterprise-SDK (Software Development Kit) unter <ulink url="http://download.suse.com/"/>. Dieses Paket benötigt weitere Pakete. Stellen Sie sicher, dass alle Abhängigkeiten erfüllt sind.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Stellen Sie ausreichend Speicherplatz für den Vorgang zur Verfügung.
+    </para>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.pc.create">
+  <title>Erstellen von Images</title>
+
+  <para>
+   Die YaST-Produkterstellung erstellt das Image eines Produkts mithilfe von KIWI. Falls Sie an der manuellen Entwicklung solcher Images interessiert sind, finden Sie Informationen unter <xref linkend="cha.kiwi"/>.
+  </para>
+
+  <para>
+   So erstellen Sie ein Image:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Geben Sie beim ersten Start der Produkterstellung den Konfigurationsnamen ein, und wählen Sie die Methode aus, mit der dem ISO-Image Pakete hinzugefügt werden sollen.
+    </para>
+    <para>
+     Wenn Sie die Produkterstellung bereits verwendet haben, wählen Sie <guimenu>Hinzufügen</guimenu>, legen Sie eine neue Produktdefinition an, geben Sie den Konfigurationsnamen an und wählen Sie die Methode aus.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Aktivieren oder deaktivieren Sie Paketquellen. Um eine Quelle zu aktivieren, markieren Sie sie in der Tabelle und klicken Sie auf <guimenu>Auswählen</guimenu>. Starten Sie das Programm zur Erstellung von Add-ons mit <guimenu>Neu erstellen</guimenu>. (Weitere Informationen siehe <xref linkend="cha.addon_creator"/>.) Zum Hinzufügen einer anderen Quelle fügen Sie die Quelle zuvor im YaST-Modul <guimenu>Installationsquellen</guimenu> hinzu und führen Sie dann erneut die Produkterstellung aus. Klicken Sie nach der Auswahl der Quelle auf <guimenu>Weiter</guimenu>.
+    </para>
+    <note>
+     <title>Nicht unterstützte Zielarchitekturen</title>
+     <para>
+      Ändern Sie die Zielarchitektur nicht. KIWI unterstützt derzeit nicht die Erstellung anderer Architekturen.
+     </para>
+    </note>
+   </step>
+   <step performance="required">
+    <para>
+     Geben Sie den Pfad an, in dem das Gerüstverzeichnis erstellt werden soll. Wählen Sie <guimenu>ISO-Image-Datei generieren</guimenu> oder <guimenu>Nur Verzeichnisbaum erstellen</guimenu>. Verwenden Sie die übrigen Optionen, um Metadaten einzufügen. Klicken Sie auf <guimenu>Weiter</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Bearbeiten Sie den Inhalt der Datei <filename>isolinux.cfg</filename>, wenn diese Teil der Konfiguration ist. In den meisten Fällen können Sie sie unverändert belassen. Wenn die Datei nicht Teil der Konfiguration ist, fügen Sie sie nun mit <guimenu>Datei laden</guimenu> hinzu. Klicken Sie auf <guimenu>Weiter</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Wählen Sie Ihre Software aus. Alle Paketabhängigkeiten werden automatisch nach einem Klick auf <guimenu>Anwenden</guimenu> gelöst.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Signieren Sie Ihr Produkt mit <guimenu>Produkt auf dem Medium digital signieren</guimenu>, falls erforderlich. Geben Sie einen Schlüssel für Ihre Produktkonfiguration an. Durch Signieren Ihres Produkts mit Ihrem GPG-Schlüssel belegen Sie den Ursprung Ihres Produkts. Klicken Sie nach der Schlüsselkonfiguration auf <guimenu>Weiter</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Überprüfen Sie die Übersicht. Verwenden Sie <guimenu>Zurück</guimenu>, um eine der Optionen zu ändern. Klicken Sie auf <guimenu>Beenden</guimenu>, um Ihre neue Produktkonfiguration zu bestätigen.
+    </para>
+   </step>
+  </procedure>
+
+  <para>
+   Ihre Produktdefinition ist damit abgeschlossen. Mit der Produkterstellung können Sie zwischen den folgenden Aktionen wählen:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title><guimenu>Produkt erstellen</guimenu></title>
+     <para>
+      Erstellt ein ISO-Image des ausgewählten Produkts. Wenn ein Teil fehlt, wird der Vorgang abgebrochen. Korrigieren Sie den Fehler und wiederholen Sie die Konfiguration.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><guimenu>Image mit KIWI erstellen...</guimenu></title>
+     <para>
+      Wählen Sie aus dem Pulldown-Menü eines der Zielformate, z. B. Live-Media oder Xen-Images.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+ <sect1 id="sec.pc.moreinfo">
+  <title>Weiterführende Informationen</title>
+
+  <para>
+   Weitere Informationen über das Erstellen von System-Images sowie verwandte Themen finden Sie in den folgenden Dokumenten:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     <xref linkend="cha.kiwi"/>
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     <ulink url="http://en.opensuse.org/Portal:KIWI"/> – Das KIWI-Projekt
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     KIWI-Dokumentation: <filename>/usr/share/doc/packages/kiwi/kiwi.pdf</filename>
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+</chapter>

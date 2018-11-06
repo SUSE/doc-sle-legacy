@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="zypper_upgrade.xml" id="sec.update.zypper">
+ <title>Distributions-Upgrade mit Zypper</title><indexterm> <primary>zypper</primary> <secondary>Upgrade</secondary> </indexterm> <indexterm> <primary>Upgrade</primary> <secondary>zypper</secondary> </indexterm>
+ <para>
+  Mit dem Kommandozeilenprogramm <command>zypper</command> können Sie ein Upgrade zur nächsten Version der Distribution durchführen. Dabei ist am wichtigsten, dass Sie das System-Upgrade aus dem laufenden System heraus initiieren können.
+ </para>
+ <para>
+  Diese Funktion ist nützlich für fortgeschrittene Benutzer, die Remote-Upgrades oder Upgrades auf vielen ähnlich konfigurierten Systemen ausführen möchten.
+ </para>
+ <sect3>
+  <title>Vor dem Start des Upgrades mit Zypper</title>
+  <para>
+   Zur Vermeidung von unerwarteten Fehlern beim Upgrade-Vorgang mit <command>zypper</command> minimieren Sie riskante Konstellationen.
+  </para>
+  
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Schließen Sie möglichst viele Anwendungen und nicht benötigte Services und melden Sie alle regulären Benutzer ab.
+    </para>
+   </listitem>
+   
+   <listitem os="sled;sles">
+    <para>
+     Deaktivieren Sie Repositorys von anderen Herstellern, bevor Sie mit dem Upgrade beginnen, oder verringern Sie die Priorität dieser Repositorys, um sicherzustellen, dass Pakete der Standard-System-Repositorys Vorrang erhalten. Aktivieren Sie sie nach dem Upgrade erneut und bearbeiten Sie ihre Versionsangabe mit der Versionsnummer der Distribution des aufgerüsteten laufenden Systems.
+    </para>
+   </listitem>
+   <listitem os="sled;sles">
+    <para>Das System muss registriert sein. Falls dies noch nicht der Fall ist, registrieren Sie es wahlweise mit dem <guimenu>Novell Customer Center Configuration</guimenu>-Modul in YaST oder mit dem Kommandozeilenwerkzeug <command>suse_register</command>. Damit werden die Quellen für das System aktualisiert.
+    </para>
+   </listitem>
+  </itemizedlist>
+  
+  <warning>
+    <title>Ausführen von Aufrüstungen ab Neustart</title>
+    <para>Die Aufrüstung muss komplett von Beginn an bis zum Neustart ausgeführt werden. Es gibt nur eine sehr geringe Chance, Änderungen wieder rückgängig zu machen. Außerdem muss der Server während des gesamten Vorgangs online bleiben.
+</para>
+  </warning>
+ </sect3>
+ <sect3>
+  <title>Der Upgrade-Vorgang</title>
+  <warning>
+   <title>Prüfen der Systemsicherung</title>
+   <para>
+    Prüfen Sie vor dem Upgrade, ob Ihre Systemsicherung auf dem neuesten Stand und wiederherstellbar ist. Dies ist besonders wichtig, da viele der folgenden Schritte manuell durchgeführt werden müssen.
+   </para>
+  </warning>
+  <para>
+   Das Programm <command>zypper</command> unterstützt lange und kurze Kommandonamen. So können Sie <command>zypper install</command> z. B. als <command>zypper in</command> abkürzen. Im folgenden Text werden die kurzen Varianten verwendet.
+  </para> 
+  <para>Melden Sie sich als <systemitem class="username">root</systemitem> an und führen Sie die folgenden Schritte aus:</para>
+ 
+  <procedure>
+    
+    <step performance="required">
+      <para>Aktualisieren Sie alle Dienste und Repositorys:</para>
+      <screen>zypper ref -s</screen>
+    </step>
+    <step id="st.update.zypper.proc.softwarestack" performance="required">
+      <para>Installieren Sie ggf. die Aktualisierungen für die Paketverwaltung:</para>
+      <screen>zypper up -t patch</screen>
+      <para>Weitere Informationen finden Sie unter <xref linkend="cha.onlineupdate.you"/>.</para>
+    </step>
+    <step performance="required">
+    <para>Wiederholen Sie <xref linkend="st.update.zypper.proc.softwarestack"/> und installieren Sie alle verfügbaren Aktualisierungen für das System.
+    </para>
+    <para>Hinweis: Soll das obige Kommando in einem Skript für die unbeaufsichtigte Aufrüstung eingesetzt werden, verwenden Sie das folgende Kommando: </para>
+    <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
+   </step>
+    <step performance="required">
+      <para>Lesen Sie die Informationen zu den Migrationsprodukten in <filename>/etc/products.d/*.prod</filename>. Die installierten Produkte enthalten Informationen zu den Distributionsaufrüstungen sowie zu den Migrationsprodukten, die für die Migration installiert werden sollten. Installieren Sie diese Produkte mit den folgenden Kommandos:
+      </para>
+      <substeps performance="required">
+        <step performance="required">
+          <para>Extrahieren Sie die Produktinformationen:</para>
+          <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
+          <para>Ein Beispiel für die Ausgabe:</para>
+          <screen>SUSE_SLES-SP3-migration
+sle-sdk-SP3-migration</screen>
+        </step>
+        <step performance="required">
+          <para>Installieren Sie diese Migrationsprodukte (Beispiel):</para>
+          <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
+        </step>
+        <step performance="required">
+          <para>Registrieren Sie die Produkte, damit die entsprechenden Aktualisierungs-Repositorys verfügbar werden:</para>
+          <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+          <warning>
+            <title>Aktivieren eines zusätzlichen Repositorys für SLED-Benutzer</title>
+            <para>Einige devel-Pakete wurden vom <literal>SLED11-SP2</literal>-Installationsmedium in das Repository <literal>SLED11-Extras</literal> verschoben. Damit beim Aufrüsten keine Abhängigkeitskonflikte auftreten, aktualisieren Sie dieses Repository, bevor Sie die eigentliche Aufrüstung starten. Führen Sie <command>yast2 repositories</command> aus und aktivieren Sie dort den Eintrag <literal>SLED11-Extras</literal>. Unter SLES ist dieser zusätzliche Schritt nicht erforderlich. </para>
+          </warning>
+        </step>
+      </substeps>      
+    </step>
+    
+    <step performance="required">
+      <para>Aktualisieren Sie die Dienste und Repositorys:</para>
+      <screen>zypper ref -s</screen>
+    </step>
+    <step performance="required">
+        <para>Prüfen Sie die Repositorys mit <command>zypper lr</command>. Deaktivieren Sie bei Bedarf die SP1/SP2-Repositorys in <systemitem>Pool/Core/Updates</systemitem> manuell und aktivieren Sie die neuen SP3-Repositorys (<systemitem>SP3-Pool</systemitem>, <systemitem>SP3-Updates</systemitem>):</para>
+      <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
+zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
+    </step>
+    <step performance="required">
+      <para>Führen Sie eine Distributionsaufrüstung mit dem folgenden Kommando aus (Beispiel für SLES; bei SLED sind die Katalognamen entsprechend zu ändern):</para>
+      <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
+      <para>Hier können Sie weitere Kataloge hinzufügen, beispielsweise wenn Add-on-Produkte installiert sind. zypper meldet, dass das Migrationsprodukt gelöscht wird und die Hauptprodukte aktualisiert werden. Bestätigen Sie die Meldung. Damit wird die Aktualisierung der rpm-Pakete fortgesetzt.</para>
+    </step>
+    <step performance="required">
+      <para>Registrieren Sie die neuen Produkte nach Abschluss der Aufrüstung erneut:</para>
+      <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
+    </step>
+    <step performance="required">
+      <para>Booten Sie das System neu:</para>
+      <screen>shutdown -r</screen>
+    </step>
+  </procedure>
+   
+ </sect3>
+</sect2>

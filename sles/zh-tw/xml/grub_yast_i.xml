@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="grub_yast_i.xml" id="sec.boot.yast2.config">
+ <title>使用 YaST 設定開機載入器</title><indexterm> <primary>開機</primary><secondary>設定</secondary><tertiary>YaST</tertiary></indexterm><indexterm> <primary>YaST</primary><secondary>開機組態</secondary></indexterm>
+
+ <para>
+  在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 系統中設定開機載入程式最簡單的方法就是使用 YaST 模組。在 YaST 控制中心內，選取<menuchoice><guimenu>系統</guimenu> <guimenu>開機載入程式</guimenu></menuchoice>。正如<xref linkend="fig.yast.bootloader.config"/> 所示，這時會顯示系統目前的開機載入程式組態，並允許您進行變更。
+ </para>
+
+ <figure id="fig.yast.bootloader.config">
+  <title>開機載入程式設定</title>
+  <mediaobject>
+   <imageobject role="fo">
+    <imagedata fileref="yast2_bootloader.png" width="75%" format="PNG"/>
+   </imageobject>
+   <imageobject role="html">
+    <imagedata fileref="yast2_bootloader.png" width="75%" format="PNG"/>
+   </imageobject>
+  </mediaobject>
+ </figure>
+
+ <para>
+  使用<guimenu>區段管理</guimenu>索引標籤可以編輯、變更以及刪除個別作業系統的開機載入程式區段。要加入選項，請按一下<guimenu>新增</guimenu>。若要變更現有選項的值，請先用滑鼠選取，接著按一下<guimenu>編輯</guimenu>。如果要移除現有項目，請選取它並按一下<guimenu>刪除</guimenu>。如果不熟悉開機載入程式選項，請先閱讀<xref linkend="sec.grub.basic"/>。
+ </para>
+
+ <para>
+  使用<guimenu>開機載入程式安裝</guimenu>索引標籤可以檢視和變更關於類型、位置和進階載入程式設定的設定。
+ </para>
+
+ <para>
+  按一下<guimenu>其他</guimenu>可存取進階組態選項。內建的編輯器可讓您變更 GRUB 組態檔案。如需詳細資料，請參閱<xref linkend="sec.grub.basic"/>。還可以刪除現有的組態然後<guimenu>重新啟動</guimenu>，或者讓 YaST <guimenu>建議新的組態</guimenu>。也可以將組態寫入磁碟，或者從磁碟中重新讀取組態。要還原安裝期間儲存的原始主開機記錄 (MBR)，請選擇<guimenu>還原硬碟的 MBR</guimenu>。
+ </para>
+
+ <sect2 id="sec.boot.yast2.config.default">
+  <title>調整預設開機項目</title><indexterm> <primary>YaST</primary> <secondary>開機組態</secondary> <tertiary>預設系統</tertiary> </indexterm>
+  <para>
+   若要變更預設開機的系統，請依照下列步驟執行：
+  </para>
+  <procedure id="pro.boot.yast2.config.default">
+   <title>設定預設系統</title>
+   <step performance="required">
+    <para>
+     開啟<guimenu>磁區管理</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     從清單中選取所需項目。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>設定為預設值</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>確定</guimenu>，啟動這些變更。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.blocation">
+  <title>修改開機載入程式位置</title><indexterm> <primary>YaST</primary> <secondary>開機載入程式</secondary> <tertiary>位置</tertiary> </indexterm>
+  <para>
+   若要修改開機載入程式的位置，請執行下列步驟：
+  </para>
+  <procedure id="pro.boot.yast2.config.blocation">
+   <title>變更開機載入程式位置</title>
+   <step performance="required">
+    <para>
+     選取<guimenu>開機載入程式安裝</guimenu>索引標籤，然後為<guimenu>開機載入程式位置</guimenu>選擇以下其中一個選項：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>從主開機記錄開機</guimenu>
+      </term>
+      <listitem>
+       <para>
+        這樣會在第一個磁碟的 MBR 中安裝開機載入程式 (根據 BIOS 中預設的開機順序)。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>從根分割區開機</guimenu>
+      </term>
+      <listitem>
+       <para>
+        這會在 <filename>/</filename> 分割區的開機磁區中安裝開機載入程式。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>從開機分割區開機</guimenu>
+      </term>
+      <listitem>
+       <para>
+        這會在 <filename>/boot</filename> 分割區的開機磁區中安裝開機載入程式。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>從延伸分割區開機</guimenu>
+      </term>
+      <listitem>
+       <para>
+        這會在延伸分割區容器中安裝開機載入程式。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>自定開機分割區</guimenu>
+      </term>
+      <listitem>
+       <para>
+        這個選項可讓您手動指定開機載入程式的位置。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>確定</guimenu>套用您的變更。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.timeout">
+  <title>變更開機載入程式逾時</title><indexterm> <primary>YaST</primary> <secondary>開機組態</secondary> <tertiary>逾時</tertiary> </indexterm>
+  <para>
+   開機載入程式不會立即啟動預設系統。在逾時期間，您可以選取系統開機，或是寫入一些核心參數。若要設定開機載入程式逾時時間，請依照下列步驟執行：
+  </para>
+  <procedure id="pro.boot.yast2.config.timeout">
+   <title>變更開機載入程式逾時</title>
+   <step performance="required">
+    <para>
+     開啟<guimenu>開機載入程式安裝</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>開機載入程式選項</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     輸入新值、用滑鼠按住適當的方向鍵或使用鍵盤上的方向鍵，變更<guimenu>逾時秒數</guimenu>的設定值。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按兩次<guimenu>確定</guimenu>儲存變更。
+    </para>
+   </step>
+  </procedure>
+  <warning>
+   <title>0 秒逾時</title>
+   <para>
+    若將逾時設定為 0 秒，您將無法在開機時存取 GRUB。如果另外還將預設開機選項設定為非 Linux 作業系統，實際結果則是您將無法存取 Linux 系統。
+   </para>
+  </warning>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.security">
+  <title>設定啟動密碼</title><indexterm> <primary>YaST</primary> <secondary>開機組態</secondary> <tertiary>密碼</tertiary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>開機載入程式</secondary> <tertiary>密碼</tertiary></indexterm>
+  <para>
+   使用 YaST 模組，您也可以設定密碼來保護開機。這可以提供您另一層安全保護。
+  </para>
+  <procedure id="pro.boot.yast2.config.security">
+   <title>設定開機載入程式密碼</title>
+   <step performance="required">
+    <para>
+     開啟<guimenu>開機載入程式安裝</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>開機載入程式選項</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下滑鼠啟動<guimenu>使用密碼保護開機載入程式</guimenu>選項，並輸入兩次<guimenu>密碼</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按兩次<guimenu>確定</guimenu>儲存變更。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.order">
+  <title>調整磁碟順序</title><indexterm> <primary>YaST</primary><secondary>開機載入器</secondary><tertiary>磁碟順序</tertiary></indexterm>
+  <para>
+   如果您的電腦有多個硬碟，您可以指定磁碟開機順序採用機器 BIOS 的設定 (請參閱<xref linkend="sec.grub.map"/>)。若要執行這個動作，請依照下列步驟執行：
+  </para>
+  <procedure id="pro.boot.yast2.config.order">
+   <title>設定磁碟順序</title>
+   <step performance="required">
+    <para>
+     開啟<guimenu>開機載入程式安裝</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按一下<guimenu>開機載入程式詳細資訊</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     如果列出超過一個磁碟，請選擇一個磁碟，然後按一下<guimenu>向上</guimenu>或<guimenu>向下</guimenu>重新排列顯示磁碟的順序。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     按兩次<guimenu>確定</guimenu>儲存變更。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.advanced">
+  <title>設定進階選項</title><indexterm> <primary>YaST</primary> <secondary>開機組態</secondary> <tertiary>進階</tertiary></indexterm>
+  <para>
+   可透過<menuchoice><guimenu>開機載入程式安裝</guimenu><guimenu>開機載入程式選項</guimenu></menuchoice>設定進階開機選項。一般情況下，不需要變更預設設定。
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>在分割區表中為開機分割區設定使用中旗標</guimenu>
+    </term>
+    <listitem>
+     <para>
+      啟動包含開機載入程式的分割區。部分舊版的作業系統 (例如 Windows 98) 只能從使用中的分割區開機。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>將一般開機碼寫入 MBR</guimenu>
+    </term>
+    <listitem>
+     <para>
+      以與作業系統無關的一般代碼取代目前的 MBR。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>除錯旗標</guimenu>
+    </term>
+    <listitem>
+     <para>
+      將 GRUB 設定為除錯模式，以顯示描述磁碟活動的訊息。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>隱藏開機功能表</guimenu>
+    </term>
+    <listitem>
+     <para>
+      隱藏開機功能表並使用預設項目開機。
+     </para>
+     <warning>
+      <para>
+       如果隱藏開機功能表，您將無法在開機時存取 GRUB。如果另外還將預設開機選項設定為非 Linux 作業系統，實際結果則是您將無法存取 Linux 系統。
+      </para>
+     </warning>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>使用信任的 GRUB</guimenu>
+    </term>
+    <listitem>
+     <para>
+      啟動信任的 GRUB，以支援信任的計算功能。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>圖形功能表檔案</guimenu>
+    </term>
+    <listitem>
+     <para>
+      顯示開機畫面時所使用的圖形檔案路徑。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>序列連接參數</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果您的機器是透過序列主控台控制的，您可以指定以何種速度來使用哪一個 COM 埠。同時請將<guimenu>終端機定義</guimenu>設定為<quote>serial</quote>。如需詳細資料，請參閱 <command>info grub</command> 或 <ulink url="http://www.gnu.org/software/grub/manual/grub.html"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>使用序列控制台</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果您的機器是透過序列控制台控制的，請啟用此選項並指定以何速度來使用哪一個 COM 埠。請參閱 <command>info grub</command> 或 <ulink url="http://www.gnu.org/software/grub/manual/grub.html#Serial-terminal"/>
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect2>
+
+ <sect2 id="sec.boot.yast2.config.loader">
+  <title>變更開機載入程式類型</title><indexterm> <primary>YaST</primary><secondary>開機載入程式</secondary><tertiary>類型</tertiary></indexterm><indexterm><primary>YaST</primary><secondary>LILO</secondary></indexterm><indexterm><primary>YaST</primary><secondary>GRUB</secondary></indexterm>
+  <para>
+   在<guimenu>開機載入程式安裝</guimenu>中設定開機載入程式類型。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中的預設開機載入程式是 GRUB. 若要使用 LILO 或 ELILO，請繼續執行下列步驟：
+  </para>
+  <warning>
+   <title>LILO 不受支援</title>
+   <para>
+    不建議使用 LILO — 在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 上不受支援。請只在特殊情況下使用。
+   </para>
+  </warning>
+  <procedure id="pro.boot.yast2.config.loader">
+   <title>變更開機載入程式類型</title>
+   <step performance="required">
+    <para>
+     開啟<guimenu>開機載入程式安裝</guimenu>索引標籤。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     為<guimenu>開機載入程式</guimenu>選取 <guimenu>LILO</guimenu>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在這時開啟的對話方塊中，選取下面其中一個動作：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>建議新組態</guimenu>
+      </term>
+      <listitem>
+       <para>
+        指定 YaST 建議新的組態
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>轉換目前的組態</guimenu>
+      </term>
+      <listitem>
+       <para>
+        指定 YaST 轉換目前的組態。轉換組態時，可能會遺失某些設定。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>從頭開始設定新的組態</guimenu>
+      </term>
+      <listitem>
+       <para>
+        寫入自定的組態。安裝 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 時不能使用此動作。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>讀取儲存在硬碟的組態</guimenu>
+      </term>
+      <listitem>
+       <para>
+        載入您個人的 <filename>/etc/lilo.conf</filename>。安裝 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 時不能使用此動作。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </step>
+   <step performance="required">
+    <para>
+     按兩次<guimenu>確定</guimenu>儲存變更。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   轉換過程中，舊的 GRUB 組態會儲存在磁碟中。若要使用它，只需將開機載入程式類型改回 GRUB ，然後選擇<guimenu>還原轉換前所儲存的組態</guimenu>。這個動作只能在已安裝系統上使用。
+  </para>
+  <note>
+   <title>自定開機載入程式</title>
+   <para>
+    如果要使用 GRUB 或 LILO 以外的開機載入程式，請選取<guimenu>請勿安裝任何開機載入程式</guimenu>。請先詳細閱讀開機載入程式的說明文件，再選取這個選項。
+   </para>
+  </note>
+ </sect2>
+</sect1>

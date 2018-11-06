@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="nm.xml" id="cha.nm">
+ <title>Verwendung von NetworkManager</title><indexterm> <primary>Internet</primary> <secondary>Herstellen der Verbindung</secondary></indexterm><indexterm> <primary>NetworkManager</primary></indexterm>
+ <para>
+  NetworkManager ist die ideale Lösung für Notebooks und andere portable Computer. Es unterstützt die neuesten Verschlüsselungstypen und Standards für Netzwerkverbindungen, einschließlich Verbindungen zu Netzwerken, die nach 802.1X geschützt sind. 802.1X ist die <quote>anschlussbasierte Netzwerkzugriffssteuerung des IEEE-Standards für lokale und innerstädtische Netzwerke</quote>. Wenn Sie viel unterwegs sind und NetworkManager verwenden, brauchen Sie keine Gedanken mehr an die Konfiguration von Netzwerkschnittstellen und den Wechsel zwischen verkabelten und drahtlosen Netzwerken zu verschwenden.  NetworkManager kann automatisch eine Verbindung zu bekannten drahtlosen Netzwerken aufbauen oder mehrere Netzwerkverbindungen parallel verwalten – die schnellste Verbindung wird in diesem Fall als Standard verwendet. Darüber hinaus können Sie zwischen verfügbaren Netzwerken manuell wechseln und Ihre Netzwerkverbindung über ein Miniprogramm im Systemabschnitt der Kontrollleiste verwalten.
+
+ </para>
+ <para>
+  Anstelle nur einer Verbindung können mehrere Verbindungen gleichzeitig aktiv sein. Dies ermöglicht Ihnen, Ihr Notebook von einem Ethernet zu trennen und drahtlos verbunden zu bleiben. 
+ </para>
+ <sect1 id="sec.nm.usecase">
+  <title>Anwendungsbeispiele für den NetworkManager</title>
+
+  <para>
+   NetworkManager enthält eine ausgereifte und intuitive Bedienoberfläche, über die Benutzer mühelos zwischen Netzwerkumgebungen wechseln können. In den folgenden Fällen ist der NetworkManager jedoch ungeeignet:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Ihr Computer stellt Netzwerkdienste für andere Computer in Ihrem Netzwerk bereit (es handelt sich zum Beispiel um einen DHCP- oder DNS-Server)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Ihr Computer ist ein Xen-Server oder Ihr System ein virtuelles System innerhalb von Xen.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect1>
+ <sect1 id="sec.nm.activate">
+  <title>Aktivieren oder Deaktivieren von NetworkManager</title><indexterm> <primary>NetworkManager</primary> <secondary>Aktivieren</secondary></indexterm>
+
+  <para>
+   Auf Notebook-Computern ist NetworkManager standardmäßig aktiviert. Es lässt sich jedoch jederzeit im YaST-Modul „Netzwerkeinstellungen“ aktivieren oder deaktivieren.
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Starten Sie YaST, und gehen Sie zu <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>Netzwerkeinstellungen</guimenu> </menuchoice>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Das Dialogfeld <guimenu>Netzwerkeinstellungen</guimenu> wird geöffnet. Klicken Sie auf den Karteireiter <guimenu>Globale Optionen</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Zum Konfigurieren und Verwalten der Netzwerkverbindungen mit NetworkManager gehen Sie wie folgt vor:
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       Wählen Sie im Feld <guimenu>Netzwerkeinrichtungsmethode</guimenu> die Option <guimenu>Benutzergesteuert mithilfe von NetworkManager</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, und schließen Sie YaST.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Konfigurieren Sie die Netzwerkverbindungen mit NetworkManager gemäß den Anweisungen in <xref linkend="sec.nm.configure"/>.
+      </para>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     Zum Deaktivieren von NetworkManager und zum Steuern des Netzwerks auf gewohnte Weise gehen Sie wie folgt vor:
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       Wählen Sie im Feld <guimenu>Netzwerkeinrichtungsmethode</guimenu> die Option <guimenu>Traditionelle Methode mit ifup</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Richten Sie Ihre Netzwerkkarte mit YaST mithilfe der automatischen Konfiguration durch DHCP oder mithilfe einer statischen IP-Adresse ein. Alternativ konfigurieren Sie Ihr Modem mit YaST:
+      </para>
+      <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+        <para>
+         Für DFÜ-Verbindungen verwenden Sie <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>Modem</guimenu> </menuchoice>.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Wählen Sie <menuchoice><guimenu>Netzwerkgeräte </guimenu><guimenu>ISDN </guimenu></menuchoice>, um ein internes ISDN-Modem oder ein USB-ISDN-Modem zu konfigurieren. 
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         Wählen Sie <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>DSL</guimenu> </menuchoice>, um ein internes DSL-Modem oder ein USB-DSL-Modem zu konfigurieren.
+        </para>
+       </listitem>
+      </itemizedlist>
+      <para>
+       Eine ausführliche Beschreibung der Netzwerkkonfiguration mit YaST erhalten Sie unter <xref linkend="sec.basicnet.yast"/> und <xref linkend="cha.wireless.wlan"/>.
+      </para>
+     </step>
+    </substeps>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.nm.configure">
+  <title>Konfigurieren von Netzwerkverbindungen</title><indexterm> <primary>NetworkManager</primary> <secondary>Konfigurieren</secondary></indexterm>
+
+  <para>
+   Konfigurieren Sie nach der Aktivierung von NetworkManager in YaST Ihre Netzwerkverbindungen mit den NetworkManager-Frontends, die in KDE und GNOME verfügbar sind. Die Dialogfelder zur Netzwerkkonfiguration sind für beide Frontends sehr ähnlich. Sie zeigen Registerkarten für alle Arten von Netzwerkverbindungen, z. B. verkabelte, drahtlose, mobile Breitband-, DSL- und VPN-Verbindungen. Auf jeder Registerkarte können Sie Verbindungen dieses Typs hinzufügen, bearbeiten oder löschen. Im Dialogfeld für die KDE-Konfiguration sind die entsprechenden Registerkarten nur aktiv, wenn der Verbindungstyp auf Ihrem System verfügbar ist (abhängig von Hardware und Software). Standardmäßig zeigt KNetworkManager auch umfassende Kurzinfos für die verfügbaren Eingabefelder und Optionen auf jeder Registerkarte an.
+  </para>
+
+
+
+  <note>
+   <title>Bluetooth-Verbindungen</title>
+   <para>
+    Bluetooth-Verbindungen können zur Zeit nicht mit NetworkManager konfiguriert werden.
+   </para>
+  </note>
+
+  <para>
+   Öffnen Sie zum Anzeigen des Dialogfelds zur Netzwerkkonfiguration in GNOME das Hauptmenü und klicken Sie rechts auf den Eintrag <guimenu>Netzwerk</guimenu>. Drücken Sie alternativ auf <keycombo> <keycap function="alt"/> <keycap>F2</keycap> </keycombo> und geben Sie <command>nm-connection-editor</command> ein oder wählen Sie im GNOME-Kontrollzentrum <menuchoice> <guimenu>System</guimenu> <guimenu>Netzwerkverbindungen</guimenu> </menuchoice> aus.
+  </para>
+
+  <figure>
+   <title>Dialogfeld „Netzwerkverbindungen“ in GNOME</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="nm_gnome_tabs.png" width="70%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="nm_gnome_tabs.png" width="50%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   Bei Verwendung von KDE öffnen Sie das Hauptmenü und klicken Sie auf <guimenu>Desktop-Einstellungen</guimenu>. Wählen Sie auf der Registerkarte <guimenu>Allgemein</guimenu> der <guimenu>Persönlichen Einstellungen</guimenu> die Option <guimenu>Netzwerkeinstellungen</guimenu> aus, um das Dialogfeld zur Netzwerkkonfiguration zu öffnen.
+  </para>
+
+  <figure>
+   <title>KDE-Umgebung – Dialogfeld „Netzwerkkonfiguration“</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="nm_kde_tabs.png" width="70%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="nm_kde_tabs.png" width="50%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   Sie können die Konfigurationsdialogfelder alternativ auch aus dem NetworkManager-Miniprogramm im Systemabschnitt der Kontrollleiste starten. Klicken Sie in KDE mit der linken Maustaste auf das Symbol und wählen Sie <guimenu>Verbindungen verwalten</guimenu>. Klicken Sie in GNOME mit der rechten Maustaste auf das Symbol und wählen Sie <guimenu>Verbindungen bearbeiten</guimenu>.
+  </para>
+
+  <note>
+   <title>Verfügbarkeit von Optionen</title>
+   <para>
+    Abhängig von Ihrer Systemeinrichtung dürfen Sie möglicherweise keine Verbindungen konfigurieren. In einer abgesicherten Umgebung sind eventuell einige Optionen gesperrt oder verlangen eine <systemitem class="username">root</systemitem>-Berechtigung. Erfragen Sie Einzelheiten bei Ihrem Systemadministrator.
+   </para>
+  </note>
+
+  <procedure id="pro.nm.configure">
+   <title>Hinzufügen oder Bearbeiten von Verbindungen</title>
+   <para>
+    Beim Konfigurieren von Netzwerkverbindungen mit NetworkManager können Sie auch <literal>Systemverbindungen</literal> definieren, die für alle Benutzer freigegeben sind. Im Unterschied zu <literal>Benutzerverbindungen</literal> werden Systemverbindungen direkt nach dem Start von NetworkManager und vor der Anmeldung von Benutzern zur Verfügung gestellt. Weitere Einzelheiten über beide Verbindungstypen finden Sie in <xref linkend="sec.nm.sec.types"/>.
+   </para>
+   <para>
+    Derzeit steht die Option <literal>Systemverbindung</literal> in KDE nicht zur Verfügung. In diesem Fall müssen Sie zum Einrichten von Systemverbindungen YaST verwenden.
+   </para>
+   <note>
+    <title>Verborgene Netzwerke</title>
+    <para>
+     Um eine Verbindung zu einem <quote>verborgenen</quote> Netzwerk aufzubauen (einem Netzwerk, das seinen Dienst nicht als Broadcast ausführt), müssen Sie den Service Set Identifier (SSID) oder Extended Service Set Identifier (ESSID) des Netzwerks kennen. Verborgene Netzwerke können nicht automatisch gefunden werden.
+    </para>
+   </note>
+   <step performance="required">
+    <para>
+     Klicken Sie im Dialogfeld für die Netzwerkkonfiguration auf die Registerkarte für den Verbindungstyp, den Sie verwenden möchten.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Klicken Sie auf <guimenu>Hinzufügen</guimenu>, um eine neue Verbindung zu erstellen, oder wählen Sie eine vorhandene Verbindung aus und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Geben Sie einen <guimenu>Verbindungsnamen</guimenu> und Ihre Verbindungsdetails ein. 
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Geben Sie für ein verborgenes Netzwerk die ESSID und die Verschlüsselungsparameter ein.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Sie können die Verbindung an ein bestimmtes Gerät binden, wenn mehrere physische Geräte pro Verbindungsart verfügbar sind (z. B. wenn Ihr Computer mit zwei Ethernet-Karten oder zwei Wireless-Karten ausgestattet ist).
+    </para>
+    <para>
+     Bei Verwendung von KDE erledigen Sie dies über die Option <guimenu>Restrict to Interface</guimenu> (Auf Schnittstelle beschränken). Bei Verwendung von GNOME geben Sie die <guimenu>MAC-Adresse</guimenu> des Geräts ein, an das Sie die Verbindung binden möchten, und bestätigen Sie Ihre Einstellungen.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Damit NetworkManager automatisch eine bestimmte Verbindung nutzt, aktivieren Sie die folgende Option für die gewünschte Verbindung: <guimenu>Automatisch verbinden</guimenu> (KDE) oder <guimenu>Stay connected when possible (Nach Möglichkeit verbunden bleiben)</guimenu> (GNOME).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Zum Umwandeln einer Verbindung in eine <literal>Systemverbindung</literal> aktivieren Sie <guimenu>Available to all users</guimenu> (Für alle Benutzer verfügbar) (GNOME). Zum Erstellen und Bearbeiten von Systemverbindungen ist die <systemitem class="username">root</systemitem>-Berechtigung erforderlich.
+    </para>
+   </step>
+  </procedure>
+
+  <para>
+   Nachdem Sie Ihre Änderungen bestätigt haben, erscheint die neu konfigurierte Netzwerkverbindung in der Liste der verfügbaren Netzwerke, die Sie erhalten, wenn Sie mit der linken Maustaste auf das NetworkManager-Miniprogramm klicken.
+  </para>
+
+  <figure>
+   <title>KNetworkManager – Konfigurierte und verfügbare Verbindungen</title>
+   <mediaobject>
+    <imageobject role="html">
+     <imagedata fileref="kde_knm_wlan_connections.png" width="40%" format="PNG"/>
+    </imageobject>
+    <imageobject role="fo">
+     <imagedata fileref="kde_knm_wlan_connections.png" width="40%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="nm_kde.xml" parse="xml"/>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="nm_gnome.xml" parse="xml"/>
+ <sect1 id="sec.nm.vpn">
+  <title>NetworkManager und VPN</title><indexterm> <primary>NetworkManager</primary> <secondary>VPN</secondary></indexterm><indexterm> <primary>VPN</primary></indexterm>
+
+  <para>
+   NetworkManager unterstützt verschiedene Technologien für virtuelle private Netzwerke (VPN). Für jede Technologie bietet <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> ein Basispaket mit generischer Unterstützung für NetworkManager. Zusätzlich müssen Sie auch das entsprechende Desktop-spezifische Paket für Ihr Miniprogramm installieren.
+  </para>
+
+
+
+  <variablelist>
+   <varlistentry>
+    <term>NovellVPN</term>
+    <listitem>
+     <para>
+      Installieren Sie zur Verwendung dieser VPN-Technik
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-novellvpn</systemitem> und
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-novellvpn-kde4</systemitem> oder <systemitem class="resource">NetworkManager-novellvpn-gnome</systemitem>.
+       </para>
+      </listitem>
+     </itemizedlist>
+     <para>
+      NovellVPN-Unterstützung für KDE steht derzeit noch nicht zur Verfügung, es wird jedoch daran gearbeitet.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>OpenVPN</term>
+    <listitem>
+     <para>
+      Installieren Sie zur Verwendung dieser VPN-Technik
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-openvpn</systemitem> und
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-openvpn-kde4</systemitem> oder <systemitem class="resource">NetworkManager-openvpn-gnome</systemitem>.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>vpnc (Cisco)</term>
+    <listitem>
+     <para>
+      Installieren Sie zur Verwendung dieser VPN-Technik
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-vpnc</systemitem> und
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+
+        <systemitem class="resource">NetworkManager-vpnc-kde4</systemitem> oder <systemitem class="resource">NetworkManager-vpnc-gnome</systemitem>.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>PPTP (Point-to-Point-Tunneling-Protokoll)</term>
+    <listitem>
+     <para>
+      Installieren Sie zur Verwendung dieser VPN-Technik
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-pptp</systemitem> und
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <systemitem class="resource">NetworkManager-pptp-kde4</systemitem> oder <systemitem class="resource">NetworkManager-pptp-gnome</systemitem>.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   Konfigurieren Sie Ihre VPN-Verbindung nach der Installation der Pakete, wie in <xref linkend="sec.nm.configure"/> beschrieben.
+  </para>
+ </sect1>
+ <sect1 id="sec.nm.security">
+  <title>NetworkManager und Sicherheit</title><indexterm> <primary>NetworkManager</primary> <secondary>Sicherheit</secondary></indexterm>
+
+  <para>
+   Der NetworkManager unterscheidet zwischen zwei Typen von drahtlosen Verbindungen: verbürgte und unverbürgte Verbindungen. Eine verbürgte Verbindung ist jedes Netzwerk, das Sie in der Vergangenheit explizit ausgewählt haben. Alle anderen sind unverbürgt. Verbürgte Verbindungen werden anhand des Namens und der MAC-Adresse des Zugriffspunkts identifiziert. Durch Verwendung der MAC-Adresse wird sichergestellt, dass Sie keinen anderen Zugriffspunkt mit dem Namen Ihrer verbürgten Verbindung verwenden können.
+  </para>
+
+  <para>
+   NetworkManager scannt in regelmäßigen Abständen nach verfügbaren drahtlosen Netzwerken. Wenn mehrere verbürgte Netzwerke gefunden werden, wird automatisch das zuletzt verwendete ausgewählt. Wenn keines der Netzwerke vertrauenswürdig ist, wartet NetworkManager auf Ihre Auswahl.
+  </para>
+
+  <para>
+   Wenn die Verschlüsselungseinstellung geändert wird, aber Name und MAC-Adresse gleich bleiben, versucht NetworkManager, eine Verbindung herzustellen. Zuvor werden Sie jedoch aufgefordert, die neuen Verschlüsselungseinstellungen zu bestätigen und Aktualisierungen, z. B. einen neuen Schlüssel, bereitzustellen.
+  </para>
+
+  <para>
+   Wenn Sie von der Verwendung einer drahtlosen Verbindung in den Offline-Modus wechseln, blendet NetworkManager die SSID oder ESSID aus. So wird sichergestellt, dass die Karte nicht mehr verwendet wird.
+  </para>
+
+  <sect2 id="sec.nm.sec.types">
+   <title>Benutzer- und Systemverbindungen</title>
+   <para>
+    NetworkManager kennt zwei Verbindungsarten: <literal>Benutzer-</literal> und <literal>System-</literal>Verbindungen. Bei Benutzerverbindungen handelt es sich um Verbindungen, die für NetworkManager verfügbar werden, sobald sich der erste Benutzer anmeldet. Alle erforderlichen Legitimationsdaten werden vom Benutzer angefordert, und wenn er sich abmeldet, werden die Verbindungen getrennt und aus NetworkManager entfernt. Als Systemverbindung definierte Verbindungen können für alle Benutzer freigegeben werden und sind direkt nach dem Start von NetworkManager verfügbar, bevor sich Benutzer angemeldet haben. Für Systemverbindungen müssen alle Berechtigungsnachweise zum Zeitpunkt der Verbindungserstellung angegeben werden. Über Systemverbindungen können automatisch Verbindungen mit Netzwerken hergestellt werden, für die eine Autorisierung erforderlich ist. Informationen zum Konfigurieren von Benutzer- oder Systemverbindungen mit NetworkManager finden Sie unter <xref linkend="sec.nm.configure"/>.
+   </para>
+   <para>
+    Für KDE wird die Konfiguration von Systemverbindungen mit NetworkManager derzeit nicht unterstützt. (Verwenden Sie stattdessen YaST.)
+   </para>
+  </sect2>
+
+  <sect2 id="sec.nm.sec.store">
+   <title>Speichern von Passwörtern und Berechtigungsnachweisen</title>
+   <para>
+    Wenn Sie Ihre Berechtigungsnachweise nicht bei jedem Verbindungsversuch mit einem verschlüsselten Netzwerk erneut eingeben möchten, können Sie die Desktop-spezifischen Werkzeuge oder den GNOME Keyring Manager oder KWalletManager verwenden, um Ihre Berechtigungsnachweise verschlüsselt und durch Master-Passwort geschützt auf der Festplatte zu speichern. 
+   </para>
+
+
+   
+   
+   <para os="sled;sles">
+    NetworkManager kann auch seine Zertifikate für sichere Verbindungen (z. B. verschlüsselte Kabel-, Funk- oder VPN-Verbindungen) vom Zertifikatspeicher abrufen. Weitere Informationen hierzu finden Sie in <xref linkend="cha.certstore"/>.
+   </para>
+
+
+  </sect2>
+ </sect1>
+ <sect1 id="sec.nm.faq">
+  <title>Häufig gestellte Fragen</title>
+
+  <para>
+   Nachfolgend finden Sie einige häufig gestellte Fragen zum Konfigurieren spezieller Netzwerkoptionen mit NetworkManager.
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Wie kann eine Verbindung an ein bestimmtes Gerät gebunden werden?</term>
+    <listitem>
+     <para>
+      Standardmäßig sind Verbindungen in NetworkManager gerätetypspezifisch: Sie gelten für alle physischen Geräte desselben Typs. Wenn mehrere physische Geräte pro Verbindungsart verfügbar sind (z. B. wenn Ihr Gerät mit zwei Ethernet-Karten ausgestattet ist), können Sie eine Verbindung an ein bestimmtes Gerät binden.
+
+     </para>
+     <para>
+      Schlagen Sie dafür in GNOME zunächst die MAC-Adresse Ihres Geräts in der <guimenu>Verbindungsinformation</guimenu> nach, die über das Miniprogramm zur Verfügung steht, oder verwenden Sie die Ausgabe von Kommandozeilenwerkzeugen wie <command>nm-tool</command> oder <command>ifconfig</command>. Starten Sie dann das Dialogfeld zur Konfiguration von Netzwerkverbindungen und wählen Sie die Verbindung aus, die Sie ändern möchten. Geben Sie auf der Registerkarte <guimenu>Verkabelt</guimenu> oder <guimenu>Drahtlos</guimenu> die <guimenu>MAC-Adresse</guimenu> des Geräts ein und bestätigen Sie Ihre Änderungen.
+     </para>
+     <para>
+      Wenn Sie KDE verwenden, starten Sie das Dialogfeld zum Konfigurieren Ihrer Netzwerkverbindungen und wählen Sie die zu ändernde Verbindung aus. Wählen Sie auf der Registerkarte <guimenu>Ethernet</guimenu> oder <guimenu>Drahtlos</guimenu> mit der Option <guimenu>Restrict to Interface</guimenu> (Auf Schnittstelle beschränken) die Netzwerkschnittstelle aus, an welche die Verbindung gekoppelt werden soll.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Wie wird ein bestimmter Zugriffspunkt angegeben, wenn mehrere Zugriffspunkte mit derselben ESSID erkannt werden?</term>
+    <listitem>
+     <para>
+      Wenn mehrere Zugriffspunkte mit unterschiedlichen Funkfrequenzbereichen (a/b/g/n) verfügbar sind, wird standardmäßig der Zugriffspunkt mit dem stärksten Signal automatisch gewählt. Um diesen Vorgang außer Kraft zu setzen, verwenden Sie das Feld <guimenu>BSSID</guimenu> beim Konfigurieren Ihrer drahtlosen Verbindungen.
+     </para>
+     <para>
+      Der Basic Service Set Identifier (BSSID) identifiziert jedes Basic Service Set eindeutig. In einem Basic Service Set der Infrastruktur entspricht die BSSID der MAC-Adresse des drahtlosen Zugriffspunkts. In einem unabhängigen (Ad-hoc) Basic Service Set entspricht die BSSID einer lokal verwalteten MAC-Adresse, die aus einer 46-Bit-Zufallszahl generiert wird.
+     </para>
+     <para>
+      Starten Sie den Dialog die die Konfiguration von Netzwerkverbindungen wie in <xref linkend="sec.nm.configure"/> beschrieben. Wählen Sie die drahtlose Verbindung, die Sie ändern möchten, und klicken Sie auf <guimenu>Bearbeiten</guimenu>. Geben Sie im Karteireiter <guimenu>Drahtlos</guimenu> die BSSID ein.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Wie werden Netzwerkverbindungen mit anderen Computern freigegeben?</term>
+    <listitem>
+     <para>
+      Das primäre Gerät (das Gerät, das mit dem Internet verbunden ist) benötigt keine spezielle Konfiguration. Jedoch müssen Sie das Gerät, das mit dem lokalen Hub oder Computer verbunden ist, wie folgt konfigurieren:
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        Starten Sie den Dialog düe die Konfiguration von Netzwerkverbindungen wie in <xref linkend="sec.nm.configure"/> beschrieben. Wählen Sie die Verbindung, die Sie ändern möchten, und klicken Sie auf <guimenu>Bearbeiten</guimenu>. Bei Verwendung von GNOME wechseln Sie in die Registerkarte <guimenu>IPv4-Einstellungen</guimenu> und wählen Sie aus der Dropdown-Liste <guimenu>Methode</guimenu> die Option <guimenu>Shared to other computers</guimenu> (Für andere Computer freigegeben). Bei Verwendung von KDE wechseln Sie zum Karteireiter <guimenu>IP-Adresse</guimenu> und wählen Sie aus der Dropdown-Liste <guimenu>Konfigurieren</guimenu> die Option <guimenu>Freigegeben</guimenu>. Damit ist die Weiterleitung von IP-Netzwerkverkehr möglich und ein DHCP-Server wird auf dem Gerät ausgeführt. Bestätigen Sie Ihre Änderungen in NetworkManager.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Da der DCHP-Server den Port <literal>67</literal> verwendet, stellen Sie sicher, dass dieser nicht durch die Firewall blockiert ist: Starten Sie YaST auf dem Computer, der die Verbindungen nutzen möchte, und wählen Sie <menuchoice> <guimenu>Sicherheit und Benutzer</guimenu> <guimenu>Firewall</guimenu> </menuchoice>. Wechseln Sie zur Kategorie <guimenu>Erlaubte Dienste</guimenu>. Wenn <guimenu>DCHP-Server</guimenu> nicht bereits als <guimenu>Erlaubter Dienst</guimenu> angezeigt ist, wählen Sie <guimenu>DCHP-Server</guimenu> aus <guimenu>Services to Allow</guimenu> (Erlaubte Dienste) und klicken Sie auf <guimenu>Hinzufügen</guimenu>. Bestätigen Sie Ihre Änderungen in YaST.
+       </para>
+      </listitem>
+     </orderedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Wie kann statische DNS-Information mit automatischen (DHCP-, PPP-, VPN-) Adressen bereitgestellt werden? </term>
+    <listitem>
+     <para>
+      Falls ein DHCP-Server ungültige DNS-Informationen (und/oder Routen) liefert, können Sie diese überschreiben. Starten Sie den Dialog düe die Konfiguration von Netzwerkverbindungen wie in <xref linkend="sec.nm.configure"/> beschrieben. Wählen Sie die Verbindung, die Sie ändern möchten, und klicken Sie auf <guimenu>Bearbeiten</guimenu>. Bei Verwendung von GNOME öffnen Sie den Karteireiter <guimenu>IPv4-Einstellungen</guimenu> und wählen Sie aus der Dropdown-Liste <guimenu>Methode</guimenu> die Option <guimenu>Automatic (DHCP) addresses only</guimenu> (Nur automatische (DHCP&amp;#x2011;) Adressen). Bei Verwendung von KDE öffnen Sie den Karteireiter <guimenu>IP-Adresse</guimenu> und wählen Sie aus der Dropdown-Liste <guimenu>Konfigurieren</guimenu> die Option <guimenu>Automatic (DHCP) addresses only</guimenu> (Nur automatische (DHCP-) Adressen). Geben Sie die DNS-Information in die Felder <guimenu>DNS-Server</guimenu> und <guimenu>Suchdomänen</guimenu> ein. Sollen automatisch abgerufene Routen ignoriert werden, klicken Sie auf <guimenu>Routes</guimenu> (GNOME) und aktivieren Sie das Kontrollkästchen <guimenu>Ignore automatically obtained routes (Automatisch bezogene Routen ignorieren)</guimenu> oder wählen Sie in der Dropdown-Liste unten auf dem Karteireiter (KDE) die Option <guimenu>Routes</guimenu> und aktivieren Sie das entsprechende Kontrollkästchen. Bestätigen Sie Ihre Änderungen.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Wie kann NetworkManager dazu veranlasst werden, eine Verbindung zu passwortgeschützten Netzwerken aufzubauen, bevor sich ein Benutzer anmeldet?</term>
+    <listitem>
+     <para>
+      Definieren Sie eine <literal>Systemverbindung</literal>, die für solche Zwecke verwendet werden kann. Weitere Informationen hierzu finden Sie in <xref linkend="sec.nm.security"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nm.trouble">
+  <title>Fehlersuche</title><indexterm> <primary>NetworkManager</primary> <secondary>Fehlersuche</secondary></indexterm>
+
+  <para>
+   Es können Verbindungsprobleme auftreten. Bei NetworkManager sind unter anderem die Probleme bekannt, dass das Miniprogramm nicht startet oder eine VPN-Option fehlt. Die Methoden zum Lösen und Verhindern dieser Probleme hängen vom verwendeten Werkzeug ab.
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>NetworkManager-Desktop-Applet wird nicht gestartet</term>
+    <listitem>
+     <para>
+      Die Miniprogramme von GNOME- und KDE NetworkManager starten automatisch, wenn das Netzwerk für die NetworkManager-Steuerung eingerichtet ist. Wenn das Miniprogramm/Widget nicht gestartet wird, überprüfen Sie, ob NetworkManager in YaST aktiviert ist (siehe <xref linkend="sec.nm.activate"/>). Vergewissern Sie sich danach, ob das richtige Paket für Ihre Desktop-Umgebung installiert ist. Wenn Sie mit KDE 4 arbeiten, trägt das Paket die Bezeichnung <systemitem class="resource">NetworkManager-kde4</systemitem>. Wenn Sie mit GNOME arbeiten, trägt das Paket die Bezeichnung <systemitem class="resource">NetworkManager-gnome</systemitem>.
+     </para>
+     <para>
+      Wenn das Desktop-Miniprogramm installiert ist, aber aus einem unbestimmten Grund nicht ausgeführt wird, starten Sie es manuell. Wenn das Desktop-Miniprogramm installiert ist, aber nicht ausgeführt wird, starten Sie es manuell über das Kommando <command>nm-applet</command> (GNOME) bzw. <command>knetworkmanager</command> (KDE).
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Das NetworkManager-Applet beinhaltet keine VPN-Option</term>
+    <listitem>
+     <para>
+      Die Unterstützung für NetworkManager-Miniprogramme sowie VPN für NetworkManager wird in Form separater Pakete verteilt. Wenn Ihr NetworkManager-Applet keine VPN-Option enthält, überprüfen Sie, ob die Pakete mit der NetworkManager-Unterstützung für Ihre VPN-Technologie installiert sind. Weitere Informationen finden Sie unter <xref linkend="sec.nm.vpn"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Keine Netzwerkverbindung verfügbar</term>
+    <listitem>
+     <para>
+      Wenn Sie Ihre Netzwerkverbindung korrekt konfiguriert haben und alle anderen Komponenten für die Netzwerkverbindung (Router etc.) auch gestartet sind und ausgeführt werden, ist es manchmal hilfreich, die Netzwerkschnittstellen auf Ihrem Computer erneut zu starten. Melden Sie sich dazu bei einer Kommandozeile als <systemitem class="username">root</systemitem> an, und führen Sie das Kommando <command>rcnetwork restart</command> aus.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.nm.more">
+  <title>Weiterführende Informationen</title>
+
+  <para>
+   Weitere Informationen zu NetworkManager finden Sie auf den folgenden Websites und in folgenden Verzeichnissen:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>Projektseite von NetworkManager</term>
+    <listitem>
+     <para>
+      <ulink url="http://projects.gnome.org/NetworkManager/"/>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>KDE NetworkManager-Frontend</term>
+    <listitem>
+     <para>
+      <ulink url="http://userbase.kde.org/NetworkManagement"/>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Dokumentation zu den einzelnen Paketen</term>
+    <listitem>
+     <para>
+      Lesen Sie auch die neuesten Informationen zu NetworkManager und den Miniprogrammen GNOME und KDE NetworkManager in den folgenden Verzeichnissen:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <filename>/usr/share/doc/packages/NetworkManager/</filename>,
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/usr/share/doc/packages/NetworkManager-kde4/</filename> und
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/usr/share/doc/packages/NetworkManager-gnome/</filename>.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+</chapter>

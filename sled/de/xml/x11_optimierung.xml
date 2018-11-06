@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_optimierung.xml" id="sec.x11.optimieren">
+ <title>Manuelles Konfigurieren des X Window-Systems</title><indexterm id="idx.X_optimizing" class="startofrange"> <primary>X</primary> <secondary>konfigurieren</secondary></indexterm><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+
+ <para>
+  Standardmäßig ist das X Window System mit der unter <xref linkend="cha.y2.hw.graph"/> beschriebenen SaX2-Schnittstelle konfiguriert. Alternativ kann er manuell konfiguriert werden, indem Sie die entsprechenden Konfigurationsdateien bearbeiten.
+ </para>
+
+ <warning>
+  <title>Fehlerhafte X-Konfigurationen können Ihre Hardware beschädigen</title>
+  <para>
+   Seien Sie sehr vorsichtig, wenn Sie die Konfiguration des X Window-Systems ändern. Starten Sie auf keinen Fall das X Window-System, bevor die Konfiguration abgeschlossen ist. Ein falsch konfiguriertes System kann Ihre Hardware irreparabel beschädigen (dies gilt insbesondere für Monitore mit fester Frequenz). Die Autoren dieses Buchs und die Entwickler von <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> übernehmen keine Haftung für mögliche Schäden. Die folgenden Informationen basieren auf sorgfältiger Recherche. Es kann jedoch nicht garantiert werden, dass alle hier aufgeführten Methoden fehlerfrei sind und keinen Schaden an Ihrer Hardware verursachen können.
+  </para>
+ </warning>
+
+ <para>
+  Das Kommando <command>sax2</command> erstellt die Datei<filename>/etc/X11/xorg.conf</filename>. Dabei handelt es sich um die primäre Konfigurationsdatei des <phrase role="productname">X Window System</phrase>. Hier finden Sie alle Einstellungen, die Grafikkarte, Maus und Monitor betreffen. <indexterm> <primary>X</primary> <secondary>SaX2</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xorg.conf</secondary> </indexterm>
+ </para>
+
+ <important>
+  <title>Verwenden von X -configure</title>
+  <para>
+   Konfigurieren Sie Ihr X-Setup mit <command>X -configure</command>, wenn vorherige Versuche mit SaX2 von <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> nicht erfolgreich waren. Wenn Ihre Einrichtung proprietäre ausschließlich binäre Treiber umfasst, funktioniert <command>X -configure</command> nicht.
+  </para>
+ </important>
+
+ <para>
+  In den folgenden Abschnitten wird die Struktur der Konfigurationsdatei <filename>/etc/X11/xorg.conf</filename> beschrieben. Sie ist in mehrere Abschnitte gegliedert, die jeweils für bestimmte Aspekte der Konfiguration verantwortlich sind. Jeder Abschnitt beginnt mit dem Schlüsselwort <systemitem>Section &lt;Bezeichnung&gt;</systemitem> und endet mit <systemitem>EndSection</systemitem>. Die folgende Konvention gilt für alle Abschnitte:
+ </para>
+
+<screen>Section "designation"
+  entry 1
+  entry 2
+  entry n
+EndSection </screen>
+
+ <para>
+  Die verfügbaren Abschnittstypen finden Sie in <xref linkend="tab.x11.sections"/>.
+ </para>
+
+ <table id="tab.x11.sections">
+  <title>Abschnitte in /etc/X11/xorg.conf</title>
+  <tgroup cols="2" align="left">
+   <thead>
+    <row>
+     <entry>
+      <para>
+       <emphasis role="bold">Typ</emphasis>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       <emphasis role="bold">Bedeutung</emphasis>
+      </para>
+     </entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Dateien</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Die Pfade für die Schriften und die RGB-Farbtabelle. <indexterm> <primary>xorg.conf</primary> <secondary>Dateien</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>ServerFlags</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Allgemeine Schalter für das Serververhalten. <indexterm> <primary>xorg.conf</primary> <secondary>ServerFlags</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Modul</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Eine Liste mit Modulen, die der Server laden sollte <indexterm> <primary>xorg.conf</primary> <secondary>Module</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>InputDevice</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Eingabegeräte wie Tastaturen und spezielle Eingabegeräte (Touchpads, Joysticks usw.) werden in diesem Abschnitt konfiguriert. Wichtige Parameter in diesem Abschnitt sind <systemitem>Driver</systemitem> und die Optionen für <systemitem>Protocol</systemitem> und <systemitem>Device</systemitem>. Normalerweise ist dem Computer ein <systemitem>InputDevice</systemitem>-Abschnitt pro Gerät angefügt. <indexterm> <primary>xorg.conf</primary> <secondary>InputDevice</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Monitor</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Der verwendete Monitor. Wichtige Elemente dieses Abschnitts sind die Kennung (<systemitem>Identifier</systemitem>), auf die später in der Definition von <systemitem>Screen</systemitem> eingegangen wird, die Aktualisierungsrate (<systemitem>VertRefresh</systemitem>) und die Grenzwerte für die Synchronisierungsfrequenz (<systemitem>HorizSync</systemitem> und <systemitem>VertRefresh</systemitem>). Die Einstellungen sind in MHz, kHz und Hz angegeben. Normalerweise akzeptiert der Server nur Modeline-Werte, die den Spezifikationen des Monitors entsprechen. Dies verhindert, dass der Monitor versehentlich mit zu hohen Frequenzen angesteuert wird. <indexterm> <primary>xorg.conf</primary> <secondary>Monitor</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>Modelines</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Modi</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Die Modeline-Parameter für die spezifischen Bildschirmauflösungen. Diese Paramter können von SaX2 auf Grundlage der vom Benutzer vorgegebenen Werte berechnet werden und müssen in der Regel nicht geändert werden. Nehmen Sie hier beispielsweise dann Änderungen vor, wenn Sie einen Monitor mit fester Frequenz anschließen möchten. Details zur Bedeutung der einzelnen Zahlenwerte finden Sie in den HOWTO-Dateien unter <filename>/usr/share/doc/howto/en/html/XFree86-Video-Timings-HOWTO</filename> (im Paket <systemitem>howtoenh</systemitem>). Zur manuellen Berechnung von VESA-Modi können Sie das Tool <command>cvt</command> verwenden. Verwenden Sie z. B. zur Berechnung einer Modeline für einen 1680x1050@60Hz-Monitor das Kommando <command>cvt 1680 1050 60</command>. <indexterm> <primary>xorg.conf</primary> <secondary>Modes</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Gerät</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Eine spezifische Grafikkarte. Sie wird mit ihrem beschreibenden Namen angeführt. Die in diesem Abschnitt verfügbaren Optionen hängen stark vom verwendeten Treiber ab. Wenn Sie beispielsweise den <literal>i810</literal>-Treiber verwenden, erhalten Sie weitere Informationen auf der man-Seite <command>man 4 i810</command>.
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Screen</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Hier wird eine Verbindung zwischen einem <systemitem>Monitor</systemitem> und einer Grafikkarte (<systemitem>Device</systemitem>) hergestellt, wodurch alle erforderlichen Einstellungen für X.Org bereitgestellt werden. Im Unterabschnitt <systemitem>Display</systemitem> können Sie die Größe des virtuellen Bildschirms (<systemitem>Virtual</systemitem>), den <systemitem>ViewPort</systemitem> und die <systemitem>Modes</systemitem> für diesen Bildschirm festlegen.
+      </para>
+      <para>
+       Beachten Sie, dass einige Treiber es erfordern, dass alle verwendeten Konfigurationen an einer Stelle im Abschnitt <systemitem>Display</systemitem> vorhanden sein müssen. Wenn Sie beispielsweise an einem Laptop einen externen Monitor verwenden möchten, der größer als das interne LCD-Display ist, kann es erforderlich sein, eine höhere Auflösung als die vom internen LCD-Display ünterstützte an das Ende der Zeile <systemitem>Modes</systemitem> anzufügen.
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>ServerLayout</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Das Layout einer Einzel- oder Multihead-Konfiguration. In diesem Abschnitt werden Kombinationen aus Eingabegeräten (<systemitem>InputDevice</systemitem>) und Anzeigegeräten (<systemitem>Screen</systemitem>) festgelegt.
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>DRI</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       Bietet Informationen für die Direct Rendering Infrastructure (DRI).
+      </para>
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+
+ <para>
+  <systemitem>Monitor</systemitem>, <systemitem>Device</systemitem> und <systemitem>Screen</systemitem> werden genauer erläutert. Weitere Informationen zu den anderen Abschnitten finden Sie auf den Manualpages von <filename>X.Org</filename> und <filename>xorg.conf</filename>.
+ </para>
+
+ <para>
+  Die Datei <systemitem>xorg.conf</systemitem> kann mehrere unterschiedliche Abschnitte vom Typ <systemitem>Monitor</systemitem> und <filename>Device</filename> enthalten. Manchmal gibt es sogar mehrere Abschnitte vom Typ <systemitem>Screen. </systemitem> Der Abschnitt <systemitem>ServerLayout</systemitem> legt fest, welche dieser Abschnitte verwendet werden.
+ </para>
+
+ <sect2 id="sec.x11.screen">
+  <title>Abschnitt „Screen“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary> <tertiary>Screen</tertiary> </indexterm>
+  <para>
+   Der Abschnitt „Screen“ kombiniert einen Monitor mit einem Device-Abschnitt und legt fest, welche Auflösung und Farbtiefe verwendet werden sollen. Der Abschnitt „Screen“ kann beispielsweise wie in <xref linkend="dat.x11.scrsec"/> aussehen.
+  </para>
+  <example id="dat.x11.scrsec">
+   <title>Abschnitt „Screen“ der Datei /etc/X11/xorg.conf</title>
+<screen>Section "Screen"<co id="co.x11.screen"/>
+  DefaultDepth  16<co id="co.x11.ddepth"/>
+  SubSection "Display"<co id="co.x11.display"/>
+    Depth       16<co id="co.x11.depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co id="co.x11.mode"/>
+    Virtual     1152x864<co id="co.x11.virt"/>
+  EndSubSection
+  SubSection "Display"
+    Depth       24
+    Modes       "1280x1024"
+  EndSubSection
+  SubSection "Display"
+    Depth       32
+    Modes "640x480"
+  EndSubSection
+  SubSection "Display"
+    Depth        8
+    Modes       "1280x1024"
+  EndSubSection
+  Device        "Device[0]"
+  Identifier    "Screen[0]"<co id="co.x11.ident"/>
+  Monitor       "Monitor[0]"
+EndSection</screen>
+  </example>
+  <calloutlist>
+   <callout arearefs="co.x11.screen">
+    <para>
+     <literal>Section</literal> legt den Typ des Abschnitts fest, in diesem Fall <literal>Screen</literal>.
+    </para>
+   </callout>
+   <callout arearefs="co.x11.ddepth">
+    <para>
+     <indexterm> <primary>xorg.conf </primary> <secondary>Monitor</secondary> </indexterm> <literal>DefaultDepth</literal> bestimmt die Farbtiefe, die standardmäßig verwendet werden soll, wenn keine andere Farbtiefe explizit angegeben wird.
+    </para>
+   </callout>
+   <callout arearefs="co.x11.display">
+    <para>
+     <indexterm> <primary>xorg.conf</primary> <secondary>Display</secondary> </indexterm> Für jede Farbtiefe werden verschiedene <literal>Display</literal>-Unterabschnitte angegeben.
+    </para>
+   </callout>
+   <callout arearefs="co.x11.depth">
+    <para>
+     <indexterm> <primary>xorg.conf</primary> <secondary>Depth</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>Farbtiefe</secondary> </indexterm> <literal>Depth</literal> bestimmt die Farbtiefe, die mit diesem Satz von <literal>Display</literal>-Einstellungen benutzt werden soll. Mögliche Werte sind <literal>8</literal>, <literal>15</literal>, <literal>16</literal>, <literal>24</literal> und <literal>32</literal>, obwohl möglicherweise nicht alle davon durch alle X-Server-Module oder -Auflösungen unterstützt werden.
+    </para>
+   </callout>
+   <callout arearefs="co.x11.mode">
+    <para>
+     Der Abschnitt <systemitem>Modes</systemitem> enthält eine Liste der möglichen Bildschirmauflösungen. Diese Liste wird vom X-Server von links nach rechts gelesen. Zu jeder Auflösung sucht der X-Server eine passende <systemitem>Modeline</systemitem> im Abschnitt <systemitem>Modes</systemitem>. Die <systemitem>Modeline</systemitem> ist von den Fähigkeiten des Monitors und der Grafikkarte abhängig. Die Einstellungen unter <systemitem>Monitor</systemitem> bestimmen die <systemitem>Modeline</systemitem>. <indexterm> <primary>xorg.conf</primary> <secondary>Modes</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>Modeline</secondary> </indexterm>
+    </para>
+    <para>
+     Die erste passende Auflösung ist der Standardmodus (<systemitem>Default mode</systemitem>). Mit <keycombo><keycap>Strg</keycap><keycap>Alt</keycap><keycap>+</keycap></keycombo> (auf dem Ziffernblock) können Sie zur nächsten Auflösung rechts in der Liste wechseln. Mit <keycombo><keycap>Strg</keycap><keycap>Alt</keycap> <keycap>–</keycap></keycombo> (auf dem Ziffernblock) können Sie zur vorherigen Auflösung wechseln. So lässt sich die Auflösung ändern, während X ausgeführt wird. <indexterm> <primary>Bildschirm</primary> <secondary>Auflösung</secondary> </indexterm>
+    </para>
+   </callout>
+   <callout arearefs="co.x11.virt">
+    <para>
+     <indexterm> <primary>X</primary><secondary>Virtueller Bildschirm</secondary></indexterm> Die letzte Zeile des Unterabschnitts <systemitem>Display</systemitem> mit <systemitem>Depth 16</systemitem> bezieht sich auf die Größe des virtuellen Bildschirms. Die maximal mögliche Größe eines virtuellen Bildschirms ist von der Menge des Arbeitsspeichers auf der Grafikkarte und der gewünschten Farbtiefe abhängig, nicht jedoch von der maximalen Auflösung des Monitors. Wenn Sie diese Zeile auslassen, entspricht die virtuelle Auflösung der physikalischen Auflösung. Da moderne Grafikkarten über viel Grafikspeicher verfügen, können Sie sehr große virtuelle Desktops erstellen. Gegebenenfalls ist es aber nicht mehr möglich, 3-D-Funktionen zu nutzen, wenn ein virtueller Desktop den größten Teil des Grafikspeichers belegt. Wenn die Grafikkarte beispielsweise über 16 MB RAM verfügt, kann der virtuelle Bildschirm bei einer Farbtiefe von 8 Bit bis zu 4096 x 4096 Pixel groß sein. Insbesondere bei beschleunigten Grafikkarten ist es nicht empfehlenswert, den gesamten Arbeitsspeicher für den virtuellen Bildschirm zu verwenden, weil der Kartenspeicher auch für diverse Schrift- und Grafik-Caches genutzt wird.
+    </para>
+   </callout>
+   <callout arearefs="co.x11.ident">
+    <para>
+     In der Zeile <systemitem>Identifier</systemitem> (hier <systemitem>Screen[0]</systemitem>) wird für diesen Abschnitt ein Name vergeben, der als eindeutige Referenz im darauf folgenden Abschnitt <systemitem>ServerLayout</systemitem> verwendet werden kann. Die Zeilen <systemitem>Device</systemitem> und <systemitem>Monitor</systemitem> geben die Grafikkarte und den Monitor an, die zu dieser Definition gehören. Hierbei handelt es sich nur um Verbindungen zu den Abschnitten <systemitem>Device</systemitem> und <systemitem>Monitor</systemitem> mit ihren entsprechenden Namen bzw. Kennungen (<emphasis>identifiers</emphasis>). Diese Abschnitte werden weiter unten detailliert beschrieben. <indexterm> <primary>xorg.conf </primary><secondary>Device</secondary> </indexterm>
+    </para>
+   </callout>
+  </calloutlist>
+ </sect2>
+
+ <sect2 id="sec.x11.device.section">
+  <title>Abschnitt „Device“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary> <tertiary>Device</tertiary> </indexterm>
+  <para>
+   Im Abschnitt „Device“ wird eine bestimmte Grafikkarte beschrieben. <filename>xorg.conf</filename> kann beliebig viele Grafikkarteneinträge enthalten. Jedoch muss der Name der Grafikkarten eindeutig sein. Hierfür wird das Schlüsselwort <systemitem>Identifier</systemitem> verwendet. Wenn mehrere Grafikkarten installiert sind, werden die Abschnitte einfach der Reihe nach nummeriert. Die erste wird als <systemitem>Device[0]</systemitem>, die zweite als <systemitem>Device[1]</systemitem> usw. eingetragen. Die folgende Datei zeigt einen Auszug aus dem Abschnitt <systemitem>Device</systemitem> eines Computers mit einer Matrox Millennium PCI-Grafikkarte (wie von SaX2 konfiguriert):
+  </para>
+<screen>Section "Device"
+  BoardName     "MGA2064W"
+  BusID         "0:19:0"<co id="co.x11.bus"/>
+  Driver        "mga"<co id="co.x11.driver"/>
+  Identifier    "Device[0]"
+  VendorName    "Matrox"
+  Option        "sw_cursor"
+EndSection</screen>
+  <calloutlist>
+   <callout arearefs="co.x11.bus">
+    <para>
+     Der Wert unter <systemitem>BusID</systemitem> steht für den PCI- oder AGP-Steckplatz, in dem die Grafikkarte installiert ist. Er entspricht der ID, die bei Eingabe des Befehls <command>lspci</command> angezeigt wird. Der X-Server benötigt Informationen im Dezimalformat, <command>lspci</command> zeigt die Informationen jedoch im Hexadezimalformat an. Der Wert von <systemitem>BusID</systemitem> wird von SaX2 automatisch erkannt.
+    </para>
+   </callout>
+   <callout arearefs="co.x11.driver">
+    <para>
+     <indexterm> <primary>X</primary> <secondary>Treiber</secondary> </indexterm> <indexterm> <primary>Karten</primary> <secondary>Grafik</secondary> </indexterm> <indexterm> <primary>Grafik</primary> <secondary>Karten</secondary> <tertiary>Treiber</tertiary> </indexterm> Der Wert von <systemitem>Driver</systemitem> wird automatisch von SaX2 eingestellt und gibt den Treiber an, der für Ihre Grafikkarte verwendet wird. Wenn es sich um eine Matrox Millennium-Grafikkarte handelt, heißt das Treibermodul <systemitem>mga</systemitem>. Anschließend durchsucht der X-Server den <systemitem>ModulePath</systemitem>, der im Abschnitt <systemitem>Files</systemitem> des Unterverzeichnisses <filename>drivers</filename> angegeben ist. In einer Standardinstallation ist dies das Verzeichnis <filename>/usr/lib/xorg/modules/drivers</filename> oder das Verzeichnis <filename>/usr/lib64/xorg/modules/drivers</filename> für 64-Bit-Betriebssysteme. <filename>_drv.o</filename> wird an den Namen angehängt, sodass beispielsweise im Falle des <systemitem>mga</systemitem>-Treibers die Treiberdatei <systemitem>mga_drv.o</systemitem> geladen wird.
+    </para>
+   </callout>
+  </calloutlist>
+  <para>
+   Das Verhalten des X-Servers bzw. des Treibers kann außerdem durch weitere Optionen beeinflusst werden. Ein Beispiel hierfür ist die Option <systemitem>sw_cursor</systemitem>, die im Abschnitt „Device“ festgelegt wird. Diese deaktiviert den Hardware-Mauszeiger und stellt den Mauszeiger mithilfe von Software dar. Je nach Treibermodul können verschiedene Optionen verfügbar sein. Diese finden Sie in den Beschreibungsdateien der Treibermodule im Verzeichnis <filename>/usr/share/doc/packages/<replaceable>Paketname</replaceable> </filename>. Allgemeingültige Optionen finden Sie außerdem auf den entsprechenden man-Seiten (<command>man</command> <option>xorg.conf</option>, <command>man</command> <option>4</option> <option><replaceable>&lt;Treibermodul&gt;</replaceable></option> und <command>man</command> <option>4</option> <option><replaceable>chips</replaceable></option>).
+  </para>
+  <para>
+   Wenn die Grafikkarte über mehrere Videoanschlüsse verfügt, können die verschiedenen an der Karte angeschlossenen Geräte in SaX2 als eine Ansicht konfiguriert werden.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.opt.monitor">
+  <title>Abschnitte „Monitor“ und „Modes“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary> <tertiary>Monitor</tertiary> </indexterm>
+  <para>
+   So wie die Abschnitte vom Typ <systemitem>Device</systemitem> jeweils für eine Grafikkarte verwendet werden, beschreiben die Abschnitte <systemitem>Monitor</systemitem> und <systemitem>Modes</systemitem> jeweils einen Monitor. Die Konfigurationsdatei <filename>/etc/X11/xorg.conf</filename> kann beliebig viele Abschnitte vom Typ <systemitem>Monitor</systemitem> enthalten. Jeder <systemitem>Monitor</systemitem>-Abschnitt verweist, sofern verfügbar, auf einen <systemitem>Modes</systemitem>-Abschnitt mit der Zeile <systemitem>UseModes</systemitem>. Wenn für den Abschnitt <systemitem>Monitor</systemitem> kein <systemitem>Modes</systemitem>-Abschnitt zur Verfügung steht, berechnet der X-Server aus den allgemeinen Synchronisierungswerten passende Werte. Der Abschnitt „ServerLayout“ gibt an, welcher <systemitem>Monitor</systemitem>-Abschnitt zu verwenden ist.
+  </para>
+  <para>
+   Monitordefinitionen sollten nur von erfahrenen Benutzern festgelegt werden. Die Modelines stellen einen bedeutenden Teil der <systemitem>Monitor</systemitem>-Abschnitte dar. Modelines legen die horizontalen und vertikalen Frequenzen für die jeweilige Auflösung fest. Die Monitoreigenschaften, insbesondere die zulässigen Frequenzen, werden im Abschnitt <systemitem>Monitor</systemitem> gespeichert. Standard-VESA-Modi können auch mit dem Dienstprogramm <command>cvt</command> generiert werden. Weitere Informationen über cvt erhalten Sie auf der man-Seite <command>man cvt</command>.
+  </para>
+  <warning>
+   <para>
+    Die Modelines sollten Sie nur ändern, wenn Sie sich sehr gut mit den Bildschirmfunktionen und der Grafikkarte auskennen, da der Bildschirm durch eine falsche Änderung dieser Zeilen ernsthaft Schaden nehmen kann.
+   </para>
+  </warning><indexterm> <primary>Hilfe</primary> <secondary>X</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>Hilfe</secondary> </indexterm>
+  <para>
+   Falls Sie Ihre eigenen Monitorbeschreibungen entwickeln möchten, sollten Sie sich eingehend mit der Dokumentation unter <filename>/usr/share/X11/doc</filename> vertraut machen. Installieren Sie das Paket <systemitem>xorg-x11-doc</systemitem>, um PDFs und HTML-Seiten zu finden.
+  </para>
+  <para>
+   Heutzutage ist es nur sehr selten erforderlich, Modelines manuell festzulegen. Wenn Sie mit einem modernen Multisync-Monitor arbeiten, können die zulässigen Frequenzen und die optimalen Auflösungen in aller Regel vom X-Server direkt per DDC vom Monitor abgerufen werden, wie im SaX2-Konfigurationsabschnitt beschrieben. Ist dies aus irgendeinem Grund nicht möglich, können Sie auf einen der VESA-Modi des X-Servers zurückgreifen. Dies funktioniert in Verbindung mit den meisten Kombinationen aus Grafikkarte und Monitor.
+  </para><indexterm class="endofrange" startref="idx.X_optimizing"/>
+ </sect2>
+</sect1>

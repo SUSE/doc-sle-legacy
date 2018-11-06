@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_fonts.xml" id="sec.x11.fontconfig">
+ <title>安裝與設定字型</title><indexterm> <primary>X</primary> <secondary>TrueType 字型</secondary> </indexterm> <indexterm> <primary>字型</primary> <secondary>TrueType</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>字型</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xft</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>字集</secondary> </indexterm>
+
+ <para>
+  在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 上安裝其他字型非常簡單。只要將字型複製到位於 X11 字型路徑中的任何目錄即可 (請參閱<xref linkend="sec.x11.fontconfig.fontsys.x11core"/>)。若要啟用字型，安裝目錄應為 <filename>/etc/fonts/fonts.conf</filename> 中所設定目錄的子目錄 (請參閱<xref linkend="sec.x11.fontconfig.fontsys.xft"/>)，或以 <filename>/etc/fonts/suse-font-dirs.conf</filename> 包含於此檔案中。
+ </para>
+
+ <para>
+  以下內容摘自 <filename>/etc/fonts/fonts.conf</filename>。此檔案為適用於大多數組態的標準組態檔案。它還定義了包含目錄 <filename>/etc/fonts/conf.d</filename>。在此目錄中，所有以兩位數值開頭的檔案或符號連結將由 fontconfig 載入。關於此功能的詳細說明，請參閱 <filename>/etc/fonts/conf.d/README</filename>。
+ </para>
+
+<screen>&lt;!-- Font directory list --&gt;
+&lt;dir&gt;/usr/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/X11R6/lib/X11/fonts&lt;/dir&gt; 
+&lt;dir&gt;/opt/kde3/share/fonts&lt;/dir&gt;
+&lt;dir&gt;/usr/local/share/fonts&lt;/dir&gt;
+&lt;dir&gt;~/.fonts&lt;/dir&gt;
+</screen>
+
+ <para>
+  <filename>/etc/fonts/suse-font-dirs.conf</filename> 是自動產生的，目的是將應用程式 (大多數為協力廠商的應用程式，如 LibreOffice、Java 或 Adobe Reader) 中隨附的字型提取到系統中。常見項目如下所示：
+ </para>
+
+<screen>&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font&lt;/dir&gt;
+&lt;dir&gt;/usr/lib/Adobe/Reader9/Resource/Font/PFM&lt;/dir&gt;
+ </screen>
+
+ <para>
+  若要在整個系統上安裝其他字型，請以 <systemitem class="username">root</systemitem> 身分手動將字型檔案複製到合適的目錄，如 <filename>/usr/share/fonts/truetype</filename>。此外，這個作業可以透過「KDE 控制中心」中的 KDE 字型安裝程式來執行。結果完全相同。
+ </para>
+
+ <para>
+  您也可以建立符號連結，來替代複製實際字型。例如，如果您擁有掛接 Windows 分割區上的授權字型並且想要使用它們，便可能需要這樣做。接下來，請執行 <command>SuSEconfig <option>--module fonts</option> </command>。
+ </para>
+
+ <para>
+  <command>SuSEconfig <option>--module fonts</option> </command> 會執行指令碼 <filename>/usr/sbin/fonts-config</filename> 來處理字型組態。關於此指令碼的詳細資訊，請參閱其手冊頁 (<command>man <option>fonts-config</option> </command>)。
+ </para><indexterm> <primary>指令</primary> <secondary>fonts-config</secondary> </indexterm>
+
+ <para>
+  點陣字型、TrueType 與 OpenType 字型以及 Type1 (PostScript) 字型的程序完全相同。所有這些字型類型可安裝到任何目錄。<indexterm> <primary>X</primary><secondary>字型系統</secondary></indexterm> <indexterm><primary>字型</primary></indexterm>
+ </para>
+
+ <para>
+  X.Org 包含兩種完全不同的字型系統：舊的 <guimenu>X11 核心字型系統</guimenu>及新設計的 <guimenu>Xft 與 fontconfig</guimenu> 系統。以下數節簡短描述這兩種系統。
+ </para>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.x11core">
+  <title>X11 核心字型</title><indexterm> <primary>X</primary><secondary>X11 核心字型</secondary></indexterm><indexterm><primary>字型 </primary><secondary>X11 核心</secondary></indexterm>
+  <para>
+   目前，X11 核心字型系統不僅支援點陣字型，也支援縮放字型如 Type1 字型、TrueType 與 OpenType 字型。縮放字型僅支援不需要消除鋸齒及子像素 (subpixel) 處理的字型，含有更多語言的文字符號之縮放字型所需的載入時間也越長。也支援 Unicode 字型，但是處理速度較慢且需要更多的記憶體。
+  </para>
+  <para>
+   X11 核心字型系統具有某些先天性的弱點。該字型系統已過時，無法再以任何有效的方法擴充。保留這種字型是為了回溯相容，但最好儘可能使用更先進的 Xft 和 fontconfig 系統。
+  </para>
+  <para>
+   為了能夠進行作業，X 伺服器必須知道它有哪些字型可用，以及系統中的哪些地方可以找到這些字型。這是由 <literal>FontPath</literal> 變數負責處理，該變數包含所有有效系統字型目錄的路徑。每個目錄中的 <filename>fonts.dir</filename> 檔案，可以列出目錄中可用的字型有哪些。<literal>FontPath</literal> 是 X 伺服器在啟動時產生的。它會在 <filename>/etc/X11/xorg.conf</filename> 組態檔案的 <literal>FontPath</literal> 項目中，搜尋一個有效的 <filename>fonts.dir</filename> 檔案。這些項目會在 <literal>Files</literal> 區段中找到。使用 <command>xset</command> <option>q</option> 顯示實際的 <literal>FontPath</literal>。也可以使用 <command>xset</command> 在執行時變更此路徑。若要新增其他路徑，請使用 <command>xset</command><option>+fp &lt;path&gt;</option>。若要移除不要的路徑，請使用 <command>xset</command><option>-fp &lt;path&gt;</option>。
+  </para>
+  <para>
+   如果 X 伺服器已經啟動，掛接目錄中新安裝的字型可以透過指令 <command>xset</command><option>fp rehash</option> 來設成可用。這個指令以 <command>SuSEconfig</command><option>--module fonts </option>執行。由於指令 <command>xset</command> 必須存取執行中的 X 伺服器，因此只有在 <command>SuSEconfig</command><option>--module fonts</option> 是從可存取之執行中 X 伺服器的外圍程序啟動時才有效。實現此目的最簡單的方法是輸入 <systemitem class="username">su</systemitem> 和 <command>root</command> 密碼，以取得 <systemitem class="username">root</systemitem> 權限。<command>su</command> 可以將啟動 X 伺服器之使用者的存取權傳送到 <systemitem class="username">root</systemitem> 外圍程序。要檢查字型是否安裝正確以及是否可以透過 X11 核心字型系統來使用，請使用 <command>xlsfonts</command> 指令來列出所有可用字型。
+  </para>
+  <para>
+   依預設，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 使用 UTF-8 地區設定。因此，最好使用 Unicode 字型 (在 <command>xlsfonts</command> 的輸出中，字型名稱的結尾為 <literal>iso10646-1</literal>)。<command>xlsfonts</command><option>| grep iso10646-1</option> 可以列出所有可用的 Unicode 字型。幾乎 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 隨附的所有 Unicode 字型都至少包含歐洲語言 (舊編號方式為 <literal>iso-8859-*</literal>) 所需的文字符號。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.fontconfig.fontsys.xft">
+  <title>Xft</title><indexterm> <primary>X</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>字型</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Xft</primary> </indexterm>
+  <para>
+   從一開始，Xft 的程式設計人員便確保了能支援平滑美觀的可縮放字型。如果使用 Xft，字型將由使用字型的應用程式處理，而不是如 X11 核心字型系統那樣由 X 伺服器處理。在這種方式，個別的應用程式需要存取實際字型檔並完全控制文字符號的處理方式。多種語言文字的正確顯示基礎便是由此構成。直接存取字型檔對於在列印中內嵌字型，來保證列印出的外觀和螢幕輸出一致非常有用。
+  </para>
+  <para>
+   在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中，KDE 和 GNOME 兩個桌面環境、Mozilla 以及其他許多應用程式已經預設使用 Xft。越來越多的應用程式已經從舊 X11 核心字型系統改用 Xft。
+  </para>
+  <para>
+   Xft 使用 fontconfig 程式庫來尋找字型以及操作字型的處理方式。fontconfig 的內容由全域組態檔案 <filename>/etc/fonts/fonts.conf</filename> 控制。特殊組態應新增至 <filename>/etc/fonts/local.conf</filename> 與使用者特定的組態檔案 <filename>~/.fonts.conf</filename>。這些 fontconfig 組態檔每一個都必須以下列開頭
+  </para>
+<screen>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;
+&lt;fontconfig&gt;</screen>
+  <para>
+   並以下列結束
+  </para>
+<screen>&lt;/fontconfig&gt;</screen>
+  <para>
+   要新增字型搜尋目錄，請附加下列行：
+  </para>
+<screen>&lt;dir&gt;/usr/local/share/fonts/&lt;/dir&gt;</screen>
+  <para>
+   不過，通常並不需要這樣做。依預設，使用者專屬目錄 <filename>~/.fonts</filename> 已經輸入到 <filename>/etc/fonts/fonts.conf</filename> 中。因此，安裝額外的字型時，只要將它們複製到 <filename>~/.fonts</filename> 即可。
+  </para>
+  <para>
+   您還可以插入操作字型外觀的規則。例如，輸入
+  </para>
+<screen>
+&lt;match target="font"&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+  &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   可以停用所有字型的消除鋸齒效果，或輸入
+  </para>
+<screen>&lt;match target="font"&gt;
+ &lt;test name="family"&gt;
+  &lt;string&gt;Luxi Mono&lt;/string&gt;
+  &lt;string&gt;Luxi Sans&lt;/string&gt;
+ &lt;/test&gt;
+ &lt;edit name="antialias" mode="assign"&gt;
+ &lt;bool&gt;false&lt;/bool&gt;
+ &lt;/edit&gt;
+&lt;/match&gt;</screen>
+  <para>
+   可以停用特定字型的消除鋸齒效果。
+  </para>
+  <para>
+   依預設，大部份的應用程式都是使用字型名稱 <literal>sans-serif</literal> (或相等的 <literal>sans</literal>)、<literal>serif</literal> 或 <literal>monospace</literal>。這些都不是真實的字型，而是可以解析為適當字型的別名，視語言設定而定。
+  </para>
+  <para>
+   使用者很容易在 <filename>~/.fonts.conf</filename> 新增規則來將這些別名解析為屬意的字型：
+  </para>
+<screen>&lt;alias&gt;
+ &lt;family&gt;sans-serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSans&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;serif&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeSerif&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;
+&lt;alias&gt;
+ &lt;family&gt;monospace&lt;/family&gt;
+ &lt;prefer&gt;
+  &lt;family&gt;FreeMono&lt;/family&gt;
+ &lt;/prefer&gt;
+&lt;/alias&gt;</screen>
+  <para>
+   因為幾乎所有的應用程式都預設使用這些別名，所以幾乎整個系統會受到影響。這樣，您幾乎可以簡單地隨處使用喜歡的字型而不必針對個別應用程式修改字型設定。
+  </para>
+  <para>
+   請使用指令 <command>fc-list</command> 來找出已安裝且可用的字型。例如，指令 <command>fc-list</command> 指令可傳回所有字型的清單。若要找出含有希伯來文 (<option>:lang=he</option>) 所有文字符號的可用縮放字型 (<option>:scalable=true</option>)、這些字型的名稱 (<option>family</option>)、樣式 (<option>style</option>)、粗細 (<option>weight</option>) 以及包含這些字型的檔案名稱，請輸入下列指令：
+  </para>
+<screen>fc-list ":lang=he:scalable=true" family style weight</screen>
+  <para>
+   這個指令的輸出看起來如下：
+  </para>
+<screen>
+Lucida Sans:style=Demibold:weight=200
+DejaVu Sans:style=Bold Oblique:weight=200
+Lucida Sans Typewriter:style=Bold:weight=200
+DejaVu Sans:style=Oblique:weight=80
+Lucida Sans Typewriter:style=Regular:weight=80
+DejaVu Sans:style=Book:weight=80
+DejaVu Sans:style=Bold:weight=200
+Lucida Sans:style=Regular:weight=80</screen>
+  <para>
+   可以使用 <command>fc-list</command> 來查詢的重要參數：
+  </para>
+  <table id="tab.x11.fonts.fclist">
+   <title><command>fc-list</command> 的參數</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        參數
+       </para>
+      </entry>
+      <entry>
+       <para>
+        意義及可用值
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <option>family</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型系列的名稱，例如，<literal>FreeSans</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>foundry (製造商)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型的製造商，例如，<literal>urw</literal>。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>style (樣式)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型樣式，例如，<literal>Medium</literal> (中)、<literal>Regular</literal> (標準)、<literal>Bold</literal> (粗體)、<literal>Italic</literal> (斜體) 或是 <literal>Heavy</literal> (特粗)。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>lang</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型支援的語言，例如，<literal>de</literal> 表示德文、<literal>ja</literal> 表示日文、<literal>zh-TW</literal> 表示繁體中文，<literal>zh-CN</literal> 表示簡體中文。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>weight</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型粗細，例如 <literal>80</literal> 表示一般，<literal>200</literal> 表示粗體。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>slant (斜度)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        通常，斜度 <literal>0</literal> 表示沒有斜度，<literal>100</literal> 表示斜體。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>file</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        字型檔案的名稱。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>outline (外框)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true (真)</literal> 表示外框字型，<literal>false (偽)</literal> 表示其他字型。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>scalable (縮放)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true (真)</literal> 表示縮放字型，<literal>false (偽)</literal> 表示其他字型。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>bitmap (點陣)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <literal>true (真)</literal> 表示點陣字型，<literal>false (偽)</literal> 表示其他字型。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <option>pixelsize (點大小)</option>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        以點表示的字型大小。這個選項和 fc-list 一起使用時只對點陣字型有意義。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+ </sect2>
+</sect1>

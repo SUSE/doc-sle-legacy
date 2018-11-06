@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_addon_creator.xml" id="cha.addon_creator">
+ <title>Creazione di prodotti aggiuntivi con il Creatore aggiuntivo</title>
+ <abstract>
+  <para>
+   Un prodotto aggiuntivo è un supporto, in genere un CD o un DVD, progettato specificamente per estendere il proprio prodotto. Il Creatore aggiuntivo è stato sviluppato per supportare i clienti e i partner e semplificare la distribuzione del software di terze parti per tutti i prodotti SUSE.
+  </para>
+ </abstract>
+ <sect1 id="sec.addon_creator.creating">
+  <title>Creazione di immagini</title>
+
+  <para>
+   Per creare un CD aggiuntivo, procedere come segue:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Avviare YaST e aprire il modulo <guimenu>Creatore aggiuntivo</guimenu>. Viene aperta una finestra.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Se non si è eseguito questo modulo in precedenza, fare clic su <guimenu>Crea un componente aggiuntivo da zero</guimenu> per iniziare. Nel caso si siano già creati componenti aggiuntivi, la finestra mostrerà un elenco di tutti i componenti aggiuntivi creati. Fare clic su <guimenu>Aggiungi</guimenu> per iniziare.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Immettere il nome prodotto, la versione del componente aggiuntivo e fornire ulteriori opzioni:
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Scegliere il prodotto desiderato da usare come base.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Selezionare il percorso dei pacchetti aggiuntivi. Ciò è necessario nel caso siano richiesti ulteriori pacchetti RPM non inclusi nel prodotto di base (questo passaggio è facoltativo).
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Selezionare il percorso con i pacchetti del prodotto richiesti (questo passaggio è facoltativo).
+      </para>
+      
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     Correggere la definizione del progetto e immettere il nome di un fornitore. Disabilitare <guimenu>Visualizza solo parole chiave necessarie</guimenu> per visualizzare ulteriori parole chiave.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Modificare le descrizioni dei pacchetti. Utilizzare <guimenu>Aggiungi lingua</guimenu> per inserire una nuova lingua e aggiungere le descrizioni tradotte (questo passaggio è facoltativo).
+    </para>
+    
+   </step>
+   <step performance="required">
+    <para>
+     Aggiungere i nuovi modelli. Grazie ai modelli è possibile raggruppare i propri pacchetti RPM. Utilizzare <guimenu>Nuovo</guimenu> per aggiungere un nuovo nome di modello e modificare i rispettivi attributi nell'elenco seguente (questo passaggio è facoltativo).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Modificare le impostazioni di output. Immettere il percorso della directory di output e modificare il nome dell'immagine ISO (la modifica del nome dell'immagine ISO è facoltativa). Inoltre, sarà possibile modificare ulteriori funzioni:
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Utilizzare <guimenu>Configura flusso di lavoro...</guimenu> per immettere i file di personalizzazione del workflow del prodotto.
+      </para>
+      
+     </listitem>
+     <listitem>
+      <para>
+       Utilizzare <guimenu>File opzionali...</guimenu> per aggiungere file al prodotto aggiuntivo. La prima parte può essere utilizzata per inserire informazioni relative al prodotto aggiuntivo nel file <filename>info.txt</filename>. Utilizzare i file di licenza per visualizzare una finestra contenente i pulsanti <guimenu>Accetto</guimenu> e <guimenu>Non accetto</guimenu>, prima dell'inizio dell'installazione. Ulteriori file possono essere aggiunti nella sezione README.
+      </para>
+      <para>
+       La seconda parte può essere utilizzata per memorizzare i file <filename>COPYRIGHT</filename> e <filename>COPYING</filename> in più lingue.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     Firmare il prodotto aggiuntivo con la propria chiave GPG; In questo modo si fornisce una prova dell'origine del prodotto. Se non si possiede una chiave, crearne una e immettere due volte la stringa di cifratura.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Verificare il prodotto nella panoramica e procedere con <guimenu>Fine</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Utilizzare il pulsante <guimenu>Crea</guimenu> per avviare il processo. <guimenu>Fine</guimenu> chiude la finestra.
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.addon_creator.structure">
+  <title>Struttura prodotti aggiuntivi</title>
+
+  <para>
+   Se si crea un prodotto aggiuntivo, la seguente panoramica conterrà la struttura dei file e delle directory:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>ARCHIVES.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene il contenuto di tutti i file RPM, compresso con Gzip. Si tratta in effetti di un elenco di comandi <command>rpm</command> con le opzioni <option>-qil</option> per ciascun file RPM.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>Cambia log</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene tutte le modifiche ai file RPM.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>contenuto</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene le informazioni sul prodotto aggiuntivo.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene il file della firma proveniente da GPG.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.key</filename>, <filename>gpg-pubkey-<replaceable>NUMBER</replaceable>.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      La chiave GPG pubblica.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>INDEX.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene un elenco di tutti i file RPM e compressi con <command>gzip</command>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>ls-lR.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene un elenco di tutti i file e le directory del supporto del prodotto aggiuntivo.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>per Linux.<replaceable>N</replaceable>/</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene i file con le informazioni di base relative al set di supporti aggiuntivi. La directory è numerata, pertanto <filename>media.1</filename> sarà per il primo supporto aggiuntivo Ulteriori supporti presenteranno un numero consecutivo.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>suse/</filename>
+    </term>
+    <listitem>
+     <para>
+      Contiene le sottodirectory con informazioni specifiche per l'architettura. Le eccezioni sono <filename>noarch/</filename> per i pacchetti indipendenti dall'architettura e <filename>src/</filename> per i pacchetti di origine. I pacchetti software proprietari sono memorizzati in <filename>nosrc/</filename>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.addon_creator.moreinfo">
+  <title>Ulteriori informazioni</title>
+
+  <para>
+   Ulteriori informazioni sono disponibili nei documenti seguenti sul portale KIWI all'indirizzo <ulink url="http://en.opensuse.org/Portal:KIWI"/>.
+  </para>
+ </sect1>
+</chapter>

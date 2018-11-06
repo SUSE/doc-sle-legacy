@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="system_repair.xml" id="sec.trouble.data.recover">
+ <title>Recuperando um sistema corrompido</title><indexterm> <primary>recuperando sistemas</primary></indexterm>
+ <para>
+  Há vários motivos pelos quais um sistema pode não ser inicializado ou executado adequadamente. Um sistema de arquivos corrompido após uma falha do sistema, arquivos de configuração corrompidos ou uma configuração de carregador de boot corrompida são os mais comuns.
+ </para>
+
+ <para os="sles;sled">
+  O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> oferece dois métodos diferentes para resolver essas situações. Você pode usar a função YaST Reparo do Sistema ou inicializar o sistema de resgate. As seções a seguir abordam os dois tipos de métodos de conserto do sistema.
+ </para>
+
+ <sect3 id="sec.trouble.data.recover.yast" os="sles;sled">
+  <title>Usando o Reparo do Sistema do YaST</title><indexterm> <primary>YaST</primary> <secondary>reparando sistemas</secondary></indexterm><indexterm> <primary>reparando sistemas</primary></indexterm>
+  <note>
+   <title>Configurações de teclado e idioma</title>
+   <para>
+    Se você mudar as configurações de idioma depois de inicializar, o teclado também será adaptado.
+   </para>
+  </note>
+  <para>
+   Antes de iniciar o módulo Reparo do Sistema do YaST, determine em que modo ele será executado para melhor atender às suas necessidades. Dependendo da gravidade e da causa da falha do sistema (bem como da sua experiência), existem três modos diferentes a escolher:
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>Reparo Automático</term>
+    <listitem>
+     <para>
+      Se o sistema falhou devido a uma causa desconhecida e você basicamente não sabe que parte do sistema é responsável pela falha, use <guimenu>Reparo Automático</guimenu>. Uma ampla verificação automatizada será executada em todos os componentes do sistema instalado. Para obter uma descrição detalhada deste procedimento, consulte <xref linkend="sec.trouble.data.recover.yast.auto"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Reparo Personalizado</term>
+    <listitem>
+     <para>
+      Se o sistema falhou e você sabe qual é o componente responsável, poderá reduzir a extensa verificação do sistema com <guimenu>Reparo Automático</guimenu>, e limitar o escopo da análise do sistema a esses componentes. Por exemplo, se as mensagens do sistema antes da falha sugerirem a existência de um erro no banco de dados de pacotes, você poderá limitar o procedimento de análise e reparo para que apenas verifique e restaure esse aspecto do sistema. Para obter uma descrição detalhada deste procedimento, consulte <xref linkend="sec.trouble.data.recover.yast.custom"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Ferramentas Especialista</term>
+    <listitem>
+     <para>
+      Se você já tem uma ideia clara do componente que falhou e como isso deve ser corrigido, pode ignorar as execuções de análise e aplicar diretamente as ferramentas necessárias para o reparo do componente relevante. Para obter informações detalhadas, consulte <xref linkend="sec.trouble.data.recover.yast.expert"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   Escolha um dos modos de reparo descritos acima e prossiga com o reparo do sistema conforme explicado nas seções a seguir:
+  </para>
+  <sect4 id="sec.trouble.data.recover.yast.auto">
+   <title>Reparo Automático</title>
+   <procedure>
+    <para>
+     Para iniciar o modo de reparo automático do YaST Reparo do Sistema, proceda da seguinte maneira:
+    </para>
+    <step performance="required">
+     <para>
+      Insira o meio de instalação do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> na unidade de DVD.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Reinicialize o sistema. 
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na tela de boot, selecione <guimenu>Reparar o Sistema Instalado</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Confirme o contrato de licença e clique em <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione <guimenu>Reparo Automático</guimenu>.
+     </para>
+     <para>
+      O YaST inicia uma ampla análise do sistema instalado. O progresso do procedimento é exibido na parte inferior da tela com duas barras. A barra superior mostra o progresso do teste atualmente em execução. A barra inferior mostra o progresso geral da análise. A janela de registro na seção superior controla o teste atualmente em execução e o seu resultado. Consulte a <xref linkend="fig.trouble.data.recover.yast.auto"/>.
+     </para>
+     <figure id="fig.trouble.data.recover.yast.auto">
+      <title>Modo de Reparo Automático</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="i_y2_repair_auto.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="i_y2_repair_auto.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+     <para>
+      As execuções de testes principais a seguir são feitas com cada execução e contêm, por sua vez, vários subtestes individuais:
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term>Verificar Tabela de Partições</term>
+       <listitem>
+        <para>
+         Verifica a validade e coerência das tabelas de partição de todos os discos rígidos detectados.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Verificar Área de Swap</term>
+       <listitem>
+        <para>
+         As partições de troca do sistema instalado são detectadas, testadas e oferecidas para ativação, onde aplicável. Essa oferta deve ser aceita para que a velocidade de reparo do sistema aumente.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Verificar File System</term>
+       <listitem>
+        <para>
+         Todos os sistemas de arquivos detectados estão sujeitos a uma verificação específica de sistema de arquivos.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Verificar Entradas fstab</term>
+       <listitem>
+        <para>
+         As entradas no arquivo são verificadas quanto à totalidade e consistência. Todas as partições válidas são montadas.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Verificar Banco de Dados de Pacotes</term>
+       <listitem>
+        <para>
+         Verifica se todos os pacotes necessários para a operação de uma instalação mínima estão presentes. Embora seja opcionalmente possível analisar também os pacotes básicos, isso leva muito tempo, devido a seu grande número.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Verificar Configuração do Bootloader</term>
+       <listitem>
+        <para>
+         A configuração do carregador de boot do sistema instalado (GRUB ou LILO) é verificada quanto à totalidade e coerência. Dispositivos de boot e root são examinados e a disponibilidade dos módulos initrd é verificada.
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </step>
+    <step performance="required">
+     <para>
+      Sempre que um erro é encontrado, o procedimento pára e uma caixa de diálogo com os detalhes e possíveis soluções é aberta.
+     </para>
+     <para>
+      Leia as mensagens da tela com cuidado antes de aceitar a correção proposta. Se você decidir recusar uma solução proposta, seu sistema permanecerá inalterado.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Depois que o processo de reparo tiver terminado com sucesso, clique em <guimenu>OK</guimenu> e <guimenu>Concluir</guimenu> e remova a mídia de instalação. O sistema é reinicializado automaticamente.
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.yast.custom">
+   <title>Reparo Personalizado</title>
+   <procedure>
+    <para>
+     Para iniciar o modo <guimenu>Reparo Personalizado</guimenu> e verificar seletivamente certos componentes do sistema instalado, proceda da seguinte maneira:
+    </para>
+    <step performance="required">
+     <para>
+      Insira o meio de instalação do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> na unidade de DVD.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Reinicialize o sistema. 
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na tela de boot, selecione <guimenu>Reparar o Sistema Instalado</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Confirme o contrato de licença e clique em <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione <guimenu>Reparo Personalizado</guimenu>.
+     </para>
+     <para>
+      A escolha de <guimenu>Reparo Personalizado</guimenu> mostra uma lista de execuções de testes que são todas marcadas inicialmente para execução. A faixa total de testes corresponde à faixa de reparo automático. Se você já sabe onde não há danos, desmarque os testes correspondentes. Clique em <guimenu>Próximo</guimenu> para iniciar um procedimento de teste mais restrito, que provavelmente tem um tempo de execução bem menor.
+     </para>
+     <para>
+      Nem todos os grupos de testes podem ser aplicados individualmente. A análise das entradas fstab está sempre atrelada a uma verificação dos sistemas de arquivo, incluindo partições de troca existentes. O YaST resolve automaticamente essas dependências selecionando o menor número de execuções de testes necessárias. O YaST não suporta partições criptografadas. Caso tenha uma, o YaST lhe informará sobre ela.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Sempre que um erro é encontrado, o procedimento pára e uma caixa de diálogo com os detalhes e possíveis soluções é aberta.
+     </para>
+     <para>
+      Leia as mensagens da tela com cuidado antes de aceitar a correção proposta. Se você decidir recusar uma solução proposta, seu sistema permanecerá inalterado.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Depois que o processo de reparo tiver terminado com sucesso, clique em <guimenu>OK</guimenu> e <guimenu>Concluir</guimenu> e remova a mídia de instalação. O sistema é reinicializado automaticamente.
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.yast.expert">
+   <title>Ferramentas Especialista</title>
+   <para>
+    Se você tem experiência com o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> e já tem uma ideia muito clara do que precisa ser reparado no sistema, aplique as ferramentas diretamente e ignore a análise do sistema.
+   </para>
+   <para>
+    Para aproveitar o recurso <guimenu>Ferramentas Especialistas</guimenu> do módulo Reparo do Sistema do YaST, proceda da seguinte maneira:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Insira o meio de instalação do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> na unidade de DVD.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Reinicialize o sistema. 
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Na tela de boot, selecione <guimenu>Reparar o Sistema Instalado</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Confirme o contrato de licença e clique em <guimenu>Avançar</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Selecione <guimenu>Ferramentas Especialista</guimenu> e escolha uma opção de reparo.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Depois que o processo de reparo tiver terminado com sucesso, clique em <guimenu>OK</guimenu> e <guimenu>Concluir</guimenu> e remova a mídia de instalação. O sistema é reinicializado automaticamente.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    As <guimenu>Ferramentas Especialista</guimenu> oferecem as seguintes opções para reparar a falha do sistema:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>Instalar Novo Bootloader</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Isso inicia o módulo de configuração do bootloader do YaST. Encontre detalhes na <xref linkend="sec.boot.yast2.config"/>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Inicializar Sistema Instalado</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Tente inicializar um sistema Linux já instalado.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Iniciar Ferramenta de Particionamento</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Essa opção inicia a ferramenta de particionamento avançada no YaST.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Reparar Sistema de Arquivos</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Essa opção verifica os sistemas de arquivos do sistema instalado. Na seleção de todas as partições detectadas apresentada primeiro, escolha aquelas que deseja verificar.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Recuperar Partições Perdidas￼</guimenu><indexterm> <primary>recuperando partições</primary></indexterm>
+     </term>
+     <listitem>
+      <para>
+       É possível tentar reconstruir tabelas de partição danificadas. Uma lista de discos rígidos detectados é apresentada primeiro para seleção. Clicar em <guimenu>OK</guimenu> inicia a verificação. Isso pode demorar um pouco, dependendo da velocidade do seu computador e do tamanho e da velocidade do disco rígido.
+      </para>
+      <important>
+       <title><guimenu>Reconstruindo uma tabela de partição</guimenu></title>
+       <para>
+        A reconstrução de uma tabela de partição é complicada. O YaST tenta reconhecer partições perdidas analisando os setores de dados do disco rígido. As partições perdidas são adicionadas à tabela de partição de reconstrução quando reconhecidas. Isso, no entanto, não é bem-sucedido em todos os casos imagináveis.
+       </para>
+      </important>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Gravar Configurações do Sistema em Disquete</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Essa opção grava arquivos de sistemas importantes em um disquete. Se um desses arquivos ficar danificado, ele poderá ser restaurado a partir do disco.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Verificar Software Instalado</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Isso verifica a consistência do banco de dados de pacotes e a disponibilidade dos pacotes mais importantes. Quaisquer pacotes instalados podem ser reinstalados com essa ferramenta.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect4>
+ </sect3>
+ <sect3 id="sec.trouble.data.recover.rescue">
+  <title>Usando o sistema de recuperação</title><indexterm> <primary>sistema de recuperação</primary></indexterm><indexterm> <primary>sistema</primary> <secondary>recuperando</secondary></indexterm>
+  <para>
+   O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> inclui um sistema de recuperação. que consiste em um pequeno sistema Linux que pode ser carregado em um disco de RAM e montado como um sistema de arquivos raiz, permitindo acesso externo às partições Linux. Com o sistema de recuperação, você pode recuperar ou modificar qualquer aspecto importante do sistema:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     Manipule qualquer tipo de arquivo de configuração.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Verifique se há defeitos no sistema de arquivos e inicie processos de reparo automáticos.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Acesse o sistema instalado em um ambiente de <quote>mudança de raiz</quote>.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Verifique, modifique e reinstale a configuração do carregador de boot.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Recuperar-se de um driver de dispositivo instalado incorretamente ou um kernel inutilizável.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Redimensione as partições usando o comando parted. Encontre mais informações sobre essa ferramenta no site GNU Parted na Web <ulink url="http://www.gnu.org/software/parted/parted.html"/>.
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   É possível carregar o sistema de recuperação a partir de várias origens e locais. A opção mais simples é inicializar o sistema de recuperação a partir do meio original de instalação:
+  </para>
+  <procedure><indexterm> <primary>sistema de recuperação</primary> <secondary>iniciando pelo meio</secondary></indexterm>
+   <step performance="required">
+    <para>
+     Insira o meio de instalação na unidade de DVD.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Reinicialize o sistema. 
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Na tela de boot, pressione <keycap>F4</keycap> e escolha <guimenu>DVD-ROM</guimenu>. Em seguida, escolha <guimenu>Sistema de Recuperação</guimenu> no menu principal.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Digite <literal>root</literal> no prompt <literal>Rescue:</literal>. Não é necessário inserir uma senha.
+    </para>
+   </step>
+  </procedure>
+  <procedure id="proc.trouble.data.recover.rescue.network"><indexterm> <primary>sistema de recuperação</primary> <secondary>iniciando pela fonte na rede</secondary></indexterm>
+   <para>
+    Se a sua configuração de hardware não inclui uma unidade de DVD, você poderá inicializar o sistema de recuperação a partir de uma fonte na rede. O seguinte exemplo aplica-se a um cenário de boot remoto. Se você estiver usando outro meio de boot, como um DVD, modifique o arquivo <filename>info</filename> adequadamente e inicialize como em uma instalação normal.
+   </para>
+   <step performance="required">
+    <para>
+     Digite a configuração do seu boot PXE e adicione as linhas <literal>install=<replaceable>protocolo</replaceable>://<replaceable>fonte_de_instalação</replaceable></literal> e <literal>rescue=1</literal>. Se precisar iniciar o sistema de recuperação, prefira <literal>repair=1</literal>. Como em uma instalação normal, <replaceable>protocolo</replaceable> significa qualquer um dos protocolos de rede suportados (NFS, HTTP, FTP, etc.) e <replaceable>origem_inst</replaceable> é o caminho da origem de instalação da rede.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Inicialize o sistema usando <quote>Wake on LAN</quote>, conforme descrito na <xref linkend="sec.deployment.remoteinst.boot.wol"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Digite <literal>root</literal> no prompt <literal>Rescue:</literal>. Não é necessário inserir uma senha.
+    </para>
+   </step>
+  </procedure>
+  <para>
+   Depois de acessar o sistema de recuperação, você poderá utilizar os consoles virtuais por meio das teclas <keycombo><keycap function="alt"/><keycap>F1</keycap></keycombo> a <keycombo><keycap function="alt"/><keycap>F6</keycap></keycombo>.
+  </para>
+  <para>
+   Um shell e muitos outros eficientes utilitários, como o programa de montagem, estão disponíveis no diretório <filename>/bin</filename>. O diretório <filename>sbin</filename> contém importantes utilitários de arquivo e de rede para a análise e o reparo do sistema de arquivos. Esse diretório também contém os binários mais importantes para a manutenção do sistema, por exemplo, fdisk, mkfs, mkswap, mount, mount, init e shutdown, assim como ifconfig, ip, route e netstat para a manutenção da rede. O diretório <filename>/usr/bin</filename> contém o editor vi, find, less e ssh.
+  </para>
+  <para>
+   Para ver as mensagens do sistema, use o comando <command>dmesg</command> ou exiba o arquivo <filename>/var/log/messages</filename>.
+  </para>
+  <sect4 id="sec.trouble.data.recover.rescue.file">
+   <title>Verificando e manipulando arquivos de configuração</title>
+   <para>
+    Como exemplo de uma configuração que possa ser corrigida por meio do sistema de recuperação, suponha que você tenha um arquivo de configuração defeituoso que impeça a inicialização adequada do sistema. Você pode corrigir isso usando o sistema de recuperação.
+   </para>
+   <procedure>
+    <para>
+     Para manipular um arquivo de configuração, faça o seguinte:
+    </para>
+    <step performance="required">
+     <para>
+      Inicie o sistema de recuperação usando um dos métodos descritos acima.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Para montar uma sistema de arquivos raiz localizado em <filename>/dev/sda6</filename> para o sistema de recuperação, use o seguinte comando:
+     </para>
+<screen>mount /dev/sda6 /mnt</screen>
+     <para>
+      Agora, todos os diretórios do sistema estão localizados em <filename>/mnt</filename>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Mude o diretório para o sistema de arquivos raiz montado:
+     </para>
+<screen>cd /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Abra o arquivo de configuração problemático no editor vi. Ajuste e grave a configuração.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Desmonte o sistema de arquivos raiz no sistema de recuperação:
+     </para>
+<screen>umount /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Reinicialize a máquina.
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.filesystem">
+   <title>Reparando e verificando os sistemas de arquivos</title><indexterm> <primary>sistemas de arquivos</primary><secondary>reparando</secondary></indexterm>
+   <para>
+    Geralmente, não é possível reparar sistemas de arquivos em um sistema em execução. Se você tiver sérios problemas, talvez não consiga montar seu sistema de arquivos raiz e a inicialização do sistema poderá ser encerrada com <quote>kernel panic</quote>. Nesse caso, a única maneira será reparar o sistema externamente. <phrase os="sles;sled">É recomendável usar o YaST Reparo do Sistema para essa tarefa (consulte a <xref linkend="sec.trouble.data.recover.yast"/> para obter detalhes). Contudo, se você precisar fazer uma verificação ou um reparo manual no sistema de arquivos, inicialize o sistema de recuperação.</phrase> Inclui os utilitários para verificar e consertar os sistemas de arquivos <literal>btrfs</literal>, <literal>ext2</literal>, <literal>ext3</literal>, <literal>ext4</literal>, <literal>reiserfs</literal>, <literal>xfs</literal>, <literal>dosfs</literal> e <literal>vfat</literal>.
+   </para>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.access">
+   <title>Acessando o sistema instalado</title>
+   <para>
+    Se você precisa acessar o sistema instalado do sistema de recuperação, faça isso em um ambiente <emphasis>raiz de mudança</emphasis>. Por exemplo, para modificar a configuração do carregador de boot ou executar um utilitário de configuração de hardware.
+   </para>
+   <para>
+    Para configurar um ambiente de mudança de raiz com base no sistema instalado, faça o seguinte:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Primeiro monte a partição raiz do sistema instalado e do sistema de arquivos do dispositivo (mude o nome do dispositivo de acordo com as suas configurações atuais):
+     </para>
+<screen>mount /dev/sda6 /mnt
+mount --bind /dev /mnt/dev</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Agora, você pode <quote>mudar a raiz</quote> no novo ambiente:
+     </para>
+<screen>chroot /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Em seguida, monte <filename>/proc</filename> e <filename>/sys</filename>:
+     </para>
+<screen>mount /proc
+mount /sys</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Por fim, monte as partições restantes no sistema instalado:
+     </para>
+<screen>mount -a</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Agora, você tem acesso ao sistema instalado. Antes de reinicializar o sistema, desmonte as partições com <command>umount <option>-a</option></command> e saia do ambiente de <quote>mudança de raiz</quote> com <command>exit</command>.
+     </para>
+    </step>
+   </procedure>
+   <warning>
+    <title>Limitações</title>
+    <para>
+     Embora você tenha acesso total aos arquivos e aplicativos do sistema instalado, há algumas limitações. O kernel em execução é o que foi inicializado com o sistema de recuperação, e não com o ambiente de mudança de raiz. Ele suporta apenas o hardware essencial e não é possível adicionar módulos do kernel do sistema instalado, a menos que as versões do kernel sejam exatamente iguais. Verifique sempre a versão do kernel em execução (recuperação) com <command>uname -r</command> e, em seguida, descubra se existe um subdiretório correspondente no diretório <filename>/lib/modules</filename> no ambiente raiz de mudança. Em caso positivo, você poderá usar os módulos instalados; do contrário, precisará fornecer as versões corretas em outra mídia, como um pendrive USB. Na maioria das vezes, a versão do kernel de recuperação é diferente da que está instalada, portanto, não é possível simplesmente acessar a placa de som, por exemplo. Também não será possível iniciar uma interface gráfica de usuário.
+    </para>
+    <para>
+     Observe também que você sai do ambiente de <quote>mudança de raiz</quote> ao percorrer o console com as teclas <keycombo><keycap function="alt"/><keycap>F1</keycap></keycombo> a <keycombo><keycap function="alt"/><keycap>F6</keycap></keycombo>.
+    </para>
+   </warning>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.grub">
+   <title>Modificando e reinstalando o carregador de boot</title>
+   <para>
+    Às vezes, não é possível reinicializar um sistema porque a configuração do carregador de boot está corrompida. As rotinas de inicialização não podem, por exemplo, converter unidades físicas em locais reais no sistema de arquivos Linux sem um carregador de boot ativo.
+   </para>
+   <para>
+    Para verificar a configuração do carregador de boot e reinstalá-lo, faça o seguinte:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Execute as etapas necessárias para acessar o sistema instalado como descrito em <xref linkend="sec.trouble.data.recover.rescue.access"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Verifique se os arquivos a seguir estão configurados corretamente de acordo com os princípios de configuração do GRUB, descritos no <xref linkend="cha.grub"/> e aplique as correções, se necessário.
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <filename>/etc/grub.conf</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/boot/grub/device.map</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/boot/grub/menu.lst</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/etc/sysconfig/bootloader</filename>
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      Reinstale o carregador de boot usando a seguinte sequência de comandos:
+     </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+    </step>
+    <step performance="required">
+     <para>
+      Desmonte as partições, efetue logout do ambiente de <quote>mudança de raiz</quote> e reinicialize o sistema:
+     </para>
+<screen>umount -a
+exit
+reboot</screen>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.dud">
+   <title>Corrigindo a instalação do Kernel</title>
+   <para>
+    Uma atualização do kernel pode introduzir um novo bug capaz de afetar a operação do sistema. Por exemplo, um driver de parte do hardware no sistema pode estar com falha, o que o impede de acessá-lo e usá-lo. Nesse caso, reverta para o último kernel em funcionamento (se disponível no sistema) ou instale o kernel original pela mídia de instalação.
+   </para>
+   <tip>
+    <title>Como manter os últimos kernels após a atualização</title>
+    <para>
+     Para evitar falhas na inicialização após uma atualização do kernel com defeito, use o recurso multiversão do kernel e indique ao <systemitem>libzypp</systemitem> quais kernels deseja manter após a atualização.
+    </para>
+    <para>
+     Por exemplo, para sempre manter os dois últimos kernels e o kernel atual em execução, adicione
+    </para>
+<screen>multiversion.kernels = latest,latest-1,running</screen>
+    <para>
+     ao arquivo <filename>/etc/zypp/zypp.conf</filename>.
+    </para>
+   </tip>
+   <para>
+    Um caso semelhante é quando você precisa reinstalar ou atualizar um driver com defeito em um dispositivo não suportado pelo <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>. Por exemplo, quando o fornecedor do hardware utiliza determinando dispositivo, como um controlador RAID de hardware, que precisa de um driver binário para ser reconhecido pelo sistema operacional. O fornecedor, normalmente, lança um Disco de Atualização de Driver com a versão corrigida ou atualizada do driver necessário.
+   </para>
+   <para>
+    Nos dois casos, você precisa acessar o sistema instalado no modo de recuperação e corrigir o problema relacionado ao kernel; do contrário, o sistema poderá não ser inicializado corretamente:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Inicialize da mídia de instalação do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você estiver recuperando após uma atualização do kernel com defeito, ignore esta etapa. Se precisar usar um disco de atualização de driver (DUD), pressione <keycap>F6</keycap> para carregar a atualização de driver depois que o menu de boot aparecer e, em seguida, escolha o caminho ou URL para a atualização de driver e confirme clicando em <guimenu>Sim</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Escolha <guimenu>Sistema de Recuperação</guimenu> no menu de boot e pressione <keycap>Enter</keycap>. Se você usar o DUD, será solicitado a especificar o local em que a atualização de driver está armazenada.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Digite <literal>root</literal> no prompt <literal>Rescue:</literal>. Não é necessário inserir uma senha.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Monte manualmente o sistema de destino e <quote>mude a raiz</quote> para o novo ambiente. Para obter mais informações, consulte <xref linkend="sec.trouble.data.recover.rescue.access"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Se você usar o DUD, instale/reinstale/atualize o pacote de driver do dispositivo com defeito. Sempre verifique se a versão do kernel instalada corresponde exatamente à versão do driver que está instalando.
+     </para>
+     <para>
+      Se você estiver corrigindo uma instalação de atualização do kernel com defeito, poderá instalar o kernel original da mídia de instalação com o procedimento a seguir.
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        Identifique o seu dispositivo de DVD com <command>hwinfo --cdrom</command> e monte-o com <command>mount /dev/sr0 /mnt</command>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Navegue até o diretório em que os arquivos do kernel estão armazenados no DVD, por exemplo, <command>cd /mnt/suse/x86_64/</command>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Instale os pacotes necessários <systemitem>kernel-*</systemitem>, <systemitem>kernel-*-base</systemitem> e <systemitem>kernel-*-extra</systemitem> de acordo com o seu tipo, usando o comando <command>rpm -i</command>.
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        Após o término da instalação, verifique se uma nova entrada de menu relevante ao kernel recém-instalado foi adicionada ao arquivo de configuração do carregador de boot (<filename>/boot/grub/menu.lst</filename> para <systemitem>grub</systemitem>).
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      Atualize os arquivos de configuração e reinicialize o carregador de boot, se necessário. Para obter mais informações, consulte a <xref linkend="sec.trouble.data.recover.rescue.grub"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Remova a mídia inicializável da unidade do sistema e reinicialize-o.
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+ </sect3>
+</sect2>

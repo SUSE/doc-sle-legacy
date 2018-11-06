@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="bootconcept.xml" id="cha.boot">
+ <title>引导和配置 Linux 系统</title><indexterm><primary>引导</primary></indexterm>
+ <abstract>
+  <para>
+   引导 Linux 系统涉及不同组件。BIOS 初始化硬件本身，并通过引导加载程序启动内核。之后，<systemitem>init</systemitem> 的引导进程及运行级别将完全受操作系统控制。runlevel 概念使您可以维护日常使用的设置，也可以对系统执行维护任务。
+  </para>
+ </abstract>
+ <sect1 id="sec.boot.proc">
+  <title>Linux 引导进程</title>
+
+  <para>
+   Linux 引导进程包括多个阶段，每个阶段由一个不同组件来代表。下表概要总结了引导进程并介绍了所涉及的所有主要组件。
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>BIOS</title>
+     <para>
+      在打开计算机之后，BIOS 将初始化屏幕和键盘并测试主内存。直到这一阶段，计算机不访问任何大容量储存媒体。随后，将从 CMOS 值装载有关当前日期、时间和最重要的外设的信息。当识别出第一块硬盘及其几何属性之后，系统控制将从 BIOS 传递到引导加载程序。<phrase os="sles">如果 BIOS 支持网络引导，则也可以配置提供引导加载程序的引导服务器。在 x86 系统上需要 PXE 引导。其他体系结构通常使用 BOOTP 协议获得引导加载程序。</phrase>
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>引导加载程序</title>
+     <para>
+      第一块硬盘的前 512 个字节的物理数据扇区将被装载到主储存器中，位于此扇区开始位置的<emphasis>引导加载程序</emphasis>将接管系统控制。引导加载程序执行的命令决定了引导进程剩余的部分。因此，第一块硬盘的前 512 个字节被称为<emphasis>主引导记录</emphasis> (MBR)。引导加载程序随后将控制权交给实际的操作系统（在本例中即 Linux 内核）。有关 Linux 引导加载程序 GRUB 的详细信息，可以在<xref linkend="cha.grub"/>中找到。<phrase os="sles">对于网络引导，BIOS 充当了引导加载程序。它从引导服务器启动映像，然后启动系统。这完全不依赖本地硬盘。</phrase>
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>内核和 <systemitem>initramfs</systemitem></title>
+     <para>
+      为了传递系统控制，引导加载程序将内核和基于 RAM 的初始文件系统 (<systemitem>initramfs</systemitem>) 装载到内存中。内核可以直接使用 <systemitem>initramfs</systemitem> 的内容。<systemitem>initramfs</systemitem> 包含一个小的可执行文件，称为 <systemitem>init</systemitem>，可以处理真实 root 文件系统的装入。如果需要特殊硬盘驱动程序才能访问大容量储存，则这些程序必须在 <systemitem>initramfs</systemitem> 中。有关 <systemitem>initramfs</systemitem> 的详细信息，请参见<xref linkend="sec.boot.initrd"/>。<phrase os="sles">如果系统没有本地硬盘，则 <systemitem>initramfs</systemitem> 必须向内核提供 root 文件系统。这应该通过网络块设备（如 iSCSI 或 SAN）的帮助进行，但也可以使用 NFS 作为 root 设备。</phrase>
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><systemitem/>initramfs 中的 init<systemitem/></title>
+     <para>
+      此程序执行装入正确 root 文件系统所需的所有操作，如为所需的文件系统提供内核功能以及为带有 <systemitem class="service">udev</systemitem> 的大容量储存控制器提供设备驱动程序。找到 root 文件系统后，对其进行错误检查并装入。如果此操作成功，将清除 <systemitem>initramfs</systemitem> 并执行 root 文件系统上的 <systemitem>init</systemitem> 程序。有关 <systemitem>init</systemitem> 的详细信息，请参见<xref linkend="sec.boot.linuxrc"/>。有关 <systemitem class="service">udev</systemitem> 的详细信息，请参见<xref linkend="cha.udev"/>。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><systemitem>init</systemitem></title>
+     <para>
+      <systemitem>init</systemitem> 通过提供不同功能的多个不同级别来处理实际的系统引导。有关 <systemitem>init</systemitem> 的介绍，请参见<xref linkend="sec.boot.init"/>。
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+
+  <sect2 id="sec.boot.initrd">
+   <title><systemitem>initramfs</systemitem></title>
+   <para>
+    <systemitem>initramfs</systemitem> 是一个内核可以装载到 RAM 磁盘的小型 cpio 归档。它提供了一个最小的 Linux 环境，可在装入实际 root 文件系统之前执行程序。这个最小的 Linux 环境由 BIOS 例程装载进内存，而且除了需要足够的内存外没有特别的硬件要求。<systemitem>initramfs</systemitem> 必须始终提供一个名为 <systemitem>init</systemitem> 的可执行文件，该文件应该执行 root 文件系统中实际的 <systemitem>init</systemitem> 程序以使引导进程继续进行。
+   </para>
+   <para>
+    在能够装入 root 文件系统并启动操作系统之前，内核需要相应的驱动程序来访问 root 文件系统所在的设备。这些驱动程序可能包括用于特定类型硬盘的特殊驱动程序，甚至还可能包括访问网络文件系统所需的网络驱动程序。root 文件系统所需的模块可以由 <systemitem>initramfs</systemitem> 上的 <systemitem>init</systemitem> 来装载。装载模块后，<systemitem class="service">udev</systemitem> 将为 <systemitem>initramfs</systemitem> 提供所需的设备。在引导过程的后面，更改 root 文件系统之后需要重新生成设备。通过 <filename>boot.udev</filename>（使用 <command>udevtrigger</command> 命令）来完成此操作。
+   </para><indexterm> <primary>引导</primary> <secondary>initramfs</secondary> </indexterm> <indexterm> <primary>引导</primary> <secondary>initrd</secondary> </indexterm> <indexterm> <primary>脚本</primary> <secondary>mkinitrd</secondary> </indexterm>
+   <para>
+    如果需要更改已安装系统的硬件（例如硬盘），并且该硬件要求引导时内核中有不同的驱动程序，则必须更新 <systemitem>initramfs</systemitem>。操作方法和其前身 <systemitem>init</systemitem> 一样，即调用 <command>mkinitrd</command>。调用 <command>mkinitrd</command>（不带任何参数）创建 <systemitem>initramfs</systemitem>。调用 <command>mkinitrd <option>-R</option></command> 创建 <systemitem>init</systemitem>。在 <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 中，要装载的模块由 <filename>/etc/sysconfig/kernel</filename> 中的变量 <systemitem>INITRD_MODULES</systemitem> 指定。<indexterm><primary>配置文件</primary><secondary>内核</secondary></indexterm>安装后，自动将此变量设置为正确的值。将严格按照这些模块在 <systemitem>INITRD_MODULES</systemitem> 中出现的顺序来装载它们。只有您依赖正确的设备文件 <filename>/dev/sd? </filename>设置时，这才显得重要。然而，在当前系统下，也可以使用 <filename>/dev/disk/</filename> 下的设备文件。这些文件以几个子目录的形式排序，分别为 <filename>by-id</filename>、<filename>by-path</filename> 和 <filename>by-uuid</filename>，并始终代表相同的磁盘。也可以在安装时通过指定相应的装入选项完成此操作。
+   </para>
+   <important>
+    <title>更新 <systemitem>initramfs</systemitem> 或 <systemitem>init</systemitem></title>
+    <para>
+     引导加载程序装载 <systemitem>initramfs</systemitem> 或 <systemitem>init</systemitem> 的方式与内核相同。更新 <systemitem>initramfs</systemitem> 或 <systemitem>init</systemitem> 后无需重安装 GRUB，因为 GRUB 会在引导时从目录中搜索正确的文件。
+    </para>
+   </important>
+  </sect2>
+
+  <sect2 id="sec.boot.linuxrc">
+   <title><systemitem>initramfs</systemitem> 上的 init</title>
+   <para>
+    <systemitem>initramfs</systemitem> 上的 <systemitem>init</systemitem> 的主要用途是准备真实 root 文件系统的装入和访问。<systemitem>init</systemitem> 负责以下任务，具体取决于您的系统配置。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>装载内核模块</term>
+     <listitem>
+      <para>
+       根据硬件配置的不同，可能需要一些特殊的驱动程序来访问计算机的硬件组件（最重要的组件是硬盘）。要访问最终的 root 文件系统，内核需要装载正确的文件系统驱动程序。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>提供块特殊文件</term>
+     <listitem>
+<?dbfo-need height="10em"?>
+
+
+      <para>
+       内核对每个装载的模块生成设备事件。<systemitem class="service">udev</systemitem> 会处理这些事件并在 RAM 文件系统的 <filename>/dev</filename> 中生成所需的特殊块文件。没有这些特殊文件，文件系统和其他设备将不可访问。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>管理 RAID 和 LVM 设置</term>
+     <listitem>
+      <para>
+       如果将系统配置为在 RAID 或 LVM 下保存 root 文件系统，则 <systemitem>init</systemitem> 将设置 LVM 或 RAID 以支持稍后对 root 文件系统的访问。在<xref linkend="cha.advdisk"/>中查找关于 RAID 和 LVM 的信息。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry id="ve.net">
+     <term>管理网络配置</term>
+     <listitem>
+      <para>
+       如果将系统配置为使用通过网络装入的 root 文件系统（通过 NFS 装入），则 <systemitem>init</systemitem> 必须确保装载了正确的网络驱动程序，并确保将其设置为支持访问 root 文件系统。
+      </para>
+      <para os="sles">
+       如果文件系统驻留在一个联网的块设备（如 iSCSI 或 SAN）上，则到储存服务器的连接也由 <systemitem>initramfs</systemitem> 设置。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    在初始引导期间作为安装过程的一部分调用 <systemitem>init</systemitem> 时，要执行的任务将与上述任务不同：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>查找安装媒体</term>
+     <listitem>
+      <para>
+       启动安装进程时，计算机将通过安装媒体中的 YaST 安装程序装载一个安装内核和一个特殊的 <systemitem>init</systemitem>。YaST 安装程序在 RAM 文件系统中运行，它需要有关安装媒体位置的信息以访问安装媒体并安装操作系统。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>启动硬件识别并装载适当的内核模块</term>
+     <listitem>
+      <para>
+       如<xref linkend="sec.boot.initrd"/> 中所述，引导进程从可用于大多数硬件配置的一组最小的驱动程序开始。<systemitem>init</systemitem> 将启动初始硬件扫描进程，以确定适合您的硬件配置的一组驱动程序。引导进程所需的模块名写进 <systemitem>/etc/sysconfig/kernel</systemitem> 中的 <filename>INITRD_MODULES</filename>。这些名称用于生成引导系统所需的自定义 <systemitem>initramfs</systemitem>。如果模块不是用于引导，而是用于冷插入，则模块要写进 <filename>/etc/sysconfig/hardware/hwconfig-*</filename>。本目录下用配置文件描述的所有设备均要在引导过程中进行初始化。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>装载安装系统或救援系统</term>
+     <listitem>
+      <para>
+       正确识别硬件后，系统便会装载合适的驱动程序，<systemitem class="service">udev</systemitem> 将创建特殊的设备文件，<systemitem>init</systemitem> 将使用实际的 YaST 安装程序启动安装系统或者救援系统。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>启动 YaST</term>
+     <listitem>
+      <para>
+       最后，<systemitem>init</systemitem> 将启动 YaST，由后者启动包安装和系统配置。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.boot.init">
+  <title><systemitem>init</systemitem> 进程</title><indexterm id="idx.init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>配置文件</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
+
+  <para>
+   <systemitem>init</systemitem> 程序是进程 ID 为 1 的进程，负责按所要求的方式初始化系统。<systemitem>init</systemitem> 由内核直接启动，并且抵制信号 9（该信号通常会终止进程）。所有其他程序由 <systemitem>init</systemitem> 直接启动，或由它的其中一个子进程启动。
+  </para>
+
+  <para>
+   <systemitem>init</systemitem> 在 <filename>/etc/inittab</filename> 文件中集中配置，其中<emphasis>运行级别</emphasis>已定义（请参见<xref linkend="sec.boot.runlevel"/>）。该文件还指定了在每个运行级别有哪些服务和守护程序可用。根据 <filename>/etc/inittab</filename> 中的项，<systemitem>init</systemitem> 将运行若干个脚本。默认情况下，引导后启动的第一个脚本为 <filename>/etc/init.d/boot</filename>。完成系统初始化阶段后，系统将使用 <filename>/etc/init.d/rc</filename> 脚本把运行级别更改为默认运行级别。为了清楚起见，这些称作 <emphasis>init 脚本</emphasis>的脚本都位于目录 <filename>/etc/init.d</filename> 中（请参见<xref linkend="sec.boot.init.skripte"/>）。<indexterm><primary>脚本</primary><secondary>init.d</secondary> </indexterm>
+  </para>
+
+  <para>
+   启动和关闭系统的整个过程是由 <systemitem>init</systemitem> 维护的。从这一点来看，可以将内核视为一个后台进程，其任务是维护所有其他进程，以及根据其他程序的请求来调整 CPU 时间和硬件访问。
+  </para><indexterm class="endofrange" startref="idx.init"/>
+
+  <sect2 id="sec.boot.runlevel">
+   <title>运行级别</title><indexterm id="idx.runlevels" class="startofrange"><primary>运行级别</primary></indexterm><indexterm><primary>配置文件</primary><secondary>inittab</secondary></indexterm>
+   <para>
+    在 Linux 中，<emphasis>运行级别</emphasis>定义了系统如何启动以及正在运行的系统中有哪些服务可用。在引导后，系统会按照 <filename>/etc/inittab</filename> 中的 <literal>initdefault</literal> 行所定义的方式启动。通常是 <literal>3</literal> 或 <literal>5</literal>。请参见<xref linkend="tab.boot.runlevel"/>。也可以选择在引导时指定运行级别（例如，在引导提示符后添加运行级别号）。不直接由内核本身评估的任何参数均将传递给 <systemitem>init</systemitem>。要引导到 runlevel 3，只需向引导提示符添加一个数字 3。
+   </para>
+   <table id="tab.boot.runlevel">
+    <title>可用运行级别</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         运行级别
+        </para>
+       </entry>
+       <entry>
+        <para>
+         描述
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         0
+        </para>
+       </entry>
+       <entry>
+        <para>
+         系统暂停
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         S 或 1
+        </para>
+       </entry>
+       <entry>
+        <para>
+         单用户方式
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         2
+        </para>
+       </entry>
+       <entry>
+        <para>
+         没有远程网络的本地多用户方式（NFS 等）
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         3
+        </para>
+       </entry>
+       <entry>
+        <para>
+         有网络的完全多用户方式
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         4
+        </para>
+       </entry>
+       <entry>
+        <para>
+         除非管理员配置该运行级别，否则不使用<guimenu>用户定义</guimenu>。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         5
+        </para>
+       </entry>
+       <entry>
+        <para>
+         有网络和 X 显示管理器的完全多用户方式 — KDM、GDM 或 XDM
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         6
+        </para>
+       </entry>
+       <entry>
+        <para>
+         系统重引导
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <important>
+    <title>避免运行级别 2 与通过 NFS 装入的分区</title>
+    <para>
+     如果您的系统通过 NFS 装入了 <filename>/usr</filename> 分区，则不应使用运行级别  2。如果程序文件或库丢失，系统可能会异常运行，因为 NFS 设备不能以运行级别 2（没有远程网络的本地多用户方式）提供。
+    </para>
+   </important>
+   <para>
+    要在系统运行时更改运行级别，请输入 <command>telinit</command> 和作为参数的相应数字。仅允许系统管理员执行该操作。下表总结了运行级别区域中最重要的命令。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>telinit 1</command> 或 <command>shutdown now</command>
+     </term>
+     <listitem>
+      <para>
+       系统更改为<emphasis>单用户方式</emphasis>。该方式用于系统维护和管理任务。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 3</command>
+     </term>
+     <listitem>
+      <para>
+       启动了所有基本的程序和服务（包括网络），允许普通用户登录并在不具备图形环境的系统中工作。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 5</command>
+     </term>
+     <listitem>
+      <para>
+       启用了图形化环境。通常启动诸如 XDM、GDM 或 KDM 之类的显示管理器。如果启用 autologin，则本地用户便可登录到预先选择的窗口管理器（GNOME 或 KDE 或其他任何窗口管理器）中。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 0</command> 或 <command>shutdown -h now</command>
+     </term>
+     <listitem>
+      <para>
+       系统暂停。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 6</command> 或 <command>shutdown -r now</command>
+     </term>
+     <listitem>
+      <para>
+       系统暂停后重引导。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    运行级别 <literal>5</literal> 是所有 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 标准安装中的默认运行级别。提示用户使用图形界面登录，或者默认用户将自动登录。
+   </para>
+   <warning>
+    <title><filename>/etc/inittab</filename> 中的错误可能导致系统引导出现故障</title>
+    <para>
+     <indexterm> <primary>配置文件</primary> <secondary>inittab</secondary> </indexterm> 如果 <filename>/etc/inittab</filename> 损坏，则可能无法正常引导系统。因此，在编辑 <filename>/etc/inittab</filename> 时要特别小心。在重引导计算机前，使 <systemitem>init</systemitem> 使用命令 <command>telinit <option>q</option></command> 重读 <filename>/etc/inittab</filename>。
+    </para>
+   </warning><indexterm id="idx.runlevels_changing" class="startofrange"><primary>运行级别</primary><secondary>更改</secondary></indexterm>
+   <para>
+    通常情况下，更改运行级别时会发生两件事情。首先是启动当前运行级别的停止脚本，同时关闭当前运行级别必需的一些程序。然后启动新运行级别的启动脚本。在大多数情况下，这时会启动多个程序。例如，将运行级别从 3 更改到 5 时会发生以下情况：
+   </para>
+   <orderedlist spacing="normal">
+    <listitem>
+     <para>
+      通过输入 <command>telinit <option>5</option></command>，管理员 (<systemitem class="username">root</systemitem>) 请求 <systemitem>init</systemitem> 更改到其他运行级别。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <indexterm><primary>配置文件</primary><secondary>inittab</secondary></indexterm><indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>rc</tertiary></indexterm><systemitem/>init 检查当前运行级别 (<command>runlevel</command>) 并确定是否应使用新的运行级别作为参数来启动 <filename>/etc/init.d/rc</filename>。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <command>rc </command> 现在调用当前运行级别的停止脚本，但仅限新运行级别中没有启动脚本的那些停止脚本。在本例中，这些就是位于 <filename>/etc/init.d/rc3.d</filename>（旧的运行级别是 3）中以 <literal>K</literal> 开头的所有脚本。<literal>K</literal> 后跟的编号指定使用 <systemitem>stop</systemitem> 参数运行脚本的顺序，因为有很多依赖性要考虑。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      最后要启动的是新运行级别的启动脚本。在本例中，这些是位于 <filename>/etc/init.d/rc5.d</filename> 中以 <literal>S</literal> 开头的脚本。<literal>S</literal> 后跟的编号确定启动脚本的顺序。
+     </para>
+    </listitem>
+   </orderedlist>
+   <para>
+    当更改为与当前运行级别相同的运行级别时，<systemitem>init</systemitem> 仅检查 <filename>/etc/inittab</filename> 的更改，并启动相应的步骤（例如，在另一个界面上启动 <command>getty</command> 所需的步骤）。使用命令 <command>telinit q</command> 也达到到相同的作用。
+   </para><indexterm class="endofrange" startref="idx.runlevels_changing"/><indexterm class="endofrange" startref="idx.runlevels"/>
+  </sect2>
+
+  <sect2 id="sec.boot.init.skripte">
+   <title>Init 脚本</title><indexterm id="idx.init_scripts" class="startofrange"> <primary>init</primary> <secondary>脚本</secondary> </indexterm> <indexterm id="idx.scripts_init.d" class="startofrange"> <primary>脚本</primary> <secondary>init.d</secondary> </indexterm>
+   <para>
+    <filename>/etc/init.d</filename> 中有两种类型的脚本：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>由 <systemitem>init</systemitem> 直接执行的脚本
+     </term>
+     <listitem>
+      <para>
+       <phrase arch="x86;ipf;amd64;em64t;ipseries;ppc">仅在引导过程中或在启动系统立即关闭时（电源故障或用户按了 <keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap><keycap>Del</keycap></keycombo> 组合键）时才会发生这种情况。</phrase><phrase arch="zseries" os="sles">对于 IBM System z 系统，仅在引导过程中或发生系统瞬间关闭（电源故障或通过<quote>信号关机</quote>）时才会出现这种情况。</phrase>这些脚本的执行是在 <filename>/etc/inittab</filename> 中定义的。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>由 <systemitem>init</systemitem> 间接执行的脚本
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>rc</tertiary></indexterm>这些脚本在更改运行级别时运行并始终调用主脚本 <command>/etc/init.d/rc</command>，后者能够确保相关脚本以正确顺序运行。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    所有脚本位于 <filename>/etc/init.d</filename> 中。引导时运行的脚本是通过指向 <filename>/etc/init.d/boot.d</filename> 的符号链接调用的。用于更改运行级别的脚本也是通过符号链接从一个子目录（<filename>/etc/init.d/rc0.d</filename> 到 <filename>/etc/init.d/rc6.d</filename>）进行调用的。这仅仅是为了清楚起见，并避免在多个运行级别中使用时出现重复脚本。因为每个脚本既可以作为启动脚本也可以作为停止脚本来执行，这些脚本必须理解 <option>start</option> 和 <option>stop</option> 参数。这些脚本还必须理解 <option>restart</option>、<option>reload</option>、<option>force-reload</option> 和 <option>status</option> 选项。对这些不同的选项进行了解释。<xref linkend="tab.boot.initscript.opt"/> 由 <systemitem>init</systemitem> 直接运行的脚本没有这些链接。需要时，可以从运行级别独立运行它们。
+   </para>
+   <table id="tab.boot.initscript.opt">
+    <title>可能的 <systemitem>init</systemitem> 脚本选项</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         选项
+        </para>
+       </entry>
+       <entry>
+        <para>
+         描述
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>start</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         启动服务。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>stop</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         停止服务。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>restart</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         如果服务正在运行，则首先将其停止，然后重启动。如果服务未在运行，则启动服务。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>reload</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         在不停止和重启动服务的情况下重装载配置。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>force-reload</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         如果服务支持，则重装载配置。否则，要执行的步骤与指定 <option>restart</option> 时相同。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>status</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         显示服务的当前状态。
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    每个特定于运行级别的子目录中的链接使将脚本与不同的运行级别相关联成为可能。在安装或卸载包时，在程序 insserv（或使用 <filename>/usr/lib/lsb/install_initd</filename>，它是调用此程序的一个脚本）的帮助下可添加和删除这些链接。有关更多细节，请参见 <command>man 8 insserv</command>。
+   </para>
+   <para>
+    所有这些设置也可能在 YaST 模块的帮助下发生变化。如果需要在命令行上检查状态，请使用 <command>man 8 chkconfig</command> 手册页中所描述的工具 <systemitem>chkconfig</systemitem>。
+   </para>
+   <para>
+    下面分别简要介绍最先或最后启动的引导和停止脚本，并对脚本的维护进行了描述。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><filename>boot</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>引导</tertiary></indexterm> 在使用 <systemitem>init</systemitem> 直接启动系统时执行。它与选择的运行级别无关，而且仅执行一次。这时将装入 <filename>/proc</filename> 和 <filename>/dev/pts</filename> 文件系统，并激活 <systemitem>blogd</systemitem>（引导日志记录守护程序）。如果在更新或安装后首次引导系统，则会启动初始系统配置。
+      </para>
+      <para>
+       <systemitem>blogd</systemitem> 守护程序是由 <systemitem>boot</systemitem> 和 <systemitem>rc</systemitem> 启动的第一个服务。它在由这些脚本触发的操作（运行几个子脚本，例如使特殊块文件变为可用的）完成之后停止。<systemitem/>blogd 将所有屏幕输出写入日志文件 <filename>/var/log/boot.msg</filename>（前提是装入的 <filename>/var</filename> 是可读写的）。否则，blogd 将缓冲所有屏幕数据，直到 <filename>/var</filename> 可用。有关 <systemitem>blogd</systemitem> 的进一步信息，请使用 <command>man 8 blogd</command>。
+      </para>
+      <para>
+       <filename>boot</filename> 脚本还负责启动 <filename>/etc/init.d/boot.d</filename> 中名称以 <literal>S</literal> 开头的所有脚本。在这里，将检查文件系统并根据需要配置回路设备。同时设置系统时间。如果在自动检查和修复文件系统时出错，系统管理员可以在输入 root 口令后进行干预。上次执行的脚本是 <command>boot.local</command>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>boot.local</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>boot.local</tertiary></indexterm>在此，输入引导时、在更改为某个运行级别之前执行的其他命令。这类似于 DOS 系统上的 <filename>AUTOEXEC.BAT</filename>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>halt</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>脚本</primary> <secondary>init.d</secondary> <tertiary>暂停</tertiary> </indexterm>此脚本仅在更改为运行级别 0 或 6 时执行。在这里，它作为 <command>init</command> 或 <command>init</command> 来执行。是关闭还是重引导系统取决于调用 <filename>halt</filename> 的方式。如果在关闭系统过程中需要特殊命令，请将此类命令添加到 <command>init</command> 脚本。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>rc</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>脚本</primary> <secondary>init.d</secondary> <tertiary>rc</tertiary></indexterm> 此脚本调用当前运行级别的相应停止脚本和新选择的运行级别的启动脚本。与 <filename>/etc/init.d/boot</filename> 脚本类似，该脚本是通过将所需运行级别用作参数从 <filename>/etc/inittab</filename> 调用的。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist><indexterm> <primary>init</primary> <secondary>添加脚本</secondary> </indexterm>
+   <para>
+    您可以创建自己的脚本并方便地将它们集成到上面描述的方案中。有关格式化、命名和组织自定义脚本的说明，请参考 LSB 的规范以及 <systemitem>init</systemitem>、<systemitem>init.d</systemitem>、<systemitem>chkconfig</systemitem> 和 <systemitem>insserv</systemitem> 的手册页。此外还可以参见 <systemitem>startproc</systemitem> 和 <systemitem>killproc</systemitem> 的手册页。
+   </para>
+   <warning>
+    <title>有问题的 init 脚本可能会使您的系统暂停</title>
+    <para>
+     有问题的 <systemitem>init</systemitem> 脚本可能会使您的计算机挂起。应认真编辑这些脚本，如果可能，应在多用户环境中对它们进行严格测试。在<xref linkend="sec.boot.runlevel"/> 中可以找到有关 <systemitem>init</systemitem> 脚本的有用信息。
+    </para>
+   </warning>
+   <para>
+    要为给定程序或服务创建自定义 <systemitem>init</systemitem> 脚本，请使用文件 <filename>/etc/init.d/skeleton</filename> 作为模板。以新名称保存此文件的副本，然后根据需要编辑相关程序和文件名、路径及其他细节。您可能还需要用自己的部分来增强此脚本，以便 <systemitem>init</systemitem> 过程可以触发正确的操作。
+   </para>
+   <para>
+    位于顶部的 <literal>INIT INFO</literal> 块是脚本的一个必需部分，应进行编辑。请参见<xref linkend="aus.boot.init.skripte.add.initinfo"/>。
+   </para>
+   <example id="aus.boot.init.skripte.add.initinfo">
+    <title>最小的 INIT INFO 块</title>
+<screen>### BEGIN INIT INFO
+# Provides:          FOO
+# Required-Start:    $syslog $remote_fs
+# Required-Stop:     $syslog $remote_fs
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Description:       Start FOO to allow XY and provide YZ
+### END INIT INFO</screen>
+   </example>
+   <para>
+    在 <literal>INFO</literal> 块第一行上 <literal>Provides:</literal> 后，指定由此 init 脚本控制的程序或服务的名称。<systemitem/>在 <literal>Required-Start:</literal> 和 <literal>Required-Stop:</literal> 行中，指定停止服务本身时仍需运行的所有服务。这些信息稍后用于生成脚本名的编号（可以在运行级别目录中找到）。在 <literal>Default-Start:</literal> 和 <literal>Default-Stop:</literal> 后，指定应自动启动或停止的服务所在的运行级别。最后，在 <literal>Description:</literal> 下，提供对相关服务的简短描述。
+   </para>
+   <para>
+    要创建从运行级别目录 (<filename>/etc/init.d/rc?.d/</filename>) 到 <filename>/etc/init.d/</filename> 中相应脚本的链接，请输入命令 <command>insserv <replaceable>new-script-name</replaceable></command>。<command>insserv</command> 对 <literal>INIT INFO</literal> 标题进行评估，以便为运行级别目录 (<filename>/etc/init.d/rc?.d/</filename>) 中的启动和停止脚本创建所需的链接。此程序还负责保证每个运行级别的启动和停止顺序正确无误，方法是在这些链接的名称中包含必要的数字。如果要使用图形工具来创建这样的链接，请按照<xref linkend="sec.boot.runlevel.edit"/>中说明的方法使用 YaST 提供的运行级别编辑器。
+   </para>
+   <para>
+    如果应将已存在于 <filename>/etc/init.d/</filename> 中的脚本集成到现有运行级别方案中，请立即通过 insserv 或启用 YaST 的运行级别编辑器中的相应服务在运行级别目录中创建链接。<command/>您的更改将在下次重引导时生效 — 新服务将自动启动。
+   </para>
+   <para>
+    不要手动设置这些链接。如果 <literal>INFO</literal> 块中出错，则在稍后为其他服务运行 <command>insserv</command> 时将会出现问题。下次为此脚本运行 <command>insserv</command> 时将删除手动添加的服务。
+   </para><indexterm class="endofrange" startref="idx.init_scripts"/><indexterm class="endofrange" startref="idx.scripts_init.d"/>
+  </sect2>
+
+  <sect2 id="sec.boot.runlevel.edit">
+   <title>使用 YaST 配置系统服务（运行级别）</title><indexterm> <primary>YaST</primary> <secondary>运行级别</secondary> </indexterm> <indexterm> <primary>运行级别</primary> <secondary>在 YaST 中编辑</secondary> </indexterm>
+   <para>
+    使用 <menuchoice><guimenu>YaST</guimenu> <guimenu>系统</guimenu> <guimenu>系统服务（运行级别）</guimenu></menuchoice>启动此 YaST 模块后，它将显示一个概要，列出所有可用的服务和每个服务的当前状态（已禁用或已启用）。确定是以<guimenu>简单方式</guimenu>还是以<guimenu>专家方式</guimenu>使用此模块。默认的<guimenu>简单方式</guimenu>足以完成大多数操作。左边的列显示服务的名称，中间的列指示其当前状态，而右边的列则给出简短描述。窗口下部提供了对所选服务的更为详细的描述。若要启用某个服务，请首先在表中选定它，然后选择<guimenu>启用</guimenu>。同样的步骤可用于禁用服务。
+   </para>
+   <para>
+    要对所启动或停止的服务所在运行级别进行更具体的控制，或者更改默认运行级别，请先选择<guimenu>专家方式</guimenu>。将在顶部显示当前默认的运行级别或 <quote>initdefault</quote>（默认情况下将系统引导至的运行级别）。通常情况下，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 系统的默认运行级别是 5（有网络和 X 的完全多用户模式）。运行级别 3（有网络的完全多用户方式）是合适的替代选择。
+   </para>
+   <para>
+    此 YaST 对话框用于选择一个运行级别（如<xref linkend="tab.boot.runlevel"/>中所列）作为新的默认运行级别。此外，可使用此窗口中的表来启用或禁用各个服务和守护程序。此表列出可用的服务和守护程序，显示它们当前是否已在您的系统上启用，如果已启用，则指示它们用于哪些运行级别。用鼠标选择其中的一行后，请单击表示运行级别（<guimenu>B</guimenu>、<guimenu>0</guimenu>、<guimenu>1</guimenu>、<guimenu>2</guimenu>、<guimenu>3</guimenu>、<guimenu>5</guimenu>、<guimenu>6</guimenu> 和 <guimenu>S</guimenu>）的复选框来确定所选服务或守护程序的运行级别。未对运行级别 4 进行定义，目的是供用户创建自定义运行级别。表概要下方提供了当前所选服务或守护程序的简要描述。
+   </para>
+   <warning>
+    <title>有问题的运行级别设置可能会对您的系统造成损害</title>
+    <para>
+     有问题的运行级别设置可能会导致系统无法使用。在应用您的更改之前，请确保您清楚这些设置可能产生的结果。
+    </para>
+   </warning>
+   <figure id="fig.yast2.runlevel">
+    <title>系统服务（运行级别）</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_runlevel.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_runlevel.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    用<guimenu>启动、停止或刷新</guimenu>来确定是否应激活某服务。<guimenu>刷新状态</guimenu>用来检查当前状态。<guimenu>设置或重设置</guimenu>用于选择是将更改应用到系统，还是恢复启动运行级别编辑器之前存在的设置。选择<guimenu>确定</guimenu>即可将已更改的设置保存到磁盘。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.boot.sysconfig">
+  <title>通过 <filename>/etc/sysconfig</filename> 配置系统</title><indexterm> <primary>配置</primary> </indexterm> <indexterm id="idx.scripts_SuSEconfig" class="startofrange"> <primary>脚本</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx.configuration_files_sysconfig" class="startofrange"> <primary>配置文件</primary> <secondary>sysconfig</secondary> </indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的主配置是由 <filename>/etc/sysconfig</filename> 中的配置文件控制的。只有与 <filename>/etc/sysconfig</filename> 中的各个文件相关的脚本才会读取它们。这样有很多好处，例如确保了网络设置只需要由与网络相关的脚本来分析。
+  </para>
+
+  <para>
+   可以使用两种方法编辑系统配置。使用 YaST sysconfig 编辑器或手工编辑配置文件。
+  </para>
+
+  <sect2 id="sec.boot.sysconfig.edit">
+   <title>使用 YaST sysconfig 编辑器更改系统配置</title><indexterm> <primary>YaST</primary> <secondary>sysconfig editor</secondary> </indexterm>
+   <para>
+    YaST sysconfig 编辑器提供了一种易于使用的前端供您进行系统配置。您无需了解需要更改的配置变量的实际位置，只需使用该模块的内置搜索功能，就可以根据需要更改配置变量的值，并让 YaST 负责应用这些更改以及根据 <filename>sysconfig</filename> 中设置的值更新配置和重新动服务。
+   </para>
+   <warning>
+    <title>修改 <filename>/etc/sysconfig/*</filename> 文件可能会对您的安装造成损害</title>
+    <para>
+     如果没有足够的经验和知识，切勿修改 <filename>/etc/sysconfig</filename> 文件。否则可能会对您的系统造成巨大损害。<filename>/etc/sysconfig </filename>中的文件包含对每个变量的简短注释，解释了这些变量的实际作用。
+    </para>
+   </warning>
+   <figure id="fig.yast2.sysconfig">
+    <title>使用 sysconfig 编辑器进行系统配置</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="75%" fileref="yast2_sysconfig.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="75%" fileref="yast2_sysconfig.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    YaST sysconfig 对话框分为三个部分。对话框左边的部分显示了一个树视图，其中列出了所有可配置变量。当您选择某个变量时，右边的部分会显示当前选择和此变量的当前设置。在下面第三个窗口中，简要描述了变量的用途、可能的值、默认值以及此变量源自的实际配置文件。此对话框还提供了有关更改变量后将执行哪些配置脚本，以及作为更改的结果将启动哪些新服务等信息。YaST 将提示您确认更改，并通知您在选择<guimenu>完成</guimenu>退出对话框后哪些脚本将会执行。在这里还可以选择需要现在跳过而在以后启动的服务和脚本。YaST 将自动应用所有的更改并重启动涉及的所有服务以使更改生效。
+   </para>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.boot.sysconfig.man">
+   <title>手动更改系统配置</title>
+   <para>
+    要手动更改系统配置，请执行如下操作
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      成为 <systemitem class="username">root </systemitem>用户。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用 <command>telinit 1</command> 将系统转入单用户模式（运行级别 1）。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用您选择的编辑器根据需要对配置文件进行更改。
+     </para>
+     <para>
+      如果不使用 YaST 来更改 <filename>/etc/sysconfig</filename> 中的配置文件，请务必将空变量值用两个引号表示 (<systemitem>KEYTABLE=</systemitem><literal>""</literal>)，并将含有空隔的值用引号括起来。只包括一个单词的值不需要用引号括起来。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      执行 <command>SUSEconfig</command> 来确保更改生效。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用类似 <command>telinit <replaceable>default_runlevel</replaceable></command> 的命令将系统返回到先前的运行级别。使用系统的默认运行级别替代 <replaceable>default_runlevel</replaceable>。如果想返回 有网络和 X 的完全多用户方式，请选择 <literal>5</literal>；如果希望在有网络的完全多用户方式下工作，请选择 <literal>3</literal>。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    这一过程主要用于更改整个系统范围的配置，例如网络配置。若要进行较小的更改，不一定要切换到单用户方式，但这样做可以完全确保正确重启动所有相关的程序。
+   </para>
+   <tip>
+    <title>配置自动系统配置</title>
+    <para>
+     <indexterm><primary>脚本</primary><secondary>SuSEconfig</secondary><tertiary>禁用</tertiary></indexterm><indexterm><primary>配置文件</primary><secondary>suseconfig</secondary></indexterm>要禁用 SuSEconfig 设定的自动系统配置，请将 <filename>/etc/sysconfig/suseconfig</filename> 中的变量 <systemitem>ENABLE_SUSECONFIG</systemitem> 设置为 <literal>no</literal>。如果要使用 SUSE 安装支持，请不要禁用 SUSEconfig。也可以部分禁用自动配置。
+    </para>
+   </tip><indexterm class="endofrange" startref="idx.scripts_SuSEconfig"/><indexterm class="endofrange" startref="idx.configuration_files_sysconfig"/>
+  </sect2>
+ </sect1>
+</chapter>

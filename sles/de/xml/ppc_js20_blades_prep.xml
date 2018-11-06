@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_js20_blades_prep.xml" id="sec.prep.js20blades">
+ <title>Vorbereiten einer Installation auf IBM JSxx BladeCenter</title><indexterm> <primary>Vorbereiten</primary> <secondary>JSxx BladeCenter</secondary> </indexterm>
+ <para>
+  Dieser Abschnitt behandelt die vorbereitenden Schritte für die Installation von SUSE® Linux Enterprise Server auf JSxx-Blades. Der Abschnitt beschreibt die Installation über das CD-ROM-Laufwerk von BladeCenter und die Installation über das Netzwerk.
+ </para>
+ <sect3 id="sec.prep.js20blades.netsource">
+  <title>Erstellen der Netzwerkinstallationsquelle</title>
+  <para>
+   Wenn SUSE Linux Enterprise Server auf mehreren Partitionen installiert werden muss, sollten Sie eine Netzwerkinstallationsquelle erstellen. Sie brauchen die CDs dann während der Installation nicht ständig zu wechseln. Die Installationsquelle kann auch für gleichzeitige Installationen auf verschiedenen Systemen verwendet werden. Informationen zur Konfiguration einer Netzwerkinstallationsquelle finden Sie unter <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.js20blades.hd-storage">
+  <title>Speicherbedarf</title>
+  <para>
+   Vergewissern Sie sich, dass Ihre Festplatte über ausreichend Speicherplatz für die Installation von SUSE Linux Enterprise Server verfügt. Eine eigens für SUSE Linux Enterprise Server bestimmte Festplatte wird empfohlen.
+  </para>
+ </sect3>
+
+ <sect3>
+  <title>Vorbereitung des Systems für das Booten</title>
+  <para/>
+  <sect4>
+   <title>Vorbereitung für das Booten vom CD-ROM-Laufwerk</title>
+   <para>
+    Führen Sie die nachfolgend beschriebenen Schritte aus, wenn Sie die Installation von CD-ROM ausführen möchten.
+   </para>
+   <para>
+    Weisen Sie das CD-ROM-Laufwerk dem für die Installation ausgewählten Blade zu, indem Sie über einen Webbrowser eine Verbindung mit dem BladeCenter-Verwaltungsmodul herstellen und sich dort anmelden. Wählen Sie nach der Anmeldung im Menü <guimenu>Blade Tasks</guimenu> (Blade-Aufgaben) die Funktion <guimenu>Remote Control</guimenu> (Fernsteuerung) aus und aktivieren Sie <guimenu>Start Remote Control</guimenu> (Fernsteuerung starten). Im neuen Fenster weisen Sie das CD-ROM-Laufwerk über das Menü <guimenu>Change Media Tray Owner</guimenu> (Eigentümer von Medienfach ändern) dem gewünschten Blade zu.
+   </para>
+   <para>
+    Richten Sie das CD-ROM-Laufwerk als Boot-Gerät ein. Dazu wählen Sie im Menü <guimenu>Blade Tasks</guimenu> (Blade-Aufgaben) des BladeCenter-Verwaltungsmoduls die Funktion <guimenu>Konfiguration</guimenu> aus. Wählen Sie das JSxx-Blade im Abschnitt <guimenu>Boot-Sequenz</guimenu> aus. Setzen Sie die Option <guimenu>Erstes Gerät</guimenu> auf der Seite <guimenu>Blade Boot Sequence</guimenu> (Blade-Boot-Sequenz) auf <guimenu>CD-ROM</guimenu>.
+   </para>
+   <para>
+    Legen Sie CD 1 in das CD-ROM-Laufwerk ein und starten Sie das Blade neu.
+   </para>
+  </sect4>
+  <sect4>
+   <title>Vorbereitung für das Booten über das Netzwerk</title>
+   <para>
+    Führen Sie die nachfolgend beschriebenen Schritte aus, wenn Sie die Installation über das Netzwerk ausführen möchten.
+   </para>
+   <para>
+    Bauen Sie über einen Webbrowser eine Verbindung zum BladeCenter Management Module auf und melden Sie sich an. Stellen Sie das Boot-Gerät auf das Netzwerk ein, indem Sie das Menü <guimenu>Konfiguration</guimenu> auf der Seite <guimenu>Blade Tasks</guimenu> (Blade-Aufgaben) öffnen. Wählen Sie das JSxx-Blade im Abschnitt <guimenu>Boot-Sequenz</guimenu> aus und setzen Sie die Option <guimenu>1st Boot Device</guimenu> (Erstes Boot-Gerät) auf der Seite <guimenu>Blade Boot Sequence</guimenu> (Blade-Boot-Sequenz) auf <guimenu>Netzwerk – BOOTP</guimenu>.
+   </para>
+  </sect4>
+  <sect4>
+   <title>Neustart und Verbindung mit der Konsole des JSxx-Blade</title>
+   <para>
+    Starten Sie das JSxx-Blade über das BladeCenter-Verwaltungsmodul mit der Option <guimenu>Einschalten/Neu starten</guimenu> des Menüs <guimenu>Blade Tasks</guimenu> (Blade-Aufgaben) neu. Eine Tabelle, deren Spalte <guimenu>Pwr</guimenu> den Einschaltstatus der Blades angibt, wird eingeblendet. Aktivieren Sie das Kontrollkästchen des gewünschten Blade und starten Sie es mit <guimenu>Power On Blade</guimenu> (Blade einschalten) neu.
+   </para>
+   <para>
+    Stellen Sie über das Kommando <command>telnet <replaceable>bladecenter</replaceable></command> eine Verbindung mit dem BladeCenter her und melden Sie sich an.
+   </para>
+<screen>
+username: <replaceable>user</replaceable>
+password: ********
+system&gt;
+</screen>
+   <para>
+    Das Kommando <command>env -T system:blade[<replaceable>gestellnummer</replaceable>]</command> legt fest, für welches JSxx-Blade die nachfolgenden Kommandos bestimmt sind. Die im BladeCenter installierten Blades werden mit dem Befehl <command>list -l 3</command> aufgelistet.
+   </para>
+<screen>
+system&gt; list -l 3
+system
+        mm[1]    primary
+        power[1]
+        power[2]
+        power[3]
+        power[4]
+        blower[1]
+        blower[2]
+        switch[1]
+        switch[3]
+        blade[1]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[3]
+                sp
+        blade[4]
+                sp
+        blade[6]
+                sp
+        blade[8]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[9]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[10]
+                sp
+        blade[11]
+                sp
+        blade[13]
+                sp
+        mt
+system&gt; 
+</screen>
+   <para>
+    Danach legen Sie das <emphasis>Befehlsziel</emphasis> fest. Wenn Sie beispielsweise mit Blade-Nummer <literal>9</literal> arbeiten möchten, geben Sie <command>env -T system:blade[9]</command> ein. Stellen Sie anschließend über das Kommando <command>console</command> eine <emphasis>SOL-Verbindung (Serial over LAN)</emphasis> mit der Konsole des JSxx-Blade her.
+   </para>
+<screen>
+system&gt; env -T system:blade[9]
+OK
+system:blade[9]&gt; console
+</screen>
+  </sect4>
+  <sect4>
+   <title>Starten der Installation</title>
+   <para>
+    Nach der Systemüberprüfung wird der Bootloader von SUSE Linux Enterprise Server gestartet.
+   </para>
+   
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+   <para>
+    Wählen Sie im Menü den Befehl <guimenu>Installieren</guimenu> aus und drücken Sie die <keycap>Eingabetaste</keycap>.
+   </para>
+   <para>
+    Wenn Sie die Installation über VNC ausführen möchten, fügen Sie der Kommandozeile für den Kernel (install) die Parameter <option>vnc=1</option> und <option>vncpassword=<replaceable>passwort</replaceable></option> hinzu.
+   </para>
+  </sect4>
+  <sect4>
+   <title>Weitere Schritte</title>
+   <para>
+    Fahren Sie nun mit Kapitel <xref linkend="cha.inst"/> fort, um die Installation der Software mit linuxrc und YaST auszuführen.
+   </para>
+  </sect4>
+ </sect3>
+</sect2>

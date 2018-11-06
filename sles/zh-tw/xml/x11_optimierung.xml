@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="x11_optimierung.xml" id="sec.x11.optimieren">
+ <title>手動設定 X Window System</title><indexterm id="idx.X_optimizing" class="startofrange"> <primary>X</primary> <secondary>設定</secondary></indexterm><indexterm> <primary>組態檔案</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+
+ <para>
+  X Window System 預設透過 SaX2 介面來設定，如<xref linkend="cha.y2.hw.graph"/> 中所述。但也可手動編輯組態檔案進行設定。
+ </para>
+
+ <warning>
+  <title>錯誤的 X 組態可能會損壞您的硬體</title>
+  <para>
+   進行 X Window System 組態時請務必小心。在完成組態之前，絕對不可以啟動 X Window System。錯誤設定的系統會對硬體造成無法挽回的損害 (特別是對固定頻率的監視器)。本書與 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的創作者對於產生的任何損害概不負責。本資訊是仔細研究的結果，但不保證提及的所有方法都正確以及不會損害您的硬體。
+  </para>
+ </warning>
+
+ <para>
+  指令 <command>sax2</command> 可建立 <filename>/etc/X11/xorg.conf</filename> 檔案。這是 <phrase role="productname">X Window System</phrase> 的主要組態檔。這裡有您的圖形卡、滑鼠以及顯示器相關的所有設定。<indexterm> <primary>X</primary><secondary>SaX2</secondary> </indexterm> <indexterm> <primary>X</primary><secondary>xorg.conf</secondary> </indexterm>
+ </para>
+
+ <important>
+  <title>使用 X -configure</title>
+  <para>
+   若之前透過 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的 SaX2 設定 X 安裝的嘗試已經失敗，請使用 <command>X -configure</command> 來設定。如果您的設定包含專屬的僅二進位驅動程式，則 <command>X -configure</command> 無法工作。
+  </para>
+ </important>
+
+ <para>
+  下列段落會描述組態檔 <filename>/etc/X11/xorg.conf</filename> 的結構。它由多個段落組成，每一個都會處理組態的某個層面。每一個段落以關鍵字 <systemitem>Section &lt;designation&gt;</systemitem> 開始，並以 <systemitem>EndSection</systemitem> 結束。下列轉換會套用到所有部份：
+ </para>
+
+<screen>Section "designation"
+  entry 1
+  entry 2
+  entry n
+EndSection </screen>
+
+ <para>
+  可用的段落類型列出在 <xref linkend="tab.x11.sections"/> 中。
+ </para>
+
+ <table id="tab.x11.sections">
+  <title>/etc/X11/xorg.conf 中的段落</title>
+  <tgroup cols="2" align="left">
+   <thead>
+    <row>
+     <entry>
+      <para>
+       <emphasis role="bold">類型</emphasis>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       <emphasis role="bold">代表意義</emphasis>
+      </para>
+     </entry>
+    </row>
+   </thead>
+   <tbody>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Files</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       用於字型與 RGB 顏色表的路徑。<indexterm> <primary>xorg.conf</primary> <secondary>檔案</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>ServerFlags</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       伺服器行為的一般切換器。<indexterm> <primary>xorg.conf</primary> <secondary>ServerFlags</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Module</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       伺服器應載入的模組清單 <indexterm><primary>xorg.conf</primary> <secondary>模組</secondary></indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>InputDevice</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       鍵盤和特殊輸入裝置 (觸控板、搖桿裝置等) 之類的輸入裝置均在此區段設定。這個段落含有 <systemitem>Driver</systemitem> 的重要參數以及定義 <systemitem>Protocol</systemitem> 與 <systemitem>Device</systemitem> 的選項。您每個連接到電腦的裝置通常有一個 <systemitem>InputDevice</systemitem> 段落。<indexterm> <primary>xorg.conf</primary> <secondary>InputDevice</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Monitor</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       所用的伺服器。此區段的重要元素包括 <systemitem>Identifier</systemitem> (稍後的 <systemitem>Screen</systemitem> 定義中會提及)、重新整理速率 <systemitem>VertRefresh</systemitem> 以及同步頻率限制 (<systemitem>HorizSync</systemitem> 和 <systemitem>VertRefresh</systemitem>)。設定值以 MHz、kHz 和 Hz 提供。通常，伺服器會拒絕和監視器規格不對應的模式行。這樣可防止不小心將太高的頻率送往顯示器。<indexterm> <primary>xorg.conf</primary> <secondary>顯示器</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>模式行</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Modes</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       特定螢幕解析度的模式行參數。這些參數可以由 SaX2 依據使用者給定的值計算，通常不需要變更。如果您要連接固定頻率監視器，現在可以手動變更。在 <filename>/usr/share/doc/howto/en/html/XFree86-Video-Timings-HOWTO</filename> 目錄 (<systemitem>howtoenh</systemitem> 套件中提供) 中的 HOWTO 檔案中，可以找到各個數值之意義的詳細資料。若要手動計算 VESA 模式，可以使用 <command>cvt</command> 工具。例如，若要計算解析度為 1680x1050、頻率為 60Hz 之顯示器的模式行，請使用指令 <command>cvt 1680 1050 60</command>。<indexterm> <primary>xorg.conf</primary> <secondary>模式</secondary> </indexterm>
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Device</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       特定圖形卡。它以本身的描述名稱表示。本節中可用的選項主要取決於所用的驅動程式。例如，如果使用 <literal>i810</literal> 驅動程式，可以在手冊頁 <command>man 4 i810</command> 中找到有關可用選項的詳細資訊。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>Screen</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       此區段將 <systemitem>Monitor </systemitem> 和 <systemitem>Device</systemitem> 合併在一起組成 X.Org 的所有必要設定。在 <systemitem>Display</systemitem> 子區段中，指定虛擬螢幕的大小 (<systemitem>Virtual </systemitem>)、<systemitem>ViewPort</systemitem> 以及與此螢幕配合使用的 <systemitem>Mode</systemitem>。
+      </para>
+      <para>
+       請注意，某些驅動程式要求所有使用的組態都必須存在於 <systemitem>Display</systemitem> 區段的某個位置。例如，如果您使用筆記型電腦並想要使用比內部 LCD 大的外部顯示器，則可能需要在 <systemitem>Modes</systemitem> 行末尾新增比內部 LCD 支援的解析度更高的解析度。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>ServerLayout</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       單螢幕顯示或多螢幕顯示組態的配置。這個段落連結輸入裝置 <systemitem>InputDevice</systemitem> 和顯示裝置 <systemitem>Screen</systemitem>。
+      </para>
+     </entry>
+    </row>
+    <row>
+     <entry>
+      <para>
+       <systemitem>DRI</systemitem>
+      </para>
+     </entry>
+     <entry>
+      <para>
+       提供資訊給「直接算圖基礎結構 (DRI)」。
+      </para>
+     </entry>
+    </row>
+   </tbody>
+  </tgroup>
+ </table>
+
+ <para>
+  <systemitem>Monitor</systemitem>、<systemitem>Device</systemitem> 與 <systemitem>Screen</systemitem> 將做詳細說明。如需其他段落的進一步資訊，請參閱 <filename>X.Org</filename> 和 <filename>xorg.conf</filename> 的手冊頁。
+ </para>
+
+ <para>
+  <filename>xorg.conf</filename> 中可能有多個不同的 <systemitem>Monitor </systemitem> 和 <systemitem>Device </systemitem>段落。也可能有多個 <systemitem>Screen </systemitem> 段落。<systemitem>ServerLayout</systemitem> 段落決定使用這些段落中的哪些段落。
+ </para>
+
+ <sect2 id="sec.x11.screen">
+  <title>Screen 段落</title><indexterm> <primary>組態檔</primary> <secondary>xorg.conf</secondary> <tertiary>螢幕</tertiary> </indexterm>
+  <para>
+   Screen 段落是由 monitor 和 device 段落組成，已決定要使用的解析度和色彩深度。Screen 段落可能如同 <xref linkend="dat.x11.scrsec"/> 一般。
+  </para>
+  <example id="dat.x11.scrsec">
+   <title>/etc/X11/xorg.conf 檔的螢幕段落</title>
+<screen>Section "Screen"<co id="co.x11.screen"/>
+  DefaultDepth  16<co id="co.x11.ddepth"/>
+  SubSection "Display"<co id="co.x11.display"/>
+    Depth       16<co id="co.x11.depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co id="co.x11.mode"/>
+    Virtual     1152x864<co id="co.x11.virt"/>
+  EndSubSection
+  SubSection "Display"
+    Depth       24
+    Modes       "1280x1024"
+  EndSubSection
+  SubSection "Display"
+    Depth       32
+    Modes "640x480"
+  EndSubSection
+  SubSection "Display"
+    Depth        8
+    Modes       "1280x1024"
+  EndSubSection
+  Device        "Device[0]"
+  Identifier    "Screen[0]"<co id="co.x11.ident"/>
+  Monitor       "Monitor[0]"
+EndSection</screen>
+  </example>
+  <calloutlist>
+   <callout arearefs="co.x11.screen">
+    <para>
+     <literal>Section</literal> 決定段落類型，在此情況下為 <literal>Screen</literal>。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.ddepth">
+    <para>
+     <indexterm> <primary>xorg.conf</primary> <secondary>監視器</secondary> </indexterm> <literal>DefaultDepth</literal> 決定若無指定色彩深度的話，預設使用的色彩深度。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.display">
+    <para>
+     <indexterm><primary>xorg.conf</primary> <secondary>Display</secondary> </indexterm> 會為每種色彩深度指定不同的 <literal>Display</literal> 子段落。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.depth">
+    <para>
+     <indexterm><primary>xorg.conf</primary> <secondary>Depth</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>color depth</secondary> </indexterm> <literal>Depth</literal> 決定與該組 <literal>Display</literal> 設定搭配使用的色彩深度。可能的值為 <literal>8</literal>、<literal>15</literal>、<literal>16</literal>、<literal>24</literal> 與 <literal>32</literal>，但並不是每個值都可用於所有 X 伺服器模組或解析度。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.mode">
+    <para>
+     <systemitem>Modes</systemitem> 段落包括可能螢幕解析度的清單。X 伺服器將由左而右檢查這個清單。對於每一個解析度，X 伺服器會在 <systemitem>Modes</systemitem> 段落搜尋適合的 <systemitem>Modeline</systemitem>。<systemitem>Modeline</systemitem> 同時由顯示器與圖形卡的功能決定。<systemitem>Monitor</systemitem> 設定值將決定 <systemitem>Modeline</systemitem> 的結果。<indexterm> <primary>xorg.conf</primary> <secondary>模式</secondary> </indexterm> <indexterm> <primary>xorg.conf</primary> <secondary>模式行</secondary> </indexterm>
+    </para>
+    <para>
+     第一個找到的解析度是 <systemitem>Default mode</systemitem>。按 <keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap> <keycap>+</keycap></keycombo> (數字鍵盤)，可以向右切換到清單中的下一個解析度。按 <keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap> <keycap>–</keycap></keycombo> (在數字鍵盤上)，可以切換到上一個解析度。您可以在 X 執行中變更解析度。<indexterm><primary> 螢幕</primary><secondary>解析度</secondary> </indexterm>
+    </para>
+   </callout>
+   <callout arearefs="co.x11.virt">
+    <para>
+     <indexterm> <primary>X</primary> <secondary>虛擬螢幕</secondary> </indexterm> <systemitem>Display</systemitem> 子段落最後一行的 <systemitem>Depth 16</systemitem> 指虛擬螢幕大小。虛擬螢幕可能的最大大小由圖形卡上安裝的記憶體數量以及所要的色彩深度決定，而不是顯示器的最大解析度。如果省略此行，虛擬解析度便是實體解析度。因為目前的圖形卡都附有大量的視訊記憶體，您可以建立非常大的虛擬桌面。不過，如果將大部份的視訊記憶體用於虛擬桌面，將可能無法使用 3D 功能。例如，如果卡上有 16 MB 的視訊 RAM，虛擬螢幕最大可使用 4096x4096 像素，8 位元色彩探度。不過，不建議將所有記憶體用於虛擬螢幕，特別是加速卡，因為卡的記憶體還要用於各種字型與圖形的快取。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.ident">
+    <para>
+     <systemitem>Identifier</systemitem> 行 (此處為 <systemitem>Screen[0]</systemitem>) 對這個段落提供一個定義的名稱，以便對下列 <systemitem>ServerLayout</systemitem> 段落提供唯一性參照。<systemitem>Device</systemitem> 和 <systemitem>Monitor</systemitem> 行指定屬於這個定義的圖形卡和顯示器。它們透過本身對應的名稱或<emphasis>識別碼</emphasis>和 <systemitem>Device</systemitem> 以及 <systemitem>Monitor</systemitem> 段落連結。以下詳細討論這些段落。<indexterm> <primary>xorg.conf</primary> <secondary>驅動程式</secondary> </indexterm>
+    </para>
+   </callout>
+  </calloutlist>
+ </sect2>
+
+ <sect2 id="sec.x11.device.section">
+  <title>Device 段落</title><indexterm> <primary>組態檔</primary> <secondary>xorg.conf</secondary> <tertiary>裝置</tertiary> </indexterm>
+  <para>
+   Device 段落描述特定的圖形卡。<filename>xorg.conf</filename> 中的裝置項目數沒有限制，但每一個設的名稱要使用關鍵字 <systemitem>Identifier (識別碼)</systemitem> 來區別。若您安裝多張圖形卡，段落將只依序編號。第一個稱為 <systemitem>Device[0]</systemitem>，第二個稱為 <systemitem>Device[1]</systemitem>，以下類推。下面的檔案顯示摘自一台使用 Matrox Millennium PCI 圖形卡的電腦 (如 SaX2 所設定) 之 <systemitem>Device</systemitem> 區段的一段內容：
+  </para>
+<screen>Section "Device"
+  BoardName     "MGA2064W"
+  BusID         "0:19:0"<co id="co.x11.bus"/>
+  Driver        "mga"<co id="co.x11.driver"/>
+  Identifier    "Device[0]"
+  VendorName    "Matrox"
+  Option        "sw_cursor"
+EndSection</screen>
+  <calloutlist>
+   <callout arearefs="co.x11.bus">
+    <para>
+     <systemitem>BusID</systemitem> 表示要在其中安裝圖形卡的 PCI 或 AGP 插槽。這個值和指令 <command>lspci</command> 顯示的 ID 相符。X 伺服器需要十進位格式的詳細資料，但 <command>lspci</command> 以十六進位格式顯示這些值。SaX2 會自動偵測 <systemitem>BusID</systemitem> 的值。
+    </para>
+   </callout>
+   <callout arearefs="co.x11.driver">
+    <para>
+     <indexterm> <primary>X</primary> <secondary>驅動程式</secondary> </indexterm> <indexterm> <primary>卡</primary> <secondary>圖形</secondary> </indexterm> <indexterm> <primary>圖形</primary> <secondary>卡</secondary> <tertiary>驅動程式</tertiary> </indexterm> SaX2 會自動設定 <systemitem>Driver</systemitem> 的值，該值指定您的圖形卡要使用的驅動程式。如果是 Matrox Millennium 圖形卡，驅動程式模組稱為 <systemitem>mga</systemitem>。X 伺服器會在定義於 <systemitem>drivers</systemitem> 子目錄的 <systemitem>Files</systemitem> 段落中的 <filename>ModulePath</filename> 中搜尋。在標準安裝中，此為 <filename>/usr/lib/xorg/modules/drivers</filename> 目錄或適用於 64 位元作業系統目錄的 <filename>/usr/lib 64/xorg/modules/drivers</filename> 目錄。名稱會附加 <filename>_drv.o</filename>，因此，如果是 <systemitem>mga</systemitem> 驅動程式，將載入驅動動程式檔案 <systemitem>mga_drv.o</systemitem>。
+    </para>
+   </callout>
+  </calloutlist>
+  <para>
+   X 伺服器或驅動程式的行為可以透過附加的選項來操作。Device 段落中的選項 <systemitem>sw_cursor</systemitem> 便是一個範例。它可以停用硬體滑鼠游標並描述使用軟體的滑鼠指標。驅動程式模組不同，可用的選項也各異 (可以在 <filename>/usr/share/doc/packages/<replaceable>套件名稱</replaceable></filename>目錄內驅動程式模組的描述檔案中找到)。通常情況下，也可以在手冊頁 (<command>man</command> <option>xorg.conf</option>、<command>man</command> <option>4</option> <option><replaceable>&lt;驅動程式模組&gt;</replaceable></option> 和 <command>man</command> <option>4</option> <option><replaceable>晶片</replaceable></option>) 中找到有效的選項。
+  </para>
+  <para>
+   如果圖形卡有多個視訊連接器，可將此卡的各個不同裝置設定為單個檢視窗。請使用 SaX2 以此方式設定圖形介面。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.x11.opt.monitor">
+  <title>Monitor 和 Modes 段落</title><indexterm> <primary>組態檔</primary> <secondary>xorg.conf</secondary> <tertiary>監視器</tertiary> </indexterm>
+  <para>
+   和 <systemitem>Device</systemitem> 段落類似，<systemitem>Monitor</systemitem> 和 <systemitem>Modes</systemitem> 段落分別描述一個顯示器。組態檔 <filename>/etc/X11/xorg.conf</filename> 可以含有沒有個數限制的 <systemitem>Monitor</systemitem> 段落。每個 <systemitem>Monitor</systemitem> 段落都會參考帶有 <systemitem>UseModes</systemitem> 行 (若可用) 的 <systemitem>Modes</systemitem> 段落。如果沒有可用於 <systemitem>Monitor</systemitem> 段落的 <systemitem>Modes</systemitem> 段落，X 伺服器將從一般同步值計算適當的值。ServerLayout 段落指定相關的 <systemitem>Monitor</systemitem> 段落。
+  </para>
+  <para>
+   顯示器定義應該由有經驗的使用者進行設定。模式行是 <systemitem>Monitor</systemitem> 段落的重要組成部份。模式行可設定對應解析度的水平與垂直計時。顯示器內容，特別是允許的頻率，儲存在 <systemitem>Monitor</systemitem> 區段中。可以使用公用程式 <command>cvt</command> 產生標準 VESA 模式。如需詳細資訊，請參閱 cvt 手冊頁 (<command>man cvt</command>)。
+  </para>
+  <warning>
+   <para>
+    除非您深入瞭解監視器與圖形卡功能，否則請勿變更模式行，因為這樣做可能會嚴重損壞您的監視器。
+   </para>
+  </warning><indexterm> <primary>說明</primary><secondary>X</secondary></indexterm><indexterm><primary>X</primary><secondary>說明 </secondary></indexterm>
+  <para>
+   想自行開發顯示器描述的人員，應非常熟悉 <filename>/usr/share/X11/doc</filename> 文件的內容。安裝 <systemitem>xorg-x11-doc</systemitem> 套件以尋找 PDF 與 HTML 頁面。
+  </para>
+  <para>
+   在今天，需要手動指定模式行的的情況非常少見。如果您使用先進的多頻顯示器，依規則，X 伺服器可以透過 DDC 直接從顯示器讀取容許頻率以及最佳解析度值，如 SaX2 組態段落中的說明那樣。如果因某種原因而不適用，請使用 X 伺服器內附的一種 VESA 模式。此模式對大多數圖形卡與顯示器組合都起作用。
+  </para><indexterm class="endofrange" startref="idx.X_optimizing"/>
+ </sect2>
+</sect1>

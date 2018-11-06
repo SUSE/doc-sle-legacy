@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_addon_creator.xml" id="cha.addon_creator">
+ <title>使用附加產品建立程式建立附加產品</title>
+ <abstract>
+  <para>
+   附加產品是一個經特殊設計的媒體，通常是 CD 或 DVD，用於延伸產品功能。我們開發了附加產品建立程式，以向客戶與合作夥伴提供支援，並簡化針對所有 SUSE 產品的協力廠商軟體配送。
+  </para>
+ </abstract>
+ <sect1 id="sec.addon_creator.creating">
+  <title>建立影像</title>
+
+  <para>
+   若要建立附加產品 CD，請執行下列步驟︰
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     啟動 YaST，然後開啟<guimenu>附加產品建立程式</guimenu>模組。一個視窗即會開啟。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     如果之前未執行此模組，請按一下<guimenu>從頭建立附加產品</guimenu>啟動該模組。如果已經建立了附加產品，視窗會顯示所有建立的附加產品的清單。按一下<guimenu>新增</guimenu>啟動該模組。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     輸入附加產品的產品名稱與版本，然後指定一些其他選項︰
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       選擇附加產品所依據的必要產品。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       選取其他附加產品套件的路徑。如果需要基本產品中未包含的其他 RPM 套件，則需要執行此動作 (這是選擇性步驟)。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       選取所需產品套件的路徑 (這是選擇性步驟)。
+      </para>
+      
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     校正產品定義，然後輸入廠商名稱。停用<guimenu>僅顯示需要的關鍵字</guimenu>以顯示更多關鍵字。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     變更套件描述。使用<guimenu>新增語言</guimenu>插入新的語言並新增翻譯後的描述 (這是選擇性步驟)。
+    </para>
+    
+   </step>
+   <step performance="required">
+    <para>
+     新增新的模式。使用這些模式，您就可以對 RPM 套件進行分組。使用<guimenu>新增</guimenu>以新增新的模式名稱並變更下面清單中的相應屬性 (這是選擇性步驟)。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     修改輸出設定。輸入輸出目錄的路徑，並變更 ISO 的名稱 (變更 ISO 名稱是選擇性操作)。此外，您還可以修改以下其他功能︰
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       使用<guimenu>設定工作流程...</guimenu>可輸入檔案以自定產品工作流程。
+      </para>
+      
+     </listitem>
+     <listitem>
+      <para>
+       使用<guimenu>選擇性檔案...</guimenu>可將檔案新增至附加產品。第一部分可用於在 <filename>info.txt</filename> 檔案中插入有關附加產品的資訊。使用授權檔案可以在開始安裝前顯示包含<guimenu>同意</guimenu>與<guimenu>不同意</guimenu>按鈕的視窗。可在 README 區段中新增更多檔案。
+      </para>
+      <para>
+       第二部分可用於儲存各種語言的 <filename>COPYRIGHT</filename> 與 <filename>COPYING</filename> 檔案。
+      </para>
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     使用 GPG 金鑰簽署附加產品。使用 GPG 金鑰簽署產品可以提供產品來源證明。如果您沒有金鑰，請先建立一個金鑰，然後分別輸入兩次密碼片語。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在綜覽中檢查產品，然後按一下<guimenu>完成</guimenu>繼續。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用<guimenu>建立</guimenu>按鈕啟動程序。使用<guimenu>完成</guimenu>可關閉視窗。
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.addon_creator.structure">
+  <title>附加產品結構</title>
+
+  <para>
+   如果建立附加產品，下面的綜覽包含了檔案與目錄的結構︰
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>ARCHIVES.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      包含所有 RPM 檔案的 Gzip 壓縮內容。對於每個 RPM 檔案而言，Gzip 壓縮內容實際上就是含有選項 <option>-qil</option> 的 <command>rpm</command> 指令清單。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>變更記錄</filename>
+    </term>
+    <listitem>
+     <para>
+      包含 RPM 檔案的所有變更。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content</filename>
+    </term>
+    <listitem>
+     <para>
+      包含有關附加產品的資訊。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      包含來自 GPG 的簽名檔案。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.key</filename>、<filename>gpg-pubkey-<replaceable>NUMBER</replaceable>.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      公用 GPG 金鑰。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>INDEX.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      包含所有 RPM 檔案的清單，該清單以 <command>gzip</command> 壓縮。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>ls-lR.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      包含附加產品媒體所有檔案與目錄的清單。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>media.<replaceable>N</replaceable>/</filename>
+    </term>
+    <listitem>
+     <para>
+      包含儲存有關附加產品媒體集之基本資訊的檔案。目錄已被編號，因此 <filename>media.1/</filename> 表示第一個附加產品媒體。其餘媒體都依此順序編號。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>suse/</filename>
+    </term>
+    <listitem>
+     <para>
+      包含專門用於儲存架構資訊的子目錄。其中的例外是儲存架構獨立套件的 <filename>noarch/</filename> 與儲存來源套件的 <filename>src/</filename>。專屬軟體套件儲存於 <filename>nosrc/</filename> 下。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.addon_creator.moreinfo">
+  <title>更多資訊</title>
+
+  <para>
+   在 KIWI 入口網站 (<ulink url="http://en.opensuse.org/Portal:KIWI"/>) 上的下列文件中尋找更多資訊。
+  </para>
+ </sect1>
+</chapter>

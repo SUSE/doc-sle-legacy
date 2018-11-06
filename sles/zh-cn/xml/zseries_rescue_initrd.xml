@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="zseries_rescue_initrd.xml" id="sec.zseries.rescue">
+ <title>IBM System z：将 initrd 用作救援系统</title>
+
+ <para>
+  如果升级或修改了 SUSE® Linux Enterprise Server for IBM System z 的内核，则可能会在不一致的状态下意外地重引导系统，这样会使已安装系统的标准 IPL 过程失败。如果已安装了新的或经过更新的 SUSE Linux Enterprise Server 内核，但尚未运行 zipl 程序来更新 IPL 记录，最容易出现这种情况。在这种情况下，请使用标准安装包作为救援系统，并从中执行 zipl 程序来更新 IPL 记录。
+ </para><indexterm> <primary>救援系统</primary> </indexterm>
+
+ <sect2 id="sec.zseries.rescue.ipling">
+  <title>对救援系统执行初始程序装载</title>
+  <important>
+   <title>使安装数据可用</title>
+   <para>
+    要使此方法起作用，SUSE Linux Enterprise Server for IBM System z 安装数据必须可用。有关详细信息，请参见<xref linkend="sec.prep.makeavail"/>。此外，您还需要设备的通道号，以及设备内包含 SUSE Linux Enterprise Server 安装的根文件系统的分区号。
+   </para>
+  </important>
+  <para>
+   首先按<xref linkend="sec.zseries.prep"/>中所述，对 SUSE Linux Enterprise Server for IBM System z 安装系统执行 IPL。随后将显示一个要使用的网络适配器的选择列表。
+  </para>
+  <para>
+   选择<guimenu>启动安装或系统</guimenu>，然后选择<guimenu>启动救援系统</guimenu>来启动救援系统。根据安装环境，现在必须确定网络调节器的参数和安装源。装载救援程序，并显示后面的登陆提示。
+  </para>
+  <screen>Skipped services in runlevel 3:  nfs nfsboot
+
+Rescue login:</screen>
+  <para>
+   您现在可以用 <systemitem class="username">root</systemitem> 身份登录，而无需输入口令。
+  </para>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.configure_disks">
+  <title>磁盘配置</title>
+  <para>
+   在此情况下，没有做任何磁盘配置。需要在在能进入以前配置磁盘。
+  </para>
+  <procedure>
+   <title>配置 DASD</title>
+   <step performance="required">
+    <para>
+     用以下的命令配置 DASD：
+    </para>
+    <screen>dasd_configure 0.0.0150 1 0</screen>
+    <para>
+     DASD 以 0.0.0150 连接。<literal>1</literal> 表示激活该磁盘（此位置若为 <literal>0</literal> 则将停用该磁盘）。<literal>0</literal> 表示磁盘<quote>无 DIAG 模式</quote>（<literal>1</literal> 使磁盘的 DAIG 访问可用）。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     现在，DASD 为联机（用 <command>cat /proc/partitions</command> 检查），并可用于后续命令。
+    </para>
+   </step>
+  </procedure>
+  <procedure>
+   <title>配置 zFCP 磁盘</title>
+   <step performance="required">
+    <para>
+     配置 zFCP 磁盘，首先要配置 zFCP 调节器。请使用以下命令完成该操作：
+    </para>
+    <screen>zfcp_host_configure 0.0.4000 1</screen>
+    <para>
+     <literal>0.0.4000</literal> 是调节器的连接目标通道 <literal>1</literal> 表示激活(<literal>0</literal>使调节器无效)。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     调节器被激活后，可以配置磁盘。请使用以下命令完成该操作：
+    </para>
+    <screen>zfcp_disk_configure 0.0.4000 1234567887654321 8765432100000000  1</screen>
+    <para>
+     <literal>0.0.4000</literal> 是以前用的通道 ID, <literal>1234567887654321</literal> 为 WWPN (国际端口号码 World wide Port Number), 而 <literal>8765432100000000</literal> 是 LUN (逻辑单位号码 logical unit number). <literal>1</literal> 意味着激活该磁盘 (这里的 <literal>0</literal> 将使该磁盘无效)。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     现在，zFCP 磁盘为联机（用 <command>cat /proc/partitions</command> 检查），并可用于后续命令。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.mount">
+  <title>装入 root 设备</title>
+  <para>
+   如果所有所需设备都为联机，则现在应该能够装入 root 设备。假定 root 设备位于 DASD 设备的第 2 个分区 (<literal>/dev/dasda2</literal>)，则相应的命令是 <command>mount /dev/dasda2 /mnt</command>。
+  </para>
+  <important>
+   <title>文件系统一致性</title>
+   <para>
+    如果没有正确关闭已安装系统，则最好在执行装入之前检查文件系统一致性。这样可避免意外丢失数据。在本例中，发出命令 <command>fsck</command> <option>/dev/dasda2</option> 以确保文件系统处于一致的状态。
+   </para>
+  </important>
+  <para>
+   通过只发布命令 <command>mount</command>，可以检查是否能够正确装入文件系统。
+  </para>
+  <example id="ex.zseries.rescue.mount.mount_output">
+   <title>Mount 命令的输出</title>
+   <screen>SuSE Instsys suse:/ # mount
+shmfs on /newroot type shm (rw,nr_inodes=10240)
+devpts on /dev/pts type devpts (rw)
+virtual-proc-filesystem on /proc type proc (rw)
+/dev/dasda2 on /mnt type reiserfs (rw)</screen>
+  </example>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.chroot">
+  <title>更改为已装入的文件系统</title>
+  <para>
+   为了使 <literal>zipl</literal> 命令从已安装系统的 root 设备而非救援系统读取配置文件，请使用 <command>chroot</command> 命令将 root 设备更改为已安装系统：
+  </para>
+  <example id="ex.zseries.rescue.chroot">
+   <title>chroot 到已装入的文件系统</title>
+   <screen>SuSE Instsys suse:/ # cd /mnt 
+SuSE Instsys suse:/mnt # chroot /mnt</screen>
+  </example>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.zipl">
+  <title>执行 zipl</title>
+  <para>
+   现在执行 <command>zipl</command> 用正确的值改写 IPL 记录。
+  </para>
+  <example id="ex.zseries.rescue.zipl">
+   <title>使用 zipl 命令安装 IPL 记录</title>
+   <screen>sh-2.05b# zipl 
+building bootmap : /boot/zipl/bootmap 
+adding Kernel Image : /boot/kernel/image located at 0x00010000 
+adding Ramdisk : /boot/initrd located at 0x00800000 
+adding Parmline : /boot/zipl/parmfile located at 0x00001000 
+Bootloader for ECKD type devices with z/OS compatible layout installed. 
+Syncing disks.... 
+...done</screen>
+  </example>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.exit">
+  <title>退出救援系统</title>
+  <para>
+   要退出救援系统，应首先使用 <command>exit</command> 退出由 <command>chroot</command> 命令打开的外壳。为了避免丢失任何数据，请使用 <command>sync</command> 命令将所有未使用的缓冲区清理到磁盘。现在切换到救援系统的根目录，然后卸载 SUSE Linux Enterprise Server for IBM System z 安装的根设备。
+  </para>
+  <example id="ex.zseries.rescue.exit.umount">
+   <title>卸装文件系统</title>
+   <screen>SuSE Instsys suse:/mnt # cd / 
+SuSE Instsys suse:/ # umount /mnt</screen>
+  </example>
+  <para>
+   最后，使用 <command>halt</command> 命令暂停救援系统。现在便可以按照<xref linkend="sec.s390.inst.reipl"/>所述对 SUSE Linux Enterprise Server 系统执行 IPL。
+  </para>
+ </sect2>
+</sect1>

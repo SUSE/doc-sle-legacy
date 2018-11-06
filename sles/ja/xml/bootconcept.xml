@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="bootconcept.xml" id="cha.boot">
+ <title>Linuxシステムのブートと設定</title><indexterm> <primary>ブート</primary> </indexterm>
+ <abstract>
+  <para>
+   Linuxシステムのブートには、さまざまなコンポーネントが関係しています。ハードウェアはBIOSにより初期化され、BIOSはブートローダでカーネルを起動します。それ以後は、オペレーティングシステムが<systemitem>init</systemitem>とランレベルを含むブートプロセスを完全にコントロールします。ランレベルのコンセプトにより、日常使用のセットアップを保持できるほか、システム上でタスクを保守することもできます。
+  </para>
+ </abstract>
+ <sect1 id="sec.boot.proc">
+  <title>Linuxのブートプロセス</title>
+
+  <para>
+   Linuxのブートプロセスは、いくつかの段階から成り、それぞれ別のコンポーネントが実行しています。次のリストに、主要なすべてのコンポーネントが関与するブートプロセスと機能を簡潔にまとめています。
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>BIOS</title>
+     <para>
+      コンピュータの電源を入れた後、BIOSが画面とキーボードを初期化し、メインメモリをテストします。この段階まで、コンピュータは大容量ストレージメディアにアクセスしません。続いて、現在の日付、時刻、および最も重要な周辺機器に関する情報が、CMOS値からロードされます。最初のハードディスクとそのジオメトリが認識されると、システム制御がBIOSからブートローダに移ります。<phrase os="sles">BIOSがネットワークブートをサポートしている場合は、ブートローダを提供するブートサーバを設定することもできます。x86システムの場合、PXEブートを利用する必要があります。他のアーキテクチャの場合は、通常BOOTPプロトコルを使ってブートローダを取得します。</phrase>
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>ブートローダ</title>
+     <para>
+      最初のハードディスクの先頭の 512バイト物理データセクタがメインメモリにロードされ、このセクタの先頭に常駐する<emphasis>ブートローダ</emphasis>が起動します。ブートローダによって実行されたコマンドがブートプロセスの残りの部分を確定します。したがって、最初のハードディスクの先頭 512バイトのことを<emphasis>マスタブートレコード</emphasis>(MBR)といいます。次に、ブートローダは、実際のオペレーティングシステム(この場合はLinuxカーネル)に制御を渡します。GRUB(Linuxのブートローダ)の詳細については、<xref linkend="cha.grub"/>を参照してください。<phrase os="sles">ネットワークブートを行う場合、BIOSがブートローダとしての役割を果たします。BIOSは、ブートサーバから起動するためのイメージを取得し、システムを起動します。この作業にローカルのハードディスクからは完全に独立した処理として行われます。</phrase>
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>カーネルと<systemitem>initramfs</systemitem></title>
+     <para>
+      システムに制御を渡すために、ブートローダは、カーネルとRAMベースの初期ファイルシステム(<systemitem>initramfs</systemitem>)をメモリにロードします。カーネルは、<systemitem>initramfs</systemitem>のコンテンツを直接使用できます。<systemitem>initramfs</systemitem>には、実際のルートファイルシステムのマウント処理を行う<systemitem>init</systemitem>と呼ばれる小さな実行可能ファイルが含まれています。大容量ストレージにアクセスするために特別なハードウェアドライバが必要な場合、それらは<systemitem>initramfs</systemitem>内になければなりません。<systemitem>initramfs</systemitem>の詳細については、 <xref linkend="sec.boot.initrd"/>を参照してください。<phrase os="sles"><systemitem>システムにローカルハードディスクがない場合、initramfsがルートファイルシステムをカーネルに提供する必要があります。</systemitem>そのためには、iSCSIやSANなどのネットワークブロックデバイスを利用しますが、NFSをルートデバイスとして使うことも可能です。</phrase>
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><systemitem/>initramfs上のinit<systemitem/></title>
+     <para>
+      このプログラムは、適切なルートファイルシステムをマウントするために必要なすべてのアクションを実行します。たとえば、必要なファイルシステムにカーネル機能を提供したり、大容量ストレージコントローラ用のデバイスドライバに<systemitem class="service">udev</systemitem>を提供します。ルートファイルシステムが見つかると、エラーをチェックしてからマウントします。これが正常に実行されれば、<systemitem>initramfs</systemitem>はクリアされ、ルートファイルシステムで<systemitem>init</systemitem>プログラムが実行されます。<systemitem>init</systemitem>の詳細については、 <xref linkend="sec.boot.linuxrc"/>を参照してください。<systemitem class="service">udev</systemitem>の詳細については、<xref linkend="cha.udev"/>を参照してください。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title><systemitem>init</systemitem></title>
+     <para>
+      <systemitem>init</systemitem>は、いくつかの異なるレベルでシステムの実際のブートを処理し、さまざまな機能を提供します<systemitem>init</systemitem>については、<xref linkend="sec.boot.init"/>で説明されています。
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+
+  <sect2 id="sec.boot.initrd">
+   <title><systemitem>initramfs</systemitem></title>
+   <para>
+    <systemitem>initramfs</systemitem>は、カーネルがRAMディスクにロードできる、小さなcpioアーカイブです。また、実際のルートファイルシステムがマウントされる前にプログラムを実行できるようにする最低限のLinux環境を提供します。この最小Linux環境は、BIOSルーチンによってメモリにロードされ、十分なメモリを必要とする以外、特定のハードウェア要件はありません。<systemitem>initramfs</systemitem>は、必ず、<systemitem>init</systemitem>という名前の実行可能ファイルを提供する必要があります。このファイルは、ルートファイルシステム上で実際の<systemitem>init</systemitem>プログラムを実行することによりブートプロセスを進行させます。
+   </para>
+   <para>
+    ルートファイルシステムをマウントして実際のオペレーティングシステムを起動する前に、カーネルには、ルートファイルシステムが配置されているデバイスにアクセスするための対応ドライバが必要です。こうしたドライバには、特定のハードディスク用の特殊なドライバや、ネットワークファイルシステムにアクセスするためのネットワークドライバが含まれる場合もあります。ルートファイルシステムに必要なモジュールは、<systemitem>initramfs</systemitem>上の<systemitem>init</systemitem>によってロードされます。モジュールをロードしたら、<systemitem class="service">udev</systemitem>によって必要なデバイスが<systemitem>initramfs</systemitem>に提供されます。ブートプロセス後半で、ルートファイルシステムが変更された後、デバイスを再生成する必要があります。これには、<command>udevtrigger</command>コマンドで<filename>boot.udev</filename>を実行します。
+   </para><indexterm> <primary>ブート</primary> <secondary>initramfs</secondary> </indexterm> <indexterm> <primary>ブート</primary> <secondary>initrd</secondary> </indexterm> <indexterm> <primary>スクリプト</primary> <secondary>mkinitrd</secondary> </indexterm>
+   <para>
+    インストール済みのシステムのハードウェア(たとえば、ハードディスク)を変更する必要が生じ、このハードウェアはブート時にカーネル内に存在する他のドライバを必要とする場合には、<systemitem>initramfs</systemitem>を更新する必要があります。これは、initramfsの前身である<systemitem>init</systemitem>の場合と同様に、<command>mkinitrd</command>を呼び出して行うことができます。引数を付けずに <command>mkinitrd </command>を呼び出すと、<systemitem>initramfs</systemitem>が作成されます。<command>mkinitrd <option>-R</option></command>を呼び出すと、<systemitem>init</systemitem>が作成されます。<phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase>では、ロードするモジュールは<systemitem>/etc/sysconfig/kernel</systemitem>内の変数<filename>INITRD_MODULES</filename>で指定されます。<indexterm> <primary>環境設定ファイル</primary> <secondary>カーネル</secondary> </indexterm>インストール後、この変数は自動的に正しい値に設定されます。モジュールは、<systemitem>INITRD_MODULES</systemitem>に指定されている順序で正確にロードされます。このことは、デバイスファイルの<filename>/dev/sd?の設定の正確性に依存している場合にのみ重要になります。</filename>ただし、現在のシステムで<filename>/dev/disk/</filename>ディレクトリ下にあるデバイスファイルを使用することもできます。これらのファイルは、<filename>by-id</filename>、<filename>by-path</filename>、および<filename>by-uuid</filename>などのサブディレクトリに分類されており、常に同じディスクを表します。これは、該当するマウントオプションの指定により、インストール時にも可能です。
+   </para>
+   <important>
+    <title><systemitem>initramfs</systemitem>または <systemitem>init</systemitem>の更新</title>
+    <para>
+     ブートローダは、カーネルと同じように<systemitem>initramfs</systemitem>または<systemitem>init</systemitem>をロードします。GRUBはブート時に正しいファイルのディレクトリを検索するので、<systemitem>initramfs</systemitem>または<systemitem>init</systemitem>を更新した後にGRUBを再インストールする必要はありません。
+    </para>
+   </important>
+  </sect2>
+
+  <sect2 id="sec.boot.linuxrc">
+   <title><systemitem>initramfs</systemitem>上のinit</title>
+   <para>
+    <systemitem>initramfs</systemitem>上の<systemitem>init</systemitem>の主な目的は、実際のルートファイルシステムのマウントとアクセスの準備をすることです。システム設定に応じて、<systemitem>init</systemitem>は次のタスクを実行します。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>カーネルモジュールのロード</term>
+     <listitem>
+      <para>
+       ハードウェア設定によっては、使用するコンピュータのハードウェアコンポーネント(ハードディスクになる最も重要なコンポーネント)にアクセスするために特殊なドライバが必要になる場合があります。最終的なルートファイルシステムにアクセスするには、カーネルが適切なファイルシステムドライバをロードする必要があります。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>ブロック特殊ファイルの提供</term>
+     <listitem>
+<?dbfo-need height="10em"?>
+
+
+      <para>
+       ロードされるモジュールごとに、カーネルはデバイスイベントを生成します。<systemitem class="service">udev</systemitem>は、これらのイベントを処理し、RAMファイルシステム上で必要なブロック特殊ファイルを<filename>/dev</filename>内に生成します。これらの特殊ファイルがないと、ファイルシステムや他のデバイスにアクセスできません。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>RAIDとLVMのセットアップの管理</term>
+     <listitem>
+      <para>
+       RAIDまたはLVMの下でルートファイルシステムを保持するようにシステムを設定した場合、<systemitem>init</systemitem>はLVMまたはRAIDをセットアップして、後でルートファイルシステムにアクセスできるようにします。<xref linkend="cha.advdisk"/>でRAIDとLVMに関する情報を参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry id="ve.net">
+     <term>ネットワーク設定の管理</term>
+     <listitem>
+      <para>
+       ネットワークマウントしたルートファイルシステム(NFSを介してマウント)を使用するようにシステムを設定した場合、<systemitem>init</systemitem>は適切なネットワークドライバがロードされ、ドライバがルートファイルシステムにアクセスできるように設定されていることを確認する必要があります。
+      </para>
+      <para os="sles">
+       ファイルシステムがiSCSIやSANなどのネットワークブロックデバイスに常駐している場合は、ストレージサーバへの接続も<systemitem>initramfs</systemitem>によって設定されます。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    初期ブート時にインストールプロセスの一環として<systemitem>init</systemitem>が呼び出される場合、そのタスクは上記で説明したタスクと異なります。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>インストールメディアの検出</term>
+     <listitem>
+      <para>
+       インストールプロセスを開始すると、使用するコンピュータでは、YaSTインストーラでインストールカーネルと特殊な<systemitem>init</systemitem>がインストールメディアからロードされます。RAMファイルシステムで実行されるインストーラには、インストールメディアにアクセスしてオペレーティングシステムをインストールするために、そのメディアの場所に関する情報が必要になります。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>ハードウェア認識の開始および適切なカーネルモジュールのロード</term>
+     <listitem>
+      <para>
+       で説明しているように、ブートプロセスは、ほとんどのハードウェア設定で使用できる最小限のドライバセットで開始されます。initは、ハードウェア設定に適したドライバセットを確定する、初期ハードウェアスキャンプロセスを開始します。<xref linkend="sec.boot.initrd"/><systemitem/>ブートプロセスに必要なモジュール名は、<systemitem>/etc/sysconfig/kernel</systemitem>ディレクトリ中の<filename>INITRD_MODULES</filename>に書き込まれます。これらの名前は、システムをブートするために必要なカスタム<systemitem>initramfs</systemitem>を生成するために使用されます。ブートではなくcoldplugで必要なモジュールは、<filename>/etc/sysconfig/hardware/hwconfig-*</filename>ディレクトリに書き込まれます。ブートプロセス時には、このディレクトリ中の設定ファイルに記述されているすべてのデバイスが初期化されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>インストールシステムまたはレスキューシステムのロード</term>
+     <listitem>
+      <para>
+       ハードウェアが適切に認識されると、適切なドライバがただちにロードされ、<systemitem class="service">udev</systemitem>は特殊なデバイスファイルを作成し、<systemitem>init</systemitem>は実際のYaSTインストーラでインストールシステムを起動するか、またはレスキューシステムを起動します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>YaSTの起動</term>
+     <listitem>
+      <para>
+       最後に、<systemitem>init</systemitem>はYaSTを起動し、これによってパッケージのインストールとシステム設定が開始されます。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.boot.init">
+  <title><systemitem>init</systemitem>プロセス</title><indexterm id="idx.init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
+
+  <para>
+   <systemitem>init</systemitem>プログラムは、プロセスIDが1のプロセスです。このプロセスでは、要求された方法でシステムの初期化を行います。<systemitem>init</systemitem>は直接カーネルから起動され、プロセスを強制終了するsignal 9で終了することはできません。他のすべてのプログラムは、<systemitem>init</systemitem>またはその子プロセスの1つによって直接起動されます。
+  </para>
+
+  <para>
+   <systemitem>init</systemitem>は、<filename>/etc/inittab</filename>ファイルで一元的に設定されます。<emphasis>ランレベル</emphasis>はこのファイルで定義されます(<xref linkend="sec.boot.runlevel"/>を参照)。このファイルはまた、各ランレベルで利用可能なサービスとデーモンを指定しています。<filename>etc/inittab</filename>のエントリに応じて、<systemitem>init</systemitem>はいくつかのスクリプトを実行します。デフォルトでは、ブート後に最初に開始するスクリプトは、<filename>/etc/init.d/boot</filename>です。システムの初期設定が完了すると、<filename>/etc/init.d/rc</filename>スクリプトで、ランレベルがデフォルトのランレベルに変更されます。わかりやすくするために、これらの<emphasis>initスクリプト</emphasis>と呼ばれるスクリプトはすべて、ディレクトリ<filename>/etc/init.d</filename>にあります(<xref linkend="sec.boot.init.skripte"/>を参照)。<indexterm><primary>スクリプト</primary><secondary>init.d</secondary> </indexterm>
+  </para>
+
+  <para>
+   システムの起動からシャットダウンまでのプロセス全体が<systemitem>init</systemitem>によって保持されます。この見地から、カーネルは、他のプログラムからの要求に従って、他のすべてのプロセスを保持し、CPU時間とハードウェアアクセスを調整するバックグラウンドプロセスと考えることができます。
+  </para><indexterm class="endofrange" startref="idx.init"/>
+
+  <sect2 id="sec.boot.runlevel">
+   <title>ランレベル</title><indexterm id="idx.runlevels" class="startofrange"> <primary>ランレベル</primary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>inittab</secondary> </indexterm>
+   <para>
+    Linuxでは、<emphasis>ランレベル</emphasis>はシステムの起動方法および稼動中のシステムで使用可能なサービスを定義します。ブート後、システムは<filename>/etc/inittab</filename>の<literal>initdefault</literal>行での定義に従って起動します。通常のランレベルは<literal>3</literal>または<literal>5</literal>です。参照先<xref linkend="tab.boot.runlevel"/>.別の方法として、ランレベルをブート時に(たとえばブートプロンプトにランレベル番号を追加する)指定することもできます。パラメータは、カーネル自体が直接評価するのもの以外はすべて、<systemitem>init</systemitem>に渡されます。ランレベル3にブートするには、ブートプロンプトに単一の番号3を追加します。
+   </para>
+   <table id="tab.boot.runlevel">
+    <title>ランレベルの種類</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         ランレベル
+        </para>
+       </entry>
+       <entry>
+        <para>
+         説明
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         0
+        </para>
+       </entry>
+       <entry>
+        <para>
+         システム停止
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         Sまたは1
+        </para>
+       </entry>
+       <entry>
+        <para>
+         シングルユーザモード
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         2
+        </para>
+       </entry>
+       <entry>
+        <para>
+         リモートネットワーク(NFSなど)なしのローカルマルチユーザモード
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         3
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ネットワークを使用するフルマルチユーザモード
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         4
+        </para>
+       </entry>
+       <entry>
+        <para>
+         <guimenu>ユーザ定義</guimenu>。管理者が設定しない限り使用されないランレベル。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         5
+        </para>
+       </entry>
+       <entry>
+        <para>
+         ネットワークとXディスプレイマネージャのKDM、GDM、またはXDMを使用するフルマルチユーザモード
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         6
+        </para>
+       </entry>
+       <entry>
+        <para>
+         システムの再起動
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <important>
+    <title>パーティションがNFSマウントされている場合にはランレベル2は避ける</title>
+    <para>
+     システムでNFSを介して<filename>/usr</filename>などのパーティションをマウントする場合は、ランレベル 2を使用しないでください。NFSサービスは、ランレベル2(リモートネットワークのないローカルマルチユーザモード)では使用できないため、プログラムファイルまたはライブラリがない場合、システムは予想しない動作をする可能性があります。
+    </para>
+   </important>
+   <para>
+    システムの稼動中にランレベルを変更するには、<command>telinit</command>の後に、ランレベルに対応する番号を引数として入力します。これができるのは、システム管理者だけです。次のリストは、ランレベルに関連した最も重要なコマンドの概要です。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>telinit 1</command>または<command>shutdown now</command>
+     </term>
+     <listitem>
+      <para>
+       システムは<emphasis>シングルユーザモード</emphasis>に入ります。このモードは、システムメンテナンスや管理タスクで使用します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 3</command>
+     </term>
+     <listitem>
+      <para>
+       (ネットワークを含む)すべての重要なプログラムとサービスが起動します。グラフィック環境はありませんが、一般ユーザは、システムにログインして作業することができます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 5</command>
+     </term>
+     <listitem>
+      <para>
+       グラフィック環境は有効になります。通常、XDM、GDMまたはKDMなどのディスプレイマネージャが起動します。自動ログインが有効な場合、ローカルユーザは事前に選択されているウィンドウマネージャ(GNOME、KDEまたはその他のウィンドウマネージャ)にログインします。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 0</command>または<command>shutdown -h now</command>
+     </term>
+     <listitem>
+      <para>
+       システムは停止します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>telinit 6</command>または<command>shutdown -r now</command>
+     </term>
+     <listitem>
+      <para>
+       システムは停止した後、再起動します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    ランレベル<literal>5</literal>は、すべての<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>標準インストールにおけるデフォルトのランレベルです。ユーザは、グラフィカルインタフェースでログインするように求められます。デフォルトユーザの場合は自動的にログインされます。
+   </para>
+   <warning>
+    <title><filename>/etc/inittab</filename>のエラーのため、システムブートが失敗することがある</title>
+    <para>
+     <indexterm><primary>設定ファイル</primary><secondary>inittab</secondary></indexterm><filename>/etc/inittab</filename>が破損した場合、システムが正しく起動しないことがあります。そのため、<filename>/etc/inittab</filename>を編集する場合は細心の注意を払ってください。また、コンピュータを再起動する前には、常に<command>telinit <option>q</option></command>コマンドを使用して、<systemitem>init</systemitem>に<filename>/etc/inittab</filename>を再読み込みさせてください。
+    </para>
+   </warning><indexterm id="idx.runlevels_changing" class="startofrange"> <primary>ランレベル</primary> <secondary>変更</secondary> </indexterm>
+   <para>
+    ランレベルを変更するときには、一般に2つの操作が行われます。1つは、現在のランレベルの停止スクリプトが起動し、現在のランレベルに必要なプログラムを終了します。次に、新しいランレベルの起動スクリプトが起動します。ここで、ほとんどの場合、プログラムがいくつか起動します。たとえば、ランレベルを3から5に変更する場合、次の操作が行われます。
+   </para>
+   <orderedlist spacing="normal">
+    <listitem>
+     <para>
+      管理者(<systemitem class="username">root</systemitem>)が<command>telinit <option>5</option></command>を入力して、<systemitem>init</systemitem>にランレベルを変更するように要求します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <indexterm><primary>設定ファイル</primary><secondary>inittab</secondary></indexterm><indexterm><primary>スクリプト</primary><secondary>init.d</secondary><tertiary>rc</tertiary></indexterm><systemitem/>initは現在のランレベル(<command>runlevel</command>)を調べ、新しいランレベルをパラメータとして<filename>/etc/init.d/rc</filename>を起動する必要があるかどうか判断します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      ここで<command>rc</command>は、現在のランレベルの停止スクリプトであって、新しいランレベルの起動スクリプトがないものを呼び出します。この例では、元のランレベルが3なので、<filename>/etc/init.d/rc 3.d</filename>の中の<literal>K</literal>で始まるすべてのスクリプトが対象となります。<literal>K</literal>の次の番号は、<systemitem>stop</systemitem>パラメータを使ってスクリプトを実行する順番を示します(検討する必要がある依存関係が存在するため)。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      最後に、新しいランレベルの起動スクリプトを起動します。この例では<filename>/etc/init.d/rc5.d</filename>の中の<literal>S</literal>で始まるスクリプトがそれにあたります。この場合も、<literal>S</literal>の次の番号が、スクリプトの実行順序を表します。
+     </para>
+    </listitem>
+   </orderedlist>
+   <para>
+    現在のランレベルと同じランレベルに変更する場合、<systemitem>init</systemitem>は<filename>/etc/inittab</filename>で変更部分だけをチェックし、適切な手順を開始します。たとえば、別のインタフェースで<command>getty</command>を起動します。telinit q<command>コマンドを使用しても同じ操作を実行できます。</command>
+   </para><indexterm class="endofrange" startref="idx.runlevels_changing"/><indexterm class="endofrange" startref="idx.runlevels"/>
+  </sect2>
+
+  <sect2 id="sec.boot.init.skripte">
+   <title>initスクリプト</title><indexterm id="idx.init_scripts" class="startofrange"> <primary>init</primary> <secondary>スクリプト</secondary> </indexterm> <indexterm id="idx.scripts_init.d" class="startofrange"> <primary>スクリプト</primary> <secondary>init.d</secondary> </indexterm>
+   <para>
+    /etc/init.d<filename>内に、2種類のスクリプトがあります。</filename>
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><systemitem>init</systemitem>によって直接実行されるスクリプト
+     </term>
+     <listitem>
+      <para>
+       <phrase arch="x86;ipf;amd64;em64t;ipseries;ppc">これは、ブートプロセスの実行中、または即座のシステムシャットダウンを行ったとき(電源障害またはユーザが<keycombo><keycap>Ctrl</keycap><keycap>Alt</keycap><keycap>Del</keycap></keycombo>キーを押した場合)にのみ適用されます。</phrase><phrase arch="zseries" os="sles">IBM System zシステムの場合、ブートプロセスの実行中または即時のシステムシャットダウンを行ったとき（電源障害または「シグナルによる停止」）にのみ適用されます。<quote/></phrase>こうしたスクリプトの実行は、<filename>/etc/inittab</filename>で定義されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>init</systemitem>によって間接的に実行されるスクリプト
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>スクリプト</primary><secondary>init.d</secondary><tertiary>rc</tertiary></indexterm>これらは、ランレベルの変更時に実行され、関連スクリプトの正しい順序を保証するマスタスクリプト<command>/etc/init.d/rc</command>を常に呼び出します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    すべてのスクリプトは、<filename>/etc/init.d</filename>にあります。ブート時に実行されるスクリプトは、<filename>/etc/init.d/boot.d</filename>からのシンボリックリンク経由で呼び出されます。ランレベルを変更するスクリプトもサブディレクトリの1つからのシンボリックリンク(<filename>/etc/init.d/rc0.d</filename>から<filename>/etc/init.d/rc6.d</filename>へ)経由で呼び出されます。これは単にわかりやすくして、複数のランレベルで使用されている場合にスクリプトが重複するのを防ぐためです。すべてのスクリプトは、起動スクリプトとしても停止スクリプトとしても実行できるので、これらのスクリプトはパラメータの<option>start</option>と<option>stop</option>を認識する必要があります。また、これらのスクリプトは<option>restart</option>、<option>reload</option>、<option>force-reload</option>、および<option>status</option>のオプションも認識します。これらのオプションについては、<xref linkend="tab.boot.initscript.opt"/>で説明します。<systemitem>init</systemitem>によって直接実行されるスクリプトには、これらのリンクはありません。こうしたスクリプトは、必要なときにランレベルとは無関係に実行されます。
+   </para>
+   <table id="tab.boot.initscript.opt">
+    <title><systemitem>init</systemitem>スクリプトのオプション</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         オプション
+        </para>
+       </entry>
+       <entry>
+        <para>
+         説明
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <option>start</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         サービスを起動します。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>stop</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         サービスを停止します。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>restart</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         サービスが実行中の場合は、停止して再起動します。実行中でない場合は、起動します。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>reload</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         サービスの停止や再起動をせずに、設定を再ロードします。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>force-reload</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         サービスが設定の再ロードをサポートする場合は、それを実行します。サポートしない場合は、<option>restart</option>が指定された場合と同じ操作を行います。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <option>status</option>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         サービスの現在のステータスを表示します。
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    ランレベル固有のサブディレクトリにあるリンクによって、スクリプトを複数のランレベルに関連付けることができます。パッケージのインストールまたはアンインストール時に、プログラムinsservを使用して(またはこのプログラムを呼び出す<filename>/usr/lib/lsb/install_initd</filename>スクリプトを使用して)、このようなリンクを追加または削除することができます。詳細については、「 <command>man 8 insserv</command>」を参照してください。
+   </para>
+   <para>
+    これらの設定は、YaSTモジュールにより変更されることもあります。コマンドラインからステータスを確認するには、<systemitem>chkconfig</systemitem>ツールを使用します。このツールについては、<command>man 8 chkconfig</command>のマニュアルページで説明されています。
+   </para>
+   <para>
+    次に、最初または最後に起動するブートスクリプトおよび停止スクリプトの概略を示すとともに、保守スクリプトについて説明します。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><filename>boot</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>スクリプト</primary><secondary>init.d</secondary><tertiary>boot</tertiary></indexterm><systemitem>init</systemitem>を直接使用してシステムの起動時に実行されます。選択したランレベルから独立で、一度だけ実行されます。これによって <filename>/proc </filename>ファイルシステムと<filename>/dev/pts</filename>ファイルシステムがマウントされ、<systemitem>blogd</systemitem>(ブートログ出力デーモン)が有効化されます。システムがアップデートまたはインストール後初めてブートされる場合、初期システム設定が起動します。
+      </para>
+      <para>
+       <systemitem>blogd</systemitem>デーモンは、<systemitem>boot</systemitem>および<systemitem>rc</systemitem>によって最初に起動されるサービスです。このサービスは、これらのスクリプトにより開始されたアクション(たとえば特殊なブロックファイルを利用可能にするなど、多数のサブスクリプトの実行)が完了すると停止します。<systemitem/>blogdは、<filename>/var</filename>が読み書き可能でマウントされている場合にのみ、画面出力をログファイル<filename>/var/log/boot.msg</filename>に出力します。そうでない場合は、<filename>/var</filename>が利用できるようになるまで、blogdがすべての画面データをバッファします。<systemitem> blogd</systemitem>の詳細情報を取得するには、<command>man 8 blogd</command>を使用します。
+      </para>
+      <para>
+       <filename>boot</filename>スクリプトは、<filename>/etc/init.d/boot.d</filename>の中の<literal>S</literal>で始まる名前のスクリプトもすべて起動します。そこで、ファイルシステムがチェックされ、必要に応じてループデバイスが設定されます。加えて、システム時間が設定されます。ファイルシステムの自動チェックや修復中にエラーが発生した場合、システム管理者はルートパスワードを入力して介入することができます。最後に実行されるスクリプトは、<command>boot.local</command>です。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>boot.local</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>スクリプト</primary> <secondary>init.d</secondary> <tertiary>boot.local</tertiary> </indexterm>ブート時、ランレベルへの移行前に実行する追加コマンドを入力します。これは、DOSシステムの<filename>AUTOEXEC.BAT</filename>に相当します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>halt</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm> <primary>スクリプト</primary> <secondary>init.d</secondary> <tertiary>halt</tertiary> </indexterm>このスクリプトは、ランレベル0または6への移行時にのみ実行されます。<command>init</command>または<command>init</command>のいずれかとして実行されます。システムがシャットダウンするかリブートするかは、<filename>halt</filename>の呼び出され方に依存します。シャットダウン時に特別なコマンドが必要な場合は、それらのコマンドを<command>init</command>スクリプトに追加してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><filename>rc</filename>
+     </term>
+     <listitem>
+      <para>
+       <indexterm><primary>スクリプト</primary><secondary>init.d</secondary><tertiary>rc</tertiary></indexterm>このスクリプトは、現在のランレベルの適切な停止スクリプトと、新しく選択したランレベルの起動スクリプトを呼び出します。<filename>/etc/init.d/boot</filename>スクリプトと同様、このスクリプトは、目的のランレベルをパラメータとして使用して、<filename>/etc/inittab</filename>から呼び出します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist><indexterm> <primary>init</primary> <secondary>スクリプトの追加</secondary> </indexterm>
+   <para>
+    独自のスクリプトを作成して、先に説明したスキーマに容易に組み込むことができます。カスタムスクリプトの形式設定、名前付け、および構成方法については、LSBの仕様と、<systemitem>init</systemitem>、<systemitem>init.d</systemitem>、<systemitem>chkconfig</systemitem>、および<systemitem>insserv</systemitem>のマニュアルページを参照してください。加えて、<systemitem>startproc</systemitem>および<systemitem>killproc</systemitem>のマニュアルページも参照してください。
+   </para>
+   <warning>
+    <title>initスクリプトのエラーはシステムの停止につながる場合がある</title>
+    <para>
+     <systemitem>init</systemitem>スクリプトに問題があると、コンピュータがハングアップする場合があります。このようなスクリプトは最大限の注意を払って編集し、可能であれば、マルチユーザ環境で徹底的にテストします。<systemitem>init</systemitem>スクリプトの有益な情報については、<xref linkend="sec.boot.runlevel"/>を参照してください。
+    </para>
+   </warning>
+   <para>
+    所定のプログラムまたはサービス用のカスタム<systemitem>init</systemitem>スクリプトを作成する場合は、テンプレートとしてファイル<filename>/etc/init.d/skeleton</filename>を使用します。このファイルのコピーを別名で保存し、必要に応じて、関連のプログラムやファイル名、パス、その他の詳細を編集します。場合によっては、<systemitem>init</systemitem>プロシージャで正しいアクションが開始されるように、独自の改良をスクリプトに加える必要があります。
+   </para>
+   <para>
+    最初に記載されている<literal>INIT INFO</literal>ブロックはスクリプトの必須部分で、次のように編集する必要があります。詳細については、<xref linkend="aus.boot.init.skripte.add.initinfo"/>を参照してください。
+   </para>
+   <example id="aus.boot.init.skripte.add.initinfo">
+    <title>最低限のINIT INFOブロック</title>
+<screen>### BEGIN INIT INFO
+# Provides:          FOO
+# Required-Start:    $syslog $remote_fs
+# Required-Stop:     $syslog $remote_fs
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 6
+# Description:       Start FOO to allow XY and provide YZ
+### END INIT INFO</screen>
+   </example>
+   <para>
+    INFO<literal>ブロックの最初の行では、</literal>Provides:<literal>の後に、このinitスクリプトで制御するプログラムまたはサービスの名前を指定します。</literal><systemitem/><literal>Required-Start:</literal>行と<literal>Required-Stop:</literal>行では、サービス自体が停止しても実行中の状態を維持する必要のあるすべてのサービスを指定します。この情報は後で、ランレベルディレクトリに表示するスクリプト名に対し、番号を生成するために使用します。<literal>Default-Start:</literal>および<literal>Default-Stop:</literal>の後に、サービスが自動的に起動または停止する際のランレベルを指定します。最後に、<literal>Description:</literal>の下に、対象のサービスについての簡単な説明を記載します。
+   </para>
+   <para>
+    ランレベルディレクトリ(<filename>/etc/init.d/rc?.d/</filename>)から<filename>/etc/init.d/</filename>内の対応するスクリプトへのリンクを作成するには、コマンド<command>insserv <replaceable>new-script-name</replaceable></command>を入力します。<command>insserv</command>プログラムは、<literal>INIT INFO</literal>ヘッダを評価して、ランレベルディレクトリ(<filename>/etc/init.d/rc?.d/</filename>)内の起動スクリプトと停止スクリプトに必要なリンクを作成します。このプログラムはまた、必要な番号をこれらのリンクの名前に取り込むことによって、ランレベルごとに正しい起動、停止の順序を管理します。グラフィックツールを使用してリンクを作成する場合は、<xref linkend="sec.boot.runlevel.edit"/>の説明に従って、YaSTのランレベルエディタを使用します。
+   </para>
+   <para>
+    /etc/init.d/<filename>にすでに存在するスクリプトを既存のランレベルスキーマに統合する場合は、はじめにinsservを使用するか、YaSTのランレベルエディタで対応するサービスを有効にすることにより、ランレベルディレクトリにリンクを作成します。</filename><command/>変更内容は、次回のブート時に適用され、新しいサービスが自動的に起動します。
+   </para>
+   <para>
+    作成したリンクは手動で設定しないでください。INFO<literal>ブロック内に誤りがある場合は、後で他のサービスに対して</literal>insserv<command>を実行すると問題が生じます。</command>手動で追加されたサービスは、このスクリプトに対する<command>insserv</command>の次回実行時に削除されます。
+   </para><indexterm class="endofrange" startref="idx.init_scripts"/><indexterm class="endofrange" startref="idx.scripts_init.d"/>
+  </sect2>
+
+  <sect2 id="sec.boot.runlevel.edit">
+   <title>YaSTでのシステムサービス(ランレベル)の設定</title><indexterm> <primary>YaST</primary> <secondary>ランレベル</secondary> </indexterm> <indexterm> <primary>ランレベル</primary> <secondary>YaSTでの編集</secondary> </indexterm>
+   <para>
+    <menuchoice><guimenu>YaST</guimenu><guimenu>システム</guimenu><guimenu>システムサービス(ランレベル)</guimenu></menuchoice>の順に選択すると、利用可能なすべてのサービスの概要と、各サービスの現在のステータス(有効か無効か)が表示されます。モジュールを<guimenu>単純モード</guimenu>と<guimenu>エキスパートモード</guimenu>のどちらで使用するかを決定します。ほとんどの場合、デフォルトの<guimenu>単純モード</guimenu>で十分です。左の列にはサービスの名前、中央の列にはその現在のステータス、右の列には簡単な説明が表示されます。ウィンドウの下部には、選択したサービスについての詳細な説明が表示されます。サービスを有効にするには、表でそれを選択し、<guimenu>有効にする</guimenu>を選択します。同じ手順で、サービスを無効にできます。
+   </para>
+   <para>
+    サービスの起動または停止時のランレベルを詳細に制御する場合、またはデフォルトのランレベルを変更する場合は、最初に<guimenu>エキスパートモード</guimenu>を選択します。上部には、現在のデフォルトのランレベル、つまり<quote>initdefault</quote> (システムのブート時にデフォルトで入るランレベル)が表示されます。通常、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムのデフォルトのランレベルは、5 (ネットワークありフルマルチユーザモードおよびX)です。適切な代替の設定は、ランレベル3 (ネットワークありフルマルチユーザモード)です。
+   </para>
+   <para>
+    YaSTのダイアログボックスでは、ランレベルのいずれか1つを新しいデフォルトとして選択できます(<xref linkend="tab.boot.runlevel"/>を参照)。また、このウィンドウのテーブルを使用して、個々のサービスやデーモンを有効、無効にできます。テーブルには、利用可能なサービスとデーモンが一覧表示され、現在ご使用のシステム上で有効かどうか、有効な場合はそのランレベルが表示されます。マウスで行を選択し、ランレベルを表すチェックボックス(<guimenu>B</guimenu>、<guimenu>0</guimenu>、<guimenu>1</guimenu>、<guimenu>2</guimenu>、<guimenu>3</guimenu>、<guimenu>5</guimenu>、<guimenu>6</guimenu>、<guimenu>S</guimenu>)をクリックして、選択しているサービスまたはデーモンが実行されるランレベルを定義します。ランレベル4は、カスタムランレベルを作成できるように未定義になっています。最後に現在選択しているサービスまたはデーモンの簡単な説明が、テーブルの概要の下に表示されます。
+   </para>
+   <warning>
+    <title>ランレベルの設定を誤るとシステムに害が及ぶことがある</title>
+    <para>
+     ランレベルの設定が誤っていると、システムを使用できなくなることがあります。変更を実際に適用する前に、どういう結果が出るかをよく確認してください。
+    </para>
+   </warning>
+   <figure id="fig.yast2.runlevel">
+    <title>システムサービス(ランレベル)</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_runlevel.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_runlevel.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    <guimenu>スタート</guimenu>、［中止］、または［更新］をクリックして、サービスを有効化するかどうかを決定します。現在の状態が自動的に確認されなかった場合は、<guimenu>状態を更新</guimenu>を使用して確認することができます。<guimenu>設定</guimenu>または［リセット］をクリックすると、変更をシステムに適用するか、ランレベルエディタの起動前に存在していた設定を復元するかを選択できます。<guimenu>OK</guimenu>を選択すると、設定の変更がディスクに保存されます。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.boot.sysconfig">
+  <title><filename>/etc/sysconfig</filename>によるシステム設定</title><indexterm> <primary>環境設定</primary> </indexterm> <indexterm id="idx.scripts_SuSEconfig" class="startofrange"> <primary>スクリプト</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx.configuration_files_sysconfig" class="startofrange"> <primary>環境設定ファイル</primary> <secondary>sysconfig</secondary> </indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>の主な設定は、<filename>/etc/sysconfig</filename>ディレクトリに格納されている設定ファイルで指定できます。<filename>/etc/sysconfig</filename>ディレクトリの個々のファイルは、それらが関係するスクリプトによってのみ読み込まれます。これにより、たとえば、ネットワークはネットワーク関連のスクリプトでのみ解析されるようになります。
+  </para>
+
+  <para>
+   システム設定を編集するには、2通りの方法があります。YaSTのsysconfigエディターを使う方法と、設定ファイルを手動で編集する方法です。
+  </para>
+
+  <sect2 id="sec.boot.sysconfig.edit">
+   <title>YaSTのsysconfigエディターを使ってシステム設定を変更する</title><indexterm> <primary>YaST</primary> <secondary>sysconfigエディタ</secondary> </indexterm>
+   <para>
+    YaSTのsysconfigエディタは、使いやすい、システム設定のフロントエンドです。変更する必要のある設定用変数の実際の場所が分からなくても、このモジュールに内蔵された検索機能を使用するだけで、必要に応じて設定用変数の値を変更できますし、これらの変更の適用、<filename>sysconfig</filename>で設定されている値に基づく設定の更新、サービスのリスタートは、YaSTが行います。
+   </para>
+   <warning>
+    <title><filename>/etc/sysconfig/*</filename>ファイルの変更はインストールに害を及ぼすことがある</title>
+    <para>
+     知識や経験が豊富でない限り、<filename>/etc/sysconfig</filename>ファイルは変更しないでください。システムに相当なダメージを与えることがあります。<filename>/etc/sysconfig</filename>のファイルには、各変数が持つ実際の効果を説明する簡単なコメントが付いています。
+    </para>
+   </warning>
+   <figure id="fig.yast2.sysconfig">
+    <title>sysconfigエディタを使用したシステム設定</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="75%" fileref="yast2_sysconfig.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="75%" fileref="yast2_sysconfig.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    YaSTのsysconfigダイアログは、3つの部分に分かれています。ダイアログの左側には、すべての設定変数がツリー表示されます。変数を選択した段階で、右側に現在選択されている変数と、この変数の現在の設定が表示されます。その下の3番目のウィンドウには、変数の目的、有効な値、デフォルト値、およびこの変数が設定されている実際の設定ファイルについての簡単な説明が表示されます。このダイアログボックスには、変数の変更後に実行された設定スクリプトや、変更の結果起動された新しいサービスについての情報も表示されます。YaSTにより変更の確認が求められ、<guimenu>完了</guimenu>を選択してダイアログを終了した後にどのスクリプトが実行されるかが通知されます。現在は実行しないサービスやスクリプトを選択すると、それらが後で実行されます。YaSTはすべての変更を自動的に適用し、変更と関係のあるすべてのサービスをリスタートします。
+   </para>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.boot.sysconfig.man">
+   <title>システム設定を手動で変更する</title>
+   <para>
+    システム設定を手動で変更するには、以下の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <systemitem class="username">root</systemitem>になります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <command>telinit 1</command>コマンドで、システムをシングルユーザモード(ランレベル 1)にします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      必要に応じて、設定ファイルを、自分が使っているエディタで変更します。
+     </para>
+     <para>
+      <filename>/etc/sysconfig</filename>の設定ファイルの変更にYaSTを使用しない場合、空の変数値は2つの引用符(<systemitem>KEYTABLE=</systemitem><literal>""</literal>)によって表し、空白を含む値は引用符で囲むことに注意してください。語の値は、引用符で囲む必要はありません。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      SuSEconfig<command>を実行して、変更が有効になっていることを確認します。</command>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <command>telinit <replaceable>default_runlevel</replaceable></command>などのコマンドで、システムを以前のランレベルに戻します。default_runlevel<replaceable>の部分は、システムのデフォルトのランレベルで置き換えてください。</replaceable>ネットワークとXのあるフルマルチユーザモードに戻るには<literal>5</literal>を、ネットワークのあるフルマルチユーザで作業するには<literal>3</literal>を選択します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    この手順は主に、ネットワーク設定など、システム全体の設定を変更する場合に必要です。小さな変更であれば、シングルユーザモードに移行する必要はありませんが、関与するすべてのプログラムが正しく再起動することを絶対的に保証する必要がある場合は、移行しても差し支えありません。
+   </para>
+   <tip>
+    <title>自動システム設定機能の設定</title>
+    <para>
+     <indexterm><primary>スクリプト</primary><secondary>SuSEconfig</secondary><tertiary>無効化</tertiary></indexterm><indexterm><primary>設定ファイル</primary><secondary>suseconfig</secondary></indexterm>SuSEconfigの自動システム設定機能を無効にするには、<systemitem>/etc/sysconfig/suseconfig</systemitem>の<filename>ENABLE_SUSECONFIG</filename>を<literal>no</literal>に設定します。SUSEのインストールサポートを使用する場合は、SuSEconfigを無効にしないでください。無効にすると、自動設定も部分的に無効になる可能性があります。
+    </para>
+   </tip><indexterm class="endofrange" startref="idx.scripts_SuSEconfig"/><indexterm class="endofrange" startref="idx.configuration_files_sysconfig"/>
+  </sect2>
+ </sect1>
+</chapter>

@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="zseries_prep_i.xml" id="sec.zseries.prep">
+ <title>准备安装</title>
+
+ <para>
+  在本节，您将了解如何使安装进程能够访问数据、如何用不同方法安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>，以及如何准备和使用 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统的 IPL。以及怎样进行网络配置和安装。
+ </para>
+
+ <sect2 id="sec.prep.makeavail">
+  <title>使安装数据可用</title><indexterm> <primary>准备</primary><secondary>提供安装数据</secondary></indexterm> <indexterm><primary>提供安装数据</primary></indexterm>
+  <para>
+   本节详细说明如何使安装进程能够访问 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> IBM System z 安装数据。根据您的计算机环境和系统环境，选择 NFS 或 FTP 安装。如果您的环境中运行的是 Microsoft Windows 工作站，您也可以使用 Windows 网络（包括 SMB 协议）在 IBM System z 系统上安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。
+  </para>
+  <tip>
+   <title>从 DVD 进行 IPL 操作</title>
+   <para>
+    从 SUSE Linux Enterprise Server V10 的 Service Pack 1 起，即可以从 DVD 进行 IPL 操作并使用该 DVD 作为安装媒体。如果在设置通过网络提供安装媒体的安装服务器方面有限制，这会非常方便。前提是 FCP 挂接式 SCSI DVD 驱动器。
+   </para>
+  </tip>
+  <note>
+   <title>不能<quote>从硬盘</quote>安装</title>
+   <para>
+    不能通过将 DVD 内容拖至 DASD 上的分区来从硬盘执行安装。
+   </para>
+  </note>
+  <sect3 id="sec.prep.makeavail.linuxws">
+   <title>使用 Linux 工作站或 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> DVD</title><indexterm> <primary>提供安装数据</primary><secondary>Linux 工作站</secondary> </indexterm>
+   <para>
+    如果您的计算机环境中正在运行 Linux 工作站，请使用该工作站通过 NFS 或 FTP 将安装数据提供给 IBM System z 安装进程。如果 Linux 工作站在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 下运行，您可以使用<xref linkend="sec.deployment.remoteinst.instserver.sles9"/>中所述的 YaST <guimenu>安装服务器</guimenu>模块设置安装服务器（NFS 或 FTP）。
+   </para>
+   <sect4 id="sec.prep.makeavail.linuxws.nfs">
+    <title>通过 NFS</title>
+    <para>
+     通过使用 NFS（网络文件系统）使安装媒体可用。
+    </para>
+    <important>
+     <title>通过 NFS 导出已装入设备。</title>
+     <para>
+      导出文件系统 root (<filename>/</filename>) 并不意味着导出已装入设备（如 DVD）。在 <filename>/etc/exports</filename> 中为安装点明确命名：
+     </para>
+     <screen>/media/dvd  *(ro)</screen>
+     <para>
+      更改此文件后,请使用命令 <command>rcnfsserver</command> <option>restart</option> 重启动 NFS 服务器。
+     </para>
+    </important>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.linuxws.ftp">
+    <title>通过 FTP</title>
+    <para>
+     在 Linux 系统上设置 FTP 服务器包括安装服务器软件本身（如 wuftpd 或 proftpd）以及其他可能的配置任务。如果使用 YaST，安装步骤就会变得直截了当：选择要安装的包，然后即可开始安装。如果没有匿名的 FTP 用于此安装，跳过 FTP 服务器配置。如果有，则使用具有有效用户名和口令的 FTP 登录。可能您只是想为此任务创建一个用户帐户。FTP 守护程序不需要手动启动。如果需要一个 FTP 连接可以用 inetd 启动它。要激活新设置，请输入 <command>rcinetd</command> <option>restart</option> 或 <command>rcxinetd</command> <option>restart</option>。
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.linuxws.oncd">
+    <title>DVD 中的 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></title>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z 的 DVD1 包含用于基于 Intel 的工作站的可引导 Linux 映像以及用于 System z 的映像。
+    </para>
+    <para>
+     对于基于 Intel 的工作站，从此 DVD 引导，回答关于语言和键盘布局的问题，然后选择<guimenu>启动救援系统</guimenu>。这个操作至少需要 64 MB RAM。不需要任何磁盘空间，因为整个救援系统驻留在工作站 RAM 中。这个操作需要一定的 Linux 和 网络经验，因为您需要手动设置工作站网络。
+    </para>
+    <para>
+     对于 System z，从 DVD 对 LPAR/VM guest 系统进行 IPL 操作（如<xref linkend="sec.prep.ipling.lpar.dvd"/>所述）。输入网络参数之后，安装系统会将 DVD 视为安装数据的来源。由于 System z 不能直接挂接支持 X11 的终端，因此请选择 VNC 或 SSH 安装。SSH 还提供一种图形安装，方式是使用 <command>ssh -X</command> 通过 SSH 为 X 连接提供隧道。
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.makeavail.windowsws">
+   <title>使用“ Microsoft Windows 工作站”</title><indexterm> <primary>提供安装数据</primary><secondary>Windows 工作站</secondary> </indexterm>
+   <para>
+    如果您网络中有 Microsoft Windows 工作站，则使用该计算机提供安装媒体。完成此操作最简单的方法是使用 Windows 操作系统中已经包含的 SMB 协议。一定要激活 <guimenu>SMB over TCP/IP</guimenu> 这样才能使 SMB 包封装到 TCP/IP 包中。有关详细信息，请参见 Windows 联机帮助或其他有关 Windows 并含网络内容的文档。另外，可以选择使用 FTP。此操作中，Windows 仍然需要一些第三方软件。
+   </para>
+   <sect4 id="sec.prep.makeavail.windowsws.smb">
+    <title>通过 SMB</title>
+    <para>
+     要通过 SMB 提供安装媒体，只需将 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的 DVD 1 插入 Windows 工作站的 DVD 驱动器。然后，使用 DVD-ROM 驱动器盘符创建一个新的共享，并使其可用于网络中的每个人。
+    </para>
+    
+    <para>YaST 中的安装路径可以是：</para>
+    <screen>smb://<replaceable>DOMAIN</replaceable>;<replaceable>USER</replaceable>:<replaceable>PW</replaceable>@<replaceable>SERVERNAME</replaceable>/<replaceable>SHAREPATH</replaceable></screen>
+     <para>其中占位符指：</para>
+     <variablelist>
+       <varlistentry>
+         <term><replaceable>DOMAIN</replaceable></term>
+         <listitem>
+           <para>可选工作组或活动的目录域。</para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><replaceable>USER</replaceable></term><term><replaceable>PW</replaceable></term>
+         <listitem>
+           <para>可以访问此服务器及其共享的用户的可选用户名和口令</para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><replaceable>服务器名称</replaceable></term>
+         <listitem>
+           <para>共享内容所在的服务器的名称。</para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><replaceable>共享路径</replaceable></term>
+         <listitem>
+           <para>共享内容的路径。</para>
+         </listitem>
+       </varlistentry>
+     </variablelist>
+     
+     
+     <para/>
+    
+     
+   </sect4>
+   <sect4 id="sec.prep.makeavail.windowsws.nfs">
+    <title>通过 NFS</title>
+    <para>
+     参见为 Windows 工作站激活 NFS 服务器服务的第三方产品的文档。包含 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> DVD 的 DVD-ROM 驱动器必须在可用的 NFS 路径中。
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.windowsws.ftp">
+    <title>通过 FTP</title>
+    <para>
+     参考为 Windows 工作站激活 FTP 服务器服务的第三方产品的文档。包含 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> DVD 的 DVD-ROM 驱动器必须在可用的 FTP 路径中。
+    </para>
+    <para>
+     与一些 Microsoft Windows 版本捆绑的 FTP 服务器只实施了 FTP 命令集的一个子集，不适于用来提供安装数据。然而，其他产品（例如做为 Hummingbird Exceed 或 WAR-FTPD 一部分的 FTP 服务器）以已报告为“有效的”。
+    </para>
+   </sect4>
+   <sect4>
+    <title>使用 FCP 挂接式 SCSI DVD 驱动器</title>
+    <para>
+     如<xref linkend="sec.info.iplopt.dvd"/>所述从 SCSI DVD 进行 IPL 操作之后，安装系统即使用 DVD 作为安装媒体。在这种情况下，FTP、NFS 或 SMB 服务器上不需要安装媒体。但您需要 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的网络配置数据，因为在安装期间必须设置网络来通过 VNC 或通过使用 SSH 的 X 隧道执行图形安装。
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.makeavail.zpxe_cobbler">
+   <title>针对 zPXE 使用 Cobbler 服务器</title>
+   <para>
+    若要从网络实现 IPL 操作，则要求 Cobbler 服务器提供内核、initrd 和安装数据。Cobbler 服务器的准备工作分为四个步骤：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      导入安装数据
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      添加分发包
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      添加配置文件
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      添加系统
+     </para>
+    </listitem>
+   </itemizedlist>
+   
+   <sect4 id="sec.prep.makeavail.zpxe_cobbler.import">
+    <title>导入安装数据</title>
+    <para>
+     要导入媒体，在 Cobbler 服务器上必须可以使用安装源 — 可以来自于 DVD 或网络来源。运行以下命令以导入数据：
+    </para>
+    <screen>cobbler import --path=<replaceable>PATH</replaceable><co id="cobbler.import.path"/> --name=<replaceable>IDENTIFIER</replaceable><co id="cobbler.import.dirname"/> --arch=s390x</screen>
+    <calloutlist>
+     <callout arearefs="cobbler.import.path">
+      <para>
+       安装数据的安装点。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.import.dirname">
+      <para>
+       用于标识已导入产品的字符串，例如 <quote>sles11_sp3_s390x</quote>。该字符串用作安装数据所复制到的子目录的名称。在运行于 SUSE Linux Enterprise 上的 Cobbler 服务器中，此目录为 <filename>/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable></filename>。如果 Cobbler 运行在其他操作系统上，此路径可能会稍有不同。
+      </para>
+     </callout>
+    </calloutlist>
+   </sect4>
+   <sect4 id="sec.prep.makeavail.zpxe_cobbler.add_distro">
+    <title>添加分发包</title>
+    <para>
+     您可以通过添加分发包告知 Cobbler 提供借助 zPXE 实现 IPL 所需的内核及 initrd。在 Cobbler 服务器上运行以下命令，以添加 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z：
+    </para>
+    <screen>cobbler distro add --arch=s390x --breed=suse --name="<replaceable>IDENTIFIER</replaceable>"<co id="cobbler.add.identifier"/> \
+  --os-version=sles10<co id="cobbler.add.os"/> \
+  --initrd=/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable>/boot/s390x/initrd<co id="cobbler.add.initrd"/> \
+  --kernel=/srv/www/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable>/boot/s390x/vmrdr.ikr<co id="cobbler.add.kernel"/> \
+  --kopts="install=http://cobbler.example.com/cobbler/ks_mirror/<replaceable>IDENTIFIER</replaceable>"<co id="cobbler.add.server"/>
+    </screen>
+    <calloutlist>
+     <callout arearefs="cobbler.add.identifier">
+      <para>
+       该发行套件的自定标识符，例如 <quote>SLES <phrase role="productname"><phrase os="sles;sled;slerte">11 SP4</phrase></phrase> System z</quote>。必须是唯一的。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.os">
+      <para>
+       操作系统标识符。使用 <literal>sles10</literal>。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.initrd">
+      <para>
+       initrd 的路径。该路径的第一部分（<filename>/srv/www/cobbler/ks_mirror/<replaceable>标识符</replaceable>/</filename>）取决于 Cobbler 导入数据的位置以及您在导入安装数据时选择的子目录名称。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.kernel">
+      <para>
+       内核的路径。该路径的第一部分（<filename>/srv/www/cobbler/ks_mirror/<replaceable>标识符</replaceable>/</filename>）取决于 Cobbler 导入数据的位置以及您在导入安装数据时选择的子目录名称。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.add.server">
+      <para>
+       指向 Cobbler 服务器上的安装目录的 URI。  
+      </para>
+     </callout>
+    </calloutlist>
+   </sect4>
+  </sect3>
+  
+  <sect3 id="sec.prep.makeavail.zpxe_cobbler.profile">
+   <title>添加配置文件</title>
+   <para>
+    借助配置文件，您可以向发行套件中添加其他选项，例如为自动安装添加 AutoYaST 文件。您可以为每个分发包指定多个配置文件，但至少必须创建一个。
+   </para>
+   <screen>cobbler profile add
+   --name=<replaceable>PROFILENAME</replaceable><co id="cobbler.profile.name"/> --distro=<replaceable>DISTRIBUTION</replaceable><co id="cobbler.profile.distro"/> --kickstart=<replaceable>PATH_TO_AUTOYAST_FILE</replaceable><co id="cobbler.profile.kickstart"/></screen>
+   <calloutlist>
+    <callout arearefs="cobbler.profile.name">
+     <para>
+      配置文件的唯一名称。
+     </para>
+    </callout>
+    <callout arearefs="cobbler.profile.distro">
+     <para>
+      配置文件应该应用到的分发包。您必须使用此处导入步骤中的 <option>--name=<replaceable>标识符</replaceable></option>指定的字符串。
+     </para>
+    </callout>
+    <callout arearefs="cobbler.profile.kickstart">
+     <para>
+      在此为自动安装指定 AutoYaST 文件的路径。该参数可选。
+     </para>
+    </callout>
+   </calloutlist>
+  </sect3>
+  
+  <sect3 id="sec.prep.makeavail.zpxe_cobbler.system">
+   <title>添加系统</title>
+   <para>
+    所需执行的最后一步是将系统添加到 Cobbler 服务器。需要针对应该通过 zPXE 引导的每个 System z guest 完成系统添加。各位 guest 通过其 z/VM 用户 ID 进行标识（在以下示例中，假设 ID 称为 <quote>LINUX01</quote>）。要添加一个系统，请运行以下命令：
+   </para>
+
+   <screen>cobbler system add --name=LINUX01 --hostname=linux01.example.com \
+--ip=192.168.2.103 --subnet=192.168.2.255 --netmask=255.255.255.0 \
+--name-servers=192.168.1.116 --name-servers-search=example.com \
+--gateway=192.168.2.1 --kopts="<replaceable>KERNEL_OPTIONS</replaceable>"</screen>
+
+   <para>
+    通过 <option>--kopts</option> 选项，您可以指定在 parmfile 中将经常指定的内核和安装参数。这些参数通过以空格分隔的列表进行输入，采用的方式为 <replaceable>PARAMETER1=VALUE1 PARAMETER2=VALUE2</replaceable>。安装程序会提示您缺少的参数。要实现完全自动化的安装，您需要为联网设备和 DASD 指定所有参数，并提供一个 AutoYaST 文件。下文提供了一个 guest 示例，该 guest 具备 OSA 接口，采用的网络参数与上文相同。
+   </para>
+   <screen>--kopts=" \
+AutoYaST=http://192.168.0.5/autoinst.xml \
+Hostname=linux01.example.com \
+Domain=example.com \
+HostIP=192.168.2.103 \
+Gateway=192.168.2.1 \
+Nameserver=192.168.1.116 \
+Searchdns=example.com \
+InstNetDev=osa; \
+Netmask=255.255.255.0 \
+Broadcast=192.168.2.255 \
+OsaInterface=qdio \
+OsaMedium=eth \
+Layer2=0 \
+PortNo=0 \
+ReadChannel=0.0.0600 \
+WriteChannel=0.0601 \
+DataChannel=0.0.0602 \
+Portname=DT70 \
+DASD=600"</screen>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.inst_types">
+  <title>安装类型</title><indexterm> <primary>安装</primary><secondary>LPAR</secondary></indexterm><indexterm><primary>安装</primary><secondary>z/VM</secondary></indexterm>
+  <para>
+   本节提供以每种安装模式安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 所需执行的步骤的信息，并说明可在何处找到相应的信息。完成前面章节所述的准备工作后，遵循所需安装模式的安装概述，在您的系统上安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。
+  </para>
+  <para>
+   如<xref linkend="sec.prep.makeavail"/>所述，可使用两种不同的安装模式在 IBM System z 上安装 Linux：
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     LPAR 安装
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     z/VM 安装
+    </para>
+   </listitem>
+  </itemizedlist>
+  <procedure id="pro.prep.inst_types.lpar">
+   <title>LPAR 安装概述</title><indexterm> <primary>LPAR 安装</primary><secondary>概述</secondary> </indexterm>
+   <step performance="required">
+    <para>
+     准备安装所需设备。请参见<xref linkend="sec.prep.prep_ipl.natlpar"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     对安装系统进行 IPL 操作。请参见<xref linkend="sec.prep.ipling.lpar"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     配置网络。请参见<xref linkend="sec.prep.netcfg"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     连接到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统。请参见 <xref linkend="sec.prep.connect"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用 YaST 开始安装，然后对安装好的系统执行 IPL。请参见 <xref linkend="cha.inst"/>。
+    </para>
+   </step>
+  </procedure>
+  <procedure id="pro.prep.inst_types.vm">
+   <title>z/VM 安装的“安装预览”</title><indexterm> <primary>z/VM 安装</primary><secondary>概述</secondary> </indexterm>
+   <step performance="required">
+    <para>
+     准备安装所需设备。请参见<xref linkend="sec.prep.prep_ipl.vm"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     对安装系统进行 IPL 操作。请参见<xref linkend="sec.prep.ipling.vm"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     配置网络。请参见<xref linkend="sec.prep.netcfg.vm"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     连接到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统。请参见 <xref linkend="sec.prep.connect"/>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     使用 YaST 开始安装，然后对安装好的系统执行 IPL。请参见 <xref linkend="cha.inst"/>。
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.prep.prep_ipl">
+  <title>准备对 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统执行 IPL</title>
+  <para/>
+  <sect3 id="sec.prep.prep_ipl.natlpar">
+   <title>LPAR 安装</title><indexterm> <primary>LPAR 安装</primary><secondary>准备 IPL</secondary></indexterm><indexterm><primary>准备 IPL</primary><secondary>LPAR 安装</secondary></indexterm>
+   <para>
+    通过相应的激活配置文件和 IOCDS，将 IBM System z 系统配置为以 ESA/S390 模式或仅支持 Linux 的模式启动。有关操作方法的更多信息，请参考 IBM 文档。
+   </para>
+   <sect4 id="sec.prep.prep_ipl.natlpar.iocds">
+    <title>IOCDS：连接和配置设备</title>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装至少需要两个设备：DASD 和网络连接设备。要从磁带进行 IPL 操作，还需要可以访问一个磁带设备。所有设备都被配置并挂接到 IOCDS（输入输出配置数据集）中的一个 LPAR。此示例定义了一个 DASD、一个 OSA-2 网络设备和一个 LPAR Z1 磁带设备。关于如何为 Linux 设置 IOCDS 的详细信息, 参考您计算机的 IBM 硬件文档。
+    </para>
+    <example id="ex.prep.prep_ipl.natlpar.iocds">
+     <title>IOCDS 范例</title>
+     <screen>CHPID PATH=(CSS(0),FD),PCHID=120,TYPE=FC
+CHPID PATH=(CSS(0),FE),PCHID=320,TYPE=OSD
+CHPID PATH=(CSS(0),10),PCHID=3A0,TYPE=CNC
+
+CNTLUNIT CUNUMBR=FD00,PATH=((CSS(0),FD)),UNITADD=((00,1)),UNIT=2105
+IODEVICE ADDRESS=(FD00,1),CUNUMBR=(FD00),UNIT=3390B,UNITADD=00
+
+CNTLUNIT CUNUMBR=FE20,PATH=((CSS(0),FE)),UNIT=OSA
+IODEVICE ADDRESS=(FE20,1),CUNUMBR=(FE20),UNIT=OSA
+IODEVICE ADDRESS=(FEFE,1),CUNUMBR=(FE20),UNIT=OSAD
+
+CNTLUNIT CUNUMBR=100A,PATH=((CSS(0),10)),UNIT=3480,UNITADD=((0A,1))
+IODEVICE ADDRESS=(100A,1),CUNUMBR=(100A),UNIT=3480,UNITADD=00</screen>
+    </example>
+    <para>
+     进行<xref linkend="sec.prep.ipling.lpar"/>。
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.prep_ipl.vm">
+   <title>z/VM 安装</title><indexterm> <primary>z/VM 安装</primary><secondary>准备 IPL</secondary></indexterm><indexterm><primary>准备 IPL</primary><secondary>z/VM 安装</secondary></indexterm>
+   <sect4 id="sec.prep.prep_ipl.vm.linux_guest">
+    <title>添加 Linux Guest</title><indexterm> <primary>z/VM 安装</primary><secondary>Linux guest 系统</secondary> </indexterm>
+    <para>
+     第一步是在系统中挂接和格式化一个或多个要由 z/VM 中 Linux guest 系统使用的 DASD。下一步，在 z/VM 中创建一个新用户。该事例展示了 带有 <literal>LINPWD</literal> 口令的<literal>LINUX1</literal> 用户的目录、256 MB 内存(可扩展为 1024 MB), 32 MB 已扩展 RAM (XSTORE), 一些迷你磁盘 (MDISK), 两个 CPU 及一个 OSA QDIO 设备。
+    </para>
+    <tip>
+     <title>为 z/VM guest 分配内存</title>
+     <para>
+      为 z/VM guest 系统分配内存时，确保内存大小适合所想要安装类型的需要。请参见<xref linkend="sec.info_sysreq.sysreq.hw.mem"/>。要将内存大小设置为 512 MB，请使用命令 <command>CP DEFINE STORAGE 512M</command>。完成安装之后，将内存大小重设置为所需值。
+     </para>
+    </tip>
+    <example id="ex.prep.prep_ipl.vm.linux_guest.config">
+     <title>z/VM 目录的配置</title>
+     <screen>USER LINUX1 LINPWD 256M 1024M G 
+*____________________________________________
+* LINUX1 
+*____________________________________________
+* This VM Linux guest has two CPUs defined.
+
+CPU 01 CPUID 111111 
+CPU 02 CPUID 111222 
+IPL CMS PARM AUTOCR 
+IUCV ANY 
+IUCV ALLOW 
+MACH ESA 10 
+OPTION MAINTCCW RMCHINFO 
+SHARE RELATIVE 2000 
+XSTORE 32M 
+CONSOLE 01C0 3270 A 
+SPOOL 000C 2540 READER * 
+SPOOL 000D 2540 PUNCH A 
+SPOOL 000E 3203 A 
+* OSA QDIO DEVICE DEFINITIONS 
+DEDICATE 9A0 9A0 
+DEDICATE 9A1 9A1 
+DEDICATE 9A2 9A2 
+* 
+LINK MAINT 0190 0190 RR 
+LINK MAINT 019E 019E RR 
+LINK MAINT 019D 019D RR 
+* MINIDISK DEFINITIONS 
+MDISK 201 3390 0001 0050 DASD40 MR ONE4ME TWO4ME THR4ME 
+MDISK 150 3390 0052 0200 DASD40 MR ONE4ME TWO4ME THR4ME 
+MDISK 151 3390 0253 2800 DASD40 MR ONE4ME TWO4ME THR4ME</screen>
+    </example>
+    <para>
+     此示例使用了 201 迷你磁盘作为 guest 系统主盘。有 200 个柱面的 150 迷你磁盘是 Linux 交换设备。有 2800 柱面的 151 磁盘保存 Linux 安装。
+    </para>
+    <para>
+     使用 <command>DIRM FOR LINUX1 ADD</command>，（作为 <systemitem class="username">MAINT</systemitem> 用 ）将 guest 系统添加到用户目录。输入 guest 名称 (<literal>LINUX1</literal>)，然后按 <keycap>F5</keycap>。设置用户环境的方法：
+    </para>
+    <screen>DIRM DIRECT 
+DIRM USER WITHPASS</screen>
+    <para>
+     最后一个命令返回一个读者文件编号。此号码用于下一步命令：
+    </para>
+    <screen>RECEIVE &lt;number&gt; USER DIRECT A (REPL)</screen>
+    <para>
+     使用 <command>DISKMAP USER DIRECT A</command> 将目录指派到 guest 系统。现在可以作为用户 <systemitem class="username">LINUX1</systemitem> 登录 guest 系统了。
+    </para>
+    <para>
+     如果没有 <literal>dirmaint</literal> 选项，请参见 IBM 文档以设置此用户。
+    </para>
+    <para>
+     进行<xref linkend="sec.prep.ipling.vm"/>。
+    </para>
+   </sect4>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.ipling">
+  <title>对 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统执行 IPL</title>
+  <para/>
+  <sect3 id="sec.prep.ipling.lpar">
+   <title>LPAR 安装</title><indexterm> <primary>LPAR 安装</primary><secondary>IPL 安装系统</secondary></indexterm><indexterm><primary>IPL</primary><secondary>LPAR 安装</secondary></indexterm>
+   <para>
+    可通过不同的方法对 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 执行 IPL，以将其装载到 LPAR 中。最好使用 SE 或 HMC 的<guimenu>从 CD-ROM 或服务器装载</guimenu>功能。
+   </para>
+   <sect4 id="sec.prep.ipling.lpar.cdrom">
+    <title>从 DVD-ROM 进行 IPL 操作</title>
+    <para>
+     标记要安装的 LPAR，然后选择<guimenu>从 CD-ROM 或服务器装载</guimenu>。将文件位置字段保留为空，或输入第一张 DVD-ROM root 目录的路径，然后选择继续。在显示的选项列表中，选择默认选项。此时，<guimenu>操作系统消息</guimenu>应该显示内核引导消息。
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.lpar.dvd">
+    <title>从 FCP 挂接式 SCSI DVD 进行 IPL 操作</title>
+    <para>
+     您可以选择 <guimenu>SCSI</guimenu> 作为<guimenu>装载类型</guimenu>使用<guimenu>装载</guimenu>过程，以从 SCSI 进行 IPL。输入 SCSI 网桥或储存提供的 WWPN（全球端口名称）和 LUN 逻辑单元号（16 位数，不要省略尾部的 0）。必须选择 2 作为引导程序。使用 FCP 适配器作为<guimenu>装载地址</guimenu>并执行 IPL。
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.lpar.tape">
+    <title>从 ESCON 或 FICON 挂接式磁带进行 IPL 操作</title>
+    <para>
+     如果不能从 DVD IPL，则创建一个连接磁带通道，通过它来对 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装映像执行 IPL。使用 SE 或 HMC 中的<guimenu>装载</guimenu>按钮，用磁带设备地址作为装载地址来对 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统进行 IPL。
+    </para>
+    <para>
+     创建可 IPL 磁带的方式很多。一个就是拷贝文件：
+    </para>
+    <screen>/boot/s390x/tapeipl.ikr
+/boot/s390x/parmfile
+/boot/s390x/initrd</screen>
+    <para>
+     作为 DVD1 中的二进制文件（例如，使用 Linux 工作站的 FTP）。
+    </para>
+    <para>
+     为他们命名
+    </para>
+    <screen>SLES11 IMAGE
+SLES11 PARM
+SLES11 INITRD</screen>
+    <para>
+     然后以 REXX（如例所示）把他们写入磁带。
+    </para>
+    <important>
+     <title>用 FTP 传输二进制文件</title>
+     <para>
+      不要上载文件作为 <literal>fixed 80</literal>。将它们储存为 <literal>fixed 1024</literal>。使用 FTP 命令 <command>locsite fix 1024</command>。
+     </para>
+    </important>
+    <example id="sec.prep.ipling.lpar.tape.create">
+     <title>用于创建可 IPL 磁带的 REXX 脚本</title>
+     <screen>'REWIND 181'
+'FILEDEF IN1 DISK' SLES11 IMAGE A
+'FILEDEF IN2 DISK' SLES11 PARM A
+'FILEDEF IN3 DISK' SLES11 INITRD A
+'FILEDEF OUT TAP1 (RECFM F BLOCK 1024 LRECL 1024 PERM'
+say 'Writing: ' left(file1,23)
+'MOVEFILE IN1 OUT'
+say 'Writing: ' left(file2,23)
+'MOVEFILE IN2 OUT'
+say 'Writing: ' left(file3,23)
+'MOVEFILE IN3 OUT'
+say 'Done.'
+'REWIND 181'
+ exit</screen>
+    </example>
+    <para>
+     此脚本里的磁带以 181 连接，按照需要可对其进行调节。
+    </para>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.prep.ipling.vm">
+   <title>z/VM 安装</title><indexterm> <primary>z/VM 安装</primary><secondary>IPL 安装系统</secondary></indexterm><indexterm><primary>IPL</primary><secondary>z/VM 安装</secondary></indexterm>
+   <para>
+    本节介绍如何对安装系统执行 IPL，以便在 z/VM 系统上安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z。
+   </para>
+   <sect4 id="sec.prep.ipling.vm.reader">
+    <title>从 z/VM 阅读器进行 IPL 操作</title>
+    <para>
+     在新定义的 z/VM Guest 中需要有效的 TCP/IP 连接和 FTP 客户端程序，以通过 FTP 传送安装系统。为 z/VM 设置 TCP/IP 不在本手册的讨论范围内。请参考相关的 IBM 文档。
+    </para>
+    <para>
+     作为 z/VM Linux guest 系统登录并 IPL。使 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> for IBM System z DVD 1 中 <filename>/boot/s390x</filename> 目录的内容可在网络中通过 FTP 访问。从目录中找到 <filename>vmrdr.ikr</filename>、<filename>initrd</filename>、<filename>parmfile</filename> 和 <filename>sles11.exec</filename> 文件。用固定的 80 字符的块大小来传送文件。用 FTP 命令 <command>locsite fix 80</command> 来指定它。将 <filename>vmrdr.ikr</filename>（Linux 内核）和 <filename>initrd</filename>（安装映像）作为二进制文件复制非常重要，所以请使用<literal>二进制</literal>传送模式。<filename>parmfile</filename> 和 <filename>sles11.exec</filename> 需要在 ASCII 模式下传送。
+    </para>
+    <para>
+     该示例展示了所需步骤。在此示例中，需要的文件可以通过 FTP 服务器从 IP 地址 <literal>192.168.0.3</literal> 访问，登录名为 <systemitem class="username">lininst</systemitem>。可能与您的网络不一致。
+    </para>
+    <example id="ex.prep.ipling.vm.reader.ftp.ftptrans">
+     <title>通过 FTP 传送二进制文件。</title>
+     <screen>FTP 192.168.0.3
+VM TCP/IP FTP Level 530
+Connecting to 192.168.0.3, port 21
+220 ftpserver FTP server (Version wu-2.4.2-academ[BETA-18](1)
+Thu Feb 11 16:09:02 GMT 2010) ready.
+USER
+lininst
+331 Password required for lininst
+PASS
+******
+230 User lininst logged in.
+Command:
+binary
+200 Type set to I
+Command:
+locsite fix 80
+Command:
+get /media/dvd1/boot/s390x/vmrdr.ikr sles11.image
+200 PORT Command successful
+150 Opening BINARY mode data connection for /media/dvd1/boot/s390x/vmrdr.ikr
+(6757376 bytes)
+226 Transfer complete.
+6757376 bytes transferred in 8.826 seconds.
+Transfer rate 766.70 Kbytes/sec.
+Command:
+get /media/dvd1/boot/s390x/initrd sles11.initrd
+200 PORT Command successful
+150 Opening BINARY mode data connection for /media/dvd1/boot/s390x/initrd
+(12654815 bytes)
+226 Transfer complete.
+12194534 bytes transferred in 16.520 seconds.
+Transfer rate 766.70 Kbytes/sec.
+Command:
+ascii
+200 Type set to A
+Command:
+get /media/dvd1/boot/s390x/parmfile sles11.parmfile
+150 Opening ASCII mode data connection for /media/dvd1/boot/s390x/parmfile
+(71 bytes)
+226 Transfer complete.
+71 bytes transferred in 0.092 seconds.
+Transfer rate 0.71 Kbytes/sec.
+Command:
+get /media/dvd1/boot/s390x/sles11.exec sles11.exec
+150 Opening ASCII mode data connection for /media/dvd1/boot/s390x/sles11.exec
+(891 bytes)
+226 Transfer complete.
+891 bytes transferred in 0.097 seconds.
+Transfer rate 0.89 Kbytes/sec.
+Command:
+quit</screen>
+    </example>
+    <para>
+     使用刚下载的 REXX 脚本 sles11.exec 来对 Linux 安装系统执行 IPL。此脚本装载用于 IPL 的内核、parmfile 及 初始 RAM 磁盘到阅读器。
+    </para>
+    <example id="sex.prep.ipling.vm.reader.startscript.slesexec">
+     <title>SLES11 EXEC</title>
+     <screen>/* REXX LOAD EXEC FOR SUSE LINUX S/390 VM GUESTS       */
+/* LOADS SUSE LINUX S/390 FILES INTO READER            */
+SAY ''
+SAY 'LOADING SLES11 FILES INTO READER...'
+'CP CLOSE RDR'
+'PURGE RDR ALL'
+'SPOOL PUNCH * RDR'
+'PUNCH SLES11 IMAGE A (NOH'
+'PUNCH SLES11 PARMFILE A (NOH'
+'PUNCH SLES11 INITRD A (NOH'
+'I 00C'</screen>
+    </example>
+    <para>
+     使用此脚本，您可以通过命令 <phrase role="productname">sles11<phrase os="sles"> 对 </phrase></phrase>SUSE Linux Enterprise Server<command/> 安装系统执行 IPL。Linux 便会开启并打印其引导信息。
+    </para>
+    <para>
+     要继续安装，请转至<xref linkend="sec.prep.netcfg.vm"/>。
+    </para>
+   </sect4>
+   <sect4>
+    <title>从 FCP 挂接式 SCSI DVD 进行 IPL 操作</title>
+    <para>
+     要在 z/VM 中进行 IPL 操作，请通过使用 SET LOADDEV 参数准备 SCSI IPL 过程。
+    </para>
+    <screen>SET LOADDEV PORTNAME 200400E8 00D74E00 LUN 00020000 00000000 BOOT 2</screen>
+    <para>
+     用相应值设置 LOADDEV 参数后，对您的 FCP 适配器进行 IPL 操作，例如：
+    </para>
+    <screen>IPL FC00</screen>
+    <para>
+     要继续安装，请转至<xref linkend="sec.prep.netcfg.vm"/>。
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.vm.tape">
+    <title>从 ESCON 或 FICON 挂接式磁带进行 IPL 操作</title>
+    <para>
+     如果您无法从 z/VM 阅读器进行 IPL，请创建一个连接磁带通道，通过它来对 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装映像执行 IPL。有关说明，请参见<xref linkend="sec.prep.ipling.lpar.tape"/>。
+    </para>
+    <para>
+     要继续安装，请转至<xref linkend="sec.prep.netcfg.vm"/>。
+    </para>
+   </sect4>
+   <sect4 id="sec.prep.ipling.vm.zpxe">
+    <title>使用 zPXE 从 Cobbler 服务器实现 IPL</title>
+    <para>
+     若要通过 zPXE 从 Cobbler 服务器实现 IPL，您需要将 <filename>zpxe.exec</filename> 脚本通过 FTP 从 Cobbler 服务器传送至您的 z/VM guest。z/VM guest 需要使用正在运行的 TCP/IP 连接和 FTP 客户端程序。
+    </para>
+    <para>
+     以 z/VM Linux guest 的身份登录，并将脚本以 ASCII 模式固定在 80 个字符的大小内进行 IPL 和传送（相关示例请参见<xref linkend="ex.prep.ipling.vm.reader.ftp.ftptrans"/>）。如需 <filename>zpxe.exec</filename> 脚本，请参见 Cobbler 服务器（网址为 ftp://<replaceable>COBBLER_服务器_IP</replaceable>/<replaceable>zSERIES_安装目录</replaceable>/boot/s390x/zpxe.exec）。<replaceable>zSERIES_安装目录</replaceable>的具体位置取决于您在 Cobbler 服务器上导入安装数据的位置（相关细节请参见<xref linkend="sec.prep.makeavail.zpxe_cobbler.import"/>）。
+    </para>
+    <para>
+     假设 <filename>zpxe.exec</filename> 替换您的 guest 中的 <filename>PROFILE EXEC</filename>。为现有的 <filename>PROFILE EXEC</filename> 创建备份，并将 <filename>ZPXE EXEC</filename> 重命名为 <filename>PROFILE EXEC</filename>。或者，另起一行（内容为 <literal>'ZPXE EXEC'</literal>），以此从现有的 <filename>PROFILE EXEC</filename> 中调用 <filename>ZPXE EXEC</filename>。
+    </para>
+    <para>
+     最后，向 <filename>ZPXE EXEC</filename> 指定要连接的 Cobbler 服务器以及用于 IPL 的磁盘，以此创建配置文件 <filename>ZPXE CONF</filename>。运行 <command>xedit zpxe conf a</command> 并使用以下内容（请根据实际情况替换示例数据）创建 <filename>ZPXE CONF</filename>。
+    </para>
+    <screen>HOST cobbler.example.com
+IPLDISK 600</screen>
+    <para>
+     下次登录到您的 z/VM guest 时，系统会连接 Cobbler 服务器。如果在 Cobbler 服务器上安排了安装计划，则会按计划执行。若要安排安装计划，请在 Cobbler 服务器上运行以下命令。
+    </para>
+    <screen>cobbler system edit --name <replaceable>ID</replaceable><co id="cobbler.sysedit.id"/> --netboot-enabled 1<co id="cobbler.sysedit.netboot"/> --profile <replaceable>PROFILENAME</replaceable><co id="cobbler.sysedit.profile"/></screen>
+    <calloutlist>
+     <callout arearefs="cobbler.sysedit.id">
+      <para>
+       z/VM 用户 ID。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.sysedit.netboot">
+      <para>
+       启用从网络实现 IPL 的功能。
+      </para>
+     </callout>
+     <callout arearefs="cobbler.sysedit.profile">
+      <para>
+       现有的配置文件名称，请参见<xref linkend="sec.prep.makeavail.zpxe_cobbler.profile"/>。
+      </para>
+     </callout>
+    </calloutlist>
+   </sect4>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.netcfg">
+  <title>网络配置</title>
+  <para/><indexterm> <primary>LPAR 安装</primary><secondary>网络配置</secondary></indexterm><indexterm><primary>网络配置</primary><secondary>LPAR 安装</secondary></indexterm>
+  <para>
+   耐心等待，直到内核已经完成其启动例程。如果您以基础模式或在 LPAR 中安装，则在 HMC 或 SE 上打开<guimenu>操作系统消息</guimenu>。
+  </para>
+  <para>
+   首先，在 Linuxrc 主菜单里，选择<guimenu>启动安装或系统</guimenu>，然后选择<guimenu>启动安装或更新</guimenu>启动安装过程。选择<guimenu>网络</guimenu>作为安装媒体，然后选择要用于安装的网络协议类型。<xref linkend="sec.prep.makeavail"/>描述了如何为各种网络连接类型提供安装数据。目前支持 <guimenu>FTP</guimenu>、 <guimenu>HTTP</guimenu>、<guimenu>NFS</guimenu> 和 <guimenu>SMB/CIFS</guimenu>（Windows 文件共享）。
+  </para>
+  <para>
+   现在可设置用于接收安装数据的网络设备：<guimenu>OSA-2 或 OSA  xpr ss</guimenu> 或 <guimenu>HiperS c ets</guimenu>。以下的网络调节器仍然可用，但不再受支持：CTC、ESCON、IUCV。下一步，选择 CCW 总线接口和物理媒体（<guimenu>以太网</guimenu>）。于是，安装了相应驱动器，并且显示相应的内核消息。
+  </para>
+  <para>
+   如果继续安装，linuxrc 会显示一个潜在可用的读、写、和（如果适用）数据通道。输入每个通道的地址后，您可能还需要输入其他信息，例如 OSA 以太网卡的端口名。
+  </para>
+  <para>
+   然后，决定是否使用 DHCP 自动配置来设置网络接口的参数。因为 DHCP 只能在少数设备上工作，并且需要特殊的硬盘配置设置，您可能会想在此选<guimenu>否</guimenu>。如果这样做，将提示您输入安装网络设备的网络参数：
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     要安装的系统的 IP 地址
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     相应的网络掩码
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     用于连接服务器的网关的 IP 地址
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     域名服务器 (DNS) 的 IP 地址
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   现在使用 OSA Express 网卡时，会提示您输入<guimenu>相关端口号</guimenu>。添加该功能是为了支持新的 2 端口 OSA Express 3 网络设备。如果不使用 OSA Express 3 设备，请输入 <literal>0</literal>。OSA Express 网卡具有以 <quote>OSI 第 2 层支持</quote>模式运行或使用较旧的更常见的<quote>第 3 层</quote>模式运行的选项。网卡模式影响共享该设备的所有系统，包括其他 LPAR 上的系统。如果不确定，请指定 <literal>2</literal> 以与其他操作系统（例如 z/VM 和 z/OS）使用的默认模式兼容。有关这些选项的更多信息，请咨询硬件管理员。
+  </para>
+  <sect3 id="sec.prep.netcfg.vm">
+   <title>z/VM 安装</title><indexterm> <primary>z/VM 安装</primary><secondary>网络配置</secondary></indexterm><indexterm><primary>网络配置</primary><secondary>z/VM 安装</secondary></indexterm>
+   <para>
+    当内核完成了其启动例程后，您要回答几个有关网络设置的问题。首先，选择要使用的网络连接类型：OSA Express 或 HiperSockets。在范例安装中，使用 OSA Express。
+   </para>
+   <para>
+    系统现在会显示可能的 OSA 配置。首先选择使用 QDIO 还是 LCS OSA。然后选择要用的物理媒体，并输入设备地址。如果您想进行其他的设置，输入 OSA 读通道的地址（本示例中为 0.0.0700）然后输入 OSA 写通道地址 (0.0.0701) 和 OSA 控制通道地址 (0.0.0702)。输入这些通道后，插入 OSA 卡连接的端口名。
+   </para>
+   <para>
+    现在，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 会用提供的信息构建一个参数行并显示所有已装载的模块，来尝试装载网络模块。如果出现以下输出，证明装载成功：
+   </para>
+   <example id="ex.prep.netcfg.vm.param">
+    <title>网络设备驱动器参数</title>
+    <screen>(portname YSW2)
+(Port 0)
+qdio: 0.0.0702 OSA on SC 3 using AI:1 QEBSM:0 PCI:1 TDD:1 SIGA:RW AO
+qeth.736dae: 0.0.0700: Device is a Guest LAN QDIO card (level: V540)
+with link type GuestLAN QDIO (portname: YSW2)
+qeth.47953b: 0.0.0700: Hardware IP fragmentation not supported on eth0
+qeth.066069: 0.0.0700: Inbound source MAC-address not supported on eth0
+qeth.d7fdb4: 0.0.0700: VLAN enabled
+qeth.e90c78: 0.0.0700: Multicast enabled
+qeth.5a9d02: 0.0.0700: IPV6 enabled
+qeth.184d8a: 0.0.0700: Broadcast enabled
+qeth.dac2aa: 0.0.0700: Using SW checksumming on eth0.
+qeth.9c4c89: 0.0.0700: Outbound TSO not supported on eth0
+</screen>
+   </example>
+   <para>
+    接着，输入您的 IP 地址、网络掩码和默认网关。要通过 IUCV 或 CTC 安装，请输入更多信息，如对等地址（用于点对点适配器）或端口名。
+   </para>
+   <para>
+    最后，要求输入 DNS 服务器的 IP 地址和 MTU 大小。MTU 大小应该总是与要连接网络的 MTU 大小一致。
+   </para>
+   <para>
+    现在会显示一个摘要。确认您的输入是否正确。在启动网络之前，输入只在安装中有效的口令。在已经 IPL 了安装系统以后, 输入 <emphasis>real</emphasis> root 口令。
+   </para>
+   <para>
+    设置所有的基本参数后，将启动网络。检查 ifconfig 的输出，它应包含两项：回写 (lo) 连接和具有正确设置的连接（eth0、ctc0、escon0、iucv0 或 hsi0）。
+   </para>
+   <example id="ex.prep.netcfg.vm.ifconfig">
+    <title>范例 ifconfig</title>
+    <screen>/sbin/ifconfig eth0 : 
+	Link encap:Ethernet  HWaddr 02:00:01:00:00:27  
+        inet addr:192.168.0.1  Bcast:192.168.0.255  Mask:255.255.255.0
+        inet6 addr: fe80::200:100:100:27/64 Scope:Link
+        UP BROADCAST RUNNING MULTICAST  MTU:1492  Metric:1
+        RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+        TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+        collisions:0 txqueuelen:1000 
+        RX bytes:0 (0.0 Mb)  TX bytes:0 (0.0 Mb)</screen>
+   </example>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.prep.connect">
+  <title>连接到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统</title><indexterm> <primary>LPAR 安装</primary><secondary>连接到安装系统</secondary></indexterm><indexterm><primary>连接到安装系统</primary><secondary>LPAR 安装</secondary></indexterm><indexterm><primary>z/VM 安装</primary><secondary>连接到安装系统</secondary></indexterm><indexterm><primary>连接到安装系统</primary><secondary>z/VM 安装</secondary></indexterm>
+  <para>
+   设置网络连接之后，linuxrc 会提示输入稍早在该过程中选择的安装源的详细信息，例如，服务器 IP 地址和用于储存数据的目录。
+  </para>
+  <para>
+   最后，linuxrc 还要了解您想要选择控制安装过程的显示类型。可能的选择有 <literal>X11</literal>（X Window 系统）、<literal>VNC</literal>（虚拟网络计算协议）、<literal>SSH</literal>（文本模式或通过安全外壳的 X11 安装）或 <literal>ASCII 控制台</literal>。
+  </para>
+  <para>
+   如果您选择最后一个选项（<literal>ASCII 控制台</literal>），YaST 将以文本模式启动，并且您可以直接在终端内执行安装。有关使用指导，请参见<xref linkend="cha.yast.text"/>。
+  </para>
+  <note>
+   <title>ASCII 控制台的终端仿真</title>
+   <para>
+    要在文本模式下使用 YaST，需要在具有 VT220/Linux 仿真功能（也称为 <literal>ASCII 控制台</literal>）的终端中运行该程序。例如，您无法在 3270 终端中使用 YaST。
+   </para>
+  </note>
+  <sect3 id="sec.inst.connect.vnc_inst">
+   <title>初始化 VNC 安装</title><indexterm> <primary>VNC</primary><secondary>启动安装</secondary> </indexterm>
+   <procedure>
+    <step performance="required">
+     <para>
+      选择 <literal>VNC</literal> 安装选项后，VNC 服务器会启动。控制台显示的简短信息提供与 vncviewer 连接所需的 IP 地址和显示编号。或者，显示要填入您支持 Java 的浏览器的 URL来连接到安装系统。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      启动客户端系统上的 VNC 客户端应用程序。请使用 vncviewer 或 VNC Java 客户端和一个支持 Java 的 Web 浏览器。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      出现提示后，输入 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装系统的 IP 地址和显示编号。
+     </para>
+     <para>
+      如果通过支持 Java 的浏览器连接, 输入包含 IP 地址的安装系统的 URL 和正确的端口名，以下面的格式：
+     </para>
+     <screen>http://&lt;IP address of installation system&gt;:5801/</screen>
+    </step>
+    <step performance="required">
+     <para>
+      建立连接后，使用 YaST 开始安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+  <sect3 id="sec.inst.connect.x">
+   <title>初始化 X Window 系统的安装</title><indexterm> <primary>X</primary><secondary>启动安装</secondary> </indexterm>
+   <important>
+    <title>X 身份验证机制</title>
+    <para>
+     在 Window 系统直接安装依赖于一个基于主机名的原始身份验证机制。此机制在当前的 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 版本上已禁用。最好以 SSH 或 VNC 安装。
+    </para>
+   </important>
+   <procedure>
+    <step performance="required">
+     <para>
+      确保 X 服务器允许客户端（已安装的系统）连接。在文件 <filename>/etc/sysconfig/displaymanager</filename> 中设置变量 <command>DISPLAYMANAGER_XSERVER_TCP_PORT_6000_OPEN="yes"</command>。然后重启动 X 服务器，使用 <command>xhost &lt;client IP address&gt;</command> 允许客户端绑定到服务器。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果安装系统提示，则输入运行 X 服务器的计算机的 IP 地址。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      等到 YaST 打开，然后开始安装。
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+<?dbfo-need height="20em"?>
+
+
+  <sect3 id="sec.inst.connect.ssh">
+   <title>初始化 SSH 安装</title><indexterm> <primary>ssh</primary><secondary>启动安装</secondary> </indexterm>
+   <para>
+    要使用 SSH 连接到名为 earth 的安装系统，请执行 <command>ssh -X earth</command>。如果您的工作站是在 Microsoft Windows 上运行的，则使用 ssh 和 telnet 客户端以及终端仿真器 putty（可在 <ulink url="http://www.chiark.greenend.org.uk/~sgtatham/putty/"/> 找到）。在 putty 中的<menuchoice> <guimenu>连接</guimenu> <guimenu>SSH</guimenu><guimenu>X11</guimenu></menuchoice>下设置<guimenu>启用 X11 转发</guimenu>。
+   </para>
+   <para>
+    出现一个登录提示。输入 <literal>root</literal> 然后使用您的口令登录。输入 <command>yast2</command> 启动 YaST。
+   </para>
+   <para>
+    转至<xref linkend="cha.inst"/>了解安装过程的详细描述。
+   </para>
+  </sect3>
+ </sect2>
+</sect1>

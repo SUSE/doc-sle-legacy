@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_kiwi.xml" id="cha.kiwi">
+ <title>KIWI</title>
+ <abstract>
+  <para>
+   KIWI 是一個用於建立作業系統影像的系統。影像就是含有某個檔案的目錄，該檔案中包含作業系統、系統應用程式與組態、作業系統的檔案系統結構、其他可能的中繼資料以及磁碟規格與分割區表資料 (視影像類型而定)。利用 KIWI，您可以建立 LiveCD、LiveDVD、USB 晶片組及可在 VMware 等完全虛擬的系統中播放的虛擬磁碟、用於在監管程式中準虛擬化的 XEN 影像，以及可從網路開機的 PXE 環境。
+  </para>
+
+ </abstract>
+
+
+ <sect1 id="sec.kiwi.prereq">
+  <title>KIWI 的先決條件</title>
+
+  <para>
+   若要使用 KIWI 建立影像，需要下列先決條件︰
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     為此操作騰出足夠的空間。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     KIWI 分割成幾個套件，可用於產生不同的影像類型。在任何情況下，您都需要基本套件 <systemitem class="resource">kiwi</systemitem>。根據目標影像的不同，您需要下列套件︰
+    </para>
+    <informaltable>
+     <tgroup cols="2">
+      <thead>
+       <row>
+        <entry>
+         <para>
+          影像類型
+         </para>
+        </entry>
+        <entry>
+         <para>
+          套件名稱
+         </para>
+        </entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+        <entry>
+         <para>
+          安裝媒體
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-oemboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          虛擬化
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-xenboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          USB 晶片組
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-usbboot</systemitem>
+         </para>
+        </entry>
+       </row>
+       <row>
+        <entry>
+         <para>
+          網路用戶端
+         </para>
+        </entry>
+        <entry>
+         <para>
+          <systemitem>kiwi-desc-netboot</systemitem>
+         </para>
+        </entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </informaltable>
+   </listitem>
+   <listitem>
+    <para>
+     安裝 <systemitem class="resource">kiwi-doc</systemitem> 套件。您可以尋找一些組態範例，以瞭解其結構與內容。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     瞭解 KIWI 組態檔案及其結構。它以 RELAX NG 綱要為基礎，<systemitem class="resource">kiwi</systemitem> 套件的 <filename>/usr/share/doc/packages/kiwi/kiwi.html</filename> 做了說明。當您要從頭建立組態檔案或要插入元素或屬性時，就需要此文件。
+    </para>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.kiwi.process">
+  <title>瞭解 KIWI 建立程序</title>
+
+  <para>
+   KIWI 的建立程序分為三個步驟︰
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>實體擴充 (準備)</title>
+     <para>
+      此階段用於準備新檔案系統的內容。在此步驟中會建立根目錄，您需要決定影像上應安裝的套件及應包含的使用者組態檔案。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>邏輯擴充 (建立)</title>
+     <para>
+      此階段要求準備步驟成功完成。邏輯擴充步驟會在上一步驟的基礎上建立作業系統影像。
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>部署</title>
+     <para>
+      您可以使用不同的方法部署產生的影像類型，如將其安裝在硬碟上或透過虛擬化系統 (VMware、Qemu、VirtualBox) 進行播放。
+     </para>
+    </formalpara>
+   </listitem>
+  </orderedlist>
+ </sect1>
+ <sect1 id="sec.kiwi.imagedesc">
+  <title>影像描述</title>
+
+  <para>
+   KIWI 需要使用影像描述來建立影像類型。影像描述為至少包含一個 <filename>config.xml</filename> 檔案或包含副檔名為 <filename>*.kiwi</filename> 之檔案的目錄。
+  </para>
+
+  <sect2 id="sec.kiwi.imagedescr.contents">
+   <title>影像描述的內容</title>
+   <para>
+    下表包含了其他選擇性資訊。但是，若要在更高版本的作業系統中運作，您必須提供其中的大部分資訊︰
+   </para>
+   <table id="tab.kiwi.imagedesc">
+    <title> 影像描述的其他檔案與目錄</title>
+    <tgroup cols="2">
+     <thead>
+      <row>
+       <entry>
+        <para>
+         檔案／目錄
+        </para>
+       </entry>
+       <entry>
+        <para>
+         描述
+        </para>
+       </entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>
+        <para>
+         <filename>config/</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         選擇性子目錄。包含所有影像套件安裝後所執行的 Bash 程序檔。
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         建立實體擴充時的選擇性組態程序檔
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         每個影像描述的組態檔案，<xref linkend="sec.kiwi.config.xml" xrefstyle="select:label"/> 中做了說明
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-cdroot.tgz</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         僅用於 ISO 影像的歸檔
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-cdroot.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         操作 <filename>config-cdroot.tgz</filename> 的解壓縮資料
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-yast-autoyast.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         AutoYaST 建立的組態檔案
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>config-yast-firstboot.xml</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         用於控制 YaST 首次開機服務的組態檔案
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>images.sh</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         建立準備步驟時的選擇性組態程序檔
+        </para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para>
+         <filename>root/</filename>
+        </para>
+       </entry>
+       <entry>
+        <para>
+         包含所有影像套件安裝<emphasis>後</emphasis>有變更的其他目錄、特殊檔案及程序檔。
+        </para>
+       </entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect2>
+
+  <sect2 id="sec.kiwi.config.xml">
+   <title><filename>config.xml</filename> 檔案</title>
+   <para>
+    有關影像描述的所有資訊都儲存於中央組態 XML 檔案 <filename>config.xml</filename> 中。KIWI 每次執行時都會根據 RELAX NG 綱要來驗證 <filename>config.xml</filename> (有關此綱要語言的詳細資訊，請參閱 <ulink url="http://www.relaxng.org"/>)。因此，建議使用支援 RELAX NG 功能的適用 XML 編輯器或使用 HTML 檔案 <filename>/usr/share/doc/packages/kiwi/schema/kiwi.xsd.html</filename> 中有關綱要的文件。
+   </para>
+   <para>
+    組態檔案由以下幾部分組成︰
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+
+     <para>
+      一些關於原著者的描述、聯絡人資訊及簡要說明。
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      邏輯擴充階段所需的優先設定選項。
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      有關使用者及其名稱、主目錄和密碼的資訊。
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      指向儲存庫的連結。
+     </para>
+    </listitem>
+    <listitem>
+
+     <para>
+      用於所定義影像類型的套件清單。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      以及其他不太重要的資訊，您可在上文中 HTML 格式的 RELAX NG 綱要文件中檢視。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    以下範例顯示了檔案的基本架構︰
+   </para>
+   <example id="ex.kiwi.config">
+    <title>KIWI 組態檔案</title>
+<screen>&lt;image schemeversion="2.0" name="..."&gt; <co id="co.kiwi.config.image"/>
+  &lt;description type="system"&gt; <co id="co.kiwi.config.description"/>
+    &lt;author&gt;...&lt;/author&gt;
+    &lt;contact&gt;...&lt;/contact&gt;
+    &lt;specification&gt;...&lt;/specification&gt;
+  &lt;/description&gt;
+  &lt;preferences&gt; <co id="co.kiwi.config.preferences"/>
+    &lt;type primary="true" boot="..." flags="..."&gt;iso&lt;/type&gt;
+    &lt;type boot="..." filesystem="ext3" format="vmdk"&gt;vmx&lt;/type&gt;
+    &lt;type boot="..." filesystem="ext3"&gt;xen&lt;/type&gt;
+    &lt;type boot="..." filesystem="squashfs" flags="unified"&gt;oem&lt;/type&gt;
+    &lt;version&gt;2.7.0&lt;/version&gt;
+    &lt;size unit="M"&gt;780&lt;/size&gt;
+    &lt;packagemanager&gt;zypper&lt;/packagemanager&gt;
+    &lt;rpm-check-signatures&gt;False&lt;/rpm-check-signatures&gt;
+    &lt;rpm-force&gt;False&lt;/rpm-force&gt;
+    &lt;locale&gt;en_US.UTF-8&lt;/locale&gt;
+    &lt;oem-swap&gt;no&lt;/oem-swap&gt;
+    &lt;oem-boot-title&gt;USB&lt;/oem-boot-title&gt;
+  &lt;/preferences&gt;
+  &lt;users group="users"&gt; <co id="co.kiwi.config.users"/>
+    &lt;user name="root" pwd="" home="/root"/&gt;
+  &lt;/users&gt;
+  &lt;repository type="rpm-md"&gt; <co id="co.kiwi.config.repository"/>
+    &lt;source path="/home/rpmdir"/&gt;
+  &lt;/repository&gt;
+  &lt;packages type="image" patternPackageType="onlyRequired"&gt; <co id="co.kiwi.config.packages"/>
+    &lt;package name="yast2-live-installer"/&gt;
+    &lt;package name="pam"/&gt;
+    &lt;!-- List of packages reduced --&gt;
+  &lt;/packages&gt;</screen>
+   </example>
+   <calloutlist>
+    <callout arearefs="co.kiwi.config.image">
+     <para>
+      每個 KIWI 組態檔案的根元素。每個檔案都需要版本號碼。選擇性的 <literal>kiwirevision</literal> 屬性可用於指定 KIWI 的 SVN 修正版。
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.description">
+     <para>
+      包含必要的描述，其中包括有關此影像描述的建立者、聯絡人地址及簡要說明。
+     </para>
+    </callout>
+
+    <callout arearefs="co.kiwi.config.preferences">
+     <para>
+      包含必要的優先設定，其中包括有關此影像的版本、使用的套件管理員、支援的影像類型及其他設定。
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.users">
+     <para>
+      選擇性的 <literal>users</literal> 元素包含新增至影像的所有使用者清單。<literal>user</literal> 元素包含名稱、主目錄路徑、密碼及外圍程序。
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.repository">
+     <para>
+      包含套件管理員所使用的必要儲存庫清單。
+     </para>
+    </callout>
+    <callout arearefs="co.kiwi.config.packages">
+     <para>
+      包含影像中所包含的必要套件清單。
+     </para>
+    </callout>
+   </calloutlist>
+   <para>
+    上文的 HTML 頁面中顯示了組態檔案的更多詳細資料。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.kiwi.creating">
+  <title>使用 KIWI 建立裝置</title>
+
+  <para>
+   本節說明如何使用 KIWI 建立裝置裝置是為執行特定任務而特別設計的作業系統。例如，您可以建立一個側重於辦公室程式的裝置。
+  </para>
+
+  <sect2 id="sec.kiwi.img.createrepo">
+   <title>建立本地安裝來源</title>
+   <para>
+    <systemitem class="resource">kiwi-doc</systemitem> 套件中的所有範例都需要有效的安裝來源才能建立影像。通常，這些範例會連接至網路資源。網路的頻寬越高，建立影像的速度就越快。如果您未配備高速網路或者不想使用這種網路，請建立本地安裝資源。請執行下列步驟：
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      收集安裝 DVD。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      開啟外圍程序，切換為 <systemitem class="username">root</systemitem> 身分。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      建立做為本地安裝目錄的目錄。範例通常會使用路徑 <filename>/image/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable></filename>。使用相應的值取代佔位符 <replaceable>VERSION</replaceable> 與 <replaceable>ARCH</replaceable> 。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      掛接媒體。使用相應的裝置 (通常為 <filename>dvd</filename>、<filename>cdrom</filename> 等) 取代 <replaceable>DRIVE</replaceable> 佔位符︰
+     </para>
+<screen>mount -o loop /dev/<replaceable>DRIVE</replaceable> /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      將媒體的所有內容複製到安裝目錄中︰
+     </para>
+<screen>cp -a /mnt/* /images/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable></screen>
+    </step>
+   </procedure>
+   <para>
+    若要使用本地安裝來源，只需在 <literal>repository</literal> 元素中將其啟用即可。
+   </para>
+<?dbfo-need height="6em"?>
+
+
+<screen>&lt;repository type="..."&gt;
+  &lt;!-- Remove the comment markers in the next line --&gt;
+  &lt;!-- &lt;source path="/image/CDs/full-<replaceable>VERSION</replaceable>-<replaceable>ARCH</replaceable>" --&gt;
+  &lt;source path="opensuse://openSUSE:11.0/standard"/&gt; 
+&lt;/repository&gt;</screen>
+  </sect2>
+
+  <sect2 id="sec.kiwi.img">
+   <title>建立影像</title>
+   <para>
+    影像是虛擬的磁碟影像，它包含所有分割區、開機載入程式資訊以及套件，就像位於實際的磁碟上一樣。要建立 ISO 影像，請執行下列步驟︰
+   </para>
+   <procedure id="pr.kiwi.img">
+
+    <step performance="required">
+     <para>
+      安裝套件 <systemitem class="resource">kiwi</systemitem> 與 <systemitem class="resource">kiwi-doc</systemitem>，並解決所有相依性。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      開啟外圍程序，切換為 <systemitem class="username">root</systemitem> 身分。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      將目錄 <filename>/usr/share/doc/packages/kiwi/examples/suse-11.0/suse-oem-preload</filename> 複製到目前的目錄。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      開啟檔案 <filename>config.xml</filename> 並找到元素 <literal>repository</literal>。若要使用本地安裝來源，請參閱<xref xrefstyle="select: label" linkend="sec.kiwi.img.createrepo"/> 以獲取詳細資訊。
+     </para>
+    </step>
+    <step id="st.kiwi.prep" performance="required">
+     <para>
+      使用以下指令執行 KIWI，為第一階段 (<quote>實體延伸</quote>) 做好準備︰
+     </para>
+<screen>kiwi --prepare suse-oem-preload --root oem</screen>
+    </step>
+    <step performance="required">
+     <para>
+      建立 ISO 影像︰
+     </para>
+<screen>kiwi --create oem --type iso --destdir /tmp/myoem</screen>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.kiwi.img.nfs">
+   <title>使用 NFS 建立預先載入影像</title>
+   <para>
+    要建立具有 NFS 功能的 影像，請執行下列步驟：
+   </para>
+   <procedure id="pr.kiwi.img.nfs">
+    <step performance="required">
+     <para>
+      開啟外圍程序，切換為 <systemitem class="username">root</systemitem> 身分。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      將目錄 <filename>/usr/share/doc/packages/kiwi/examples/suse-11.1/suse-oem-preload</filename> 複製到目前的目錄。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      開啟檔案 <filename>suse-oem-preload/config.xml</filename>，並找到具有 <literal>type="image"</literal> 屬性的 <literal>packages</literal> 元素。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在 <literal>&lt;packages type="image"&gt;</literal> 與 <literal>&lt;/packages&gt;</literal> 之間插入下行，並儲存檔案：
+     </para>
+<screen>&lt;package name="nfs-client"/&gt;</screen>
+    </step>
+    <step performance="required">
+     <para>
+      如<xref linkend="st.kiwi.prep"/> 中所述重建影像。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.kiwi.moreinfo">
+  <title>更多資訊</title>
+  <para>
+   在 KIWI 入口網站 (<ulink url="http://en.opensuse.org/Portal:KIWI"/>) 上的下列文件中尋找更多資訊。
+  </para>
+ </sect1>
+</chapter>

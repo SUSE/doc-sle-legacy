@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="mobile.xml" id="cha.mobile">
+ <title>Linux 的行動計算功能</title><indexterm id="idx.mobility" class="startofrange"> <primary>行動性</primary> </indexterm>
+ <abstract>
+  <para>
+   人們多半會將行動計算與筆記型電腦、PDA、行動電話以及它們彼此間的資料交換聯想在一起。行動硬體元件 (如外接硬碟、隨身碟或數位相機) 可以連接到筆記型電腦或桌上電腦系統。行動計算環境需要許多軟體元件，而且有些應用程式是專為行動用途量身訂製的。
+  </para>
+ </abstract>
+ <sect1 id="sec.mobile.nbook">
+  <title>筆記型電腦</title><indexterm class="startofrange" id="idx.notebook"> <primary>筆記型電腦</primary> </indexterm> <indexterm> <primary>筆記型電腦</primary> <secondary>硬體</secondary> </indexterm> <indexterm> <primary>筆記型電腦</primary> <secondary>PCMCIA</secondary> </indexterm> <indexterm> <primary>PCMCIA</primary> </indexterm> <indexterm> <primary>行動性</primary> <secondary>筆記型電腦</secondary> </indexterm>
+
+  <para>
+   筆記型電腦的硬體與一般桌上電腦系統不同。因為可交換性、空間要求和耗電量之類的準則必須考慮在內。行動硬體的製造廠商開發了一些標準介面，例如 PCMCIA (國際個人電腦記憶卡協會)、Mini PCI 和 Mini PCIe，可以使用它們來擴充筆記型電腦的硬體。這些標準涵蓋了記憶卡、網路介面卡、ISDN 和數據機卡，以及外接硬碟。
+  </para>
+
+  <tip>
+   <title><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 和 Tablet PC</title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 也支援 Tablet PC。Tablet PC 隨附的觸控板/數位板可讓您使用數位筆甚至是指尖直接在螢幕上編輯資料，而無需使用滑鼠和鍵盤。它們的安裝與設定方式與所有其他系統非常相似。如需安裝和設定 Tablet PC 的詳細資料，請參閱<xref linkend="cha.tablet"/>。
+   </para>
+  </tip>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.powerm">
+   <title>省電</title><indexterm> <primary>筆記型電腦</primary> <secondary>電源管理</secondary> </indexterm> <indexterm> <primary>電源管理</primary> </indexterm>
+   <para>
+    製造筆記型電腦時採用了電能優化系統元件，因此不必靠電力系統就可以使用該類電腦。它們在省電的貢獻上至少與作業系統的貢獻一樣重要。<phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 支援各種影響筆記型電腦電源消耗的方法，在使用電池電源時，這些方法對電腦運作時間的影響各不相同。下列清單以遞減排序陳述對省電的貢獻：
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      調節 CPU 速度。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      暫停時關閉顯示器亮度。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      手動調整顯示器亮度.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      將未使用的 HotPlug 配件 (USB CD-ROM、外接滑鼠、未使用的 PCMCIA 卡、WLAN 等) 解除連接。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      閒置時降低硬碟轉速。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    關於 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中電源管理的詳細背景資訊，請參閱<xref linkend="cha.pmanage"/>。 
+   </para>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.nbook.change">
+   <title>與變動作業環境的整合</title><indexterm> <primary>筆記型電腦</primary></indexterm>
+   <para>
+    您的系統在用於行動計算時，常需與變動的作業環境搭配。許多服務與環境息息相關，因而基礎用戶端必須經過重新設定。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 會為您處理此工作。
+   </para>
+   <figure id="fig.mobile.scpm">
+    <title>將行動電腦整合到現有環境中</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="90%" fileref="mobile_scpm.svg" format="SVG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="75%" fileref="mobile_scpm.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    筆記型電腦在小型家用網路及公司網路之間來回交替使用的情形，影響的服務包括：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>網路</term>
+     <listitem>
+      <para>
+       包括 IP 位址指定、名稱解析、網際網路連接、以及與其他網路的連接。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>列印</term>
+     <listitem>
+      <para>
+       視網路而定，必須出現可用印表機及可用列印伺服器目前的資料庫。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>電子郵件和代理</term>
+     <listitem>
+      <para>
+       列印時，對應伺服器的清單必須是最新的。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>X (圖形環境)</term>
+     <listitem>
+      <para>
+       如果您的筆記型電腦暫時性地連接到投影機或外接顯示器，則必須要有不同的顯示器組態。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 提供了數種將筆記型電腦整合到現有作業環境的方法：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>NetworkManager</term>
+     <listitem>
+      <para>
+       <indexterm><primary>NetworkManager</primary></indexterm><indexterm><primary>筆記型電腦</primary><secondary>NetworkManager</secondary></indexterm> NetworkManager 是專為筆記型電腦的行動網路功能特別量身訂製的。它能讓您在多種網路環境或不同類型的網路 (例如 GPRS、EDGE 或 3G 等行動寬頻、無線 LAN 和乙太網路) 之間輕鬆地自動切換。NetworkManager 支援無線 LAN 中的 WEP 與 WPA-PSK 加密，亦支援撥接連接 (使用 smpppd)。兩種桌面環境 (GNOME 和 KDE) 都包含 NetworkManager 的前端工具。如需有關桌面 applet 的更多資訊，請參閱<xref linkend="sec.nm.kde"/> 與 <xref linkend="sec.nm.gnome"/>。
+      </para>
+<?dbfo-need height="20em"?>
+
+
+      <table>
+       <title>NetworkManager 的使用案例</title>
+       <tgroup cols="2">
+        <thead>
+         <row>
+          <entry>
+           <para>
+            我的電腦......
+           </para>
+          </entry>
+          <entry>
+           <para>
+            使用 NetworkManager
+           </para>
+          </entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>
+           <para>
+            是筆記型電腦
+           </para>
+          </entry>
+          <entry>
+           <para>
+            是
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            有時候會連接到不同網路
+           </para>
+          </entry>
+          <entry>
+           <para>
+            是
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            提供網路服務 (例如 DNS 或 DHCP)
+           </para>
+          </entry>
+          <entry>
+           <para>
+            否
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            只使用靜態 IP 位址
+           </para>
+          </entry>
+          <entry>
+           <para>
+            否
+           </para>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+      <para>
+       在不應由 NetworkManager 處理網路組態時，請使用 YaST 工具來設定網路連線。
+      </para>
+      <tip>
+       <title>DNS 組態和各種類型的網路連接</title>
+       <para>
+        如果您常常攜帶筆記型電腦出差，並且需要變更不同類型的網路連接，則只要使用 DHCP 正確指定所有 DNS 位址，NetworkManager 便可正常運作。如果某些連接使用靜態 DNS 位址，請將該位址新增至 <filename>/etc/sysconfig/network/config</filename> 中的 <literal>NETCONFIG_DNS_STATIC_SERVERS</literal> 選項。
+       </para>
+      </tip>
+     </listitem>
+    </varlistentry>
+
+    <varlistentry>
+     <term>SLP</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>筆記型電腦</primary> <secondary>SLP</secondary> </indexterm> <indexterm> <primary>SLP</primary> </indexterm> 服務位置通訊協定 (SLP) 簡化了筆記型電腦到現有網路的連接。沒有 SLP，筆記型電腦的管理員通常需要熟知網路中的可用服務。SLP 廣播特定類型服務的可用性到本地網路中的所有用戶端。支援 SLP 的應用程式可以處理由 SLP 分派出來的資訊，而且能夠自動設定。SLP 還可用來安裝系統，縮短對適用安裝來源的搜尋時間。如需有關 SLP 的詳細資訊，請參閱<xref linkend="cha.slp"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.mobile.nbook.soft">
+   <title>軟體選項</title>
+   <para>
+    行動用途的許多特殊任務領域是由專屬軟體所負責的：系統監控 (特別是電池電量)、資料同步化，以及與週邊和網際網路的無線通訊。以下幾節涵蓋了 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 為每項任務提供的最重要的應用程式。
+   </para>
+   <sect3 id="sec.mobile.nbook.soft.mon">
+    <title>系統監控</title><indexterm> <primary>系統監控</primary> </indexterm>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 提供了兩種 KDE 系統監控工具：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>電源管理</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>系統監控</primary> <secondary>電源管理</secondary> </indexterm> <indexterm> <primary>電源管理</primary> </indexterm> <guimenu>電源管理</guimenu>是一款可讓您調整與 KDE 桌面行為關聯之節能的應用程式。一般情況下，這款應用程式可透過<guimenu>電池監視器</guimenu>系統匣圖示來存取，該圖示因目前的供電類型而有所不同。您還可以透過<guimenu>Kickoff 應用程式啟動器</guimenu>來開啟其組態對話方塊：<menuchoice><guimenu>應用程式</guimenu><guimenu>設定桌面</guimenu><guimenu>進階</guimenu><guimenu>電源管理</guimenu></menuchoice>。
+       </para>
+       <para>
+        按一下<guimenu>電池監視器</guimenu>系統匣圖示可以存取用於設定其行為的選項。您可以從顯示的五個電源設定檔中選擇最適合您需要的那一個。例如，<guimenu>簡報</guimenu>規劃停用了螢幕保護程式和整體的電源管理，因此您的簡報不會被系統事件所干擾。按一下<guimenu>更多...</guimenu>會開啟一個更複雜的組態螢幕。您可在此處編輯個人設定檔，設定進階電源管理選項與通知，如筆記型電腦上蓋關閉時或電池電量低時執行什麼操作。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>系統監視器</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>系統監控</primary> <secondary>系統監視器</secondary> </indexterm> <guimenu>系統監視器</guimenu>(也稱為<guimenu>KSysguard</guimenu>) 會將度量系統參數收集到一個監控環境中。依預設，它會在 2 個分頁中顯示輸出資訊。<guimenu>程序表</guimenu>提供目前執行之程序的詳細資訊，例如 CPU 負載、記憶體使用率，或程序 ID 編號及 nice 值。您可以自定收集之資料的顯示和過濾方式。若要新增新的程序資訊類型，請按一下程序表的標頭，然後選擇要隱藏或新增至檢視窗的欄。還可以在各資料頁監控不同的系統參數，或透過網路同時收集各種機器的資料。KSysguard 也能在沒有 KDE 環境的機器上做為精靈來執行。如需有關此程式的詳細資訊，請參閱其整合的說明功能或 SUSE 說明頁。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     GNOME 環境中使用<guimenu>電源管理偏好設定</guimenu>和<guimenu>系統監視器</guimenu>。
+    </para>
+   </sect3>
+   <sect3 id="sec.mobile.nbook.soft.sync">
+    <title>同步化資料</title>
+    <para>
+     在沒有連接網路的行動機器與公司中連接網路的工作站之間切換時，必須讓所有個體間已處理的資料保持同步。這些資料可能包括出差時以及在公司內都需要用到的電子郵件資料夾、目錄以及個別檔案。這兩種情況中的解決方案如下：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>同步化電子郵件</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>同步化資料</primary> <secondary>電子郵件</secondary> </indexterm> <indexterm> <primary>電子郵件</primary> <secondary>同步化</secondary> </indexterm> 使用 IMAP 帳戶在公司網路中儲存您的電子郵件。然後使用任何中斷連接的已啟用 IMAP 之電子郵件用戶端 (如 Mozilla Thunderbird Mail、Evolution 或 KMail)，從工作站存取電子郵件。電子郵件用戶端需要設定，如此「<literal>傳送郵件</literal>」會永遠存取相同的資料夾。這樣可確保完成同步化程序後，所有訊息及其狀態資訊都能使用。使用郵件用戶端中實作的用於傳送郵件的 SMTP 伺服器，代替全系統 MTA postfix 或 sendmail 來接收有關未傳送郵件的可靠回應。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>同步化檔案與目錄</term>
+      <listitem>
+       <para>
+        <indexterm><primary>同步化資料</primary></indexterm> 有數種公用程式適合用來同步化筆記型電腦與工作站之間的資料。使用最廣的是一項名為 <command>rsync</command> 的指令行工具。<phrase os="sled;sles">如需詳細資訊，請參閱其手冊頁 (<command>man 1 rsync</command>)</phrase>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.mobile.nbook.soft.wlan">
+    <title>無線通訊</title><indexterm> <primary>網路</primary> <secondary>無線</secondary> </indexterm>
+    <para>
+     筆記型電腦不僅可以使用電纜連接家用或公司網路，還可以透過無線方式連接其他電腦、周邊裝置、行動電話或 PDA。Linux 支援三種類型的無線通訊：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>WLAN</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>網路</primary> <secondary>WLAN</secondary> </indexterm> <indexterm> <primary>WLAN</primary> </indexterm> WLAN 採用了最廣泛的無線技術，是唯一適合操作大型、甚至極端分散網路的模式。個別機器可以彼此連接，形成一個獨立的無線網路或存取網際網路。稱為<emphasis>存取點</emphasis>的裝置，是做為啟用 WLAN 裝置的基礎工作站，而且扮演存取網際網路的中介角色。行動使用者可以在存取點之間切換，端視所在位置及哪個存取點提供最佳連接而定。與行動電話的通訊方式類似，供 WLAN 使用者使用的大型網路，不用將它們連結到特定位置才能存取。如需有關 WLAN 的詳細資訊，請參閱<xref linkend="cha.wireless.wlan"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>藍芽</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>網路</primary> <secondary>藍芽</secondary> </indexterm> <indexterm> <primary>藍芽</primary> </indexterm> 藍芽在所有無線技術中的應用範圍最廣泛。它可以用於電腦 (筆記型電腦) 與 PDA 或行動電話之間的通訊，像 IrDA 的功能一樣。也可以用來連接覆蓋範圍內的各台電腦。連接鍵盤或滑鼠等無線系統元件時，也可以使用藍芽。不過，此技術的範圍還不足以連接遠端系統與網路。WLAN 是穿透實體障礙物 (如牆) 進行通訊的選用技術。
+
+
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>IrDA</term>
+      <listitem>
+       <para>
+        <indexterm> <primary>網路</primary> <secondary>IrDA</secondary> </indexterm> <indexterm> <primary>IrDA</primary> </indexterm> IrDA 是最短距離的無線技術。兩邊的通訊方必須位於彼此可見的距離內。無法克服如牆之類的障礙物。IrDA 的一個應用方式是從筆記型電腦傳輸檔案到行動電話。可使用 IrDA 來涵蓋筆記型電腦到行動電話的短距離。長距離傳送檔案到收件者是由行動網路處理。IrDA 的另一種應用是在公司內以無線方式傳輸列印工作。
+
+
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.mobile.nbook.sec">
+   <title>資料安全性</title><indexterm> <primary>行動性</primary> <secondary>資料安全性</secondary> </indexterm> <indexterm> <primary>安全性</primary> <secondary>加密檔案系統</secondary> </indexterm> <indexterm> <primary>資料安全性</primary> </indexterm>
+   <para>
+    理想而言，您應使用多種方式保護筆記型電腦上的資料，不受未授權的存取。可以從下列三大面向來採取適當的安全性措施：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>防止竊取</term>
+     <listitem>
+      <para>
+       不論在什麼時候，都要避免機器遭到竊取。各種保全工具 (例如鎖鏈) 都可以在零售店中買到。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>增強式驗證</term>
+     <listitem>
+      <para>
+       除了透過登入和密碼進行標準驗證之外，還使用生物驗證。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 支援指紋驗證。如需詳細資訊，請參閱<xref linkend="cha.security.fp"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>保全系統上的資料</term>
+     <listitem>
+      <para>
+       重要資料在傳輸時不僅要加密，在硬碟上也要加密。這樣在竊取的情況中可確保其安全。<xref linkend="cha.security.cryptofs"/>中介紹了如何使用 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 建立加密分割區。另一種方案是在使用 YaST 新增使用者時建立加密的主目錄。
+      </para>
+      <important>
+       <title>資料安全性和暫停寫入到磁碟</title>
+       <para>
+        暫停寫入到磁碟時，不會卸載加密分割區。因此，任何人只要偷到硬體並且將硬碟復原，即可使用分割區上的資料。
+       </para>
+      </important>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>網路安全性</term>
+     <listitem>
+      <para>
+       任何資料傳輸，不論其傳輸方式為何，我們都應保護其安全。有關 Linux 及網路的一般安全性議題，請參閱<xref linkend="cha.security"/>。與無線網路相關的安全性措施，請參閱<xref linkend="cha.wireless.wlan"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist><indexterm class="endofrange" startref="idx.notebook"/>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.mobile.hw">
+  <title>行動硬體</title><indexterm> <primary>行動性</primary> <secondary>USB</secondary> </indexterm> <indexterm> <primary>行動性</primary> <secondary>FireWire (IEEE1394)</secondary> </indexterm> <indexterm> <primary>FireWire (IEEE1394)</primary> <secondary>硬碟</secondary> </indexterm> <indexterm> <primary>USB</primary> <secondary>硬碟</secondary> </indexterm> <indexterm> <primary>USB</primary> <secondary>隨身碟</secondary> </indexterm> <indexterm> <primary>隨身碟</primary> </indexterm> <indexterm> <primary>行動性</primary> <secondary>外接式硬碟</secondary> </indexterm> <indexterm> <primary>行動性</primary> <secondary>數位相機</secondary> </indexterm> <indexterm> <primary>數位相機</primary> </indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 能夠自動偵測 FireWire (IEEE 1394) 或 USB 上的行動儲存裝置。<emphasis>行動儲存裝置</emphasis>這個詞，包含了任何種類的 FireWire 或 USB 硬碟、USB 隨身碟或數位相機。只要這些裝置一透過對應介面與系統連接，即可自動偵測與設定。GNOME 和 KDE 的檔案管理員都提供靈活的行動硬體項目處理方式。若要安全卸載所有這些媒體，請使用檔案管理員 KDE 或 GNOME 的<guimenu>安全移除</guimenu>(KDE) 或<guimenu>卸載卷冊</guimenu>(GNOME) 功能。
+   
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>外接磁碟 (USB 和 FireWire)</term>
+    <listitem>
+     <para>
+      系統正確辨識外接硬碟後，其圖示就會出現在檔案管理員中。按一下圖示，會顯示裝置的內容。在此可以建立、編輯或刪除資料夾及檔案。若要重新命名磁碟的系統指定名稱，請在圖示上按一下滑鼠右鍵所開啟的功能表中，選取對應的功能表項目。此名稱的變更，僅限顯示於檔案管理員中。因此，掛接於 <filename>/media</filename> 中裝置的描述符號不會受影響。
+     </para>
+     
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>USB 隨身碟</term>
+    <listitem>
+     <para>
+      這些裝置由系統處理，如外接硬碟一樣。同樣可以在檔案管理員中重新命名項目。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.mobile.comm">
+  <title>行動電話和 PDA</title><indexterm> <primary>行動性</primary> <secondary>行動電話</secondary> </indexterm> <indexterm> <primary>行動性</primary> <secondary>PDA</secondary> </indexterm> <indexterm> <primary>行動電話</primary> </indexterm> <indexterm> <primary>PDA</primary> </indexterm>
+
+  <para>
+   桌上電腦或筆記型電腦可以透過藍芽或 IrDA 進行通訊。有些型號支援兩種通訊協定，而有些則僅支援其中一種。兩種通訊協定的使用範圍及相關的延伸說明文件已經在<xref linkend="sec.mobile.nbook.soft.wlan"/>中提及。行動電話通訊協定的組態，於手冊中均有說明。
+
+
+  </para>
+
+  <para>
+   <indexterm> <primary>同步化資料</primary> <secondary>Evolution</secondary> </indexterm> <indexterm> <primary>同步化資料</primary> <secondary>Kontact</secondary> </indexterm> <indexterm> <primary>Evolution</primary> </indexterm> <indexterm> <primary>Kontact</primary> </indexterm> Evolution 與 Kontact 均支援在 Palm, Inc. 生產的手持裝置之間進行同步化作業。與裝置的首次連接可以在精靈的協助下輕鬆完成。設定 Palm Pilot 的支援後，必須判斷應該同步化哪些類型的資料 (通訊錄、約會等)。 
+  </para>
+
+  
+ </sect1>
+ <sect1 id="sec.mobile.info">
+  <title>更多資訊</title>
+
+  <para>
+   有關行動裝置與 Linux 所有問題的參考重點，請參閱 <ulink url="http://tuxmobil.org/"/>。該網站的各個區段，對應筆記型電腦、PDA、行動電話及其他行動硬體中軟體和硬體的各個方面。
+  </para>
+
+  <para>
+   <ulink url="http://tuxmobil.org/"/> 的類似方法由 <ulink url="http://www.linux-on-laptops.com/"/> 提供。在此可以找到有關筆記型電腦和掌上型裝置的資訊。
+  </para>
+
+  <para>
+   關於筆記型電腦相關議題，SUSE 提供了專屬的郵件清單 (使用德文)。請參閱<ulink url="http://lists.opensuse.org/opensuse-mobile-de/"/>。在此清單中，使用者與開發人員討論了 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 行動計算的所有觀念。以英文張貼的文章會收到回應，但是大部分的歸檔資訊僅有德文版本。使用 <ulink url="http://lists.opensuse.org/opensuse-mobile/"/> 可獲取英文張貼的文章。
+  </para>
+
+  <para>
+   <ulink url="http://opensync.org/"/> 中提供了關於 <literal>OpenSync</literal> 的資訊。
+  </para><indexterm class="endofrange" startref="idx.mobility"/>
+ </sect1>
+</chapter>

@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="grub.xml" id="cha.grub">
+ <title>ブートローダGRUB</title><indexterm> <primary>ブート</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
+ <abstract>
+  <para>
+   この章では、<phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase>で使用されているブートローダGRUB (Grand Unified Bootloader)の設定方法について説明します。すべての設定操作には、特殊なYaSTモジュールを使用できます。Linuxでのブートに不慣れな場合は、以降の各セクションを読んで背景情報を理解してください。また、この章では、でのブート時に頻繁に発生する問題とその解決策についても説明します。
+  </para>
+ </abstract>
+ <note os="sles;sled">
+  <title>UEFIを使用するコンピュータ上にGRUBがない</title>
+  <para>
+   通常GRUBは従来のBIOSを備え、UEFI (Unified Extensible Firmware Interface)上にあるコンピュータにインストールされます。CSMが有効になっていないUEFIコンピュータでは、<systemitem>eLILO</systemitem>が自動的にインストールされます (DVD1が正常に起動した場合)。詳細については、ご使用のシステムの<filename>/usr/share/doc/packages/elilo/</filename>にあるeLILOマニュアルを参照してください。
+  </para>
+ </note>
+ <para>
+  この章は、ブート管理とGRUBブートローダの設定に重点を置いています。ブート手順は、総じて<xref linkend="cha.boot"/>で説明しています。ブートローダは、マシン(BIOS)とオペレーティングシステム(<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>)の間のインタフェースになります。ブートローダの設定は、オペレーティングシステムの起動に直接影響を及ぼします。
+ </para>
+ <para>
+  次の用語は、この章で頻繁に使用されており、少し説明を加えた方がよいと思われるものです。
+ </para>
+ <variablelist>
+  <varlistentry>
+   <term>MBR (マスターブートレコード)<indexterm> <primary>ブート</primary> <secondary>ブートセクタ</secondary></indexterm><indexterm> <primary>MBR</primary></indexterm><indexterm> <primary>マスタブートレコード</primary> <see>MBR</see></indexterm><indexterm> <primary>パーティション</primary> <secondary>パーティションテーブル</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>マスタブートレコード(MBR)</secondary></indexterm></term>
+   <listitem>
+    
+    <para>
+     MBRの構造は、オペレーティングシステムに依存しない規則に従って定義されます。最初の446バイトは、プログラムコード用に予約されています。通常、ここにはブートローダプログラムやオペレーティングシステムセレクタの一部が保管されています。次の64バイトは、最大4つのエントリからなるパーティションテーブル用のスペースです。パーティションテーブルには、ハードディスクのパーティション分割とファイルシステムのタイプに関する情報が含まれています。オペレーティングシステムでハードディスクを処理するには、このテーブルが必要です。MBRの従来の汎用コードでは、1つのパーティションにだけ<emphasis>アクティブ</emphasis>のマークを付ける必要があります。MBRの最後の2バイトは、静的な「<quote>マジックナンバー</quote>」(<literal>AA55</literal>)を含む必要があります。一部のBIOSでは、異なる値を持つMBRは無効とみなされ、ブートの対象とはみなされません。
+    </para>
+   </listitem>
+  </varlistentry>
+  <varlistentry>
+   <term>ブートセクタ<indexterm><primary> ブート</primary><secondary> ブートセクタ</secondary></indexterm><indexterm><primary>GRUB</primary></indexterm><indexterm><primary>MBR</primary><secondary>ブートセクタ</secondary></indexterm></term>
+   <listitem>
+    <para>
+     ブートセクタは、拡張パーティションを除くハードディスクパーティションの最初のセクタであり、その他のパーティションの<quote>コンテナ</quote>として機能するだけです。これらのブートセクタのうち512バイトのスペースは、関連パーティションにインストールされているオペレーティングシステムをブートするためのコードが占有します。これは、フォーマット済みのDOS、Windows、およびOS/2パーティションのブートセクタに該当し、ファイルシステムの重要な基本データも一部含まれています。これに対して、Linuxパーティションのブートセクタは、XFS以外のファイルシステムの設定直後は当初空になっています。そのため、Linuxパーティションは、カーネルと有効なルートファイルシステムが含まれている場合にも、単独ではブートできません。システムブート用の有効なコードを含むブートセクタの場合、最後の2バイトにはMBRと同じマジックナンバー(<literal>AA55</literal>)があります。
+    </para>
+   </listitem>
+  </varlistentry>
+ </variablelist>
+ <sect1 id="sec.grub.basic">
+  <title>GRUBによるブート</title><indexterm> <primary>GRUB</primary> <secondary>ブート</secondary></indexterm><indexterm> <primary>インストール</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>ブート</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>設定</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>コマンド</primary> <secondary>grub</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>コマンド</secondary></indexterm>
+
+  <para>
+   GRUBは、2つのステージで構成されています。ステージ1は、512バイトから成り、そのタスクは、ブートローダの第2ステージをロードすることだけです。その後、stage2が読み込まれます。このステージにいは、ブートローダの主要部分が含まれています。
+  </para>
+
+  <para>
+   一部の設定では、適切なファイルシステムからステージ2を検出し、ロードする中間ステージの1.5を使用できます。可能であれば、デフォルトでインストール時、またはYaSTを使用したGRUBの初回セットアップ時に、この方法が選択されます。
+  </para>
+
+  <para>
+   stage2は、多くのファイルシステムにアクセスできます。現在、Windowsで使用されているext2、ext3、ReiserFS、Minix、およびDOS FATファイルシステムがサポートされます。BSDシステムで使用されているXFS、UFS、およびFFSも、特定の範囲までサポートされます。バージョン0.95以降のGRUBには、<quote>El Torito</quote>仕様に準拠するISO 9660標準ファイルシステムを含むCDまたはDVDからブートする機能も用意されています。システムをブートする前にも、サポートされているBIOSディスクデバイス(BIOSにより検出されるフロッピーディスクまたはハードディスク、CDドライブ、およびDVDドライブ)のファイルシステムにアクセスできます。したがって、GRUBの設定ファイル(<filename>menu.lst</filename>)を変更しても、ブートマネージャを新たにインストールする必要はありません。システムをブートすると、GRUBはメニューファイルと共にカーネルまたは初期RAMディスク(<literal>initrd</literal>)の有効なパスとパーティションデータを再読み込みし、これらのファイルを検索します。
+  </para>
+
+  <para>
+   GRUBの実際の設定は、次の4つのファイルに基づきます。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>/boot/grub/menu.lst</filename><indexterm><primary>GRUB</primary><secondary>menu.lst</secondary></indexterm></term>
+    <listitem>
+     <para>
+      このファイルには、ブートできるパーティションまたはオペレーティングシステムに関する情報がすべて含まれています。この情報がない場合、GRUBコマンドラインは、どのように処理を続行するかユーザの指示を求めます(詳細については、「<xref linkend="sec.grub.menu.change"/>」を参照してください)。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/boot/grub/device.map</filename><indexterm><primary>GRUB</primary><secondary>device.map</secondary></indexterm></term>
+    <listitem>
+     <para>
+      このファイルは、デバイス名をGRUBとBIOSの表記法からLinuxデバイス名に変換するために使います。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/etc/grub.conf</filename><indexterm><primary>GRUB</primary><secondary>grub.conf</secondary></indexterm></term>
+    <listitem>
+     <para>
+      このファイルには、GRUBシェルでブートローダを正常にインストールするために必要なコマンド、パラメータおよびオプションが含まれています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>/etc/sysconfig/bootloader</filename> <indexterm> <primary>GRUB </primary> <secondary>sysconfig/bootloader</secondary></indexterm></term>
+    <listitem>
+     <para>
+      このファイルはperl-bootloaderライブラリが読み込みます。これはブートローダをYaSTで設定するときと、新しいカーネルがインストールされるたびに使用されます。カーネルパラメータなどの設定オプションが含まれ、これはブートローダ設定ファイルにデフォルトで追加されます。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <para>
+   GRUB は、さまざまな方法で制御できます。グラフィカルメニュー(スプラッシュ画面)を使用して、既存の設定からブートエントリを選択できます。設定は、ファイル<filename>menu.lst</filename>から読み込まれます。
+  </para>
+
+  <para>
+   GRUBでは、すべてのブートパラメータをブート前に変更できます。たとえば、メニューファイルを間違って編集した場合は、この方法で訂正できます。また、ブートコマンドは、一種の入力プロンプトで対話的に入力することもできます。詳細については、<xref linkend="sec.grub.menu.change"/>を参照してください。GRUBには、ブート前にカーネルと<filename>initrd</filename>の位置を判別する機能が用意されています。この機能を使用すると、ブートローダ設定にエントリが存在しないインストール済みオペレーティングシステムでもブートできます。
+  </para>
+
+  <para>
+   GRUBは実際には2つのバージョンがあります。ブートローダと、<filename>/usr/sbin/grub</filename>にある通常のLinuxプログラムです。このプログラムを<emphasis>GRUBシェル</emphasis>と呼びます。GRUBシェルは、インストールされたシステムにGRUBのエミュレーションを提供し、GRUBのインストールまたは新規設定の適用前のテストに使用できます。ハードディスクやフロッピーディスクにGRUBをブートローダとしてインストールする機能は、コマンド<command>setup</command>の形でGRUBに組み込まれています。この機能は、Linuxの読み込み時にGRUBシェル内で使用できます。
+  </para>
+
+  <sect2 id="sec.grub.menu">
+   <title>ファイル<filename>/boot/grub/menu.lst</filename></title><indexterm> <primary>設定ファイル</primary> <secondary>menu.lst</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>ブートメニュー</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>menu.lst</secondary></indexterm>
+   <para>
+    ブートメニューを含むグラフィカルスプラッシュ画面は、GRUBの設定ファイル<filename>/boot/grub/menu.lst</filename>に基づいており、このファイルにはメニューを使用してブートできるパーティションまたはオペレーティングシステムに関する情報がすべて含まれています。
+   </para>
+   <para>
+    システムをブートするたびに、ファイルシステムからメニューファイルを読み込みます。このため、ファイルを変更するたびに再インストールする必要がありません。で説明しているように、YaSTのブートローダを使用してGRUBの設定を変更します。<xref linkend="sec.boot.yast2.config"/>
+   </para>
+   <para>
+    メニューファイルにはコマンドが含まれています。構文はきわめて単純です。各行には、コマンド1つとオプションのパラメータがシェルと同様にスペースで区切って指定されています。これまでの経緯が理由で、一部のコマンドでは最初の引数の前に等号(<literal>=</literal>)を使用することができます。コメントを記述するには、行頭にシャープ記号(<literal>#</literal>)を入力します。
+   </para>
+   <para>
+    メニュー概要の中にあるメニュー項目を識別できるように、各エントリに対して<literal>title</literal> (タイトル)を設定します。キーワード<literal>title</literal>の後に続くテキスト(半角スペースも使用できます)は、メニューの中で、選択可能なオプションとして表示されます。そのメニュー項目が表示された場合、次の<literal>title</literal>までに記述されているすべてのコマンドが実行されます。
+   </para>
+   <para>
+    最も簡単な例は、他のオペレーティングシステムのブートローダにリダイレクトすることです。該当するコマンドは<literal>chainloader</literal>であり、引数は通常、他のパーティション内にあるブートブロックをGRUBのブロック表記に従って記述したものです。次に例を示します。
+   </para>
+<screen>chainloader (hd0,3)+1</screen>
+   <para>
+    GRUBでのデバイス名については、<xref linkend="sec.grub.devices"/>を参照してください。この例では、1台目のハードディスクの4番目のパーティションの最初のブロックを指定しています。
+   </para>
+   <para>
+    カーネルイメージを指定するには、<literal>kernel</literal>コマンドを使用します。最初の引数は、パーティションにあるカーネルイメージを表すパスです。他の引数は、そのコマンドラインでカーネルに渡されます。
+   </para>
+   <para>
+    ルートパーティションへのアクセスに必要なビルトインドライバがカーネルに用意されていない場合、または高度なhotplug機能のある新しいLinuxシステムが使用されていない場合は、<filename>initrd</filename>ファイルへのパスを示す引数だけを指定して、別のGRUBコマンドで<filename>initrd</filename>を指定する必要があります。<filename>initrd</filename>のロードアドレスは、ロードされるカーネルイメージに書き込まれるので、<literal>initrd</literal>コマンドは、<literal>kernel</literal>コマンドの後に記述する必要があります。
+   </para>
+   <para>
+    <literal>root</literal>コマンドは、kernelとinitrdの各ファイルの指定を簡略化します。<literal>root</literal>の引数は、デバイスまたはパーティションだけです。このデバイスは、すべてのカーネル、<filename>initrd</filename>、または次の<literal>root</literal>コマンドまでデバイスが明示的に指定されて｢ない他のファイルのパスに使用されます。
+   </para>
+   <para>
+    <literal>boot</literal>コマンドは各メニューエントリの最後に必ず含まれています。そのため、メニューファイルにこのコマンドを記述する必要はありません。ただし、GRUBをブート時に対話形式で使用する場合は、<literal>boot</literal>コマンドを最後に入力する必要があります。このコマンド自体は、引数を使用しません。単純に、読み込み済みのカーネルイメージ、または指定のチェーンローダをブートします。
+   </para>
+   <para>
+    すべてのメニューエントリを記述した後、その1つを<literal>default</literal>エントリとして定義します。デフォルトエントリを指定しなかった場合、最初のエントリ(エントリ<literal>0</literal>)が使用されます。デフォルトエントリがブートされるまでのタイムアウトを秒単位で指定することもできます。通常、<literal>timeout </literal>および <literal>default</literal> は、メニューエントリより先に記述します。サンプルファイルについては、<xref linkend="sec.grub.menu.example"/>を参照してください。
+   </para>
+   <sect3 id="sec.grub.devices">
+    <title>ハードディスクとパーティションに関する命名規則</title><indexterm> <primary>GRUB</primary> <secondary>デバイス名</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>パーティション名</secondary></indexterm>
+    <para>
+     GRUBでのハードディスクとパーティションの命名規則は、通常のLinuxデバイスの命名規則と異なっています。どちらかというと、BIOSが使用する単純なディスクエミューレーションに似ており、構文は一部のBSDデリバティブで使用されているものに類似しています。GRUBでは、パーティション番号は0から始まります。これは、(<filename>hd0,0</filename>)は最初のハードディスクの最初のパーティションになります。ハードディスクがプライマリマスタとして接続されている一般的なデスクトップマシンでは、対応するLinuxデバイス名は<filename>/dev/sda1</filename>になります。
+    </para>
+    <para>
+     可能な4つの基本パーティションに、パーティション番号<literal>}0</literal>～<literal>3</literal>が割り当てられます。論理パーティション番号は<literal>4</literal>から始まります。
+    </para>
+<screen>(hd0,0)   first primary partition of the first hard disk
+(hd0,1)   second primary partition
+(hd0,2)   third primary partition
+(hd0,3)   fourth primary partition (usually an extended partition)
+(hd0,4)   first logical partition
+(hd0,5)   second logical partition</screen>
+    <para>
+     GRUBは、BIOSデバイスに依存しているので、PATA (IDE)、SATA、SCSIおよびハードウェアRAIDのデバイスを区別しません。BIOSまたは他のディスクコントローラで認識されるすべてのハードディスクには、BIOSの中で事前に設定されたブートシーケンスに従って番号が割り当てられます。
+    </para>
+    <para>
+     一般に、GRUBには、Linuxデバイス名をBIOSデバイス名に正確にマップする機能がありません。このマッピングはアルゴリズムを使用して生成され、<filename>device.map</filename>ファイルに保存されるため、必要に応じて編集できます。ファイル<filename>device.map</filename>については、<xref linkend="sec.grub.map"/>を参照してください。
+    </para>
+    <para>
+     のフルパスは、カッコ内のデバイス名と、指定のパーティションにあるファイルシステム内のファイルへのパスで構成されます。このパスはスラッシュで始まります。たとえば、単一PATA(IDE)ハードディスクの最初のパーティションにLinuxを含んでいるシステムでは、ブート可能カーネルを次のように指定できます。
+    </para>
+<screen>(hd0,0)/boot/vmlinuz</screen>
+   </sect3>
+   <sect3 id="sec.grub.menu.example">
+    <title>メニューファイルの例</title>
+    <para>
+     次の例は、GRUBのメニューファイルの構造を示しています。このインストール例では、Linuxのブートパーティションが<filename>/dev/sda5</filename>、ルートパーティションが<filename>/dev/sda7</filename>、およびWindowsのインストールファイルが<filename>/dev/sda1</filename>にあります。
+    </para>
+    
+<screen>gfxmenu (hd0,4)/boot/message<co id="grub.menu.example.gfxmenu"/>
+color white/blue black/light-gray<co id="grub.menu.example.color"/>
+default 0<co id="grub.menu.example.default"/>
+timeout 8<co id="grub.menu.example.timeout"/>
+
+title linux<co id="grub.menu.example.linux"/>
+   root (hd0,4)
+   kernel /boot/vmlinuz root=/dev/sda7 vga=791 resume=/dev/sda9
+   initrd /boot/initrd
+
+title windows<co id="grub.menu.example.windows"/>
+   rootnoverify (hd0,0)
+   chainloader +1
+
+title floppy<co id="grub.menu.example.floppy"/>
+   rootnoverify (hd0,0)
+   chainloader (fd0)+1
+
+title failsafe<co id="grub.menu.example.failsafe"/>
+   root (hd0,4)
+   kernel /boot/vmlinuz.shipped root=/dev/sda7 ide=nodma \
+   apm=off acpi=off vga=normal nosmp maxcpus=0 3 noresume
+   initrd /boot/initrd.shipped</screen>
+    <para>
+     最初のブロックは、スプラッシュ画面の設定を定義します。
+    </para>
+    <calloutlist>
+     <callout arearefs="grub.menu.example.gfxmenu">
+      <para>
+       背景画像<literal>message</literal>は、<filename>/dev/sda5</filename>パーティションの <filename>/boot</filename>ディレクトリにあります。
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.color">
+      <para>
+       カラースキーマ:白(前景色)、青(背景色)、黒(選択項目)、明るい灰色(選択項目の背景色)です。配色はスプラッシュ画面には影響しません。影響を受けるのは、<keycap>Esc</keycap>キーを押してスプラッシュ画面を終了するとアクセスできるカスタマイズ可能なGRUBメニューだけです。
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.default">
+      <para>
+       デフォルトでは、最初の(<literal>0</literal>)メニューエントリ<literal>title linux</literal>がブートされます。
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.timeout">
+      <para>
+       ユーザ入力がないまま8秒が経過した場合、GRUBは自動的にデフォルトエントリをブートします。自動ブートを無効にするには、<literal>timeout</literal>の行を削除します。timeout 0<literal>と設定すると、GRUBは待ち時間なしでデフォルトのエントリをブートします。</literal>
+      </para>
+     </callout>
+    </calloutlist>
+    <para>
+     2番目の(最大)ブロックは、ブート可能な各種オペレーティングシステムを示します。個々のオペレーティングシステムに関するセクションは<literal>title</literal>で始まります。
+    </para>
+    <calloutlist>
+     <callout arearefs="grub.menu.example.linux">
+      <para>
+       最初のエントリ(<literal>title linux</literal>)は、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>をブートします。カーネル(<literal>vmlinuz</literal>)は、1台目のハードディスクの最初の論理パーティション(ブートパーティション)内に配置されています。ルートパーティションやVGAモードなどのカーネルパーティションは、ここに追加されます。この情報を読み込むのはLinuxカーネルであり、GRUBは関係しないため、ルートパーティションは、Linuxの命名規則(<filename>/dev/sda7/</filename>)に従って指定されます。<literal>initrd</literal>も、1台目のハードディスクの最初の論理パーティション内に配置されています。
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.windows">
+      <para>
+       第2のエントリは、Windowsを読み込む役割を果たします。Windowsは、1台目のハードディスク(<filename>hd0,0</filename>)の最初のパーティションからブートされます。chainloader +1<literal>コマンドは、指定されたパーティションの最初のセクタを読み取って実行するようGRUBに指示します。</literal>
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.floppy">
+      <para>
+       次のエントリは、BIOS設定を変更することなく、フロッピーディスクからブートすることを可能にします。
+      </para>
+     </callout>
+     <callout arearefs="grub.menu.example.failsafe">
+      <para>
+       ブートオプション<literal>failsafe</literal>は、問題のあるシステム上でもLinuxのブートを可能にするカーネルパラメータを選択してLinuxを起動します。
+      </para>
+     </callout>
+    </calloutlist>
+    <para>
+     メニューファイルは必要に応じて変更できます。その場合、GRUBは変更後の設定を次回のブート時に使用します。このファイルを永続的に編集するには、YaSTまたは好みのエディタを使用します。また、対話形式で一時的に変更するには、GRUBの編集機能を使用します。詳細については、<xref linkend="sec.grub.menu.change"/>を参照してください。
+    </para>
+   </sect3>
+   <sect3 id="sec.grub.menu.change">
+    <title>ブート手順実行中のメニューエントリの編集</title><indexterm> <primary>GRUB </primary> <secondary>メニューエディタ</secondary></indexterm>
+    <para>
+     グラフィカルブートメニューでは、ブートするオペレーティングシステムを矢印キーで選択します。Linuxシステムを選択した場合は、ブートプロンプトからブートパラメータを追加入力できます。個々のメニューエントリを直接編集するには、<keycap>Esc</keycap>キーを押してスプラッシュ画面を終了し、GRUBテキストベースメニューを表示してから<keycap>E</keycap>キーを押します。この方法で加えた変更は、現在のブートだけに適用され、永続的に採用されることはありません。
+    </para>
+    <important>
+     <title>ブート手順実行中のキーボードレイアウト</title>
+     <para>
+      ブート時は、USキーボードレイアウトだけが使用可能です。詳細については、<xref linkend="fig.trouble.install.keyboard_us"/>を参照してください。
+     </para>
+    </important>
+    <para>
+     メニューエントリの編集により、障害が発生してブートできなくなったシステムを容易に修復できます。これは、ブートローダの設定ファイルの誤りをパラメータの手動入力により回避できるからです。ブート手順の中でパラメータを手動で入力する方法は、ネイティブシステムを損傷せずに新規設定をテストする際にも役立ちます。
+    </para>
+    <para>
+     編集モードを有効にした後、矢印キーを使用して、設定を編集するメニューエントリを選択します。設定を編集可能にするには、もう一度<keycap>E</keycap>キーを押します。このようにして、不正なパーティションまたはパス指定を、ブートプロセスに悪影響を及ぼす前に編集します。<keycap>Enter</keycap>キーを押して編集モードを終了し、メニューに戻ります。次に、<keycap>B</keycap>キーを押してこのエントリをブートします。下部のヘルプテキストに、さらに可能なアクションが表示されます。
+    </para>
+    <para>
+     変更後のブートオプションを永続的に入力してカーネルに渡すには、ユーザの<systemitem class="username">root</systemitem>でファイル<filename>menu.lst</filename>を開き、関連カーネルパラメータをスペースで区切って既存の行に追加します。
+    </para>
+<screen>title linux
+   root(hd0,0)
+     kernel /vmlinuz root=/dev/sda3 <replaceable>additional parameter</replaceable>
+   initrd /initrd</screen>
+    <para>
+     GRUBは、次回のシステムブート時に新規パラメータを自動的に使用します。または、この変更をYaSTのブートローダモジュールで行うこともできます。新規パラメータをスペースで区切って既存の行に追加します。
+    </para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.grub.map">
+   <title>device.mapファイル</title><indexterm> <primary>GRUB </primary> <secondary>device.map</secondary></indexterm>
+   <para>
+    device.map<filename>ファイルは、GRUBおよびBIOSのデバイス名をLinuxのデバイス名にマップします。</filename>PATA (IDE)とSCSIのハードディスクが混在するシステムでは、GRUBは、特殊プロシージャを使用してブートシーケンスの判別を試みる必要があります。これは、GRUBがブートシーケンスに関するBIOS情報にアクセスできない場合があるためです。GRUBはこの分析の結果をファイル<filename>/boot/grub/device.map</filename>に保存します。BIOS内のブートシーケンスをSCSIの前にPATAに設定するシステムの<filename>device.map</filename>ファイルは、たとえば、次のようになります:
+   </para>
+<screen>(fd0)  /dev/fd0
+(hd0)  /dev/sda
+(hd1)  /dev/sdb</screen>
+   <para>
+    または
+   </para>
+<screen>(fd0)  /dev/fd0
+(hd0)  /dev/disk-by-id/<replaceable>DISK1 ID</replaceable>
+(hd1)  /dev/disk-by-id/<replaceable>DISK2 ID</replaceable></screen>
+   <para>
+    PATA(IDE)やSCSIなどのハードディスクの順序はさまざまな要因によって左右され、Linuxではそのマッピングを識別できないので、<filename>device.map</filename>ファイル内のシーケンスは手動で設定することができます。ブート時に問題に直面した場合、このファイル内のシーケンスが、BIOS内のシーケンスに対応しているかどうかチェックします。さらに、必要に応じてGRUBは、ファイル内のシーケンスを一時的に変更するように指示します。Linuxシステムのブート後に、YaSTブートローダモジュールまたは好みのエディタを使用して、<filename>device.map</filename>ファイルを永続的に変更できます。
+   </para>
+   
+   <para>
+    device.map<filename>を手動で編集した後、次のコマンドを実行してGRUBを再インストールします。</filename>このコマンドにより、<filename>device.map</filename>ファイルが再読み込みされ、<filename>grub.conf</filename>に指定されているコマンドが実行されます。
+   </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+  </sect2>
+
+  <sect2 id="sec.grub.conf">
+   <title>/etc/grub.confファイル</title><indexterm> <primary>設定ファイル</primary> <secondary>grub.conf</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>grub.conf</secondary></indexterm><indexterm> <primary>設定</primary> <secondary>GRUB</secondary></indexterm>
+   <para>
+    <filename>menu.lst</filename>および<filename>device.map</filename>の次に重要な第3のGRUB設定ファイルは、<filename>/etc/grub.conf</filename>です。このファイルには、GRUBシェルでブートローダを正常にインストールするために必要なコマンド、パラメータおよびオプションが含まれています。
+   </para>
+<screen>setup --stage2=/boot/grub/stage2 --force-lba (hd0,1) (hd0,1)
+   quit</screen>
+   <para>
+    このコマンドは、同じパーティションに存在するブートイメージを使用して、最初のハードディスク(hd0,1)の第2パーティションにブートローダを自動的にインストールするようにGRUBに指示します。マウントされたファイルシステムから<option>stage2</option>イメージをインストールするには、<filename>--stage2=/boot/grub/stage2</filename>パラメータが必要です。一部のBIOSは、LBAサポート実装に欠陥があります。これを無視する解決策として、<option>--force-lba</option>を使用します。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.grub.sysconfig">
+   <title>ファイル<filename>/etc/sysconfig/bootloader</filename></title><indexterm> <primary>GRUB</primary> <secondary>sysconfig/bootloader</secondary></indexterm>
+   <para>
+    この設定ファイルは、ブートローダをYaSTで設定するときと、新しいカーネルがインストールされる際にのみ使用されます。perl-bootloaderライブラリで評価され、それに従ってブートローダ設定ファイル(GRUBの<filename>/boot/grub/menu.lst</filename>など)が変更されます。<filename>/etc/sysconfig/bootloader</filename>は、GRUB固有の設定ファイルではありません。その値は、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>にインストールされているすべてのブートローダに適用されます。
+   </para>
+   <note>
+    <title>カーネルアップデート後のブートローダ設定</title>
+    <para>
+     新しいカーネルがインストールされるたびに、perl-bootloaderは<filename>/etc/sysconfig/bootloader</filename>で指定されたデフォルトを使用して、新しいブートローダ設定ファイル(たとえば、GRUBの<filename>/boot/grub/menu.lst</filename>など)を作成します。カスタマイズしたカーネルパラメータのセットを使用している場合、必要に応じて<filename>/etc/sysconfig/bootloader</filename>の該当するデフォルト値を調整してください。
+    </para>
+   </note>
+   <variablelist>
+    <varlistentry>
+     <term><literal>LOADER_TYPE</literal>
+     </term>
+     <listitem>
+      <para>
+       システムにインストールされたブートローダを指定します(GRUBやLILOなど)。変更は勝手にしないでください。ブートローダは、<xref linkend="pro.boot.yast2.config.loader"/>に説明されているように、YaSTを使用して変更します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>DEFAULT_VGA / FAILSAFE_VGA / XEN_VGA</literal>
+     </term>
+     <listitem>
+      <para>
+       起動時に使用されるフレームバッファの画面解像度と色深度は、カーネルパラメータ<literal>vga</literal>で設定されます。これらの値は、デフォルトブートエントリ、フェイルセーフ、XENエントリに使用する解像度と色深度を定義します。有効な値は次のとおりです。
+      </para>
+      <table>
+       <title>画面解像度および色深度の参照</title>
+       <tgroup cols="6">
+        <thead>
+         <row>
+          <entry>
+           <para/>
+          </entry>
+          <entry>
+           <para>
+            640x480
+           </para>
+          </entry>
+          <entry>
+           <para>
+            800x600
+           </para>
+          </entry>
+          <entry>
+           <para>
+            1024x768
+           </para>
+          </entry>
+          <entry>
+           <para>
+            1280x1024
+           </para>
+          </entry>
+          <entry>
+           <para>
+            1600x1200
+           </para>
+          </entry>
+         </row>
+        </thead>
+        <tbody>
+         <row>
+          <entry>
+           <para>
+            8bit
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x301
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x303
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x305
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x307
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31C
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            15ビット
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x310
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x313
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x316
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x319
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31D
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            16ビット
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x311
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x314
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x317
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31A
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31E
+           </para>
+          </entry>
+         </row>
+         <row>
+          <entry>
+           <para>
+            24ビット
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x312
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x315
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x318
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31B
+           </para>
+          </entry>
+          <entry>
+           <para>
+            0x31F
+           </para>
+          </entry>
+         </row>
+        </tbody>
+       </tgroup>
+      </table>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>DEFAULT_APPEND / FAILSAFE_APPEND / XEN_KERNEL_APPEND</literal>
+     </term>
+     <listitem>
+      <para>
+       ブートローダ設定ファイルのデフォルト、フェイルセーフ、XENブートエントリに自動的に付加されるカーネルパラメータ(<literal>vga</literal>以外)。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>CYCLE_DETECTION / CYCLE_NEXT_ENTRY</literal>
+     </term>
+     <listitem>
+      <para>
+       ブートサイクル検出を使用するかどうか設定します。使用する場合は、リブートサイクルの際に<filename>/boot/grub/menu.lst</filename>から使用する代替エントリ(たとえば、<systemitem>Failsafe</systemitem>)を設定します。詳細は、<filename>/usr/share/doc/packages/bootcycle/README</filename>を参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.grub.password">
+   <title>ブートパスワードの設定</title><indexterm> <primary>GRUB </primary> <secondary>ブートパスワード</secondary></indexterm>
+   <para>
+    オペレーティングシステムのブート前でも、GRUB はファイルシステムへのアクセスを可能にします。rootパーミッションを持たないユーザは、システムのブート後、アクセス権のないLinuxシステム上のファイルにアクセスできます。この種のアクセスを阻止したり、ユーザによる特定のオペレーティングシステムのブートを防止するために、ブートパスワードを設定できます。
+   </para>
+   <important>
+    <title>ブートパスワードとスプラッシュ画面</title>
+    <para>
+     にブートパスワードを使用する場合、通常のスプラッシュ画面は表示されません。
+    </para>
+   </important>
+   <para>
+    ユーザ<literal>root</literal>として、次の手順に従ってブートパスワードを設定します。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      rootプロンプトで、grub-md5-cryptを使ってパスワードを暗号化します。
+     </para>
+<screen># grub-md5-crypt
+Password: ****
+Retype password: ****
+Encrypted: $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
+    </step>
+    <step performance="required">
+     <para>
+      暗号化後の文字列を、<filename>menu.lst</filename>ファイルのグローバルセクションに貼り付けます。
+     </para>
+<screen>gfxmenu (hd0,4)/message
+color white/blue black/light-gray
+default 0
+timeout 8
+password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
+     <para>
+      これで、ブートプロンプトからGRUBコマンドを実行するには、先に<keycap>P</keycap>キーを押してパスワードを入力する操作が必要になります。しかし、ユーザはブートメニューから引き続き任意のオペレーティングシステムをブートすることができます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブートメニューから1つまたは複数のオペレーティングシステムをブートする操作を禁止するには、<literal>menu.lst</literal>内で、パスワードを入力しなければブートできないようにする必要のある各セクションにエントリ<filename>lock</filename>を追加します。たとえば、次のようにします。
+     </para>
+<screen>title linux
+   kernel (hd0,4)/vmlinuz root=/dev/sda7 vga=791
+   initrd (hd0,4)/initrd
+   lock</screen>
+     <para>
+      システムをリブートしてブートメニューからLinuxエントリを選択すると、次のエラーメッセージが表示されます。
+     </para>
+<screen>Error 32: Must be authenticated</screen>
+     <para>
+      <keycap>Enter</keycap>キーを押してメニューを表示します。次に、<keycap>P</keycap>キーを押してパスワードプロンプトを表示します。パスワードを入力して<keycap>Enter</keycap>キーを押すと、選択したオペレーティングシステム(この場合はLinux)がブートします。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_yast_i.xml" parse="xml"/>
+ <sect1 id="sec.grub.entfernen">
+  <title>Linuxブートローダのアンインストール</title><indexterm> <primary>アンインストール</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>アンインストール</primary> <secondary>Linux</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>アンインストール</secondary></indexterm><indexterm> <primary>Linux</primary> <secondary>アンインストール</secondary></indexterm>
+
+  <para>
+   を使用してLinuxブートローダをアンインストールし、MBRをLinuxインストール前の状態に戻すことができます。インストール中に、YaSTは自動的にオリジナルMBRのバックアップコピーを作成しており、要求があるとMBRを復元します。
+  </para>
+
+  <para>
+   GRUBをアンインストールするには、YaSTを起動して<menuchoice><guimenu>システム</guimenu><guimenu>ブートローダ</guimenu></menuchoice>の順にクリックして、ブートローダモジュールを起動します。<menuchoice> <guimenu>その他</guimenu><guimenu>ハードディスクのMBRの復元</guimenu> </menuchoice>を選択し、<guimenu>はい、上書きします</guimenu>で確認します。
+  </para>
+ </sect1>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_bootcd_i.xml" parse="xml"/>
+ <sect1 id="sec.boot.screen">
+  <title>SUSEのグラフィカル画面</title><indexterm> <primary>ブート</primary> <secondary>グラフィック</secondary> </indexterm> <indexterm> <primary>コンソール</primary> <secondary>グラフィカル</secondary> </indexterm>
+
+  <para>
+   オプション<option>vga=<replaceable>value</replaceable></option>がカーネルパラメータとして使用されている場合、SUSEのグラフィカル画面が1番目のコンソール上に表示されます。YaSTを使用してインストールする場合、このオプションは、選択した解像度とグラフィックカードに基づいて自動的に使用されます。必要な場合にSUSEの画面を無効にするには、3つの方法があります。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>必要に応じてSUSE画面を無効にする。</term>
+    <listitem>
+     <para>
+      コマンドラインでコマンド「<command>echo 0 &gt;/proc/splash</command>」を入力し、グラフィカル画面を無効にします。画面を再度有効にするには、「<command>echo 1 &gt;/proc/splash</command>」コマンドを入力します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>デフォルトでSUSE画面を無効にする。</term>
+    <listitem>
+     <para>
+      カーネルパラメータ<option>splash=0</option>をブートローダの設定に追加します。これについては、<xref linkend="cha.grub"/>を参照してください。ただし、以前のバージョンではデフォルトになっていたテキストモードを使用したい場合は、<option>vga=normal</option>を設定します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>SUSE画面を完全に無効にする。</term>
+    <listitem>
+     <para>
+      新しいカーネルをコンパイルし、<guimenu>framebuffer support</guimenu>でオプション<guimenu>Use splash screen instead of boot logo</guimenu>を無効にします。カーネルでフレームバッファのサポートを無効にすると、スプラッシュ画面も自動的に無効になります。
+     </para>
+     <warning>
+      <title>未サポート</title>
+      <para>
+       システムをカスタムカーネルで実行した場合、SUSEはサポートを何も提供することができません。
+      </para>
+     </warning>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.grub.probs">
+  <title>トラブルシューティング</title><indexterm> <primary>GRUB</primary> <secondary>トラブルシューティング</secondary></indexterm>
+
+  <para>
+   ここでは、GRUBを使用してブートする際に頻繁に発生する一部の問題と、考えられる解決策の概略について説明します。一部の問題については、<phrase os="sled;sles"><ulink url="http://www.suse.com/support"/></phrase>のKnowledgebase(ナレッジベース)に記事が提供されています。「<emphasis>GRUB</emphasis>」、「<emphasis>ブート</emphasis>」、および「<emphasis>ブートローダ</emphasis>」などのキーワードを使って検索を行うには、検索ダイアログを使用します。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>GRUBとXFS</term>
+    <listitem>
+     <para>
+      XFSの場合、パーティションブートブロックには<filename>stage1</filename>のための余地がありません。そのため、ブートローダの位置としてXFSパーティションを指定しないでください。この問題は、XFSでフォーマットされていない別のブートパーティションを作成することで解決できます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>GRUBレポートGRUB Geom Error<indexterm><primary>GRUB</primary><secondary>GRUB Geom Error</secondary></indexterm></term>
+    <listitem>
+     <para>
+      GRUBは、システムのブート時に、接続されているハードディスクのジオメトリを検査します。ときには、BIOSから一貫性のない情報が戻され、GRUBがGRUB Geom Errorをレポートする場合があります。この場合、BIOSをアップデートします。
+     </para>
+     <para>
+      また、LinuxがBIOSに登録されていない追加ハードディスクにインストールされている場合にも、GRUBはこのエラーメッセージを戻します。ブートローダの <emphasis>stage1</emphasis> は正常に検出されロードされますが、<emphasis>stage2</emphasis> は検出されません。この問題は、新規ハードディスクをBIOSに登録することで解消できます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>いくつかのハードディスクを搭載したシステムがブートしない</term>
+    <listitem>
+     <para>
+      インストール中、YaSTは、ハードディスクのブートシーケンスを誤って判断する場合があります。たとえば、GRUBがPATA (IDE)ディスクを<filename>hd0</filename>、SCSIディスクを<filename>hd1</filename>と見なしても、BIOS内ではブートシーケンスが逆順(PATAの<emphasis>前に</emphasis>SCSI)である場合があります。
+     </para>
+     <para>
+      この場合は、ブートプロセス中にコマンドラインを使用してハードディスクを訂正します。システムのブート後に、<filename>device.map</filename>ファイルを編集して新規マッピングを永続的に適用します。次に、<filename>/boot/grub/menu.lst</filename>ファイルと<filename>/boot/grub/device.map</filename>ファイルでGRUBデバイス名を検査し、次のコマンドでブートローダを再インストールします。
+     </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>2台目のハードディスクからのWindowsのブート</term>
+    <listitem>
+     <para>
+      Windowsのような一部のオペレーティングシステムは、1台目のハードディスクからのみブートできます。この種のオペレーティングシステムが2台目以降のハードディスクにインストールされている場合は、関連メニューエントリに対して論理的な変更を加えることができます。
+     </para>
+<screen>...
+title windows
+   map (hd0) (hd1)
+   map (hd1) (hd0)
+   chainloader(hd1,0)+1
+...</screen>
+     <para>
+      この例では、Windowsは2台目のハードディスクから起動されます。この目的で、<literal>map</literal>を使用して、ハードディスクの論理的な順序を変更します。この変更は、GRUBのメニューファイル内でのロジックには影響を及ぼしません。したがって、2台目のハードディスクは<literal>chainloader</literal>に対して指定する必要があります。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.grub.info">
+  <title>詳細情報</title>
+
+  <para>
+   GRUB の詳細情報は、<ulink url="http://www.gnu.org/software/grub/"/>で入手できます。また、<command>grub</command>情報ページも参照してください。<phrase os="sles;sled"><ulink url="http://www.novell.com/support"/>にあるTechnical Information Search (技術情報検索)で、キーワード<quote>GRUB</quote>を検索して、特別な事項に関する情報を入手することもできます。</phrase>
+  </para>
+ </sect1>
+</chapter>

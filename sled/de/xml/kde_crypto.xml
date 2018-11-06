@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="kde_crypto.xml" id="cha.crypto">
+ <title>KGpg: Signieren und Verschlüsseln von Daten</title><indexterm class="startofrange" id="idx.encryption"> <primary>Verschlüsselung</primary> </indexterm> <indexterm class="startofrange" id="idx.kgpg"> <primary>KGpg</primary> </indexterm> <indexterm> <primary>KDE</primary> <secondary>KGpg</secondary> </indexterm>
+ <para>
+  Mit KGpg, einer grafischen Bedienoberfläche für GPG, können Sie Daten signieren oder verschlüsseln. Mithilfe dieses Programms können Sie alle erforderlichen Schlüssel erzeugen und verwalten. Sie können seine Editorfunktion zur schnellen Erstellung und Verschlüsselung von Dateien verwenden oder mit dem Applet in der Kontrollleiste durch Ziehen und Ablegen Ver- und Entschlüsselungsfunktionen durchführen. Andere Programme, beispielsweise das Mail-Programm (Kontact oder Evolution) greifen auf den Schlüssel zu, um signierte bzw. verschlüsselte Inhalte zu verarbeiten. In den folgenden Abschnitten erfahren Sie, wie Sie die zum Signieren und Verschlüsseln von Daten mit KGpg erforderlichen Schritte ausführen:
+ </para>
+ <orderedlist spacing="normal">
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.keygen" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.export" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.mng.import" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <xref linkend="sec.crypto.kgpg.applet" xrefstyle="select:title"/>
+   </para>
+  </listitem>
+ </orderedlist>
+ <sect1 id="sec.crypto.kgpg.why">
+  <title>Wozu signieren und verschlüsseln?</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>Signieren</term>
+    <listitem>
+     <para>
+      Signieren bedeutet, elektronische Signaturen zu E-Mails (oder sogar Software) hinzuzufügen, um deren Herkunft zu bestätigen. Sie sollten Ihre E-Mails zu Ihrem Schutz und zum Schutz der Empfänger signieren, um zu verhindern, dass jemand unter Ihrem Namen E-Mails schreibt. Anhand der Signaturen können Sie leicht prüfen, wer Ihnen die empfangenen E-Mails gesendet hat, und Sie können dadurch auch gutartige E-Mails von bösartigen unterscheiden.
+     </para>
+     <para>
+      Softwareentwickler signieren ihre Software, damit Sie deren Integrität prüfen können. Auch wenn Sie die Software von einem inoffiziellen Server erhalten haben, können Sie das Paket anhand der Signatur überprüfen.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <variablelist>
+   <varlistentry>
+    <term>Verschlüsseln</term>
+    <listitem>
+     <para>
+      Sie haben möglicherweise sensible Informationen, die Sie vor anderen schützen wollen. Durch die Verschlüsselung können Sie Daten übertragen und für andere unlesbar machen. Dies ist besonders wichtig in Unternehmen, die interne Informationen und die Daten ihrer Mitarbeiter schützen müssen.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.keygen">
+  <title>Erstellen eines neuen Schlüsselpaars</title><indexterm> <primary>KGpg</primary> <secondary>Erstellen von Schlüsseln</secondary> </indexterm>
+
+
+
+  <para>
+   Um verschlüsselte Nachrichten mit anderen Benutzern austauschen zu können, müssen Sie zunächst Ihr eigenes Schlüsselpaar erstellen. Ein Teil davon, der <emphasis>öffentliche Schlüssel</emphasis>, wird an Ihre Kommunikationspartner verteilt, die ihn zum Verschlüsseln der Dateien und E-Mail-Nachrichten verwenden können, die sie versenden. Der andere Teil des Schlüssels, der <emphasis>private Schlüssel</emphasis>, dient zur Entschlüsselung der verschlüsselten Inhalte.
+  </para>
+
+  <important>
+   <title>Privater Schlüssel und öffentlicher Schlüssel im Vergleich</title>
+   <para>
+    Auf den privaten Schlüssel sollten nur Sie selbst Zugriff haben. Gewähren Sie keinen anderen Benutzern Zugriff auf diese Daten.
+   </para>
+   <para>
+    Ihr privater Schlüssel ist durch einen Passwortsatz geschützt. Wählen Sie den Passwortsatz sorgfältig aus: Verwenden Sie keine Wörter aus einem Wörterbuch und mischen Sie alphabetische und nicht alphabetische Zeichen.
+   </para>
+  </important>
+
+  <para>
+   Zum Erstellen eines neuen Paars gehen Sie wie folgt vor:
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     <indexterm> <primary>KGpg</primary> <secondary>starten</secondary> </indexterm> Starten Sie KGpg im Hauptmenü oder drücken Sie <keycombo> <keycap function="alt"/> <keycap>F2</keycap> </keycombo> und geben Sie <command>kgpg</command> ein. Beim ersten Starten des Programms wird ein Assistent angezeigt, der Sie durch den Konfigurationsprozess führt. Befolgen Sie die Anweisungen bis zu der Stelle, an der Sie aufgefordert werden, einen Schlüssel zu erstellen.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Wählen Sie <menuchoice> <guimenu>Schlüssel</guimenu> <guimenu>Schlüsselpaar erzeugen</guimenu> </menuchoice> aus, wenn ein neues Schlüsselpaar erstellt werden soll.
+    </para>
+    <figure id="fig.kgpg_keygen">
+     <title>KGpg: Erstellen eines Schlüssels</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="40%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="35%" fileref="kgpg_keygen.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+   <step performance="required">
+    <para>
+     Geben Sie einen Namen, eine E-Mail-Adresse und optional einen Kommentar ein. Wenn Ihnen die vorgegebenen Standardeinstellungen nicht gefallen, können Sie auch den Ablaufzeitpunkt für den Schlüssel, die Schlüsselgröße und den verwendeten Verschlüsselungsalgorithmus eingeben. 
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Um einen Standardschlüssel zu erstellen, bestätigen Sie die Einstellungen mit <guimenu>OK</guimenu>. Nach dem Klicken auf <guimenu>OK</guimenu> wird ein Dialogfeld angezeigt, in dem Sie zur zweimaligen Eingabe eines Passwortsatzes aufgefordert werden. Der Passwortsatz schützt Ihren privaten Schlüssel. Die relative Stärke Ihres gewählten Passworts wird vom <guimenu>Password strength meter</guimenu> (Passwortstärkenmesser) gemessen und angezeigt. Das Schlüsselpaar wird erzeugt. Dies kann einige Zeit dauern. 
+    </para>
+    <note>
+     <title>Expertenmodus</title>
+     <para>
+      Wenn Sie ein erfahrener Benutzer sind, können Sie den <guimenu>Expertenmodus</guimenu> verwenden, um weitere Optionen zu definieren. Auf diese Weise gelangen Sie zu einem Terminalfenster, in dem Sie den Typ des zu erzeugenden Schlüssels, die Schlüsselgröße (in Bit) und das Ablaufdatum festlegen können. Nach Eingabe Ihres Namens und Ihrer E-Mail-Adresse werden Sie zur Eingabe eines Passwortsatzes zum Schutz Ihres privaten Schlüssels aufgefordert.
+     </para>
+    </note>
+   </step>
+   <step performance="required">
+    <para>
+     Nach Erzeugung des Schlüssels wird eine Zusammenfassung angezeigt. Sie sollten dieses Widerrufszertifikat speichern und drucken und an einem sicheren Ort aufbewahren. Sie benötigen dieses Zertifikat, um Ihren Passwortsatz zu widerrufen, falls Sie diesen einmal vergessen sollten. Nach der Bestätigung mit <guimenu>OK</guimenu> wird das Hauptfenster von KGpg angezeigt und der Vorgang ist abgeschlossen.
+    </para>
+    <figure id="fig.kgpg_manager">
+     <title>KGpg-Hauptfenster: Schlüsselverwaltung</title>
+     <mediaobject>
+      <imageobject role="fo">
+       <imagedata width="90%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+      <imageobject role="html">
+       <imagedata width="70%" fileref="kgpg_manager.png" format="PNG"/>
+      </imageobject>
+     </mediaobject>
+    </figure>
+   </step>
+  </procedure>
+
+  <para>
+   Im Hauptfenster werden die Schlüssel angezeigt, die zu Ihrem Schlüsselring gehören: Ihr eigener Schlüssel und die Schlüssel von anderen Personen, die Sie bereits importiert haben. Da GPG eine kompliziertere Implementierung von Schlüsselpaaren verwendet, werden für jeden Benutzernamen mehrere Unterschlüssel angezeigt. Diese können jedoch für die Zwecke dieses Kapitels vernachlässigt werden. Abgesehen von anderen Details (wie Ablaufdatum oder Erstellungsdatum von Schlüssel und ID) wird im Hauptfenster auch die Vertrauensstufe für jeden Schlüssel angezeigt (durch farbige Kennzeichnung). Weiß bedeutet, dass die Vertrauensstufe unbekannt ist, Blau steht für eine hohe Vertrauensstufe. Weitere Informationen finden Sie in <xref linkend="sec.crypto.kgpg.mng.trust"/>.
+  </para>
+
+  <note>
+   <title>KGpg-Symbol und Hauptfenster</title>
+   <para>
+    Wenn Sie KGpg in späteren Sitzungen starten, wird lediglich ein kleines Symbol mit einem Vorhängeschloss im Systemabschnitt der Kontrollleiste angezeigt. Klicken Sie auf dieses Symbol, um das Hauptfenster von KGpg auf dem Desktop anzuzeigen.
+   </para>
+  </note>
+ </sect1>
+<?dbfo-need height="20em"?>
+
+
+ <sect1 id="sec.crypto.kgpg.mng.export">
+  <title>Exportieren des öffentlichen Schlüssels</title><indexterm> <primary>KGpg</primary> <secondary>Exportieren von öffentlichen Schlüsseln</secondary> </indexterm>
+
+  <para>
+   Nach dem Erstellen Ihres Schlüsselpaars müssen Sie den öffentlichen Schlüssel anderen Benutzern zur Verfügung stellen. Dadurch können Sie ihn zur Verschlüsselung bzw. Signierung der Nachrichten und Dateien verwenden, die sie Ihnen senden. Wenn Sie beispielsweise eine Nachricht für den Benutzer Tux verschlüsseln möchten, so tun Sie dies mit dem öffentlichen Schlüssel von Tux. Zur Entschlüsselung verwendet Tux seinen privaten Schlüssel. Wenn Tux Ihnen eine Nachricht senden möchte, verschlüsselt er sie mit Ihrem öffentlichen Schlüssel und Sie entschlüsseln die Nachricht mit Ihrem privaten Schlüssel.
+  </para>
+
+  <para>
+   Um den öffentlichen Schlüssel anderen Benutzern zur Verfügung zu stellen, wählen Sie die Optionsfolge <menuchoice><guimenu>Schlüssel</guimenu> <guimenu>Öffentliche Schlüssel exportieren</guimenu></menuchoice>. Ein Dialogfeld mit vier Optionen wird geöffnet:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>Email</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Der öffentliche Schlüssel wird per E-Mail an einen von Ihnen ausgewählten Empfänger gesendet. Wenn Sie diese Option aktivieren und den Vorgang mit <guimenu>OK</guimenu> bestätigen, wird das Dialogfeld zum Erstellen einer neuen E-Mail-Nachricht mit Ihrem Standard-Mail-Programm angezeigt. Geben Sie den Empfänger ein und klicken Sie auf <guimenu>Send</guimenu>. Der Empfänger erhält Ihren Schlüssel und kann Ihnen nun verschlüsselte Inhalte senden.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Clipboard (Zwischenablage)</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Hier können Sie Ihren öffentlichen Schlüssel ablegen, bevor Sie mit seiner Verarbeitung fortfahren.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Standardschlüsselserver</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Um Ihren öffentlichen Schlüssel für eine breite Öffentlichkeit verfügbar zu machen, exportieren Sie ihn auf einen der Schlüsselserver im Internet. Weitere Informationen hierzu finden Sie in <xref linkend="sec.crypto.kgpg.serv"/>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Datei</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Wenn Sie den Schlüssel lieber als Datei auf einem Datenmedium verteilen, als ihn per E-Mail zu versenden, klicken Sie auf diese Option, bestätigen bzw. ändern Sie Dateipfad und -namen und klicken Sie auf <guimenu>OK</guimenu>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.mng.import">
+  <title>Importieren öffentlicher Schlüssel von anderen Personen</title><indexterm> <primary>KGpg</primary> <secondary>Importieren von Schlüsseln</secondary> </indexterm>
+
+  <para>
+   Wenn Sie einen Schlüssel in einer Datei erhalten (beispielsweise als E-Mail-Anlage), integrieren Sie ihn mit <guimenu>Import Key</guimenu> (Schlüssel importieren) in Ihren Schlüsselring und verwenden Sie ihn für verschlüsselte Kommunikation mit dem Sender. Sie können auch Schlüssel von einem öffentlichen Server importieren, wenn die Person, mit der Sie kommunizieren möchten, ihre öffentlichen Schlüssel dort gespeichert hat. Weitere Informationen finden Sie unter <xref linkend="sec.crypto.kgpg.serv"/>. Das Verfahren ähnelt dem bereits beschriebenen Verfahren zum Exportieren von Schlüsseln.
+  </para>
+
+  <sect2 id="sec.crypto.kgpg.mng.sign">
+   <title>Signieren von Schlüsseln</title><indexterm> <primary>KGpg</primary> <secondary>Signieren von Schlüsseln</secondary> </indexterm>
+   <para>
+    Schlüssel können wie jede andere Datei signiert werden, um ihre Authentizität und Integrität zu gewährleisten. Wenn Sie absolut sicher sind, dass ein importierter Schlüssel zu der als Eigentümer angegebenen Person gehört, können Sie mit Ihrer Signatur Ihr Vertrauen in die Authentizität des Schlüssels angeben.
+   </para>
+   <important>
+    <title>Erstellen eines Verbürgungsnetzes</title>
+    <para>
+     Verschlüsselte Kommunikation ist nur so sicher, wie Sie die im Umlauf befindlichen öffentlichen Schlüssel zweifelsfrei dem angegebenen Benutzer zuordnen können. Durch Gegenproben und Signieren dieser Schlüssel tragen Sie zum Aufbau eines Verbürgungsnetzes bei. Stellen Sie aus diesen Gründen sicher, dass Sie nur solche Schlüssel signieren, die Sie auch selbst überprüft haben.
+    </para>
+   </important>
+   <para>
+    Bevor Sie Ihren Schlüssel verwenden können, müssen Sie ihn selbst signieren.
+   </para>
+   <procedure>
+    <title>Signieren eines Schlüssels</title>
+    <step performance="required">
+     <para>
+      Wählen Sie im Fenster <guimenu>Schlüsselverwaltung</guimenu> den zu signierenden Schlüssel in der Schlüsselliste aus.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wählen Sie <menuchoice> <guimenu>Keys (Schlüssel)</guimenu><guimenu>Sign Keys (Schlüssel signieren)</guimenu> </menuchoice> aus.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wählen Sie im folgenden Dialogfeld den für die Signatur zu verwendenden privaten Schlüssel aus. Eine Warnmeldung erinnert Sie daran, vor dem Signieren die Authentizität dieses Schlüssels zu überprüfen. Wählen Sie in der Dropdown-Liste aus, wie sorgfältig Sie geprüft haben, dass der Schlüssel zu der Person gehört, mit der Sie kommunizieren möchten.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>Weiter</guimenu> und geben Sie im nächsten Schritt Ihren Passwortsatz ein. Bei der Eingabe des Passwortsatzes signieren Sie den Schlüssel mit Ihrem eigenen privaten Schlüssel. Der signierte Schlüssel wird jetzt in der Spalte der vertrauenswürdigen Elemente angezeigt.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Andere Benutzer können nun die Signatur mithilfe Ihres öffentlichen Schlüssels überprüfen.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.mng.trust">
+   <title>Betrachten von Schlüsseln als vertrauenswürdig</title><indexterm> <primary>KGpg</primary> <secondary>Schlüsseln vertrauen</secondary> </indexterm>
+   <para>
+    Normalerweise werden Sie vom betreffenden Programm gefragt, ob Sie den Schlüssel als vertrauenswürdig betrachten oder ob Sie annehmen, dass er tatsächlich von seinem autorisierten Eigentümer verwendet wird. Dies geschieht jedes Mal, wenn eine Nachricht entschlüsselt oder eine Signatur überprüft werden muss. Um dies zu vermeiden, müssen Sie die Verbürgungsstufe des neu importierten Schlüssels bearbeiten. Um einen Schlüssel für vertrauenswürdig zu erklären und eine Vertrauensstufe festzulegen, gehen Sie wie folgt vor:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Klicken Sie mit der rechten Maustaste auf den Schlüssel und wählen Sie die Option <guimenu>Schlüsseleigenschaften</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Passen Sie in der Dropdown-Liste <guimenu>Vertrauen des Eigentümers</guimenu> die Vertrauensstufe an. Dieser Wert gibt an, für wie vertrauenswürdig Sie den Eigentümer dieses Schlüssels halten, also wie sehr Sie darauf vertrauen, dass er die Identität der von ihm signierten Schlüssel richtig überprüft.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Schließen Sie das Eigenschaftendialogfeld. Wenn Sie die Vertrauensstufe auf <guimenu>Vollständig</guimenu> oder <guimenu>Unbedingt</guimenu> gesetzt haben, wird der Schlüssel nun in der Spalte der vertrauenswürdigen Elemente in blauer Farbe angezeigt.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Je niedriger die Verbürgungsstufe, desto weniger vertrauen Sie darauf, dass der Signierende des Schlüssels die wahre Identität der signierten Schlüssel überprüft hat. Sie sind sich vielleicht hinsichtlich der Identität des Signierenden absolut sicher, doch dieser Benutzer überprüft möglicherweise nicht sorgfältig die Identitäten der anderen Personen, bevor er deren Schlüssel signiert. Beachten Sie, dass die Verbürgungsstufe keine automatischen Aktionen durch KGpg auslöst.
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.serv">
+  <title>Schlüsselserver-Dialogfeld</title><indexterm> <primary>KGpg</primary> <secondary>Schlüsselserver</secondary> </indexterm>
+
+  <para>
+   Mehrere internetbasierte Schlüsselserver bieten die öffentlichen Schlüssel für viele Benutzer. Wenn Sie verschlüsselte Kommunikation mit einer großen Anzahl von Benutzen durchführen möchten, sollten Sie diese Server zur Verteilung Ihres öffentlichen Schlüssels nutzen. Exportieren Sie zu diesem Zweck Ihren öffentlichen Schlüssel auf einen dieser Server. In ähnlicher Weise können Sie mit KGpg einen dieser Server nach den Schlüsseln bestimmter Personen durchsuchen und diese öffentlichen Schlüssel vom Server importieren. Öffnen Sie das Schlüsselserver-Dialogfeld mit <menuchoice> <guimenu>File (Datei)</guimenu> <guimenu>Key Server Dialog (Schlüsselserver-Dialogfeld)</guimenu> </menuchoice>.
+  </para>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.crypto.kgpg.serv.import">
+   <title>Importieren eines Schlüssels von einem Schlüsselserver</title><indexterm> <primary>KGpg</primary> <secondary>Schlüsselserver</secondary> <tertiary>Importieren von Schlüsseln</tertiary> </indexterm>
+   <para>
+    Importieren Sie mit dem Karteireiter <guimenu>Import</guimenu> (Import) im Schlüsselserver-Dialogfeld öffentliche Schlüssel aus einem der internetbasierten Schlüsselserver. Wählen Sie einen der vorkonfigurierten Schlüsselserver aus und geben Sie eine Suchzeichenkette (E-Mail-Adresse des Kommunikationspartners) oder die ID des zu suchenden Schlüssels ein. Wenn Sie auf <guimenu>Suche</guimenu> klicken, stellt Ihr System eine Verbindung zum Internet her und durchsucht die angegebenen Schlüsselserver nach einem Schlüssel, der Ihren Spezifikationen entspricht.
+   </para>
+   <figure id="fig.kgpg_servimp">
+    <title>Suchbildschirm zum Importieren eines Schlüssels</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servimp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    Wenn die Suche auf dem Schlüsselserver erfolgreich ist, wird eine Liste aller abgerufenen Servereinträge in einem neuen Fenster angezeigt. Wählen Sie den in Ihren Schlüsselring aufzunehmenden Schlüssel aus und klicken Sie auf <guimenu>Import</guimenu> (Importieren). Bestätigen Sie die folgende Meldung mit <guimenu>OK </guimenu> und beenden Sie das Schlüsselserver-Dialogfeld mit <guimenu>Schließen</guimenu>. Der importierte Schlüssel wird dann in der Hauptübersicht des Schlüsselmanagers angezeigt und steht zur Verwendung zur Verfügung.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.serv.export">
+   <title>Exportieren Ihrer Schlüssel auf einen Schlüsselserver</title><indexterm> <primary>KGpg</primary> <secondary>Schlüsselserver</secondary> <tertiary>Exportieren von Schlüsseln</tertiary> </indexterm>
+   <para>
+    Um Ihren Schlüssel auf einen der frei zugänglichen Schlüsselserver im Internet zu exportieren, wählen Sie im Schlüsselserver-Dialogfeld die Registerkarte <guimenu>Export</guimenu> (Export) aus. Legen Sie den Zielserver und den zu exportierenden Schlüssel mithilfe zweier Dropdown-Menüs fest. Starten Sie anschließend den Exportvorgang mit <guimenu>Export</guimenu> (Export).
+   </para>
+   <figure id="fig.kgpg_servexp">
+    <title>Exportieren eines Schlüssels auf einen Schlüsselserver</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="60%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="40%" fileref="kgpg_servexp.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.crypto.kgpg.applet">
+  <title>Verschlüsseln von Daten</title><indexterm> <primary>KGpg</primary> <secondary>Textverschlüsselung</secondary> </indexterm> <indexterm> <primary>KGpg</primary> <secondary>Dateiverschlüsselung</secondary> </indexterm> <indexterm> <primary>Dateien</primary> <secondary>Verschlüsseln</secondary> </indexterm>
+
+  <para>
+   Nachdem Sie Ihr Schlüsselpaar generiert, Ihren öffentlichen Schlüssel exportiert und öffentliche Schlüssel von anderen Personen importiert haben, können Sie auch verschlüsselte Mails senden bzw. empfangen. Unter <xref linkend="sec.kontact.mail.crypto"/> erfahren Sie, wie Sie diese Optionen in KMail nutzen können.
+  </para>
+
+  <para>
+   Mit KGpg ist es auch möglich, Text zu verschlüsseln. Wählen Sie zum Öffnen des integrierten Editors die Optionen <menuchoice> <guimenu>Datei</guimenu> <guimenu>Editor öffnen</guimenu> </menuchoice> aus.
+  </para>
+
+  
+
+
+
+  <sect2 id="sec.crypto.kgpg.dnd">
+   <title>Verschlüsseln und Entschlüsseln über einen Dateimanager</title>
+   <para>
+    KGpg ist auch in Dateimanager wie Dolphin oder Konqueror integriert. Im Allgemeinen werden PGP-verschlüsselte Dateien mit dem Suffix <filename>asc</filename> versehen. Zum Verschlüsseln oder Entschlüsseln von Dateien in einem Dateimanager stehen verschiedene Optionen zur Verfügung:
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>Datei verschlüsseln</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Klicken Sie zum Verschlüsseln einer Datei in einem Dateimanager mit der rechten Maustaste auf die Datei und wählen Sie <menuchoice> <guimenu>Aktionen</guimenu> <guimenu>Datei verschlüsseln</guimenu> </menuchoice> aus. Wählen Sie einen der verbürgten Schlüssel im Dialogfeld aus. Nach dem Klicken auf <guimenu>OK</guimenu> im Dialogfeld wird eine neue Datei mit dem Suffix <filename>asc</filename> im selben Verzeichnis erstellt.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Datei bei der Verarbeitung entschlüsseln</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Klicken Sie zum sofortigen Entschlüsseln einer verschlüsselten Datei mit der rechten Maustaste auf die Datei und wählen Sie <menuchoice> <guimenu>Mit KGpg öffnen</guimenu> </menuchoice> aus. Wenn der ursprüngliche Dateiname bereits vorhanden ist, wird ein Dialogfeld geöffnet, in dem Sie gefragt werden, wie Sie die Datei nennen möchten bzw. ob sie überschrieben werden soll. KGpg fordert Sie zur Eingabe des Passworts für Ihren privaten Schlüssel auf und speichert die entschlüsselte Datei im selben Verzeichnis.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>Mit dem Editor entschlüsseln</guimenu>
+     </term>
+     <listitem>
+      <para>
+       Klicken Sie zum Entschlüsseln einer verschlüsselten Datei mit dem Editor mit der rechten Maustaste auf die Datei im Dateimanager und wählen Sie <menuchoice> <guimenu>Aktionen</guimenu> <guimenu>Datei entschlüsselt anzeigen</guimenu> </menuchoice> aus.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+
+
+
+
+  </sect2>
+
+  <sect2 id="sec.crypto.kgpg.edit">
+   <title>Der KGpg-Editor</title><indexterm> <primary>KGpg</primary> <secondary>Editor</secondary> </indexterm>
+   <para>
+    Anstatt Inhalte für die Verschlüsselung in einem externen Editor zu erstellen und dann die Datei mit einer der oben beschriebenen Methoden zu verschlüsseln, können Sie auch den integrierten Editor von KGpg verwenden. Wählen Sie zum Öffnen des Editors die Optionen <menuchoice> <guimenu>Datei</guimenu> <guimenu>Editor öffnen</guimenu> </menuchoice> aus. Geben Sie im Editor den gewünschten Text ein (oder kopieren Sie ihn aus der Zwischenablage oder aus einer Datei in den Editor) und klicken Sie auf <guimenu>Verschlüsseln</guimenu>. Wählen Sie dann den zu verwendenden Schlüssel aus und schließen Sie den Verschlüsselungsvorgang ab. Zum Entschlüsseln der Dateien verwenden Sie die Option <guimenu>Decrypt</guimenu> (Entschlüsseln) und geben das mit dem Schlüssel verknüpfte Passwort ein.
+   </para>
+   <para>
+    Das Erstellen und Überprüfen von Signaturen ist genauso einfach wie das Verschlüsseln von Dateien direkt aus dem Editor. Wechseln Sie zu <menuchoice><guimenu>Signature (Signatur)</guimenu><guimenu>Generate Signature (Signatur erstellen)</guimenu></menuchoice> und wählen Sie im Dateidialogfeld die zu signierende Datei aus. Wählen Sie den zu verwendenden privaten Schlüssel aus und geben Sie das zugehörige Passwort ein. KGpg informiert Sie über die erfolgreiche Erstellung der Signatur. Dateien können außerdem über den Editor signiert werden. Klicken Sie dazu einfach auf <guimenu>Sign/Verify</guimenu> (Signieren/Überprüfen). Um eine signierte Datei zu überprüfen, wechseln Sie zu <menuchoice><guimenu>Signature (Signatur)</guimenu><guimenu>Verify Signature (Signatur überprüfen)</guimenu></menuchoice> und wählen Sie im folgenden Dialogfeld die zu überprüfende Datei aus. Nach der Bestätigung der Auswahl überprüft KGpg die Signatur und meldet das Ergebnis des Vorgangs. Eine weitere Möglichkeit besteht darin, die signierte Datei in den Editor zu laden und auf <guimenu>Sign/Verify</guimenu> (Signieren/Überprüfen) zu klicken.
+   </para>
+  </sect2>
+ </sect1>
+<?dbfo-need height="15em"?>
+
+
+ <sect1 id="sec.crypto.basics">
+  <title>Weiterführende Informationen</title>
+
+  <para>
+   Umfassende Hintergrundinformationen zur Verschlüsselungsmethode finden Sie in den GPG-Projektseiten unter <ulink url="http://www.gnupg.org/documentation/index.en.html"/>. <indexterm class="endofrange" startref="idx.encryption"/> <indexterm class="endofrange" startref="idx.kgpg"/>
+  </para>
+ </sect1>
+</chapter>

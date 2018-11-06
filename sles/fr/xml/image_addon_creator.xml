@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="image_addon_creator.xml" id="cha.addon_creator">
+ <title>Création de produits complémentaires à l'aide du créateur de produits complémentaires</title>
+ <abstract>
+  <para>
+   Un produit complémentaire est un support spécifique, généralement un CD ou un DVD, qui permet d'ajouter des fonctionnalités à votre produit. Le créateur de produits complémentaires a été développé pour aider nos clients et partenaires, et simplifier la distribution des logiciels tiers pour tous les produits SUSE.
+  </para>
+ </abstract>
+ <sect1 id="sec.addon_creator.creating">
+  <title>Création d'images</title>
+
+  <para>
+   Pour créer un CD de produit complémentaire, procédez comme suit :
+  </para>
+
+  <procedure>
+   <step performance="required">
+    <para>
+     Démarrez YaST et ouvrez le module <guimenu>Créateur de produit complémentaire</guimenu>. Une fenêtre s'ouvre.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Si vous n'avez pas exécuté ce module auparavant, cliquez sur <guimenu>Créer un nouveau produit complémentaire</guimenu> pour démarrer. Si vous avez déjà créé un produit complémentaire, la fenêtre affiche la liste de tous les produits complémentaires créés. Cliquez sur <guimenu>Ajouter</guimenu> pour démarrer.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Entrez le nom et la version de votre produit complémentaire et renseignez les options supplémentaires suivantes :
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Sélectionnez le produit sur lequel le produit complémentaire est basé.
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Sélectionnez le chemin d'accès aux paquetages complémentaires. Cela s'avère nécessaire si vous avez besoin de paquetages RPM supplémentaires non inclus dans votre produit de base (cette étape est facultative).
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       Sélectionnez le chemin avec les paquetages du produit requis (cette étape est facultative).
+      </para>
+      
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     Corrigez la définition du produit et entrez le nom d'un fournisseur. Désactivez <guimenu>N'afficher que les mots-clés requis</guimenu> pour afficher davantage de mots-clés.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Modifiez les descriptions des paquetages. Cliquez sur <guimenu>Ajouter une langue</guimenu> pour insérer une nouvelle langue et ajouter des descriptions traduites (cette étape est facultative).
+    </para>
+    
+   </step>
+   <step performance="required">
+    <para>
+     Ajoutez de nouveaux modèles. Ceux-ci permettent de regrouper vos paquetages RPM. Cliquez sur <guimenu>Nouveau</guimenu> pour ajouter le nom d'un nouveau modèle et modifier les attributs respectifs dans la liste ci-dessous (cette étape est facultative).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Modifiez les paramètres de sortie. Entrez un chemin d'accès à votre répertoire de sortie et modifiez le nom de l'image ISO (cette modification est facultative). Vous pouvez également modifier d'autres fonctions :
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Cliquez sur <guimenu>Configurer le module...</guimenu> pour entrer des fichiers et personnaliser le workflow de votre produit.
+      </para>
+      
+     </listitem>
+     <listitem>
+      <para>
+       Cliquez sur <guimenu>Fichiers en option...</guimenu> pour ajouter des fichiers à votre produit complémentaire. La première partie peut être utilisée pour insérer les informations relatives au produit complémentaire dans le fichier <filename>info.txt</filename>. Utilisez les fichiers de licence pour afficher une fenêtre comportant les boutons <guimenu>J'accepte</guimenu> et <guimenu>Je refuse</guimenu> avant le début de l'installation. Il est possible d'ajouter davantage de fichiers dans la section README.
+      </para>
+      <para>
+       La seconde partie peut être utilisée pour stocker les fichiers <filename>COPYRIGHT</filename> et <filename>COPYING</filename> dans différentes langues.
+      </para>
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     Signez votre produit complémentaire avec votre clé GPG. Le fait de signer votre produit avec votre clé GPG prouve l'origine de votre produit. Si vous n'avez pas de clé, commencez par en créer une et entrez deux fois la phrase secrète correspondante.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Vérifiez que votre produit figure dans l'aperçu et sélectionnez <guimenu>Terminer</guimenu>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Utilisez le bouton <guimenu>Construire</guimenu> pour démarrer le processus. Le bouton <guimenu>Terminer</guimenu> ferme la fenêtre.
+    </para>
+   </step>
+  </procedure>
+ </sect1>
+ <sect1 id="sec.addon_creator.structure">
+  <title>Structure des produits complémentaires</title>
+
+  <para>
+   Si vous créez un produit complémentaire, l'aperçu suivant contient la structure des fichiers et des répertoires :
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><filename>ARCHIVES.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient le contenu compressé par Gzip de tous les fichiers RPM. Il s'agit d'une liste de commandes <command>rpm</command> avec les options <option>-qil</option> pour chaque fichier RPM.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>Changelog</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient toutes les modifications des fichiers RPM.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>huit heures</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient les informations relatives à votre produit complémentaire.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient le fichier de signature de GPG.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>content.key</filename>, <filename>gpg-pubkey-<replaceable>NUMÉRO</replaceable>.asc</filename>
+    </term>
+    <listitem>
+     <para>
+      La clé publique GPG.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>INDEX.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient une liste de tous les fichiers RPM compressés avec <command>gzip</command>.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>ls-lR.gz</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient une liste de tous les fichiers du support de votre produit complémentaire.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>media.<replaceable>N</replaceable>/</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient les fichiers et les informations de base relatives à l'ensemble des supports du produit complémentaire. Le répertoire est numéroté. Ainsi, <filename>media.1/</filename> correspond au premier support du produit complémentaire. Les numéros des supports supplémentaires sont consécutifs.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><filename>suse/</filename>
+    </term>
+    <listitem>
+     <para>
+      Contient les sous-répertoires et les informations spécifiques à l'architecture, à l'exception de <filename>noarch/</filename>, qui concerne les paquetages indépendants de l'architecture, et de <filename>src/</filename>, qui concerne les paquetages sources. Les paquetages des logiciels propriétaires sont stockés sous <filename>nosrc/</filename>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.addon_creator.moreinfo">
+  <title>Pour plus d'informations</title>
+
+  <para>
+   Pour plus d'informations, reportez-vous aux documents disponibles sur le portail KIWI à l'adresse <ulink url="http://en.opensuse.org/Portal:KIWI"/>.
+  </para>
+ </sect1>
+</chapter>

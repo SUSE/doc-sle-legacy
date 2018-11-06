@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_lan.xml" id="sec.basicnet.yast">
+ <title>Konfigurieren von Netzwerkverbindungen mit YaST</title><indexterm id="idx.networks_integrating" class="startofrange"> <primary>Netzwerke</primary> <secondary>Konfigurieren</secondary> </indexterm> <indexterm> <primary>Karten</primary> <secondary>Netzwerk</secondary> </indexterm>
+
+ <para>
+  Unter Linux gibt es viele unterstützte Netzwerktypen. Die meisten verwenden unterschiedliche Gerätenamen und die Konfigurationsdateien sind im Dateisystem an unterschiedlichen Speicherorten verteilt. Einen detaillierten Überblick über die Aspekte der manuellen Netzwerkkonfiguration finden Sie in <xref linkend="sec.basicnet.manconf"/>.
+ </para>
+
+ <para>
+  <phrase os="sles;sled">In SUSE Linux Enterprise Desktop mit standardmäßig aktivem NetworkManager sind alle Netzwerkkarten konfiguriert.</phrase> Wenn NetworkManager nicht aktiv ist, wird nur die erste Schnittstelle mit Link-Up (einem angeschlossenen Netzwerkkabel) automatisch konfiguriert. Zusätzliche Hardware kann jederzeit nach Abschluss der Installation auf dem installierten System konfiguriert werden. In den folgenden Abschnitten wird die Netzwerkkonfiguration für alle von <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> unterstützten Netzwerkverbindungen beschrieben.
+ </para>
+
+ <tip arch="zseries" os="sles">
+
+  <title>IBM System z: Hotplug-fähige Netzwerkkarten</title>
+  <para>
+   Auf den IBM-System z-Plattformen werden Hotplug-fähige Netzwerkkarten unterstützt, aber nicht deren automatische Netzwerkintegration über DHCP (wie beim PC). Nach der Erkennung muss die Schnittstelle manuell konfiguriert werden.
+  </para>
+ </tip>
+
+ <sect2 id="sec.basicnet.yast.netcard">
+  <title>Konfigurieren der Netzwerkkarte mit YaST</title><indexterm> <primary>Karten</primary> <secondary>Netzwerk</secondary> </indexterm> <indexterm> <primary>Netzwerke</primary> <secondary>YaST</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>Netzwerkkarte</secondary> </indexterm> <indexterm/>
+  <para>
+   Zur Konfiguration verkabelter oder drahtloser Netzwerkkarten in YaST wählen Sie <menuchoice><guimenu>Netzwerkgeräte</guimenu><guimenu>Netzwerkeinstellungen</guimenu> </menuchoice>. Nach dem Öffnen des Moduls zeigt YaST das Dialogfeld <guimenu>Netzwerkeinstellungen</guimenu> mit den vier Karteireitern <guimenu>Globale Optionen</guimenu>, <guimenu>Übersicht</guimenu>, <guimenu>Hostname/DNS</guimenu> und <guimenu>Routing</guimenu> an.
+  </para>
+  <para>
+   Auf dem Karteireiter <guimenu>Globale Optionen</guimenu> können allgemeine Netzwerkoptionen wie die Verwendung der Optionen NetworkManager, IPv6 und allgemeine DHCP-Optionen festgelegt werden. Weitere Informationen finden Sie unter <xref linkend="sec.basicnet.yast.netcard.global"/>.
+  </para>
+  <para>
+   Der Karteireiter <guimenu>Übersicht</guimenu> enthält Informationen über installierte Netzwerkschnittstellen und -konfigurationen. Jede korrekt erkannte Netzwerkkarte wird dort mit ihrem Namen aufgelistet. In diesem Dialogfeld können Sie Karten manuell konfigurieren, entfernen oder ihre Konfiguration ändern. Informationen zum manuellen Konfigurieren von Karten, die nicht automatisch erkannt wurden, finden Sie unter <xref linkend="sec.basicnet.yast.netcard.man"/>. Informationen zum Ändern der Konfiguration einer bereits konfigurierten Karte finden Sie unter <xref linkend="sec.basicnet.yast.netcard.change"/>.
+  </para>
+  <para>
+   Auf dem Karteireiter <guimenu>Hostname/DNS</guimenu> können der Hostname des Computers sowie die zu verwendenden Nameserver festgelegt werden. Weitere Informationen finden Sie unter <xref linkend="sec.basicnet.yast.change.host"/>.
+  </para>
+  <para>
+   Der Karteireiter <guimenu>Routing</guimenu> wird zur Konfiguration des Routings verwendet. Weitere Informationen finden Sie unter <xref linkend="sec.basicnet.yast.change.route"/>.
+  </para>
+  <figure id="fig.yast2.neticard">
+   <title>Konfigurieren der Netzwerkeinstellungen</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_net_icard.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_net_icard.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <sect3 id="sec.basicnet.yast.netcard.global">
+   <title>Konfigurieren globaler Netzwerkoptionen</title>
+   <para>
+    Auf dem Karteireiter <guimenu>Globale Optionen</guimenu> des YaST-Moduls <guimenu>Netzwerkeinstellungen</guimenu> können wichtige globale Netzwerkoptionen wie die Verwendung der Optionen NetworkManager, IPv6 und DHCP-Client festgelegt werden. Diese Einstellungen sind für alle Netzwerkschnittstellen anwendbar.
+   </para>
+   <para>
+    Unter <guimenu>Netzwerkeinrichtungsmethode</guimenu> wählen Sie die Methode aus, mit der Netzwerkverbindungen verwaltet werden sollen. Wenn die Verbindungen für alle Schnittstellen über das Desktop-Applet NetworkManager verwaltet werden sollen, wählen Sie <guimenu>Benutzergesteuert mithilfe von NetworkManager</guimenu> aus. Diese Option eignet sich besonders für den Wechsel zwischen verschiedenen verkabelten und drahtlosen Netzwerken. Wenn Sie keine Desktop-Umgebung (GNOME oder KDE) ausführen oder wenn Ihr Computer ein Xen-Server oder ein virtuelles System ist oder Netzwerkdienste wie DHCP oder DNS in Ihrem Netzwerk zur Verfügung stellt, verwenden Sie die <guimenu>Traditionelle Methode mit ifup</guimenu>. Beim Einsatz von NetworkManager sollte <command>nm-applet</command> verwendet werden, um Netzwerkoptionen zu konfigurieren. Die Karteireiter <guimenu>Übersicht</guimenu>, <guimenu>Hostname/DNS</guimenu> und <guimenu>Routing</guimenu> des Moduls <guimenu>Netzwerkeinstellungen</guimenu> sind dann deaktiviert. Weitere Informationen zu NetworkManager finden Sie in <xref linkend="cha.nm"/>.
+   </para>
+   <para>
+    Geben Sie unter <guimenu>IPv6 Protocol Settings</guimenu> (IPv6-Protokolleinstellungen) an, ob Sie das IPv6-Protokoll verwenden möchten. IPv6 kann parallel zu IPv4 verwendet werden. IPv6 ist standardmäßig aktiviert. In Netzwerken, die das IPv6-Protokoll nicht verwenden, können die Antwortzeiten jedoch schneller sein, wenn dieses Protokoll deaktiviert ist. Zum Deaktivieren von IPv6 deaktivieren Sie die Option <guimenu>IPv6 aktivieren</guimenu>. Dadurch wird das automatische Laden des Kernel-Moduls von IPv6 unterbunden. Die Einstellungen werden nach einem Neustart übernommen.
+   </para>
+   <para>
+    Unter <guimenu>Optionen für DHCP-Client</guimenu> konfigurieren Sie die Optionen für den DHCP-Client. Wenn der DHCP-Client den Server anweisen soll, seine Antworten immer per Broadcast zu versenden, aktivieren Sie <guimenu>Broadcast-Antwort anfordern</guimenu>. Diese Einstellung ist vermutlich erforderlich, wenn Sie Ihren Computer in verschiedenen Netzwerken verwenden. Die <guimenu>Kennung für DHCP-Client</guimenu> muss innerhalb eines Netzwerks für jeden DHCP-Client eindeutig sein. Wenn dieses Feld leer bleibt, wird standardmäßig die Hardware-Adresse der Netzwerkschnittstelle als Kennung übernommen. Falls Sie allerdings mehrere virtuelle Computer mit der gleichen Netzwerkschnittstelle und damit der gleichen Hardware-Adresse ausführen, sollten Sie hier eine eindeutige Kennung in beliebigem Format eingeben.
+   </para>
+   <para>
+    Unter <guimenu>Zu sendender Hostname</guimenu> wird eine Zeichenkette angegeben, die für das Optionsfeld „Hostname“ verwendet wird, wenn dhcpcd Nachrichten an den DHCP-Server sendet. Einige DHCP-Server aktualisieren Namenserver-Zonen gemäß diesem Hostnamen (dynamischer DNS). Bei einigen DHCP-Servern muss das Optionsfeld <guimenu>Zu sendender Hostname</guimenu> in den DHCP-Nachrichten der Clients zudem eine bestimmte Zeichenkette enthalten. Übernehmen Sie die Einstellung <literal>AUTO</literal>, um den aktuellen Hostnamen zu senden (d. h. der aktuelle in <filename>/etc/HOSTNAME</filename> festgelegte Hostname). Lassen Sie das Optionsfeld leer, wenn kein Hostname gesendet werden soll. Wenn die Standardroute nicht gemäß der Informationen von DHCP geändert werden soll, deaktivieren Sie <guimenu>Standardroute über DHCP ändern</guimenu>.
+   </para>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.netcard.change">
+   <title>Ändern der Konfiguration einer Netzwerkkarte</title>
+   <para>
+    Wenn Sie die Konfiguration einer Netzwerkkarte ändern möchten, wählen Sie die Karte aus der Liste der erkannten Karten unter <menuchoice> <guimenu>Netzwerkeinstellungen</guimenu> <guimenu>Übersicht</guimenu> </menuchoice> in YaST aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>. Das Dialogfeld <guimenu>Netzwerkkarten-Setup</guimenu> wird angezeigt. Hier können Sie die Kartenkonfiguration auf den Karteireitern <guimenu>Allgemein</guimenu>, <guimenu>Adresse</guimenu> und <guimenu>Hardware</guimenu> anpassen. Genauere Informationen zur drahtlosen Kartenkonfiguration finden Sie unter <xref linkend="sec.wireless.wlan.yast2"/>.
+   </para>
+   <sect4 id="sec.basicnet.yast.change.address">
+    <title>IP-Adressen konfigurieren</title>
+<indexterm> <primary>Netzwerke</primary> <secondary>YaST</secondary> <tertiary>IP-Adresse</tertiary> </indexterm>
+    <para>
+     Die IP-Adresse der Netzwerkkarte oder die Art der Festlegung dieser IP-Adresse kann auf dem Karteireiter <guimenu>Adresse</guimenu> im Dialogfeld <guimenu>Einrichten der Netzwerkkarte</guimenu> festgelegt werden. Die Adressen IPv4 und IPv6 werden unterstützt. Für die Netzwerkkarte können die Einstellungen <guimenu>Keine IP-Adresse</guimenu> (nützlich für eingebundene Geräte), <guimenu>Statisch zugewiesene IP-Adresse</guimenu> (IPv4 oder IPv6) oder <guimenu>Dynamische Adresse</guimenu> über <guimenu>DHCP</guimenu> und/oder <guimenu>Zeroconf</guimenu> zugewiesen werden.
+    </para>
+    <para>
+     Wenn Sie <guimenu>Dynamische Adresse</guimenu> verwenden, wählen Sie, ob <guimenu>Nue DHCP-Version 4</guimenu> (für IPv4), <guimenu>Nur DHCP-Version 6</guimenu> (für IPv6) oder <guimenu>DHCP-Version 4 und 6</guimenu> verwendet werden soll.
+    </para>
+    <para>
+     Wenn möglich wird die erste Netzwerkkarte mit einer Verbindung, die bei der Installation verfügbar ist, automatisch zur Verwendung der automatischen Adressenkonfiguration mit DHCP konfiguriert. <phrase os="sles;sled">In SUSE Linux Enterprise Desktop mit standardmäßig aktivem NetworkManager sind alle Netzwerkkarten konfiguriert.</phrase>
+     
+    </para>
+    <note arch="zseries" os="sles">
+     <title>IBM-System z und DHCP</title>
+     <para>
+      Auf IBM System z-Plattformen wird die DHCP-basierte Adressenkonfiguration nur mit Netzwerkkarten unterstützt, die über eine MAC-Adresse verfügen. Das ist nur der Fall bei OSA- und OSA Express-Karten.
+     </para>
+    </note>
+    <para>
+     DHCP sollten Sie auch verwenden, wenn Sie eine DSL-Leitung verwenden, Ihr ISP (Internet Service Provider) Ihnen aber keine statische IP-Adresse zugewiesen hat. Wenn Sie DHCP verwenden möchten, konfigurieren Sie dessen Einstellungen im Dialogfeld <guimenu>Netzwerkeinstellungen</guimenu> des YaST-Konfigurationsmoduls für Netzwerkkarten auf dem Karteireiter <guimenu>Globale Optionen</guimenu> unter <guimenu>Optionen für DHCP-Client</guimenu>. Geben Sie unter <guimenu>Broadcast-Antwort anfordern</guimenu> an, ob der DHCP-Client den Server anweisen soll, seine Antworten immer per Broadcast zu versenden. Diese Einstellung ist vermutlich erforderlich, wenn Sie Ihren Computer als mobilen Client in verschiedenen Netzwerken verwenden. In einer virtuellen Hostumgebung, in der mehrere Hosts über dieselbe Schnittstelle kommunizieren, müssen diese anhand der <guimenu>Kennung für DHCP-Client</guimenu> unterschieden werden.
+    </para>
+    <para>
+     DHCP eignet sich gut zur Client-Konfiguration, aber zur Server-Konfiguration ist es nicht ideal. Wenn Sie eine statische IP-Adresse festlegen möchten, gehen Sie wie folgt vor:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Wählen Sie im YaST-Konfigurationsmodul für Netzwerkkarten auf dem Karteireiter <guimenu>Übersicht</guimenu> in der Liste der erkannten Karten eine Netzwerkkarte aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Wählen Sie auf dem Karteireiter <guimenu>Adresse</guimenu> die Option <guimenu>Statisch zugewiesene IP-Adresse</guimenu> aus.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Geben Sie die <guimenu>IP-Adresse</guimenu> ein. Es können beide Adressen, IPv4 und IPv6, verwendet werden. Geben Sie die Netzwerkmaske in <guimenu>Teilnetzmaske</guimenu> ein. Wenn die IPv6-Adresse verwendet wird, benutzen Sie <guimenu>Teilnetzmaske</guimenu> für die Präfixlänge im Format <literal>/64</literal>.
+      </para>
+      <para>
+       Optional kann ein voll qualifizierter <guimenu>Hostname</guimenu> für diese Adresse eingegeben werden, der in die Konfigurationsdatei <filename>/etc/hosts</filename> geschrieben wird.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+      </para>
+     </step>
+    </procedure>
+    <para>
+     Wenn Sie die statische Adresse verwenden, werden die Namenserver und das Standard-Gateway nicht automatisch konfiguriert. Informationen zur Konfiguration von Namenservern finden Sie unter <xref linkend="sec.basicnet.yast.change.host"/>. Informationen zur Konfiguration eines Gateways finden Sie unter <xref linkend="sec.basicnet.yast.change.route"/>.
+    </para>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.configure.aliases">
+    <title>Konfigurieren von Aliassen</title><indexterm> <primary>Netzwerke</primary> <secondary>YaST</secondary> <tertiary>Alias</tertiary> </indexterm>
+    <para>
+     Ein Netzwerkgerät kann mehrere IP-Adressen haben, die Aliasse genannt werden. 
+    </para>
+    <note>
+     <title>Aliasse stellen eine Kompatibilitätsfunktion dar</title>
+     <para>
+      Die so genannten Aliasse oder Labels funktionieren nur bei IPv4. Bei IPv6 werden sie ignoriert. Bei der Verwendung von <command>iproute2</command>-Netzwerkschnittstellen können eine oder mehrere Adressen vorhanden sein.
+     </para>
+    </note>
+    <para>
+     Gehen Sie folgendermaßen vor, wenn Sie einen Alias für Ihre Netzwerkkarte mithilfe von YaST einrichten möchten:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Wählen Sie im YaST-Konfigurationsmodul für Netzwerkkarten auf dem Karteireiter <guimenu>Übersicht</guimenu> in der Liste der erkannten Karten eine Netzwerkkarte aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf dem Karteireiter <menuchoice> <guimenu>Adresse</guimenu> <guimenu>Zusätzliche Adressen</guimenu> </menuchoice> auf <guimenu>Hinzufügen</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Geben Sie den <guimenu>Aliasnamen</guimenu>, die <guimenu>IP-Adresse</guimenu> und die <guimenu>Netzmaske</guimenu> ein. Nehmen Sie den Schnittstellennamen nicht in den Aliasnamen auf.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.udev">
+    <title>Ändern des Gerätenamens und der Udev-Regeln</title>
+    <para>
+     Der Gerätename der Netzwerkkarte kann während des laufenden Betriebs geändert werden. Es kann auch festgelegt werden, ob udev die Netzwerkkarte über die Hardware-Adresse (MAC) oder die Bus-ID erkennen soll. Die zweite Option ist bei großen Servern vorzuziehen, um einen Austausch der Karten unter Spannung zu erleichtern. Mit YaST legen Sie diese Optionen wie folgt fest:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Wählen Sie im YaST-Modul Netzwerkeinstellungen auf dem Karteireiter <guimenu>Übersicht</guimenu><guimenu/> in der Liste der erkannten Karten eine Netzwerkkarte aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Öffnen Sie den Karteireiter <guimenu>Hardware</guimenu>. Der aktuelle Gerätename wird unter <guimenu>Udev-Regeln</guimenu> angezeigt. Klicken Sie auf <guimenu>Ändern</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Wählen Sie aus, ob udev die Karte über die <guimenu>MAC-Adresse</guimenu> oder die <guimenu>Bus-ID</guimenu> erkennen soll. Die aktuelle MAC-Adresse und Bus-ID der Karte werden im Dialogfeld angezeigt.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Aktivieren Sie zum Ändern des Gerätenamens die Option <guimenu>Gerätenamen ändern</guimenu> und bearbeiten Sie den Namen.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu> und <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.driver">
+    <title>Ändern des Kernel-Treibers für Netzwerkkarten</title>
+    <para>
+     Für einige Netzwerkkarten sind eventuell verschiedene Kernel-Treiber verfügbar. Wenn die Karte bereits konfiguriert ist, ermöglicht YaST die Auswahl eines zu verwendenden Kernel-Treibers in einer Liste verfügbarer Treiber. Es ist auch möglich, Optionen für den Kernel-Treiber anzugeben. Mit YaST legen Sie diese Optionen wie folgt fest:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Wählen Sie im YaST-Modul Netzwerkeinstellungen auf dem Karteireiter <guimenu>Übersicht</guimenu> in der Liste der erkannten Karten eine Netzwerkkarte aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Öffnen Sie den Karteireiter <guimenu>Hardware.</guimenu>
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Wählen Sie den zu verwendenden Kernel-Treiber unter <guimenu>Modulname</guimenu> aus. Geben Sie die entsprechenden Optionen für den ausgewählten Treiber unter <guimenu>Optionen</guimenu> im Format <command><replaceable>Option</replaceable>=<replaceable>Wert</replaceable></command> ein. Wenn mehrere Optionen verwendet werden, sollten sie durch Leerzeichen getrennt sein.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu> und <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.start">
+    <title>Aktivieren des Netzwerkgeräts</title><indexterm> <primary>Netzwerke</primary> <secondary>YaST</secondary> <tertiary>Aktivieren</tertiary> </indexterm>
+    <para>
+     Wenn Sie die traditionelle Methode mit ifup verwenden, können Sie Ihr Gerät so konfigurieren, dass es wahlweise beim Systemstart, bei der Verbindung per Kabel, beim Erkennen der Karte, manuell oder nie startet. Wenn Sie den Gerätestart ändern möchten, gehen Sie wie folgt vor:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Wählen Sie in YaST unter <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>Netzwerkeinstellungen</guimenu> </menuchoice> in der Liste der erkannten Karten eine Netzwerkkarte aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       In der Karteireiter <guimenu>Allgemein</guimenu> wählen Sie den gewünschten Eintrag unter <guimenu>Geräte-Aktivierung</guimenu>.
+      </para>
+      <para>
+       Wählen Sie <guimenu>Beim Systemstart</guimenu>, um das Gerät beim Booten des Systems zu starten. Wenn <guimenu>Bei Kabelanschluss</guimenu> aktiviert ist, wird die Schnittstelle auf physikalische Netzwerkverbindungen überwacht. Wenn <guimenu>Falls hot-plugged</guimenu> aktiviert ist, wird die Schnittstelle eingerichtet, sobald sie verfügbar ist. Dies gleicht der Option <guimenu>Bei Systemstart</guimenu>, führt jedoch nicht zu einem Fehler beim Systemstart, wenn die Schnittstelle nicht vorhanden ist. Wählen Sie <guimenu>Manuell</guimenu>, wenn Sie die Schnittstelle manuell mit <command>ifup</command> steuern möchten. Wählen Sie <guimenu>Nie</guimenu>, wenn das Gerät gar nicht gestartet werden soll. <guimenu>Bei NFSroot</guimenu> verhält sich ähnlich wie <guimenu>Beim Systemstart</guimenu>, allerdings fährt das Kommando <command>rcnetwork stop</command> die Schnittstelle bei dieser Einstellung nicht herunter. Diese Einstellung empfiehlt sich bei einem NFS- oder iSCSI-Root-Dateisystem.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+      </para>
+     </step>
+    </procedure>
+    <para>
+     Normalerweise können Netzwerk-Schnittstellen nur vom Systemadministrator aktiviert und deaktiviert werden. Wenn Benutzer in der Lage sein sollen, diese Schnittstelle über KInternet zu aktivieren, wählen Sie <guimenu>Gerätesteuerung für Nicht-Root-Benutzer über KInternet aktivieren</guimenu> aus.
+    </para>
+   </sect4>
+   <sect4>
+    <title>Einrichten der Größe der maximalen Transfereinheit</title>
+    <para>
+     Sie können eine maximale Transfereinheit (MTU) für die Schnittstelle festlegen. MTU bezieht sich auf die größte zulässige Paketgröße in Byte. Eine größere MTU bringt eine höhere Bandbreiteneffizienz. Große Pakete können jedoch eine langsame Schnittstelle für einige Zeit belegen und die Verzögerung für nachfolgende Pakete vergrößern.
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Wählen Sie in YaST unter <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>Netzwerkeinstellungen</guimenu> </menuchoice> in der Liste der erkannten Karten eine Netzwerkkarte aus, und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Wählen Sie im Karteireiter <guimenu>Allgemein</guimenu> den gewünschten Eintrag aus der Liste <guimenu>Set MTU</guimenu> (MTU festlegen).
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+   <sect4 id="sec.basicnet.yast.change.fire">
+
+    <title>Konfigurieren der Firewall</title>
+    <para>
+     Sie müssen nicht die genaue Firewall-Konfiguration durchführen, wie unter <xref linkend="sec.fire.SuSE.yast"/> beschrieben. Sie können einige grundlegende Firewall-Einstellungen für Ihr Gerät als Teil der Gerätekonfiguration festlegen. Führen Sie dazu die folgenden Schritte aus:
+    </para>
+    <procedure>
+     <step performance="required">
+      <para>
+       Öffnen Sie das YaST-Modul <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>Netzwerkeinstellungen</guimenu> </menuchoice>. Wählen Sie im Karteireiter <guimenu>Übersicht</guimenu> eine Karte aus der Liste erkannter Karten und klicken Sie auf <guimenu>Bearbeiten</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Öffnen Sie den Karteireiter <guimenu>Allgemein</guimenu> des Dialogfelds <guimenu>Netzwerkeinstellungen</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Legen Sie die Firewall-Zone fest, der Ihre Schnittstelle zugewiesen werden soll. Mit den zur Verfügung stehenden Optionen können Sie
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term>Firewall deaktiviert</term>
+        <listitem>
+         <para>
+          Diese Option ist nur verfügbar, wenn die Firewall deaktiviert ist und die Firewall überhaupt nicht ausgeführt wird. Verwenden Sie diese Option nur, wenn Ihr Computer Teil eines größeren Netzwerks ist, das von einer äußeren Firewall geschützt wird.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Automatisches Zuweisen von Zonen</term>
+        <listitem>
+         <para>
+          Diese Option ist nur verfügbar, wenn die Firewall aktiviert ist. Die Firewall wird ausgeführt und die Schnittstelle wird automatisch einer Firewall-Zone zugewiesen. Die Zone, die das Stichwort <literal>Beliebig</literal> enthält, oder die externe Zone wird für solch eine Schnittstelle verwendet.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Interne Zone (ungeschützt)</term>
+        <listitem>
+         <para>
+          Die Firewall wird ausgeführt, aber es gibt keine Regeln, die diese Schnittstelle schützen. Verwenden Sie diese Option, wenn Ihr Computer Teil eines größeren Netzwerks ist, das von einer äußeren Firewall geschützt wird. Sie ist auch nützlich für die Schnittstellen, die mit dem internen Netzwerk verbunden sind,wenn der Computer über mehrere Netzwerkschnittstellen verfügt.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Demilitarisierte Zone</term>
+        <listitem>
+         <para>
+          Eine demilitarisierte Zone ist eine zusätzliche Verteidigungslinie zwischen einem internen Netzwerk und dem (feindlichen) Internet. Die dieser Zone zugewiesenen Hosts können vom internen Netzwerk und vom Internet erreicht werden, können jedoch nicht auf das interne Netzwerk zugreifen.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>Externe Zone</term>
+        <listitem>
+         <para>
+          Die Firewall wird an dieser Schnittstelle ausgeführt und schützt sie vollständig vor anderem (möglicherweise feindlichem) Netzwerkverkehr. Dies ist die Standardoption.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </step>
+     <step performance="required">
+      <para>
+       Klicken Sie auf <guimenu>Weiter</guimenu>.
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       Aktivieren Sie die Konfiguration, indem Sie auf <guimenu>OK</guimenu> klicken.
+      </para>
+     </step>
+    </procedure>
+   </sect4>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.netcard.man">
+   <title>Konfigurieren einer unerkannten Netzwerkkarte</title>
+   <para>
+    Ihre Karte wird unter Umständen nicht richtig erkannt. In diesem Fall erscheint sie nicht in der Liste der erkannten Karten. Wenn Sie sich nicht sicher sind, ob Ihr System über einen Treiber für die Karte verfügt, können Sie sie manuell konfigurieren. Sie können auch spezielle Netzwerkgerätetypen konfigurieren, z. B. Bridge, Bond, TUN oder TAP. So konfigurieren Sie eine nicht erkannte Netzwerkkarte (oder ein spezielles Gerät):
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Klicken Sie im Dialogfeld <menuchoice> <guimenu>Netzwerkgeräte</guimenu> <guimenu>Netzwerkeinstellungen</guimenu> <guimenu>Übersicht</guimenu> </menuchoice> in YaST auf <guimenu>Hinzufügen</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      
+      
+      Legen Sie den <guimenu>Gerätetyp</guimenu> der Schnittstelle im Dialogfeld <guimenu>Hardware</guimenu> mit Hilfe der verfügbaren Optionen fest und geben Sie einen <guimenu>Konfigurationsnamen</guimenu> ein. Wenn es sich bei der Netzwerkkarte um ein PCMCIA- oder USB-Gerät handelt, aktivieren Sie das entsprechende Kontrollkästchen und schließen Sie das Dialogfeld durch Klicken auf <guimenu>Weiter</guimenu>. Ansonsten können Sie den Kernel <guimenu>Modulname</guimenu> definieren, der für die Karte verwendet wird, sowie gegebenenfalls dessen <guimenu>Optionen</guimenu>.
+     </para>
+     <para>
+      Unter <guimenu>Ethtool-Optionen</guimenu> können Sie die von <command>ifup</command> für die Schnittstelle verwendeten <command>Ethtool</command>-Optionen einstellen. Die verfügbaren Optionen werden auf der man-Seite <command>ethtool</command> beschrieben. Wenn die Optionszeichenkette mit einem <literal>-</literal> beginnt (z. B. <literal>-K <replaceable>Schnittstellenname</replaceable> rx on</literal>), wird das zweite Wort der Zeichenkette durch den aktuellen Schnittstellennamen ersetzt. Andernfalls (z. B. bei <literal>autoneg off speed 10</literal>) stellt <command>ifup</command> die Zeichenkette <literal>-s <replaceable>Schnittstellenname</replaceable></literal> voran.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>Weiter</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Konfigurieren Sie die benötigten Optionen wie die IP-Adresse, die Geräteaktivierung oder die Firewall-Zone für die Schnittstelle auf den Karteireitern <guimenu>Allgemein</guimenu>, <guimenu>Adresse</guimenu> und <guimenu>Hardware</guimenu>. Weitere Informationen zu den Konfigurationsoptionen finden Sie in <xref linkend="sec.basicnet.yast.netcard.change"/>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wenn Sie für den Gerätetyp der Schnittstelle die Option <guimenu>Drahtlos</guimenu> gewählt haben, konfigurieren Sie im nächsten Dialogfeld die drahtlose Verbindung. <phrase os="sles;sled">Weitere Informationen zur Konfiguration drahtloser Geräte erhalten Sie unter <xref linkend="cha.wireless.wlan"/>.</phrase>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>Weiter</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>OK</guimenu>, um die neue Netzwerkkonfiguration zu aktivieren.
+     </para>
+    </step>
+   </procedure>
+
+  </sect3>
+  <sect3 id="sec.basicnet.yast.change.host">
+   <title>Konfigurieren des Hostnamens und DNS</title><indexterm> <primary>Netzwerke</primary> <secondary>YaST</secondary> <tertiary>Hostname</tertiary> </indexterm>
+   <para>
+    Wenn Sie die Netzwerkkonfiguration während der Installation noch nicht geändert haben und die verkabelte Karte bereits verfügbar war, wurde automatisch ein Hostname für Ihren Computer erstellt und DHCP wurde aktiviert. Dasselbe gilt für die Namensservicedaten, die Ihr Host für die Integration in eine Netzwerkumgebung benötigt. Wenn DHCP für eine Konfiguration der Netzwerkadresse verwendet wird, wird die Liste der Domain Name Server automatisch mit den entsprechenden Daten versorgt. Falls eine statische Konfiguration vorgezogen wird, legen Sie diese Werte manuell fest.
+   </para>
+   <para>
+    Wenn Sie den Namen Ihres Computers und die Namenserver-Suchliste ändern möchten, gehen Sie wie folgt vor:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Wechseln Sie zum Karteireiter <menuchoice> <guimenu>Netzwerkeinstellungen</guimenu> <guimenu>Hostname/DNS</guimenu> </menuchoice> im Modul <guimenu>Netzwerkgeräte</guimenu> in YaST.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Geben Sie den <guimenu>Hostnamen</guimenu> und bei Bedarf auch den <guimenu>Domänennamen</guimenu> ein. Die Domäne ist besonders wichtig, wenn der Computer als Mailserver fungiert. Der Hostname ist global und gilt für alle eingerichteten Netzwerkschnittstellen.
+     </para>
+     <para>
+      Wenn Sie zum Abrufen einer IP-Adresse DHCP verwenden, wird der Hostname Ihres Computers automatisch durch DHCP festgelegt. Sie sollten dieses Verhalten deaktivieren, wenn Sie Verbindungen zu verschiedenen Netzwerken aufbauen, da Sie verschiedene Hostnamen zuweisen können und das Ändern des Hostnamens beim Ausführen den grafischen Desktop verwirren kann. Zum Deaktivieren von DHCP, damit Sie eine IP-Adresse erhalten, deaktivieren Sie <guimenu>Hostnamen über DHCP ändern</guimenu>.
+     </para>
+     <para>
+      Mithilfe von <guimenu>Hostnamen zu Loopback-IP zuweisen</guimenu> wird der Hostname mit der IP-Adresse <literal>127.0.0.2</literal> (Loopback) in <filename>/etc/hosts</filename> verknüpft. Diese Option ist hilfreich, wenn der Hostname jederzeit, auch ohne aktives Netzwerk, auflösbar sein soll.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Legen Sie unter <guimenu>DNS-Konfiguration ändern</guimenu> fest, wie die DNS-Konfiguration (Namenserver, Suchliste, Inhalt der Datei <filename>/etc/resolv.conf</filename>) geändert wird.
+     </para>
+     <para>
+      Wenn die Option <guimenu>Standardrichtlinie verwenden</guimenu> ausgewählt ist, wird die Konfiguration vom Skript <command>netconfig</command> verwaltet, das die statisch definierten Daten (mit YaST oder in den Konfigurationsdateien) mit dynamisch bezogenen Daten (vom DHCP-Client oder NetworkManager) zusammenführt. Diese Standardrichtlinie ist in den meisten Fällen ausreichend.
+     </para>
+     <para>
+      Wenn die Option <guimenu>Nur manuell</guimenu> ausgewählt ist, darf <command>netconfig</command> die Datei <filename>/etc/resolv.conf</filename> nicht ändern. Jedoch kann diese Datei manuell bearbeitet werden.
+     </para>
+     <para>
+      Wenn die Option <guimenu>Benutzerdefinierte Richtlinie</guimenu> ausgewählt ist, muss eine Zeichenkette für die <guimenu>benutzerdefinierte Richtlinienregel</guimenu> angegeben werden, welche die Zusammenführungsrichtlinie definiert. Die Zeichenkette besteht aus einer durch Kommas getrennten Liste mit Schnittstellennamen, die als gültige Quelle für Einstellungen betrachtet werden. Mit Ausnahme vollständiger Schnittstellennamen sind auch grundlegende Platzhalter zulässig, die mit mehreren Schnittstellen übereinstimmen. Beispiel: <literal>eth* ppp?</literal> richtet sich zuerst an alle eth- und dann an alle ppp0-ppp9-Schnittstellen. Es gibt zwei spezielle Richtlinienwerte, die angeben, wie die statischen Einstellungen angewendet werden, die in der Datei <filename>/etc/sysconfig/network/config</filename> definiert sind:
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><literal>STATIC</literal>
+       </term>
+       <listitem>
+        <para>
+         Die statischen Einstellungen müssen mit den dynamischen Einstellungen zusammengeführt werden.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><literal>STATIC_FALLBACK</literal>
+       </term>
+       <listitem>
+        <para>
+         Die statischen Einstellungen werden nur verwendet, wenn keine dynamische Konfiguration verfügbar ist.
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+     <para>
+      Weitere Informationen finden Sie unter <command>man 8 netconfig</command>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Geben Sie die <guimenu>Namenserver</guimenu> ein und füllen Sie die <guimenu>Domänensuchliste</guimenu> aus. Nameserver müssen in der IP-Adresse angegeben werden (z. B. 192.168.1.116), nicht im Hostnamen. Namen, die im Karteireiter <guimenu>Domänensuche</guimenu> angegeben werden, sind Namen zum Auflösen von Hostnamen ohne angegebene Domäne. Wenn mehr als eine <guimenu>Suchdomäne</guimenu> verwendet wird, müssen die Domänen durch Kommas oder Leerzeichen getrennt werden.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Der Hostname kann auch mit YaST über die Kommandozeile bearbeitet werden. Die Änderungen in YaST treten sofort in Kraft (im Gegensatz zur manuellen Bearbeitung der Datei <filename>/etc/HOSTNAME</filename>). Zum Ändern des Hostnamens führen Sie das folgende Kommando aus:
+   </para>
+   <screen>yast dns edit hostname=<replaceable>hostname</replaceable></screen>
+   <para>
+    Zum Ändern der Namenserver führen Sie die folgenden Kommandos aus:
+   </para>
+   <screen>yast dns edit nameserver1=<replaceable>192.168.1.116</replaceable></screen>
+   <screen>yast dns edit nameserver2=<replaceable>192.168.1.116</replaceable></screen>
+   <screen>yast dns edit nameserver3=<replaceable>192.168.1.116</replaceable></screen>
+  </sect3>
+  <sect3 id="sec.basicnet.yast.change.route">
+   <title>Konfigurieren des Routings</title><indexterm> <primary>Netzwerke</primary> <secondary>YaST</secondary> <tertiary>Gateway</tertiary> </indexterm>
+   <para>
+    Damit Ihre Maschine mit anderen Maschinen und Netzwerken kommuniziert, müssen Routing-Daten festgelegt werden. Dann nimmt der Netzwerkverkehr den korrekten Weg. Wird DHCP verwendet, werden diese Daten automatisch angegeben. Wird eine statische Konfiguration verwendet, müssen Sie die Daten manuell angeben.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Navigieren Sie in YaST zu <menuchoice> <guimenu>Netzwerkeinstellungen</guimenu> <guimenu>Routing</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Geben Sie die IP-Adresse für das <guimenu>Standard-Gateway</guimenu> ein (gegebenenfalls IPv4 und IPv6). Der Standard-Gateway entspricht jedem möglichen Ziel, wenn aber ein anderer Eintrag der erforderlichen Adresse entspricht, wird diese anstelle der Standardroute verwendet.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      In der <guimenu>Routing-Tabelle</guimenu> können weitere Einträge vorgenommen werden. Geben Sie die IP-Adresse für das <guimenu>Ziel</guimenu>-Netzwerk, die IP-Adresse des <guimenu>Gateways</guimenu> und die <guimenu>Netzmaske</guimenu> ein. Wählen Sie das <guimenu>Gerät</guimenu> aus, durch das der Datenverkehr zum definierten Netzwerk geroutet wird (das Minuszeichen steht für ein beliebiges Gerät). Verwenden Sie das Minuszeichen <literal>-</literal>, um diese Werte frei zu lassen. Verwenden Sie <literal>default</literal> im Feld <guimenu>Ziel</guimenu>, um in der Tabelle ein Standard-Gateway einzugeben.
+     </para>
+     <note>
+      <para>
+       Wenn mehrere Standardrouten verwendet werden, kann die Metrik-Option verwendet werden, um festzulegen, welche Route eine höhere Priorität hat. Geben Sie zur Angabe der Metrik-Option <option>- Metrik <replaceable>Nummer</replaceable></option> unter <guimenu>Optionen</guimenu> ein. Die Route mit der höchsten Metrik wird als Standard verwendet. Wenn das Netzwerkgerät getrennt wird, wird seine Route entfernt und die nächste verwendet. Der aktuelle Kernel verwendet jedoch keine Metrik bei statischem Routing, sondern nur ein Routing-Dämon wie multipathd.
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      Wenn das System ein Router ist, aktivieren Sie die Option <guimenu>IP-Weiterleitung</guimenu> in den <guimenu>Netzwerkeinstellungen</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>OK</guimenu>, um die Konfiguration zu aktivieren.
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.modem">
+  <title>Modem</title><indexterm> <primary>YaST</primary> <secondary>Modems</secondary> </indexterm> <indexterm> <primary>Modems</primary> <secondary>YaST</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>Modems</secondary> </indexterm>
+  <tip arch="zseries" os="sles">
+
+   <title>IBM System z: Modem</title>
+   <para>
+    Die Konfiguration dieses Hardwaretyps wird auf den IBM System z-Plattformen nicht unterstützt.
+   </para>
+  </tip>
+  <para>
+   Im YaST-Kontrollzentrum greifen Sie mit <menuchoice><guimenu>Netzwerkgeräte</guimenu><guimenu>Modem</guimenu> </menuchoice> auf die Modem-Konfiguration zu. Wenn Ihr Modem nicht automatisch erkannt wurde, wechseln Sie zum Karteireiter <guimenu>Modemgeräte</guimenu> und öffnen Sie das Dialogfeld für manuelle Konfiguration, indem Sie auf <guimenu>Hinzufügen</guimenu> klicken. Geben Sie unter <guimenu>Modemgerät</guimenu> die Schnittstelle an, an die das Modem angeschlossen ist.
+  </para>
+  <tip>
+   <title>CDMA- und GPRS-Modems</title>
+   <para>
+    Konfigurieren Sie unterstützte CDMA- und GPRS-Modems mit dem YaST-<guimenu>Modem</guimenu>-Modul wie reguläre Modems.
+   </para>
+  </tip>
+  <figure id="fig.yast2.modem">
+   <title>Modemkonfiguration</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_modem.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_modem.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Wenn eine Telefonanlage zwischengeschaltet ist, müssen Sie ggf. eine Vorwahl für die Amtsholung eingeben. Dies ist in der Regel die Null. Sie können diese aber auch in der Bedienungsanleitung der Telefonanlage finden. Zudem können Sie festlegen, ob Ton- oder Impulswahl verwendet, der Lautsprecher eingeschaltet und der Wählton abgewartet werden soll. Letztere Option sollte nicht verwendet werden, wenn Ihr Modem an einer Telefonanlage angeschlossen ist.
+  </para>
+  <para>
+   Legen Sie unter <guimenu>Details</guimenu> die Baudrate und die Zeichenketten zur Modeminitialisierung fest. Ändern Sie die vorhandenen Einstellungen nur, wenn das Modem nicht automatisch erkannt wird oder es spezielle Einstellungen für die Datenübertragung benötigt. Dies ist vor allem bei ISDN-Terminaladaptern der Fall. Schließen Sie das Dialogfeld mit <guimenu>OK</guimenu>. Wenn Sie die Kontrolle des Modems an normale Benutzer ohne Root-Berechtigung abgeben möchten, aktivieren Sie <guimenu>Gerätesteuerung für Nicht-Root-Benutzer via KInternet ermöglichen</guimenu>. Auf diese Weise kann ein Benutzer ohne Administratorberechtigungen eine Schnittstelle aktivieren oder deaktivieren. Geben Sie unter <guimenu>Regulärer Ausdruck für Vorwahl zur Amtsholung</guimenu> einen regulären Ausdruck an. Dieser muss der vom Benutzer unter <guimenu>Dial Prefix</guimenu> (Vorwahl) in KInternet bearbeitbaren Vorwahl entsprechen. Wenn dieses Feld leer ist, kann ein Benutzer ohne Administratorberechtigungen keine andere <guimenu>Vorwahl</guimenu> festlegen.
+  </para>
+  <para>
+   Wählen Sie im nächsten Dialogfeld den ISP (Internet Service Provider). Wenn Sie Ihren Provider aus einer Liste der für Ihr Land verfügbaren Provider auswählen möchten, aktivieren Sie <guimenu>Land</guimenu>. Sie können auch auf <guimenu>Neu</guimenu> klicken, um ein Dialogfeld zu öffnen, in dem Sie die Daten Ihres ISPs eingeben können. Dazu gehören ein Name für die Einwahlverbindung und den ISP sowie die vom ISP zur Verfügung gestellten Benutzer- und Kennwortdaten für die Anmeldung. Aktivieren Sie <guimenu>Immer Passwort abfragen</guimenu>, damit immer eine Passwortabfrage erfolgt, wenn Sie eine Verbindung herstellen.
+  </para>
+  <para>
+   Im letzten Dialogfeld können Sie zusätzliche Verbindungsoptionen angeben:
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>Dial-On-Demand</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Wenn Sie <guimenu>Dial-on-Demand</guimenu> aktivieren, müssen Sie mindestens einen Namenserver angeben. Verwenden Sie diese Funktion nur, wenn Sie über eine günstige Internet-Verbindung oder eine Flatrate verfügen, da manche Programme in regelmäßigen Abständen Daten aus dem Internet abfragen.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Während Verbindung DNS ändern</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Diese Option ist standardmäßig aktiviert, d. h. die Adresse des Namenservers wird bei jeder Verbindung mit dem Internet automatisch aktualisiert.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>DNS automatisch abrufen</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Wenn der Provider nach dem Herstellen der Verbindung seinen DNS-Server nicht überträgt, deaktivieren Sie diese Option und geben Sie die DNS-Daten manuell ein.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Automatische Verbindungswiederherstellung</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Wenn aktiviert, wird nach einem Fehler automatisch versucht, die Verbindung wiederherzustellen.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Ignoriere Eingabeaufforderung</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Diese Option deaktiviert die Erkennung der Eingabeaufforderungen des Einwahlservers. Aktivieren Sie diese Option, wenn der Verbindungsaufbau sehr lange dauert oder die Verbindung nicht zustande kommt.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Externe Firewall-Schnittstelle</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Durch Auswahl dieser Option wird die Firewall aktiviert und die Schnittstelle als extern festgelegt. So sind Sie für die Dauer Ihrer Internetverbindung vor Angriffen von außen geschützt.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>Idle-Time-Out (Sekunden)</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Mit dieser Option legen Sie fest, nach welchem Zeitraum der Netzwerkinaktivität die Modemverbindung automatisch getrennt wird.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>IP-Details</guimenu>
+    </term>
+    <listitem>
+     <para>
+      Diese Option öffnet das Dialogfeld für die Adresskonfiguration. Wenn Ihr ISP Ihrem Host keine dynamische IP-Adresse zuweist, deaktivieren Sie die Option <guimenu>Dynamische IP-Adresse</guimenu> und geben Sie die lokale IP-Adresse des Hosts und anschließend die entfernte IP-Adresse ein. Diese Informationen erhalten Sie von Ihrem ISP. Lassen Sie die Option <guimenu>Standard-Route</guimenu> aktiviert und schließen Sie das Dialogfeld mit <guimenu>OK</guimenu>.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   Durch Auswahl von <guimenu>Weiter</guimenu> gelangen Sie zum ursprünglichen Dialogfeld zurück, in dem eine Zusammenfassung der Modemkonfiguration angezeigt wird. Schließen Sie das Dialogfeld mit <guimenu>OK</guimenu>.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.isdn">
+  <title>ISDN</title><indexterm> <primary>Internet</primary> <secondary>ISDN</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>ISDN</secondary> </indexterm> <indexterm> <primary>Hardware</primary> <secondary>ISDN</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>ISDN</secondary> </indexterm>
+  <tip arch="zseries" os="sles">
+
+   <title>IBM System z: ISDN</title>
+   <para>
+    Die Konfiguration dieses Hardwaretyps wird auf den IBM System z-Plattformen nicht unterstützt.
+   </para>
+  </tip>
+  <para>
+   Dieses Modul ermöglicht die Konfiguration einer oder mehrerer ISDN-Karten in Ihrem System. Wenn YaST Ihre ISDN-Karte nicht erkannt hat, klicken Sie auf dem Karteireiter <guimenu>ISDN-Geräte</guimenu> auf <guimenu>Hinzufügen</guimenu> und wählen Sie Ihre Karte manuell aus. Theoretisch können Sie mehrere Schnittstellen einrichten, im Normalfall ist dies aber nicht notwendig, da Sie für eine Schnittstelle mehrere Provider einrichten können. Die nachfolgenden Dialogfelder dienen dann dem Festlegen der verschiedenen ISDN-Optionen für den ordnungsgemäßen Betrieb der Karte.
+  </para>
+  <figure id="fig.yast2.isdn">
+   <title>ISDN-Konfiguration</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_isdn.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_isdn.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Wählen Sie im nächsten Dialogfeld, das in <xref linkend="fig.yast2.isdn"/> dargestellt ist, das zu verwendende Protokoll. Der Standard ist <guimenu>Euro-ISDN (EDSS1)</guimenu>, aber für ältere oder größere Telefonanlagen wählen Sie <guimenu>1TR6</guimenu>. Für die USA gilt <guimenu>NI1</guimenu>. Wählen Sie das Land in dem dafür vorgesehenen Feld aus. Die entsprechende Landeskennung wird im Feld daneben angezeigt. Geben Sie dann noch die <guimenu>Ortsnetzkennzahl</guimenu> und ggf. die <guimenu>Vorwahl zur Amtsholung</guimenu> ein. Wenn nicht der gesamte ISDN-Datenverkehr protokolliert werden soll, deaktivieren Sie die Option <guimenu>ISDN-Protokollierung starten</guimenu>.
+  </para>
+  <para>
+   <guimenu>Geräte-Aktivierung</guimenu> definiert, wie die ISDN-Schnittstelle gestartet werden soll: <guimenu>Beim Systemstart</guimenu> initialisiert den ISDN-Treiber bei jedem Systemstart. <guimenu>Manuell </guimenu> erfordert, dass Sie den ISDN-Treiber als  <systemitem class="username">root </systemitem> mit dem Befehl  <command>rcisdn start </command> laden. <guimenu>Falls hot-plugged</guimenu> wird für PCMCIA- oder USB-Geräte verwendet. Diese Option lädt den Treiber, nachdem das Gerät eingesteckt wurde. Wenn Sie alle Einstellungen vorgenommen haben, klicken Sie auf <guimenu>OK</guimenu>.
+  </para>
+  <para>
+   Im nächsten Dialogfeld können Sie den Schnittstellentyp für die ISDN-Karte angeben und weitere ISPs zu einer vorhandenen Schnittstelle hinzufügen. Schnittstellen können in den Betriebsarten <systemitem>SyncPPP</systemitem> oder <systemitem>RawIP</systemitem> angelegt werden. Die meisten ISPs verwenden jedoch den <systemitem>SyncPPP</systemitem>-Modus, der im Folgenden beschrieben wird.
+  </para>
+  <figure id="fig.yast2.isdn_interface">
+   <title>Konfiguration der ISDN-Schnittstelle</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_isdn_interface.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_isdn_interface.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Die Nummer, die Sie unter <guimenu>Eigene Telefonnummer</guimenu> eingeben, ist vom jeweiligen Anschlussszenario abhängig:
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>ISDN-Karte direkt an der Telefondose</term>
+    <listitem>
+     <para>
+      Eine standardmäßige ISDN-Leitung bietet Ihnen drei Rufnummern (so genannte MSNs, Multiple Subscriber Numbers). Auf Wunsch können (auch) bis zu zehn Rufnummern zur Verfügung gestellt werden. Eine dieser MSNs muss hier eingegeben werden, allerdings ohne Ortsnetzkennzahl. Sollten Sie eine falsche Nummer eintragen, wird Ihr Netzbetreiber die erste Ihrem ISDN-Anschluss zugeordnete MSN verwenden.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ISDN-Karte an einer Telefonanlage<indexterm><primary>Telefonanlage</primary> </indexterm></term>
+    <listitem>
+     <para>
+      Auch hier kann die Konfiguration je nach installierten Komponenten variieren:
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        Kleinere Telefonanlagen für den Hausgebrauch verwenden für interne Anrufe in der Regel das Euro-ISDN-Protokoll (EDSS1). Diese Telefonanlagen haben einen internen S0-Bus und verwenden für die angeschlossenen Geräte interne Rufnummern.
+       </para>
+       <para>
+        Für die Angabe der MSN verwenden Sie eine der internen Rufnummern. Eine der möglichen MSNs Ihrer Telefonanlage sollte funktionieren, sofern für diese der Zugriff nach außen freigeschaltet ist. Im Notfall funktioniert eventuell auch eine einzelne Null. Weitere Informationen dazu entnehmen Sie bitte der Dokumentation Ihrer Telefonanlage.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        Größere Telefonanlagen (z. B. in Unternehmen) verwenden für die internen Anschlüsse das Protokoll 1TR6. Die MSN heißt hier EAZ und ist üblicherweise die Durchwahl. Für die Konfiguration unter Linux ist die Eingabe der letzten drei Stellen der EAZ in der Regel ausreichend. Im Notfall probieren Sie die Ziffern 1 bis 9.
+       </para>
+      </listitem>
+     </orderedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+
+   Wenn die Verbindung vor der nächsten zu zahlenden Gebühreneinheit getrennt werden soll, aktivieren Sie <guimenu>ChargeHUP</guimenu>. Dies funktioniert unter Umständen jedoch nicht mit jedem ISP. Durch Auswahl der entsprechenden Option können Sie auch die Kanalbündelung (Multilink-PPP) aktivieren. Sie können die Firewall für die Verbindung aktivieren, indem Sie <guimenu>Externe Firewall-Schnittstelle</guimenu> und <guimenu>Firewall neu starten</guimenu> auswählen. Wenn Sie normalen Benutzern ohne Administratorberechtigung die Aktivierung und Deaktivierung der Schnittstelle erlauben möchten, aktivieren Sie <guimenu>Gerätesteuerung für Nicht-Root-Benutzer via KInternet ermöglichen</guimenu>.
+  </para>
+  <para>
+   <guimenu>Details </guimenu> öffnet ein Dialogfeld, das für die Implementierung komplexerer Verbindungsszenarien ausgelegt und aus diesem Grund für normale Heimbenutzer nicht relevant ist. Schließen Sie das Dialogfeld <guimenu>Details</guimenu> mit <guimenu>OK</guimenu>.
+  </para>
+  <para>
+   Im nächsten Dialogfeld konfigurieren Sie die Einstellungen der IP-Adressen. Wenn Ihr Provider Ihnen keine statische IP-Adresse zugewiesen hat, wählen Sie <guimenu>Dynamische IP-Adresse</guimenu>. Anderenfalls tragen Sie gemäß den Angaben Ihres Providers die lokale IP-Adresse Ihres Rechners sowie die entfernte IP-Adresse in die dafür vorgesehenen Felder ein. Soll die anzulegende Schnittstelle als Standard-Route ins Internet dienen, aktivieren Sie <guimenu>Standard-Route</guimenu>. Beachten Sie, dass jeweils nur eine Schnittstelle pro System als Standard-Route in Frage kommt. Schließen Sie das Dialogfeld mit <guimenu>Weiter</guimenu>.
+  </para>
+  <para>
+   Im folgenden Dialogfeld können Sie Ihr Land angeben und einen ISP wählen. Bei den in der Liste aufgeführten ISPs handelt es sich um Call-By-Call-Provider. Wenn Ihr ISP in der Liste nicht aufgeführt ist, wählen Sie <guimenu>Neu</guimenu>. Dadurch wird das Dialogfeld <guimenu>Provider-Parameter</guimenu> geöffnet, in dem Sie alle Details zu Ihrem ISP eingeben können. Die Telefonnummer darf keine Leerzeichen oder Kommas enthalten. Geben Sie dann den Benutzernamen und das Passwort ein, den bzw. das Sie von Ihrem ISP erhalten haben. Wählen Sie anschließend <guimenu>Weiter</guimenu>.
+  </para>
+  <para>
+   Um auf einem eigenständigen Arbeitsplatzrechner <guimenu>Dial-On-Demand</guimenu> verwenden zu können, müssen Sie auch den Namenserver (DNS-Server) angeben. Die meisten Provider unterstützen heute die dynamische DNS-Vergabe, d. h. beim Verbindungsaufbau wird die IP-Adresse eines Namenservers übergeben. Bei einem Einzelplatz-Arbeitsplatzrechner müssen Sie dennoch eine Platzhalteradresse wie <systemitem class="ipaddress">192.168.22.99</systemitem> angeben. Wenn Ihr ISP keine dynamischen DNS-Namen unterstützt, tragen Sie die IP-Adressen der Namenserver des ISPs ein. Ferner können Sie festlegen, nach wie vielen Sekunden die Verbindung automatisch getrennt werden soll, falls in der Zwischenzeit kein Datenaustausch stattgefunden hat. Bestätigen Sie die Einstellungen mit <guimenu>Weiter</guimenu>. YaST zeigt eine Zusammenfassung der konfigurierten Schnittstellen an. Klicken Sie zur Aktivierung dieser Einstellungen auf <guimenu>OK</guimenu>.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.cablemodem">
+  <title>Kabelmodem</title><indexterm> <primary>Modems</primary><secondary>Kabel</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>Kabelmodem</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>Kabelmodem</secondary> </indexterm>
+  <tip arch="zseries" os="sles">
+   <title>IBM System z: Kabelmodem</title>
+
+   <para>
+    Die Konfiguration dieses Hardwaretyps wird auf den IBM System z-Plattformen nicht unterstützt.
+   </para>
+  </tip>
+  <para>
+   In einigen Ländern wird der Zugriff auf das Internet über Kabel-TV mehr und mehr üblich. Der TV-Kabel-Abonnent erhält in der Regel ein Modem, das auf der einen Seite an die TV-Kabelbuchse und auf der anderen Seite (mit einem 10Base-TG Twisted-Pair-Kabel) an die Netzwerkkarte des Computers angeschlossen wird. Das Kabelmodem stellt dann eine dedizierte Internetverbindung mit einer statischen IP-Adresse zur Verfügung.
+  </para>
+  <para>
+   Richten Sie sich bei der Konfiguration der Netzwerkkarte nach den Anleitungen Ihres ISP (Internet Service Provider) und wählen Sie entweder <guimenu>Dynamische Adresse</guimenu> oder <guimenu>Statisch zugewiesene IP-Adresse</guimenu> aus. Die meisten Provider verwenden heute DHCP. Eine statische IP-Adresse ist oft Teil eines speziellen Firmenkontos.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.basicnet.yast.xdsl">
+
+  <title>DSL</title><indexterm> <primary>Internet</primary> <secondary>DSL</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>DSL</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>DSL</secondary> </indexterm>
+  <tip arch="zseries" os="sles">
+   <title>IBM System z: DSL</title>
+
+   <para>
+    Die Konfiguration dieses Hardwaretyps wird auf den IBM System z-Plattformen nicht unterstützt.
+   </para>
+  </tip>
+  <para>
+   Wählen Sie zum Konfigurieren des DSL-Geräts das YaST-Modul <guimenu>DSL</guimenu> unter <guimenu>Netzwerkgeräte</guimenu> aus. Dieses YaST-Modul besteht aus mehreren Dialogfeldern, in denen Sie die Parameter des DSL-Zugangs basierend auf den folgenden Protokollen festlegen können:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     PPP über Ethernet (PPPoE)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     PPP über ATM (PPPoATM)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     CAPI für ADSL (Fritz-Karten)
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     Tunnel-Protokoll für Point-to-Point (PPTP) - Österreich
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   
+   
+   Im Dialogfeld <guimenu>Überblick über die DSL-Konfiguration</guimenu> finden Sie auf dem Karteireiter <guimenu>DSL-Geräte</guimenu> eine Liste der installierten DSL-Geräte. Zur Änderung der Konfiguration eines DSL-Geräts wählen Sie das Gerät in der Liste aus und klicken Sie auf <guimenu>Bearbeiten</guimenu>. Wenn Sie ein neues DSL-Gerät manuell konfigurieren möchten, klicken Sie auf <guimenu>Hinzufügen</guimenu>.
+  </para>
+  <para>
+   Zur Konfiguration eines DSL-Zugangs auf der Basis von PPPoE oder PPTP ist es erforderlich, die entsprechende Netzwerkkarte korrekt zu konfigurieren. Falls noch nicht geschehen, konfigurieren Sie zunächst die Karte, indem Sie <guimenu>Netzwerkkarten konfigurieren</guimenu> auswählen (siehe <xref linkend="sec.basicnet.yast.netcard"/>). Bei DSL-Verbindungen können die Adressen zwar automatisch vergeben werden, jedoch nicht über DHCP. Aus diesem Grund dürfen Sie die Option <guimenu>Dynamic Address</guimenu> (Dynamische Adresse) nicht aktivieren. Geben Sie stattdessen eine statische Dummy-Adresse für die Schnittstelle ein, z. B. <systemitem class="ipaddress">192.168.22.1</systemitem>. Geben Sie unter <guimenu>Subnetzmaske</guimenu> <systemitem class="netmask">255.255.255.0</systemitem> ein. Wenn Sie eine Einzelplatz-Arbeitsstation konfigurieren, lassen Sie das Feld <guimenu>Standard-Gateway</guimenu> leer.
+  </para>
+  <tip>
+   <para>
+    Die Werte in den Feldern <guimenu>IP-Adresse</guimenu> und <guimenu>Subnetzmaske</guimenu> sind lediglich Platzhalter. Sie haben für den Verbindungsaufbau mit DSL keine Bedeutung und werden nur zur Initialisierung der Netzwerkkarte benötigt.
+   </para>
+  </tip>
+  <para>
+   Wählen Sie im ersten Dialogfeld für die DSL-Konfiguration (siehe <xref linkend="fig.yast2.adsl"/>) den <guimenu>PPP-Modus</guimenu> und die <guimenu>Ethernetkarte</guimenu>, mit der das DSL-Modem verbunden ist (in den meisten Fällen ist dies <systemitem class="systemname">eth0</systemitem>). Geben Sie anschließend unter <guimenu>Geräte-Aktivierung</guimenu> an, ob die DSL-Verbindung schon beim Booten des Systems gestartet werden soll. Aktivieren Sie <guimenu>Gerätesteuerung für Nicht-Root-Benutzer via KInternet ermöglichen</guimenu>, wenn Sie normalen Benutzern ohne Root-Berechtigung die Aktivierung und Deaktivierung der Schnittstelle via KInternet erlauben möchten.
+  </para>
+  <para>
+   Wählen Sie im nächsten Dialogfeld Ihr Land aus und treffen Sie eine Auswahl aus den ISPs, die in Ihrem Land verfügbar sind. Die Inhalte der danach folgenden Dialogfelder der DSL-Konfiguration hängen stark von den bis jetzt festgelegten Optionen ab und werden in den folgenden Abschnitten daher nur kurz angesprochen. Weitere Informationen zu den verfügbaren Optionen erhalten Sie in der ausführlichen Hilfe in den einzelnen Dialogfeldern.
+  </para>
+  <figure id="fig.yast2.adsl">
+   <title>DSL-Konfiguration</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="yast2_adsl.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="yast2_adsl.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   Um auf einem Einzelplatz-Arbeitsplatzrechner <guimenu>Dial-On-Demand</guimenu> verwenden zu können, müssen Sie auf jeden Fall den Namenserver (DNS-Server) angeben. Die meisten Provider unterstützen heute die dynamische DNS-Vergabe, d. h. beim Verbindungsaufbau wird die IP-Adresse eines Namenservers übergeben. Bei einem Einzelplatz-Arbeitsplatzrechner müssen Sie jedoch eine Platzhalteradresse wie <systemitem class="ipaddress">192.168.22.99</systemitem> angeben. Wenn Ihr ISP keine dynamische DNS-Namen unterstützt, tragen Sie die IP-Adressen der Namenserver des ISPs ein.
+  </para>
+  <para>
+   <guimenu>Idle-Timeout (Sekunden)</guimenu> definiert, nach welchem Zeitraum der Netzwerkinaktivität die Verbindung automatisch getrennt wird. Hier sind Werte zwischen 60 und 300 Sekunden empfehlenswert. Wenn <guimenu>Dial-On-Demand</guimenu> deaktiviert ist, kann es hilfreich sein, das Zeitlimit auf Null zu setzen, um das automatische Trennen der Verbindung zu vermeiden.
+  </para>
+  <para>
+   <indexterm> <primary>Internet</primary> <secondary>TDSL</secondary> </indexterm> <indexterm> <primary>YaST</primary> <secondary>T-DSL</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>T-DSL</secondary> </indexterm> Die Konfiguration von T-DSL entspricht weitgehend der Konfiguration von DSL. Durch Auswahl von <guimenu>T-Online</guimenu> als Provider gelangen Sie in das YaST-Konfigurationsdialogfeld für T-DSL. In diesem Dialogfeld geben Sie einige zusätzliche Informationen ein, die für T-DSL erforderlich sind: die Anschlusskennung, die T-Online-Nummer, die Benutzerkennung und Ihr Passwort. Diese Informationen finden Sie in den T-DSL-Anmeldeunterlagen.
+  </para><indexterm startref="idx.networks_integrating" class="endofrange"/>
+ </sect2>
+
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" arch="zseries" os="sles" href="zseries_net_lan_devices.xml" parse="xml"/>
+</sect1>

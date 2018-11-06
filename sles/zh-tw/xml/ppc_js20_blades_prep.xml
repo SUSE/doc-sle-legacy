@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_js20_blades_prep.xml" id="sec.prep.js20blades">
+ <title>在 IBM JSxx BladeCenter 上安裝的準備動作</title><indexterm> <primary>準備</primary> <secondary>JSxx BladeCenter</secondary> </indexterm>
+ <para>
+  本節說明在 JSxx Blade 上安裝 SUSE® Linux Enterprise Server 的準備步驟。包括使用 BladeCenter 的光碟機和使用網路兩種安裝方式。
+ </para>
+ <sect3 id="sec.prep.js20blades.netsource">
+  <title>建立網路安裝來源</title>
+  <para>
+   若 SUSE Linux Enterprise Server 要安裝於許多分割區上，請建立網路安裝來源。這樣的好處是，安裝過程中不需要更換 CD。相同來源亦可讓多個系統同時進行安裝。有關網路安裝來源組態的說明請參閱<xref linkend="sec.deployment.remoteinst.instserver.sles9"/>。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.js20blades.hd-storage">
+  <title>硬碟儲存空間</title>
+  <para>
+   請確定您有足夠的硬碟儲存空間可以安裝 SUSE Linux Enterprise Server。建議使用專用的硬碟。
+  </para>
+ </sect3>
+
+ <sect3>
+  <title>準備開機系統</title>
+  <para/>
+  <sect4>
+   <title>準備從 CD-ROM 光碟機開機</title>
+   <para>
+    若希望從 CD-ROM 安裝，請執行本節中說明的步驟。
+   </para>
+   <para>
+    透過網頁瀏覽器連接至「BladeCenter 管理模組」並登入，可為選定要進行安裝的 Blade 指定光碟機。登入之後，在 <guimenu>Blade 任務</guimenu>功能表中選取<guimenu>遠端控制</guimenu>功能，再啟動<guimenu>啟動遠端控制</guimenu>。在新視窗的<guimenu>變更媒體匣擁有者</guimenu>功能表中，將 CD-ROM 光碟機指派至希望的 Blade。
+   </para>
+   <para>
+    將光碟機設定為開機裝置。請在「BladeCenter 管理模組」中依序選擇<guimenu>Blade 任務</guimenu>、<guimenu>組態</guimenu>以完成此操作。在<guimenu>開機順序</guimenu>區段選取 JSxx Blade。在 <guimenu>Blade 開機序列</guimenu>頁面中，將<guimenu>第一裝置</guimenu>的項目設定為 <guimenu>CDROM</guimenu>。
+   </para>
+   <para>
+    將 CD 1 放入光碟機，並重新啟動 Blade。
+   </para>
+  </sect4>
+  <sect4>
+   <title>準備從網路開機</title>
+   <para>
+    若希望從網路安裝，請執行本節中說明的步驟。
+   </para>
+   <para>
+    使用網頁瀏覽器連接至「BladeCenter 管理模組」並登入。透過存取<guimenu>Blade 任務</guimenu>頁面中的<guimenu>組態</guimenu>功能表，將開機裝置設定為網路。在<guimenu>開機順序</guimenu>區段中選取 JSxx Blade，再在<guimenu>Blade 開機順序</guimenu>中將<guimenu>首次開機裝置</guimenu>設定為<guimenu>網路 - BOOTP</guimenu>。
+   </para>
+  </sect4>
+  <sect4>
+   <title>重新開機並連接至 JSxx Blade 的主控台</title>
+   <para>
+    在 BladeCenter 管理模組中，從<guimenu>Blade 任務</guimenu>功能表的<guimenu>電源/重新啟動</guimenu>項目中，將 JSxx Blade 重新開機。隨即會出現一表格，在 <guimenu>Pwr</guimenu> 欄中將顯示 Blade 的電源狀態。勾選希望的 blade 核取方塊，並以<guimenu>開啟 Blade</guimenu> 重新啟動。
+   </para>
+   <para>
+    以指令 <command>telnet <replaceable>bladecenter</replaceable></command> 連接至 BladeCenter 並登入。
+   </para>
+<screen>
+username: <replaceable>user</replaceable>
+password: ********
+system&gt;
+</screen>
+   <para>
+    指令 <command>env -T system:blade[<replaceable>匣編號</replaceable>]</command> 可確定後續指令的目標 JSxx Blade。呼叫 <command>list -l 3</command>，會顯示安裝於 BladeCenter 的 blade。
+   </para>
+<screen>
+system&gt; list -l 3
+system
+        mm[1]    primary
+        power[1]
+        power[2]
+        power[3]
+        power[4]
+        blower[1]
+        blower[2]
+        switch[1]
+        switch[3]
+        blade[1]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[3]
+                sp
+        blade[4]
+                sp
+        blade[6]
+                sp
+        blade[8]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[9]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[10]
+                sp
+        blade[11]
+                sp
+        blade[13]
+                sp
+        mt
+system&gt; 
+</screen>
+   <para>
+    接著會判斷<emphasis>指令目標</emphasis>。例如，若要使用編號為 <literal>9</literal> 的 Blade，請輸入 <command>env -T system:blade[9]</command>。使用指令 <command>console</command> 透過 <emphasis>Serial over LAN (SOL)</emphasis> 連接 JSxx Blade 的主控台。
+   </para>
+<screen>
+system&gt; env -T system:blade[9]
+OK
+system:blade[9]&gt; console
+</screen>
+  </sect4>
+  <sect4>
+   <title>啟動安裝</title>
+   <para>
+    SUSE Linux Enterprise Server 開機載入程式在系統檢查完成之後啟動。
+   </para>
+   
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+   <para>
+    從功能表中選取<guimenu>安裝</guimenu>，然後按 <keycap>Enter</keycap>。
+   </para>
+   <para>
+    若要透過 VNC 安裝，請將參數 <option>vnc=1</option> 和 <option>vncpassword=<replaceable>密碼</replaceable></option>附加至核心 (安裝) 的指令行。
+   </para>
+  </sect4>
+  <sect4>
+   <title>其他步驟</title>
+   <para>
+    如<xref linkend="cha.inst"/>中所述繼續開始以 linuxrc 和 YaST 安裝軟體。
+   </para>
+  </sect4>
+ </sect3>
+</sect2>

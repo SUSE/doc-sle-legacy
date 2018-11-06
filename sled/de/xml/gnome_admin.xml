@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="gnome_admin.xml" id="cha.gnome.gconf">
+ <title>GNOME-Konfiguration für Administratoren</title>
+ <para>
+  In diesem Kapitel werden die GNOME-Konfigurationsoptionen vorgestellt, die Administratoren verwenden können, um systemweite Einstellungen anzupassen. Dazu gehören beispielsweise Vorgänge wie Anpassen von Menüs, Installieren von Themen, Konfigurieren von Schriften, Ändern bevorzugter Anwendungen und Sperren von Funktionen.
+ </para>
+ <para>
+  Diese Konfigurationsoptionen werden im GConf-System gespeichert. Greifen Sie auf das GConf-System mit Tools wie der Kommandozeilenschnittstelle <command>gconftool-2</command> oder dem GUI-Tool <command>gconf-editor</command> zu.
+ </para>
+ <sect1 id="sec.gnome.gconf">
+  <title>Das GConf-System</title>
+
+  <para>
+   Der GNOME-Desktop verwaltet seine Konfiguration mit GConf. Dabei handelt es sich um eine hierarchisch strukturierte Datenbank oder Registrierung, in der der Benutzer seine eigenen Einstellungen ändern und der Systemadministrator Standardwerte oder obligatorische Werte für alle Benutzer festlegen kann. Sie gelangen zu den GConf-Einstellungen, indem Sie Zugriffspfade wie <systemitem>/desktop/gnome/background/picture_filename</systemitem> angeben. Dieses Beispiel ist der Schlüssel, der den Dateinamen des Desktop-Hintergrundbilds enthält.
+  </para>
+
+  <para>
+   Verwenden Sie den grafischen <systemitem>gconf-editor</systemitem>, wenn Sie alle Optionen bequem durchsehen möchten. Eine kurze Nutzungsbeschreibung von gconf-editor finden Sie in <xref linkend="sec.gnome.gconf-editor"/>. Falls Sie eine skriptfähige Lösung brauchen, siehe <xref linkend="sec.gnome.gconftool2"/>.
+  </para>
+
+  <warning>
+   <title>Dialogfelder im GNOME-Kontrollzentrum</title>
+   <para>
+    Direkter Zugriff auf das Gconf-System kann das System unbrauchbar machen und sollte daher nur mit äußerster Vorsicht erfolgen.
+   </para>
+   <para>
+    Unerfahrene Benutzer, die nur einige gängige Desktop-Funktionen ändern möchten, sollten die Konfigurationsdialogfelder des GNOME-Kontrollzentrums verwenden. Um das GNOME-Kontrollzentrum zu starten, klicken Sie auf <menuchoice> <guimenu>Computer</guimenu> <guimenu>Kontrollzentrum</guimenu> </menuchoice>. Weitere Informationen finden Sie in <xref linkend="sec.gnome.settings.cc"/>.
+   </para>
+  </warning>
+
+  <sect2 id="sec.gnome.gconf-editor">
+   <title>Der grafische gconf-editor</title>
+   <para>
+    Mithilfe von gconf-editor können Sie GConf-Einstellungen durchsuchen und interaktiv ändern. Um gconf-editor in der Standardansicht <guimenu>Einstellungsfenster</guimenu> zu öffnen, klicken Sie auf <menuchoice> <guimenu>Computer</guimenu> <guimenu>Weitere Anwendungen</guimenu> </menuchoice> und anschließend in der Gruppe <guimenu>System</guimenu> auf <guimenu>GNOME-Konfigurationseditor</guimenu>.
+   </para>
+   <para>
+    Standardmäßig können Benutzer die Einstellungen für ihren eigenen Desktop ändern, und der Administrator kann die Einstellungen zur Angabe von Standardwerten oder obligatorischen Werten vorbereiten. Gehen Sie folgendermaßen vor, wenn beispielsweise die Funktion <emphasis>Tipppause</emphasis> als obligatorische Funktion für alle Benutzer aktiviert werden soll:
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Starten Sie <command>gconf-editor</command> als <systemitem>root</systemitem> in der Kommandozeile.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Erweitern Sie im Baumbereich auf der linken Seite den Eintrag <systemitem>/desktop/gnome/typing_break</systemitem>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie mit der rechten Maustaste auf <guimenu>Aktiviert</guimenu> und wählen Sie <guimenu>Als obligatorisch festlegen</guimenu>. Danach können Sie diese Funktion verwalten.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Öffnen Sie das Fenster <guimenu>Notwendige Einstellungen</guimenu>, indem Sie auf <menuchoice> <guimenu>Datei</guimenu> <guimenu>Neues obligatorisches Fenster</guimenu> </menuchoice> klicken.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Erweitern Sie im Baumbereich des Fensters <guimenu>Obligatorische Einstellungen</guimenu> den Eintrag <systemitem>/desktop/gnome/typing_break</systemitem> und klicken Sie auf <guimenu>Aktiviert</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Schließen Sie das Fenster, um die Einstellung zu speichern, indem Sie auf <menuchoice> <guimenu>Datei</guimenu> <guimenu>Fenster schließen</guimenu> </menuchoice> klicken.
+     </para>
+    </step>
+   </procedure>
+   <para>
+    Weitere Informationen über den gconf-editor finden Sie im Konfigurations-Editor-Handbuch unter <ulink url="http://library.gnome.org/users/gconf-editor/stable/"/>.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconftool2">
+   <title>Die Kommandozeilenschnittstelle gconftool-2</title>
+   <para>
+    Verwenden Sie <command>gconftool-2</command> zum Ändern von Einstellungen über die Kommandozeile oder in Skripts. Nachfolgend einige Beispiele:
+   </para>
+   <para>
+    Verwenden Sie als <systemitem>root</systemitem> den folgenden Befehl, um die Werte aller Schlüssel aufzulisten:
+   </para>
+<screen>gconftool-2 --recursive-list /
+</screen>
+   <para>
+    Wenn Sie nur an einem Teil der Schlüssel interessiert sind, geben Sie einen Zugriffspfad wie z. B. <systemitem>/desktop/gnome/typing_break</systemitem> an:
+   </para>
+<screen>gconftool-2 --recursive-list /desktop/gnome/typing_break
+</screen>
+   <para>
+    So listen Sie obligatorische Einstellungen auf:
+   </para>
+<screen>gconftool-2 --recursive-list \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory /
+</screen>
+   <para>
+    So legen Sie eine obligatorische Einstellung wie <systemitem>typing_break</systemitem> fest:
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --type bool \
+  --set /desktop/gnome/typing_break/enabled true
+</screen>
+   <para>
+    So heben Sie eine obligatorische Einstellung auf:
+   </para>
+<screen>gconftool-2 \
+  --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+  --unset /desktop/gnome/typing_break/enabled
+</screen>
+   <para>
+    Verwenden Sie für Standardeinstellungen <systemitem>/etc/gconf/gconf.xml.default</systemitem>.
+   </para>
+   <para>
+    Weitere Informationen zu <command>gconftool-2</command> finden Sie im Administratorhandbuch zum GNOME-Desktop-System im Abschnitt zum GConf-Kommandozeilen-Tool unter <ulink url="http://help.gnome.org/admin/system-admin-guide/2.32/gconf-6.html.en"/> und in der <command>gconftool-2</command>-man-Seite (<command>man gconftool-2</command>).
+   </para>
+  </sect2>
+ </sect1>
+ <sect1>
+  <title>Anpassen von Hauptmenü, Kontrollleiste und Application Browser</title>
+
+
+
+  <para>
+   Steuern Sie die Standardelemente in zahlreichen Abschnitten des Hauptmenüs (<guimenu>Computer</guimenu>), indem Sie die folgenden Dateien anpassen:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/applications.xbel:</title>
+     <para>
+      Liste der standardmäßig bevorzugten Anwendungen.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/documents.xbel:</title>
+     <para>
+      Liste der standardmäßig bevorzugten Dokumente.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/usr/share/gnome-main-menu/system-items.xbel:</title>
+     <para>
+      Im Systemabschnitt angezeigte Elemente.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Mit <command>gconf-editor</command> können Sie die Anzahl der angezeigten Elemente anpassen:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/min_recent_items:</title>
+     <para>
+      Mindestanzahl der zuletzt verwendeten Elemente.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>/desktop/gnome/applications/main-menu/file-area/max_total_items:</title>
+     <para>
+      Höchstanzahl der zuletzt verwendeten Elemente.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Sie können den Application Browser auf zahlreiche Arten anpassen, z. B. sein Verhalten, wenn Benutzer Objekte starten, oder die Anzahl der angezeigten Elemente in der Kategorie <guimenu>Neue Anwendungen</guimenu>. Schlagen Sie die Schlüssel <systemitem>/desktop/gnome/applications/main-menu/ab_*</systemitem> mit <command>gconf-editor</command> nach.
+  </para>
+
+  <para>
+   Weitere Informationen finden Sie im Abschnitt über die Anpassung von Menüs im Administratorhandbuch zum GNOME-Desktop-System unter <ulink url="https://help.gnome.org/admin/system-admin-guide/2.32/menustructure-0.html.en"/>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.autostart">
+  <title>Automatischer Start von Anwendungen</title>
+
+  <para>
+   Verwenden Sie zum automatischen Start von Anwendungen in GNOME eine der folgenden Methoden:
+  </para>
+
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <formalpara>
+     <title>So führen Sie Anwendungen für jeden Benutzer aus:</title>
+     <para>
+      Platzieren Sie <filename>.desktop</filename>-Dateien in <filename>/usr/share/gnome/autostart</filename>.
+     </para>
+    </formalpara>
+   </listitem>
+   <listitem>
+    <formalpara>
+     <title>So führen Sie Anwendungen für einen einzelnen Benutzer aus:</title>
+     <para>
+      Platzieren Sie <filename>.desktop</filename>-Dateien in <filename>~/.config/autostart</filename>.
+     </para>
+    </formalpara>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   Um den automatischen Start einer Anwendung zu deaktivieren, fügen Sie <literal>X-Autostart-enabled=false</literal> zur <filename>.desktop</filename>-Datei hinzu.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.automount">
+  <title>Automatisches Einhängen und Verwalten von Mediengeräten</title>
+
+  <para>
+   Nautilus (<command>nautilus</command>) überwacht Volume-abhängige Ereignisse und reagiert mit einer vom Benutzer angegebenen Richtlinie. Sie können Nautilus verwenden, um Laufwerke im laufenden Betrieb und eingelegte Wechseldatenträger einzuhängen, Programme automatisch auszuführen und Audio-CDs oder Video-DVDs abzuspielen. Nautilus kann auch automatisch Fotos von Digitalkameras importieren.
+  </para>
+
+  <para>
+   Systemadministratoren können systemweite Standards festlegen. Weitere Informationen finden Sie in <xref linkend="sec.gnome.gconf.pref_app"/>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.pref_app">
+  <title>Ändern von bevorzugten Anwendungen</title>
+
+  <para>
+   Die bevorzugten Anwendungen von Benutzern ändern Sie, indem Sie <filename>/etc/gnome_defaults.conf</filename> bearbeiten. Weitere Hinweise finden Sie in dieser Datei.
+  </para>
+
+  <para>
+   Nachdem Sie die Datei bearbeitet haben, führen Sie <command>SuSEconfig --module glib2</command> aus.
+  </para>
+
+  <para>
+   Weitere Informationen über MIME-Typen finden Sie unter <ulink url="http://www.freedesktop.org/Standards/shared-mime-info-spec"/>.
+  </para>
+ </sect1>
+
+ <sect1 id="sec.gnome.gconf.sabayon">
+  <title>Verwalten von Profilen mit Sabayon</title>
+
+  <para>
+   Sabayon ist ein Werkzeug zur Systemverwaltung, mit dessen Hilfe Desktop-Umgebungsprofile erstellt und angewendet werden können. Bei einem Desktop-Profil handelt es sich um eine Reihe von Standardeinstellungen und Beschränkungen, die entweder auf einzelne Benutzer oder auf Benutzergruppen angewendet werden können. In Sabayon können Sie GConf-Standards und obligatorische Schlüssel mithilfe eines grafischen Tools bearbeiten.
+  </para>
+
+  <para>
+   Die Profildefinition erfolgt in einer grafischen Sitzung, ähnlich wie eine Sitzung, die ein Benutzer in einem Desktop-Fenster ausführen würde. Sie können Eigenschaften (wie Desktop-Hintergrund, Symbolleisten und verfügbare Miniprogramme) auf die übliche Weise ändern. Sabayon erkennt auch Änderungen an den Standardeinstellungen in den meisten Desktop-Anwendungen.
+  </para>
+
+  <para>
+   Dateien oder Dokumente, die im simulierten Home-Verzeichnis oder auf dem Desktop belassen werden, werden in das fertige Profil aufgenommen. Dies betrifft viele anwendungsspezifische Datenbanken, z. B. Tomboy-Notes. Dieser Mechanismus vereinfacht es, einführende Notizen oder Vorlagen so anzubieten, dass neue Benutzer bequem darauf zugreifen können.
+  </para>
+
+  <para>
+   Ein Benutzerprofil kann seine Einstellungen von einem übergeordneten Profil erben und damit spezifische Werte überschreiben oder hinzufügen. Dies ermöglicht hierarchische Sets von Einstellungen. Sie können beispielsweise ein Profil „Angestellte“ definieren und daraus Profile „Künstler“ und „Qualitätssicherung“ ableiten.
+  </para>
+
+  <para>
+   Neben dem Bereitstellen von Standards kann Sabayon auch Einstellungen sperren. Dies verhindert, dass Benutzer die Einstellung ändern. Beispiel: Sie können angeben, dass der Desktop-Hintergrund nicht geändert werden kann und immer als der Standard erscheint, den Sie festgelegt haben. Dies verhindert die beiläufige Verfälschung von Einstellungen und kann damit Anrufe beim Helpdesk verhindern und Kiosk-ähnliche Umgebungen ermöglichen. Jedoch bietet das keine absolute Sicherheit, auf die Verlass wäre.
+  </para>
+
+  <para>
+   Sabayon bietet auch eine Liste von Einstellungen für Awendungen und generische Elemente von Benutzeroberflächen, die integrierte Sperrenunterstützung samt OpenOffice.org und die GNOME-Kontrollleiste bieten. Beispielsweise kann die Kontrollleiste so eingerichtet werden, dass nur bestimmte Miniprogramme hinzugefügt werden können und eine Änderung ihrer Position oder Größe am Bildschirm verhindert wird. Ebenso können die Elemente im Menü „Speichern“ über alle Anwendungen hinweg deaktiviert werden, damit Benutzer Dokumente nicht speichern können.
+  </para>
+
+  <para>
+   Die Profile sind auf andere Computer übertragbar. Sie befinden sich in <filename>/etc/desktop-profiles/</filename>, und jedes Profil wird in einer separaten ZIP-Datei gespeichert.
+  </para>
+
+  <sect2 id="sec.gnome.gconf.sabayon.create">
+   <title>Erstellen eines Profils</title>
+   <para>
+    Profile werden in ZIP-Dateien unter <filename>/etc/desktop-profiles</filename> gespeichert. Jedes gespeicherte Profil befindet sich in einer separaten ZIP-Datei als <filename><replaceable>Name-des-Profils</replaceable>.zip </filename>. Sie können Profile auf andere Computer kopieren oder verschieben.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <menuchoice> <guimenu>Computer</guimenu> <guimenu>Weitere Anwendungen</guimenu> <guimenu>System</guimenu> <guimenu>Benutzerprofileditor</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wenn Sie nicht als <systemitem>root</systemitem>-Benutzer angemeldet sind, geben Sie das <systemitem>root</systemitem>-Passwort ein und klicken Sie dann auf <guimenu>Fortfahren</guimenu>.
+     </para>
+     <figure id="fig.gnome.gconf.sabayon1">
+      <title>Sabayon: Benutzerprofil-Editor</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon1.png" width="70%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon1.png" width="70%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>Hinzufügen</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Geben Sie einen Namen für das Profil an und klicken Sie dann auf <guimenu>Hinzufügen</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wählen Sie das Profil aus und klicken Sie dann auf <guimenu>Bearbeiten</guimenu>.
+     </para>
+     <para>
+      Eine neue Desktop-Sitzung wird in einem Xnest-Fenster geöffnet.
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.xnest">
+      <title>Sabayon: Neues Xnest-Fenster</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_xnest.png" width="80%" format="png"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Nehmen Sie im Xnest-Fenster die gewünschten Änderungen an den Einstellungen vor.
+     </para>
+     <para>
+      Jede Einstellung, die Sie ändern, wird im Xnest-Fenster angezeigt.
+     </para>
+     <para>
+      Sie können eine Einstellung als obligatorisch festlegen (<menuchoice> <guimenu>Bearbeiten</guimenu> <guimenu>Obligatorisches erzwingen</guimenu> </menuchoice>), eine Einstellung ignorieren (<menuchoice> <guimenu>Bearbeiten</guimenu> <guimenu>Ändern</guimenu> <guimenu>Ignorieren</guimenu> </menuchoice>) oder eine Einstellung als Standard festlegen (<guimenu>Ignorieren</guimenu> bzw. <guimenu>Obligatorisch</guimenu> sind deaktiviert).
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Um Einstellungen für Benutzer zu sperren, klicken Sie im Xnest-Fenster auf <menuchoice> <guimenu>Bearbeiten</guimenu> <guimenu>Sperren</guimenu> </menuchoice>.
+     </para>
+     <para>
+      Sie können zwischen den folgenden Optionen auswählen:
+     </para>
+     <formalpara>
+      <title>Allgemein:</title>
+      <para>
+       Damit ist es möglich, die Funktionen Kommandozeile, Drucken, Druckereinrichtung und Speichern auf Platte zu deaktivieren.
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>Feld:</title>
+      <para>
+       Damit können Sie die Kontrollleisten sperren sowie erzwungenes Beenden, Bildschirmsperre, Abmeldung und beliebige Miniprogramme in der Liste <guimenu>Deaktivierte Miniprogramme</guimenu> deaktivieren.
+      </para>
+     </formalpara>
+     <formalpara>
+      <title>OpenOffice.org:</title>
+      <para>
+       Ermöglicht Ihnen, die Makro-Sicherheitsstufe für OpenOffice.org-Dokumente, Lade- und Speicheroptionen sowie Optionen für die Benutzeroberfläche zu definieren.
+      </para>
+     </formalpara>
+
+
+    </step>
+    <step performance="required">
+     <para>
+      Um das Profil zu speichern, klicken Sie auf <menuchoice> <guimenu>Profil</guimenu> <guimenu>Speichern</guimenu> </menuchoice>.
+     </para>
+     <para>
+      Das Profil wird unter <filename>/etc/desktop-profiles</filename> gespeichert.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <menuchoice> <guimenu>Profil</guimenu> <guimenu>Beenden</guimenu> </menuchoice>, um das Xnest-Fenster zu schließen, und klicken Sie dann auf <guimenu>Schließen</guimenu>, um Sabayon zu beenden.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.gnome.gconf.sabayon.apply">
+   <title>Anwenden eines Profils</title>
+   <para>
+    Sie können ein Profil auf einzelne Benutzer oder alle Benutzer einer Arbeitssstation anwenden.
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <menuchoice> <guimenu>Computer</guimenu> <guimenu>Weitere Anwendungen</guimenu> <guimenu>System</guimenu> <guimenu>Benutzerprofileditor</guimenu> </menuchoice>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wenn Sie nicht als <systemitem>root</systemitem>-Benutzer angemeldet sind, geben Sie das <systemitem>root</systemitem>-Passwort ein und klicken Sie dann auf <guimenu>Fortfahren</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Wählen Sie das gewünschte Profil aus und klicken Sie dann auf <guimenu>Benutzer</guimenu>.
+     </para>
+     <figure id="fig.gnome.gconf.sabayon.apply.users">
+      <title>Sabayon: Auswählen von Benutzern</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="sabayon_users.png" width="54%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+    </step>
+    <step performance="required">
+     <para>
+      Wählen Sie die Benutzer aus, die dieses Profil verwenden sollen.
+     </para>
+     <para>
+      Um dieses Profil auf alle Benutzer an dieser Arbeitsstation anzuwenden, klicken Sie auf <guimenu>Dieses Profil für alle Benutzer verwenden</guimenu>.
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      Klicken Sie auf <guimenu>Schließen</guimenu>.
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.templates">
+  <title>Hinzufügen von Dokumentvorlagen</title>
+
+  <para>
+   Füllen Sie zum Hinzufügen von Dokumentvorlagen das Verzeichnis <filename>Templates</filename> im Home-Verzeichnis eines Benutzers. Dies können Sie manuell für jeden Benutzer erledigen, indem Sie die Dateien in <filename>~/Templates</filename> kopieren, oder systemweit, indem Sie das Verzeichnis <filename>Templates</filename> unter <filename>/etc/skel</filename> hinzufügen, bevor der Benutzer erstellt wird.
+  </para>
+
+  <para>
+   Ein Benutzer erstellt ein neues Dokument aus einer Vorlage, indem er mit der rechten Maustaste auf den Desktop klickt und <guimenu>Dokument erstellen</guimenu> wählt.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.lockdown">
+  <title>Desktop-Sperrfunktionen</title>
+
+  <para>
+   Gelegentlich müssen Desktop-Funktionen oder der Benutzerzugriff auf das zugrunde liegende Betriebssystem entfernt oder deaktiviert werden. GNOME bietet so genannte Sperrfunktionen, um den Desktop entsprechend zu ändern. Genau genommen legen Sie GConf-Schlüssel fest, um diese Änderungen zu implementieren.
+  </para>
+
+  <para>
+   Wenn Sie beispielsweise gconf-editor öffnen, sehen Sie Sperrschlüssel für das Hauptmenü in <systemitem>/desktop/gnome/applications/main-menu/lock-down/application_browser_link_visible</systemitem>. Dort finden Sie auch Beschreibungen für alle Schlüssel. Die übrigen Sperrschlüssel sind:
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>/desktop/gnome/lockdown/disable_command_line</term>
+    <listitem>
+     <para>
+      Wenn dies festgelegt ist, werden Terminals nicht im Hauptmenü und im AppBrowser angezeigt.
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_log_out</term>
+    <listitem>
+     <para/>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>/apps/panel/global/disable_lock_screen</term>
+    <listitem>
+     <para>
+      Wenn dies festgelegt ist, werden diese Elemente nicht im Hauptmenü angezeigt.
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+
+
+  <para>
+   Firefox-Sperrschlüssel finden Sie in <systemitem>/apps/firefox/lockdown</systemitem>.
+  </para>
+
+  <para>
+   Weitere Informationen finden Sie im <quote>Desktop Administrators' Guide to GNOME Lockdown and Preconfiguration</quote> von Sayamindu Dasgupta: <ulink url="http://library.gnome.org/admin/deployment-guide/"/>.
+  </para>
+ </sect1>
+ <sect1 id="sec.gnome.gconf.info">
+  <title>Weiterführende Informationen</title>
+
+  <para>
+   Weitere Informationen finden Sie in <ulink url="http://library.gnome.org/admin/"/>.
+  </para>
+ </sect1>
+</chapter>

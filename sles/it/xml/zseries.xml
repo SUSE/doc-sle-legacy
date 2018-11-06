@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="zseries.xml" id="cha.zseries">
+ <title>Installazione su IBM System z</title>
+ <abstract>
+  <para>
+   In questo capitolo viene descritta la procedura preliminare per l'installazione di <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> nei sistemi IBM System z. Sono contenute tutte le informazioni necessarie alla preparazione dell'installazione su LPAR e z/VM.
+  </para>
+ </abstract>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="zseries_info_i.xml" parse="xml"/>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="zseries_prep_i.xml" parse="xml"/>
+ <sect1 id="sec.appdendix.inst_netcontypes">
+  <title>Tipi di connessione di rete</title><indexterm> <primary>installazione</primary> <secondary>tipi di connessione di rete</secondary> </indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> per IBM System z include i driver di rete per i dispositivi OSA (Ethernet e Gigabit Ethernet) e HiperSockets. In questo capitolo viene descritta la configurazione nel sistema di installazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>.
+  </para>
+
+  <warning>
+   <title>le interfacce CTC, ESCON e IUCV non sono più supportate.</title>
+   <para>
+    Le interfacce CTC, ESCON e IUCV non sono più ufficialmente supportate. Per questioni di compatibilità, sono ancora utilizzabili ma a partire dalla prossima versione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> il supporto di queste interfacce verrà completamente abbandonato.
+   </para>
+  </warning>
+
+  <sect2 id="sec.appdendix.inst_netcontypes.ethernet_tokenring">
+   <title>HiperSockets</title><indexterm> <primary>tipi di connessione di rete</primary> </indexterm>
+   <para>
+    Selezionare il dispositivo dall'elenco di dispositivi di rete. Immettere il numero del canale di lettura del dispositivo di rete (ad esempio 0.0.700), il numero del canale di scrittura (ad esempio 0.0.701) e il numero del canale dati (ad esempio 0.0.702).
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.types">
+    <title>Tipi di connessione di rete supportati e parametri del driver</title>
+<screen>Choose the network device.
+
+ 1) IBM parallel CTC Adapter (0.0.0600)
+ 2) IBM parallel CTC Adapter (0.0.0602)
+ 3) IBM parallel CTC Adapter (0.0.0604)
+ 4) IBM Hipersocket (0.0.0700)
+ 5) IBM Hipersocket (0.0.0701)
+ 6) IBM Hipersocket (0.0.0702)
+ 7) IBM OSA Express Network card (0.0.050c)
+ 8) IBM OSA Express Network card (0.0.050d)
+ 9) IBM OSA Express Network card (0.0.050e)
+10) IBM OSA Express Network card (0.0.f401)
+11) IBM OSA Express Network card (0.0.f400)
+12) IBM OSA Express Network card (0.0.f402)
+13) IBM IUCV
+
+&gt; 4
+
+Device address for read channel [0.0.700]
+[0.0.700]&gt; 0.0.700
+
+Device address for write channel
+&gt; 0.0.701
+
+Device address for data channel
+&gt; 0.0.702</screen>
+   </example>
+   <para>
+    Successivamente, scegliere la configurazione manuale, inserire l'indirizzo IP e la maschera di rete, nonché l'indirizzo di diffusione, l'indirizzo IP del gateway e l'elenco di ricerca del server DNS.
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.devname">
+    <title>Nome del dispositivo di rete</title>
+<screen>Automatic configuration via DHCP?
+
+1) Yes
+2) No
+
+&gt; 2
+
+Enter your IP address
+&gt; 192.168.0.20
+
+Enter your netmask. For a normal class C network, this is usually
+255.255.255.0 [255.255.255.0]
+&gt; 255.255.255.0
+
+Enter the IP address of the gateway. Leave empty if you don't need one
+&gt; 192.168.0.1
+
+Enter your search domains, separated by a space:
+&gt; example.com</screen>
+   </example>
+  </sect2>
+
+  <sect2 id="sec.appdendix.inst_netcontypes.gigabit">
+   <title>Gigabit Ethernet con il modulo qeth</title><indexterm> <primary>tipi di connessione di rete</primary> <secondary>ethernet Gigabit</secondary> </indexterm>
+   <para>
+    Selezionare una <literal>scheda di rete IBM OSA Express Network </literal> dall'elenco di dispositivi di rete, quindi <literal>1</literal> per ethernet. Quando richiesto, inserire i numeri dei canali di lettura, scrittura e dati del dispositivo di rete, ad esempio <literal>0.0.0600</literal>, <literal>0.0.0601</literal> e <literal>0.0.0602</literal>, quindi il nome della porta, se presente. Scegliere se abilitare il supporto OSI Layer 2.
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.gigabit.param">
+    <title>Parametri del driver per il dispositivo di rete</title>
+<screen>Detecting and loading network drivers
+netiucv.8db02b: driver initialized
+
+Choose the network device.
+1) IBM OSA Express Network card (0.0.09a0)
+2) IBM OSA Express Network card (0.0.09a1)
+3) IBM OSA Express Network card (0.0.09a2)
+4) IBM OSA Express Network card (0.0.0600)
+5) IBM OSA Express Network card (0.0.0601)
+6) IBM OSA Express Network card (0.0.0602)
+7) IBM IUCV
+
+&gt; 4
+
+Please choose the physical medium.
+1) Ethernet
+2) Token Ring
+
+&gt; 1
+
+Enter the relative port number
+&gt; 0
+
+Device address for read channel
+[0.0.0600]&gt; 0.0.0600
+
+Device address for write channel
+&gt; 0.0.0601
+
+Device address for data channel
+&gt; 0.0.0602
+
+Portname to use
+&gt; DT70
+
+Enable OSI Layer 2 support?
+1) Yes
+2) No
+
+&gt; 2</screen>
+   </example>
+   <para>
+    Rifiutare la configurazione DHCP e immettere l'indirizzo IP e la maschera di rete. Immettere quindi l'indirizzo IP del gateway (se applicabile), i domini di ricerca e l'indirizzo IP del server DNS.
+   </para>
+   <example id="ex.appdendix.inst_netcontypes.gigabit.devname">
+    <title>Configurazione della rete</title>
+<screen>Automatic configuration via DHCP?
+
+1) Yes
+2) No
+
+&gt; 2
+
+Enter your IPv4 address.
+Example: 192.168.5.77/24
+&gt; 192.168.0.20
+
+Enter your netmask. For a normal class C network, this is usually
+255.255.255.0
+[255.255.255.0]&gt; 255.255.255.0
+
+Enter the IP address of the gateway. Leave empty if you don't need one
+&gt; 192.168.0.2
+
+Enter your search domains, separated by a space:
+&gt; example.net
+
+Enter the IP address of your name server. Leave empty or enter "+++" if you
+don't need one
+&gt; 192.168.0.1</screen>
+   </example>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.appdendix.parm">
+  <title>Il parmfile — Automazione della configurazione del sistema</title><indexterm> <primary>installazione</primary><secondary>parmfile</secondary> </indexterm>
+
+  <para>
+   Specificando alcuni parametri essenziali nel <filename>parmfile</filename>, il processo di installazione può essere parzialmente automatizzato. Il <filename>parmfile</filename> contiene tutti i dati necessari per la configurazione della rete e del dispositivo DASD. Inoltre, può essere utilizzato per configurare il metodo di connessione al sistema di installazione di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> e l'istanza di YaST in esecuzione. L'interazione dell'utente è per questo motivo limitata alla sola installazione con YaST attraverso le sue finestre di dialogo.
+  </para>
+
+  <para>
+   Alla routine di installazione è possibile passare i seguenti parametri, che vengono memorizzati come valori di default per l'installazione. Tutti gli indirizzi IP, i nomi dei server e i valori numerici sono solo esempi. Sostituire questi valori con quelli necessari per il proprio scenario di installazione.
+  </para>
+
+  <para>
+   Il numero di righe nel parmfile è limitato a dieci. I nomi dei parametri non distinguono tra maiuscole e minuscole. Separare i parametri con uno spazio. L'ordine dei parametri non è predefinito. Mantenere sempre la stringa <literal>PARAMETER=value</literal> su una sola riga. Ad esempio:
+  </para>
+
+<screen>Hostname=s390zvm01.suse.de HostIP=10.11.134.65</screen>
+
+  <tip>
+   <title>utilizzo di IPv6 durante l'installazione</title>
+   <para>
+    Per default è possibile solo assegnare indirizzi di rete IPv4 al computer. Per abilitare IPv6 durante l'installazione, immettere uno dei seguenti parametri al prompt di avvio: <literal>ipv6=1</literal> (accetta IPv4 e IPv6) o <literal>ipv6only=1</literal> (accetta solo IPv6).
+   </para>
+  </tip>
+
+  <para>
+   Alcuni dei seguenti parametri sono necessari. Se dovessero mancare, il processo automatico effettua una pausa e richiede l'immissione manuale del valore.
+  </para>
+
+  <sect2 id="sec.appdendix.parm.general">
+   <title>Parametri generali</title>
+   <variablelist>
+    <varlistentry>
+     <term><command>AutoYaST=<replaceable>&lt;URL&gt;</replaceable></command> <command>Manual=0</command>
+     </term>
+     <listitem>
+      <para>
+       Il parametro <envar>AutoYaST</envar> specifica la posizione del file di controllo <filename>autoinst.xml</filename> per l'installazione automatica. Il parametro <envar>Manuale</envar> controlla se gli altri parametri sono solo valori di default che devono essere ancora riconosciuti dall'utente. Se si desidera che tutti i valori siano accettati senza richieste di conferma, impostare il valore di questo parametro su <literal>0.</literal> L'impostazione di <envar>AutoYaST</envar> implica l'impostazione del parametro <envar>Manual</envar> sul valore <literal>0</literal>.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Info=<replaceable>&lt;URL&gt;</replaceable></command>
+     </term>
+     <listitem>
+      <para>
+       Specifica l'ubicazione del file da cui possono essere lette le opzioni aggiuntive. Ciò è utile per superare la limitazione di 10 righe (e di 80 caratteri per riga in z/VM) per il parmfile. Ulteriore documentazione per il file Info è disponibile nella <xref linkend="sec.deployment.autoinst.simple.info"/>. Dato che, in genere, su System z è possibile accedere al file Info solo tramite la rete, non sarà possibile utilizzarlo per specificare le opzioni necessarie per la configurazione della rete, vale a dire le opzioni descritte nella <xref linkend="sec.appdendix.parm.net"/>. Inoltre, altre opzioni linuxrc specifiche, quali quelle per il debug, dovranno essere specificate nel parmfile per essere effettive.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <tip>
+    <title>creazione di un file con le informazioni di autoinstallazione</title>
+    <para>
+     Al termine dell'installazione di un sistema è possibile selezionare <guimenu>Clona questo sistema per autoyast</guimenu>. Viene così creato un profilo pronto per l'uso come <filename>/root/autoinst.xml</filename>, utilizzabile per creare cloni di questa installazione particolare. Per creare un file di autoinstallazione da zero o per modificarne uno esistente, utilizzare il modulo <guimenu>Autoinstallazione</guimenu> di YaST. Per ulteriori informazioni su AutoYaST, fare riferimento al <xref linkend="cha.deployment.autoinst"/>.
+    </para>
+   </tip>
+  </sect2>
+
+<?dbfo-need height="20em"?>
+
+
+
+  <sect2 id="sec.appdendix.parm.net">
+   <title>Configurazione dell'interfaccia di rete</title>
+   <important>
+    <title>configurazione dell'interfaccia di rete</title>
+    <para>
+     Le impostazioni descritte in questa sezione si riferiscono solo all'interfaccia di rete utilizzata nel corso dell'installazione. Configurare le interfacce di rete aggiuntive nel sistema installato seguendo le istruzioni fornite nel manuale <xref linkend="sec.basicnet.manconf"/>.
+    </para>
+   </important>
+   <variablelist>
+    <varlistentry>
+     <term><command>Hostname=zseries.example.com</command>
+     </term>
+     <listitem>
+      <para>
+       Immettere il nome host completo.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Domain=example.com</command>
+     </term>
+     <listitem>
+      <para>
+       Percorso di ricerca dominio per DNS. Consente di utilizzare nomi host brevi anziché nomi completi.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>HostIP=192.168.1.2</command>
+     </term>
+     <listitem>
+      <para>
+       Inserire l'indirizzo IP dell'interfaccia da configurare.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Gateway=192.168.1.3</command>
+     </term>
+     <listitem>
+      <para>
+       Specificare il gateway da utilizzare.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Nameserver=192.168.1.4</command>
+     </term>
+     <listitem>
+      <para>
+       Specificare il server DNS attivo.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>InstNetDev=osa</command>
+     </term>
+     <listitem>
+      <para>
+       Inserire il tipo di interfaccia da configurare. I valori possibili sono <literal>osa</literal>, <literal>hsi</literal>. <literal>ctc</literal>, <literal>escon</literal> e <literal>iucv</literal> (CTC, ESCON, e IUCV non sono più supportati ufficialmente).
+      </para>
+      <para>
+       Per il tipo di interfacce <literal>hsi</literal> e <literal>osa</literal> specificare una maschera di rete appropriata e un indirizzo di diffusione opzionale:
+      </para>
+<screen>Netmask=255.255.255.0
+Broadcast=192.168.255.255</screen>
+      <para>
+       Per le interfacce di tipo <literal>ctc</literal>, <literal>escon</literal> e <literal>iucv</literal> (CTC, ESCON e IUCV non sono più ufficialmente supportate), inserire l'indirizzo IP del peer:
+      </para>
+<screen>Pointopoint=192.168.55.20</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>OsaInterface=&lt;lcs|qdio&gt;</command> <command>OsaMedium=&lt;eth|tr&gt;</command>
+     </term>
+     <listitem>
+      <para>
+       Per i dispositivi di rete <literal>osa</literal>, specificare l'interfaccia host (<literal>qdio</literal> o <literal>lcs</literal>) e il supporto fisico (<literal>eth</literal> per ethernet o <literal>tr</literal> per token ring).
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>Layer2=&lt;0|1&gt;</command>
+     </term>
+     <listitem>
+      <para>
+       Per i dispositivi ethernet QDIO <literal>osa</literal> e <literal>hsi</literal>, specificare se abilitare il supporto OSI Layer 2.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>OSAHWAddr=02:00:65:00:01:09</command>
+     </term>
+     <listitem>
+      <para>
+       Per i dispositivi Ethernet QDIO <literal>osa</literal> abilitati per lo strato 2, è necessario specificare l'indirizzo MAC manualmente. Si noti che questo indirizzo è diverso da HWAddr, che contiene l'indirizzo MAC di default rilevato da linuxrc.
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>PortNo=&lt;0|1&gt;</command>
+     </term>
+     <listitem>
+      <para>
+       Per i dispositivi di rete <literal>osa</literal> specificare il numero di porta (se il dispositivo supporta questa funzione). Il valore di default è 0.
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    Ciascuna interfaccia richiede alcune opzioni di configurazione:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Interfacce <literal>ctc</literal> e <literal>escon</literal> (CTC e ESCON non sono più ufficialmente supportate):
+     </para>
+<screen>ReadChannel=0.0.0424
+WriteChannel=0.0.0425</screen>
+     <para>
+      Il parametro <envar>ReadChannel</envar> specifica il canale di lettura da utilizzare. Il parametro <envar>WriteChannel</envar> è il canale di SCRITTURA.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Per l'interfaccia <literal>ctc</literal> (non più supportata ufficialmente), specificare il protocollo da utilizzare:
+     </para>
+<screen>CTCProtocol=&lt;0/1/2&gt;</screen>
+     <para>
+      I valori validi sono:
+     </para>
+     <informaltable>
+      <tgroup cols="2">
+       <tbody>
+        <row>
+         <entry>
+          <para>
+           <literal>0</literal>
+          </para>
+         </entry>
+         <entry>
+          <para>
+           Modalità di compatibilità, anche per peer non Linux diversi da OS/390 e z/OS (modalità di default)
+          </para>
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <para>
+           <literal>1</literal>
+          </para>
+         </entry>
+         <entry>
+          <para>
+           Modalità estesa
+          </para>
+         </entry>
+        </row>
+        <row>
+         <entry>
+          <para>
+           <literal>2</literal>
+          </para>
+         </entry>
+         <entry>
+          <para>
+           Modalità di compatibilità con OS/390 e z/OS
+          </para>
+         </entry>
+        </row>
+       </tbody>
+      </tgroup>
+     </informaltable>
+    </listitem>
+    <listitem>
+     <para>
+      Tipo di dispositivo di rete <literal>osa</literal> con interfaccia <literal>lcs</literal>:
+     </para>
+<screen>ReadChannel=0.0.0124
+Portname=1</screen>
+     <para>
+      Il parametro <envar>ReadChannel</envar> rappresenta il numero di canale utilizzato in questa configurazione. Da questo parametro è possibile definire un secondo numero di porta aggiungendo 1 al valore di <envar>ReadChannel</envar>. Il parametro <envar>Portnumber</envar> è utilizzato per specificare il relativo numero di porta.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Interfaccia <literal>iucv</literal>:
+     </para>
+<screen>IUCVPeer=PARTNER</screen>
+     <para>
+      Inserire il nome del computer peer.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Il tipo di dispositivo di rete <literal>osa</literal> con interfaccia <literal>qdio</literal> per OSA-Express Gigabit Ethernet e OSA-Express High-speed Token Ring:
+     </para>
+<screen>ReadChannel=0.0.0524
+WriteChannel=0.0.0525
+DataChannel=0.0.0526
+Portname=FEF400</screen>
+     <para>
+      Per <envar>ReadChannel</envar>, inserire il numero del canale di lettura. Per <envar>WriteChannel</envar>, inserire il numero del canale di scrittura. Il parametro <envar>DataChannel</envar> specifica il canale dati. Per <envar>Portname</envar>, inserire un nome di porta appropriato. Assicurarsi che il canale di lettura presenti un numero di dispositivo pari.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Interfaccia <literal>hsi</literal> per HiperSockets e LAN guest per VM:
+     </para>
+<screen>ReadChannel=0.0.0624
+WriteChannel=0.0.0625
+DataChannel=0.0.0626</screen>
+     <para>
+      Per <envar>ReadChannel</envar>, inserire il numero appropriato del canale di lettura. Per <envar>WriteChannel</envar> e <envar>DataChannel</envar>, inserire rispettivamente i numeri dei canali di lettura e dati.
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.appdendix.parm.yast2">
+   <title>Definizione dell'origine dell'installazione e dell'interfaccia YaST</title>
+   <variablelist>
+    <varlistentry>
+     <term><command>Install=nfs://server/directory/DVD1/</command>
+     </term>
+     <listitem>
+      <para>
+       Specificare la posizione dell'origine dell'installazione da utilizzare. I protocolli possibili sono <literal>nfs</literal>, <literal>smb</literal> (Samba/CIFS), <literal>ftp</literal> e <literal>http</literal>.
+      </para>
+      <para>
+       Se viene definito un URL <literal>ftp</literal> o <literal>smb</literal>, specificare il nome utente e la password per l'installazione via FTP. Questi parametri sono opzionali, quindi in caso non vengano definiti viene effettuato un login anonimo o come utente guest.
+      </para>
+<screen>Install=ftp://<replaceable>user</replaceable>:<replaceable>password</replaceable>@<replaceable>server</replaceable>/<replaceable>directory</replaceable>/DVD1/</screen>
+      <para>
+       In caso di installazione Samba/CIFS è possibile anche specificare il dominio da utilizzare:
+      </para>
+<screen>Install=smb://<replaceable>workdomain</replaceable>;<replaceable>user</replaceable>:<replaceable>password</replaceable>@<replaceable>server</replaceable>/<replaceable>directory</replaceable>/DVD1/</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>UseSSH=1</command> <command>UseVNC=1</command> <command>Display_IP=192.168.42.42</command>
+     </term>
+     <listitem>
+      <para>
+       In base al parametro definito, per l'installazione viene utilizzato un server X oppure SSH o VNC. Il parametro <envar>UseSSH</envar> consente l'installazione tramite, il parametro <envar>UseVNC</envar> avvia un server VNC sul computer per l'installazione, mentre il parametro <envar>Display_IP </envar>causerà il tentativo di connessione da parte del sistema di installazione all'indirizzo definito del server X. È possibile configurare solo uno di questi parametri per volta.
+      </para>
+      <important>
+       <title>meccanismo di autenticazione di X</title>
+       <para>
+        L'installazione diretta con il sistema X Window si basa su un sistema di autenticazione primitivo con nomi host. Questo meccanismo è disabilitato sulle versioni <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> correnti. È preferibile l'installazione con SSH o VNC.
+       </para>
+      </important>
+      <para>
+       Per consentire una connessione tra YaST e il server X remoto, eseguire <command>xhost</command> <option>&lt;IP address&gt;</option> aggiungendo sul computer remoto l'indirizzo del computer di installazione.
+      </para>
+      <para>
+       Per <literal>VNC</literal>, specificare una password con un numero di caratteri da sei a otto da utilizzare per l'installazione:
+      </para>
+<screen>VNCPassword=&lt;a password&gt;</screen>
+      <para>
+       Per <literal>SSH</literal>, specificare una password con un numero di caratteri da sei a otto da utilizzare per l'installazione:
+      </para>
+<screen>SSHPassword=&lt;a password&gt;</screen>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.appdendix.parm.examples">
+   <title>Esempio di parmfile</title>
+   <para>
+    Per un'installazione automatica con AutoYaST in un LPAR, è preferibile che il parmfile abbia la lunghezza di una sola riga. Se per motivi di leggibilità sono necessarie più righe, utilizzare caratteri vuoti all'inizio e alla fine di ciascuna riga. Il numero massimo di righe consentito in un parmfile è 10.
+   </para>
+   <para>
+    Per ricevere sulla console i potenziali messaggi di errore, utilizzare
+   </para>
+<screen>linuxrclog=/dev/console</screen>
+   <example id="ex.appdendix.parm.ex1">
+    <title>Parmfile per l'installazione con NFS, VNC, IUCV e AutoYaST con HTTP</title>
+<screen>ramdisk_size=131072 root=/dev/ram1 ro init=/linuxrc TERM=dumb 
+instnetdev=iucv iucvpeer=ROUTER01 pointopoint=192.168.0.1 
+hostip=192.168.0.2 
+nameserver=192.168.0.3
+install=nfs://192.168.0.4/SLES/SLES-11-s390x/DVD1
+autoyast=http://192.168.0.5/autoinst.xml 
+linuxrclog=/dev/console usevnc=1
+vncpassword=testin</screen>
+   </example>
+   <example id="ex.appdendix.parm.ex2">
+    <title>Parmfile per l'installazione con NFS, SSH, HSI e AutoYaST con HTTP</title>
+<screen>ramdisk_size=131072 root=/dev/ram1 ro init=/linuxrc TERM=dumb
+AutoYast=nfs://192.168.1.1/autoinst/s390.xml
+Hostname=zseries.example.com HostIP=192.168.1.2
+Gateway=192.168.1.3 Nameserver=192.168.1.4
+InstNetDev=hsi layer2=0
+Netmask=255.255.255.128 Broadcast=192.168.1.255
+readchannel=0.0.702c writechannel=0.0.702d datachannel=0.0.702e
+install=nfs://192.168.1.5/SLES-11-s390x/DVD1/
+UseSSH=1 SSHPassword=testing linuxrclog=/dev/console</screen>
+   </example>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.appdendix.vt220">
+  <title>Utilizzo dell'emulatore di terminale vt220</title><indexterm> <primary>vt220</primary> </indexterm>
+
+  <para>
+   I livelli recenti di MicroCode consentono l'utilizzo di un emulatore di terminale vt220 integrato in aggiunta al terminale standard in modalità riga di comando. Il terminale vt220 viene connesso a <filename>/dev/ttyS1</filename>. Il terminale a riga di comando viene connesso a <filename>/dev/ttyS0</filename>. Se è disponibile l'emulazione vt220, sull'HMC/SE accanto all'icona della console 3215 viene visualizzata l'icona della console ASCII vt220 integrata.
+  </para>
+
+  <para>
+   Per attivare il supporto per vt220 sul computer, modificare il file <filename>/etc/inittab</filename> come utente <systemitem class="username">root</systemitem>. Eseguire una ricerca della seguente riga e cancellare il segno <literal>#</literal> iniziale:
+  </para>
+
+<screen>#2:2345:respawn:/sbin/mingetty --noclear /dev/ttyS1 xterm</screen>
+
+  <para>
+   Salvare il file ed eseguire il comando <command>telinit</command> <option>q</option> per passare al file init le modifiche presenti nel file <filename>/etc/inittab. </filename> Il terminale vt220 a questo punto è pronto per l'utilizzo. In caso contrario, premere il tasto <keycap>Invio</keycap> sul terminale finché viene visualizzato il prompt del login.
+  </para>
+
+  <para>
+   Assicurarsi di non applicare le modifiche descritte in precedenza ad un sistema che non supporta gli emulatori di terminale vt220. In caso contrario, il login su questo sistema può risultare impossibile e verrà visualizzato il seguente messaggio:
+  </para>
+
+<screen>INIT respawning too fast, disabled for 5 minutes.</screen>
+
+  <para>
+   Per reindirizzare i messaggi del kernel all'avvio dalla console di sistema al terminale vt220, aggiungere i seguenti valori alla riga dei <literal>parametri</literal> in <filename>/etc/zipl.conf</filename>:
+  </para>
+
+<screen>console=ttyS0 console=ttyS1</screen>
+
+<?dbfo-need height="3em"?>
+
+
+
+  <para>
+   La conseguente riga dei <literal>parametri</literal> dovrebbe apparire come la seguente:
+  </para>
+
+<screen>parameters = "root=/dev/dasda2 TERM=dumb console=ttyS0 console=ttyS1"</screen>
+
+  <para>
+   Salvare le modifiche in <filename>/etc/zipl.conf</filename>, eseguire <command>zipl</command> e riavviare il sistema.
+  </para>
+ </sect1>
+ <sect1 id="sec.appdendix.further_information">
+  <title>Ulteriori approfondimenti sui sistemi IBM System z9 e zSeries</title>
+
+  <para>
+   IBM ha pubblicato un certo numero di documenti molto importanti sulle piattaforme System z9 e zSeries. Tali documenti sono disponibili in <ulink url="http://www.redbooks.ibm.com"/>.
+  </para>
+
+  <sect2 id="sec.intro.further_information.sles">
+   <title>IBM System z con <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></title>
+   <para>
+    Ulteriore documentazione tecnica dettagliata con argomenti relativi al kernel e alle applicazioni in IBM System z con <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> è disponibile nel sito seguente:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      <ulink url="http://www.ibm.com/developerworks/linux/linux390/documentation_novell_suse.html"/>
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.intro.further_information.hardware">
+   <title>Hardware</title>
+   <para>
+    Per un rapido sguardo ai dettagli tecnici di alcuni sistemi, fare riferimento a:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      IBM System z10 Enterprise Class Technical Introduction (SG24-7515)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM System z9 Business Class Technical Introduction (SG24-7241)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on zSeries Fibre Channel Protocol Implementation Guide (SG24-6344)
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.intro.further_information.general">
+   <title>Documentazione generale su Linux per i sistemi IBM System z9 e zSeries</title>
+   <para>
+    I seguenti documenti contengono informazioni generali sui sistemi IBM System z9 e zSeries:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: ISP and ASP Solutions (SG24-6299)
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    Questi documenti potrebbero non riflettere lo stato più aggiornato di Linux, ma la descrizione dei principi della distribuzione di Linux rimane comunque precisa.
+   </para>
+  </sect2>
+
+  <sect2 id="sec.intro.further_information.technical">
+   <title>Problematiche tecniche su Linux per i sistemi IBM System z9 e zSeries</title>
+   <para>
+    Per approfondimenti tecnici sul kernel di Linux e sugli argomenti relativi alle applicazioni, fare riferimento ai seguenti documenti. Per la versione più recente del codice, fare riferimento alle versioni aggiornate di questi documenti disponibili su Internet (<ulink url="http://www.ibm.com/developerworks/linux/linux390/index.html"/>).
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on System z Device Drivers, Features, and Commands
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      zSeries ELF Application Binary Interface Supplement
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on System z Device Drivers, Using the Dump Tools
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM System z9-109 Technical Introduction (SG26-6669)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM System z10 Enterprise Class Technical Guide (SG24-7516)
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    All'indirizzo <ulink url="http://www.redbooks.ibm.com"/> esiste anche un Redbook sullo sviluppo delle applicazioni per Linux:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: Application Development (SG24-6807)
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+
+  <sect2 id="sec.info.further_information.advanced">
+   <title>Configurazioni avanzate di Linux per i sistemi IBM System z9 e zSeries</title>
+   <para>
+    Per scenari più complessi dei sistemi IBM System z9 e zSeries, fare riferimento ai seguenti Redbook, Redpaper e collegamenti:
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: Large Scale Deployment (SG24-6824)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on IBM eServer zSeries and S/390: Performance Measuring and Tuning (SG24-6926)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux with zSeries and ESS: Essentials (SG24-7025)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      IBM TotalStorage Enterprise Storage Server Implementing ESS Copy Services with IBM eServer zSeries (SG24-5680)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Linux on IBM zSeries and S/390: High Availability for z/VM and Linux (REDP-0220)
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Saved Segments Planning and Administration
+     </para>
+     <para>
+      <ulink url="http://publibz.boulder.ibm.com/epubs/pdf/hcsg4a00.pdf"/>
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Documentazione per "Development stream" per Linux su System z
+     </para>
+     <para>
+      <ulink url="http://www.ibm.com/developerworks/linux/linux390/development_documentation.html"/>
+     </para>
+    </listitem>
+   </itemizedlist>
+  </sect2>
+ </sect1>
+</chapter>

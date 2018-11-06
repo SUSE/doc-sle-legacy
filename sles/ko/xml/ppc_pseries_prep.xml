@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_pseries_prep.xml" id="sec.prep.pseries">
+ <title>IBM pSeries 모델에 설치 준비</title><indexterm> <primary>준비</primary> <secondary>pSeries</secondary> </indexterm>
+ <para>
+  이 절에서는 pSeries 시스템에 SUSE® Linux Enterprise Server를 설치하기 위한 준비 단계를 다룹니다. 제공된 CD-ROM 드라이브나 네트워크 원본에서 설치하는 방법에 대해 설명합니다.
+ </para>
+ <sect3 id="sec.prep.pseries.features6x0">
+  <title>IBM pSeries p630, p655, p670 및 p690의 특별 기능</title>
+  <para>
+   IBM p630, p655, p670 및 p690 시스템에서는 eServer p5/System p5와 유사하게 시스템을 정적으로 파티셔닝할 수 있습니다(<xref linkend="sec.prep.eserver"/>에 설명되어 있음). 이 기능을 사용하여 시스템 하나에서 최대 16개의 운영 체제를 동시에 사용할 수 있습니다. 이러한 운영 체제는 <emphasis>LPAR</emphasis>(논리 파티션)에 설치됩니다. 이러한 파티션 중 하나 또는 여러 개가 SUSE Linux Enterprise Server 환경을 포함할 수 있습니다.
+  </para>
+  <para>
+   SUSE Linux Enterprise Server용 LPAR를 준비하려면 먼저 <emphasis>HMC</emphasis>를 통해 시스템을 구성하십시오. 자세한 내용은 Redbook <emphasis>IBM eServer pSeries 690 System Handbook</emphasis>(SG24-7040-00)을 참조하십시오(<ulink url="http://www.redbooks.ibm.com/redbooks/SG247040/"/>).
+  </para>
+  <para>
+   구성에 대한 중요 참고 사항:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     커널은 8개 프로세서만 제대로 관리할 수 있으므로, SUSE Linux Enterprise Server LPAR에 대해 권장되는 최대 프로세서 수는 8입니다.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     설치할 경우 <guimenu>SMS</guimenu>를 각 파티션의 부팅 모드로 선택합니다.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     설치 중 입력에 사용된 <emphasis>HMC</emphasis> 터미널은 VT320 에뮬레이션입니다. 이 에뮬레이션으로 인해 일부 응용 프로그램에서 비정상적인 결과가 나타날 수 있습니다. 가능하면 LPAR와 통신하는 데 XTerm을 사용하십시오.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect3>
+ <sect3 id="sec.prep.pseries.diskspace">
+  <title>하드 디스크 공간
+</title>
+  <para>
+   SUSE Linux Enterprise Server를 설치하기 위한 하드 디스크 공간이 충분한지 확인하십시오. 별도의 하드 디스크를 사용하는 것이 좋습니다.
+  </para>
+  <para>
+   또한 SUSE Linux는 파이버 채널 연결 저장소에 대한 설치를 지원합니다. 설치를 시작하기 전에 FCHBA(Fibre Channel Host Bus Adapter), SAN 패브릭 및 저장 시스템이 모두 FCHBA에서 SAN 패브릭을 통해 저장 시스템의 대상 논리 단위(LUN)에 액세스할 수 있도록 구성되어야 합니다.
+  </para>
+  <para>
+   SAN 저장 장치는 올바로 구성된 경우 시스템의 기존 하드 디스크 목록에 나열됩니다. <guimenu>사용자 정의 파티셔닝 설치 생성</guimenu>을 선택하면 <xref linkend="sec.yast2.i_y2_part_expert"/>에 설명된 대로 대화 상자가 열립니다.
+  </para>
+
+ </sect3>
+ <sect3 id="sec.prep.pseries.netsource">
+  <title>설치 원본 설정</title>
+  <para>
+   CD-ROM에서 설치하려면 드라이브에 CD1을 넣으십시오. LPAR 모드에서 설치할 파티션의 파티션 프로파일에 CD-ROM이 있어야 합니다. SUSE Linux Enterprise Server를 여러 파티션에 설치해야 하는 경우 네트워크 설치 원본을 만드십시오. 이렇게 하면 설치 중에 CD를 변경할 필요가 없습니다. 여러 시스템에 동시에 설치할 경우에도 동일한 원본을 사용할 수 있습니다. 네트워크 설치 원본 구성은 <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>에서 설명합니다.
+  </para>
+ </sect3>
+ <sect3>
+
+  <title>설치 시작</title>
+  <para>
+   설치를 시작하려면 시스템을 재부팅하십시오. 그런 다음 시스템이 재부팅되었으면 시스템 검사 중 직렬 콘솔을 사용할 때 <keycap>F1</keycap> 또는 <keycap>1</keycap>을 눌러 시스템 펌웨어를 시작하십시오. <xref linkend="fig.ppc.pseries.start.inst.sms"/>을 참조하십시오.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.sms">
+   <title>시스템 펌웨어 시작</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_sms.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_sms.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+
+
+
+
+  <para>
+   SCSI 장치를 검사하는 동안 <keycap>F1</keycap> 또는 <keycap>1</keycap>을 누르십시오. <guimenu>6 다중 부팅</guimenu>을 선택하여 <guimenu>다중 부팅</guimenu> 대화 상자를 여십시오. <xref linkend="fig.ppc.pseries.start.inst.multiboot"/>를 참조하십시오..
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.multiboot">
+   <title>다중 부팅 대화 상자</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_multiboot.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_multiboot.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <para>
+   <literal>3</literal>을 선택하여 설치 장치를 설정하십시오. 사용 가능한 장치 목록이 표시됩니다. <xref linkend="fig.ppc.pseries.start.inst.system"/>를 참조하십시오.
+  </para>
+  <figure id="fig.ppc.pseries.start.inst.system">
+   <title>운영 체제 설치</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="ppc_pseries_start_inst_system.svg" width="100%"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="ppc_pseries_start_inst_system.png" width="100%"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect3>
+
+ <sect3>
+  <title>CD-ROM 드라이브에서 부팅</title>
+  <para>
+   각 CD-ROM 드라이브를 선택하십시오(이 예에서는 <literal>3</literal>). 시스템이 CD-ROM 드라이브를 읽고 <emphasis>identstring</emphasis>을 표시합니다.
+  </para>
+  
+<screen>
+-&gt;1   SuSE:SLE-11:GA&lt;-
+</screen>
+  <para>
+   <keycap>1</keycap>을 선택하면 yaboot 유틸리티가 시작됩니다.
+  </para>
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+</screen>
+  <para>
+   <guimenu>install</guimenu>을 입력하고 <keycap>Enter</keycap> 키를 누르십시오. 또는 <keycap>Enter</keycap> 키만 눌러 설치 프로그램을 시작하십시오(기본 옵션).
+  </para>
+  <para>
+   네트워크 원본에서 설치하려면(<xref linkend="sec.prep.pseries.netsource"/> 참조) <option>manual</option>을 <command>install</command> 커널에 추가하십시오. VNC를 통한 설치는 <option>vnc=1</option> 및 <option>vncpassword=<replaceable>password</replaceable></option> 파라미터를 <command>install</command>에 추가하십시오. VNC에 대한 내용은 <xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>을 참조하십시오.
+  </para>
+
+  <para>
+   LPAR 모드에서 설치할 파티션의 파티션 프로파일에 CD-ROM이 있어야 합니다.
+  </para>
+ </sect3>
+ <sect3>
+  <title>네트워크 원본에서 부팅</title>
+  <para>
+   설치 원본에 액세스할 수 있는 이더넷 장치를 선택하십시오(이 예에서는 <literal>6</literal>).
+  </para>
+ </sect3>
+ <sect3>
+  <title>추가 단계</title>
+  <para>
+   <xref linkend="cha.inst"/>에 설명된 대로 계속하여 linuxrc 및 YaST로 소프트웨어 설치를 시작하십시오.
+  </para>
+ </sect3>
+</sect2>

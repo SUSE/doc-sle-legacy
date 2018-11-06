@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_eserver_ip5_prep.xml" id="sec.prep.eserver">
+ <title>IBM eServer p5, System p 및 OpenPower 모델에 설치 준비</title><indexterm> <primary>준비</primary> <secondary>eServer</secondary> </indexterm>
+ <para>
+  이 절에서는 IBM eServer p5 시스템에 SUSE® Linux Enterprise Server를 설치하기 위한 준비 단계를 다룹니다. 제공된 CD-ROM 드라이브에서 설치하는 경우와 네트워크를 통해 설치하는 경우에 대해 설명합니다.
+ </para>
+ <para>
+  이 절에서는 HMC를 설정했고 HMC가 시스템에 연결되었다고 가정합니다. <quote>안내 설정 마법사를 사용하여 HMC 구성</quote><ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphai_p5/confighmcgs.htm?"/>에서 마법사를 사용하여 HMC를 구성하는 과정에 대한 자세한 내용을 보십시오.
+ </para>
+ <sect3 id="sec.prep.eserver.features6x0">
+
+  <title>IBM eServer p5 시스템의 최신 기능</title>
+  <para>
+   IBM eServer p5 시스템은 시스템 파티셔닝 기능을 제공합니다. 이러한 시스템 분할로 최대 254개의 운영 체제를 시스템 하나에서 동시에 작동시킬 수 있습니다. 이러한 운영 체제는 <emphasis>LPAR</emphasis>(논리 파티션)에 설치됩니다. 이러한 파티션 중 하나 또는 여러 개가 SUSE Linux Enterprise Server 환경을 포함할 수 있습니다.
+  </para>
+  <para>
+   SUSE Linux Enterprise Server용 LPAR를 준비하려면 먼저 <emphasis>HMC</emphasis>를 통해 시스템을 구성하십시오. 자세한 내용은 IBM 문서 <ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphbi/iphbikickoff.htm"/>을 참조하십시오.
+  </para>
+
+
+
+
+
+
+
+
+
+ </sect3>
+ <sect3 id="sec.prep.eserver.diskspace">
+  <title>하드 디스크 공간</title>
+  <para>
+   SUSE Linux Enterprise Server를 설치하기 위한 하드 디스크 공간이 충분한지 확인하십시오. 표준 시스템의 경우 4GB 이상의 사용 가능한 디스크 공간이 필요합니다.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.netsource">
+
+  <title>LPAR에 설치 장치 할당</title>
+  
+  <para>
+   SUSE Linux Enterprise Server는 CD-ROM 또는 DVD 드라이브에서 또는 네트워크 설치 원본을 사용하여 설치할 수 있습니다. 설치할 LPAR에서 CD-ROM, DVD 드라이브 또는 네트워크 장치를 사용할 수 있게 하십시오.
+  </para>
+  <figure id="fig.ip5.hmc.start.menu">
+   <title>HMC: 서버 관리 - 속성</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <procedure id="ip5.hmc.assign.cdrom">
+   <title>LPAR에 CD-ROM 또는 DVD 드라이브 할당</title>
+   <step performance="required">
+    <para>
+     HMC 응용 프로그램을 열고 <menuchoice> <guimenu>서버 및 파티션</guimenu> <guimenu>서버 관리</guimenu></menuchoice>로 이동합니다.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     사용 가능한 서버에서 설치할 서버 및 파티션을 확장합니다.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     설치에 사용할 프로파일을 마우스 오른쪽 버튼으로 클릭한 다음 <guimenu>속성</guimenu>을 선택합니다. <xref linkend="fig.ip5.hmc.start.menu"/>를 참조하십시오.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>논리 파티션 프로파일 속성</guimenu> 대화 상자에서 <guimenu>물리적 I/O</guimenu> 탭을 선택합니다.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     
+     
+     
+     <guimenu>관리 시스템 I/O 장치</guimenu>의 장치가 설치되는 버스에서 <guimenu>다른 대량 저장 장치 컨트롤러</guimenu>를 선택합니다. 이 DVD 드라이브를 파티션에 할당하려면 <guimenu>필요한 만큼 추가</guimenu>를 클릭합니다.
+    </para>
+   </step>
+  </procedure>
+  <para>
+   <xref linkend="fig.ip5.hmc.assign.cdrom"/>와 같은 결과가 나타납니다.
+  </para>
+  <figure id="fig.ip5.hmc.assign.cdrom">
+   <title>HMC: 관리 시스템 I/O 장치</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  
+  <para>
+   이제 SUSE Linux Enterprise Server CD1 또는 DVD1을 드라이브에 넣으십시오.
+  </para>
+
+  <procedure>
+   <title>LPAR에 네트워크 장치 할당</title>
+   <step performance="required">
+    <para>
+     HMC 응용 프로그램을 열고 <menuchoice> <guimenu>서버 및 파티션</guimenu> <guimenu>서버 관리</guimenu></menuchoice>로 이동합니다.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     사용 가능한 서버에서 설치할 서버 및 파티션을 엽니다.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     설치에 사용할 프로파일을 마우스 오른쪽 버튼으로 클릭한 다음 <guimenu>속성</guimenu>을 선택합니다. <xref linkend="fig.ip5.hmc.start.menu"/>를 참조하십시오.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>논리 파티션 프로파일 속성</guimenu> 대화 상자에서 <guimenu>물리적 I/O</guimenu> 탭을 선택합니다.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>관리 시스템 I/O 장치</guimenu>의 장치가 설치된 버스에서 <guimenu>PCI 10/100/1000Mbps Ethernet UTP 2 포트</guimenu>를 선택합니다. 그런 다음 <guimenu>필요한 만큼 추가</guimenu>를 클릭합니다.
+    </para>
+    <para>
+     가상 이더넷 어댑터를 사용하여 설치하려면 IBM 문서를 참조하십시오.
+     
+     
+     
+    </para>
+   </step>
+  </procedure>
+  
+  <para>
+
+   SUSE Linux Enterprise Server를 여러 파티션에 설치해야 하는 경우 네트워크 설치 원본을 만드십시오. 이렇게 하면 설치 중에 CD를 변경할 필요가 없습니다. 여러 시스템에 동시에 설치할 경우에도 동일한 원본을 사용할 수 있습니다. 네트워크 설치 원본 구성은 <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>에서 설명합니다.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.startinstall">
+  <title>설치 시작</title>
+  <para>
+   설치를 시작하려면 시스템을 재부팅하십시오. 프로파일 이름을 마우스 오른쪽 버튼으로 클릭한 다음 <guimenu>활성화</guimenu>를 선택하고 다음 대화 상자에서 <guimenu>확인</guimenu>을 누르십시오.
+  </para>
+  
+  <para>
+   IBM 문서에 설명된 대로 화면 콘솔을 사용하거나 직렬 콘솔에 연결하십시오. 직렬 콘솔을 시작하는 한 가지 간단한 방법은 파티션을 활성화하는 동안 VTerm을 여는 것입니다. 이렇게 하려면 <guimenu>논리 파티션 활성화</guimenu> 대화 상자에서 <guimenu>터미널 창 또는 콘솔 세션 열기</guimenu>를 활성화하십시오.
+  </para>
+  <para>
+   시스템을 재부팅했으면 시스템 검사 중 직렬 콘솔 또는 가상 콘솔을 사용할 때 <keycap>F1</keycap> 또는 <keycap>1</keycap>을 눌러 시스템 펌웨어를 시작하십시오.
+
+  </para>
+
+<screen>
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+
+       1 = SMS Menu                          5 = Default Boot List
+       8 = Open Firmware Prompt              6 = Stored Boot List
+
+
+     memory      keyboard     network     scsi     speaker 
+</screen>
+
+  <para>
+   SCSI 장치를 검사하는 동안 <keycap>F1</keycap> 또는 <keycap>1</keycap>을 누르십시오. <guimenu>5. 부팅 옵션 선택</guimenu>을 선택하여 부팅 옵션 대화 상자를 여십시오.
+
+  </para>
+
+
+<screen>
+Version SF220_004
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+---------------------------------------------------------------------
+Main Menu
+ 1.  Select Language
+ 2.  Setup Remote IPL (Initial Program Load)
+ 3.  Change SCSI Settings
+ 4.  Select Console
+ 5.  Select Boot Options
+
+
+---------------------------------------------------------------------
+Navigation Keys:
+
+                                  X = eXit System Management Services
+---------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation
+                                                                Key:5
+</screen>
+
+  <para>
+   <guimenu>1. 설치/부팅 장치 선택</guimenu>을 선택하여 <emphasis>설치 장치</emphasis>를 설정하십시오. <guimenu>7. 모든 장치 나열</guimenu>로 가서 사용 가능한 장치 목록을 보십시오.
+
+  </para>
+
+<screen>
+Version SF220_011
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Device
+Device  Current  Device
+Number  Position  Name
+ 1.        -      Virtual Ethernet 
+                  ( loc=U9111.520.10D3CCC-V1-C3-T1 )
+ 2.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T5 )
+ 3.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T6 )
+ 4.        -      IDE CD-ROM 
+                  ( loc=U787A.001.DNZ00XG-P4-D3 )
+ 5.        1      SCSI 73407 MB Harddisk
+                  ( loc=U787A.001.DNZ00XG-P1-T10-L8-L0 )
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+ </sect3>
+
+ <sect3 id="sec.prep.eserver.boot.cd">
+  <title>CD-ROM 드라이브에서 부팅</title>
+  <para>
+   CD-ROM 드라이브(이 예의 <literal>4</literal>)를 선택하십시오.
+
+  </para>
+  
+
+<screen>SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Task
+
+IDE CD-ROM 
+    ( loc=U787A.001.DNZ00XG-P4-D3 )
+
+ 1.  Information
+ 2.  Normal Mode Boot
+ 3.  Service Mode Boot
+
+
+
+
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+  <para>
+   <guimenu>2. 일반 모드 부팅</guimenu>을 선택하여 이 드라이브에서 설치하십시오. 다음 화면에서 <guimenu>1. 예</guimenu>를 선택하여 <guimenu>시스템 관리 서비스</guimenu>를 종료하고 장치에서 부팅하십시오.
+  </para>
+  <para>
+   시스템이 CD-ROM 드라이브를 읽고 yaboot 유틸리티가 시작됩니다.
+
+  </para>
+  
+
+
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+
+  <para>
+   <guimenu>install</guimenu>을 입력하고 <keycap>Enter</keycap> 키를 누르십시오.
+  </para>
+  <para>
+   CD-ROM에서 설치를 계속하지 않고 네트워크 설치 원본에서 설치 데이터를 읽으려면(<xref linkend="sec.prep.eserver.netsource"/> 참조) <option>manual</option> 옵션을 커널 이름(<literal>install</literal>)에 추가하십시오.
+  </para>
+  <para>
+   VNC를 통해 설치하는 경우에는 <option>vnc=1</option> 및 <option>vncpassword=<replaceable>password</replaceable></option> 파라미터를 커널 이름(<literal>install</literal>)에 추가하십시오. VNC에 대한 내용은 <xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>을 확인하십시오.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.boot.net">
+  <title>네트워크 원본에서 부팅</title>
+  <para>
+   설치 원본에 대한 액세스를 가지는 이더넷 장치(이 예에서는 <literal>2</literal>)를 선택하십시오.
+  </para>
+ </sect3>
+ <sect3>
+  <title>추가 단계</title>
+  <para>
+   <xref linkend="cha.inst"/>에 설명된 대로 계속하여 linuxrc 및 YaST로 소프트웨어 설치를 시작하십시오.
+  </para>
+ </sect3>
+</sect2>

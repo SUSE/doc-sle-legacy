@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="system_repair.xml" id="sec.trouble.data.recover">
+ <title>壊れたシステムの復旧</title><indexterm> <primary>システムの復旧</primary></indexterm>
+ <para>
+  システムが起動し正常に稼動するのに失敗する理由はいくつか考えられます。最も一般的な理由としては、システムクラッシュによるファイルシステムの破損や、ブートローダ設定の破損があります。
+ </para>
+
+ <para os="sles;sled">
+  <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、これらの状況を解決するための2つの方法を提供しています。それらは、YaSTシステム修復機能の使用、またはレスキューシステムの起動です。以下のセクションでは、両方のタイプのシステム修復方法について説明します。
+ </para>
+
+ <sect3 id="sec.trouble.data.recover.yast" os="sles;sled">
+  <title>YaSTシステム修復の使用</title><indexterm> <primary>YaST</primary><secondary>システムの修復</secondary></indexterm><indexterm><primary>システムの修復 </primary></indexterm>
+  <note>
+   <title>キーボードと言語設定</title>
+   <para>
+    ブート後に言語設定を変更すると、キーボードの設定もそれに応じて変更されます。
+   </para>
+  </note>
+  <para>
+   YaSTシステム修復モジュールを起動する前に、お客さまのニーズを一番満たすように、モジュールを起動するモードを決めます。システム障害の重大度と原因(および担当者の専門知識)に応じて、3つのモードから選択できます。
+  </para>
+  <variablelist>
+   <varlistentry>
+    <term>自動修復</term>
+    <listitem>
+     <para>
+      不明な原因でシステムに障害が起こった場合で、そもそもシステムのどの部分が失敗の原因となっているか分からない場合は、<guimenu>自動修復</guimenu>を使用します。広範囲に及ぶ自動化されたチェックがお使いのシステム上のすべてのコンポーネントで実行されます。この手順の詳細な説明については、<xref linkend="sec.trouble.data.recover.yast.auto"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>カスタム修復</term>
+    <listitem>
+     <para>
+      システムに障害が発生し、その原因がどのコンポーネントにあるか分かっている場合、<guimenu>カスタム修復</guimenu>を使用して、コンポーネントに対して行うシステム分析の範囲を限定することにより、冗長なシステムチェックを短縮できます。例えば、障害の前のシステムメッセージに、パッケージデータベースのエラーの可能性を示唆する記述があれば、分析と修復手順を、システムのこの側面の検査および復元に限定できます。この手順の詳細な説明については、<xref linkend="sec.trouble.data.recover.yast.custom"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>エキスパート設定用ツール</term>
+    <listitem>
+     <para>
+      障害が発生したコンポーネントとその修復方法がはっきりわかっている場合は、分析を実行せずに、直接、該当するコンポーネントの修復に必要なツールを適用できます。詳細については、<xref linkend="sec.trouble.data.recover.yast.expert"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   前で説明した修復モードから1つを選択し、以下で概説するようにシステム修復を続行します。
+  </para>
+  <sect4 id="sec.trouble.data.recover.yast.auto">
+   <title>自動修復</title>
+   <procedure>
+    <para>
+     YaSTシステム修復の自動修復モードを起動するには、次の手順に従います。
+    </para>
+    <step performance="required">
+     <para>
+      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールメディアをDVDドライブに挿入します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      システムを再起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブート画面で、<guimenu>インストール済みシステムの修復</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用許諾契約に同意したら、<guimenu>次へ</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>自動修復</guimenu>を選択します。
+     </para>
+     <para>
+      YaSTは、ここでインストールされたシステムの広範囲に及ぶ分析を起動します。このプロシージャの進捗状況は、画面下部にある2つの進捗バーで表示されます。上のバーは現在実行中のテストの進捗状況を示します。下のバーは解析の全体の進捗状況を示します。上部のログウィンドウで、現在実行中のテストおよび結果を追跡することができます。詳細については、<xref linkend="fig.trouble.data.recover.yast.auto"/>を参照してください。
+     </para>
+     <figure id="fig.trouble.data.recover.yast.auto">
+      <title>自動修復モード</title>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="i_y2_repair_auto.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="i_y2_repair_auto.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </figure>
+     <para>
+      以下のメインテストは、自動修復を実行すると毎回実行されます。さらに、それらには、多数のサブテストが含まれています。
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term>パーティションテーブルのチェック</term>
+       <listitem>
+        <para>
+         検出された全ハードディスクのパーティションテーブルの妥当性と一貫性が検査されます。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>スワップエリアのチェック</term>
+       <listitem>
+        <para>
+         インストール済みのシステムのスワップパーティションが検出およびテストされ、適用可能な場合は、それらのパーティションをアクティブにすることができます。システム修復の速度を上げるには、このアクティベーションを承諾する必要があります。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>ファイルシステムのチェック</term>
+       <listitem>
+        <para>
+         検出されたすべてのファイルシステムがファイルシステム固有の検査の対象となります。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>fstabエントリのチェック</term>
+       <listitem>
+        <para>
+         このファイルのエントリの完全性と一貫性が検査されます。有効なパーティションは、すべてマウントされます。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>パッケージデータベースのチェック</term>
+       <listitem>
+        <para>
+         最小構成のインストールの運用に必要なすべてのパッケージが存在しているか、検査されます。基本パッケージの解析もオプションとして可能ですが、基本パッケージの数が多いので、これは長時間かかります。
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>ブートローダの設定のチェック</term>
+       <listitem>
+        <para>
+         インストールされているシステムのブートローダ設定(GRUBかLILO)の完全性と一貫性が検査されます。ブートデバイスとrootデバイスが調べられ、initrdモジュールの可用性が検査されます。
+        </para>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </step>
+    <step performance="required">
+     <para>
+      エラーを検出するたびに、プロシージャが一時停止し、エラーの詳細および可能な解決策を提示するダイアログが表示されます。
+     </para>
+     <para>
+      提案された修復を承認する前に、画面のメッセージを注意深く読みます。提案された修復を断る場合、システムは修復なしの状態のままになります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      修復プロセスが正常に終了した後に、<guimenu>OK</guimenu>および<guimenu>完了</guimenu>をクリックし、インストールメディアを取り出します。システムは自動的に再起動します。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.yast.custom">
+   <title>カスタム修復</title>
+   <procedure>
+    <para>
+     <guimenu>カスタム修復</guimenu>モードを起動し、システムのコンポーネントの一部を選択的に検査するには、次の手順に従います。
+    </para>
+    <step performance="required">
+     <para>
+      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールメディアをDVDドライブに挿入します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      システムを再起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブート画面で、<guimenu>インストール済みシステムの修復</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用許諾契約に同意したら、<guimenu>次へ</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>カスタム修復</guimenu>を選択します。
+     </para>
+     <para>
+      <guimenu>カスタム修復</guimenu>では、実行可能なテストのリストが、最初は、すべて実行対象として選択された状態で表示されます。全部のテスト範囲は、自動修復と合致します。損傷が存在していない個所が、既に判明している場合、対応するテストのチェックマークを消します。<guimenu>続行</guimenu>をクリックすると、より狭い範囲のテストプロシージャが開始され、実行時間が大幅に短縮されます。
+     </para>
+     <para>
+      すべてのテストグループを個別に実行できるわけではありません。fstab エントリの解析は常に、既存のスワップパーティションも含めたファイルシステムの検証と結び付いています。YaSTでは、このような依存性の条件が自動的に満たされ、必要なテストが最少数で実行されます。YaSTは、暗号化されたパーティションをサポートしません。そのようなパーティションがある場合は、YaSTから通知されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      エラーを検出するたびに、プロシージャが一時停止し、エラーの詳細および可能な解決策を提示するダイアログが表示されます。
+     </para>
+     <para>
+      提案された修復を承認する前に、画面のメッセージを注意深く読みます。提案された修復を断る場合、システムは修復なしの状態のままになります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      修復プロセスが正常に終了した後に、<guimenu>OK</guimenu>および<guimenu>完了</guimenu>をクリックし、インストールメディアを取り出します。システムは自動的に再起動します。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.yast.expert">
+   <title>エキスパート設定用ツール</title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>について十分な知識があり、システム内の修復の対象が明確にわかっている場合は、システム分析をスキップして、直接、ツールを適用します。
+   </para>
+   <para>
+    YaSTシステム修復の<guimenu>エキスパート設定用ツール</guimenu>の機能を使用するには、以下の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のインストールメディアをDVDドライブに挿入します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      システムを再起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブート画面で、<guimenu>インストール済みシステムの修復</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用許諾契約に同意したら、<guimenu>次へ</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>エキスパート設定用ツール</guimenu>をクリックし、修復オプションを選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      修復プロセスが正常に終了した後に、<guimenu>OK</guimenu>および<guimenu>完了</guimenu>をクリックし、インストールメディアを取り出します。システムは自動的に再起動します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    <guimenu>エキスパート設定用ツール</guimenu>では、次のオプションで、障害の発生したシステムを修復できます。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><guimenu>新しいブートローダをインストールする</guimenu>
+     </term>
+     <listitem>
+      <para>
+       YaSTのブートローダの設定モジュールを起動します。詳細については、<xref linkend="sec.boot.yast2.config"/>を参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>インストールしたシステムをブートする</guimenu>
+     </term>
+     <listitem>
+      <para>
+       すでにインストールされているLinuxシステムのブートを試行します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>パーティションツールの起動</guimenu>
+     </term>
+     <listitem>
+      <para>
+       YaSTのパーティションのエキスパート設定ツールが起動します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>ファイルシステムの修復</guimenu>
+     </term>
+     <listitem>
+      <para>
+       インストール済みのシステムのファイルシステムを検査します。はじめに、検出された全パーティションの中から1つを選択するダイアログが表示され、検査対象を選択することができます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>失われたパーティションの復旧</guimenu><indexterm> <primary>失われたパーティションの復旧</primary></indexterm>
+     </term>
+     <listitem>
+      <para>
+       損傷したパーティションテーブルの再構築を試みることができます。はじめに、検出されたハードディスクのリストが表示され、対象を選択します。<guimenu>OK</guimenu>をクリックすると検証が開始されます。コンピュータの速度およびハードディスクのサイズと速度によっては、このプロセスにしばらく時間がかかることがあります。
+      </para>
+      <important>
+       <title><guimenu>パーティションテーブルの再構築</guimenu></title>
+       <para>
+        パーティションテーブルの再構築は、難しい処理です。YaSTでは、ハードディスクのデータセクターを解析することにより、失われたパーティションの認識が試みられます。認識が成功すると、失われたパーティションが再構築したパーティションテーブルに追加されます。ただし、これは予想可能なすべての事例で成功するわけではありません。
+       </para>
+      </important>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>システム設定のフロッピーへの保存</guimenu>
+     </term>
+     <listitem>
+      <para>
+       このオプションは、重要なシステムファイルをフロッピーディスクに保存します。それらのファイルの1つが損傷した場合は、ディスクから復元できます
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><guimenu>インストールされたソフトウェアの確認</guimenu>
+     </term>
+     <listitem>
+      <para>
+       パッケージデータベースの整合性と、最も重要なパッケージの可用性を検査します。このツールを使うと、損傷しているインストールパッケージを再インストールできます。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect4>
+ </sect3>
+ <sect3 id="sec.trouble.data.recover.rescue">
+  <title>レスキューシステムの使用</title><indexterm> <primary>レスキューシステム</primary></indexterm><indexterm><primary>システム</primary><secondary>レスキュー </secondary></indexterm>
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>には、レスキューシステムが含まれています。レスキューシステムは、RAMディスクにロードして、ルートファイルシステムとしてマウントできる小さなLinuxシステムで、これを利用して外部からLinuxパーティションにアクセスすることができます。レスキューシステムを使用して、システムの重要な部分を復元したり、適切な変更を行ったりできます。
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     任意の種類の設定ファイルを操作できます。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     ファイルシステムの欠陥をチェックして、自動修復プロセスを開始することができます。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     インストールされているシステムを、<quote>他のルート</quote>環境内からアクセスすることができます。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     ブートローダーの設定を確認、変更、および再インストールできます。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     正常にインストールされていないデバイスドライバや使用不能なカーネルを修復できます。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     partedコマンドを使って、パーティションサイズを変更できます。このツールの詳細については、GNU PartedのWebサイト(<ulink url="http://www.gnu.org/software/parted/parted.html"/>)を参照してください。
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   レスキューシステムは、さまざまなソースや場所からロードすることができます。一番簡単な方法は、オリジナルのインストールメディアからレスキューシステムをブートすることです。
+  </para>
+  <procedure><indexterm> <primary>レスキューシステム</primary> <secondary>メディアによる起動</secondary></indexterm>
+   <step performance="required">
+    <para>
+     インストールメディアをDVDドライブに挿入します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     システムを再起動します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     ブート画面で、<keycap>F4</keycap>を押し、<guimenu>DVD-ROM</guimenu>を選択します。次に、メインメニューから<guimenu>レスキューシステム</guimenu>を選択します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <literal>Rescue:</literal>プロンプトに「<literal>root</literal>」と入力します。パスワードは必要ありません。
+    </para>
+   </step>
+  </procedure>
+  <procedure id="proc.trouble.data.recover.rescue.network"><indexterm> <primary>レスキューシステム</primary><secondary>ネットワークソースからの起動</secondary> </indexterm>
+   <para>
+    ハードウェア設定にDVDドライブが含まれていない場合は、ネットワークソースからレスキューシステムをブートできます。次の例は、リモートブートの場合のシナリオです。DVDなど、他のブートメディアを使用する場合は、<filename>info</filename>ファイルを適宜変更し、通常のインストールと同様にブートします。
+   </para>
+   <step performance="required">
+    <para>
+     PXEブートセットアップの設定を入力し、<literal>install=<replaceable>protocol</replaceable>://<replaceable>instsource</replaceable></literal>行と<literal>rescue=1</literal>行を追加します。修復システムを起動する必要がある場合は、代わりに<literal>repair=1</literal>を使用します。通常のインストールと同様に、<replaceable>protocol</replaceable>はサポートする任意のネットワークプロトコル(NFS、HTTP、FTPなど)を表しています。また、<replaceable>instsource</replaceable>は、ネットワークインストールソースへのパスを表します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <xref linkend="sec.deployment.remoteinst.boot.wol"/>に説明したように、<quote>Wake on LAN</quote>を使用してシステムをブートします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <literal>Rescue:</literal>プロンプトに「<literal>root</literal>」と入力します。パスワードは必要ありません。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   レスキューシステムが起動したら、<keycombo><keycap function="alt"/><keycap>F1</keycap></keycombo>～<keycombo><keycap function="alt"/><keycap>F6</keycap></keycombo>を使って、仮想コンソールを使用することができます。
+  </para>
+  <para>
+   シェルおよび他の多くの便利なユーティリティ(マウントプログラムなど)は、<filename>/bin</filename>ディレクトリにあります。<filename>sbin</filename>ディレクトリには、 ファイルシステムを検討し、修復するための重要なファイルおよびネットワークユーティリティが入っています。このディレクトリには、最も重要なバイナリも入っています。たとえばステムメンテナンス用にはfdisk、mkfs、mkswap、mount、mount、init、およびshutdownがあり、ネットワークメンテナンス用にはifconfig、ip、route、およびnetstatがあります。<filename>/usr/bin</filename>ディレクトリには、vi editor、find、less、およびsshがあります。
+  </para>
+  <para>
+   システムメッセージを表示するには、<command>dmesg</command>コマンドを使用するか、または<filename>/var/log/messages</filename>ファイルを参照してください。
+  </para>
+  <sect4 id="sec.trouble.data.recover.rescue.file">
+   <title>環境設定ファイルの確認と修正</title>
+   <para>
+    レスキューシステムを使った環境設定情報の修正例として、環境設定ファイルが壊れたためシステムが正常にブートできなくなった場合を考えてみましょう。このような場合は、レスキューシステムを使って設定ファイルを修復します。
+   </para>
+   <procedure>
+    <para>
+     環境設定ファイルを修正するには、以下の手順に従ってください。
+    </para>
+    <step performance="required">
+     <para>
+      前述のいずれかの方法を使って、レスキューシステムを起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      /dev/sda6<filename>下にあるルートファイルシステムをレスキューシステムにマウントするには、以下のコマンドを使用します。</filename>
+     </para>
+<screen>mount /dev/sda6 /mnt</screen>
+     <para>
+      システム中のすべてのディレクトリが、<filename>/mnt</filename>下に配置されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      マウントしたルートファイルシステムのディレクトリに移動します。
+     </para>
+<screen>cd /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      問題の発生している設定ファイルを、viエディタで開きます。次に、設定内容を修正して、ファイルを保存します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      レスキューシステムから、ルートファイルシステムをアンマウントします。
+     </para>
+<screen>umount /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      コンピュータを再起動します。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.filesystem">
+   <title>ファイルシステムの修復と確認</title><indexterm> <primary>ファイルシステム</primary> <secondary>修復</secondary> </indexterm>
+   <para>
+    一般的に、稼動システムではファイルシステムを修復できません。重大な問題が見つかった場合、ルートファイルシステムをブートできなくなることさえあります。この場合、システムブートは<quote>カーネルパニック</quote>で終了します。この場合、外部からシステムを修復するしか方法はありません。<phrase os="sles;sled">このような作業には、YaSTシステム修復モジュールを使用することを強くお勧めします(詳細は<xref linkend="sec.trouble.data.recover.yast"/>を参照)。ただし、手動でファイルシステムを確認、修復する必要がある場合は、レスキューシステムを起動します。</phrase>レスキューシステムには、<literal>btrfs</literal><literal>、ext2</literal>、<literal>ext3</literal>、<literal>ext4</literal>、<literal>reiserfs</literal>、<literal>xfs</literal>、<literal>dosfs</literal>、および<literal>vfat</literal>の各ファイルシステムを確認し、修復するユーティリティが用意されています。
+   </para>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.access">
+   <title>インストール済みシステムへのアクセス</title>
+   <para>
+    レスキューシステムからインストール済みのシステムにアクセスする必要がある場合は、それを<emphasis>change root</emphasis>(ルート変更)環境で行う必要があります。これは、たとえば、ブートローダの設定を変更したり、ハードウェア設定ユーティリティを実行するために行います。
+   </para>
+   <para>
+    インストール済みシステムに基づいたchange root(ルート変更)環境を設定するには、以下の手順に従ってください。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      まず、インストールしたシステムからのルートパーティションとデバイスファイルシステムをマウントします(デバイス名を現在の設定に変更します)。
+     </para>
+<screen>mount /dev/sda6 /mnt
+mount --bind /dev /mnt/dev</screen>
+    </step>
+    <step performance="required">
+     <para>
+      新しい環境に<quote>change root</quote>(ルート変更)します。
+     </para>
+<screen>chroot /mnt</screen>
+    </step>
+    <step performance="required">
+     <para>
+      <filename>/proc</filename>および<filename>/sys</filename>をマウントします。
+     </para>
+<screen>mount /proc
+mount /sys</screen>
+    </step>
+    <step performance="required">
+     <para>
+      最後に、インストール済みシステムから、残りのパーティションをマウントします。
+     </para>
+<screen>mount -a</screen>
+    </step>
+    <step performance="required">
+     <para>
+      これで、インストール済みシステムにアクセスできるようになります。システムを再起動する前に、<command>umount <option>-a</option></command>を使ってパーティションをアンマウントし、<command>exit</command>コマンドを実行して<quote>change root</quote>(ルート変更)環境を終了してください。
+     </para>
+    </step>
+   </procedure>
+   <warning>
+    <title>制限</title>
+    <para>
+     インストール済みシステムのファイルやアプリケーションにフルアクセスできますが、いくつかの制限事項もあります。実行中のカーネルは、レスキューシステムでブートされたカーネルであり、ルート変更環境でブートされたカーネルではありません。このカーネルは、必要最低限のハードウェアしかサポートしておらず、カーネルのバージョンが完全に一致しない限り、インストール済みシステムからカーネルモジュールを追加することはできません。常に、現在実行中の(レスキュー)カーネルのバージョンを<command>uname -r</command>でチェックし、次に、一致するサブディレクトリがchange root環境の <filename>/lib/modules</filename>ディレクトリに存在するかどうか調べてください。存在する場合は、インストールされたモジュールを使用できます。そうでない場合は、USBやスティックなど、他のメディアにある正しいバージョンを提供する必要があります。多くの場合、レスキューカーネルのバージョンは、インストールされているバージョンと異なります。その場合は、たとえば、サウンドカードなどに簡単にアクセスすることはできません。また、GUIも利用できません。
+    </para>
+    <para>
+     また、<keycombo><keycap function="alt"/><keycap>F1</keycap></keycombo>から<keycombo><keycap function="alt"/><keycap>F6</keycap></keycombo>を使ってコンソールを切り替えると、<quote>change root</quote>(ルート変更)環境は終了することに注意してください。
+    </para>
+   </warning>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.grub">
+   <title>ブートローダの変更と再インストール</title>
+   <para>
+    場合によっては、ブートローダが壊れてしまい、システムをブートできなくなることもあります。たとえば、ブートローダが正常に機能しないと、起動ルーチンは物理ドライブとそのLinuxファイルシステム中の場所とを関連付けられず、正常な処理を行うことができません。
+   </para>
+   <para>
+    ブートロードの設定を確認し、ブートロードを再インストールするには、以下の手順に従ってください。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <xref linkend="sec.trouble.data.recover.rescue.access"/>の説明に従って、インストール済みシステムにアクセスするために必要な作業を行います。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      次のファイルが<xref linkend="cha.grub"/>に示されているGRUBの設定ルールに従って正しく設定されているかどうかチェックし、必要に応じて修正します。
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <filename>/etc/grub.conf</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/boot/grub/device.map</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/boot/grub/menu.lst</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/etc/sysconfig/bootloader</filename>
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      以下のコマンドシーケンスを使って、ブートローダを再インストールします。
+     </para>
+<screen>grub --batch &lt; /etc/grub.conf</screen>
+    </step>
+    <step performance="required">
+     <para>
+      パーティションをアンマウントして、<quote/>「change root」 (ルート変更)環境からログアウトします。次に、システムを再起動します。
+     </para>
+<screen>umount -a
+exit
+reboot</screen>
+    </step>
+   </procedure>
+  </sect4>
+  <sect4 id="sec.trouble.data.recover.rescue.dud">
+   <title>カーネルインストールの修復</title>
+   <para>
+    カーネルアップデートによって、システムの操作に影響する可能性のある新しいバグが導入される場合があります。たとえば、一部のシステムハードウェアのドライバに障害が発生し、そのハードウェアのアクセスや使用ができなくなることがあります。その場合は、機能した最後のカーネルに戻すか(システムで使用可能な場合)、インストールメディアから元のカーネルをインストールします。
+   </para>
+   <tip>
+    <title>更新後も最後のカーネルを保持する方法</title>
+    <para>
+     正常でないカーネルアップデート後にブートできなくなることを防ぐには、カーネルの複数バージョン機能を使用して、更新後にどのカーネルを保持するか<systemitem>libzypp</systemitem>に指示します。
+    </para>
+    <para>
+     たとえば、最後の2つのカーネルと現在実行中のカーネルを常に保持するには、次のコードを、
+    </para>
+<screen>multiversion.kernels = latest,latest-1,running</screen>
+    <para>
+     <filename>/etc/zypp/zypp.conf</filename>ファイルに追加します。
+    </para>
+   </tip>
+   <para>
+    また、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>でサポートされていないデバイスのドライバが破損し、その再インストールまたはアップデートが必要な場合があります。たとえば、ハードウェアベンダが、ハードウェアRAIDコントローラなどの特定のデバイスを使用している場合は、オペレーティングシステムによって認識されるバイナリドライバが必要です。ベンダは、通常、要求されたドライバの修正または更新バージョンを含むドライバアップデートディスクをリリースします。
+   </para>
+   <para>
+    両方のケースで、レスキューモードでインストールされているシステムにアクセスし、カーネル関係の問題を修正する必要があります。さもないと、システムが正しくブートしないことがあります。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>メディアからのブート
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      正常でないカーネルアップデート後に修復を行っている場合、次のステップはスキップしてください。DUD(ドライバアップデートディスク)を使用する必要がある場合は、<keycap>F6</keycap>を押して、ブートメニューの表示後にドライバアップデートをロードし、 ドライバアップデートへのパスまたはURLを選択して、<guimenu>はい</guimenu>をクリックして確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブートメニューから<guimenu>レスキューシステム</guimenu>を選択し、<keycap>Enter</keycap>を押します。DUDの使用を選択した場合は、ドライバアップデートの保存先を指定するように要求されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <literal>Rescue:</literal>プロンプトに「<literal>root</literal>」と入力します。パスワードは必要ありません。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ターゲットシステムを手動でマウントし、新しい環境に<quote>change root</quote>(ルート変更)します。詳細については、<xref linkend="sec.trouble.data.recover.rescue.access"/>を参照してください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      DUDを使用する場合は、障害のあるデバイスドライバパッケージのインストール/再インストール/更新を行います。インストールされたカーネルバージョンがインストールするドライバのバージョンと正確に一致することを常に確認してください。
+     </para>
+     <para>
+      障害のあるカーネルアップデートのインストールを修復する場合は、次の手順で、インストールメディアから元のカーネルをインストールできます。
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        DVDデバイスを<command>hwinfo --cdrom</command>で識別し、識別したデバイスを<command>mount /dev/sr0 /mnt</command>でマウントします。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        DVD上のカーネルファイルが保存されているディレクトリにナビゲートします(たとえば、 <command>cd /mnt/suse/x86_64/</command>)。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        必要なパッケージ<systemitem>kernel-*</systemitem>、<systemitem>kernel-*-base</systemitem>、および<systemitem>kernel-*-extra</systemitem>のカスタマイズしたバージョンを、<command>rpm -i</command>コマンドでインストールします。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        インストールが完了したら、新しくインストールしたカーネルに関する新しいメニューエントリがブートローダの設定ファイルに追加されたかどうかチェックします(<systemitem>grub</systemitem>の場合は<filename>/boot/grub/menu.lst</filename>)。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      設定ファイルを更新し、必要に応じてブートローダを再初期化します。詳細については、<xref linkend="sec.trouble.data.recover.rescue.grub"/>を参照してください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      システムドライブからブート可能なメディアをすべて除去し、再起動します。
+     </para>
+    </step>
+   </procedure>
+  </sect4>
+ </sect3>
+</sect2>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_eserver_ip5_prep.xml" id="sec.prep.eserver">
+ <title>在 IBM eServer p5、System p 和 OpenPower 型号上准备安装</title><indexterm> <primary>准备</primary><secondary>eServer</secondary> </indexterm>
+ <para>
+  本节介绍在 IBM eServer p5 系统上安装 SUSE® Linux Enterprise Server 之前的准备步骤。本节说明了从内置 CD-ROM 驱动器和通过网络来进行安装。
+ </para>
+ <para>
+  本节假设您已设置 HMC 并已将其连接到系统。可在<quote>使用设置向导配置 HMC</quote>中找到有关使用向导配置 HMC 的更多信息：<ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphai_p5/confighmcgs.htm?"/>
+ </para>
+ <sect3 id="sec.prep.eserver.features6x0">
+
+  <title>IBM eServer p5 系统的先进功能</title>
+  <para>
+   IBM eServer p5 系统允许对系统分区。这使得可在一台计算机上同时操作多达 254 个操作系统。这些操作系统安装在 <emphasis>LPAR</emphasis>（逻辑分区）中。一个或多个此类分区可包含一个 SUSE Linux Enterprise Server 环境。
+  </para>
+  <para>
+   要对 SUSE Linux Enterprise Server 准备 LPAR，请首先通过 <emphasis>HMC</emphasis> 配置系统。请参考 IBM 文档以获取详细信息：<ulink url="http://publib.boulder.ibm.com/infocenter/systems/scope/hw/topic/iphbi/iphbikickoff.htm"/>
+  </para>
+
+
+
+
+
+
+
+
+
+ </sect3>
+ <sect3 id="sec.prep.eserver.diskspace">
+  <title>硬盘空间</title>
+  <para>
+   请确保有足够的硬盘空间来安装 SUSE Linux Enterprise Server。标准系统需要至少 4G 可用硬盘空间。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.netsource">
+
+  <title>将安装设备分配到 LPAR</title>
+  
+  <para>
+   SUSE Linux Enterprise Server 可以从 CD-ROM 或 DVD 驱动器安装，或使用网络安装源安装。提供 CD-ROM、DVD 驱动器或网络设备以便 LPAR 安装。
+  </para>
+  <figure id="fig.ip5.hmc.start.menu">
+   <title>HMC：服务器管理 — 属性</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_start_menu.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  <procedure id="ip5.hmc.assign.cdrom">
+   <title>将 CD-ROM 或 DVD 驱动器分配到 LPAR</title>
+   <step performance="required">
+    <para>
+     打开 HMC 应用程序并转到<menuchoice> <guimenu>服务器和分区</guimenu> <guimenu>服务器管理</guimenu></menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     从可用的服务器，展开要安装的服务器和分区。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     右键单击要用于安装的配置文件，然后选择<guimenu>属性</guimenu>（请参见<xref linkend="fig.ip5.hmc.start.menu"/>）。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>逻辑分区配置文件属性</guimenu>对话框中，选择<guimenu>物理 I/O</guimenu> 选项卡。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     
+     
+     
+     然后，从<guimenu>受管系统 I/O 设备</guimenu>，从安装分区的总线中选择<guimenu>其他大容量储存控制器</guimenu>。要向分区指派此 DVD 驱动器，请单击<guimenu>按需添加</guimenu>。
+    </para>
+   </step>
+  </procedure>
+  <para>
+   结果应类似于<xref linkend="fig.ip5.hmc.assign.cdrom"/>。
+  </para>
+  <figure id="fig.ip5.hmc.assign.cdrom">
+   <title>HMC：受管系统 I/O 设备</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata width="75%" fileref="ip5_hmc_assign_cdrom.png" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+  
+  <para>
+   将 SUSE Linux Enterprise Server CD1 或 DVD1 放入驱动器中。
+  </para>
+
+  <procedure>
+   <title>将网络设备分配到 LPAR</title>
+   <step performance="required">
+    <para>
+     打开 HMC 应用程序并转到<menuchoice> <guimenu>服务器和分区</guimenu> <guimenu>服务器管理</guimenu></menuchoice>。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     从可用的服务器，打开要安装的服务器和分区。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     右键单击要用于安装的配置文件，然后选择<guimenu>属性</guimenu>（请参见<xref linkend="fig.ip5.hmc.start.menu"/>）。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     在<guimenu>逻辑分区配置文件属性</guimenu>对话框中，选择<guimenu>物理 I/O</guimenu> 选项卡。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     从<guimenu>受管系统 I/O 设备</guimenu>，从安装分区的总线选择 <guimenu>PCI 10/100/1000Mbps 以太网 UTP 2-port</guimenu>。然后单击<guimenu>按需添加</guimenu>。
+    </para>
+    <para>
+     如果计划使用虚拟以太网适配器执行安装，则请参见 IBM 文档。
+     
+     
+     
+    </para>
+   </step>
+  </procedure>
+  
+  <para>
+
+   如果 SUSE Linux Enterprise Server 应安装在大量分区上，请创建一个网络安装源。这可免去在安装期间更换 CD。相同源还可用于同时安装各种系统。<xref linkend="sec.deployment.remoteinst.instserver.sles9"/>中介绍了网络安装源的配置。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.startinstall">
+  <title>开始安装</title>
+  <para>
+   要开始安装，请重引导系统。鼠标右键单击配置文件名称，在以下对话框中选择<guimenu>激活</guimenu>并按<guimenu>确定</guimenu>。
+  </para>
+  
+  <para>
+   使用屏幕控制台或按照 IBM 文档来连接到串行控制台。可简单地通过在激活分区时打开 VTerm 来启动串行控制台。要执行此操作，请在<guimenu>激活逻辑分区</guimenu>对话框中激活<guimenu>打开终端窗口或控制台会话</guimenu>。
+  </para>
+  <para>
+   在系统引导时的系统检查期间，通过按 <keycap>F1</keycap> 或按 <keycap>1</keycap>（如果使用串行控制台或虚拟控制台）来进入系统固件。
+
+  </para>
+
+<screen>
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM IBM
+
+       1 = SMS Menu                          5 = Default Boot List
+       8 = Open Firmware Prompt              6 = Stored Boot List
+
+
+     memory      keyboard     network     scsi     speaker 
+</screen>
+
+  <para>
+   检查 SCSI 设备时，按 <keycap>F1</keycap> 或 <keycap>1</keycap>。选择 <guimenu>5. 选择引导选项</guimenu>以进入引导选项对话框：
+
+  </para>
+
+
+<screen>
+Version SF220_004
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+---------------------------------------------------------------------
+Main Menu
+ 1.  Select Language
+ 2.  Setup Remote IPL (Initial Program Load)
+ 3.  Change SCSI Settings
+ 4.  Select Console
+ 5.  Select Boot Options
+
+
+---------------------------------------------------------------------
+Navigation Keys:
+
+                                  X = eXit System Management Services
+---------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation
+                                                                Key:5
+</screen>
+
+  <para>
+   选择 <guimenu>1. 选择安装/引导设备</guimenu>以设置<emphasis>安装设备</emphasis>。转到 <guimenu>7. 列出所有设备</guimenu>以查看可用设备的列表：
+
+  </para>
+
+<screen>
+Version SF220_011
+SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Device
+Device  Current  Device
+Number  Position  Name
+ 1.        -      Virtual Ethernet 
+                  ( loc=U9111.520.10D3CCC-V1-C3-T1 )
+ 2.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T5 )
+ 3.        -      Ethernet 
+                  ( loc=U787A.001.DNZ00XG-P1-T6 )
+ 4.        -      IDE CD-ROM 
+                  ( loc=U787A.001.DNZ00XG-P4-D3 )
+ 5.        1      SCSI 73407 MB Harddisk
+                  ( loc=U787A.001.DNZ00XG-P1-T10-L8-L0 )
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+ </sect3>
+
+ <sect3 id="sec.prep.eserver.boot.cd">
+  <title>从 CD-ROM 驱动器引导</title>
+  <para>
+   选择 CD-ROM 驱动器（在此示例中为 <literal>4</literal>）：
+
+  </para>
+  
+
+<screen>SMS 1.5 (c) Copyright IBM Corp. 2000,2003 All rights reserved.
+--------------------------------------------------------------------------
+Select Task
+
+IDE CD-ROM 
+    ( loc=U787A.001.DNZ00XG-P4-D3 )
+
+ 1.  Information
+ 2.  Normal Mode Boot
+ 3.  Service Mode Boot
+
+
+
+
+
+--------------------------------------------------------------------------
+Navigation keys:
+M = return to Main Menu
+ESC key = return to previous screen    X = eXit System Management Services
+--------------------------------------------------------------------------
+Type the number of the menu item and press Enter or select Navigation Key:
+</screen>
+
+  <para>
+   选择 <guimenu>2. 常规模式引导</guimenu>以从此设备安装。在下一个屏幕中，按 <guimenu>1. 是</guimenu>以确定并退出<guimenu>系统管理服务</guimenu>，然后从设备引导。
+  </para>
+  <para>
+   系统将从 CD-ROM 驱动器读取并且 yaboot 实用程序将启动：
+
+  </para>
+  
+
+
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+
+  <para>
+   输入 <guimenu>install</guimenu> 并按 <keycap>Enter</keycap> 键。
+  </para>
+  <para>
+   要从网络安装源读取安装数据而非继续从 CD-ROM 进行安装（请参见<xref linkend="sec.prep.eserver.netsource"/>），则将选项<option>手动</option>附加到内核名称 (<literal>install</literal>)。
+  </para>
+  <para>
+   对于通过 VNC 进行安装，则向内核名称 (<literal>install</literal>) 附加参数 <option>vnc=1</option> 和 <option>vncpassword=<replaceable>password</replaceable></option>。可在<xref linkend="sec.deployment.remoteinst.scenario.vncstat"/>中阅读有关 VNC 的更多信息。
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.eserver.boot.net">
+  <title>从网络源引导</title>
+  <para>
+   选择可访问安装源（在此示例中为 <literal>2</literal>）的以太网设备。
+  </para>
+ </sect3>
+ <sect3>
+  <title>其他步骤</title>
+  <para>
+   请如<xref linkend="cha.inst"/>中所述继续操作以开始通过 linuxrc 和 YaST 安装软件。
+  </para>
+ </sect3>
+</sect2>

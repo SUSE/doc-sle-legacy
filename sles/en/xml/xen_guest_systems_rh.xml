@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+[
+  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
+  <!ENTITY % entities SYSTEM "entity-decl.ent">
+  %entities;
+]>
+<!-- also see doccomments
+ 7224 -> which versions of RH can be virtualized para/full
+ 7225 -> missing RH documentation.
+ 7330 -> kernel not supported on RH (paravirtualized)
+ 7472 -> installing RH5 
+ 8070 -> supported systems
+ 8362 -> missing RH documentation
+ -->
+<sect1 id="sec.xen.guests.rh">
+ <title>Red Hat Linux Virtual Machines</title>
+
+ <para>
+  On &vmhost; computers running &sle; &productnumber;, Red Hat Enterprise
+  Linux systems are only supported when running fully virtualized and with
+  the latest patch level.
+ </para>
+
+ <para>
+  To install a Red Hat virtual machine, proceed as follows:
+ </para>
+
+ <procedure>
+  <step>
+   <para>
+    Start
+    <menuchoice><guimenu>&yast;</guimenu><guimenu>Virtualization</guimenu><guimenu>Create
+    Virtual machine</guimenu></menuchoice>.
+   </para>
+  </step>
+  <step>
+   <para>
+    Click <guimenu>Forward</guimenu>. Activate <guimenu>I need to install an
+    operating system</guimenu> and click <guimenu>Forward</guimenu>.
+   </para>
+  </step>
+  <step>
+   <para>
+    Select <guimenu>RedHat</guimenu> as operating system and choose the
+    desired version from the list. Click <guimenu>Forward</guimenu>.
+   </para>
+  </step>
+  <step>
+   <para>
+    Click on the respective items of the installation settings to change the
+    configuration.
+   </para>
+  </step>
+  <step>
+   <para>
+    Click on <guimenu>Operating System Installation</guimenu>.
+   </para>
+  </step>
+  <step>
+   <para>
+    Select <guimenu>Virtual Disk</guimenu> and click <guimenu>Add</guimenu>.
+   </para>
+  </step>
+  <step>
+   <para>
+    Click <guimenu>Browse</guimenu> and select the path to either the
+    physical installation DVD or to the iso image of the installation DVD.
+    Click <guimenu>Ok</guimenu>.
+   </para>
+  </step>
+  <step>
+   <para>
+    Click <guimenu>Apply</guimenu>.
+   </para>
+  </step>
+  <step>
+   <para>
+    The actual installation is started by clicking on <guimenu>Ok</guimenu>
+    in the installation summary.
+   </para>
+  </step>
+ </procedure>
+
+ <sect2>
+  <title>Installing the Virtual Machine Driver Pack</title>
+  <para>
+   The virtual machine driver pack can only be installed after the basic
+   installation has finished. To install the driver pack, proceed as
+   follows:
+  </para>
+  <procedure>
+   <step>
+    <para>
+     Add the Driver Pack Add-On CD to the &vmhost; as described in
+     <xref
+      linkend="sec.xen.drivers.vmdp"/>.
+    </para>
+   </step>
+   <step>
+    <para>
+     Install the package
+     <systemitem>vmdp-xen-&lt;operating_system&gt;</systemitem> with &yast;.
+     The iso image of the driver pack is copied to
+     <filename>/opt/novell/vm-driver-pack/xen</filename>.
+    </para>
+   </step>
+   <step>
+    <para>
+     Add the iso image as CD drive to your &vmguest;as described in
+     <xref
+      linkend="sec.xen.config.vcd"/>.
+    </para>
+   </step>
+   <step>
+    <para>
+     Mount the virtual machine driver pack CD on the Red Hat &vmguest;.
+    </para>
+   </step>
+   <step>
+    <para>
+     Install the virtual machine driver pack with the command:
+    </para>
+<screen>rpm -Uhv --nodeps kmod-vmdp-<replaceable>version</replaceable></screen>
+    <para>
+     Take care to use the correct version of the virtual machine driver pack
+     for your system.
+    </para>
+   </step>
+   <step>
+    <para>
+     Reboot the &vmguest; system.
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+</sect1>

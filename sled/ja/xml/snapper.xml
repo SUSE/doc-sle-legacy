@@ -1,0 +1,951 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="snapper.xml" id="cha.snapper">
+ <title>Snapperによるスナップショットとロールバック</title>
+ <abstract>
+  <para>
+   Linuxでファイルシステムのスナップショットを作成し、ロールバックできるようにすることは、過去に要望の多かった機能です。Snapperを、<literal>Btrfs</literal>ファイルシステムまたはシンプロビジョンのLVMボリュームと併用することによって対応できます。
+  </para>
+
+  <para>
+   <literal>Btrfs</literal>は、Linux用の新しい書き込み時コピー方式のファイルシステムで、サブボリューム(各物理パーティション内の1つまたは複数の個別にマウント可能なファイルシステム)のファイルシステムスナップショット(特定時点におけるサブボリュームの状態のコピー)をサポートします。Snapperを使用してこれらのスナップショットを管理できます。Snapperには、コマンドラインおよびYaSTインタフェースがあります。
+  </para>
+
+  <para>
+   デフォルトで、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>のSnapperおよび<literal>Btrfs</literal>は、YaSTおよびzypperによるシステム変更を<quote>元に戻すツール</quote>として設定されます。YaSTモジュールまたはzypperの実行前と実行後にスナップショットが作成されます。Snapperを使用して、2つのスナップショットを比較し、その変更を元に戻すことができます。また、このツールは、システムのサブボリュームに対して毎時のスナップショットを作成することにより、システムのバックアップとしても機能します。
+  </para>
+ </abstract>
+ <sect1 id="sec.snapper.requirements">
+  <title>要件</title>
+
+  <para>
+   <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>では<literal>Btrfs</literal>がスナップショットに対応した唯一のファイルシステムであるため、<quote>スナップショット</quote>を利用したいすべてのパーティションまたはサブボリュームで、このファイルシステムが必要です。
+  </para>
+
+  <sect2 id="sec.snapper.requires.diskspace">
+   <title>スナップショットとディスク容量</title>
+   <para>
+    スナップショットを作成すると、スナップショットとスナップショット元のファイルは、 いずれもファイルシステム内の同じブロックを指します。そのため、最初は、スナップショットが余分にディスク容量を占めることはありません。元のファイルシステムのデータが変更されると、変更されたデータブロックがコピーされ、古いデータブロックはスナップショットのように保持されます。このため、スナップショットは、変更されたデータと同じ容量を占めます。こうして、時間が経過するにつれて、スナップショットの領域は大きくなっていきます。その結果、スナップショットを含む<literal>Btrfs</literal>ファイルシステムからファイルを削除しても、ディスクの空き容量が<emphasis>増えない</emphasis>ことがあります。
+   </para>
+   <note>
+    <title>スナップショットの場所</title>
+    <para>
+     スナップショットは常に、<quote>スナップショット作成元</quote>と同じパーティションまたはサブボリュームに保存されます。別のパーティションまたはサブボリュームにスナップショットを保存することはできません。
+    </para>
+   </note>
+   <para>
+    その結果、スナップショットを含むパーティションは、<quote>通常の</quote>パーティションよりも大きくする必要があります。具体的な容量は、保持するスナップショット数やデータの変更頻度によって異なります。一般的には、通常のファイルシステムの2倍程度を検討してください。
+   </para>
+   <tip>
+    <title>容量を空ける/ディスクの使用率</title>
+    <para>
+     スナップショットを含む<literal>Btrfs</literal>パーティションの容量を空けるには、ファイルではなく、不要なスナップショットを削除する必要があります。古いスナップショットは、最近のスナップショットよりも多くの領域を使用します。
+    </para>
+    <para>
+     <command>Btrfs</command>ファイルシステムでは<literal>df</literal>が正しいディスクの使用率を表示しないため、コマンド<command>btrfs filesystem df <replaceable>MOUNT_POINT</replaceable></command>を使用する必要があります。現時点では、<literal>Btrfs</literal>ツールで、スナップショットが使用するディスク容量を表示できません。
+    </para>
+    <para>
+     あるサービスパックから別のサービスパックにアップグレードすると、多くのデータが変更される(パッケージのアップデート)ので、スナップショットにより、システムのサブボリュームで多くのディスク容量が使用されます。これらのスナップショットが不要になった場合は、手動で削除することをお勧めします。
+    </para>
+   </tip>
+   <para>
+    Snapperを使用して、ext3またはXFSでフォーマットされたシンプロビジョンのLVMボリュームでもスナップショットを作成および管理できます(<xref linkend="sec.snapper.lvm"/>を参照)。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.snapper.auto">
+  <title>Snapperによるシステム変更の取り消し</title>
+
+  <para>
+   <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>のSnapperは、<command>zypper</command>やYaSTで行った変更を取り消すことができるツールとしてあらかじめ設定されています。このために、Snapperは、<command>zypper</command>およびYaSTの実行前後にスナップショットのペアを作成します。また、Snapperを使用して、誤って削除または変更したシステムファイルを復元することもできます。このために、毎時のバックアップが作成されます。
+  </para>
+
+  <para>
+   上記の自動スナップショットは、デフォルトでルートパーティションとそのサブボリュームに対して設定されます。カスタム設定を作成すれば、<filename>/home</filename>など、他のパーティションに対してスナップショット機能を利用できます。
+  </para>
+
+  <sect2 id="sec.snapper.yast">
+   <title>YaSTおよびZypperによる変更の取り消し</title>
+   <para>
+    インストール時にルートパーティションを<literal>Btrfs</literal>で設定すると、Snapper　(YaSTまたはZypperによる変更のロールバックがあらかじめ設定されている)が自動的にインストールされます。YaSTモジュールまたはZypperトランザクションを開始するたびに、2つのスナップショットが作成されます。モジュール開始前のファイルシステムの状態をキャプチャした「事前スナップショット」と、モジュール完了後の状態をキャプチャした「事後スナップショット」です。<quote/><quote/>
+   </para>
+   <para>
+    YaSTのSnapperモジュールまたは<command>snapper</command>コマンドラインツールを使用して、<quote>事前スナップショット</quote>からファイルを復元し、YaST/zypperによる変更を元に戻すことができます。また、2つのスナップショットを比較して、どのファイルが変更されているか調べることができます。2つのバージョンのファイルの違いを表示することもできます(diff)。
+   </para>
+   <para>
+    Linuxはマルチタスクシステムなので、事前スナップショットと事後スナップショットの間に、YaSTまたはZypper以外のプロセスがデータを変更してしまう場合があります。この場合、事前スナップショットに戻してしまうと、他のプロセスによる変更も取り消されてしまいます。多くの場合、これは望ましくありません。このため、ロールバックを開始する前に、2つのスナップショットの間の変更点をよく確認してください。他のプロセスによる変更を維持したい場合は、ロールバックするファイルを選択してください。
+   </para>
+   <important>
+    <title>制限</title>
+    <para>
+     Snapperのロールバック機能を使用する前に、Snapperの制限について理解しておいてください。詳細については、<xref linkend="sec.snapper.limits"/>を参照してください。
+    </para>
+   </important>
+   <note>
+    <title>スナップショットの保存期間</title>
+    <para>
+     デフォルトで、YaSTおよびZypperのスナップショットは、新しいものから100個が保持されます。この数を超えると、もっとも古いスナップショットが削除されます。
+    </para>
+   </note>
+   <procedure id="proc.snapper.yast.yast">
+    <title>YaSTの<guimenu>Snapper</guimenu>モジュールによる変更の取り消し</title>
+    <step performance="required">
+     <para>
+      YaSTの<guimenu>その他</guimenu>セクションにある<guimenu>Snapper</guimenu>モジュールを起動するか、「<command>yast2 snapper</command>」と入力します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>現在の設定</guimenu>が<guimenu>root</guimenu>になっていることを確認します。 独自のSnapper設定を手動で追加していない限り、常にそのようになっています。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      リストから事前スナップショットと事後スナップショットのペアを選択します。YaSTのスナップショットペアもZypperのスナップショットペアも、種類は<guimenu>事前および事後</guimenu>です。YaSTのスナップショットの場合は<guimenu>説明</guimenu>に「<literal>yast<replaceable>モジュール名</replaceable></literal>」と表示され、Zypperのスナップショットの場合は「<literal>zypp(zypper)</literal>」と表示されます。
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="snapper_yast2_list.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="snapper_yast2_list.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>変更点の表示</guimenu>をクリックすると、2つのスナップショット間のファイルの差異がリスト表示されます。下の図は、ユーザ<systemitem class="username">tester</systemitem>を追加した後に変更されたファイルのリストです。
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="snapper_yast2_changes.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="snapper_yast2_changes.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+    </step>
+    <step performance="required">
+     <para>
+      ファイルのリストを確認します。事前と事後のファイル間の「<quote>差異</quote>」を表示するには、リストからファイルを選択します。下の図は、ユーザ<filename>tester</filename>を追加した後の<systemitem class="username">/etc/passwd</systemitem>の変更を示しています。
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="snapper_yast2_diff.png" width="65%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="snapper_yast2_diff.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+    </step>
+    <step performance="required">
+     <para>
+      ファイルのセットを復元するには、該当するチェックボックスをオンにして、ファイルまたはディレクトリを選択します。<guimenu>選択したものを復元</guimenu>をクリックし、<guimenu>はい</guimenu>をクリックして操作を確認します。
+     </para>
+     <informalfigure>
+      <mediaobject>
+       <imageobject role="fo">
+        <imagedata fileref="snapper_yast2_restore.png" width="75%" format="PNG"/>
+       </imageobject>
+       <imageobject role="html">
+        <imagedata fileref="snapper_yast2_restore.png" width="75%" format="PNG"/>
+       </imageobject>
+      </mediaobject>
+     </informalfigure>
+     <para>
+      単一のファイルを復元する場合は、ファイル名をクリックして差分を表示します。<guimenu>最初から復元する</guimenu>をクリックし、<guimenu>はい</guimenu>をクリックして操作を確認します。
+     </para>
+    </step>
+   </procedure>
+   <procedure id="proc.snapper.yast.cmdline">
+    <title><command>snapper</command>コマンドによる変更の取り消し</title>
+    <step performance="required">
+     <para>
+      <command>snapper list <option>-t pre-post</option></command>を実行すると、YaSTおよびZypperのスナップショットリストが表示されます。YaSTのスナップショットの場合は<guimenu>説明</guimenu>に「<literal>yast<replaceable>モジュール名</replaceable></literal>」と表示され、Zypperのスナップショットの場合は「<literal>zypp(zypper)</literal>」と表示されます。
+     </para>
+<screen><?dbsuse-fo font-size="0.60em"?>
+
+~ # snapper list -t pre-post
+     Pre # | Post # | Pre Date                 | Post Date                | Description
+     ------+--------+--------------------------+--------------------------+----------------------+
+     4     | 5      | Tue Jan 10 14:39:14 2012 | Tue Jan 10 14:39:33 2012 | yast system_settings
+     65    | 66     | Thu Jan 12 17:18:10 2012 | Thu Jan 12 17:18:23 2012 | zypp(zypper)
+     68    | 69     | Thu Jan 12 17:25:46 2012 | Thu Jan 12 17:27:09 2012 | zypp(zypper)
+     73    | 74     | Thu Jan 12 17:32:55 2012 | Thu Jan 12 17:33:13 2012 | yast system_settings
+     75    | 76     | Thu Jan 12 17:33:56 2012 | Thu Jan 12 17:34:42 2012 | yast users
+     77    | 92     | Thu Jan 12 17:38:36 2012 | Thu Jan 12 23:13:13 2012 | yast snapper
+     83    | 84     | Thu Jan 12 22:10:33 2012 | Thu Jan 12 22:10:39 2012 | zypp(zypper)
+     85    | 86     | Thu Jan 12 22:16:58 2012 | Thu Jan 12 22:17:09 2012 | zypp(zypper)
+     88    | 89     | Thu Jan 12 23:10:42 2012 | Thu Jan 12 23:10:46 2012 | zypp(zypper)
+     90    | 91     | Thu Jan 12 23:11:40 2012 | Thu Jan 12 23:11:42 2012 | zypp(zypper)
+     108   | 109    | Fri Jan 13 13:01:06 2012 | Fri Jan 13 13:01:10 2012 | zypp(zypper)
+     </screen>
+    </step>
+    <step performance="required">
+     <para>
+      スナップショットのペア間で変更されたファイルのリストを取得するには、以下を実行します。<command>snapper status <replaceable>PRE</replaceable><replaceable>POST</replaceable></command>. 内容が変更されたファイルには<guimenu>c</guimenu>のマーク、追加されたファイルには<guimenu>+</guimenu>のマーク、削除されたファイルには<guimenu>-</guimenu>のマークが付いています。 下の例は、パッケージ<systemitem class="resource">ncftp</systemitem>のインストール前後のスナップショットペアです。
+     </para>
+<screen>~ # snapper status 108..109
+     +... /usr/bin/ncftp
+     +... /usr/bin/ncftpbatch
+     +... /usr/bin/ncftpget
+     +... /usr/bin/ncftpls
+     [...]
+     +... /usr/share/man/man1/ncftpspooler.1.gz
+     c... /var/cache/zypp/solv/@System/cookie
+     c... /var/cache/zypp/solv/@System/solv
+     c... /var/lib/rpm/Basenames
+     c... /var/lib/rpm/Dirnames
+     c... /var/lib/rpm/Filemd5s
+     c... /var/lib/rpm/Group
+     c... /var/lib/rpm/Installtid
+     c... /var/lib/rpm/Name
+     c... /var/lib/rpm/Packages
+     c... /var/lib/rpm/Providename
+     c... /var/lib/rpm/Provideversion
+     c... /var/lib/rpm/Requirename
+     c... /var/lib/rpm/Requireversion
+     c... /var/lib/rpm/Sha1header
+     c... /var/lib/rpm/Sigmd5
+     c... /var/lib/zypp/SoftLocks</screen>
+    </step>
+    <step performance="required">
+     <para>
+      特定のファイルの差異を表示するには、以下を実行します。<command>snapper diff <replaceable>PRE</replaceable>..<replaceable>POST</replaceable> <replaceable>ファイル名</replaceable></command><replaceable>ファイル名</replaceable>を指定しない場合は、すべてのファイルの差異が表示されます。
+     </para>
+<screen>~ # snapper diff 108..109 /var/lib/zypp/SoftLocks
+     --- /.snapshots/108/snapshot/var/lib/zypp/SoftLocks	2012-01-12 23:15:22.408009164 +0100
+     +++ /.snapshots/109/snapshot/var/lib/zypp/SoftLocks	2012-01-13 13:01:08.724009131 +0100
+     @@ -1,4 +1,2 @@
+     -# zypp::SoftLocksFile generated Thu Jan 12 23:10:46 2012
+     -#
+     -ncftp
+     -#
+     +# zypp::SoftLocksFile generated Fri Jan 13 13:01:08 2012
+     +##</screen>
+    </step>
+    <step performance="required">
+     <para>
+      1つまたは複数のファイルを復元するには、以下を実行します。<command>snapper -v undochange <replaceable>PRE</replaceable>..<replaceable>POST</replaceable> <replaceable>ファイル名</replaceable></command> <replaceable>ファイル名</replaceable>を指定しない場合は、変更されたすべてのファイルが復元されます。
+     </para>
+<screen>~ # snapper -v undochange 108..109
+     create:0 modify:16 delete:21
+     undoing change...
+     deleting /usr/share/man/man1/ncftpspooler.1.gz
+     deleting /usr/share/man/man1/ncftpput.1.gz
+     [...]
+     deleting /usr/bin/ncftpls
+     deleting /usr/bin/ncftpget
+     deleting /usr/bin/ncftpbatch
+     deleting /usr/bin/ncftp
+     modifying /var/cache/zypp/solv/@System/cookie
+     modifying /var/cache/zypp/solv/@System/solv
+     modifying /var/lib/rpm/Basenames
+     modifying /var/lib/rpm/Dirnames
+     modifying /var/lib/rpm/Filemd5s
+     modifying /var/lib/rpm/Group
+     modifying /var/lib/rpm/Installtid
+     modifying /var/lib/rpm/Name
+     modifying /var/lib/rpm/Packages
+     modifying /var/lib/rpm/Providename
+     modifying /var/lib/rpm/Provideversion
+     modifying /var/lib/rpm/Requirename
+     modifying /var/lib/rpm/Requireversion
+     modifying /var/lib/rpm/Sha1header
+     modifying /var/lib/rpm/Sigmd5
+     modifying /var/lib/zypp/SoftLocks
+     undoing change done</screen>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.snapper.backup">
+   <title>Snapperによる定期バックアップからのファイル復元</title>
+   <para>
+    YaSTおよびZypperのスナップショット以外に、Snapperは、システムパーティション(<filename>/</filename>)の毎時スナップショットを作成します。このバックアップ用スナップショットを使用して、誤って削除または変更したファイルを復元できます。Snapperの差分抽出機能を使用して、ある時点でどのファイルが変更されたのか調べることもできます。
+   </para>
+   <para>
+    毎時バックアップのスナップショットは、種類が<literal>Single</literal>で、<literal>timeline</literal>という説明が付いています。これらのスナップショットからファイルを復元したい場合は、<xref linkend="proc.snapper.yast.yast"/>または<xref linkend="proc.snapper.yast.cmdline"/>の手順に従ってください。
+   </para>
+   <note>
+    <title>スナップショットの保存期間</title>
+    <para>
+     デフォルトで、最近10日間、10カ月間、10年間の最初のスナップショットが保持されます。詳細については、<xref linkend="ex.snapper.config.timeline"/>を参照してください。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.snapper.config">
+   <title>Snapper設定の作成と変更</title>
+   <para>
+    Snapperの動作は、各パーティションまたは<literal>Btrfs</literal>サブボリュームに固有の設定ファイルで定義できます。これらの設定ファイルは、<filename>/etc/snapper/configs/</filename>に保存されます。<filename>/</filename>ディレクトリに対してSnapperでインストールされるデフォルトの設定ファイルが<filename>root</filename>です。このファイルは、YaSTとZypperのスナップショットを作成し管理するほか、<filename>/</filename>に対する毎時のバックアップスナップショットも作成および管理します。
+   </para>
+   <para>
+    <literal>Btrfs</literal>でフォーマットされたその他のパーティションや<literal>Btrfs</literal>パーティション上の既存のサブボリュームに対して、独自の設定ファイルを作成できます。以下の例では、<literal>/srv/www</literal>にマウントされた<filename>Btrfs</filename>フォーマットのパーティションに保存されたWebサーバデータをバックアップするSnapper設定を作成します。
+   </para>
+   <para>
+    <command>snapper</command>自体またはYaSTの<guimenu>Snapper</guimenu>モジュールを使用して、これらのスナップショットからファイルを復元できます。YaSTの場合は<guimenu>現在の設定</guimenu>を選択する必要があります。<command>snapper</command>の場合は、グローバルスイッチ<option>-c</option>を使用して設定を指定する必要があります(例:<command>snapper <option>-c myconfig</option> list</command>)。
+   </para>
+   <para>
+    新しいSnapper設定を作成するには、<command>snapper create-config</command>を実行します。
+   </para>
+<screen>snapper -c www-data<co id="snapper.create.name"/> create-config
+   /srv/www<co id="snapper.create.volume"/></screen>
+   <calloutlist>
+    <callout arearefs="snapper.create.name">
+     <para>
+      設定ファイルの名前。
+     </para>
+    </callout>
+    <callout arearefs="snapper.create.volume">
+     <para>
+      スナップショットを作成するパーティションまたは<literal>Btrfs</literal>サブボリュームのマウントポイント。
+     </para>
+    </callout>
+   </calloutlist>
+   <para>
+    このコマンドにより、新しい設定ファイル<filename>/etc/snapper/config-templates/www-data</filename>が作成され、<filename>/etc/snapper/config-templates/default</filename>から取得されたデフォルト値が使用されます。
+   </para>
+
+   <tip>
+    <title>設定のデフォルト</title>
+    <para>
+     新しい設定ファイルのデフォルト値は<filename>/etc/snapper/config-templates/default</filename>から取得されます。独自のデフォルトセットを使用する場合は、同じディレクトリ内にこのファイルのコピーを作成し、必要に応じて調整してください。作成したファイルを使用するには、create-configコマンドで<option>-t</option>オプションを指定します。
+    </para>
+<screen>snapper -c www-data create-config -t my_defaults /srv/www</screen>
+   </tip>
+   <sect3 id="sec.snapper.config.modify">
+    <title>設定ファイルの調整</title>
+    <para>
+     設定ファイルを調整するには、エディタで変更します。設定ファイルには、<literal><replaceable>キー</replaceable>=<replaceable>値</replaceable></literal>の形式でキーと値のペアが含まれています。 変更できるのは<replaceable>値</replaceable>だけです。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><literal>SUBVOLUME</literal>
+      </term>
+      <listitem>
+       <para>
+        スナップショットを作成するパーティションまたはサブボリュームのマウントポイント。変更しません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>FSTYPE</literal>
+      </term>
+      <listitem>
+       <para>
+        パーティションのファイルシステムタイプ。変更しません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>NUMBER_CLEANUP</literal>
+      </term>
+      <listitem>
+       <para>
+        合計スナップショット数が<literal>NUMBER_LIMIT</literal>で指定した数を超え、<emphasis>かつ</emphasis><literal>NUMBER_MIN_AGE</literal>で指定した保存期間を超えた場合に、古いスナップショットを自動的に削除するかどうか定義します。有効な値:<literal>yes(はい)</literal>、<literal>no(いいえ)</literal>
+       </para>
+       <note>
+        <title>制限と保存期間</title>
+        <para>
+         <literal>NUMBER_LIMIT</literal>と<literal>NUMBER_MIN_AGE</literal>は常に両方が評価されます。スナップショットが削除されるのは、<emphasis>両方</emphasis>の条件を満たしている場合のみです。保存期間に関係なく一定数のスナップショットを常に保持したい場合は、<literal>NUMBER_MIN_AGE</literal>を<literal>0</literal>に設定します。 一方、一定の保存期間を超えたスナップショットをすべて削除したい場合は、<literal>NUMBER_LIMIT</literal>を<literal>0</literal>に設定します。
+        </para>
+       </note>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>NUMBER_LIMIT</literal>
+      </term>
+      <listitem>
+       <para>
+        <literal>NUMBER_CLEANUP</literal>が<literal>yes</literal>に設定されている場合に、保持するスナップショットの数を定義します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>NUMBER_MIN_AGE</literal>
+      </term>
+      <listitem>
+       <para>
+        スナップショットが自動削除の対象となるまでの最短期間を秒単位で定義します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>TIMELINE_CREATE</literal>
+      </term>
+      <listitem>
+       <para>
+        <literal>yes</literal>に設定されている場合、毎時のスナップショットが作成されます。現時点では、これがスナップショットを自動的に作成する唯一の方法なので、<literal>yes</literal>に設定することを強くお勧めします。有効な値:<literal>yes(はい)</literal>、<literal>no(いいえ)</literal>
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>TIMELINE_CLEANUP</literal>
+      </term>
+      <listitem>
+       <para>
+        スナップショット数が<literal><replaceable>TIMELINE_LIMIT_*</replaceable></literal>オプションで指定した数を超え、<emphasis>かつ</emphasis><literal>TIMELINE_MIN_AGE</literal>で指定した保存期間を超えた場合に、古いスナップショットを自動的に削除するかどうか定義します。 有効な値:<literal>yes(はい)</literal>、<literal>no(いいえ)</literal>
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>TIMELINE_MIN_AGE</literal>
+      </term>
+      <listitem>
+       <para>
+        スナップショットが自動削除の対象となるまでの最短期間を秒単位で定義します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>TIMELINE_LIMIT_HOURLY</literal>、<literal>TIMELINE_LIMIT_DAILY</literal>、<literal>TIMELINE_LIMIT_MONTHLY</literal>、<literal>TIMELINE_LIMIT_YEARLY</literal>
+      </term>
+      <listitem>
+       <para>
+        1時間、1日、1カ月間、1年間に保持するスナップショット数です。
+       </para>
+       <example id="ex.snapper.config.timeline">
+        <title>タイムラインの設定例</title>
+<screen>TIMELINE_CREATE="yes"
+        TIMELINE_CLEANUP="yes"
+        TIMELINE_MIN_AGE="1800"
+        TIMELINE_LIMIT_HOURLY="10"
+        TIMELINE_LIMIT_DAILY="10"
+        TIMELINE_LIMIT_MONTHLY="10"
+        TIMELINE_LIMIT_YEARLY="10"
+        </screen>
+       </example>
+       <para>
+        この設定例では、毎時スナップショットが自動的に削除されます。<literal>TIMELINE_MIN_AGE</literal>と<literal>TIMELINE_LIMIT_*</literal>は常に両方が評価されます。この例では、スナップショットが削除対象となるまでの最短期間が30分(180秒)に設定されています。毎時のスナップショットを作成するので、最新のスナップショットだけが保持されることになります。<literal>TIMELINE_LIMIT_DAILY</literal>をゼロ以外に設定すると、1日の最初のスナップショットが保持されることになります。
+       </para>
+       <itemizedlist mark="bullet" spacing="normal">
+        <title>保持されるスナップショット</title>
+        <listitem>
+         <para>
+          1時間ごと:最新の10個のスナップショットが保持されます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          1日ごと:それぞれの日の最初のスナップショットが、直近の10日分保持されます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          1カ月ごと:それぞれの月の最後の日に作成された最初のスナップショットが、直近の10カ月分保持されます。
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          1年ごと:それぞれの年の最後の日に作成された最初のスナップショットが、直近の10年分保持されます。
+         </para>
+        </listitem>
+       </itemizedlist>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.snapper.config.user">
+    <title>通常ユーザとしてのSnapperの使用</title>
+    <para>
+     デフォルトでは、<systemitem class="username">root</systemitem>しかSnapperを使用できません。しかし、以下のような場合、特定のグループまたはユーザがスナップショットを作成したり、スナップショットを使って変更を取り消したりできる必要があります。
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       Webサイトの管理者が<filename>/srv/www</filename>のスナップショットを作成する
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       データベース管理者がデータベースのスナップショットを作成する
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       ユーザが自分のホームディレクトリのスナップショットを作成する
+      </para>
+     </listitem>
+    </itemizedlist>
+    <para>
+     このような場合、ユーザやグループにパーミッションを与えるSnapper設定を作成できます。この設定変更だけでなく、指定されたユーザが、対応する<filename>.snapshots</filename>ディレクトリを読み取ることができ、このディレクトリにアクセスできる必要があります。
+    </para>
+    <procedure>
+     <title>通常ユーザによるSnapper使用の有効化</title>
+     <para>
+      次のすべての手順は<systemitem class="username">root</systemitem>として実行する必要があります。
+     </para>
+     <step performance="required">
+      <para>
+       ユーザがSnapperを使用するパーティションまたはサブボリュームにSnapper設定がない場合は、作成します。手順については、<xref linkend="sec.snapper.config"/>を参照してください。例:
+      </para>
+<screen>snapper --config web_data create /srv/www</screen>
+     </step>
+     <step performance="required">
+      <para>
+       <filename>/etc/snapper/configs/<replaceable>NAME</replaceable></filename>に設定ファイルを作成します。NAMEは、上記の手順で<option>-c/--config</option>を使用して指定される値です(<filename>/etc/snapper/configs/web_data</filename>など)。 必要に応じて設定ファイルを調整します。詳細は<xref linkend="sec.snapper.config.modify"/>を参照してください。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       <envar>ALLOW_USERS</envar>と<envar>ALLOW_GROUPS</envar>、またはその一方の値を設定し、ユーザやグループにパーミッションを与えます。複数のエントリは<keycap function="space"/>で区切ってください。たとえば、ユーザ<systemitem class="username">www_admin</systemitem>にパーミッションを与えるには、次のように入力します。
+      </para>
+<screen>ALLOW_USERS="www_admin"</screen>
+     </step>
+     <step performance="required">
+      <para>
+       スナップショットディレクトリ<replaceable>PATH</replaceable>/.snapshotsの読み取りおよびアクセスパーミッションを与えます。<replaceable>PATH</replaceable>は、この手順の最初のステップで指定したサブボリュームに置き換えてください。例:
+      </para>
+<screen>chmod a+rx /srv/www/.snapshots</screen>
+      <para>
+       これで、指定されたユーザやグループが特定のSnapper設定を使用できます。以下のように<literal>list</literal>コマンドを使ってテストできます。
+      </para>
+<screen>www_admin:~ &gt; snapper -c web_data list</screen>
+     </step>
+    </procedure>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.snapper.disable">
+   <title>自動スナップショットの無効化</title>
+   <para>
+    インストール時に<literal>Btrfs</literal>でルートパーティションを設定すると、Snapperは自動的にシステムの毎時スナップショットを作成するほか、YaSTおよびzypperの処理の前後にスナップショットを作成します。それぞれのタスクを無効にするには、以下の手順を実行します。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>毎時スナップショットの無効化</term>
+     <listitem>
+      <para>
+       <filename>/etc/snapper/configs/root</filename>を編集し、<envar>TIMELINE_CREATE</envar>を<literal>no</literal>に設定します。
+      </para>
+<screen>TIMELINE_CREATE="no"</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>Zypperスナップショットの無効化</term>
+     <listitem>
+      <para>
+       <systemitem class="resource">snapper-zypp-plugin</systemitem>パッケージをアンインストールします。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>YaSTスナップショットの無効化</term>
+     <listitem>
+      <para>
+       <filename>/etc/sysconfig/yast2</filename>を編集し、<envar>USE_SNAPPER</envar>を<literal>no</literal>に設定します。
+      </para>
+<screen>USE_SNAPPER="no"</screen>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.snapper.manage">
+  <title>スナップショットの手動での作成と管理</title>
+
+  <para>
+   Snapperは設定によって自動的にスナップショットを作成および管理するだけのものではありません。コマンドラインツールまたはYaSTモジュールを使用して、手動でスナップショットのペア(<quote/>「事前および事後」)や単一のスナップショットを作成することもできます。
+  </para>
+
+  <para>
+   Snapperのすべての操作は既存の設定に対して実行されます(詳細は<xref linkend="sec.snapper.config"/>を参照)。スナップショットを作成するには、対象のパーティションまたはボリュームに対して設定が存在する必要があります。デフォルトで、システム設定(<literal>root</literal>)が使用されます。独自の設定に対してスナップショットを作成または管理する場合は、明示的にその設定を選択する必要があります。YaSTの<guimenu>現在の設定</guimenu>ドロップダウンメニューを使用するか、コマンドラインで<option>-c</option>を指定します(<command>snapper <option>-c</option> <replaceable>MYCONFIG</replaceable> <replaceable>COMMAND</replaceable></command>)。
+  </para>
+
+  <sect2 id="sec.snapper.manage.metadata">
+   <title>スナップショットのメタデータ</title>
+   <para>
+    各スナップショットには、スナップショット自体とメタデータが含まれています。スナップショットを作成する場合は、メタデータも指定する必要があります。スナップショットを修正すると、メタデータが変更されます。コンテンツを修正することはできません。各スナップショットについて、以下のメタデータを利用できます。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      <emphasis role="bold">Type(種類)</emphasis>:スナップショットの種類です。詳細は<xref linkend="sec.snapper.manage.metadata.type"/>を参照してください。このデータは変更できません。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis role="bold">Number(番号)</emphasis>:スナップショットの一意の番号。このデータは変更できません。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis role="bold">Pre Number(前番号)</emphasis>:対応する事前スナップショットの番号を指定します。事後スナップショットにのみ適用されます。このデータは変更できません。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis role="bold">Description(説明)</emphasis>:スナップショットの説明です。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis role="bold">Userdata(ユーザデータ)</emphasis>:カンマ区切りの「キー=値」のリスト形式でカスタムデータを指定できる、拡張用の項目です。(例:<literal>reason=testing_stuff, user=tux</literal>)。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      <emphasis role="bold">Cleanup-Algorithm(クリーンアップアルゴリズム)</emphasis>:スナップショットのクリーンアップアルゴリズムです。詳細は<xref linkend="sec.snapper.manage.metadata.cleanup"/>を参照してください。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <sect3 id="sec.snapper.manage.metadata.type">
+    <title>スナップショットの種類</title>
+    <para>
+     Snapperには、事前(pre)、事後(post)、および単一(single)の3種類のスナップショットがあります。これらは物理的には同じものですが、Snapperでは別のものとして扱われます。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><literal>pre</literal>(事前)
+      </term>
+      <listitem>
+       <para>
+        変更<emphasis>前</emphasis>のファイルシステムのスナップショットです。各<literal>pre(事前)</literal>スナップショットには、対応する<literal>post(事後)</literal>スナップショットがあります。自動YaST/zypperスナップショットなどに使用されます。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>post</literal>(事後)
+      </term>
+      <listitem>
+       <para>
+        変更<emphasis>後</emphasis>のファイルシステムのスナップショットです。各<literal>post(事後)</literal>スナップショットには、対応する<literal>pre(事前)</literal>スナップショットがあります。自動YaST/zypperスナップショットなどに使用されます。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><literal>single</literal>(単一)</term>
+      <listitem>
+       <para>
+        スタンドアロンのスナップショットです。自動毎時スナップショットなどに使用されます。これは、スナップショットを作成する際のデフォルトの種類です。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+   <sect3 id="sec.snapper.manage.metadata.cleanup">
+    <title>クリーンアップアルゴリズム</title>
+    <para>
+     Snapperには、古いスナップショットのクリーンアップアルゴリズムが3種類あります。このアルゴリズムは、日次のcronジョブとして実行されます。クリーンアップの頻度は、パーティションまたはサブボリュームのSnapper設定で定義されます(詳細は<xref linkend="sec.snapper.config.modify"/>を参照)。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>number(番号)</term>
+      <listitem>
+       <para>
+        スナップショットが特定の数に達すると、古いスナップショットを削除します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>time line(タイムライン)</term>
+      <listitem>
+       <para>
+        特定の期間が経過したスナップショットを削除しますが、毎時、毎日、毎月、および毎年のスナップショットを一定数保持します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>empty-pre-post(事前事後の差分なし)</term>
+      <listitem>
+       <para>
+        事前と事後のスナップショットに差分がない場合、そのペアを削除します。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.snapper.manage.create">
+   <title>スナップショットの作成</title>
+   <para>
+    スナップショットを作成するには、<command>snapper create</command>を実行するか、YaSTの<guimenu>Snapper</guimenu>モジュールで<guimenu>作成</guimenu>をクリックします。以下は、コマンドラインを使ってスナップショットを作成する場合の例です。YaSTインタフェースを使用している場合、これらの例は簡単に採用できます。
+   </para>
+   <tip>
+    <title>Snapshot Description</title>
+    <para>
+     後で識別しやすくするため、わかりやすい説明を指定しておいてください。ユーザデータオプションを使って、さらに情報を指定することもできます。
+    </para>
+   </tip>
+   <para/>
+   <variablelist>
+    <varlistentry>
+     <term><command>snapper create <option>--description "Snapshot for week 2 2013"</option></command>
+     </term>
+     <listitem>
+      <para>
+       説明付きのスタンドアロンのスナップショット(種類はsingle）を、デフォルト(<literal>root</literal>)設定で作成します。クリーンアップアルゴリズムは指定されていないので、自動的にスナップショットが削除されることはありません。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper <option>--config home</option> create <option>--description "Cleanup in ~tux"</option></command>
+     </term>
+     <listitem>
+      <para>
+       説明付きのスタンドアロンのスナップショット(種類はsingle)を、カスタム設定<literal>home</literal>で作成します。クリーンアップアルゴリズムは指定されていないので、自動的にスナップショットが削除されることはありません。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper <option>--config home</option> create <option>--description "Daily data backup" --cleanup-algorithm timeline</option></command>
+     </term>
+     <listitem>
+      <para>
+       説明付きのスタンドアロンのスナップショット(種類はsingle)を、カスタム設定<literal>home</literal>設定で作成します。設定のタイムライン(time line)クリーンアップアルゴリズムで指定された条件が満たされると、ファイルが自動的に削除されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper create <option>--type pre</option><option>--print-number</option><option>--description "Before the Apache config cleanup"</option></command>
+     </term>
+     <listitem>
+      <para>
+       種類が<literal>pre</literal>のスナップショットを作成し、スナップショット番号を出力します。<quote>事前</quote>と<quote>事後</quote>の状態を保存するために使用されるスナップショットペアを作成するために必要な、最初のコマンドです。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper create <option>--type post</option><option>--pre-number 30</option><option>--description "After the Apache config cleanup"</option></command>
+     </term>
+     <listitem>
+      <para>
+       番号<literal>30</literal>の<literal>pre</literal>スナップショットとペアになる<literal>post</literal>スナップショットを作成します。<quote>事前</quote>と<quote>事後</quote>の状態を保存するために使用されるスナップショットペアを作成するために必要な、2番目のコマンドです。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper create <option>--command <replaceable>COMMAND</replaceable></option><option>--description "Before and after COMMAND"</option></command>
+     </term>
+     <listitem>
+      <para>
+       <replaceable>COMMAND</replaceable>の実行前後に自動的にスナップショットを作成します。このオプションを使用できるのは、コマンドラインでsnapperを使用する場合のみです。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.snapper.manage.modify">
+   <title>スナップショットのメタデータ修正</title>
+   <para>
+    Snapperでは、説明、クリーンアップアルゴリズム、およびスナップショットのユーザデータを修正できます。それ以外のメタデータは変更できません。以下は、コマンドラインを使ってスナップショットを修正する場合の例です。YaSTインタフェースを使用している場合、これらの例は簡単に採用できます。
+   </para>
+   <para>
+    コマンドラインでスナップショットを修正するには、スナップショットの番号がわかっている必要があります。<command>snapper<option>list</option></command>を実行すると、すべてのスナップショットとその番号が表示されます。
+   </para>
+   <para>
+    YaSTの<guimenu>Snapper</guimenu>モジュールでは、すでにすべてのスナップショットのリストが表示されています。リストからスナップショットを選択し、<guimenu>Modify</guimenu>をクリックします。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><command>snapper modify <option>--cleanup-algorithm "timeline"</option> 10</command>
+     </term>
+     <listitem>
+      <para>
+       デフォルト(<literal>root</literal>)設定のスナップショット10番のメタデータを修正します。クリーンアップアルゴリズムが<literal>timeline</literal>に設定されます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper <option>--config home</option> modify <option>--description "daily backup" -cleanup-algorithm "timeline"</option>120</command>
+     </term>
+     <listitem>
+      <para>
+       カスタム設定<literal>home</literal>のスナップショット120番のメタデータを修正します。新しい説明が設定され、クリーンアップアルゴリズムを無しに設定します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.snapper.manage.delete">
+   <title>スナップショットの削除</title>
+   <para>
+    YaSTの<guimenu>Snapper</guimenu>モジュールを使用してスナップショットを削除するには、リストからスナップショットを選択して<guimenu>Delete (削除)</guimenu>をクリックします。
+   </para>
+   <para>
+    コマンドラインツールを使ってスナップショットを削除するには、スナップショットの番号が分かっている必要があります。<command>snapper list</command>を実行して番号を調べます。スナップショットを削除するには、<command>snapper delete <replaceable>NUMBER</replaceable></command>を実行します。
+   </para>
+   <tip>
+    <title>スナップショットペアの削除</title>
+    <para>
+     <literal>pre</literal>スナップショットを削除する場合は、必ず、対応する<literal>post</literal>スナップショットを削除する必要があります(逆も同様です)。
+    </para>
+   </tip>
+   <variablelist>
+    <varlistentry>
+     <term><command>snapper delete 65</command>
+     </term>
+     <listitem>
+      <para>
+       デフォルト(<literal>root</literal>)設定のスナップショット65番を削除します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><command>snapper <option>-c home</option> delete 89 90</command>
+     </term>
+     <listitem>
+      <para>
+       カスタム設定<literal>home</literal>のスナップショット89番および90番を削除します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <tip>
+    <title>古いスナップショットほどディスク容量を使用</title>
+    <para>
+     ハードディスクの容量を空けるためにスナップショットを削除する場合(詳細は<xref linkend="sec.snapper.requires.diskspace"/>を参照)は、古いスナップショットから削除します。古いスナップショットほど、多くの容量を使用します。
+    </para>
+   </tip>
+   <para>
+    スナップショットは、日次のcronジョブでも自動的に削除されます。詳細については、<xref linkend="sec.snapper.manage.metadata.cleanup"/>を参照してください。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.snapper.limits">
+  <title>制限</title>
+
+  <para>
+   <literal>Btrfs</literal>およびSnapperは本番環境で使用可能な製品ですが、引き続き開発が行われています。現時点で以下の制限があります。これらの問題は、将来のリリースで解決される予定です。
+  </para>
+
+  <sect2 id="sec.snapper.limits.consistency">
+   <title>データの整合性</title>
+   <para>
+    スナップショットを作成する際に、データの整合性を確保するメカニズムがありません。スナップショットを作成するのと同時にファイルが書き込まれると(データベースなど)、ファイルが破損したり、ファイルへの書き込みが部分的になります。このようなファイルを復元すると、問題が発生することがあります。このため、<emphasis>必ず</emphasis>変更されたファイルとその差分をよく確認してください。どうしてもロールバックが必要なファイルのみ復元してください。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.snapper.limits.user">
+   <title>ユーザ追加の取り消し</title>
+   <para>
+    通常、<filename>/home</filename>は別のパーティションにあります。このような別のパーティションは、YaSTのロールバックのデフォルト設定に含まれません。このため、Snapperを使用してユーザの追加を取り消しても、ユーザのホームパーティションは削除されません。YaSTの<guimenu>ユーザとグループの管理</guimenu>ツールを使用してユーザを削除することを強くお勧めします。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.snapper.limits.kernel">
+   <title><filename>/boot</filename>やブートローダの変更をロールバックできない</title>
+   <para>
+    現時点では、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>は<literal>Btrfs</literal>パーティションからブートできません。このため、システムパーティションに<filename>Btrfs</filename>を使用してインストールすると、<literal>/boot</literal>用に個別のパーティションが作成されます。<filename>/boot</filename>はスナップショットに対応していないため、YaST/zypperのロールバックについて以下の制限が適用されます。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>ブートローダに対する設定変更はロールバックできない</term>
+     <listitem>
+      <para>
+       ロールバックできるファイルは、<filename>/etc</filename>内のブートローダ設定ファイルのみです。メインの設定ファイルは<filename>/boot</filename>の下に保存され、ロールバックできません。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>カーネルのインストールについて完全なロールバックはできない</term>
+     <listitem>
+      <para>
+       カーネル自体とinitrdは、<filename>/boot</filename>パーティションにインストールされますが、カーネルモジュールとソースコードはそれぞれ<filename>/var/lib</filename>および<filename>/usr/src</filename>にインストールされます。 また、カーネルをインストールすると/bootのブートローダ設定も変更されます。このため、カーネルのインストールを元に戻す作業を含むロールバックを行う場合は、/bootからカーネルとそのinitrdを手動で削除し、カーネルのブートエントリを削除してブートローダ設定を調整する必要があります。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.snapper.faqs">
+  <title>よくある質問とその回答</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>
+     Snapperでは<filename>/var/log</filename>、<filename>/tmp</filename>などのディレクトリの変更が表示されませんが、なぜですか？
+    </term>
+    <listitem>
+     <para>
+      一部のディレクトリについては、<quote>スナップショット</quote>を無効にしています(<filename>/var/log</filename>など)。これは、ログを削除してしまうと問題の調査が難しくなるためです。<quote>スナップショット</quote>からパスを除外するため、これらのパス用にサブボリュームを作成しています。次のマウントポイントは、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>の<quote>スナップショット</quote>から除外されます。
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <filename>/opt</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/srv</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/tmp</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/var/crash</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/var/log</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/var/run</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/var/spool</filename>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <filename>/var/tmp</filename>
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ブートローダからスナップショットをブートできますか？</term>
+    <listitem>
+     <para>
+      現時点ではできません。<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>のブートローダは、現時点で、<literal>Btrfs</literal>パーティションからのブートに対応していません。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.snapper.lvm">
+  <title>シンプロビジョンLVMボリュームでのSnapper使用</title>
+
+  <para>
+   Snapperは、<literal>Btrfs</literal>ファイルシステムのスナップショット作成だけでなく、ext3またはXFSでフォーマットされたシンプロビジョンLVMボリュームの<quote>スナップショット作成</quote>にも対応しています(通常のLVMボリュームのスナップショットには対応<emphasis>していません</emphasis>)。詳細および設定の手順については、<xref linkend="sec.yast2.system.lvm"/>を参照してください。
+  </para>
+
+  <para>
+   シンプロビジョンLVMボリュームでSnapperを使用するには、そのようにSnapper設定を作成する必要があります。LVMで、<option>--fstype=lvm(<replaceable>FILESYSTEM</replaceable>)</option>を使用してファイルシステムを指定する必要があります。現在ext3およびXFSがサポートされているので、<literal>ext3</literal>または<literal>xfs</literal>が<replaceable>FILESYSTEM</replaceable>の有効な値です。例:
+  </para>
+
+<screen>snapper -c lvm create-config --fstype="lvm(xfs)" /thin_lvm</screen>
+
+  <para>
+   <xref linkend="sec.snapper.config.modify"/>で説明したように、必要に応じてこの設定を調整できます。これで、Snapperを使用して、スナップショットの作成と管理、ファイルの復元、変更の取り消しができるようになりました。
+  </para>
+ </sect1>
+</chapter>

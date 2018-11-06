@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="inst_yast2.xml" id="cha.inst">
+ <title>使用 YaST 进行安装</title><indexterm id="idx.Installation_YaST2" class="startofrange"> <primary>安装</primary> <secondary>YaST, 使用</secondary></indexterm><indexterm id="idx.YaST2_Installation" class="startofrange"> <primary>YaST</primary> <secondary>安装</secondary></indexterm><indexterm id="idx.Installation" class="startofrange"> <primary>安装</primary></indexterm>
+ <abstract>
+  <para os="sles">
+   在准备好用于安装 <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase>（如<xref linkend="part.archspec"/>中所述）的硬件并与安装系统建立连接之后，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的系统助手 YaST 的界面将会显示。YaST 会引导您完成整个安装和配置过程。
+  </para>
+
+  
+
+  
+ </abstract>
+ 
+ <sect1 id="sec.i.yast2.method">
+  <title>选择安装方法</title><indexterm><primary>安装</primary><secondary>方法</secondary></indexterm>
+
+  <para>
+   在选择了安装媒体后，请确定最符合需求的适当安装方法和引导选项：
+  </para>
+
+  <variablelist>
+   <varlistentry id="sec.i.yast2.source.cd">
+    <term>从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 媒体（DVD、CD、USB）安装</term>
+    <listitem>
+     <para>
+      如果您希望执行独立安装且不想依赖于提供安装数据或引导基础结构的网络，则选择此选项。安装完全按<xref linkend="sec.i.yast2.steps"/>中所列出的步骤进行。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term>从网络服务器进行安装</term>
+    <listitem>
+     <para>
+      如果在网络中有可用的安装服务器或希望使用外部服务器作为安装数据源，请选择此选项。此安装可配置为从物理媒体（软盘、CD/DVD 或硬盘）引导或配置为使用 PXE/BOOTP 通过网络引导。有关细节，请参见<xref linkend="sec.i.yast2.source.slp"/>、<xref linkend="sec.i.yast2.source.network"/>或<xref linkend="cha.deployment.remoteinst"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 支持多个不同的引导选项，您可以根据可用硬件和喜欢的安装方案进行选择。<phrase os="sles;sled">从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 媒体引导是最简单的选择，但有些特殊的要求可能需要进行特殊的设置</phrase>：
+  </para>
+
+  <table id="tab.boot.opt">
+   <title>引导选项</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        引导选项
+       </para>
+      </entry>
+      <entry>
+       <para>
+        描述
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        DVD
+       </para>
+      </entry>
+      <entry>
+       <para>
+        这是最简单的引导选项。如果系统具有 Linux 支持的本地 DVD-ROM 驱动器，则可以使用此选项。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        USB 大容量储存设备
+       </para>
+      </entry>
+      <entry>
+       <para>
+        如果您的计算机未配备光驱，您可以从 USB 大容量储存设备（例如 USB 记忆棒）引导安装映像。要创建可引导的 USB 储存设备，您需要使用 <command>dd</command> 命令将 DVD 或迷你 CD ISO 映像复制到该设备（请勿装入 USB 设备，否则该设备上的所有数据都将被删除）：
+       </para>
+<screen>dd if=<replaceable>PATH_TO_ISO_IMAGE</replaceable> of=<replaceable>USB_STORAGE_DEVICE</replaceable> bs=4M</screen>
+       <para>
+        默认情况下，<command>dd</command> 会在 Linux 和 MacOS 上提供。 适用于 Microsoft Windows* 的版本可从 <ulink url="http://www.chrysocome.net/dd"/> 中下载。
+       </para>
+       <important>
+        <title>兼容性</title>
+        <para>
+         请注意：在 UEFI 计算机（其中包含完整的 ia64 体系结构）和 ppc64 体系结构上<emphasis>不</emphasis>支持从 USB 大容量存储设备引导。
+        </para>
+       </important>
+      </entry>
+     </row>
+     
+     <row>
+      <entry>
+       <para>
+        PXE 或 BOOTP
+       </para>
+      </entry>
+      <entry>
+       <para>
+        通过网络引导必须得到系统 BIOS 或固件的支持，而且网络中必须有一个可用的引导服务器。此任务也可由另一个 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 系统来处理。<phrase>有关更多信息，请参考<xref linkend="cha.deployment.remoteinst"/>。</phrase>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        硬盘
+       </para>
+      </entry>
+      <entry>
+       <para>
+        <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装也可从硬盘引导。要实现此目的，请将内核 (<systemitem>linux</systemitem>) 和安装系统 (<systemitem>initrd</systemitem>) 从安装媒体的 <filename>/boot/<replaceable>architecture</replaceable>/</filename> 目录复制到硬盘中，并在先前安装的 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的现有引导加载程序中添加一条相应的项。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <tip arch="amd64;em64t">
+   <title>在 UEFI 计算机上从 DVD 引导</title>
+   <para arch="amd64;em64t">
+    DVD1 可用作配有 UEFI（统一可扩展固件接口）的计算机上的引导媒体。请参见供应商文档以获取特定信息。如果引导失败，尝试启用固件中的 CSM（兼容性支持模块）。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.source.slp">
+   <title>通过使用 SLP 来从网络服务器进行安装</title><indexterm><primary>安装</primary><secondary>网络</secondary> <tertiary>SLP</tertiary></indexterm>
+   <para>
+    如果网络安装支持 OpenSLP，且网络安装源已配置为通过 SLP 自行发布（如<xref linkend="sec.deployment.remoteinst.instserver"/>中所述），请引导该系统，按下引导屏幕中的 <keycap>F4</keycap> 并从菜单中选择 <guimenu>SLP</guimenu>。
+   </para>
+   <para>
+    安装程序使用 DHCP 配置网络连接，并从 OpenSLP 服务器检索该网络安装源的位置。如果自动 DHCP 网络配置失败，则会提示手动输入相应参数。除添加附加安装源之前所需的网络配置步骤外，安装步骤将按下述步骤进行。由于已配置了网络且在该点上为活动状态，则不需要再进行此步骤。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.source.network">
+   <title>从没有 SLP 的网络源安装</title><indexterm><primary>安装</primary><secondary>网络</secondary><tertiary>其他</tertiary></indexterm>
+   <para>
+    如果网络设置不支持用于检索网络安装源的 OpenSLP，请引导该系统并在引导屏幕中按 <keycap>F4</keycap> 以选择所需的网络协议（NFS、HTTP、FTP 或 SMB/CIFS）。提供服务器地址和安装媒体的路径。
+   </para>
+   <para>
+    安装程序将使用 DHCP 自动配置网络连接。如果该配置失败，则会提示您手动输入相应参数。安装会从指定来源获取安装数据。除添加附加储存库之前所需的网络配置步骤外，安装步骤将按下述步骤进行。由于已配置网络且此时为活动状态，则不再需要此步骤。
+   </para>
+  </sect2>
+
+
+
+  
+ </sect1>
+ <sect1 id="sec.i.yast2.steps">
+  <title>安装工作流程</title><indexterm><primary>安装</primary><secondary>工作流程</secondary></indexterm>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的安装主要分为三部分：准备工作、安装以及配置。在准备阶段，您可以配置一些基本参数，如语言、时间、硬盘设置和安装范围。在非交互安装阶段中，将安装软件和准备系统以用于首次引导。完成安装后，计算机将重引导为新安装的系统并开始最后的系统配置。在该阶段，将设置网络和因特网访问以及硬件组件（如打印机）。
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.start.ppc" arch="ipseries" os="sles">
+  <title>IBM POWER：系统启动以进行网络安装</title>
+
+  <para>
+   如果是 IBM POWER 平台，该系统已引导（IPL，初始程序装载），如<xref linkend="cha.ppc.prep"/>所述。如果是进行网络安装，SUSE Linux Enterprise Server 不会在这些系统上显示启动屏幕或引导加载程序命令行。在安装期间，请手动装载内核。在通过 VNC、X 或 SSH 与系统建立连接后，YaST 会立刻启动安装屏幕。因为无启动屏幕或引导加载程序命令行，内核或引导参数无法在屏幕上输入，但必须使用 <command>mkzimage_cmdline</command> 实用程序将参数包含在内核映像中。
+  </para>
+
+  <tip>
+   <title>IBM POWER：后续步骤</title>
+   <para>
+    要进行安装，请按照从 <xref linkend="sec.i.yast2.welcome"/> 开始介绍的过程使用 YaST 进行安装。
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.i.yast2.start.390" arch="zseries" os="sles">
+  <title>IBM System z：系统启动以进行安装</title>
+
+  <para>
+   对于 IBM System z 平台，系统会按照<xref linkend="sec.prep.ipling"/>中所述引导（IPL，即初始程序装载）。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 在这些系统上不会显示启动屏幕。在安装期间，需要手动装载内核、initrd 和 parmfile。一旦通过 VNC、X 或 SSH 建立了与安装系统的连接，YaST 就会立即启动并显示安装屏幕。由于没有启动屏幕，所以不能在屏幕上输入内核或引导参数，但必须在 parmfile 中指定它们（请参见<xref linkend="sec.appdendix.parm"/>）。
+  </para>
+
+  <tip>
+   <title>IBM System z：后续步骤</title>
+   <para>
+    要进行安装，请按照从 <xref linkend="sec.i.yast2.welcome"/> 开始介绍的过程使用 YaST 进行安装。
+   </para>
+  </tip>
+ </sect1>
+ <sect1 id="sec.i.yast2.start">
+  <title>系统启动以进行安装</title><indexterm> <primary>YaST</primary> <secondary>系统启动</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>启动</secondary></indexterm><indexterm> <primary>安装</primary> <secondary>系统启动</secondary></indexterm>
+
+  <para>
+   您可以从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> CD 或 DVD 等本地安装源，也可以从 FTP、HTTP、NFS 或 SMB 服务器这些网络源安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。这些方法都需要实际访问系统来进行安装并且在安装期间需要进行用户交互。无论储存库如何，安装过程基本相同。在以下工作流程描述中将充分地强调任何异常。<phrase os="sles;sled">有关如何执行非交互自动化安装的描述，请参见<xref linkend="part.autoinstall"/>。</phrase>
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.bootscreen">
+  <title>配有传统 BIOS 的计算机上的引导屏幕</title><indexterm><primary>引导屏幕</primary></indexterm><indexterm><primary>安装</primary><secondary>引导屏幕</secondary></indexterm>
+
+  <para>
+   引导屏幕将显示安装过程的多个选项。<guimenu>从硬盘引导</guimenu>是默认选中的，它会引导已安装系统，因为 CD 经常会留在驱动器中。使用箭头键选择其他选项之一，然后按下 <keycap function="enter"/> 来引导。相关的选项有：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>安装</guimenu>
+    </term>
+    <listitem>
+     <para>
+      常规安装方式。将启用所有常用的硬件功能。如果安装失败，请参见<xref linkend="sec.i.yast2.bootscreen.kernel"/>以了解禁用可能有问题的功能的引导选项。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>修复已安装系统</guimenu>
+    </term>
+    <listitem>
+     <para>
+      引导为图形修复系统。有关修复已安装系统的更多信息，可参见<xref linkend="sec.trouble.data.recover"/>。 
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>救援系统</guimenu><indexterm> <primary>YaST</primary> <secondary>救援系统</secondary></indexterm></term>
+    <listitem>
+     <para>
+      启动不带图形用户界面的最小 Linux 系统。有关详细信息，请参见<xref linkend="sec.trouble.data.recover.rescue"/>。 
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><guimenu>检查安装媒体</guimenu><indexterm> <primary>YaST</primary> <secondary>媒体检查</secondary></indexterm><indexterm><primary>安装</primary><secondary>媒体检查</secondary></indexterm></term>
+    <listitem>
+     <para>
+      只有从基于所下载 ISO 创建的媒体中进行安装时，该选项才可用。这种情况下，建议检查安装媒体的完整性。该选项会在自动检查媒体之前启动安装系统。在检查成功时，将会启动正常的安装例程。如果检测到媒体损坏，安装例程会中止。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+
+    <term><guimenu>固件测试</guimenu><indexterm><primary>固件测试</primary></indexterm></term>
+    <listitem>
+     <para>
+      启动一个 BIOS 检查程序，它可验证 ACPI 和 BIOS 的其他部分。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>内存测试</guimenu><indexterm> <primary>内存测试</primary> </indexterm></term>
+    <listitem>
+     <para>
+      通过反复的读写操作过程来测试系统的 RAM。通过重引导来终止测试。有关详细信息，请参见<xref linkend="sec.trouble.install.noboot"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>配有传统 BIOS 的计算机上的引导屏幕</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_boot_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_boot_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   用屏幕底部栏中指示的功能键更改语言、屏幕分辨率、安装源，或者从硬件供应商添加其他驱动程序：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><keycap>F1</keycap> <guimenu>帮助</guimenu>
+    </term>
+    <listitem>
+     <para>
+      获取引导屏幕的活动元素的内容相关帮助。使用箭头键进行导航，使用 <keycap function="enter"/> 转到链接，使用 <keycap function="escape"/> 离开帮助屏幕。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F2</keycap> <guimenu>语言</guimenu>
+    </term>
+    <listitem>
+     <para>
+      为此安装选择显示语言和相应的键盘布局。默认语言为美国英语。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F3</keycap> <guimenu>视频模式</guimenu>
+    </term>
+    <listitem>
+     <para>
+      选择安装的多种图形显示方式。如果图形安装出现问题，则选择<guimenu>文本方式</guimenu>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F4</keycap> <guimenu>源</guimenu>
+    </term>
+    <listitem>
+     <para>
+      通常情况下都是从插入的安装媒体来执行安装。在此处，选择其他源，如 FTP 或 NFS 服务器。如果在具有 SLP 服务器的网络中部署安装，则可以使用此选项选择服务器上可用的安装源。有关 SLP 的更多详细信息，请参见<xref linkend="cha.slp"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry id="sec.i.yast2.bootscreen.kernel">
+    <term><keycap>F5</keycap><guimenu>内核</guimenu>
+    </term>
+    <listitem>
+     <para>
+      如果正常安装遇到问题，此菜单可用于禁用几个可能有问题的功能。如果您的硬件不支持 ACPI（高级配置和电源接口），请选择<guimenu>无 ACPI</guimenu> 以选择无 ACPI 支持安装。<guimenu>无本地 APIC</guimenu>禁用对 APIC（高级可编程中断控制器）的支持，APIC 可能对某些硬件产生问题。<guimenu>安全设置</guimenu>引导使用了 DMA 方式（用于 CD/DVD-ROM 驱动器）且禁用了电源管理功能的系统。
+     </para>
+     <para>
+      如果不确定，请先尝试使用下列选项：<guimenu>安装 － 禁用 ACPI</guimenu> 或<guimenu>安装 － 安全设置</guimenu>。专家还可以使用命令行（<guimenu>引导选项</guimenu>）来输入或更改内核参数。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><keycap>F6</keycap> <guimenu>驱动程序</guimenu>
+    </term>
+    <listitem>
+     <para>
+      按此键可告知系统您有 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的可选驱动程序更新。通过<guimenu>文件</guimenu>或 <guimenu>URL</guimenu>，在安装开始前直接装载驱动程序。如果您选择<guimenu>是</guimenu>，则系统将在安装过程中的适当时间提示您插入更新磁盘。
+     </para>
+     <tip os="sles;sled">
+      <title>获取驱动程序更新磁盘</title>
+      <para>
+       <ulink url="http://drivers.suse.com/"/> 上会提供 SUSE Linux Enterprise 的驱动程序更新。这些驱动程序已通过 Partner Linux Driver Program 创建。
+      </para>
+     </tip>
+    </listitem>
+   </varlistentry>
+   
+  </variablelist>
+
+  <tip>
+   <title>在安装期间使用 IPv6</title>
+   <para>
+    默认情况下，仅可为您的计算机指定 IPv4 网络地址。要在安装期间启用 IPv6，请在引导提示符下输入以下参数之一：<literal>ipv6=1</literal>（接受 IPv4 和 IPv6）或 <literal>ipv6only=1</literal>（仅接受 IPv6）。
+   </para>
+  </tip>
+
+  <para>
+   启动安装后，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 将装载和配置一个精简 Linux 系统以运行安装过程。要在此过程中查看引导消息和版权声明，请按 <keycap>Esc</keycap> 键。此过程完成后，YaST 安装程序将启动并显示图形安装程序。
+  </para>
+
+  <tip>
+   <title>无鼠标安装</title>
+   <para>
+    如果安装程序没有正确检测到您的鼠标，请用 <keycap>Tab</keycap> 键进行导航，滚动箭头键并按 <keycap>Enter</keycap> 键确认选择。不同的按钮或选择字段包含带下划线的字母。使用 <keycombo action="press"><keycap>Alt</keycap><keycap>字母</keycap></keycombo>可选择按钮，不使用 <keycap>Tab</keycap> 按钮导航而改为直接选择。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.fun.yep" os="sles;sled">
+   <title>提供访问 SMT 服务器的数据</title>
+   <para>
+    默认情况下，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的更新由 Novell Customer Center 提供。如果您的网络提供了所谓的 SMT 服务器来提供本地更新源，则您需要在客户端上配置服务器的 URL。客户端和服务器仅通过 HTTPS 协议通讯，因此，如果服务器证书不是由证书授权者颁发的，则您还需要输入该证书的路径。此信息可如此处所述在引导提示下输入，或者如<xref linkend="sec.i.yast2.conf.manual.cc.local"/>中所述在注册过程中输入。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>regurl</term>
+     <listitem>
+      <para>
+       SMT 服务器的 URL。该 URL 具有固定格式 <literal>https://<replaceable>FQN</replaceable>/center/regsvc/</literal>，<replaceable>FQN</replaceable> 必须是 SMT 服务器的完全限定主机名。示例：
+      </para>
+<screen>regurl=https://smt.example.com/center/regsvc/</screen>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>regcert</term>
+     <listitem>
+      <para>
+       SMT 服务器证书的位置。指定以下位置之一：
+      </para>
+      <variablelist>
+       <varlistentry>
+        <term>URL</term>
+        <listitem>
+         <para>
+          可以下载证书的远程位置（http、https 或 ftp）。示例：
+         </para>
+<screen>regcert=http://smt.example.com/smt-ca.crt</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>软盘</term>
+        <listitem>
+         <para>
+          指定软盘上的位置。必须在引导时插入软盘，因为如果没有软盘，系统将不会提示您插入。值必须以字符串 <literal>floppy</literal> 开头，后跟证书的路径。示例：
+         </para>
+<screen>regcert=floppy/smt/smt-ca.crt</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>本地路径</term>
+        <listitem>
+         <para>
+          本地计算机上证书的绝对路径。示例：
+         </para>
+<screen>regcert=/data/inst/smt/smt-ca.cert</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>交互式</term>
+        <listitem>
+         <para>
+          使用<literal>询问</literal>可在安装期间打开一个弹出菜单，您可在其中指定证书的路径。请勿将此选项用于 AutoYaST。示例
+         </para>
+<screen>regcert=ask</screen>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term>停用证书安装</term>
+        <listitem>
+         <para>
+          如果证书将由外接式附件安装，或您将使用由正式证书颁发机构颁发的证书，请使用<literal>已完成</literal>选项。示例：
+         </para>
+<screen>regcert=done</screen>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <warning>
+    <title>当心键入错误</title>
+    <para>
+     确保您输入的值是正确的。如果尚未正确指定 <literal>regurl</literal>，更新源的注册将失败。如果输入了错误的 regcert 值，系统将提示您输入证书的本地路径。
+    </para>
+    <para>
+     如果未指定 regcert，它将默认为 <literal>http://<replaceable>FQN</replaceable>/smt.crt</literal>，其中 <literal>FQN</literal> 为 SMT 服务器的名称。
+    </para>
+   </warning>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.fun.supportconfigurl" os="sles;sled">
+   <title>为 <systemitem>supportconfig</systemitem> 配置备用数据服务器</title>
+   <para>
+    默认情况下，supportconfig（请参见<xref linkend="cha.adm.support"/>获取更多信息）所收集的数据将发送到 Novell Customer Center。也可以设置一个本地服务器来收集此数据。如果网络上提供了此类服务器，则需要在客户端上设置服务器的 URL。必须在引导提示符处输入此信息。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>supporturl</term>
+     <listitem>
+      <para>
+        服务器的 URL。此 URL 的格式为 <literal>http://<replaceable>FQN</replaceable>/<replaceable>Path</replaceable>/</literal> <replaceable>FQN</replaceable> 必须是该服务器的完全限定主机名，<replaceable>Path</replaceable> 必须替换为服务器上的位置。示例：
+      </para>
+<screen>supporturl=http://support.example.com/supportconfig/data/</screen>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.bootscreen_uefi">
+  <title>配有 UEFI 的计算机上的引导屏幕</title>
+
+  <para>
+   UEFI（统一可扩展固件接口）是一种新的行业标准，它替换并扩展了传统的 BIOS。最新的 UEFI 实施包含<quote>安全引导</quote>扩展，它仅允许系统执行经过签名的引导加载程序，借以防止引导恶意代码。有关详细信息，请参阅<xref linkend="cha.uefi"/>。
+  </para>
+
+
+
+  <para>
+   用于引导配备传统 BIOS 的计算机的引导管理器 GRUB 不支持 UEFI，因此 GRUB 会被替换为 ELILO。如果启用了“安全引导”，则系统会借助 ELILO 兼容层使用 GRUB 2 UEFI 模块。无论是从管理员还是用户看来，两个引导管理器实施的表现方式一致，并且在以下情况下称为 <literal>ELILO</literal>。
+  </para>
+
+  <tip>
+   <title>UEFI 和“安全引导”在默认情况下均受支持</title>
+   <para>
+    SUSE Linux Enterprise 的安装例程会自动检测计算机是否配备 UEFI。另外所有安装源均支持“安全引导”。如果双引导计算机（例如从 Microsoft Windows 8 中安装）上已存在 EFI 系统分区，则系统会自动检测并使用该分区。UEFI 系统上的分区表将写为 GPT。
+   </para>
+  </tip>
+  
+  <warning>
+   <title>通过安全引导使用非内置驱动程序</title>
+   <para>
+    该产品不支持在启用安全引导的情况下，在安装过程中添加非内置驱动程序（即，不是 SLE 自带的驱动程序）。用于 SolidDriver/PLDP 的签名密钥默认不受信任。
+   </para>
+   <para>
+    要解决此问题，需要在安装之前通过固件或系统管理工具向固件数据库中添加所需密钥，或者使用可引导 ISO 在首次引导时将所需密钥登记到 MOK 列表中。有关详细信息，请参见<xref linkend="sec.uefi.secboot"/>。
+   </para>
+  </warning>
+  <para>
+   引导屏幕将显示安装过程的多个选项。使用箭头键更改所选选项并按 <keycap function="enter"/> 进行引导。相关的选项有：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>安装</guimenu>
+    </term>
+    <listitem>
+     <para>
+      常规安装方式。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>救援系统</guimenu> <indexterm> <primary>YaST</primary> <secondary>救援系统</secondary></indexterm></term>
+    <listitem>
+     <para>
+      启动不带图形用户界面的最小 Linux 系统。有关详细信息，请参见<xref linkend="sec.trouble.data.recover.rescue"/>。 
+     </para>
+    </listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term><guimenu>检查安装媒体</guimenu><indexterm> <primary>YaST</primary> <secondary>媒体检查</secondary></indexterm><indexterm><primary>安装</primary><secondary>媒体检查</secondary></indexterm></term>
+    <listitem>
+     <para>
+      只有从基于所下载 ISO 创建的媒体中进行安装时，该选项才可用。这种情况下，建议检查安装媒体的完整性。该选项会在自动检查媒体之前启动安装系统。在检查成功时，将会启动正常的安装例程。如果检测到媒体损坏，安装例程会中止。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure>
+   <title>配有 UEFI 的计算机上的引导屏幕</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_boot_uefi.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_boot_uefi.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 上的 ELILO 不支持图形引导屏幕或引导提示。要添加其他引导参数，您需要编辑相应的引导项。使用箭头键并按 <keycap>E</keycap> 将其高亮显示。有关编辑方面的提示，请参见屏幕帮助（注意，目前仅提供英语键盘）。<guimenu>安装</guimenu>项与下列类似：
+  </para>
+
+<screen>setparams 'Installation'
+
+  set gfxpayload=keep
+  echo 'Loading kernel ...'
+  linuxefi /boot/x86_64/loader/linux
+  echo 'Loading initial ramdisk ...'
+  initrdefi /boot/x86_64/loader/initrd</screen>
+
+  <para>
+   将空格分隔的参数添加到以 <literal>linuxefi</literal> 开头的行的结尾。参数列表请见 <ulink url="https://en.opensuse.org/Linuxrc"/>。在以下示例中，安装语言会设置为“德语”：
+  </para>
+
+<screen>linuxefi /boot/x86_64/loader/linux Language=de_DE</screen>
+
+  <para>
+   要引导所编辑的项，请按 <keycap>F10</keycap>。如果要通过串行控制台访问计算机，请按 <keycombo><keycap function="escape"/> <keycap>0</keycap></keycombo>。
+  </para>
+ </sect1>
+ <sect1 id="sec.i.yast2.welcome">
+  <title>欢迎</title><indexterm><primary>安装</primary><secondary>语言</secondary></indexterm><indexterm><primary>安装</primary><secondary>键盘</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>语言</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>键盘</secondary></indexterm><indexterm><primary>许可协议</primary></indexterm>
+
+  <para>
+   选择您要采用的语言以启动 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装。更改语言将自动预选相应的键盘布局。从下拉菜单中选择其他键盘布局来覆盖此建议。在此选择的语言还将用于假定系统时钟的时区。稍后可在<guimenu>安装摘要</guimenu>中修改此设置和选择要安装在您系统上的次要语言，如<xref linkend="sec.i.yast2.proposal"/>中所述。有关已安装系统中语言设置的信息，请参见<xref linkend="cha.y2.lang"/>。
+  </para>
+
+  <para>
+   仔细阅读显示在语言和键盘选择下的许可协议。使用<guimenu>许可证翻译...</guimenu> 访问翻译。<phrase os="sles;sled">如果您接受条款，请选择<guimenu>我同意许可条款</guimenu></phrase>，然后单击<guimenu>下一步</guimenu>继续安装。如果不接受许可协议<phrase os="sles;sled">，您将无法安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase></phrase>。单击<guimenu>中止</guimenu>可终止安装。
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>欢迎</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_welcome_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_welcome_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ <sect1 id="sec.i.yast2.s390.part" arch="zseries" os="sles">
+  <title>IBM System z：硬盘配置</title>
+
+  <para>
+   当在 IBM System z 平台上进行安装时，在语言选择对话框后，会出现一个用来配置挂接硬盘的对话框。选择 DASD、光纤通道挂接式 SCSI 磁盘 (zFCP) 或 iSCSI 来安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。DASD 和 zFCP 配置按钮仅在挂接了相应设备时方可使用。有关如何配置 iSCSI 磁盘的指导，请参见<xref linkend="bj4rqa5"/>。
+  </para>
+
+  <tip>
+   <title>在后续阶段添加 DASD 或 zFCP 磁盘</title>
+   <para>
+    不仅在安装工作流程中可以添加 DASD 或 zFCP 磁盘，还可以在显示安装建议书时添加。要在该阶段添加磁盘，单击<guimenu>专家</guimenu>，然后向下滚动。DASD 和 zFCP 项显示在最底部。
+   </para>
+   <para>
+    添加磁盘后，重新读取分区表。返回到安装建议书屏幕，选择<guimenu>分区</guimenu>，然后选择<guimenu>重读取分区表</guimenu>。它会更新新的分区表。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.s390.part.dasd">
+   <title>配置 DASD 磁盘</title>
+   <para>
+    选择<guimenu>配置 DASD 磁盘</guimenu>后，概述列出了所有可用的 DASD。要更清楚地显示可用设备，可使用列表上方的输入字段来指定要显示的通道的范围。要根据这一范围过滤此列表，请选择<guimenu>过滤器</guimenu>。
+   </para>
+   <figure id="fig.s390_yast2.i_y2_sel_dasd">
+    <title>IBM System z：选择 DASD</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="70%" fileref="s390_i_y2_sel_dasd.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="70%" fileref="s390_i_y2_sel_dasd.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <para>
+    通过在列表中选择相应的条目，指定要用于安装的 DASD。单击<guimenu>选择或取消选择</guimenu>。激活 DASD 并使其可用于安装，方法是选择<menuchoice><guimenu>执行操作</guimenu><guimenu>激活</guimenu></menuchoice>。要格式化 DASD，请立即选择<menuchoice><guimenu>执行操作</guimenu><guimenu>格式化</guimenu></menuchoice>或稍后使用 YaST 分区工具（如中所述）。<xref linkend="sec.yast2.i_y2_part_expert"/>
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.s390.part.zfcp">
+   <title>配置 zFCP 磁盘</title>
+   <para>
+    要使用 zFCP 磁盘安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>，请在选择对话框中选择<guimenu>配置 zFCP 磁盘</guimenu>。这样将打开一个对话框，其中显示系统上可用 zFCP 磁盘的列表。在此对话框中，选择<guimenu>添加</guimenu>打开另一个对话框，然后在该对话框中输入 zFCP 参数。
+   </para>
+   <para>
+    要使 zFCP 磁盘可用于 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装，请从下拉列表中选择一个可用的<guimenu>通道号</guimenu>。<guimenu>获取 WWPN</guimenu>（全球端口号）和<guimenu>获取 LUN</guimenu>（逻辑单元号）分别返回可用 WWPN 和 FCP-LUN 的列表，以供选择。完成后，选择<guimenu>下一步</guimenu>退出 zFCP 对话框，然后选择<guimenu>完成</guimenu>退出常规硬盘配置对话框，接下来继续进行其他配置。
+   </para>
+  </sect2>
+ </sect1>
+
+ <sect1 id="sec.i.yast2.mediacheck" os="sles;sled">
+  <title>媒体检查</title><indexterm> <primary>YaST</primary> <secondary>媒体检查</secondary></indexterm>
+
+  <para>
+   仅当从使用下载的 ISO 创建的媒体安装时，才会显示“媒体检查”对话框。如果从原始媒体包安装，则将跳过该对话框。
+  </para>
+
+  <para>
+   媒体检查将检查媒体的完整性。要启动它，请选择包含安装媒体的驱动器，然后单击<guimenu>启动检查</guimenu>。检查可能需要一段时间。
+  </para>
+
+  <para>
+   要测试多个媒体，请等至对话框中显示了结果消息，然后再更改媒体。如果检查的最后一个媒体并非您开始安装时所使用的媒体，YaST 将提示您在继续安装前使用适当的媒体。
+  </para>
+
+  <para>
+   如果使用的是 ISO 映像（例如，安装外接式附件）,则单击<guimenu>检查 ISO 文件</guimenu>，并通过文件对话框选择映像。
+  </para>
+
+  <warning>
+   <title>媒体检查失败</title>
+   <para>
+    如果媒体检查失败，则表明您的媒体已损坏。请勿继续安装，因为安装可能会失败，或您可能会丢失数据。请更换损坏的媒体，然后重新开始安装过程。
+   </para>
+  </warning>
+
+  <para>
+   如果媒体检查结果正常，则单击<guimenu>下一步</guimenu>继续安装。
+  </para>
+
+
+ </sect1>
+ <sect1 id="sec.i.yast2.inst_mode">
+  <title>安装方式</title><indexterm><primary>YaST</primary> <secondary>安装模式</secondary></indexterm><indexterm><primary>安装</primary><secondary>模式</secondary></indexterm>
+
+  <para>
+   在系统分析（在此过程中，YaST 会探测储存设备并尝试在您的计算机上查找其他已安装系统）之后，可用的安装模式即会显示。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><guimenu>新安装</guimenu>
+    </term>
+    <listitem>
+     <para>
+      选择该选项从头开始新安装。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>更新</guimenu>
+    </term>
+    <listitem>
+     <para>
+      选择该选项可将现有安装更新为较新的版本。<phrase os="sled;sles">关于系统更新的更多信息，请参见<xref linkend="cha.update.sle"/>。</phrase>
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><guimenu>修复已安装系统</guimenu>
+    </term>
+    <listitem>
+     <para>
+      选择此选项来修复已安装的损坏系统。有关更多信息，请参见<xref linkend="sec.trouble.data.recover"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>安装方式</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_inst_mode_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_inst_mode_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  
+
+  <para os="sled;sles;osuse">
+   选中<guimenu>包括来自单独媒体的外接式附件</guimenu>可在安装过程中包含外接式附件。外接式附件可能包括扩展、第三方产品和驱动程序或用于您系统的其他软件。
+  </para>
+
+
+
+  <tip>
+   <title>安装时从 SMT 服务器安装产品增补程序</title>
+   <para>
+    如果您的组织是通过 SMT 服务器提供 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 更新通道的，则可以输入此通道的 HTTP 地址将其指定为外接式附件产品。这样就会用最新的包安装系统，而不必在安装结束后应用更新。
+   </para>
+  </tip>
+
+  <para>
+   单击<guimenu>下一步</guimenu>继续。如果您选择包括外接式附件，请继续进行<xref linkend="sec.i.yast2.inst_mode.addon"/>，否则将跳过下一部分并继续到<xref linkend="sec.i.yast2.timezone"/>。
+  </para>
+
+  <sect2 id="sec.i.yast2.inst_mode.addon">
+   <title>外接式附件</title><indexterm><primary>YaST</primary> <secondary>外接式附件</secondary></indexterm><indexterm><primary>安装</primary><secondary>外接式附件</secondary></indexterm>
+   <para>
+    外接式附件可从本地源（CD、DVD 或目录）安装，也可从网络源（HTTP、FTP、NFS 和 CIFS 等）安装。从网络源进行安装时，需要先配置网络（除非执行的是网络安装，这种情况下将使用现有的网络配置）。选择<guimenu>是，运行网络安装</guimenu>，然后按<xref linkend="sec.i.yast2.inst_mode.network"/>中所述继续。如果可本地获得外接式附件产品，选择<guimenu>否，跳过网络安装</guimenu>。
+   </para>
+   <para>
+    单击<guimenu>下一步</guimenu>，然后指定产品源。可用源类型包括 <guimenu>CD</guimenu>、<guimenu>DVD</guimenu>、<guimenu>硬盘</guimenu>、<guimenu>USB 大容量储存设备</guimenu>、<guimenu>本地目录</guimenu>或<guimenu>本地 ISO 映像</guimenu>（如果没有配置网络）。如果外接式附件产品位于可卸媒体上，则系统将自动装入此媒体并读取其内容。如果外接式附件产品位于硬盘上，请选择<guimenu>硬盘</guimenu>以便从未装入的硬盘驱动器进行安装；或选择<guimenu>本地目录</guimenu>/<guimenu>本地 ISO 映像</guimenu>以便从本地文件系统进行安装。外接式附件产品可以以储存库或一组 RPM 文件的形式提供。在后一种情况中，请选中<guimenu>纯 RPM 目录</guimenu>。如果可以使用网络，您可以选择附加远程源（如 HTTP、SLP、FTP 等等）。也可以直接指定 URL。
+   </para>
+   <para>
+    选中<guimenu>下载储存库描述文件</guimenu>可立即下载用于描述储存库的文件。如果未选中，将在安装开始后下载这些文件。选择<guimenu>下一步</guimenu>继续，并插入 CD 或 DVD（如果需要）。根据产品内容，可能必须接受附加许可协议。
+   </para>
+   <para>
+    也可以稍后再配置外接式附件产品。<xref linkend="cha.add-ons"/>中描述了在已安装系统中使用外接式附件产品。
+   </para>
+   <tip os="sles;sled">
+    <title>驱动程序更新</title>
+    <para>
+     您还可以通过“外接式附件产品”对话框添加驱动程序更新储存库。<ulink url="http://drivers.suse.com/"/> 上会提供 SUSE Linux Enterprise 的驱动程序更新。这些驱动程序已通过 Partner Linux Driver Program 创建。
+    </para>
+   </tip>
+   <sect3 id="sec.i.yast2.inst_mode.network">
+    <title>网络安装</title><indexterm><primary>安装</primary><secondary>网络</secondary></indexterm>
+    <para>
+     调用网络安装时，YaST 将扫描可用的网卡。如果发现多个网卡，您必须从此列表中选择要配置的卡。
+    </para>
+    <para>
+     如果尚未连接以太网网络适配器，将打开警告。请确保已插入网络电缆，然后选择<guimenu>是的，使用</guimenu>。如果您的网络配有 DHCP 服务器，请选择<guimenu>自动地址设置（通过 DHCP）</guimenu>。要手动设置网络，请选择<guimenu>静态地址设置</guimenu>，并指定 <guimenu>IP 地址</guimenu>、<guimenu>网络掩码</guimenu>、<guimenu>默认网关 IP</guimenu> 和 <guimenu>DNS 服务器 IP</guimenu>。
+    </para>
+    <para>
+     一些网络需要使用代理服务器才能访问因特网。勾选复选框<guimenu>使用代理访问因特网</guimenu>，并输入相应规范。单击<guimenu>接受</guimenu>以执行网络安装。安装过程将继续，外接式附件产品或储存库安装如<xref linkend="sec.i.yast2.inst_mode.addon"/>中所述。
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.timezone">
+  <title>时钟和时区</title><indexterm><primary>YaST</primary> <secondary>时区</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>时钟</secondary></indexterm><indexterm><primary>安装</primary><secondary>时区</secondary></indexterm><indexterm><primary>安装</primary><secondary>时钟</secondary></indexterm>
+
+  <para>
+   在此对话框中，请选择区域和时区。根据所选的安装语言，会预选这两项内容。要更改预选的值，请使用地图或<guimenu>区域</guimenu>和<guimenu>时区</guimenu>对应的下拉列表。使用地图时，请将光标指向区域的大概方向，并单击左键进行缩放。现在请单击左键选择您的国家/地区或区域。单击右键以返回到世界地图。
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>时钟和时区</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_timezone_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_timezone_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <para>
+   要设置时钟，请选择是否<guimenu>将硬件时钟设置为 UTC</guimenu>。如果在计算机上运行其他操作系统，如 Microsoft Windows，您的系统可能会改为使用本地时间。如果在计算机上只运行 Linux，请将硬件时钟设置为 UTC，并自动将标准时间切换为夏令时。
+  </para>
+
+  <important>
+   <title>将硬件时钟设置为 UTC</title>
+   <para>
+    如果要从标准时间自动切换到夏令时（反之亦然），则前提条件是硬件时钟（CMOS 时钟）设置为 UTC。这同样适用于借助 NTP 使用自动时间同步的情况，因为系统只有在硬件与系统时钟之间的时差少于 15 分钟时才会执行自动同步。
+   </para>
+   <para>
+    由于错误的系统时间会导致严重的问题（错过备份、丢弃邮件、无法在远程文件系统上装载等等），因此强烈建议<emphasis>始终</emphasis>将硬件时钟设置为 UTC。
+   </para>
+  </important>
+
+  <para>
+   如果已配置网络，<phrase os="sles;sled">您可以配置与 NTP 服务器的时间同步。</phrase>单击<guimenu>更改</guimenu>改变 NTP 设置或<guimenu>手动</guimenu>设置时间。有关配置 NTP 服务的更多信息，请参见<xref linkend="cha.netz.xntp"/>。完成后，请单击<guimenu>接受</guimenu>继续安装。
+  </para>
+  
+  
+
+  <note arch="zseries" os="sles">
+   <title>在 IBM System z 上无法更改时间</title>
+   <para>
+    由于操作系统不能直接更改时间和日期，<guimenu>更改</guimenu>选项在 IBM System z 上不可用。
+   </para>
+  </note>
+ </sect1>
+ 
+ <sect1 id="sec.i.yast2.server" os="sles">
+  <title>服务器基本方案</title><indexterm> <primary>YaST</primary> <secondary>服务器方案</secondary></indexterm>
+
+  <para>
+   在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中，您可以从三个基础方案中进行选择。所选方案会影响选择的包。
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>物理计算机</term>
+    <listitem>
+     <para>
+      在<quote>真实</quote>计算机或完全虚拟化 guest 上安装时，选择此方案。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>虚拟机</term>
+    <listitem>
+     <para>
+      在半虚拟化 guest 上安装时，请选择此方案。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>XEN 虚拟主机</term>
+    <listitem>
+     <para>
+      在应用作 XEN 主机的计算机上安装时请选择此方案。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <figure>
+   <title>服务器基本方案</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_server_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_server_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+ </sect1>
+ 
+ 
+ <sect1 id="sec.i.yast2.proposal">
+  <title>安装设置</title><indexterm><primary>YaST</primary> <secondary>安装设置</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>安装摘要</secondary></indexterm><indexterm><primary>安装</primary><secondary>设置</secondary></indexterm><indexterm><primary>安装</primary><secondary>摘要</secondary></indexterm>
+
+  <para>
+   在实际安装开始前的最后一步，您可以更改 YaST 所建议的安装设置，还可以复查目前为止所做的设置。<phrase os="sles;sled">可在<guimenu>概述</guimenu>选项卡中更改基本设置，<guimenu>专家</guimenu>选项卡中有高级选项。</phrase>要修改建议的值，请单击<guimenu>更改</guimenu>，然后选择要更改的类别，或单击其中一个标题。在完成对显示在这些对话框中的项的配置之后，总是会返回到“安装设置”窗口，而且每次都会随之进行相应的更新。
+  </para>
+
+  
+
+  
+
+  <figure os="sles">
+   <title>安装设置</title>
+   <mediaobject>
+    <imageobject role="fo">
+     <imagedata fileref="i_y2_inst_summary_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+    <imageobject role="html">
+     <imagedata fileref="i_y2_inst_summary_sles.png" width="75%" format="PNG"/>
+    </imageobject>
+   </mediaobject>
+  </figure>
+
+  <tip>
+   <title>恢复默认设置</title>
+   <para>
+    您可通过单击<menuchoice><guimenu>更改</guimenu> <guimenu>重设置为默认值</guimenu></menuchoice>将所有更改重设置为默认值。YaST 便会再次显示原来的建议。
+   </para>
+  </tip>
+
+  <sect2 id="sec.i.yast2.proposal.partitioning">
+   <title><guimenu>分区</guimenu><phrase os="sles;sled">（概述）</phrase></title>
+   <para>
+    检查并根据需要更改<phrase os="sled;sles">系统建议的</phrase>分区设置。<phrase os="sled;sles">更改分区设置使您可以对某特定磁盘进行分区，或者选择<guimenu>自定义分区</guimenu>时应用您自己的分区模式。</phrase>要修改分区设置，打开“专家分区程序”（如<xref linkend="sec.yast2.i_y2_part_expert"/>中所述）。
+   </para>
+   <tip os="sles">
+    <title>使用 Btrfs 作为默认文件系统</title>
+    <para>
+     默认分区模式以 Ext3 文件系统为基础。要改为使用 Btrfs 作为默认的文件系统，请单击<guimenu>概览</guimenu>选项卡上的<guimenu>分区</guimenu>并选中<guimenu>使用 Btrfs 作为默认文件系统</guimenu>
+    </para>
+   </tip>
+   <note os="sles" arch="zseries">
+
+    <title>使用 z/VM 中的迷你磁盘</title>
+    <para>
+     如果 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 安装在 z/VM 中驻留在同一物理磁盘上的几个迷你磁盘中，则迷你磁盘的访问路径 (/dev/disk/by-id/) 将不是唯一的，而是物理磁盘的 ID。所以，如果同一物理磁盘上有两个或更多迷你磁盘，它们的 ID 都相同。
+    </para>
+    <para>
+     要避免在装入迷你磁盘时发生问题，请始终“按路径”或“按 UUID”装入它们。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.booting">
+   <title><guimenu>引导</guimenu><phrase os="sles;sled">（专家）</phrase></title>
+   <para os="sles" arch="zseries">
+    此模块无法用于在 IBM System z 平台上配置引导加载程序 (zipl)。
+   </para>
+
+
+   <para>
+    YaST 会为您的系统提供引导配置建议。将自动检测在计算机上找到的其他操作系统（如 Microsoft Windows 或其他 Linux 安装），并将其添加到引导加载程序。但 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 会按默认设置引导。通常，您可以保持这些设置不变。如果您需要自定义安装，则可修改对系统的建议。有关信息，请参见<xref linkend="sec.boot.yast2.config"/>。 
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.sofware">
+   <title><guimenu>软件</guimenu><phrase os="sles;sled">（概述）</phrase></title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 中包含许多满足各种应用程序目的所需的软件包。单击<guimenu>软件</guimenu>以启动模式选择并根据需要修改安装范围。从列表中选择模式，并在窗口右侧部分查看模式描述。每种模式都包含特定功能所需的多个软件包（例如，<phrase os="sles">Web 和 LAMP 服务器或打印服务器</phrase>）。如果想查看要安装软件包的更为详细的选择，请选择<guimenu>细节</guimenu>切换到 YaST 软件管理器。
+   </para>
+   <para>
+    以后，您也可以随时使用 YaST 软件管理器安装其他软件包或从系统中去除软件包。有关更多信息，请参考<xref linkend="cha.y2.sw"/>。
+   </para>
+   
+   
+   <figure os="sles">
+    <title>软件选择和系统任务</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="i_y2_software_sles.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="i_y2_software_sles.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <note os="sles">
+    <title>默认桌面</title>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的默认桌面是 GNOME。要安装 KDE，请单击<guimenu>软件</guimenu>，然后从<guimenu>图形环境</guimenu>选择 <guimenu>KDE 桌面环境</guimenu>。
+    </para>
+   </note>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.locale">
+   <title><guimenu os="sles;sled">语言</guimenu><phrase os="sles;sled">（概述）</phrase></title>
+   <para>
+    在此处，您可以更改安装第一步中定义的系统<guimenu>语言</guimenu>。也可以添加附加语言。要调整系统语言设置，请选择<guimenu>语言</guimenu>。从列表中选择一种语言。主语言用作系统语言。如果当前设置不同，您也可以更改键盘布局和时区使它们适应主语言。<guimenu>细节</guimenu>可让您修改 <systemitem class="username">root</systemitem> 用户的语言设置，设置 <systemitem>UTF-8</systemitem> 支持，或进一步指定语言（例如，选择“南非英语”）。
+   </para>
+   <para>
+    选择次要语言，用于在无需安装其他包的情况下，即可随时切换到这些语言之一。有关详细信息，请参见<xref linkend="cha.y2.lang"/>。
+   </para>
+   
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.add-on" os="sles;sled">
+   <title><guimenu>外接式附件产品</guimenu>（专家）</title>
+   <para>
+    如果先前对某外接式附件媒体添加了源，它将出现在此处。如果需要，请在此处添加、删除或修改外接式附件产品。这与先前在<xref linkend="sec.i.yast2.inst_mode.addon"/>中讨论的配置对话框相同。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.keyboard" os="sles;sled">
+   <title><guimenu>键盘布局</guimenu>（专家）</title>
+   <para>
+    要更改键盘布局，选择<guimenu>键盘布局</guimenu>。默认情况下，布局对应于安装时所选的语言。从列表中选择键盘布局。使用对话框底部的<guimenu>测试</guimenu>字段检查是否可以正确输入该布局的特殊字符。在<guimenu>专家模式</guimenu>下可以使用调优各种设置的选项。完成后，单击<guimenu>接受</guimenu>返回到安装摘要。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.timezone">
+   <title><guimenu>时区</guimenu><phrase os="sles;sled">（专家）</phrase></title>
+   <para>
+    在此处调整时区和时钟设置。如果已配置网络，您还可以设置网络时间协议 (NTP) 客户端，它会自动使您的计算机与时间服务器同步。这与稍早在<xref linkend="sec.i.yast2.timezone"/>中显示的配置相同。
+   </para>
+  </sect2>
+
+  
+
+  <sect2 id="sec.i.yast2.proposal.runlevel">
+   <title><guimenu>默认运行级别</guimenu><phrase os="sles;sled"> (专家)</phrase></title>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 可以引导到不同的运行级别。通常情况下无需更改此处的任何内容，但是如果需要，可使用此对话框设置默认的运行级别。有关运行级别配置的更多信息，请参见<xref linkend="sec.boot.runlevel.edit"/>。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.system">
+   <title><guimenu>系统</guimenu><phrase os="sles;sled">（专家）</phrase></title>
+   <para>
+    此对话框将显示 YaST 能够获取的关于您计算机的所有硬件信息。调用时，将启动硬件检测例程。根据系统情况，可能需要一些时间。可在列表中选择任意项，然后单击<guimenu>详细信息</guimenu>以查看关于所选项的详细信息。单击<guimenu>保存到文件</guimenu>将详细的列表保存到本地文件系统或软盘中。高级用户还可通过选择<guimenu>内核设置</guimenu>来更改 PCI ID 设置和内核设置。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.i.yast2.proposal.kdump" os="sles">
+   <title><guimenu>Kdump</guimenu>（专家）</title>
+   <para>
+    使用 kdump，您可以在发生崩溃的情况下保存内核的转储，从而分析出现问题的位置。使用此对话框启用并配置 Kdump。有关详细信息，请参见<xref linkend="cha.tuning.kexec"/>。
+   </para>
+  </sect2>
+
+  
+
+  
+ </sect1>
+ <sect1 id="sec.i.yast2.perform">
+  <title>执行安装</title><indexterm><primary>安装</primary><secondary>执行</secondary></indexterm>
+
+  <para>
+   在配置所有安装设置后，在“安装设置”窗口中单击<guimenu>安装</guimenu>开始安装。某些软件可能需要许可证确认。如果您选择的软件包括此类软件，则将显示许可证确认对话框。单击<guimenu>接受</guimenu>以安装软件包。如果不同意许可证，则单击<guimenu>我不同意</guimenu>，将不会安装软件包。在随后的对话框中，选择<guimenu>安装</guimenu>再次确认。
+  </para>
+
+  <para>
+   根据系统性能和所选的软件范围，安装通常需要 15 到 30 分钟。准备好硬盘<phrase os="sles;sled">并且保存和恢复用户设置后，</phrase>软件安装开始。
+   
+  </para>
+
+  
+
+  <para>
+   完成软件的安装后，基本系统就设置好了。其中，<quote>完成基本安装</quote>包括安装引导管理器、初始化字体等等。然后 YaST 引导进入新的 Linux 系统以启动系统配置。
+  </para>
+
+  <tip>
+
+   <title>现有的 SSJ 主机键</title>
+   <para>
+    如果在已经装有 Linux 系统的计算机上安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>，安装例程会自动从现有安装导入最近访问的 SSH 主机密钥。
+   </para>
+  </tip>
+
+  <sect2 id="sec.s390.inst.reipl" arch="zseries" os="sles">
+   <title>IBM System z：对安装好的系统进行初始程序装载</title>
+   <para>
+    在多数情况下，YaST 会自动重引导至 IBM System z 平台上安装的系统中。据了解，以下安装情况例外：计算机上的 LPAR 早于 z9 或者 z/VM 早于 5.3 版本，并且在这种环境下引导加载程序驻留在 FCP 设备上。系统会将引导加载程序写入 <filename>/boot</filename> 目录所在的设备中。如果 <filename>/boot</filename> 不在独立的分区上，则在与 root 文件系统 <filename>/</filename> 相同的分区上。
+   </para>
+   <para>
+    如果无法进行自动重引导，YaST 将显示一个对话框，其中包含关于从哪个设备进行 IPL 的信息。接受关机选项，并在关机后执行 IPL。此过程将随安装类型的不同而有所不同：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>LPAR 安装</term>
+     <listitem>
+      <para>
+       <indexterm> <primary>LPAR 安装</primary> <secondary>IPL</secondary> </indexterm> 在 IBM System z HMC 中，选择<guimenu>装载</guimenu>，选择<guimenu>清除</guimenu>，然后输入装载地址（引导加载程序及 <filename>/boot</filename> 目录所在设备的设备地址）。如果适用 ZFCP 磁盘作为引导设备，请选择<guimenu>从 SCSI 装载</guimenu>，并指定 FCP 适配器的装载地址，以及引导设备的 WWPN 和 LUN。现在启动装载进程。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>z/VM 安装</term>
+     <listitem>
+      <para>
+       <indexterm><primary>z/VM 安装</primary><secondary>IPL</secondary> </indexterm>作为 <systemitem class="username">LINUX1</systemitem> 登录到 VM Guest（关于配置，请参见<xref linkend="ex.prep.prep_ipl.vm.linux_guest.config"/>），然后继续对已安装的系统执行 IPL。
+      </para>
+<screen>IPL 151 CLEAR</screen>
+      <para>
+       <literal>151</literal> 是 DASD 引导设备的地址示例，请用正确的地址替换该值。
+      </para>
+      <para>
+       如果将 ZFCP 磁盘用作引导设备，则应在启动 IPL 之前指定引导设备的 ZFCP WWPN 和 LUN。参数长度不得超过 8 个字符。较长的数字必须用空格隔开：
+      </para>
+<screen>SET LOADDEV PORT 50050763 00C590A9 LUN 50010000 00000000 </screen>
+      <para>
+       最后，启动初始程序装载：
+      </para>
+<screen>IPL FC00</screen>
+      <para>
+       <literal>FC00</literal> 是 ZFCP 适配器的地址示例，请用正确的地址替换该值。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.s390.inst.reipl.reconnect" arch="zseries" os="sles">
+   <title>IBM System z：连接安装好的系统</title>
+   <para>
+    对已安装系统进行初始程序装载后，应建立与它的连接以完成安装。所涉及的步骤随最初使用的连接类型的不同而有所不同。
+   </para>
+   <sect3 id="sec.s390.inst.reipl.reconnect.vnc">
+    <title>使用 VNC 进行连接</title>
+    <para>
+     3270 终端中有一条消息要求您使用 VNC 客户端连接到 Linux 系统。但您很容易忽略此消息，因为它与内核消息混杂在一起，而且在您注意到此消息时终端进程可能已退出。如果在 5 分钟内无任何反应，请尝试使用 VNC 查看器来启动与 Linux 系统的连接。
+    </para>
+    <para>
+     如果使用支持 Java 的浏览器进行连接，请输入完整的 URL，其中包括已安装系统的 IP 地址和端口号，具体形式如下：
+    </para>
+<screen> http://&lt;IP of installed system&gt;:5801/ </screen>
+   </sect3>
+   <sect3 id="sec.s390.inst.reipl.reconnect.x">
+    <title>使用 X 进行连接</title>
+    <para>
+     对已安装系统执行 IPL 时，请确保在安装第一阶段使用的 X 服务器已启动，并在从 DASD 引导之前仍然可用。YaST 会在此 X 服务器上打开以完成安装。如果系统已引导但无法及时连接到 X 服务器，情况就比较复杂。
+    </para>
+   </sect3>
+   <sect3 id="sec.s390.inst.reipl.reconnect.ssh">
+    <title>使用 SSH 进行连接</title>
+    <important>
+     <title>IBM System z：从 Linux 或 UNIX 系统进行连接</title>
+     <para>
+      在 xterm 中启动 SSH。其他终端模拟器不能完全支持 YaST 的基于文本的界面。
+     </para>
+    </important>
+    <para>
+     3270 终端中有一条消息要求您使用 SSH 客户端连接到 Linux 系统。但您很容易忽略此消息，因为它与内核消息混杂在一起，而且在您注意到此消息时终端进程可能已退出。
+    </para>
+    <para>
+     一旦出现该消息，请作为 <systemitem class="username">root</systemitem> 使用 SSH 登录到 Linux 系统。如果连接被拒绝或发生超时，则等待登录超时到期，然后重试（该时间会因服务器设置而异）。
+    </para>
+    <para>
+     建立连接后，执行命令 <command>/usr/lib/YaST2/startup/YaST2.ssh</command>。在这种情况下，仅执行命令 <command>yast</command> 是不够的。
+    </para>
+    <para>
+     之后，YaST 将开始安装剩余的包并创建初始系统配置。
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.conf">
+  <title>已安装系统的配置</title>
+
+  <para>
+   现在该系统已安装，但尚未针对用途进行配置。尚未设置硬件、网络和其他服务。
+  </para>
+
+  
+
+  <sect2 id="sec.i.yast2.conf.manual">
+   <title>系统配置</title><indexterm><primary>安装</primary><secondary>手动配置</secondary></indexterm>
+   <para>
+    重引导后，系统将启动手动配置。如果配置在进行到此阶段中的某个步骤时失败，则其将重启动并继续从最后一个成功的步骤开始。
+   </para>
+   <sect3 id="sec.i.yast2.conf.manual.root" os="sles">
+    <title>系统管理员 <quote>root</quote> 的口令</title><indexterm> <primary>YaST</primary><secondary>根口令</secondary></indexterm>
+    <para>
+     <systemitem class="username">root</systemitem> 是超级用户（即系统管理员）的名称。与普通用户（有的有权在系统上执行管理命令，有的则无权）不同，<systemitem class="username">root</systemitem> 可执行的命令不受限制，例如更改系统配置、安装程序和设置新硬件。如果用户忘记他们的口令或遇到其他有关系统的问题，<systemitem class="username">root</systemitem> 用户可以提供帮助。 <systemitem class="username">root </systemitem>帐户应只用于系统管理、维护和修复工作。以 <systemitem class="username">root</systemitem> 身份登录来执行日常工作有很大风险，因为一个错误操作就可能导致系统文件丢失，而且无法挽回。
+    </para>
+    <para>
+     为了进行校验，必须两次输入 <systemitem class="username">root</systemitem> 用户的口令。 切勿忘记 <systemitem class="username">root</systemitem> 口令。 一旦输入，就不能在系统中检索此口令。
+    </para>
+    <para>
+     键入口令时，字符将由圆点代替，因此您无法看到正在键入的字符串。如果您不确定是否键入了正确的字符串，请使用<guimenu>测试键盘布局</guimenu>字段来进行测试。
+    </para>
+    <para>
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 可对口令使用 DES、MD5 或 Blowfish 加密算法。默认加密类型是 Blowfish。要更改加密类型，请单击<menuchoice><guimenu>专家选项</guimenu><guimenu>加密类型</guimenu></menuchoice>并选择新类型。
+    </para>
+    <para>
+     以后，可随时在已安装系统中更改 <systemitem class="username">root</systemitem> 权限。要实现此目的，请运行 YaST，并启动<menuchoice><guimenu>安全和用户</guimenu> <guimenu>用户和组管理</guimenu></menuchoice>。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.hostname">
+    <title>主机名和域名</title><indexterm><primary>YaST</primary> <secondary>主机名</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>域名</secondary></indexterm><indexterm><primary>安装</primary><secondary>主机名</secondary></indexterm><indexterm><primary>安装</primary><secondary>域名</secondary></indexterm>
+    <para>
+     主机名是网络中的计算机名称。域名是网络的名称。主机名和域是默认设置的。如果您的系统是网络的一部分，则主机名在此网络中必须是唯一的，但网络中所有主机的域名必须是相同的。
+    </para>
+    <para>
+     在许多网络中，系统通过 DHCP 来接收其名称。在这种情况下，无需修改提议的主机名和域名。代为选择<guimenu>通过 DHCP 更改主机名</guimenu>。为了在主机未连接到网络时也能使用此主机名访问系统，请选择<guimenu>指派主机名给回写 IP</guimenu>。如果您的计算机提供网络服务，请不要启用此选项。如果您经常在不重启动桌面环境的情况下更改网络（例如，在不同的 WLAN 之间切换），则请勿启用此选项，因为当 <filename>/etc/hosts</filename> 中的主机名更改时，桌面系统可能会无法区分。
+    </para>
+    <para>
+     要在安装后随时更改主机名设置，请使用 YaST 的<menuchoice><guimenu>网络设备</guimenu><guimenu>网络设置</guimenu></menuchoice>。有关详细信息，请参见<xref linkend="sec.basicnet.yast.netcard"/>。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.network">
+    <title>网络配置</title><indexterm><primary>YaST</primary> <secondary>网络配置</secondary></indexterm><indexterm><primary>安装</primary> <secondary>网络配置</secondary></indexterm>
+    <tip arch="zseries" os="sles">
+     <title>IBM System z：网络配置</title>
+     <para>
+      如果使用的是 IBM System z 平台，在安装时需要一个有效的网络连接以连接到目标系统、安装源和控制此进程的 YaST 终端。设置网络的步骤在<xref linkend="sec.prep.netcfg"/>中有所讨论。IBM System z 平台只支持以下几种网络接口：OSA Ethernet、OSA Gigabit Ethernet、OSA Express Fast Ethernet、Escon 和 IUCV。YaST 对话框只会显示已配置好的接口及其设置。确认此对话框来继续进行配置。
+     </para>
+    </tip>
+    
+    <para os="sles">
+     默认情况下，将启用<guimenu>不使用 NetworkManager 小程序的传统方法</guimenu>。如果需要，您也可以使用 NetworkManager 管理所有网络设备。但是，传统方法是服务器解决方案的首选选项。有关 NetworkManager 的详细信息，请参见<xref linkend="cha.nm"/>。
+    </para>
+    <para>
+     也可以在系统安装完毕后配置网络。如果现在跳过此步骤，系统将为脱机状态而无法检索任何可用更新。要以后再配置网络连接，请选择<guimenu>跳过配置</guimenu>，并单击<guimenu>下一步</guimenu>。
+    </para>
+    <para>
+     在本步骤中可以配置以下网络设置：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>常规网络设置</guimenu>
+      </term>
+      <listitem>
+       <para>
+        按上文所述启用或禁用 NetworkManager。还可以在此处更改 IPv6 支持。默认启用 IPv6 支持。要禁用它，请单击<guimenu>禁用 IPv6</guimenu>。有关 IPv6 的更多信息，请参见<xref linkend="sec.basicnet.ipv6"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>防火墙</guimenu>
+      </term>
+      <listitem>
+       <para>
+        系统默认会对所有已配置的网络接口启用 SuSEfirewall2。要对此计算机全局禁用防火墙，请单击<guimenu>禁用</guimenu>。如果启用了防火墙，则可<guimenu>打开</guimenu> SSH 端口以便允许通过安全外壳进行远程连接。要打开详细的防火墙配置对话框，请单击<guimenu>防火墙</guimenu>。有关详细信息，请参见<xref linkend="sec.fire.SuSE.yast"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>网络接口</guimenu>
+      </term>
+      <listitem>
+       <para>
+        YaST 检测到的所有网卡都列在此处。如果您在安装期间已设置网络连接（如<xref linkend="sec.i.yast2.inst_mode.network"/>中所述），则此连接使用的网卡将列出为<guimenu>已配置</guimenu>。单击<guimenu>网络接口</guimenu>将打开<guimenu>网络设置</guimenu>对话框，在此对话框中可以更改现有配置、设置还未配置的网卡或添加和配置其他卡。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>DSL 连接</guimenu>、<guimenu>ISDN 适配器</guimenu>和<guimenu>调制解调器</guimenu>
+      </term>
+      <listitem>
+       <para>
+        如果您的计算机配有内部 DSL 调制解调器、内部 ADSL Fritz 卡、ISDN 卡或调制解调器，单击各自的标题将打开配置对话框。有关详细信息，请参见<xref linkend="cha.internet"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>VNC 远程管理</term>
+      <listitem>
+       <para>
+        要通过 VNC 启用计算机的远程管理，请单击 <guimenu>VNC 远程管理</guimenu>。在以下对话框中选择<guimenu>允许远程管理</guimenu>并相应调整防火墙设置。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>代理</term>
+      <listitem>
+       <para>
+        如果具有控制网络中因特网访问的代理服务器，则在此对话框中配置代理 URL 和身份验证细节。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <tip>
+     <title>将网络配置重设置为默认值</title>
+     <para>
+      单击<menuchoice><guimenu>更改</guimenu><guimenu>重设置为默认值</guimenu></menuchoice>将网络设置重设置为原始建议值。这会放弃所作的任何更改。
+     </para>
+    </tip>
+    <sect4 id="sec.i.yast2.conf.manual.network.internet">
+     <title>测试因特网连接</title><indexterm><primary>安装</primary><secondary>因特网连接</secondary></indexterm>
+     <para>
+      在配置完网络连接后，可对其进行测试。为此，YaST 会建立连到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 服务器的连接，并下载最新的发行说明。安装过程结束时请阅读这些说明。只有测试成功的情况下，才能够自动添加默认储存库和进行联机更新。
+     </para>
+     <para>
+      如果有多个网络接口，请校验是否使用了正确的网卡来连接到因特网。如果不是，请单击<guimenu>更改设备</guimenu>。
+     </para>
+     <para>
+      要开始测试，请选择<guimenu>使，测试因特网连接</guimenu>，然后单击<guimenu>下一步</guimenu>。在随后的对话框中，查看测试进程和结果。可通过<guimenu>查看日志</guimenu>获得有关测试过程的详细信息。如果测试失败，请单击<guimenu>上一步</guimenu>返回到网络配置以更正输入。
+     </para>
+     <para>
+      按<guimenu>下一步</guimenu>继续。如果测试成功，将会配置 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的官方软件储存库及更新储存库。第一次下载储存库数据可能需要一些时间。
+     </para>
+     <para>
+      如果不希望此时测试连接，请选择<guimenu>不，跳过此测试</guimenu>，然后单击<guimenu>下一步</guimenu>。这样还会跳过下载发行说明、<phrase os="sles;sled">配置客户中心</phrase>和联机更新。可在最初配置系统后随时执行这些步骤。
+     </para>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.cc" os="sles;sled">
+    <title>Novell Customer Center 配置</title>
+    <para>
+     要获取技术支持和产品更新，需要通过 Novell Customer Center 注册并激活产品。<guimenu>Novell Customer Center 配置</guimenu>可提供这方面的帮助。有关 Novell Customer Center 的详细信息，请参见 <ulink url="http://www.novell.com/documentation/ncc/"/>。
+    </para>
+    <para>
+     如果您是脱机状态活希望跳过此步骤，请选择<guimenu>以后配置</guimenu>。如此也会跳过 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的联机更新。
+    </para>
+    <para>
+     注册时，在<guimenu>为方便起见可包含</guimenu>中，选择是否发送未请求的附加信息，如<guimenu>硬盘配置文件</guimenu>或<guimenu>可选信息</guimenu>。这将简化注册步骤。单击<guimenu>细节</guimenu>获取关于如何收集数据的详细信息。为了获取关于向您的特定产品发送哪些数据的信息，将连接 Novell 服务器。对于此初始连接，只将产品 ID 发送到 Novell 服务器。
+    </para>
+    <para>
+     为了有资格获得支持，确保已检查<guimenu>注册代码</guimenu>。单击<guimenu>下一步</guimenu>继续时，系统将提示您输入此代码。有关更多技术支持信息，请参阅 <ulink url="http://www.suse.com/support/programs/"/>。
+    </para>
+    <note>
+     <title>数据私密</title>
+     <para>
+      不会将信息传递到 Novell 外部的任何人。此数据用于统计目的，并在驱动程序支持和 Web 帐户方面为您提供更多方便。通过单击<guimenu>细节</guimenu>查找到详细私密策略的链接。在位于 <filename>/root/.suse_register.log</filename> 的日志文件中查看传送的信息。
+     </para>
+    </note>
+    <para>
+     除激活并注册您的产品外，该模块还会向您的配置添加官方更新储存库。这些储存库为已知 bug 或安全问题提供了修复，可通过联机更新安装这些修复。
+    </para>
+    <para>
+     要使这些储存库保持有效，请选择<guimenu>定期与客户中心同步</guimenu>。此选项将检查您的储存库，并添加最新可用的编目或删除过时的编目。它不会影响手动添加的储存库。
+    </para>
+    
+    <para>
+     按<guimenu>下一步</guimenu>继续。与 Novell 服务器的连接已建立。按照屏幕上的指导信息完成注册。
+    </para>
+    <tip>
+     <title>使用不同的注册代码重新注册已安装系统</title>
+     <para>
+      将系统注册到 Novell Customer Center 时，注册数据会储存在本地以及 Novell Customer Center 的数据库中。虽然通常不需要这样做，但有些个别情况可能需要您使用不同的注册代码重新注册已安装的计算机。为此，请在已安装的系统上执行以下步骤：
+     </para>
+     <orderedlist spacing="normal">
+      <listitem>
+       <para>
+        以用户 <systemitem class="username">root</systemitem> 的身份输入以下命令在本地计算机上删除安装数据：
+       </para>
+<screen>suse_register.pl --erase-local-regdata</screen>
+      </listitem>
+      <listitem>
+       <para>
+        接下来，您需要从 Novell Customer Center 数据库中去除已注册的系统。使用浏览器转到 <ulink url="http://www.suse.com/"/> 并单击<menuchoice><guimenu>支持</guimenu> <guimenu>客户中心</guimenu></menuchoice>。登录并导航至<menuchoice><guimenu>我的系统</guimenu> <guimenu>系统</guimenu></menuchoice>。单击表格底栏中的短划线，选择系统并予以删除。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        现在您可以使用 <command>suse-register</command> 或 YaST 的<guimenu>联机更新配置</guimenu>模块来重新注册计算机。
+       </para>
+      </listitem>
+     </orderedlist>
+    </tip>
+    <sect4 id="sec.i.yast2.conf.manual.cc.local">
+     <title>本地注册服务器</title>
+     <para>
+      如果您的组织提供了本地注册服务器，而不是使用 Novell Customer Center，您需要指定该服务器的 URL。客户端和服务器仅通过 HTTPS 协议通讯，因此，如果服务器证书不是由证书授权者颁发的，则您还需要输入该证书的路径。通过<menuchoice> <guimenu>高级</guimenu> <guimenu>本地注册服务器</guimenu> </menuchoice>打开此对话框
+     </para>
+     <variablelist>
+      <varlistentry>
+       <term><guimenu>注册服务器</guimenu>
+       </term>
+       <listitem>
+        <para>
+         注册服务器的 URL。该 URL 具有固定格式 <literal>https://<replaceable>FQN</replaceable>/center/regsvc/</literal> <replaceable>FQN</replaceable> 必须是注册服务器的完全限定主机名。示例：
+        </para>
+<screen>https://smt.example.com/center/regsvc/</screen>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>服务器 CA 证书位置</term>
+       <listitem>
+        <para>
+         注册服务器证书的位置。指定以下位置之一：
+        </para>
+        <variablelist>
+         <varlistentry>
+          <term>URL</term>
+          <listitem>
+           <para>
+            可以下载证书的远程位置（http、https 或 ftp）。示例：
+           </para>
+<screen>http://smt.example.com/smt-ca.crt</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>软盘</term>
+          <listitem>
+           <para>
+            指定软盘上的位置。继续前，必须插入软盘。值必须以字符串 <literal>floppy</literal> 开头，后跟证书的路径。示例：
+           </para>
+<screen>floppy/smt/smt-ca.crt</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>本地路径</term>
+          <listitem>
+           <para>
+            本地计算机上证书的绝对路径。示例：
+           </para>
+<screen>/data/inst/smt/smt-ca.cert</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>交互式</term>
+          <listitem>
+           <para>
+            使用 <literal>ask</literal> 可打开一个弹出菜单，您可在其中指定证书的路径。请勿将此选项用于 AutoYaST。示例
+           </para>
+<screen>ask</screen>
+          </listitem>
+         </varlistentry>
+         <varlistentry>
+          <term>停用证书安装</term>
+          <listitem>
+           <para>
+            如果证书将由外接式附件产品安装，或您将使用由正式证书颁发机构颁发的证书，请使用<literal>已完成</literal>选项。示例：
+           </para>
+<screen>done</screen>
+          </listitem>
+         </varlistentry>
+        </variablelist>
+       </listitem>
+      </varlistentry>
+     </variablelist>
+    </sect4>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.update">
+    <title>联机更新</title><indexterm><primary>YaST</primary> <secondary>软件更新</secondary></indexterm><indexterm><primary>安装</primary><secondary>联机更新</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>联机更新</secondary></indexterm><indexterm><primary>安装</primary><secondary>软件更新</secondary></indexterm>
+    <para>
+     如果已建立因特网连接，并且有可用更新，请选择是否执行 YaST 联机更新。如果这些服务器上有任何增补程序包，请立即下载并安装它们，以修复已知错误或安全问题。有关详细指导，请参见<xref linkend="cha.onlineupdate.you"/>。有关如何在已安装系统中执行联机更新的指令，请参见<xref linkend="sec.updater"/>或<xref linkend="cha.onlineupdate.you"/>。如果没有任何更新可用，或者未建立任何因特网连接，则会跳过此步骤。它会自动预先选择修复安全问题的增补程序和应用于安装的建议增补程序。单击<guimenu>接受</guimenu>安装它们，并单击<guimenu>下一步</guimenu>继续进行系统配置。
+    </para>
+    <important>
+     <title>下载软件更新程序</title>
+     <para>
+      根据因特网连接的带宽和更新文件的大小，更新程序的下载可能需要一些时间。如果增补程序系统本身进行了更新，则联机更新将重启动，并在重启动后下载更多的增补程序。如果更新了内核，则系统将在完成配置前进行重引导。
+     </para>
+    </important>
+   </sect3>
+   <sect3 id="sec.i.yast2.servprop" os="sles">
+    <title>服务配置 </title>
+    <para>
+     在测试因特网连接并下载首批更新后，将打开一个对话框，在其中可启用和配置三个网络服务。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>CA 管理</term>
+      <listitem>
+       <para>
+        CA（证书颁发机构）用于确保互相通讯的所有网络服务之间存在信任关系。无 CA 的情况下，您可以针对每个单独的服务分别保护与 SSL 和 TLS 的服务器通讯。默认情况下，在安装期间将创建并启用 CA。有关使用 YaST 创建 CA 的细节，请参见<xref linkend="cha.security.yast_ca"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>OpenLDAP 服务器</term>
+      <listitem>
+       <para>
+        您可以在主机上运行 LDAP 服务，以便集中管理一系列配置文件。通常，LDAP 服务器负责处理用户帐户数据，但通过 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>，它也可用于处理邮件、DHCP 和 DNS 数据。默认情况下，LDAP 服务器是在安装期间设置的。如果您决定不使用 LDAP 服务器，则 YaST 邮件服务器模块将不起作用，因为它依赖于 LDAP 功能。但是，您仍可以借助<guimenu>邮件传送代理</guimenu>模块在系统上设置邮件服务器。有关 LDAP 以及使用 YaST 配置 LDAP 的详细信息，请参见 <xref linkend="cha.security.ldap"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>服务</term>
+      <listitem>
+       <para>
+        默认情况下会启动 CIM（通用信息模型）服务器。单击<guimenu>禁用</guimenu>可防止服务器在引导时自动启动。有关 CIM 服务的详细信息，请参见<xref linkend="cha.wbem"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     如果愿意，可以暂时跳过此配置建议。在安装完成后，您仍可以借助 YaST 配置和启动相同的服务。
+    </para>
+    <tip>
+     <title>将服务配置重设置为默认值</title>
+     <para>
+      恢复到默认值的方法是单击<menuchoice><guimenu>更改</guimenu> <guimenu>重设置为默认值</guimenu></menuchoice>。这会放弃所作的任何更改。
+     </para>
+    </tip>
+   </sect3>
+   
+   <sect3 id="sec.i.yast2.conf.manual.user_auth" os="sles">
+    <title>用户身份验证方法</title><indexterm><primary>安装</primary><secondary>用户</secondary><tertiary>专家设置</tertiary></indexterm>
+    <para>
+     如果已在先前的安装步骤中成功配置了网络访问，则现在您可以从若干用户管理选项中进行选择。如果尚未配置网络连接，请创建本地用户帐户。您还可以从先前的安装中导入用户（如果存在）。在此对话框中还可以更改口令加密类型。
+    </para>
+    <para>
+     您还可以添加其他用户帐户或更改已安装系统中的用户身份验证方法。关于用户管理的详细信息，请参见<xref linkend="cha.y2.userman"/>。
+    </para>
+    <para>
+     默认身份验证方法为<guimenu>本地 (/etc/passwd)</guimenu>。如果检测到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的早先版本或使用 <filename>/etc/passwd</filename> 的其他系统，您可以导入本地用户。要执行该操作，请选中<guimenu>从以前的安装中读取用户数据</guimenu>并单击<guimenu>选择</guimenu>。在下一个对话框中选择要导入的用户，并单击<guimenu>确定</guimenu>完成。
+    </para>
+    <para>
+     通过单击<guimenu>下一步</guimenu>手动输入本地用户。将打开“新的本地用户”对话框。输入姓和名后，可以接受建议或指定将用于登录的新<guimenu>用户名</guimenu>。最后，输入此用户的口令。重新输入以进行确认（确保您的输入无误）。为提供有效的安全性，口令长度应在 5 到 8 个字符之间。口令的最大长度为 72 个字符。但是，如果没有装载特殊的安全性模块，则仅使用前 8 个字符来识别口令。口令是区分大小写的。允许使用特殊字符（7 位 ASCII）和数字 0 到 9。不允许使用其他特殊字符，如元音变音或重音字符。
+    </para>
+    <para>
+     将检查所输入口令的强度。如果输入的口令很容易猜出（如字典单词或名称），您将看到一个警告。确保安全的好做法是使用强口令。
+    </para>
+    <para>
+     有两个附加选项可用：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term><guimenu>接收系统邮件</guimenu>
+      </term>
+      <listitem>
+       <para>
+        选中此框向用户发送由系统服务创建的消息。这些讯息通常只发送到 <systemitem class="username">root</systemitem> 用户（即系统管理员）。此选项对于最常用的帐户很有用，因为我们建议您仅在特殊情况下以 <systemitem class="username">root</systemitem> 身份登录。
+       </para>
+       <para>
+        由系统服务发送的邮件储存在本地邮箱 <filename>/var/spool/mail/</filename><replaceable>username</replaceable> 中，其中 <replaceable>username</replaceable> 是所选用户的登录名。安装后，若要读取电子邮件，可以使用任何电子邮件客户端，例如 KMail 或 Evolution。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term><guimenu>自动登录</guimenu>
+      </term>
+      <listitem>
+       <para>
+        此选项可在启动时自动使当前用户登录到系统。如果计算机只由一个用户操作，此选项很有用。<phrase os="sles">为了能够自动登录，必须明确启用此选项。</phrase>
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <warning>
+     <title>自动登录</title>
+     <para>
+      启用自动登录后，系统在引导时无需身份验证即可直接进入桌面。当您在系统上储存敏感数据时，如果其他用户也可以访问此计算机，则不应启用此选项。
+     </para>
+    </warning>
+    <para>
+     通过调用<xref linkend="cha.y2.userman"/>中所述的<guimenu>用户管理</guimenu>模块输入更多用户。
+    </para>
+    <para>
+     使用网络服务器进行用户身份验证时，会配置对以下服务的访问：
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>LDAP</term>
+      <listitem>
+       <para>
+        在 LDAP 服务器上对网络中的所有系统进行集中用户管理。有关更多信息，请参见<xref linkend="sec.ldap.yast.client"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>NIS</term>
+      <listitem>
+       <para>
+        在 NIS 服务器上对网络中的所有系统进行集中用户管理。有关更多信息，请参见<xref linkend="sec.nis.client"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Windows 域</term>
+      <listitem>
+       <para>
+        在 Linux 和 Windows 混用的网络中经常使用 SMB 身份验证。有关详细信息，请参见<xref linkend="sec.samba.adnet"/>和<xref linkend="sec.ad.config"/>。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+    <para>
+     通过 <guimenu>LDAP</guimenu> 和 <guimenu>NIS</guimenu> 以及用户管理，您可以使用 Kerberos 身份验证。要使用 Kerberos 身份验证，请选择<guimenu>设置 Kerberos 身份验证</guimenu>。有关 Kerberos 的详细信息，请参见<xref linkend="cha.net.kerberos"/>。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.relnotes">
+    <title>版本发行说明</title><indexterm><primary>安装</primary><secondary>发行说明</secondary></indexterm>
+    <para>
+     完成用户身份验证设置后，YaST 将显示发行说明。建议您阅读这些内容，因为其中包含手册印刷时未涵盖的重要的最新信息。如果因特网连接测试成功，请阅读最新版本的发行说明，该说明可从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的服务器获取。您可以使用 YaST 中的<menuchoice><guimenu>杂项</guimenu><guimenu>发行说明</guimenu></menuchoice>，或在安装后启动 SUSE 帮助中心来查看发行说明。
+    </para>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.hardware">
+    <title>硬件配置</title><indexterm><primary>安装</primary><secondary>硬件配置</secondary></indexterm>
+    <para>
+     安装结束时，YaST 会打开一个用于配置<guimenu>图形卡</guimenu> <guimenu>打印机</guimenu> <phrase os="sles">和<guimenu>声音</guimenu></phrase>的对话框。单击相应部件来启动硬件配置。YaST 在多数情况下能够自动检测和配置设备。
+    </para>
+    <tip arch="zseries" os="sles">
+     <title>IBM System z：硬件配置</title>
+     <para>
+      在 IBM System z 上，XFree 将不支持任何显示。相应地，在这些系统上找不到<guimenu>图形卡</guimenu>项。
+     </para>
+    </tip>
+    <para>
+     如<xref linkend="cha.y2.hw"/>中所述，您可以跳过任何外围设备，并在以后配置它们。要跳过配置，请选择<guimenu>跳过配置</guimenu>，然后单击<guimenu>下一步</guimenu>。
+    </para>
+    <para>
+     但是，在设置桌面系统时，您应该立即配置图形卡。尽管一般情况下 YaST 配置的显示设置都是可以接受的，但在分辨率、颜色深度以及其他图形功能方面，大多数用户都会有强烈的个人偏好。要更改这些设置，请选择相应的项，然后将值设置为期望的值。
+    </para>
+    <tip>
+     <title>将硬件配置重设置为默认值</title>
+     <para>
+      您可以通过单击<menuchoice><guimenu>更改</guimenu><guimenu>重设置为默认值</guimenu></menuchoice>取消对硬件配置的任何更改。YaST 便会再次显示原来的建议。
+     </para>
+    </tip>
+   </sect3>
+   <sect3 id="sec.i.yast2.conf.manual.complete">
+    <title>安装已完成</title><indexterm> <primary>AutoYaST</primary> <secondary>克隆系统</secondary> </indexterm>
+    <para>
+     安装成功后，YaST 将显示安装已完成对话框。在此对话框中，选择是否为 AutoYaST 复制新安装的系统。 要复制系统，请选择<guimenu>为 AutoYaST 复制此系统</guimenu>。 当前系统的配置文件储存在 <filename>/root/autoyast.xml</filename> 中。<phrase os="sles">默认选择克隆。</phrase>
+    </para>
+    <para>
+     AutoYaST 是一款可自动安装一个或多个 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 系统而无需用户干预的系统。AutoYaST 安装是通过使用具有安装和配置数据的控制文件来执行的。<phrase os="sles">有关详细信息，请参见<xref linkend="cha.deployment.autoinst"/>。</phrase>单击最后一个对话框中的<guimenu>完成</guimenu>，完成 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的安装。
+    </para>
+   </sect3>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.i.yast2.conf.dm">
+  <title>图形登录</title>
+
+  <tip arch="zseries" os="sles">
+   <title>IBM System z：无图形登录</title>
+   <para>
+    在 IBM System z 平台上不能进行图形登录。
+   </para>
+  </tip>
+
+  <para>
+   此时，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 便已完全安装并配置好。除非您已启用自动登录功能或已自定义默认运行级别，否则就应在屏幕上看到图形登录界面，在其中输入用户名和口令登录至系统。在启用自动登录的单个用户系统中，将自动启动桌面。
+  </para>
+
+  <indexterm class="endofrange" startref="idx.Installation"/><indexterm class="endofrange" startref="idx.Installation_YaST2"/><indexterm class="endofrange" startref="idx.YaST2_Installation"/>
+ </sect1>
+</chapter>

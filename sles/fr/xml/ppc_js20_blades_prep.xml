@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect2 xml:base="ppc_js20_blades_prep.xml" id="sec.prep.js20blades">
+ <title>Préparation d'une installation sur IBM JSxx BladeCenter</title><indexterm> <primary>préparation</primary> <secondary>JSxx BladeCenter</secondary> </indexterm>
+ <para>
+  Cette section décrit les étapes préparatoires pour l'installation de SUSE® Linux Enterprise Server sur les serveurs lame JSxx. Elle explique comment procéder à cette installation à l'aide du lecteur de CD-ROM du système BladeCenter, ainsi que via le réseau.
+ </para>
+ <sect3 id="sec.prep.js20blades.netsource">
+  <title>Création d'une source d'installation réseau</title>
+  <para>
+   Créez une source d'installation réseau si SUSE Linux Enterprise Server doit être installé sur plusieurs partitions. Ainsi, vous n'aurez pas besoin de changer de CD au cours de l'installation. La même source peut également être utilisée pour l'installation simultanée de plusieurs systèmes. Pour plus d'informations sur la configuration d'une source d'installation réseau, reportez-vous à la <xref linkend="sec.deployment.remoteinst.instserver.sles9"/>.
+  </para>
+ </sect3>
+ <sect3 id="sec.prep.js20blades.hd-storage">
+  <title>Espace de stockage sur le disque dur</title>
+  <para>
+   Vérifiez que vous disposez sur le disque dur d'un espace de stockage suffisant pour l'installation de SUSE Linux Enterprise Server. Il est recommandé d'utiliser un disque dur dédié.
+  </para>
+ </sect3>
+
+ <sect3>
+  <title>Préparation du système pour le démarrage</title>
+  <para/>
+  <sect4>
+   <title>Préparation pour un démarrage à partir du lecteur de CD-ROM</title>
+   <para>
+    Si vous envisagez de procéder à l'installation à partir d'un CD-ROM, procédez de la manière décrite dans cette section.
+   </para>
+   <para>
+    Assignez le lecteur de CD-ROM au serveur lame choisi pour l'installation. Pour cela, ouvrez un navigateur Web, connectez-vous au module de gestion des châssis BladeCenter, puis authentifiez-vous. Une fois authentifié, sélectionnez la fonction <guimenu>Remote Control</guimenu> (Contrôle à distance) dans le menu <guimenu>Blade Tasks</guimenu> (Tâches des serveurs lame), puis activez <guimenu>Start Remote Control</guimenu> (Lancer le contrôle à distance). Une nouvelle fenêtre s'ouvre. Assignez le lecteur de CD-ROM au serveur lame de votre choix dans le menu <guimenu>Change Media Tray Owner</guimenu> (Changer le propriétaire du porte-supports).
+   </para>
+   <para>
+    Configurez le lecteur de CD-ROM en tant que périphérique de démarrage. Pour cela, dans le module de gestion du BladeCenter, sélectionnez <guimenu>Blade Tasks</guimenu> (Tâches des serveurs lame), puis <guimenu>Configuration. </guimenu> Sélectionnez le serveur lame JSxx dans la section <guimenu>Séquence de démarrage</guimenu>. Dans la page <guimenu>Blade Boot Sequence</guimenu> (Séquence de démarrage du serveur lame), affectez la valeur <guimenu>CD-ROM</guimenu> à l'entrée <guimenu>1st Device</guimenu> (1er périphérique).
+   </para>
+   <para>
+    Insérez le CD 1 dans le lecteur de CD-ROM, puis redémarrez le serveur lame.
+   </para>
+  </sect4>
+  <sect4>
+   <title>Préparation pour un démarrage à partir du réseau</title>
+   <para>
+    Si vous envisagez de procéder à l'installation via le réseau, procédez de la manière décrite dans cette section.
+   </para>
+   <para>
+    Connectez-vous au module de gestion du BladeCenter grâce à un navigateur Web, puis loguez-vous. Configurez le réseau comme périphérique de démarrage en accédant au menu <guimenu>Configuration</guimenu>, depuis la page<guimenu>Blade Tasks</guimenu> (Tâches des serveurs lame). Sélectionnez le serveur lame JSxx dans la section <guimenu>Boot Sequence</guimenu> (Séquence de démarrage) et définissez <guimenu>1st Boot Device</guimenu> (1er périphérique de démarrage) sur <guimenu>Network — BOOTP</guimenu> (Réseau — BOOTP) sur la page <guimenu>Blade Boot Sequence</guimenu> (Séquence de démarrage du serveur lame).
+   </para>
+  </sect4>
+  <sect4>
+   <title>Redémarrage et connexion à la console du serveur lame JSxx</title>
+   <para>
+    Dans le module de gestion du BladeCenter, redémarrez le serveur lame JSxx à l'aide de l'option <guimenu>Power/Restart (Mettre sous tension/Redémarrer)</guimenu> du menu <guimenu>Blade Tasks (Tâches des serveurs lame)</guimenu>. Un tableau s'affiche : sa colonne <guimenu>Pwr (Alim.)</guimenu> indique l'état de l'alimentation des serveurs lame. Cochez la case du serveur lame de votre choix, puis redémarrez ce dernier en sélectionnant <guimenu>Power On Blade (Mettre le serveur lame sous tension)</guimenu>.
+   </para>
+   <para>
+    Connectez-vous au système BladeCenter à l'aide de la commande <command>telnet <replaceable>bladecenter</replaceable></command>, puis loguez-vous.
+   </para>
+<screen>
+username: <replaceable>user</replaceable>
+password: ********
+system&gt;
+</screen>
+   <para>
+    La commande <command>env -T system:blade[<replaceable>n° de la baie</replaceable>]</command> détermine à quel serveur lame JSxx sont destinées les commandes ultérieures. Vous pouvez afficher les serveurs lame installés dans le système BladeCenter grâce à la commande <command>list -l 3</command>.
+   </para>
+<screen>
+system&gt; list -l 3
+system
+        mm[1]    primary
+        power[1]
+        power[2]
+        power[3]
+        power[4]
+        blower[1]
+        blower[2]
+        switch[1]
+        switch[3]
+        blade[1]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[3]
+                sp
+        blade[4]
+                sp
+        blade[6]
+                sp
+        blade[8]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[9]
+                sp
+                cpu[1]
+                cpu[2]
+        blade[10]
+                sp
+        blade[11]
+                sp
+        blade[13]
+                sp
+        mt
+system&gt; 
+</screen>
+   <para>
+    La <emphasis>cible de la commande</emphasis> est alors déterminée. Pour travailler avec, par exemple, le serveur lame n° <literal>9</literal>, entrez <command>env -T system:blade[9]</command>. Exécutez la commande <emphasis>console</emphasis> pour établir une connexion série via un réseau local (connexion <command>SOL ou Serial over LAN</command>) à la console du serveur lame JSxx.
+   </para>
+<screen>
+system&gt; env -T system:blade[9]
+OK
+system:blade[9]&gt; console
+</screen>
+  </sect4>
+  <sect4>
+   <title>Démarrage de l'installation</title>
+   <para>
+    Une fois la vérification système terminée, le chargeur d'amorçage de SUSE Linux Enterprise Server démarre.
+   </para>
+   
+<screen>
+
+  Welcome to SuSE:SLE-11:GA!
+
+  Type  "install"  to start the YaST installer on this CD/DVD
+  Type  "slp"      to start the YaST install via network
+  Type  "rescue"   to start the rescue system on this CD/DVD
+
+Welcome to yaboot version 1.3.11.SuSE
+Enter "help" to get some basic usage information
+boot:
+</screen>
+   <para>
+    Sélectionnez <guimenu>install</guimenu> dans le menu, puis appuyez sur la touche <keycap>Entrée</keycap>.
+   </para>
+   <para>
+    Pour une installation avec une connexion VNC, ajoutez les paramètres <option>vnc=1</option> et <option>vncpassword=<replaceable>motdepasse</replaceable> dans la ligne de commande du kernel (install).</option>
+   </para>
+  </sect4>
+  <sect4>
+   <title>Étapes supplémentaires</title>
+   <para>
+    Procédez comme indiqué au <xref linkend="cha.inst"/> pour lancer l'installation du logiciel avec linuxrc et YaST.
+   </para>
+  </sect4>
+ </sect3>
+</sect2>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="zseries_rescue_initrd.xml" id="sec.zseries.rescue">
+ <title>IBM System z: Verwenden von initrd als Rettungssystem</title>
+
+ <para>
+  Wenn der Kernel von SUSE® Linux Enterprise Server für IBM System z aktualisiert oder geändert wird, kann es zu einem versehentlichen Neustart des Systems in einem instabilen Zustand kommen, sodass Fehler bei Standardprozeduren von IPLing im installierten System auftreten. Dies tritt häufig dann auf, wenn ein neuer oder aktualisierter SUSE Linux Enterprise Server-Kernel installiert und der IPL-Datensatz nicht mit dem Programm zipl aktualisiert wurde. Verwenden Sie in diesem Fall das Standardinstallationspaket als Rettungssystem, von dem aus das Programm zipl zur Aktualisierung des IPL-Datensatzes ausgeführt werden kann.
+ </para><indexterm> <primary>Rettungssystem</primary> </indexterm>
+
+ <sect2 id="sec.zseries.rescue.ipling">
+  <title>Rettungssystem IPLing</title>
+  <important>
+   <title>Bereitstellen der Installationsdaten</title>
+   <para>
+    Damit diese Methode funktioniert, müssen die SUSE Linux Enterprise Server-Installationsdaten für IBM-System z verfügbar sein. Detaillierte Informationen finden Sie in <xref linkend="sec.prep.makeavail"/>. Darüber hinaus benötigen Sie die Kanalnummer des Geräts und die Nummer der Partition innerhalb des Geräts, die das Stammdateisystem der SUSE Linux Enterprise Server-Installation enthält.
+   </para>
+  </important>
+  <para>
+   Führen Sie zunächst den IPL-Vorgang für SUSE Linux Enterprise Server für das IBM System z-Installationssystem gemäß den Anweisungen in <xref linkend="sec.zseries.prep"/> aus. Anschließend wird eine Liste der Auswahlmöglichkeiten für den Netzwerkadapter angezeigt.
+  </para>
+  <para>
+   Wählen Sie <guimenu>Installation oder System starten</guimenu> und anschließend <guimenu>Start Rescue System</guimenu> (Rettungssystem starten) aus, um das Rettungssystem zu starten. Je nach Installationsumgebung müssen Sie jetzt die Parameter für den Netzwerkadapter und die Installationsquelle angeben. Das Rettungssystem wird geladen und abschließend wird folgende Anmeldeeingabeaufforderung angezeigt:
+  </para>
+  <screen>Skipped services in runlevel 3:  nfs nfsboot
+
+Rescue login:</screen>
+  <para>
+   Nun können Sie sich ohne Passwort als Benutzer <systemitem class="username">root</systemitem> anmelden.
+  </para>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.configure_disks">
+  <title>Konfigurieren von Festplatten</title>
+  <para>
+   Zu diesem Zeitpunkt sind noch keine Festplatten konfiguriert. Sie müssen Sie konfigurieren, um fortfahren zu können.
+  </para>
+  <procedure>
+   <title>Konfigurieren von DASDs</title>
+   <step performance="required">
+    <para>
+     Konfigurieren Sie DASDs mit folgendem Befehl:
+    </para>
+    <screen>dasd_configure 0.0.0150 1 0</screen>
+    <para>
+     DASD wird an den Kanal 0.0.0150 angeschlossen. Mit <literal>1</literal> wird die Festplatte aktiviert (durch eine <literal>0</literal> an dieser Stelle würde die Festplatte deaktiviert). Die <literal>0</literal> steht für <quote>kein DIAG-Modus</quote> für den Datenträger (mit einer <literal>1</literal> würde DAIG an dieser Stelle für den Zugriff auf die Festplatte aktiviert).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Nun ist DASD online (dies kann mit dem Befehl <command>cat /proc/partitions</command> überprüft werden) und kann für nachfolgende Befehle verwendet werden.
+    </para>
+   </step>
+  </procedure>
+  <procedure>
+   <title>Konfigurieren einer zFCP-Festplatte</title>
+   <step performance="required">
+    <para>
+     Für die Konfiguration einer zFCP-Festplatte muss zunächst der zFCP-Adapter konfiguriert werden. Das geschieht mit folgendem Befehl:
+    </para>
+    <screen>zfcp_host_configure 0.0.4000 1</screen>
+    <para>
+     <literal>0.0.4000</literal> ist der Kanal, an den der Adapter angeschlossen ist. Die <literal>1</literal> steht für „aktivieren“ (mit einer <literal>0</literal> an dieser Stelle würde der Adapter deaktiviert).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Nach dem Aktivieren des Adapters kann die Festplatte konfiguriert werden. Das geschieht mit folgendem Befehl:
+    </para>
+    <screen>zfcp_disk_configure 0.0.4000 1234567887654321 8765432100000000  1</screen>
+    <para>
+     <literal>0.0.4000</literal> ist die zuvor verwendete Kanal-ID, <literal>1234567887654321</literal> ist die WWPN (World wide Port Number) und <literal>8765432100000000</literal> die LUN (logical unit number). Mit <literal>1</literal> wird die Festplatte aktiviert (durch eine <literal>0</literal> an dieser Stelle würde die Festplatte deaktiviert).
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Nun ist die zFCP-Festplatte online (dies kann mit dem Befehl <command>cat /proc/partitions</command> überprüft werden) und kann für nachfolgende Befehle verwendet werden.
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.mount">
+  <title>Einhängen des Root-Geräts</title>
+  <para>
+   Wenn alle benötigten Festplatten online sind, kann das Root-Gerät eingehängt werden. Wenn sich das Root-Gerät beispielsweise auf der zweiten Partition des DASD-Geräts (<literal>/dev/dasda2</literal>) befindet, lautet der entsprechende Befehl <command>mount /dev/dasda2 /mnt</command>.
+  </para>
+  <important>
+   <title>Dateisystemkonsistenz</title>
+   <para>
+    Wenn das installierte System nicht richtig heruntergefahren wurde, empfiehlt es sich, vor dem Einhängen die Dateisystemkonsistenz zu überprüfen. Dadurch werden unerwünschte Datenverluste vermieden. Geben Sie für dieses Beispiel den Befehl <command>fsck</command><option>/dev/dasda2</option> ein, um sicherzustellen, dass sich das System in einem konsistenten Zustand befindet.
+   </para>
+  </important>
+  <para>
+   Mit dem Befehl <command>mount</command> können Sie überprüfen, ob das Dateisystem richtig eingehängt werden konnte.
+  </para>
+  <example id="ex.zseries.rescue.mount.mount_output">
+   <title>Ausgabe des Befehls „mount“</title>
+   <screen>SuSE Instsys suse:/ # mount
+shmfs on /newroot type shm (rw,nr_inodes=10240)
+devpts on /dev/pts type devpts (rw)
+virtual-proc-filesystem on /proc type proc (rw)
+/dev/dasda2 on /mnt type reiserfs (rw)</screen>
+  </example>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.chroot">
+  <title>Ändern des eingehängten Dateisystems</title>
+  <para>
+   Ändern Sie das auf dem System installierte Root-Gerät mit dem Befehl <command>chroot</command>, damit die Konfigurationsdatei mit dem Befehl <literal>zipl</literal> aus der Konfiguration des installierten Root-Geräts und nicht vom Rettungssystem abgelesen wird:
+  </para>
+  <example id="ex.zseries.rescue.chroot">
+   <title>Ausführen des Befehls „chroot“ für das eingehängte Dateisystem</title>
+   <screen>SuSE Instsys suse:/ # cd /mnt 
+SuSE Instsys suse:/mnt # chroot /mnt</screen>
+  </example>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.zipl">
+  <title>Ausführen des Befehls „zipl“</title>
+  <para>
+   Führen Sie jetzt den Befehl <command>zipl</command> aus, um den IPL-Datensatz erneut mit den richtigen Werten zu speichern:
+  </para>
+  <example id="ex.zseries.rescue.zipl">
+   <title>Installieren des IPL-Datensatzes mit dem Befehl „zipl“</title>
+   <screen>sh-2.05b# zipl 
+building bootmap : /boot/zipl/bootmap 
+adding Kernel Image : /boot/kernel/image located at 0x00010000 
+adding Ramdisk : /boot/initrd located at 0x00800000 
+adding Parmline : /boot/zipl/parmfile located at 0x00001000 
+Bootloader for ECKD type devices with z/OS compatible layout installed. 
+Syncing disks.... 
+...done</screen>
+  </example>
+ </sect2>
+
+ <sect2 id="sec.zseries.rescue.exit">
+  <title>Beenden des Rettungssystems</title>
+  <para>
+   Schließen Sie zum Beenden des Rettungssystems die mit dem Befehl <command>chroot</command> geöffnete Shell mit <command>exit</command>. Um Datenverluste zu vermeiden, leeren Sie alle nicht gespeicherten Puffer, indem Sie die darin enthaltenen Daten mit dem Befehl <command>sync</command> auf der Festplatte speichern. Ändern Sie jetzt das root-Verzeichnis des Rettungssystems und hängen Sie das Root-Gerät der SUSE Linux Enterprise Server-Installation für IBM-System z aus.
+  </para>
+  <example id="ex.zseries.rescue.exit.umount">
+   <title>Aushängen des Dateisystems</title>
+   <screen>SuSE Instsys suse:/mnt # cd / 
+SuSE Instsys suse:/ # umount /mnt</screen>
+  </example>
+  <para>
+   Halten Sie das Rettungssystem mit dem Befehl <command>halt</command> an. Für das SUSE Linux Enterprise Server-System kann jetzt IPLed ausgeführt werden, wie unter <xref linkend="sec.s390.inst.reipl"/> beschrieben.
+  </para>
+ </sect2>
+</sect1>

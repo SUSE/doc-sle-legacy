@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="yast2_printer.xml" id="sec.y2.hw.print">
+ <title>プリンタの設定</title><indexterm id="idx.yast.printing.config" class="startofrange"> <primary>YaST</primary> <secondary>プリンタ設定</secondary></indexterm><indexterm id="idx.printing.config" class="startofrange"> <primary>印刷</primary> <secondary>YaSTを使用した設定</secondary></indexterm><indexterm id="idx.config.printing" class="startofrange"> <primary>設定</primary> <secondary>印刷</secondary></indexterm>
+
+ <para>
+  YaSTを使用して、コンピュータに直接接続されている(通常はUSBまたはパラレルポート使用)ローカルプリンタを設定したり、ネットワークプリンタによる印刷を設定することができます。プリンタをインターネット上で共用することも可能です。印刷に関する詳細(一般情報、技術詳細、トラブルシューティング)は、<xref linkend="cha.p"/>に記載されています。
+ </para>
+
+ <para>
+  YaSTで<menuchoice><guimenu>ハードウェア</guimenu> <guimenu>プリンタ</guimenu></menuchoice>の順に選択してプリンタモジュールを起動します。デフォルトでは、モジュールが<guimenu>プリンタ設定</guimenu>画面で開き、使用可能な設定済みのプリンタをすべて一覧します。これは、ネットワークを介して多数のプリンタにアクセスできる環境で、特に役に立ちます。ここから、<guimenu>テストページの印刷</guimenu>を実行し、ローカルプリンタを設定することもできます。
+ </para>
+
+ <sect2 id="sec.y2.hw.print.local">
+  <title>ローカルプリンタの設定</title><indexterm> <primary>YaST</primary> <secondary>プリンタの設定</secondary> <tertiary>ローカルプリンタ</tertiary></indexterm><indexterm> <primary>印刷</primary> <secondary>YaSTを使用した設定</secondary> <tertiary>ローカルプリンタ</tertiary></indexterm><indexterm> <primary>設定</primary> <secondary>印刷</secondary> <tertiary>ローカルプリンタ</tertiary></indexterm>
+  <para>
+   通常、ローカルUSBプリンタが自動的に検出されます。USBプリンタが自動検出されない理由としては、次の2つが考えられます。
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     USBプリンタをオフに切り替えます。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     プリンタ/コンピュータ間の通信はできません。ケーブルやプラグをチェックして、プリンタが正しく接続されていることを確認してください。正しく接続されている場合、問題はプリンタ関係でなく、USB関係である可能性があります。
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para>
+   プリンタの設定プロセスは基本的には3つのステップで構成されます。つまり、接続タイプを指定し、ドライバを選択し、このセットアップ用の印刷キューに名前を付けます。
+  </para>
+  <para>
+   多くのプリンタモデルでは、さまざまなドライバを使用できます。プリンタを設定する場合、YaSTでは通常はデフォルトで1つのプリンタに<literal>recommended</literal>のマークが付きます。通常は、ドライバを変更する必要はありません。<literal>recommended</literal>とマークされたドライバが最良の結果を出すはずです。ただし、たとえば、カラープリンタでモノクロ印刷だけをしたい場合は、カラー印刷をサポートしないドライバの使用が最も便利です。画像印刷時にPostScriptプリンタでパフォーマンス上の問題が発生する場合は、PostScriptドライバからPCLドライバに変更すると問題が改善されることがあります(ただし、使用するプリンタがPCLを理解できる場合)。
+  </para>
+  <para>
+   プリンタ用ドライバがリストされていない場合は、該当する標準言語を使用する汎用ドライバをリストから選択してみてください。プリンタのマニュアルを参照して、プリンタが理解する言語(プリンタを制御するコマンドのセット)を見つけてください。これでうまくいかない場合は、<xref linkend="sec.y2.hw.print.local.get_ppd"/>を参照して他の解決方法を試してください。
+  </para>
+  <para>
+   プリンタは、直接には使用されず、必ずプリンタキューを介して使用されます。これにより、同時実行ジョブをキューに入れ、次々に処理することができます。各印刷キューは、特定のドライバに割り当てられ、プリンタは、複数のキューを持つことができます。これにより、たとえば、カラープリンタ上に、モノクロでだけ印刷する2つ目のキューを設定することができます。印刷キューの詳細については、<xref linkend="sec.p.workflow"/>を参照してください。
+  </para>
+  <procedure id="pro.y2.hw.print.local.config">
+   <title>新しいローカルプリンタを追加する</title>
+   <step performance="required">
+    <para>
+     <menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択して、YaSTのプリンタモジュールを起動します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>プリンタ設定</guimenu>画面で<guimenu>追加</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     ［<literal>接続方法の指定</literal>］の下にプリンタがすでに表示されている場合は、次のステップに進みます。そうでない場合は、<guimenu>さらに検出</guimenu>を試すか、または <guimenu>接続ウィザード</guimenu>を起動します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     ［<literal>ドライバの検出と割り当て</literal>］にある入力ボックスにベンダ名とモデル名を入力し、<guimenu>検索</guimenu>をクリックします。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     推奨マークの付いたドライバからプリンタに最適なドライバを選択します。適切なドライバが表示されない場合は、次の手順に従います。
+    </para>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       検索条件をチェックします。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       <guimenu>その他のドライバ</guimenu>をクリックして、検索範囲を広げます。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       ドライバを追加します(<xref linkend="sec.y2.hw.print.local.get_ppd"/>を参照)。
+      </para>
+     </step>
+    </substeps>
+   </step>
+   <step performance="required">
+    <para>
+     ［<literal>デフォルトの用紙サイズ</literal>］を指定します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>任意の名前の設定</guimenu>フィールドに、印刷キューの固有の名前を入力します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     これで、プリンタはデフォルト値で設定され、使用可能な状態になりました。<guimenu>OK</guimenu>をクリックして、<guimenu>プリンタ設定</guimenu>画面に戻ります。新しく設定されたプリンタがプリンタ一覧に表示されます。
+    </para>
+   </step>
+  </procedure>
+  <sect3 id="sec.y2.hw.print.local.get_ppd">
+   <title>YaSTによるドライバの追加</title>
+   <para>
+    新しいプリンタを追加するときに、<guimenu>Find and Assign a Driver</guimenu>ダイアログに適切なドライバが表示されない場合は、ご使用のモデルに適したPPD (PostScript Printer Description)が用意されていないということです。PPDファイルの詳細については、<xref linkend="sec.p.software"/>を参照してください。
+   </para>
+   <para>
+    PPDファイルは、プリンタベンダから直接か、またはPostScriptプリンタのドライバCDから入手します。詳細については、<xref linkend="sec.drucken.prob.ppd"/>を参照してください。PPDファイルは、<ulink url="http://www.linuxfoundation.org/collaborate/workgroups/openprinting/database/databaseintro"/>の<quote>OpenPrinting.org printer database</quote>で見つけることもできます。OpenPrintingからPPDファイルをダウンロードする時点では、OpenPrintingに最新のLinuxサポートステータスが記載されていますが、このステータスが必ずしも<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のステータスと一致しているとは限りません。
+   </para>
+   <procedure>
+    <title>PPDファイルを追加する</title>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択して、YaSTのプリンタモジュールを起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>プリンタ設定</guimenu>画面で<guimenu>追加</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ［<literal>Find and Assign a Driver</literal>］セクションで<guimenu>ドライバパッケージ</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ［<literal>プリンタ記述ファイルを使用可能にする</literal>］にある入力ボックスに、PPDファイルへのフルパスを入力します。または、<guimenu>ブラウズ</guimenu>をクリックして、ダイアログボックスからファイルを選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>OK</guimenu>をクリックして、［<literal>新しいプリンタ設定の追加</literal>］画面に戻ります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      このPPDファイルを直接使用するには、<xref linkend="pro.y2.hw.print.local.config"/>の説明に従って続行します。それ以外の場合は、<guimenu>キャンセル</guimenu>をクリックします。
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+  <sect3 id="sec.y2.hw.print.local.tune">
+   <title>ローカルプリンタ設定の編集</title>
+   <para>
+    ローカルプリンタの既存設定の編集では、接続タイプやドライバなどの基本設定を変更できるだけでなく、用紙サイズ、解像度、メディアソースなどのデフォルト設定を調整することもできます。プリンタのIDは、プリンタ記述を変更することで変更できます。
+   </para>
+   <procedure>
+    <title>ローカルプリンタを編集する</title>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択して、YaSTのプリンタモジュールを起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>プリンタ設定</guimenu>画面で、リストからローカルプリンタを選択し、<guimenu>編集</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      接続タイプまたはドライバを変更します(<xref linkend="pro.y2.hw.print.local.config"/>参照)。この手順は、現在の設定で問題がある場合にのみ必要です。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>既定のプリンタ</guimenu>を選択して、このプリンタをデフォルトにします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>現在のドライバに対する全てのオプション</guimenu>をクリックして、デフォルト設定を調整します。設定を変更するには、該当する<literal>+</literal>記号をクリックしてオプションのリストを展開します。オプションをクリックして、デフォルトを変更します。変更内容を反映するには、<guimenu>OK</guimenu>をクリックします。
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.y2.hw.print.network">
+  <title>YaSTによるネットワーク印刷の設定</title><indexterm> <primary>YaST</primary> <secondary>プリンタ設定</secondary> <tertiary>ネットワーク印刷</tertiary></indexterm><indexterm> <primary>印刷</primary> <secondary>YaSTを使用した設定</secondary> <tertiary>ネットワーク印刷</tertiary></indexterm><indexterm> <primary>設定</primary> <secondary>印刷</secondary> <tertiary>ネットワーク印刷</tertiary></indexterm>
+  <para>
+   ネットワークプリンタは、自動的には検出されません。ネットワークプリンタは、YaSTのプリンタモジュールを使用して手動で設定する必要があります。ネットワークの設定内容に応じて、プリントサーバ(CUPS、LPD、SMB、またはIPX)に印刷したり、ネットワークプリンタに直接印刷(TCP経由を推奨)することができます。YaSTのプリンタモジュールの左ペインで<guimenu>ネットワーク経由で印刷する</guimenu>を選択してネットワーク印刷の設定画面にアクセスします。
+  </para>
+  <sect3 id="sec.y2.hw.print.network.cups">
+   <title>CUPSの使用</title>
+   <para>
+    Linus環境では、ネットワークを介した印刷に、通常CUPSが使用されます。最も簡単なセットアップは、すべてのクライアントが直接アクセスできる1つのCUPSサーバだけを使用する印刷です。複数のCUPSサーバによる印刷では、リモートCUPSサーバと通信するCUPSデーモンが稼動中であることが必要です。
+   </para>
+   <procedure>
+    <title>1つのCUPSサーバを介して印刷</title>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択して、YaSTのプリンタモジュールを起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      左ペインから<guimenu>ネットワーク経由で印刷する</guimenu>画面を開きます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>すべての印刷を1つのCUPSサーバ経由で直接行う</guimenu>をオンにして、サーバの名前またはIPアドレスを指定します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>テストサーバ</guimenu>をクリックして、正しい名前またはIPアドレスが選択されていることを確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ［OK］をクリックして、<guimenu>プリンタ設定</guimenu>画面に戻ります。これで、CPUSサーバを介して利用できるすべてのプリンタが一覧されます。
+     </para>
+    </step>
+   </procedure>
+   <procedure>
+    <title>複数のCUPSサーバを介して印刷</title>
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択して、YaSTのプリンタモジュールを起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      左ペインから<guimenu>ネットワーク経由で印刷する</guimenu>画面を開きます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>プリンタ情報を次のサーバから受け入れる</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ［<literal>一般設定</literal>］で、使用するサーバを指定します。すべての使用可能なネットワーク、ローカルネットワーク、または特定ホストからの接続を受け入れることができます。最後のオプションを選択する場合は、ホスト名またはIPアドレスを指定する必要があります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ローカルCUPSサーバの起動を要求されたら、<guimenu>OK</guimenu>をクリックし、次に<guimenu>はい</guimenu>をクリックして確認します。サーバが起動すると、YaSTの画面は<guimenu>プリンタ設定</guimenu>画面に戻ります。<guimenu>一覧を更新</guimenu>をクリックして、今までに検出されたプリンタを参照します。追加プリンタを使用可能にする場合は、このボタンを再度クリックします。
+     </para>
+    </step>
+   </procedure>
+  </sect3>
+  <sect3 id="sec.y2.hw.print.network.other">
+   <title>CUPS以外の印刷サーバの使用</title>
+   <para>
+    CUPS以外の印刷サーバから印刷サービスを提供しているネットワークでは、<menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択してYaSTのプリンタモジュールを起動し、左ペインから<guimenu>ネットワーク経由で印刷する</guimenu>画面を開きます。<guimenu>接続ウィザード</guimenu>を起動し、該当する<guimenu>接続タイプ</guimenu>を選択します。ご利用の環境でのネットワークプリンタの設定については、ネットワーク管理者にお問い合わせください。
+   </para>
+  </sect3>
+ </sect2>
+
+ <sect2 id="sec.y2.hw.print.share">
+  <title>ネットワーク上のプリンタ共有</title><indexterm> <primary>YaST</primary> <secondary>プリンタ設定</secondary> <tertiary>プリンタの共有</tertiary></indexterm><indexterm> <primary>印刷</primary> <secondary>YaSTを使用した設定</secondary> <tertiary>プリンタの共有</tertiary></indexterm><indexterm> <primary>設定</primary> <secondary>印刷</secondary> <tertiary>プリンタの共有</tertiary></indexterm>
+  <para>
+   ローカルCUPSデーモンが管理するプリンタは、ネットワーク上で共有できます。その場合、ローカルコンピュータがCUPSサーバになります。通常、プリンタを共有するには、CUPSのいわゆる<quote>ブラウジングモード</quote>を有効にします。ブラウジングを有効にした場合は、リモートCUPSデーモンをリッスンするために、ローカル印刷キューがネットワーク上で利用可能になります。また、専用のCUPSサーバをセットアップして、そのサーバですべての印刷キューを管理し、リモートクライアントをそのサーバに直接アクセスさせることも可能です。この場合は、ブラウジングを有効にする必要はありません。
+  </para>
+  <procedure>
+   <title>プリンタを共有する</title>
+   <step performance="required">
+    <para>
+     <menuchoice><guimenu>ハードウェア</guimenu><guimenu>プリンタ</guimenu></menuchoice>の順に選択して、YaSTのプリンタモジュールを起動します。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     左のペインから、<guimenu>プリンタの共有</guimenu>画面を開きます。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>リモートアクセスを許可する</guimenu>を選択します。詳細な設定ついては、次の追加オプションを使用できます。
+    </para>
+    <itemizedlist mark="bullet" spacing="normal">
+     <listitem>
+      <para>
+       <guimenu>ローカルネットワーク内のコンピュータ向け</guimenu>を選択します。さらに、<guimenu>既定でローカルネットワーク内にプリンタを公開</guimenu>も選択して参照モードを有効にします。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       <guimenu>追加</guimenu>をクリックして、CUPSサーバによって使用されるネットワークインターフェイスを追加します。指定したネットワークインタフェースを介してプリンタを共用したい場合は、下の入力ボックスでそれらのプリンタを追加します。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       CUPSサーバへのアクセスを一定のネットワークまたはIPアドレスに制約するには、2つの入力ボックスでそれらを指定します。
+      </para>
+     </listitem>
+    </itemizedlist>
+   </step>
+   <step performance="required">
+    <para>
+     <guimenu>OK</guimenu>をクリックしてCUPSサーバを再起動し、<guimenu>プリンタ設定</guimenu>画面に戻ります。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     CUPSと ファイアウォールの設定については、<ulink url="http://en.opensuse.org/SDB:CUPS_and_SANE_Firewall_settings"/>を参照してください。
+    </para>
+   </step>
+  </procedure><indexterm class="endofrange" startref="idx.yast.printing.config"/><indexterm class="endofrange" startref="idx.printing.config"/><indexterm class="endofrange" startref="idx.config.printing"/>
+ </sect2>
+</sect1>

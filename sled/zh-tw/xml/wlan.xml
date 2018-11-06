@@ -1,0 +1,965 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="wlan.xml" id="cha.wireless.wlan">
+ <title>無線區域網路</title><indexterm> <primary>WLAN</primary></indexterm><indexterm> <primary>無線 LAN</primary></indexterm>
+ <abstract>
+  <para>
+   無線 LAN 或無線區域網路 (WLAN) 已成為行動運算中不可或缺的一環。如今，大多數的筆記型電腦都有內建的 WLAN 卡。本章介紹如何使用 YaST 設定 WLAN 網路卡，如何對傳輸進行加密，以及如何使用秘訣提示。<phrase os="osuse;sled">或者，您也可以使用 NetworkManager 來設定和管理 WLAN 的存取權限。如需詳細資訊，請參閱<xref linkend="cha.nm"/>。</phrase>
+  </para>
+ </abstract>
+ <sect1 id="sec.wireless.wlan.standards">
+  <title>WLAN 標準</title>
+
+  <para>
+   WLAN 卡使用由 IEEE 組織提出的 802.11 標準進行通訊。此標準最初用於最大傳輸率 2 MBit/s。其間已增加許多新的標準來提高資料傳輸率。這些補充項目定義調變、傳輸輸出及傳輸率等詳細資訊 (請參閱<xref linkend="tab.wireless.std.overview"/>)。此外，很多公司都實作具有專利權或草擬功能的硬體。
+  </para>
+
+  <table id="tab.wireless.std.overview">
+   <title>WLAN 標準綜覽</title>
+   <tgroup cols="4">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        名稱
+       </para>
+      </entry>
+      <entry>
+       <para>
+        頻段 (GHz)
+       </para>
+      </entry>
+      <entry>
+       <para>
+        最大傳輸率 (MBit/s)
+       </para>
+      </entry>
+      <entry>
+       <para>
+        備註
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        802.11 舊版
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2
+       </para>
+      </entry>
+      <entry>
+       <para>
+        過時的；實際上無法取得終端裝置
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11a
+       </para>
+      </entry>
+      <entry>
+       <para>
+        5
+       </para>
+      </entry>
+      <entry>
+       <para>
+        54
+       </para>
+      </entry>
+      <entry>
+       <para>
+        較少干涉
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11b
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        11
+       </para>
+      </entry>
+      <entry>
+       <para>
+        較不普遍
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        28.29oz
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4
+       </para>
+      </entry>
+      <entry>
+       <para>
+        54
+       </para>
+      </entry>
+      <entry>
+       <para>
+        常見，與 11b 向後相容
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11n
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4 與/或 5
+       </para>
+      </entry>
+      <entry>
+       <para>
+        300
+        
+        
+       </para>
+      </entry>
+      <entry>
+       <para>
+        通用
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        802.11ad
+       </para>
+      </entry>
+      <entry>
+       <para>
+        2.4/5/60
+       </para>
+      </entry>
+      <entry>
+       <para>
+        最多 7000
+       </para>
+      </entry>
+      <entry>
+       <para>
+        於 2012 年發行，目前較不普遍
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> 不支援 802.11 舊式網路卡。支援使用 802.11a、802.11b、802.11g 與 802.11n 的大多數網路卡。新卡通常符合 802.11n 標準，但也有使用 802.11g 的卡。
+  </para>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.modes">
+  <title>運作模式</title>
+
+  <para>
+   使用無線網路時，您可以用各種不同的技術和組態來確保快速、高品質的安全連接。不同的作業類型適合不同的設定方式。選擇正確的驗證方法相當困難。可用的加密方法會有不同的優缺點。
+  </para>
+
+  <para>
+   無線網路基本可分為三種網路模式︰
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>受管理模式 (基礎結構模式)，透過存取點 </term>
+    <listitem>
+     <para>
+      管理網路中有一個管理元件，即存取點。在此模式 (又稱為基礎結構模式) 下，網路上所有 WLAN 工作站的連接都會通過該存取點，此存取點亦可連接至乙太網路。此模式會使用各種不同的驗證機制 (WPA 等)，以便確定只有獲得授權的工作站才可以連接。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>臨機操作模式 (對等網路)</term>
+    <listitem>
+     <para>
+      臨機操作網路中沒有存取點。由於工作站之間可直接進行通訊，因此臨機操作網路通常比受管理網路要快。不過，臨機操作網路中的傳輸範圍及參與工作站的數量相當有限。也不支援 WPA 驗證。如果您想要使用 WPA 安全性，就不應當使用臨機操作模式。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>主要模式</term>
+    <listitem>
+     <para>
+      在主要模式中，網路卡被用作存取點。但只有在 WLAN 卡支援此模式時才會如此。如需 WLAN 卡的詳細資訊，請造訪 <ulink url="http://linux-wless.passys.nl"/>。
+      
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.func.auth">
+  <title>驗證</title>
+
+  <para>
+   無線網路比有線網路更容易受到攔截和危害，因此各項標準均包含驗證和加密方式。在較早版本的 IEEE 802.11 標準中，可在 WEP 條款 (有線等值隱密) 下找到這些項目的說明。然而，WEP 已證實不夠安全 (請參閱<xref linkend="sec.wireless.wlan.tant.sec"/>)。為此，WLAN 業者 (組成「<emphasis>Wi-Fi 聯盟</emphasis>」) 定義了一項稱為 WPA 的擴充標準，用於提高 WEP 的安全性。較新版的 IEEE 802.11i 標準中包含了 WPA 及一些其他驗證和加密方式。IEEE 802.11i 又稱為 WPA2，因為 WPA 建立於 802.11i 的草擬版本之上。
+  </para>
+
+  <para>
+   目前管理網路時會使用各種不同的驗證機制，以便確定只有獲得授權的工作站才可進行連接：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>無 (開放)</term>
+    <listitem>
+     <para>
+      開放的系統，即不需要驗證的系統。任何工作站均可加入網路。但您還是可以使用 WEP 加密，請參閱<xref linkend="sec.wireless.wlan.func.encr"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>共用金鑰 (根據 IEEE 802.11)</term>
+    <listitem>
+     <para>
+      此程序使用 WEP 金鑰進行驗證。不過，並不建議採用此程序，因為它使 WEP 金鑰更容易受到攻擊。攻擊者只需要截聽工作站與存取點間的通訊達足夠的時間就行了。在驗證過程中，雙方交換相同的資訊，先是以加密的形式，然後是以未加密形式。這樣就可以利用適合的工具重新建構金鑰。由於此方式是以 WEP 金鑰來驗證和加密，因此無法提高網路的安全性。擁有正確 WEP 金鑰的工作站可以驗證、加密及解密。缺乏金鑰的工作站則無法解密已收到的封包。因此，不論是否需要驗證其身份，該工作站均無法進行通訊。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>WPA-PSK (或 WPA-個人，根據 IEEE 802.1x)</term>
+    <listitem>
+     <para>
+      WPA-PSK (PSK 即 Pre-Shared Key (預先共用金鑰) 的縮寫) 的作用方式與共用金鑰程序相似。所有連接工作站及存取點都要有相同的金鑰。此金鑰長度為 256 位元，且通常以密碼片語的方式輸入。本系統不需要如 WPA-EAP 一樣複雜的金鑰管理，並且更適合個人使用。因此，WPA-PSK 有時稱為 WPA<quote>家用</quote>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>WPA-EAP (或 WPA-企業，根據 IEEE 802.1x)</term>
+    <listitem>
+     <para>
+      WPA-EAP (可延伸的驗證通訊協定) 實際上並非驗證系統，而是用來傳送驗證資訊的協定。WPA-EAP 用來保護企業中的無線網路。在私人網路中幾乎很少用到。因此，WPA-EAP 有時稱為 WPA<quote>企業</quote>。
+     </para>
+     <para>
+      WPA-EAP 需要 Radius 伺服器才能驗證使用者。EAP 提供三種不同的方法，用於連接至伺服器以及向伺服器進行驗證：
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        輸輸層安全性 (EAP-TLS)：TLS 驗證的進行依賴於伺服器和用戶端相互的證書交換。首先，伺服器會向評估它的用戶端提供其憑證。如果用戶端認為該憑證有效，就會接著向伺服器提供其憑證。雖然 TLS 是安全的，它仍需要網路中的工作憑證管理基礎結構。這種基礎結構在私有網路中很難找到。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        通道式傳輸層安全性 (EAP-TTSL)
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        受保護的可延伸驗證通訊協定 (EAP-PEAP)：TTLS 和 PEAP 都是包含兩個階段的通訊協定。第一個階段是建立安全性連接，第二個階段是交換用戶端驗證資料。它們需要的憑證管理負荷 (如果有的話) 遠低於 TLS。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.func.encr">
+  <title>加密</title>
+
+  <para>
+   可使用各種不同的加密方式，防止未經授權者讀取無線網路中交換的資料封包，或進入網路：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>WEP (定義於 IEEE 802.11 中)</term>
+    <listitem>
+     <para>
+      此標準使用 RC4 加密演算法，最初的金鑰長度為 40  位元，後來增加為 104 位元。視 24 位元的啟始向量是否包含其中而定，其長度通常為 64 位元或 128 位元。然而此標準具有某些弱點。此系統所產生的金鑰可能受到攻擊。儘管如此，使用 WEP 仍然比完全不加密網路來得好。
+     </para>
+     <para>
+      某些廠商已實作了非標準<quote>動態 WEP</quote>。其功能與 WEP 完全相同並具有同樣的弱點，唯一的區別在於，金鑰會透過金鑰管理服務定期進行變更。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>TKIP (定義於 WPA/IEEE 802.11i 中)</term>
+    <listitem>
+     <para>
+      此金鑰管理協定定義於 WPA 標準中，使用與 WEP 相同的加密演算法，其弱點則均已消除。因為每個資料封包都有一個新的金鑰，所以攻擊這些金鑰等於白費力氣。TKIP 與 WPA-PSK 必須搭配使用。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>CCMP (定義於 IEEE 802.11i 中)</term>
+    <listitem>
+     <para>
+      CCMP 說明金鑰管理。通常與 WPA-EAP 搭配使用，但也可配合 WPA-PSK 使用。根據 AES 的規定所進行的加密，比 WEP 標準下的 RC4 加密更安全。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.yast2">
+  <title>利用 YaST 進行組態</title>
+
+  <important>
+   <title>無線網路安全方面的風險</title>
+   <para>
+    第三者可在未加密的 WLAN 連接上截取所有的網路資料。請務必使用其中一種受支援的驗證和加密方式保護您的網路流量。
+   </para>
+   <para>
+    請使用硬體允許的最佳加密方式。不過，若要使用某種加密方式，網路中的所有裝置都必須支援此方式，否則它們無法互相通訊。例如，如果您的路由器支援 WEP 及 WPA，但無線區域網路卡的驅動程式只支援 WEP，那麼您可以使用 WEP 這種最不常用的加密方式。不過，即使是使用 WEP 進行不嚴密的加密也比完全不加密要好。如需詳細資訊，請參閱<xref linkend="sec.wireless.wlan.func.encr"/> 和<xref linkend="sec.wireless.wlan.tant.sec"/>。
+   </para>
+  </important>
+
+  <para>
+   若要使用 YaST 來設定無線 LAN，您需要定義下列參數：
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term>IP 位址</term>
+    <listitem>
+     <para>
+      使用靜態 IP 位址，或讓 DHCP 伺服器動態地將 IP 位址指定給介面。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>操作模式</term>
+    <listitem>
+     <para>
+      定義如何將機器整合到 WLAN 中，視網路拓撲而定。如需 的背景資訊，請參閱<xref linkend="sec.wireless.wlan.modes"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>網路名稱 (ESSID)</term>
+    <listitem>
+     <para>
+      用於識別網路的唯一字串。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>驗證和加密詳細資料</term>
+    <listitem>
+     <para>
+      根據網路使用的驗證和加密方式，您需要輸入一或多個金鑰和/或證書。
+     </para>
+     <para>
+      有多個輸入選項可用來輸入相應的金鑰：<guimenu>密碼片語</guimenu>、<guimenu>ASCII</guimenu> (僅用於 WEP 驗證方式) 以及<guimenu>16 進位</guimenu>。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+
+  <sect2 id="sec.wireless.wlan.yast2.nm">
+   <title>取消啟動 NetworkManager</title>
+   <para>
+    安裝期間通常會偵測無線區域網路卡。如果您的機器是行動電腦，依預設，NetworkManager 通常會處於啟動狀態。如果您要改為使用 YaST 來設定 WLAN 網路卡，則需要先取消啟動 NetworkManager︰
+   </para>
+   <procedure>
+    <step id="st.wireless.wlan.start" performance="required">
+     <para>
+      以 <systemitem class="username">root</systemitem> 使用者身分啟動 YaST。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在 YaST 控制中心中，選取<menuchoice><guimenu>網路裝置</guimenu><guimenu>網路設定</guimenu></menuchoice>開啟<guimenu>網路設定</guimenu>對話方塊。
+     </para>
+     <para>
+      如果您的網路目前是透過 NetworkManager 控制，一則警告訊息就會顯示，告知您無法透過 YaST 編輯網路設定。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      若要允許使用 YaST 進行編輯，請按一下<guimenu>確定</guimenu>關閉該訊息，然後在<guimenu>全域選項</guimenu>索引標籤上啟用<guimenu>使用 ifup 的傳統方法</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      若要進一步設定組態，請繼續<xref linkend="sec.wireless.wlan.yast2.accesspoint"/> 或<xref linkend="sec.wireless.wlan.yast2.adhocnet"/>。
+     </para>
+     <para>
+      否則請按一下<guimenu>確定</guimenu>確認變更，以便寫入網路組態。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.accesspoint">
+   <title>存取點的組態</title>
+   <para>
+    本節介紹如何設定無線區域網路卡以連接至 (外部) 存取點，或如何使用無線區域網路卡做為存取點 (如果您的無線區域網路卡支援此用途)。有關沒有存取點的網路的組態，請參閱<xref linkend="sec.wireless.wlan.yast2.adhocnet"/>。
+   </para>
+   <procedure id="pro.wlan.yast2.accesspoint">
+    <title>設定無線區域網路卡以使用存取點</title>
+    <step performance="required">
+     <para>
+      啟動 YaST，然後開啟<guimenu>網路設定</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      切換到<guimenu>綜覽</guimenu>索引標籤，此處會列出系統偵測到的所有網路卡。如需一般網路組態的詳細資訊，請參閱<xref linkend="sec.basicnet.yast"/>。
+     </para>
+    </step>
+    <step id="st.wireless.wlan.card" performance="required">
+     <para>
+      從清單中選擇無線網路卡並按一下<guimenu>編輯</guimenu>以開啟<guimenu>網路卡設定</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>位址</guimenu>索引標籤中，設定機器是使用動態還是靜態 IP 位址。通常設定成使用<guimenu>DHCP</guimenu>獲取<guimenu>動態位址</guimenu>即可。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按<guimenu>下一步</guimenu>前進至<guimenu>無線網路卡組態</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      若要使用無線區域網路卡來連接至存取點，請將<guimenu>操作模式</guimenu>設定為<guimenu>管理的</guimenu>。
+     </para>
+     <para>
+      但是，如果您要使用無線區域網路卡做為存取點，請將<guimenu>操作模式</guimenu>設定為<guimenu>主要</guimenu>。請注意，並非所有無線區域網路卡都支援此模式。
+     </para>
+     <note>
+      <title>使用 WPA-PSK 或 WPA-EAP</title>
+      <para>
+       若要使用 WPA-PSK 或 WPA-EAP 驗證模式，就必須將操作模式設定為<guimenu>管理的</guimenu>。
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      若要連接至特定網路，請輸入<guimenu>網路名稱 (ESSID)</guimenu>。或者，按一下<guimenu>掃描網路</guimenu>並從可用無線網路的清單中選取一個網路。
+     </para>
+     <para>
+      在無線網路中，所有工作站都要有相同的 ESSID 才能互相通訊。如果未指定 ESSID，無線區域網路卡會自動與訊號強度最佳的存取點關聯。
+     </para>
+     <note>
+      <title>WPA 驗證需要 ESSID</title>
+      <para>
+       如果選取<guimenu>WPA</guimenu>驗證，則必須設定網路名稱 (ESSID)。
+      </para>
+     </note>
+    </step>
+    <step performance="required">
+     <para>
+      為網路選取<guimenu>驗證模式</guimenu>。哪種模式合適，視無線區域網路卡的驅動程式和網路中其他裝置的功能而定。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果之前選擇將<guimenu>驗證模式</guimenu>設定為<guimenu>沒有加密</guimenu>，請按<guimenu>下一步</guimenu>完成組態設定。對提示存在此潛在安全性風險的訊息進行確認，然後按一下<guimenu>確定</guimenu>離開<guimenu>綜覽</guimenu>索引標籤 (顯示新設定的無線區域網路卡)。
+     </para>
+     <para>
+      如果您之前選擇的是任何其他驗證模式，請繼續<xref linkend="pro.wlan.yast2.enryption"/>。
+     </para>
+    </step>
+   </procedure>
+   <figure id="fig.wireless.wlan.yast">
+    <title>YaST：設定無線網路卡</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata width="75%" fileref="yast2_wlan.png" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata width="55%" fileref="yast2_wlan.png" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+   <procedure id="pro.wlan.yast2.enryption">
+    <title>輸入加密詳細資料</title>
+    <para>
+     下列驗證方式需要加密金鑰：<guimenu>WEP - 開放</guimenu>、<guimenu>WEP - 共用金鑰</guimenu>以及<guimenu>WPA-PSK</guimenu>。
+    </para>
+    <para>
+     WEP 驗證方式通常只需要一個金鑰，不過，您最多可為工作站定義 4 個不同的 WEP 金鑰。其中的一個金鑰必須設定為預設金鑰並用於加密。其他三個用於解密。預設使用的金鑰長度為 128 位元，但您也可以將長度設定為 64 位元。
+    </para>
+    <para>
+     為了提高安全性，WPA-EAP 使用 RADIUS 伺服器來驗證使用者。在伺服器上進行驗證可以使用三種不同的方式：TLS、TTLS 和 PEAP。WPA-EAP 需要的身分證明與證書視用於 RADIUS 伺服器的驗證方式而定。您可以請求系統管理員提供所需的資訊和身分證明。YaST 可搜尋 <filename>/etc/cert</filename> 下的任何證書。因此，請將指定給您的憑證儲存到此位置，並將對這些檔案的存取權限限制為 <literal>0600</literal> (擁有者讀取和寫入)。
+    </para>
+    <step performance="required">
+     <para>
+      若要輸入<guimenu>WEP - 開放</guimenu>或<guimenu>WEP - 共用金鑰</guimenu>的金鑰：
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        將<guimenu>金鑰輸入類型</guimenu>設定為<guimenu>密碼片語</guimenu>、<guimenu>ASCII</guimenu>或<guimenu>16 進位</guimenu>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        輸入相應的<guimenu>加密金鑰</guimenu> (通常僅使用一個金鑰)：
+       </para>
+       <para>
+        如果您選取了<guimenu>密碼片語</guimenu>，請輸入一個單字或一個字元串，系統會根據此內容按照指定的金鑰長度 (預設為 128 位元) 建立金鑰。
+       </para>
+       <para>
+        <guimenu>ASCII</guimenu> 必須輸入 5 個字元以建立 64 位元金鑰；輸入 13 個字元以建立 128 位元金鑰。
+       </para>
+       <para>
+        <guimenu>16 進位</guimenu>則必須輸入 10 個字元以建立 64 位元金鑰，或 26 個字元以在 16 進位表示法中建立 128 位元金鑰。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        若要將金鑰長度調整為較低的位元率 (較舊的硬體可能需要如此)，請按一下<guimenu>WEP 金鑰</guimenu>並將<guimenu>金鑰長度</guimenu>設定為<guimenu>64</guimenu>位元。<guimenu>WEP 金鑰</guimenu>對話方塊還會顯示到目前為止所有輸入的 WEP 金鑰。除非有另一個金鑰已明確設定為預設金鑰，否則 YaST 一律使用第一個金鑰做為預設金鑰。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        若要為 WEP 輸入更多金鑰或修改其中一個金鑰，請選取相應的項目，然後按一下<guimenu>編輯</guimenu>。選取<guimenu>金鑰輸入類型</guimenu>，然後輸入金鑰。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        按一下<guimenu>確定</guimenu>確認您的變更。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      若要為<guimenu>WPA-PSK</guimenu>輸入金鑰：
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        選取輸入方法<guimenu>密碼片語</guimenu>或<guimenu>16 進位</guimenu>。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        輸入相應的<guimenu>加密金鑰</guimenu>。
+       </para>
+       <para>
+        在 <guimenu>密碼片語</guimenu> 模式下，必須輸入 8 至 63 個字元。在 <guimenu>16 進位</guimenu> 模式下，必須輸入 64 個字元。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      如果您選擇了<guimenu>WPA-EAP</guimenu>驗證，請按<guimenu>下一步</guimenu>切換到<guimenu>WPA-EAP</guimenu>對話方塊，在此處輸入網路管理員提供給您的身分證明和證書。
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        選取 RADIUS 伺服器用於驗證的<guimenu>EAP 模式</guimenu>。接下來需要輸入哪些詳細資料，視選取的<guimenu>EAP 模式</guimenu>而定。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        若為 TLS，請提供<guimenu>身分</guimenu>、<guimenu>用戶端證書</guimenu>、<guimenu>用戶端金鑰</guimenu>以及<guimenu>用戶端金鑰密碼</guimenu>。為了提高安全性，您還可以設定用於驗證伺服器真實性的<guimenu>伺服器證書</guimenu>。
+       </para>
+       <para>
+        TTLS 與 PEAP 需要<guimenu>身分</guimenu>和<guimenu>密碼</guimenu>，而<guimenu>伺服器證書</guimenu>和<guimenu>匿名身分</guimenu>則可以選擇性提供。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        按一下<guimenu>詳細資料</guimenu>，進入用於設定 WPA-EAP 的進階驗證對話方塊。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        選擇 EAP-TTLS 或 EAP-PEAP 通訊第二階段 (內部驗證) 的<guimenu>驗證方式</guimenu>。可選的方式視您在上一個對話方塊中所選的 RADIUS 伺服器驗證方式而定。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        如果自動確定設定沒有運作，請選擇某個特定<guimenu>PEAP 版本</guimenu>以強制使用特定的 PEAP 實作。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>確定</guimenu>確認您的變更。<guimenu>綜覽</guimenu>索引標籤即會顯示新設定之無線區域網路卡的詳細資料。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>確定</guimenu>以完成組態設定並離開該對話方塊。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.adhocnet">
+   <title>建立臨時網路</title>
+   <para>
+    某些情況下，可以連接兩個配有 WLAN 卡的電腦。若要使用 YaST 建立臨時網路，請執行以下操作︰
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      啟動 YaST，然後開啟<guimenu>網路設定</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      切換到<guimenu>綜覽</guimenu>索引標籤，從清單中選擇您的無線網路卡，然後按一下<guimenu>編輯</guimenu>以開啟<guimenu>網路卡設定</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選擇<guimenu>靜態指定的 IP 位址</guimenu>，然後輸入以下資料︰
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <guimenu>IP 位址</guimenu>︰<systemitem class="ipaddress">192.168.1.1</systemitem>。例如，將第二部電腦上的此位址變更為 <systemitem class="ipaddress">192.168.1.2</systemitem>。
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <guimenu>子網路遮罩</guimenu>︰<systemitem class="ipaddress">/24</systemitem>
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        <guimenu>主機名稱</guimenu>︰選擇所需的名稱。
+       </para>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      按<guimenu>下一步</guimenu>繼續。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      將<guimenu>操作模式</guimenu>設定為<guimenu>臨機操作</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選擇<guimenu>網路名稱 (ESSID)</guimenu>。可以是任意名稱，但必須在臨機操作網路中的每部電腦上使用。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      為網路選取<guimenu>驗證模式</guimenu>。哪種模式合適，視無線區域網路卡的驅動程式和網路中其他裝置的功能而定。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果之前選擇將<guimenu>驗證模式</guimenu>設定為<guimenu>沒有加密</guimenu>，請按<guimenu>下一步</guimenu>完成組態設定。對提示存在此潛在安全性風險的訊息進行確認，然後按一下<guimenu>確定</guimenu>離開顯示新設定之無線區域網路卡的<guimenu>綜覽</guimenu>索引標籤。
+     </para>
+     <para>
+      如果您之前選擇的是任何其他驗證模式，請繼續<xref linkend="pro.wlan.yast2.enryption"/>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      如果您未安裝 <systemitem class="resource">smpppd</systemitem>，YaST 會要求您安裝。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      相應地設定網路中的其他無線區域網路卡，設定時請使用相同的<guimenu>網路名稱 (ESSID)</guimenu>、相同的<guimenu>驗證模式</guimenu>，但需使用不同的 IP 位址。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.yast2.advanced">
+   <title>設定其他組態參數</title>
+   <para>
+    設定 WLAN 網路卡時，通常無需變更預先設定的設定。但是，如果您需要 WLAN 連接的詳細組態，YaST 可讓您調整下列設定：
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>通道</term>
+     <listitem>
+      <para>
+       WLAN 工作站可在其上正常運作的通道的規格。只有<guimenu>臨機操作</guimenu>和<guimenu>主要</guimenu>模式需要設定此項。在<guimenu>管理</guimenu>模式下，網路卡會自動搜尋可用的通道以連接存取點。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>位元率</term>
+     <listitem>
+      <para>
+       視您網路的效能而定，您可以設定點對點間特定的傳輸位元率。在預設值為<guimenu>自動</guimenu>的情況下，系統會試著選擇使用最高的資料傳輸率。有些 WLAN 卡不支援位元率的設定。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>存取點</term>
+     <listitem>
+      <para>
+       在擁有多個存取點的環境中，只要指定 MAC 位址即可預選其中一個存取點。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>電源管理</term>
+     <listitem>
+      <para>
+       當您外出時，省電技術可讓您的電池供電時間達到最久。<phrase os="sles;sled">如需電源管理的詳細資訊，請參閱<xref linkend="cha.pmanage"/>。</phrase>使用電源管理可能會影響連接品質，增加網路延遲時間。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <procedure>
+    <para>
+     若要存取進階選項：
+    </para>
+    <step performance="required">
+     <para>
+      啟動 YaST，然後開啟<guimenu>網路設定</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      切換到<guimenu>綜覽</guimenu>索引標籤，從清單中選擇您的無線網路卡，然後按一下<guimenu>編輯</guimenu>以開啟<guimenu>網路卡設定</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按<guimenu>下一步</guimenu>前進至<guimenu>無線網路卡組態</guimenu>對話方塊。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>進階設定</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>臨機操作</guimenu>模式中，必須從提供的通道 (11 至 14 個，取決於您所在的國家) 中選取其中之一，讓您的工作站可與其他工作站通訊。在<guimenu>主要</guimenu>模式下，需要指定一個<guimenu>通道</guimenu>，以便您的網路卡可以用它來提供存取點功能。此選項的預設值為<guimenu>自動</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選取要使用的<guimenu>位元率</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      輸入要連接的<guimenu>存取點</guimenu>的 MAC 位址。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      選擇是否<guimenu>使用電源管理</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      按一下<guimenu>確定</guimenu>確認變更，然後依序按<guimenu>下一步</guimenu>和<guimenu>確定</guimenu>完成組態設定。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.tant">
+  <title>設定 WLAN 的秘訣與技巧</title>
+
+  <para>
+   下列工具和秘訣可協助您監控並提高 WLAN 的速度、穩定性及安全性。
+  </para>
+
+  <sect2 id="sec.wireless.wlan.tant.tools">
+   <title>公用程式</title>
+
+   <para>
+    <systemitem class="resource">wireless-tools</systemitem> 套件包含允許設定無線區域網路特定參數並取得統計資料的公用程式。如需相關資訊，請參閱 <ulink url="http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html"/>。
+   </para>
+   
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.tant.stab">
+   <title>穩定性及速度</title>
+   <para>
+    無線網路的效能及可靠性，要看連線工作站是否能從其他工作站收到清楚的訊號。牆壁之類的障礙物會大大減弱訊號強度。訊號強度愈弱，傳輸速度愈慢。運作期間，可以在指令行上使用 <literal>iwconfig</literal> 公用程式，或是使用 KDE 或 GNOME 提供的 NetworkManager Applet，來檢查訊號強度 (<command>Link Quality</command> 欄位)。若您的訊強度出現問題，試著將您的裝置安裝在其他地方，或調整您存取點的天線方向。許多 PCMCIA WLAN 卡都有輔助天線，可大幅提高接收度。由廠商指定的速率 (例如 54 MBit/s) 為一額定值，代表推定的最大值。實際上，最大資料量從始至終都沒能達到該值的一半。
+   </para>
+   <para>
+    <command>iwspy</command> 指令可以顯示 WLAN 統計資料：
+   </para>
+<screen>iwspy wlan0
+wlan0      Statistics collected:
+    00:AA:BB:CC:DD:EE : Quality:0  Signal level:0  Noise level:0
+    Link/Cell/AP      : Quality:60/94  Signal level:-50 dBm   Noise level:-140 dBm (updated)
+    Typical/Reference : Quality:26/94  Signal level:-60 dBm   Noise level:-90 dBm</screen>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.tant.sec">
+   <title>安全性</title>
+   <para>
+    如果您要建立一個無線網路，請記得在缺乏安全措施的情況下，任何在傳輸範圍內的人都可輕易地進入您的網路。因此，應確定啟用加密方式。所有 WLAN 卡和存取點都支援 WEP 加密。雖然不是安全無虞，但仍足以阻礙可能的攻擊。
+   </para>
+   <para>
+    若網路供私人使用，請使用 WPA-PSK (如果可用)。儘管在絕大多數硬體元件上，Linux 都支援 WPA，但一些驅動程式並不支援 WPA。WPA 在較舊的存取點和具有 WLAN 功能的路由器上可能也不適用。對於這類裝置，請檢查是否可以透過韌體更新來實作 WPA。如果沒有 WPA，則 WEP 仍然比完全不加密來得好。對於需要進階安全性的企業來說，只有在執行 WPA 的情況下才可操作無線網路。
+   </para>
+   <para>
+    為驗證方法使用增強式密碼。例如，網頁 <ulink url="https://www.grc.com/passwords.htm"/> 會隨機產生 64 位元密碼。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.probs">
+  <title>疑難排解</title>
+
+  
+
+  <para>
+   如果您的 WLAN 卡沒有回應，請檢查以下幾方面︰
+  </para>
+
+  <orderedlist spacing="normal">
+   <listitem>
+    <para>
+     您是否知道無線區域網路卡的裝置名稱？通常會是 <systemitem>wlan0</systemitem>。使用工具 <command>ifconfig</command> 對此進行檢查。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     是否檢查過所需的韌體？如需詳細資訊，請參閱 <filename>/usr/share/doc/packages/wireless-tools/README.firmware</filename>。
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     路由器的 ESSID 是否已被廣播並且可以看到 (即未隱藏)？
+    </para>
+   </listitem>
+  </orderedlist>
+
+  <sect2 id="sec.wireless.wlan.probs.iwconfi">
+   <title>檢查網路狀態</title>
+   <para>
+    指令 <command>iwconfig</command> 可為您提供有關無線連接的重要資訊。例如，執行下面這一行指令將顯示 ESSID、無線模式、頻率、是否加密以及連線品質等︰
+   </para>
+<screen><command>iwconfig</command> wlan0
+wlan0  IEEE 802.11abg  ESSID:"guest"
+       Mode:Managed   Frequency:5.22GHz  Access Point: 00:11:22:33:44:55
+       Bit Rate:54 Mb/s   Tx-Power=13 dBm
+       Retry min limit:7   RTS thr:off   Fragment thr:off
+       Encryption key:off
+       Power Management:off
+       Link Quality:62/92   Signal level:-48 dBm  Noise level:-127 dBm
+       Rx invalid nwid:0  Rx invalid crypt:0  Rx invalid frag:0
+       Tx excessive retries:10  Invalid misc:0   Missed beacon:0</screen>
+   <para>
+    此外，也可以透過 <command>iwlist</command> 指令獲取先前的資訊。例如，執行下面這一行指令將顯示目前的位元速率︰
+   </para>
+<screen><command>iwlist</command> wlan0 rate
+wlan0    unknown bit-rate information.
+         Current Bit Rate=54 Mb/s</screen>
+   <para>
+    如果要瞭解有多少存取點可用，可以使用 <command>iwlist</command> 指令。它會給出<quote>單元式</quote>清單，類似於︰
+   </para>
+<screen><command>iwlist</command> wlan0 scanning
+wlan0   Scan completed:
+   Cell 01 - Address: 00:11:22:33:44:55
+             Channel:40
+             Frequency:5.2 GHz (Channel 40)
+             Quality=67/70  Signal level=-43 dBm
+             Encryption key: off
+             ESSID:"Guest"
+             Bit Rates: 6 Mb/s; 9 Mb/s; 12 Mb/s; 18 Mb/s;
+                        24 Mb/s; 36 Mb/s; 48 Mb/s
+             Mode: Master
+             Extra:tsf=0000111122223333
+             Extra: Last beacon: 179ms ago
+             IE: Unknown: ...</screen>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.probs.multi">
+   <title>多重網路裝置</title>
+   <para>
+    現代的筆記型電腦通常具備一張網路卡和一張 WLAN 卡。如果您以 DHCP 來設定這兩者 (自動指定位址)，則可能會出現名稱解析和預設閘道的問題。如果您可以偵測到路由器，卻無法瀏覽網際網路，表示己出現此問題。支援資料庫提供本主題的文章，網址是：<ulink url="http://old-en.opensuse.org/SDB:Name_Resolution_Does_Not_Work_with_Several_Concurrent_DHCP_Clients"/>。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.wireless.wlan.probs.prism">
+   <title>Prism2 網路卡的問題</title>
+   <para>
+    有許多驅動程式可用於裝有 <phrase role="productname">Prism2</phrase> 晶片的裝置。各種不同的網路卡多多少少都可以與不同的驅動程式配合運作。使用這些卡時，WPA 只能配合 hostap 驅動程式來運作。如果這些網路卡無法順利運作，或完全無法運作，或者您想使用 WPA，請參閱 <filename>/usr/share/doc/packages/wireless-tools/README.prism2</filename>。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.wireless.wlan.info">
+  <title>更多資訊</title>
+
+  <para>
+   如需詳細資訊，請參閱以下頁面︰
+  </para>
+
+  <variablelist>
+   <varlistentry>
+    <term><ulink url="http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Wireless.html"/>
+    </term>
+    <listitem>
+     <para>
+      Linux「<emphasis>無線工具</emphasis>」的開發者 Jean Tourrilhes 在其網頁中提供大量有關無線網路的有用資訊。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://tuxmobil.org"/>
+    </term>
+    <listitem>
+     <para>
+      有關使用 Linux 行動電腦的實用資訊。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><ulink url="http://www.linux-on-laptops.com"/>
+    </term>
+    <listitem>
+     <para>
+      有關在筆記型電腦上使用 Linux 的詳細資訊。
+     </para>
+    </listitem>
+   </varlistentry>
+   
+   
+  </variablelist>
+ </sect1>
+</chapter>

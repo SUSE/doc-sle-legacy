@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="net_smpppd.xml" id="sec.smpppd">
+ <title>ダイアルアップアシスタントとしてのsmpppd</title><indexterm id="idx.Internet_smpppd"> <primary>インターネット</primary> <secondary>smpppd</secondary> </indexterm> <indexterm id="idx.Internet_dial-up"> <primary>インターネット</primary> <secondary>ダイヤルアップ</secondary> </indexterm>
+
+ <para>
+  一部のホームユーザは、インターネット接続専用の回線を持っていません。代わりにダイアルアップ接続を使用しています。接続は、ダイアルアップ方法(ISDNまたはDSL)に応じてipppdまたはpppdで制御されます。基本的には、これらのプログラムを正常に起動するだけでオンラインで接続できます。
+ </para>
+
+ <para>
+  ダイアルアップ接続時に追加費用が発生しない定額接続を使用している場合は、単に該当するデーモンを起動します。ダイアルアップ接続の管理には、デスクトップアプレットまたはコマンドラインインタフェースを使用します。インターネットゲートウェイ以外のホストを使用している場合は、ネットワークホスト経由でダイアルアップ接続を管理できます。
+ </para>
+
+ <para>
+  smpppd (SUSE Meta PPP Daemon)は、ここで関与します。このプログラムは補助プログラム用に一様なインタフェースを提供し、双方向に動作します。第1に、必要なpppdまたはipppdをプログラミングし、そのダイアルアッププロパティを制御します。第2に、各種プロバイダをユーザプログラムで使用できるようにして、現在の接続ステータスに関する情報を送信します。smpppdはネットワーク経由で制御することもできるため、プライベートサブネットワーク内のワークステーションからインターネットへのダイアルアップ接続の制御に適しています。
+ </para>
+
+ <sect2>
+  <title>smpppdの設定</title>
+  <para>
+   smpppdによる接続は、YaSTにより自動的に設定されます。実際のダイアルアッププログラムであるkinternetとcinternetも事前に設定済みです。手動設定が必要となるのは、リモート制御など、smpppdの付加的機能を設定する場合のみです。
+  </para>
+  <para>
+   smpppdの設定ファイルは<filename>/etc/smpppd.conf</filename>です。デフォルトでは、このファイルによるリモート制御はできません。この設定ファイルの最も重要なオプションを次に示します。
+  </para><indexterm> <primary>環境設定ファイル</primary> <secondary>smppd.conf</secondary> </indexterm>
+  <variablelist>
+   <varlistentry>
+    <term>open-inet-socket = <replaceable>yes|no</replaceable>
+    </term>
+    <listitem>
+     <para>
+      smpppdをネットワーク経由で管理するには、このオプションを<literal>yes</literal>に設定します。smpppdはポート<literal>3185</literal>でリッスンします。このパラメータを<literal>yes</literal>に設定した場合は、パラメータ<literal>bind-address</literal>、<literal>host-range</literal>、および<literal>password</literal>もそれに応じて設定する必要があります。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>bind-address = <replaceable>ip address</replaceable>
+    </term>
+    <listitem>
+     <para>
+      ホストに複数のIPアドレスがある場合は、このパラメータを使用してsmpppdで接続の受け入れに使用するIPアドレスを指定します。デフォルトでは、すべてのアドレスでリッスンします。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>host-range = <replaceable>min ip</replaceable><replaceable>max ip</replaceable>
+    </term>
+    <listitem>
+     <para>
+      パラメータ<literal>host-range</literal>を使用して、ネットワーク範囲を定義します。この範囲内のIPアドレスを持つホストには、smpppdへのアクセス権が付与されます。この範囲外のホストはすべてアクセスを拒否されます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>password = <replaceable>password</replaceable>
+    </term>
+    <listitem>
+     <para>
+      パスワードを割り当てることで、クライアントを認可されたホストに限定できます。これはプレーンテキストによるパスワードのため、このパスワードによるセキュリティを過大評価しないでください。パスワードを割り当てないと、すべてのクライアントがsmpppdへのアクセスを許可されます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>slp-register = <replaceable>yes|no</replaceable>
+    </term>
+    <listitem>
+     <para>
+      このパラメータにより、smpppdサービスがSLPによってネットワーク上にアナウンスされます。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   smpppdについての詳細は、<systemitem>smpppd(8)</systemitem>および<systemitem>smpppd.conf(5)</systemitem> manページを参照してください。
+  </para>
+ </sect2>
+
+ <sect2>
+  <title><command>cinternet</command>のリモート使用設定</title><indexterm> <primary>インターネット</primary> <secondary>cinternet</secondary></indexterm>
+  <para>
+   cinternetは、ローカルまたはリモートのsmpppd制御に使用できます。cinternetは、グラフィックKInternetのコマンドライン版です。これらのユーティリティをリモートsmpppdで使用できるようにするには、設定ファイル <filename>/etc/smpppd-c.conf </filename>を手動またはｃinternetの使用によって編集します。このファイルでは、次の4つのオプションのみを使用します。
+  </para><indexterm> <primary>環境設定ファイル</primary> <secondary>smpppd-c.conf</secondary> </indexterm>
+  <variablelist>
+   <varlistentry>
+    <term>sites = <replaceable>list of sites</replaceable>
+    </term>
+    <listitem>
+     <para>
+      フロントエンドがsmpppdを検索する<replaceable>サイトのリスト</replaceable>。フロントエンドは、ここに記述されている順序でオプションをテストします。<literal>local</literal>は、ローカルsmpppdへの接続の確立を指定します。<literal>gateway</literal>は、ゲートウェイ上のsmpppdをポイントします。<literal>config-file</literal>は、<systemitem>/etc/smpppd-c.conf</systemitem>ファイルの<systemitem>server</systemitem>オプションと<filename>port</filename>オプションで指定されたsmppdに対して接続を確立することを指定しています。<literal>slp</literal>は、フロントエンドを、SLPで検出されたsmppdに接続することを指定します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>server = <replaceable>server</replaceable>
+    </term>
+    <listitem>
+     <para>
+      smpppdを実行するホスト。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>port = <replaceable>port</replaceable>
+    </term>
+    <listitem>
+     <para>
+      smpppdを実行するポート。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>password = <replaceable>password</replaceable>
+    </term>
+    <listitem>
+     <para>
+      smpppdに選択されたパスワード。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+  <para>
+   smpppdがアクティブな場合、アクセスしようとします。たとえば、<command>cinternet</command> <option>--verbose --interface-list</option>とします。この時点でアクセスできない場合は、<systemitem>smpppd-c.conf(5)</systemitem>および<systemitem>cinternet(8)</systemitem>のマニュアルページを参照してください。
+  </para>
+ </sect2>
+</sect1>

@@ -1,0 +1,1854 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<chapter xml:base="troubleshooting.xml" id="cha.trouble">
+ <title>最も頻繁に起こる問題およびその解決方法</title>
+ <para>
+  この章では、一連の潜在的な問題とその解決法について説明します。ここで状況が正確に記載されていなくても、問題解決のヒントになる類似した状況が見つかる場合があります。
+ </para>
+ <sect1 id="sec.trouble.info">
+  <title>情報の検索と収集</title>
+
+  <para>
+   Linuxでは、非常に詳細なレポートが提供されます。システムの使用中に問題が発生した場合、調べる必要のあるところが何箇所かあります。それらのほとんどは、Linuxシステム一般で標準とされるもので、残りのいくつかは<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムに関連するものです。大半のログファイルはYaSTを使って表示することができます(<menuchoice><guimenu>その他</guimenu><guimenu>起動ログを表示</guimenu></menuchoice>)。
+  </para>
+
+  <para>
+   <indexterm> <primary>YaST</primary> <secondary>クエリのサポート</secondary> </indexterm><indexterm> <primary>クエリのサポート</primary> </indexterm>YaSTでは、サポートチームが必要なシステム情報のすべてを収集することができます。<menuchoice><guimenu>その他</guimenu><guimenu>サポート</guimenu></menuchoice>の順に選択し、問題のカテゴリを選択します。すべての情報が収集されたら、それをサポートリクエストに添付します。
+  </para>
+
+  <para>
+   最も頻繁にチェックされるログファイルのリストの後には、一般的な目的に関する説明があります。<filename>~</filename>を含むパスは、現在のユーザのホームディレクトリを参照します。
+  </para>
+
+  <table id="tab.trouble.info">
+   <title>ログファイル</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        ログファイル
+       </para>
+      </entry>
+      <entry>
+       <para>
+        説明
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <filename>~/.xsession-errors</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        現在実行中のデスクトップアプリケーションからのメッセージです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/apparmor/</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        AppArmorからのログファイル。詳細については、<xref linkend="part.aaa"/>を参照してください。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/audit/audit.log</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        システムのファイル、ディレクトリ、またはリソースに対するすべてのアクセスを追跡し、システムコールをトレースする監査からのログファイル。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/boot.msg</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        ブートプロセス時にレポートされたカーネルから受け取るメッセージ。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/mail.*</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        メールシステムから受け取るメッセージです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/messages</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        起動中に、カーネルおよびシステムのログデーモンから継続的に受け取るメッセージです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/NetworkManager</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        NetworkManagerからのログファイルで、ネットワーク接続についての問題を収集します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/samba/</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Sambaサーバおよびクライアントのログメッセージを含んでいるディレクトリです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/SaX.log</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        SaXディスプレーとKVMシステムから受け取るハードウェアメッセージです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/warn</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        カーネルおよびシステムのログデーモンから受け取る、<quote>警告</quote>レベル以上のすべてのメッセージ。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/wtmp</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        現在のコンピュータセッションのユーザのログインレコードを含むバイナリファイルです。last<command>コマンドを使用して表示させます。</command>
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/Xorg.*.log</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        Windowシステムから受け取る、起動時および実行時のさまざまなログです。Xの失敗した起動をデバッグするのに役に立ちます。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/YaST2/</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        YaSTのアクションおよびその結果を含んでいるディレクトリです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/var/log/zypper.log</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        zypperのログファイル。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   ログファイルとは別に、稼働中のシステムの情報も提供されます。詳細については、「<xref linkend="tab.trouble.system" xrefstyle="select:label title nopage"/>」を参照してください。
+  </para>
+
+  <table id="tab.trouble.system">
+   <title><filename>/proc</filename>ファイルシステムによるシステム情報</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        ファイル
+       </para>
+      </entry>
+      <entry>
+       <para>
+        説明
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/cpuinfo</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        プロセッサのタイプ、製造元、モデル、およびパフォーマンスなどを含む情報を表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/dma</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        どのDMAチャネルが現在使用されているかを表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/interrupts</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        どの割り込みが使用されているか、各割り込みの使用回数を表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/iomem</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        I/Oメモリの状態を表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/ioports</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        その時点でどのI/Oポートが使用されているかを表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/meminfo</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        メモリステータスを表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/modules</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        個々のモジュールを表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/mounts</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        現在マウントされているデバイスを表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/partitions</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        すべてのハードディスクのパーティション設定を表示します。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/proc/version</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        現在のLinuxバージョンを表示します。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   Linuxカーネルは、<filename>/proc</filename>ファイルシステムの場合を除いて、メモリ内ファイルシステムである<literal>sysfs</literal>モジュールで情報をエクスポートします。このモジュールは、カーネルオブジェクトとその属性および関係を表します。<literal>sysfs</literal>の詳細については、<xref linkend="cha.udev"/>でudevのコンテキストを参照してください。<xref linkend="tab.trouble.sysfs" xrefstyle="select:label nopage"/>には、<filename>/sys</filename>の下にある最も一般的なディレクトリの概要が含まれています。
+  </para>
+
+  <table id="tab.trouble.sysfs">
+   <title><filename>/sys</filename>ファイルシステムによるシステム情報</title>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>
+       <para>
+        ファイル
+       </para>
+      </entry>
+      <entry>
+       <para>
+        説明
+       </para>
+      </entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>
+       <para>
+        <filename>/sys/block</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        システム内で検出された各ブロックデバイスのサブディレクトリが含まれています。一般に、これらの大半はディスクタイプのデバイスです。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/sys/bus</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        各物理バスタイプにのサブディレクトリが含まれます。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/sys/class</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        デバイスの機能タイプとしてグループ化されたサブディレクトリが含まれます(graphics、net、printerなど)。
+       </para>
+      </entry>
+     </row>
+     <row>
+      <entry>
+       <para>
+        <filename>/sys/device</filename>
+       </para>
+      </entry>
+      <entry>
+       <para>
+        グローバルなデバイス階層が含まれます。
+       </para>
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </table>
+
+  <para>
+   Linuxには、システム解析とモニタリング用のさまざまなツールが含まれています。システム診断で使用される最も重要なツールの選択については、<xref linkend="cha.util"/>を参照してください。
+  </para>
+
+  <para>
+   次の各シナリオは、問題を説明するヘッダに続いて、推奨される解決方法、より詳細な解決方法への利用可能な参照、および関連する他のシナリオへの相互参照が書かれた、1つまたは2つの段落から構成されています。
+  </para>
+ </sect1>
+ <sect1 id="sec.trouble.install">
+  <title>インストールの問題</title>
+
+  <para>
+   インストールの問題とは、コンピュータがインストールに失敗した状態のことを指します。インストールが全体において失敗する、またはグラフィカルインストーラが起動できないという可能性があります。ここでは、通常経験するような問題のいくつかに集中して説明し、そのような場合に考えられる解決方法または回避方法を示します。
+  </para>
+
+  <sect2 id="sec.trouble.checkingMedia">
+   <title>メディアの確認</title><indexterm> <primary>YaST</primary> <secondary>メディアチェック</secondary></indexterm><indexterm> <primary>DVD</primary> <secondary>チェック</secondary></indexterm>
+   <para>
+    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>インストールメディアの使用時に問題が発生した場合は、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>メディアチェック</guimenu></menuchoice>の順に選択してインストールメディアの整合性をチェックします。メディアの問題は、自身で書き込むメディアで発生する可能性がより高いです。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のメディアをチェックするには、メディアをドライブに挿入し、YaSTの<guimenu>メディアチェック</guimenu>画面で、<guimenu>チェック開始</guimenu>をクリックします。これには少し時間がかかります。問題が検出された場合、インストール用にこのメディアを使用しないでください。
+   </para>
+   <figure id="fig.yast2.mediacheck">
+    <title>メディアの確認</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_medaicheck1.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_medaicheck1.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+
+  <sect2 id="sec.trouble.hardinfo">
+   <title>ハードウェア情報</title><indexterm> <primary>ハードウェア</primary><secondary>情報</secondary></indexterm><indexterm><primary>YaST</primary><secondary>ハードウェア</secondary><tertiary>情報 </tertiary></indexterm>
+   <para>
+    <menuchoice><guimenu>ハードウェア</guimenu><guimenu>ハードウェア情報</guimenu></menuchoice>を使用して、検出されたハードウェアおよび技術データを表示します。デバイスの詳細については、任意のツリーノードをクリックします。サポートを依頼するときに、ハードウェアに関する情報が必要な場合などに、このモジュールが特に役立ちます。
+   </para>
+   <para>
+    <guimenu>ファイルに保存</guimenu>をクリックして、表示されたハードウェア情報をファイルに保存します。希望するディレクトリとファイル名を選択し、<guimenu>保存</guimenu>をクリックしてファイルを作成します。
+   </para>
+   <figure id="fig.yast2.hardinfo">
+    <title>ハードウェア情報の表示</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="yast2_hwinfo_1.png" width="75%" format="PNG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="yast2_hwinfo_1.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+
+  <sect2 id="sec.trouble.install.cdrom">
+   <title>ブート可能なDVDドライブが利用不可</title>
+   <para>
+    お使いのコンピュータにブート可能なDVD-ROMドライブがない場合、または使用しているドライブがLinuxでサポートされていない場合、内蔵DVD-ROMドライブを使用しないでコンピュータをインストールするオプションがいくつかあります。
+   </para>
+<?dbfo-need height="20em"?>
+
+
+   <variablelist>
+    <varlistentry>
+     <term>フロッピーディスクからのブート</term>
+     <listitem>
+      <para>
+       ブートフロッピーを作成し、DVDの代わりにフロッピーディスクからブートします。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>外付けブートデバイスの使用</term>
+     <listitem>
+      <para>
+       BIOSおよびインストールカーネルによりサポートされる場合、外部DVDドライブから起動します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>PXE経由のネットワークブート</term>
+     <listitem>
+      <para>
+       コンピュータにDVDドライブがない場合でも、使用可能なイーサネット接続がある場合は、完全にネットワークベースのインストールを実行します。詳細については、<xref linkend="sec.deployment.remoteinst.scenario.vncpxe"/>と<xref linkend="sec.deployment.remoteinst.scenario.sshpxe"/>を参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <sect3 id="sec.trouble.install.cdrom.bdisk">
+    <title>フロッピーディスク(SYSLINUX)からのブート</title><indexterm> <primary>ブート</primary><secondary>フロッピーディスクから</secondary> </indexterm>
+    <para>
+     旧式のコンピュータには、ブート可能なDVDドライブはなく、フロッピーディスクドライブしかないものがあります。そのようなシステムにインストールするには、ブートディスクを作成し、それを使ってシステムを起動します。
+    </para>
+    <para>
+     ブートディスクには、SYSLINUXというローダとプログラムlinuxrcも含まれています。SYSLINUXを使用すると、ブート時にカーネルを選択し、使用するハードウェアに必要なパラメータを指定できます。プログラムlinuxrcは、使用するハードウェア用のカーネルモジュールのローディングをサポートし、その後インストールを開始します。
+    </para>
+    <para>
+     ブートディスNからブートする際は、ブート処理は、ブートローダーSYSLINUX(パッケージ<systemitem>syslinux</systemitem>)によって開始されます。システムが起動すると、SYSLINUXは、以下のステップで構成される、最小限のハードウェア検出検査を実行します。
+    </para>
+    <orderedlist spacing="normal">
+     <listitem>
+      <para>
+       ブートローダは、BIOSがVESA2.0準拠のフレームバッファサポートを提供しているかどうかを調べ、適宜、カーネルを起動します。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       モニタデータ(DDC info)が読み込まれます。
+      </para>
+     </listitem>
+     <listitem>
+      <para>
+       1番目のハードディスクの最初のブロック(MBR)が読み込まれ、BIOS IDとLinuxのデバイス名がブートローダの設定時に対応付けられます。ブートローダは、BIOSのlba32関数を使用して当該ブロックを読み込み、BIOSがそれらの関数をサポートしているかどうかを判別します。
+      </para>
+     </listitem>
+    </orderedlist>
+    <para>
+     SYSLINUXの開始時に、<keycap>Shift</keycap>キーを押したままにすると、上記のステップはすべてスキップされます。トラブルシューティングの目的で、
+    </para>
+<screen>verbose 1</screen>
+    <para>
+     syslinux.cfg<filename>に次の行を挿入した場合、ブートローダは、現在実行中のアクションを表示します。</filename>
+    </para>
+    <para>
+     マシンがフロッピーディスクからブートしない場合は、BIOS内のブートシーケンスを<literal>A,C,CDROM</literal>に変更しなければならないことがあります。
+    </para>
+   </sect3>
+   <sect3 id="sec.trouble.install.cdrom.ext">
+    <title>外付けブートデバイス</title>
+    <para>
+     Linuxでは、既存のDVDドライブはほとんどサポートされます。システムにDVDドライブまたはフロッピーディスクが存在しない場合でも、USB、FireWire、またはSCSIを通じて接続する外部DVDドライブを使用してシステムをブートできます。これは、BIOSおよびご利用のハードウェアのインタラクションに大きく依存します。問題が発生した場合、BIOSアップデートにより解決する場合があります。
+    </para>
+   </sect3>
+  </sect2>
+
+  <sect2 id="sec.trouble.install.BIOS">
+   <title>インストールメディアからのブートに失敗する</title><indexterm> <primary>DVD</primary> <secondary>ブート元</secondary> </indexterm> <indexterm> <primary>ブート</primary> <secondary>DVD, 元</secondary></indexterm>
+   <para>
+    コンピュータでインストールメディアが起動しない理由の1つとして、BIOS内のブートシーケンスの設定が誤っている場合があります。BIOSブートシーケンスでは、ブート用の最初のエントリとしてDVDドライブがセットされている必要があります。そうでない場合、コンピュータは他のメディア(通常ハードディスク)からブートを試みます。BIOSのブートシーケンスを変更するための説明は、マザーボードに付属するマニュアルまたは次の段落に記載されています。
+   </para>
+   <para>
+    BIOSとはコンピュータの非常に基本的な機能を有効にするソフトウェアです。マザーボードを供給するベンダが、独自のハードウェア用のBIOSを供給します。通常、BIOSセットアップは特別なとき(マシンのブート時)にだけアクセスされます。この初期化段階の間に、マシンは数多くのハードウェア診断テストを実行します。そのうちの1つとして、メモリカウンタにより示されるメモリチェックがあります。メモリカウンタが表示されたとき、通常カウンタの下または画面の下部の辺りに、BIOSセットアップにアクセスするために押すキーについて表示されています。通常は、<keycap>Del</keycap>、<keycap>F1</keycap>、または<keycap>Esc</keycap>のいずれかのキーを押します。BIOSセットアップ画面が表示されるまでこのキーを押します。
+   </para>
+   <procedure id="proc.trouble.install.bios">
+    <title>BIOSのブートシーケンスの変更</title>
+    <step performance="required">
+     <para>
+      ブートルーチンによって宣言されたように、適切なキーを使用してBIOSを入力します。その後、BIOS画面が表示されるのを待ちます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      AWARD BIOSでブートシーケンスを変更するには、<guimenu>BIOS FEATURES SETUP</guimenu>エントリを探してください。他のメーカでは、<guimenu>ADVANCED CMOS SETUP</guimenu>といった違う名前が使用されています。エントリが見つかったなら、そのエントリを選択して、<keycap>Enter</keycap>キーを押して確定します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      開いた画面で、<guimenu>BOOT SEQUENCE</guimenu>または<guimenu>BOOT ORDER</guimenu>というサブエントリを探します。ブートシーケンスは、<literal>C,A</literal>または<literal>A,C</literal>などのように記載されています。C,Aの場合、マシンは最初にハードディスク(C)を検索し、次にフロッピーディスクドライブ(A)を検索して、ブート可能なメディアを検出します。ブートシーケンスが<literal>A,CDROM,C</literal>になるまで<keycap>PgUp</keycap>キーまたは<keycap>PgDown</keycap>キーを押して、設定を変更します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <keycap>Esc</keycap>キーを押してBIOS設定画面を終了します。設定を保存するには、<guimenu>SAVE &amp; EXIT SETUP</guimenu>を選択し、<keycap>F10</keycap>キーを押します。設定が保存されていることを確認するには、<keycap>Y</keycap>キーを押します。
+     </para>
+    </step>
+   </procedure>
+   <procedure>
+    <title>SCSI BIOS (Adaptecホストアダプタ)内でのブートシーケンスの変更</title>
+    <step performance="required">
+     <para>
+      <keycombo><keycap>Ctrl</keycap><keycap>A</keycap></keycombo>を押してセットアップを開きます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>ディスクユーティリティ</guimenu>を選択します。これで、接続したハードウェアコンポーネントが表示されるようになります。
+     </para>
+     <para>
+      ご使用のDVDドライブに割り当てられているSCSI IDの記録をとります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <keycap>Esc</keycap>キーを押して、メニューを閉じます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>アダプタセッティングの設定</guimenu>を開きます。<guimenu>追加オプション</guimenu>で、<guimenu>Boot Device Options(ブートデバイスオプション)</guimenu>を選択し、<keycap>Enter</keycap>キーを押します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      DVDドライブのIDを入力して、再度<keycap>Enter</keycap>キーを押します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <keycap>Esc</keycap>キーを2回押して、SCSI BIOSの起動画面に戻ります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>はい</guimenu>を押して、この画面を終了しコンピュータを起動します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    最終的なインストールが使用する言語やキーボードレイアウトに関係なく、BIOS設定では、通常以下の図に示されているようなUSキーボードレイアウトが使用されます。<indexterm><primary>USキーボードレイアウト</primary></indexterm>
+   </para>
+   <figure id="fig.trouble.install.keyboard_us">
+    <title>USキーボードレイアウト</title>
+    <mediaobject>
+     <imageobject role="fo">
+      <imagedata fileref="keyboard_us.svg" width="75%" format="SVG"/>
+     </imageobject>
+     <imageobject role="html">
+      <imagedata fileref="keyboard_us.png" width="75%" format="PNG"/>
+     </imageobject>
+    </mediaobject>
+   </figure>
+  </sect2>
+
+  <sect2 id="sec.trouble.install.noboot">
+   <title>ブートできない</title>
+   <para>
+    ハードウェアのタイプ(主にかなり旧式かごく最近のタイプ)では、インストールが失敗するものもあります。多くの場合、インストールカーネル内でこのタイプのハードウェアのサポートが欠けているか、または、ある種のハードウェアに問題を引き起こすACPIのような、カーネルに含まれている特定の機能が原因の可能性があります。
+   </para>
+   <para>
+    最初のインストールブート画面から、標準の<guimenu>インストール</guimenu>モードを使用してインストールするのに失敗した場合、以下のことを試してみてください。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      DVDがドライブにまだ入った状態であれば、<keycombo action="press"><keycap function="control">Ctrl</keycap><keycap function="alt">Alt</keycap><keycap function="delete">Del</keycap></keycombo>を押すか、ハードウェアリセットボタンを使用して、コンピュータを再起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブート画面が表示されたら、<keycap>F5</keycap>キーを押すか、キーボードの矢印キーを使用して、<guimenu>ACPIなし</guimenu>を探し、&lt;<keycap function="enter">Enter</keycap>キーを押してブートおよびインストールプロセスを開始します。このオプションはACPIの電源管理技術を無効にします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <xref linkend="cha.inst"/>の中での説明に従って、インストールを進めます。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    これが失敗する場合、以上で述べた手順の代わりに<guimenu>セーフ設定</guimenu>を選択してインストール処理を続行します。このオプションはACPIおよびDMAサポートを無効化します。このオプションを使うと、ほとんどのハードウェアが起動します。
+   </para>
+   <para>
+    両方のオプションともに失敗する場合、ブートオプションプロンプトを使用して、ハードウェアタイプをサポートするのに必要な追加のパラメータをインストールカーネルに渡します。ブートオプションとして使用可能なパラメータの詳細については、<filename>/usr/src/linux/Documentation/kernel-parameters.txt</filename>にあるカーネルマニュアルを参照してください。
+   </para>
+   <tip>
+    <title>カーネルマニュアルの取得</title>
+    <para>
+     kernel-source<systemitem class="systemname">パッケージをインストールして、カーネルマニュアルを表示します。</systemitem>
+    </para>
+   </tip>
+   <para>
+    他にさまざまなACPI関連のカーネルパラメータがあります。それらのパラメータは、インストールのために起動する前のブートプロンプトで入力できます。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term><systemitem>acpi=off</systemitem>
+     </term>
+     <listitem>
+      <para>
+       このパラメータは、コンピュータ上の完全ACPIサブシステムを無効にします。これはコンピュータがACPIをまったく処理できない場合、またはコンピュータのACPIが問題を引き起こしていると考えられる場合に役に立ちます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>acpi=force</systemitem>
+     </term>
+     <listitem>
+      <para>
+       2000年より前の日付が付けられた古いBIOSを持つコンピュータであっても、常にACPIを有効にします。このパラメータは、<systemitem>acpi=off</systemitem>に加えて設定された場合、ACPIも有効にします。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>acpi=noirq</systemitem>
+     </term>
+     <listitem>
+      <para>
+       ACPIはIRQルーティングには使用しません。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>acpi=ht</systemitem>
+     </term>
+     <listitem>
+      <para>
+       hyper-threadingを有効化するのに十分なACPIのみ実行します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>acpi=strict</systemitem>
+     </term>
+     <listitem>
+      <para>
+       厳密にはACPI仕様互換ではないプラットフォームに対する耐性が弱くなります。
+      </para>
+     </listitem>
+    </varlistentry>
+<?dbfo-need height="20em"?>
+
+
+    <varlistentry>
+     <term><systemitem>pci=noacpi</systemitem>
+     </term>
+     <listitem>
+      <para>
+       新しいACPIシステムのPCI IRQルーティングを無効にします。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>pnpacpi=off</systemitem>
+     </term>
+     <listitem>
+      <para>
+       このオプションは、BIOSセットアップに誤った割り込みまたはポートがある場合のシリアルまたはパラレルの問題向けです。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>notsc</systemitem>
+     </term>
+     <listitem>
+      <para>
+       タイムスタンプカウンタを無効にします。このオプションを使用して、システムのタイミングについての問題に対処できます。これは最近の機能で、コンピュータに特に時間や全面的なハングなどの遅れが見られる場合に、このオプションを試す価値があります。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><systemitem>nohz=off</systemitem>
+     </term>
+     <listitem>
+      <para>
+       nohz機能を無効にします。マシンがハングした場合、このオプションが役に立ちます。それ以外の場合は、使用しません。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+   <para>
+    パラメータの正しい組み合わせを決定したら、システムが次回適切に起動することを確実にするために、YaSTは自動的にそれらのパラメータをブートローダの設定に書き込みます。
+   </para>
+   <para>
+    カーネルのロード中、またはインストール中に説明できないエラーが発生した場合は、ブートメニューから<guimenu>メモリテスト</guimenu>を選択し、メモリを確認します。<guimenu>メモリテスト</guimenu>がエラーを返す場合、それは通常はハードウェアのエラーです。
+   </para>
+  </sect2>
+
+  <sect2 id="sec.trouble.install.graph">
+   <title>グラフィカルインストーラを起動できない</title>
+   <para>
+    メディアをドライブに挿入しコンピュータを再起動した後に、インストール画面が表示されますが、<guimenu>インストール</guimenu>を選択すると、グラフィカルインストーラは起動しません。
+   </para>
+   <para>
+    この問題に対処する方法はいくつかあります。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      インストールダイアローグ用に、他の画面解像度を選択してみます。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      インストール用に<guimenu>テキストモード</guimenu>を選択します。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      VNCを介して、グラフィカルインストーラを使ってリモートインストールをします。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <procedure id="proc.trouble.install.graph">
+    <title>インストール時の画面解像度の変更</title>
+    <step performance="required">
+     <para>
+      インストールのために起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <keycap>F3</keycap>キーを押して、インストール用に低解像度を選択するメニューを開きます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>インストール</guimenu>を選択し、<xref linkend="cha.inst"/>の中の説明に従ってインストールを続行します。
+     </para>
+    </step>
+   </procedure>
+   <procedure id="proc.trouble.install.text">
+    <title>テキストモードのインストール</title>
+    <step performance="required">
+     <para>
+      インストールのために起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <keycap>F3</keycap>キーを押して、<guimenu>テキストモード</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>インストール</guimenu>を選択し、<xref linkend="cha.inst"/>の中の説明に従ってインストールを続行します。
+     </para>
+    </step>
+   </procedure>
+   <procedure id="proc.trouble.install.vnc">
+    <title>VNCによるインストール</title>
+    <step performance="required">
+     <para>
+      インストールのために起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブートオプションプロンプトに以下のテキストを入力します。
+     </para>
+<screen>vnc=1 vncpassword=<replaceable>some_password</replaceable></screen>
+     <para>
+      <replaceable>some_password</replaceable>の部分はVNCインストール用に使用するパスワードに置き換えます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>インストール</guimenu>を選択し、キーを押してインストールを開始します。<keycap function="enter"/>
+     </para>
+     <para>
+      グラフィカルインストールルーチンに入る代わりに、システムはテキストモードで実行され、その後停止します。その際、IPアドレスおよびポート番号が含まれるメッセージが表示されますが、これらは、ブラウザインタフェースまたはVNCビューアアプリケーションを使用してインストーラにアクセスできるようにするために必要です。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブラウザを使用してインストーラにアクセスする場合、ブラウザを起動して将来<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>が起動するマシン上のインストール手順で与えられたアドレス情報を入力し、&lt;<keycap function="enter">Enter</keycap>キーを押します。
+     </para>
+<screen>http://<replaceable>ip_address_of_machine</replaceable>:5801</screen>
+     <para>
+      ブラウザウィンドウでは、VNCのパスワードを入力するように要求するダイアログが開かれます。パスワードを入力し、<xref linkend="cha.inst"/>の説明に従ってインストールを続行します。
+     </para>
+     <important>
+      <para>
+       VNC経由のインストールでは、Javaサポートが有効化されていれば、オペレーションシステムやブラウザの種類を問いません。
+      </para>
+     </important>
+     <para>
+      プロンプトが表示されたら、VNCビューアにIPアドレスとパスワードを入力します。インストールダイアログを表示するウィンドウが開きます。通常のようにインストールを続行します。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.trouble.install.mini">
+   <title>最低限のブート画面だけが起動する</title>
+   <para>
+    メディアをドライブに挿入して、BIOSルーチンは終了しますが、システム上でグラフィカルブート画面が開始しません。その代わりに、最小限のテキストベースのインタフェースが起動されます。これは、グラフィカルブート画面を表示するのに十分なグラフィックメモリを持っていないコンピュータを使用する場合に起こる可能性がります。
+   </para>
+   <para>
+    テキストのブート画面は最小限に見えますが、グラフィカルブート画面が提供する機能とほぼ同じものを提供します。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>ブートオプション</term>
+     <listitem>
+      <para>
+       グラフィカルインタフェースとは違い、キーボードのカーソルキーを使って異なるブートオプションを選択することはできません。テキストモードのブート画面のブートメニューでは、ブートプロンプトで入力するキーワードが表示されます。これらのキーワードはグラフィカルバージョンで提供されているオプションにマップしています。任意の選択を入力し&lt;<keycap function="enter">Enter</keycap>キーを押して、ブートプロセスを起動します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>カスタムブートオプション</term>
+     <listitem>
+      <para>
+       ブートオプションを選択したあと、ブートプロンプトで適切なキーワードを入力するか、<xref linkend="sec.trouble.install.noboot"/>の中で説明されているカスタムブートオプションを入力します。インストールプロセスを起動するには、&lt;<keycap function="enter">Enter</keycap>キーを押します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>画面解像度</term>
+     <listitem>
+      <para>
+       Fキーを使用して、インストール用の画面解像度を判別します。テキストモードで起動する必要がある場合は、<keycap>キーを選択します。</keycap>
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.trouble.boot">
+  <title>ブートの問題</title>
+
+  <para>
+   ブートの問題とは、システムが適切に起動しないような場合を指します(意図したランレベルおよびログイン画面まで起動しない場合)。
+  </para>
+
+  <sect2 id="sec.trouble.boot.nogrub">
+   <title>GRUB ブートローダのロードに失敗する</title>
+   <para>
+    ハードウェアが問題なく機能している場合、ブートローダが壊れてしまってLinuxがコンピュータ上で起動できない可能性があります。このような場合、ブートローダを再インストールする必要があります。ブートローダを再インストールするには、以下の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      インストールメディアをドライブに挿入します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      コンピュータを再起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブートメニューから<guimenu>インストール</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      言語を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      使用許諾契約に同意します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>インストールモード</guimenu>画面で、<guimenu>インストール済みのシステムを修復</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      YaSTシステム修復モジュールの中で、<guimenu>エキスパート設定用ツール</guimenu>を選択し、<guimenu>新しいブートローダのインストール</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      元の設定を復元し、ブートローダを再インストールします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      YaSTシステム修復を修復し、システムを再起動します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    コンピュータが起動しない理由は他にBIOS関連のものが考えられます。
+   </para>
+   <variablelist>
+    <varlistentry>
+     <term>BIOS設定</term>
+     <listitem>
+      <para>
+       ハードドライブを参照するためのBIOSを確認してください。ハードドライブ自体が現在のBIOS設定に見つからない場合、GRUBが単に開始されない可能性があります
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>BIOSブートオーダー</term>
+     <listitem>
+      <para>
+       お使いのシステムのブートオーダーがハードディスクを含んでいるか確認します。ハードディスクオプションが有効になっていない場合、システムは適切にインストールされていますが、ハードディスクへのアクセスが要求される際に起動に失敗する可能性があります。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  
+
+  <sect2 id="sec.trouble.boot.prompt">
+   <title>グラフィカルログインがない</title>
+   <para>
+    コンピュータは起動するものの、グラフィカルログインマネージャが起動しない場合は、デフォルトのランレベルの選択、あるいはX Window Systemの設定のいずれかに問題があると考えられます。ランレベルの設定を確認するには、<systemitem class="username">root</systemitem>ユーザでログインし、コンピュータがランレベル 5 (グラフィカルデスクトップ)に起動する設定になっているか確認します。この確認を手軽にする方法は、<filename>/etc/inittab</filename>の内容を以下のように調べることです。
+   </para>
+<screen>tux@mercury:~&gt; grep "id:" /etc/inittab 
+id:5:initdefault:</screen>
+   <para>
+    返された行は、コンピュータのデフォルトランレベル(<literal>initdefault</literal>)が<literal>5</literal>に設定されており、グラフィカルデスクトップに起動するはずであることを示しています。ランレベルが5以外の数に設定されていた場合は、YaSTのランレベルエディタモジュールを使用して、<literal>5</literal>に設定します。
+   </para>
+   <important>
+    <para>
+     ランレベル設定を手動で編集しないでください。そうしないと、SuSEconfig (YaSTによって実行される)が次回起動した際に、変更を上書きしてしまいます。手動で変更が必要な場合、将来のSuSEconfigによる変更を、<replaceable>CHECK_INITTAB</replaceable> (<filename>/etc/sysconfig/suseconfig</filename>内にある)を<option>no</option>に設定して無効にします。
+    </para>
+   </important>
+   <para>
+    ランレベルが<literal>5</literal>に設定されている場合、デスクトップまたはX Windowsソフトウェアがおそらく誤って設定されているか、破損しています。/var/log/Xorg.*.log<filename>のログファイルから、Xサーバが開始する際にログされる詳細メッセージを調べます。</filename>開始中にデスクトップが失敗する場合、<filename>/var/log/messages</filename>にエラーメッセージが書き込まれる可能性があります。これらのエラーメッセージがXサーバの設定の問題を示唆している場合は、これを直すようにしてください。それでもグラフィカルシステムが起動しない場合は、グラフィカルデスクトップを再インストールすることを考えてください。
+   </para>
+   <tip>
+    <title>X Windowシステムを手動で起動する</title>
+    <para>
+     簡単なテスト:<command>startx</command>コマンドは、ユーザが現在コンソールにログインしている場合、X Window Systemを設定されたデフォルトで開始するように強制します。これがうまくいかない場合は、コンソールにエラーがログされるはずです。
+    </para>
+   </tip>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.trouble.login">
+  <title>Loginの問題</title>
+
+  <para>
+   ログインの問題とは、お使いのコンピュータが予期されるようこそ画面またはログインプロンプトまで実際に起動するが、ユーザ名およびパスワードを受け付けない、または受け付けるが、その後適切な動きをしない場合です(グラフィックデスクトップ開始の失敗、エラーの発生、コマンドラインに落ちる、など)。
+  </para>
+
+  <sect2 id="sec.trouble.login.no">
+   <title>有効なユーザ名とパスワードを使っても失敗する</title>
+   <para>
+    この問題は、一般的にシステムがネットワーク認証またはディレクトリサービスを使用するように設定されており、何らかの理由で、設定されたサーバから結果を取得できない場合に発生します。このような場合でも、<systemitem class="username">root</systemitem>ユーザは唯一のローカルユーザとしてこれらのコンピュータにログインできます。次に、コンピュータが一見機能しているように見えるのにログインを正しく処理できない一般的な理由をいくつか挙げます。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      ネットワークが機能していません。この場合の更なる対処方法については、<xref linkend="sec.trouble.netconfig"/>を参照してください
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      DNSが機能していないです。(これによりGNOMEまたはKDEは働かず、システムは安全なサーバに有効なリクエストを送れません)。すべてのアクションに対して、コンピュータに極端に長い時間かかる場合は、この問題の可能性があります。このトピックの詳細は、<xref linkend="sec.trouble.netconfig"/>を参照してください。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      システムがKerberosを使用するように設定されている場合、システムのローカルタイムは、Kerberosサーバのタイムとの間で許容される相違を超えてしまっている可能性があります(通常 300秒)。NTP (network time protocol)が適切に動いていない、またはローカルのNTPサーバが動いていない場合、Kerberos の認証は機能しなくなります。その理由は、この認証はネットワーク間の一般的なクロック同期に依存しているからです。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      システムの認証設定が間違って設定されています。関連するPAM設定ファイルの中に誤字や命令の順序違いがないか確認します。PAMおよび関連する設定ファイルの構文に関する背景情報の詳細については、<xref linkend="cha.pam"/>を参照してください。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      ホームパーティションが暗号化されています。このトピックの詳細は、<xref linkend="sec.trouble.login.encrypted"/>を参照してください。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    外部のネットワーク問題を含まない他のすべての問題については、解決方法としてシステムをシングルユーザモードに再起動して、動作モードに再び起動してログインし直す前に、設定を修復します。シングルユーザモードで起動するには、次の手順に従います。
+   </para>
+   <procedure id="proc.trouble.login.no">
+    <step performance="required">
+     <para>
+      システムを再起動します。ブート画面の表示に続き、プロンプトが表示されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ブートプロンプトでは、「<command>1</command>」を入力し、システムブートがシングルユーザモードになるようにします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      root<systemitem class="username">用のユーザ名とパスワードを入力します。</systemitem>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      必要な変更をすべて加えます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      コマンドラインに「<command>telinit 5</command>」を入力して、ネットワークありフルマルチユーザモードに起動します。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.trouble.login.pw">
+   <title>有効なユーザ名とパスワードが受け付けられない</title>
+   <para>
+    これは、今のところユーザが経験する問題のうち、最も一般的なものです。その理由は、この問題が起こる原因がたくさんあるからです。ローカルのユーザ管理および認証を使用するか、ネットワーク認証を使用するかによって、異なる原因によりログイン失敗が発生します。
+   </para>
+   <para>
+    ローカルユーザ管理は、次の原因により失敗する可能性があります。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      間違ったパスワードを入力した可能性があります。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      ユーザのホームディレクトリが、破損または書き込み保護されたデスクトップ設定ファイルを含んでいます。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      この特定のユーザを認証するのに、X Window Systemに何らかの問題があります。特に、ユーザのホームディレクトリが、現在のLinuxをインストールする以前の他のLinuxディストリビューションによって使用されている場合です。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    ローカルログイン失敗の原因を発見するには、次の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      認証方式全体をデバッグする前に、ユーザがパスワードを正しく覚えているか確認します。ユーザが正しいパスワードを覚えていない場合は、YaSTユーザ管理モジュールを使用してそのユーザのパスワードを変更します。<keycap>Caps Lock</keycap>キーに注意し、必要に応じてそのロックを解除します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <systemitem class="username">root</systemitem>ユーザでログインし、ログインプロセスおよびPAMのエラーメッセージがないかどうか<filename>/var/log/messages</filename>を確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      コンソールからログインしてみます(<keycombo> <keycap function="control">Ctrl</keycap> <keycap function="alt">Alt</keycap> <keycap>F1</keycap> </keycombo>キーを使用)。これが成功する場合、PAMには問題はありません。その理由は、そのユーザをそのコンピュータ上で認証可能だからです。X Window Systemまたはデスクトップ(GNOMEまたはKDE)で問題がないか探してみてください。詳細については、<xref linkend="sec.trouble.login.dk"/>および<xref linkend="sec.trouble.login.kde"/>を参照してください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ユーザのホームディレクトリが他のLinuxディストリビューションによって使用されている場合、ユーザのホームにある<filename>Xauthority</filename>ファイルを削除します。<keycombo> <keycap function="control">Ctrl</keycap> <keycap function="alt">Alt</keycap> <keycap>F1</keycap> </keycombo>キーを押してコンソールログインを使用し、<command>rm .Xauthority</command>をこのユーザとして実行します。これにより、X認証の問題はこのユーザに関してはなくなるはずです。グラフィカルログインを再試行します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      グラフィカルログインがまだ失敗する場合、<keycombo> <keycap function="control">Ctrl</keycap><keycap function="alt">Alt</keycap><keycap>F1</keycap></keycombo>キーでコンソールログインを行ってください。他のディスプレイ上でXセッションを開始します。最初のもの(<literal>:0</literal>)はすでに使用中です。
+     </para>
+<screen>startx -- :1</screen>
+     <para>
+      これによってグラフィカル画面とデストップが表示されます。表示されない場合は、X Window Systemのログファイル(<filename>/var/log/Xorg.<replaceable>displaynumber</replaceable>.log</filename>)を確認するか、デスクトップアプリケーションのログ(ユーザのホームディレクトリにある<filename>.xsession-errors</filename>)を確認して、異常な点がないか調べます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      設定ファイルが壊れていて、デスクトップが開始できなかった場合、<xref linkend="sec.trouble.login.dk"/>または<xref linkend="sec.trouble.login.kde"/>を続行します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    以下では、特定のユーザのネットワーク認証が、特定のコンピュータ上で失敗するのかの一般的な理由のいくつかを挙げます。
+   </para>
+   <itemizedlist mark="bullet" spacing="normal">
+    <listitem>
+     <para>
+      間違ったパスワードを入力した可能性があります。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      コンピュータのローカル認証ファイルの中に存在し、ネットワーク認証システムからも提供されるユーザ名が競合しています。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      ホームディレクトリは存在しますが、それが壊れている、または利用不可能です。書き込み保護がされているか、その時点でアクセスできないサーバ上にディレクトリが存在するかのどちらかの可能性があります。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      認証システム内で、ユーザがその特定のサーバにログインする権限がありません。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      コンピュータのホスト名が何らかの理由で変更されていて、そのホストにユーザがログインする権限がありません。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      コンピュータが、認証サーバまたはそのユーザの情報を含んでいるディレクトリサーバに接続できません。
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      この特定のユーザを認証するのに、X Window Systemに何らかの問題があります。特に、ユーザのホームが、現在のLinuxをインストールする以前に他のLinuxディストリビューションによって使用されている場合です。
+     </para>
+    </listitem>
+   </itemizedlist>
+   <para>
+    ネットワーク認証におけるログイン失敗の原因を突き止めるには、次の手順に従います。
+   </para>
+   <procedure id="proc.trouble.login.pw">
+    <step performance="required">
+     <para>
+      認証方式全体をデバッグする前に、ユーザがパスワードを正しく覚えているか確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      認証用にマシンが利用するディレクトリサーバを判別し、それがきちんと動作しており、他のマシンと適切に通信していることを確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ユーザのユーザ名およびパスワードが他のマシン上でも使用できるかを判別し、そのユーザの認証データが存在し、適切に配布されていることを確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      他のユーザが、問題のある動きをしているコンピュータにログインできるか観察します。その他のユーザが問題なくログインできたか、<systemitem class="username">root</systemitem>でログインできた場合、ログイン後、<filename>/var/log/messages</filename>ファイルの内容を調べます。ログインの試行に対応するタイムスタンプを見つけ出し、PAMによって、エラーメッセージが生成されていないか判別します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      コンソールからログインしてみます(<keycombo> <keycap function="control">Ctrl</keycap> <keycap function="alt">Alt</keycap> <keycap>F1</keycap> </keycombo>キーを使用)。これが成功する場合、PAMやユーザのホームがあるディレクトリサーバには問題はありません。その理由は、そのユーザをそのコンピュータ上で認証可能だからです。X Window Systemまたはデスクトップ(GNOMEまたはKDE)で問題がないか探してみてください。詳細については、<xref linkend="sec.trouble.login.dk"/>および<xref linkend="sec.trouble.login.kde"/>を参照してください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ユーザのホームディレクトリが他のLinuxディストリビューションによって使用されている場合、ユーザのホームにある<filename>Xauthority</filename>ファイルを削除します。<keycombo> <keycap function="control">Ctrl</keycap> <keycap function="alt">Alt</keycap> <keycap>F1</keycap> </keycombo>キーを押してコンソールログインを使用し、<command>rm .Xauthority</command>をこのユーザとして実行します。これにより、X認証の問題はこのユーザに関してはなくなるはずです。グラフィカルログインを再試行します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      グラフィカルログインがまだ失敗する場合、<keycombo> <keycap function="control">Ctrl</keycap><keycap function="alt">Alt</keycap><keycap>F1</keycap></keycombo>キーでコンソールログインを行ってください。他のディスプレイ上でXセッションを開始します。最初のもの(<literal>:0</literal>)はすでに使用中です。
+     </para>
+<screen>startx -- :1</screen>
+     <para>
+      これによってグラフィカル画面とデストップが表示されます。表示されない場合は、X Window Systemのログファイル(<filename>/var/log/Xorg.<replaceable>displaynumber</replaceable>.log</filename>)を確認するか、デスクトップアプリケーションのログ(ユーザのホームディレクトリにある<filename>.xsession-errors</filename>)を確認して、異常な点がないか調べます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      設定ファイルが壊れていて、デスクトップが開始できなかった場合、<xref linkend="sec.trouble.login.dk"/>または<xref linkend="sec.trouble.login.kde"/>を続行します。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.trouble.login.encrypted">
+   <title>暗号化されたホームパーティションへのログインが失敗します</title><indexterm><primary>暗号化</primary><secondary>ホームパーティションの問題</secondary></indexterm>
+   <para>
+    ラップトップでは暗号化されたホームパーティションの使用が推奨されます。ラップトップにログインできない場合、通常その理由は簡単です。パーティションのロックを解除できなかったためです。
+   </para>
+   <para>
+    起動時に、暗号化されたパーティションのロックを解除するためにパスフレーズを入力する必要があります。パスフレーズを入力しない場合、パーティションがロックしたまま起動プロセスが続行します。
+   </para>
+   <para>
+    暗号化されたパーティションのロックを解除するには、次の手順に従います。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      <keycombo><keycap function="control"/><keycap function="alt"/><keycap>F1</keycap></keycombo>でテキストコンソールに切り替えます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <systemitem class="username">root</systemitem>になります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      次のコマンドにより、ロックを解除するプロセスを再開します。
+     </para>
+<screen>/etc/init.d/boot.crypto restart</screen>
+    </step>
+    <step performance="required">
+     <para>
+      暗号化されたパーティションのロックを解除するためのパスフレーズを入力します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      テキストコンソールを終了し、<keycombo><keycap function="alt"/><keycap>F7</keycap></keycombo>でログイン画面に切り替えます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      通常通りログインします。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.trouble.login.dk">
+   <title>ログインは成功したがGNOMEデスクトップが失敗する</title>
+   <para>
+    この場合に、GNOME環境設定ファイルが破損している可能性があります。兆候としては、キーボードがうまく動かない、画面のジオメトリが歪んでいる、または画面が空の灰色領域として表示されるなどがあります。この問題の重要な特徴は、他のユーザがログインする場合は、コンピュータは普通に機能するという点です。このような場合、問題のユーザのGNOME設定ディレクトリを単に新しい場所に移すことで、が新しいデスクトップを初期化するので、比較的簡単にこの問題を解決できます。ユーザはGNOMEの再設定を強いられますが、データが失われません。
+   </para>
+   <procedure id="proc.trouble.login.dk">
+    <step performance="required">
+     <para>
+      <keycombo><keycap function="control"/><keycap function="alt"/><keycap>F1</keycap></keycombo>を押して、テキストコンソールを切り替えます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      自分のユーザ名でログインします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ユーザのGNOME設定ディレクトリを、一時的な場所に移動します。
+     </para>
+<screen>mv .gconf  .gconf-ORIG-RECOVER
+mv .gnome2 .gnome2-ORIG-RECOVER</screen>
+    </step>
+    <step performance="required">
+     <para>
+      ログアウトします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      もう一度ログインします。ただし、アプリケーションは何も実行しないでください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      次のようにして、<filename>~/.gconf-ORIG-RECOVER/apps/</filename>ディレクトリを、新しい<filename>~/.gconf</filename>ディレクトリにコピーすることで個々のアプリケーション設定データ(Evolutionの電子メールクライアントデータを含む)を回復します。
+     </para>
+<screen>cp -a .gconf-ORIG-RECOVER/apps .gconf/</screen>
+     <para>
+      これによってログインの問題が生じる場合は、重要なアプリケーションデータのみの回復を試み、アプリケーションの残りを再設定します。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.trouble.login.kde">
+   <title>ログインは成功したがKDEデスクトップが失敗する</title>
+   <para>
+    KDEデスクトップがユーザのログインを許可しない理由にはいくつかあります。壊れたKDEデスクトップ設定ファイルと同様に壊れたキャッシュデータもログインの問題を引き起こします。
+   </para>
+   <para>
+    キャッシュデータは、デスクトップの起動時にパフォーマンスを向上させるため使用されます。このデータが壊れていると、起動が遅くなったり、完全に失敗したりします。キャッシュデータを削除すると、デスクトップ起動のルーチンが最初から開始します。これには一般の起動よりも時間がかかりますが、その後はデータは無事でユーザはログインできます。
+   </para>
+   <para>
+    KDEデスクトップのキャッシュファイルを削除するには、<systemitem class="username">root</systemitem>ユーザで以下のコマンドを実行します。
+   </para>
+<screen>rm -rf /tmp/kde-<replaceable>user</replaceable> /tmp/ksocket-<replaceable>user</replaceable></screen>
+   <para>
+    <replaceable>user</replaceable>は、ご使用のユーザ名に置き換えます。これらのディレクトリを削除しても、単に壊れたキャッシュファイルが削除されるだけです。この手順で実際のデータが削除されることはありません。
+   </para>
+   <para>
+    壊れたデスクトップ設定ファイルは、いつでも初期の設定ファイルに置き換えることができます。ユーザの調整を回復する場合は、デフォルトの設定値を使用して設定が復元されたあとに、一時的な場所からこれらのユーザの調整内容を慎重にコピーします。
+   </para>
+   <para>
+    壊れたデスクトップ設定ファイルを初期の設定ファイルに置き換えるには、以下の手順に従います。
+   </para>
+   <procedure id="proc.trouble.login.kde">
+    <step performance="required">
+     <para>
+      <keycombo><keycap function="control"/><keycap function="alt"/><keycap>F1</keycap></keycombo>を押して、テキストコンソールを切り替えます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      自分のユーザ名でログインします。
+     </para>
+    </step>
+    <step id="st.trouble.login.kde.mv" performance="required">
+     <para>
+      KDE設定ディレクトリおよび<filename>.skel</filename>ファイルを一時的な場所に移動します。
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        KDE3では、次のコマンドを使用します。
+       </para>
+<screen>mv .kde  .kde-ORIG-RECOVER 
+mv .skel .skel-ORIG-RECOVER<replaceable/></screen>
+      </listitem>
+      <listitem>
+       <para>
+        KDE4では、次のコマンドを使用します。
+       </para>
+<screen>mv .kde4  .kde4-ORIG-RECOVER 
+mv .skel .skel-ORIG-RECOVER<replaceable/></screen>
+      </listitem>
+     </itemizedlist>
+    </step>
+    <step performance="required">
+     <para>
+      ログアウトします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      もう一度ログインします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      デスクトップが正常に開始したら、ユーザ自身の設定を元の場所にコピーします。
+     </para>
+<screen>cp -a <replaceable>KDEDIR</replaceable>/share .kde/share</screen>
+     <para>
+      <replaceable>KDEDIR</replaceable>を<xref linkend="st.trouble.login.kde.mv"/>のディレクトリに置き換えます。
+     </para>
+     <important>
+      <para>
+       ユーザ自身による調整によりログインが失敗し、その状態が続く場合は、<filename>.kde/share</filename>ディレクトリはコピーせずに上記の手順を繰り返します。
+      </para>
+     </important>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.trouble.netconfig">
+  <title>ネットワークの問題</title>
+
+  <para>
+   システム上の問題は、最初はそうは見えないのですが、ネットワークに関する問題であることが多いです。例えば、システムにユーザがログインできない理由は、ある種のネットワークの問題であったりします。ここでは、ネットワークの問題に直面した場合の簡単なチェックリストを紹介します。
+  </para>
+
+  <procedure id="proc.trouble.config.net">
+   <title>ネットワークの問題を識別する方法</title>
+   <para>
+    コンピュータとネットワークの接続の確認をする場合、以下の手順に従ってください。
+   </para>
+   <step performance="required">
+    <para>
+     イーサネット接続を使用する場合、はじめにハードウェアを確認します。ネットワークケーブルがきちんとコンピュータおよびルータ(またはハブなど)に差し込んであることを確認してください。イーサネットコネクタの隣に管理用ライトがある場合、その両方がアクティブである必要があります。
+    </para>
+    <para>
+     接続に失敗する場合、お使いのネットワークケーブルが他のコンピュータでは使用可能かどうか確認します。使用可能な場合、ネットワークカードに問題の原因があります。ネットワークのセットアップにハブやスイッチを使用している場合は、それらが誤っている可能性もあります。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     無線接続を使用7る場合、他のコンピュータからワイヤレスリンクが確立できるかどうか確認します。そうでない場合は、無線ネットワークの管理者にお問い合わせください。
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     基本的なネットワーク接続を確認し終わったら、どのサービスが応答していないかを探します。お使いの構成上のすべてのネットワークサーバのアドレス情報を集めます。適切なYaSTモジュール内で探すか、システム管理者に問い合わせてください。以下のリストには、ある構成内に含まれる一般的なネットワークサーバを、それらの故障の兆候とともに表わしています。
+    </para>
+    <variablelist>
+     <varlistentry>
+      <term>DNS (ネームサービス)</term>
+      <listitem>
+       <para>
+        壊れた、あるいは誤作動しているネームサービスは、ネットワークの機能にさまざまな形で影響を与えます。ローカルコンピュータの認証がネットワークサーバによって行われ、それらのサーバが名前解決に問題があるために見つからない場合、ユーザはローカルコンピュータにログインすることもできません。壊れたネームサーバが管理するネットワーク上のコンピュータは、お互いを<quote>認識</quote>し、通信することができません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>NTP (タイムサービス)</term>
+      <listitem>
+       <para>
+        誤作動している、または完全に壊れたNTPサービスは、Kerberosの認証およびXサーバの機能に影響を与えます。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>NFS (ファイルサービス)</term>
+      <listitem>
+       <para>
+        NFSによってマウントされたディレクトリ内のデータを必要とするアプリケーションがあった場合、このNFSサービスがダウンしてるか、間違って設定されていると、そのアプリケーションは起動できないか、または正しく機能しません。最悪のケースとしては、 <filename>.gconf </filename>または <filename>.kde </filename>サブディレクトリを含んでいる、あるユーザのホームディレクトリが、NFSサーバの故障のために検出されなかった場合、そのユーザ個人のデスクトップ設定が起動しません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Samba (ファイルサービス)</term>
+      <listitem>
+       <para>
+        アプリケーションが、故障したSambaサーバ上のディレクトリに保存されたデータを必要とする場合、アプリケーションは起動できないか、または正しく機能しません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>NIS (ユーザ管理)</term>
+      <listitem>
+       <para>
+        <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムがユーザデータを提供するために故障したNISサーバを使用している場合、ユーザはマシンにログインできません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>LDAP (ユーザ管理)</term>
+      <listitem>
+       <para>
+        <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムがユーザデータを提供するために故障したLDAPサーバを使用している場合、ユーザはこのマシンにログインできません。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>Kerberos (認証)</term>
+      <listitem>
+       <para>
+        認証が機能せず、すべてのコンピュータへのログインが失敗します。
+       </para>
+      </listitem>
+     </varlistentry>
+     <varlistentry>
+      <term>CUPS (ネットワーク印刷)</term>
+      <listitem>
+       <para>
+        ユーザが印刷できません。
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </step>
+   <step performance="required">
+    <para>
+     ネットワークサーバが起動しているか、ネットワーク上で接続を確立できる設定になっているか、を確認します。
+    </para>
+    <important>
+     <para>
+      次で説明するデバッグの手順は、内部ルーティングを必要としない、簡単なネットワークサーバ/クライアント設定にのみ適用されます。サーバとクライアントの両方が、追加でルーティングする必要のない同じサブネットのメンバーであることが前提です。
+     </para>
+    </important>
+    <substeps performance="required">
+     <step performance="required">
+      <para>
+       <command>ping <replaceable>IP address</replaceable>または<replaceable>hostname </replaceable></command>(<replaceable>hostname</replaceable>はサーバのホスト名で置き換えます)を使って、サーバが起動中で、ネットワークに反応するかどうか確認します。このコマンドが成功する場合は、目的のホストは起動しており、ネットワークのネームサービスは正しく設定されていることがわかります。
+      </para>
+      <para>
+       pingが「<literal>destination host unreachable</literal>」というメッセージで失敗する場合、お使いのシステムまたは宛先のサーバが正しく設定されていないか、ダウンしています。その場合、他のコンピュータから<command>ping <replaceable>IP address</replaceable>または<replaceable>your_hostname</replaceable></command>を実行して、お使いのシステムに到達可能か確認してください。他のコンピュータからお使いのコンピュータへ到達可能な場合、宛先のサーバが起動していないか、正しく設定されていません。
+      </para>
+      <para>
+       pingが「<literal>unknown host</literal>」というメッセージで失敗する場合、ネームサービスが正しく設定されていないか、使用したホスト名が正しくありません。この問題を詳細に調べるには、<xref linkend="st.trouble.config.net.host" xrefstyle="StepOnPage"/>を参照してください。それでもpingが失敗する場合は、ネットワークカードが正しく設定されていないか、ネットワークのハードウェアに障害があります。
+      </para>
+     </step>
+     <step id="st.trouble.config.net.host" performance="required">
+      <para>
+       <command>host<replaceable> hostname</replaceable></command>を使用して、接続しようとしているサーバのホスト名が適切なIPアドレスに変換され、またその逆も問題ないか確認します。このコマンドによって、このホストのIPアドレスが返される場合、ネームサービスは起動中です。この<command>host</command>コマンドが失敗する場合、お使いのホスト上の名前とアドレス解決に関係するすべてのネットワーク設定ファイルを確認します。
+      </para>
+<?dbfo-need height="20em"?>
+
+
+      <variablelist>
+       <varlistentry>
+        <term><filename>/etc/resolv.conf</filename>
+        </term>
+        <listitem>
+         <para>
+          このファイルは、ネームサーバおよび現在使用中のドメインを管理するために使用されます。このファイルは手動で変更するか、YaSTまたはDHCPによる自動調整が可能ですが、自動調整のほうをお勧めします。ただし、このファイルが以下のような構造およびネットワークアドレスを含んでいること、さらにドメイン名が正しいことを確認してください。
+         </para>
+<screen>search <replaceable>fully_qualified_domain_name</replaceable>
+nameserver <replaceable>ipaddress_of_nameserver</replaceable></screen>
+         <para>
+          このファイルには1つ以上のネームサーバのアドレスを含むことができますが、その中の少なくとも1つは、お使いのホストの名前解決が正しくできる必要があります。必要に応じて、YaSTネットワーク設定モジュール(［ホスト名/DNS］タブ)を使用してこのファイルを修正します。
+         </para>
+         <para>
+          お使いのネットワークの接続がDHCP経由の場合、YaST DNS およびHostnameモジュール内で、<guimenu>DHCP経由でのホスト名の変更</guimenu>および<guimenu>DHCP経由でのネームサービスおよび検索リストの更新</guimenu>を選択し、DHCPを有効化してホスト名およびネームサービス情報を変更します。
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry>
+        <term><filename>/etc/nsswitch.conf</filename>
+        </term>
+        <listitem>
+         <para>
+          このファイルは、Linuxがネームサービス情報を探す場所を示します。このようになります。
+         </para>
+<screen> ...
+hosts: files dns
+networks: files dns
+...</screen>
+         <para>
+          <option>dns</option>エントリは必須です。これにより、Linuxは外部のネームサーバを使用するようになります。通常、これらのエントリはYaSTにより自動的に管理されますが、慎重にチェックする必要があります。
+         </para>
+         <para>
+          ホスト上で、すべての関連エントリが正しい場合は、システム管理者に依頼して、正しいゾーン情報に関するDNSサーバの設定を確認してもらいます。<phrase os="sles;osuse">DNSの詳細については、<xref linkend="cha.dns"/>を参照してください。</phrase>お使いのホストのDNS設定およびDNSサーバが正しいことが確認できた場合、ネットワークおよびネットワークデバイス設定の確認に進みます。
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </step>
+     <step performance="required">
+      <para>
+       お使いのシステムがネットワークサーバに接続できない状況で、ネームサービスの問題を障害原因の可能性リストから除外した場合は、ネットワークカードの設定を確認します。
+      </para>
+      <para>
+       <command>ifconfig</command> <replaceable>network_device</replaceable> (<systemitem class="username">root</systemitem>ユーザで実行)コマンドを使用して、このデバイスが適切に設定されているか確認します。<option>inetアドレス</option>および<option>マスク</option>の両方が正しく設定されていることを確認してください。IPアドレス内に間違いがある場合、またはネットワークマスク内で不明のビットがある場合は、ネットワーク設定が使用不可能になります。必要であれば、サーバ上でもこの確認をしてください。
+      </para>
+     </step>
+     <step performance="required">
+      <para>
+       ネームサービスおよびネットワークサービスが正しく設定され起動している場合でも、外部のネットワーク接続がタイムアウトするのに時間がかかったり、完全に失敗する場合は、<command>traceroute <replaceable>fully_qualified_domain_name</replaceable></command> (<systemitem class="username">root</systemitem>ユーザで実行)コマンドを使用して、リクエストがネットワーク上でどのルートを使用するか追跡します。このコマンドは、お使いのコンピュータのリクエストが宛先に到達するまでに経由するゲートウェイ(ホップ)をリストします。各ホップの応答時間およびこのホップにそもそも到達可能か否かをリストします。tracerouteおよびpingコマンドを組み合わせて原因を追究し、管理者に知らせてください。
+      </para>
+     </step>
+    </substeps>
+   </step>
+  </procedure>
+
+  <para>
+   ネットワーク障害の原因を突き止めたら、自身でそれを解決するか(自分のコンピュータ上に問題がある場合)、お使いのネットワークのシステム管理者に原因について報告し、サービスを再設定するか、必要なシステムを修理してもらってください。
+  </para>
+
+  <sect2 id="sec.trouble.networkmanager">
+   <title>NetworkManagerの問題</title>
+   
+   <para>
+    ネットワーク接続に問題がある場合は、<xref linkend="proc.trouble.config.net"/>の説明に従って原因を絞り込んでください。NetworkManagerが原因と考えられる場合は、以降の説明に従ってNetworkManager障害の理由を調べるために役立つログを取得してください。
+   </para>
+   <procedure>
+    <step performance="required">
+     <para>
+      シェルを開いて、<systemitem class="username">root</systemitem>としてログインします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      NetworkManagerを再起動します。
+     </para>
+<screen>rcnetwork restart -o nm</screen>
+    </step>
+    <step performance="required">
+     <para>
+      一般ユーザとして<ulink url="http://www.opensuse.org"/>などのWebページを開いて、正常に接続できているかどうかを確認します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <filename>/var/log/NetworkManager</filename>にある、NetworkManagerに関する情報を収集します。
+     </para>
+    </step>
+   </procedure>
+   <para>
+    NetworkManagerについての詳細は、<xref linkend="cha.nm"/>を参照してください。
+   </para>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.trouble.data">
+  <title>データの問題</title>
+
+  <para>
+   データの問題とは、コンピュータが正常に起動するかしないかに関係なく、システム上でデータが壊れており、システムの修復が必要な場合を言います。このような状況では、システムに障害が発生する前の状態にシステムを復元するために、重要なデータをバックアップする必要があります。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>には、システムのバックアップ/復元や、レスキューシステム(壊れたシステムを外部から復元するのに使用できる)用に、専用のYaSTモジュールが用意されています。
+  </para>
+
+  <sect2 id="sec.trouble.data.partitions">
+   <title>パーティションイメージの管理</title>
+   <para>
+    パーティション全体、さらにはハードディスク全体からバックアップを実行することが必要になる場合があります。Linuxには、ディスクの正確なコピーを作成できる<command>dd</command>ツールが付属しています。<command>gzip</command>と組み合わせることで、若干の領域の節約になります。
+   </para>
+   <procedure>
+    <title>ハード デスクのバックアップと復元</title>
+    <step performance="required">
+     <para>
+      <systemitem class="username">root</systemitem>ユーザとしてシェルを起動します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      ソースデバイスを選択します。これは、<filename>/dev/sda</filename>などが一般的です(<replaceable>SOURCE</replaceable>というラベルが付きます)。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      イメージを保存する場所を決めます(<replaceable>BACKUP_PATH</replaceable>というラベルが付きます)。これは、ソースデバイスとは異なる場所にする必要があります。つまり、<filename>/dev/sda</filename>からバックアップを作成する場合、イメージファイルは<filename>/dev/sda</filename>に保存しないでください。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      コマンドを実行して圧縮イメージファイルを作成します。
+     </para>
+<screen>dd if=/dev/<replaceable>SOURCE</replaceable> | gzip &gt; /<replaceable>BACKUP_PATH</replaceable>/image.gz </screen>
+    </step>
+    <step performance="required">
+     <para>
+      次のコマンドによりハードディスクを復元します。
+     </para>
+<screen>gzip -dc /<replaceable>BACKUP_PATH</replaceable>/image.gz | dd of=/dev/<replaceable>SOURCE</replaceable></screen>
+    </step>
+   </procedure>
+   <para>
+    バックアップするパーティションのみが必要な場合は、<replaceable>SOURCE</replaceable>プレースホルダを対応するパーティションに置き換えます。この場合、イメージファイルを同じハードディスクにおくことができます。ただし、パーティションは異なります。
+   </para>
+  </sect2>
+
+
+
+  <sect2 id="sec.trouble.data.backup">
+   <title>重要なデータのバックアップ</title>
+   <procedure id="proc.trouble.data.backup">
+    <para>
+     YaSTシステムバックアップモジュールを使用すれば、システムのバックアップは簡単に管理できます。
+    </para>
+    <step performance="required">
+     <para>
+      <systemitem class="username">root</systemitem>ユーザでYaSTを開始し、<menuchoice><guimenu>システム</guimenu><guimenu>システムバックアップ</guimenu></menuchoice>を順に選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      バックアップに必要な詳細のすべて、アーカイブファイルのファイル名、スコープ、およびバックアップタイプを含むバックアッププロファイルを作成します。
+     </para>
+     <substeps performance="required">
+      <step performance="required">
+       <para>
+        <menuchoice><guimenu>プロファイル管理</guimenu><guimenu>追加</guimenu></menuchoice>の順にクリックします。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        アーカイブの名前を入力します。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        ローカルバックアップをしたい場合は、そのバックアップの場所へのパスを入力します。ネットワークサーバ上にバックアップをアーカイブしたい場合は、IPアドレスまたはサーバの名前、およびアーカイブを保存するディレクトリを入力します。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        アーカイブタイプを決め<guimenu>次へ</guimenu>をクリックします。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        どのパッケージにも属さないファイルをバックアップするか、アーカイブ作成の前にファイルのリストを表示させるかなど、使用するバックアップオプションを決定します。また、変更されたファイルが、時間のかかるMD5メカニズムを使用して識別されるようにするのかも決定します。
+       </para>
+       <para>
+        <guimenu>エキスパート</guimenu>を使用して、ハードディスク領域全体のバックアップのためのダイアログに入ります。現在、このオプションはExt2ファイルシステムのみに適用されます。
+       </para>
+      </step>
+      <step performance="required">
+       <para>
+        最後に、ロックファイルまたはキャッシュファイルなど、バックアップの必要のない一部のシステム領域を、バックアップ領域から除外するための検索条件を設定します。項目を追加、編集、または削除して、必要にあった条件を設定し、<guimenu>OK</guimenu>を押して終了します。
+       </para>
+      </step>
+     </substeps>
+    </step>
+    <step performance="required">
+     <para>
+      プロファイル設定を終了したら、<guimenu>Create Backup (バックアップの作成)</guimenu>を使用した即時バックアップの開始、または自動バックアップの設定ができます。他のさまざまな目的のために設定されたプロファイルも作成できます。
+     </para>
+    </step>
+   </procedure>
+   <procedure id="proc.trouble.data.profile">
+    <para>
+     特定のプロファイル用に自動バックアップを設定するには、以下の手順に従います。
+    </para>
+    <step performance="required">
+     <para>
+      <guimenu>プロファイル管理</guimenu>メニューから、<guimenu>自動バックアップ</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>バックアップの自動開始</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      バックアップの頻度を決定します。<guimenu>毎日</guimenu>、<guimenu>毎週</guimenu>、または<guimenu>毎月</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      バックアップの開始時間を決定します。これらの設定は選択されたバックアップの頻度に依存します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      古いバックアップを保存するか、保存する場合は何世代にするかを決定します。バックアッププロセスの自動的に生成されたステータスメッセージを受け取るには、<guimenu>rootユーザにサマリメールを送信する</guimenu>にチェックを入れます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      設定内容を適用し、指定した時刻にバックアップを開始するには、<guimenu>OK</guimenu>をクリックします。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <sect2 id="sec.trouble.data.replay">
+   <title>システムバックアップの復元</title>
+   <para>
+    YaSTシステムリストアモジュールを使用して、バックアップからシステム設定を復元します。バックアップの全体を復元するか、壊れたために古い状態にリセットする必要のある、特定のコンポーネントのみを選択します。
+   </para>
+<?dbfo-need height="20em"?>
+
+
+   <procedure id="proc.trouble.data.replay">
+    <step performance="required">
+     <para>
+      <menuchoice><guimenu>YaST</guimenu><guimenu>システム</guimenu><guimenu>システムの復元</guimenu></menuchoice>の順に選択して開始します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      バックアップファイルの場所を入力します。ローカルファイル、ネットワーク上でマウントされたファイル、またはフロッピーディスクおよびDVDなどの取り外し可能なデバイス上のファイルなどがあります。次に、<guimenu>次へ</guimenu>をクリックします。
+     </para>
+     <para>
+      次のダイアログでは、ファイル名、作成日、バックアップのタイプ、およびオプションのコメントなどのアーカイブプロパティのサマリが表示されます。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>アーカイブの内容</guimenu>をクリックして、アーカイブされた内容を参照します。<guimenu>OK</guimenu>をクリックすると、<guimenu>アーカイブプロパティ</guimenu>ダイアログに戻ります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>エキスパート用オプション</guimenu>では、復元プロセスを微調整するダイアログが開きます。<guimenu>OK</guimenu>をクリックすると、<guimenu>アーカイブプロパティ</guimenu>ダイアログに戻ります。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>次へ</guimenu>をクリックすると、復元するパッケージのビューが開きます。<guimenu>承認</guimenu>を押して、アーカイブ内のすべてのファイルを復元するか、<guimenu>Select Alｌ</guimenu>、<guimenu>Deselect All</guimenu>、および<guimenu>Select Files</guimenu>ボタンを使って、選択内容の微調整をします。RPMデータベースが壊れているか削除され、バックアップにこのファイルが含まれている場合にのみ、<guimenu>RPMデータベースの復元</guimenu>オプションを使用します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>承認</guimenu>をクリックすると、バックアップが復元されます。<guimenu>完了</guimenu>をクリックして、復元プロセスが完了したあと、モジュールを終了します。
+     </para>
+    </step>
+   </procedure>
+  </sect2>
+
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="system_repair.xml" parse="xml"/>
+ </sect1>
+ <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" os="sles" arch="zseries" href="zseries_rescue_initrd.xml" parse="xml"/>
+</chapter>

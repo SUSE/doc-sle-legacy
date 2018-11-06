@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="yast2_scanner.xml" id="sec.y2.hw.scan">
+ <title>Configuración de un escáner</title><indexterm> <primary>escaneado</primary> <secondary>configuración</secondary></indexterm><indexterm> <primary>YaST</primary> <secondary>escáner</secondary></indexterm><indexterm> <primary>configuración</primary> <secondary>escáner</secondary></indexterm>
+
+ <para>
+  Puede configurar un escáner USB o SCSI con YaST. El paquete <systemitem class="resource">sane-backends</systemitem> contiene controladores de hardware y otros elementos esenciales que necesitan los escáneres. Los escáneres conectados a un puerto paralelo no se pueden configurar mediante YaST. Si dispone de un dispositivo HP All-In-One, consulte la <xref linkend="sec.y2.hw.scan.hp_allinone"/>, en la <xref linkend="sec.y2.hw.scan.network_client"/> hay disponibles instrucciones sobre cómo configurar un escáner en red.
+ </para>
+
+ <procedure id="proc.y2.hw.scan.usb">
+  <title>Configuración de un escáner USB o SCSI</title>
+  <step performance="required">
+   <para>
+    Conecte el escáner USB o SCSI al equipo y enciéndalo.
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Inicie YaST y seleccione <menuchoice> <guimenu>Hardware</guimenu> <guimenu>Escáner</guimenu> </menuchoice>. YaST crea la base de datos del escáner e intenta detectar el modelo automáticamente.
+   </para>
+   <para>
+    Si no se detecta correctamente ningún escáner USB o SCSI, pruebe la opción <menuchoice> <guimenu>Otros</guimenu><guimenu>Reiniciar detección.</guimenu></menuchoice>
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Para activar el escáner, selecciónelo en la lista de los escáneres detectados y haga clic en <guimenu>Editar.</guimenu>
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Seleccione el modelo en la lista y haga clic en <guimenu>Siguiente</guimenu> y en <guimenu>Finalizar.</guimenu>
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Use la opción <menuchoice><guimenu>Otro</guimenu><guimenu>Probar</guimenu></menuchoice> para asegurarse de que ha elegido el controlador correcto.
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Salga de la pantalla de configuración haciendo clic en <guimenu>Aceptar.</guimenu>
+   </para>
+  </step>
+ </procedure>
+
+ <sect2 id="sec.y2.hw.scan.hp_allinone">
+  <title>Configuración de un dispositivo HP All-In-One</title><indexterm> <primary>escaneado</primary> <secondary>configuración</secondary> <tertiary>HP All-In-One</tertiary></indexterm><indexterm> <primary>YaST</primary> <secondary>escáner</secondary> <tertiary>HP All-In-One</tertiary></indexterm><indexterm> <primary>configuración</primary> <secondary>escáner</secondary> <tertiary>HP All-In-One</tertiary></indexterm>
+  <para>
+   Los dispositivos HP All-In-One se pueden configurar con YaST aunque estén conectados al puerto paralelo o estén disponibles en red. Si dispone de un dispositivo HP All-In-One USB, empiece la configuración como se describe en el <xref linkend="proc.y2.hw.scan.usb"/>. Si se detecta correctamente y la <guimenu>prueba</guimenu> se efectúa sin problemas, está listo para usarse.
+  </para>
+  <para>
+   Si el dispositivo USB no se detecta correctamente o si el dispositivo HP All-In-One está conectado al puerto paralelo o a la red, ejecute HP Device Manager:
+  </para>
+  <procedure>
+   <step performance="required">
+    <para>
+     Inicie YaST y seleccione <menuchoice> <guimenu>Hardware</guimenu> <guimenu>Escáner</guimenu> </menuchoice>. YaST carga la base de datos de escáneres.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Inicie HP Device Manager con la opción <menuchoice> <guimenu>Otro</guimenu> <guimenu>Ejecutar hp-setup</guimenu> </menuchoice> y siga las instrucciones en pantalla. Cuando termine el proceso de HP Device Manager, el módulo de escáner de YaST reinicia automáticamente la detección automática.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Pruébelo seleccionando <menuchoice><guimenu>Otros</guimenu><guimenu>Probar.</guimenu> </menuchoice>
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Salga de la pantalla de configuración haciendo clic en <guimenu>Aceptar.</guimenu>
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.y2.hw.scan.network_server">
+  <title>Uso compartido de un escáner en la red</title><indexterm> <primary>escaneado</primary> <secondary>configuración</secondary> <tertiary>red</tertiary></indexterm><indexterm> <primary>YaST</primary> <secondary>escáner</secondary> <tertiary>red</tertiary></indexterm><indexterm> <primary>configuración</primary> <secondary>escáner</secondary> <tertiary>red</tertiary></indexterm>
+  <para>
+   <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> permite el uso compartido de un escáner a través de la red. Para ello, configure el escáner de la siguiente forma:
+  </para>
+  <procedure>
+   <step performance="required">
+    <para>
+     Configure el escáner como se describe en la <xref linkend="sec.y2.hw.scan"/>.
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Seleccione <menuchoice> <guimenu>Otro</guimenu> <guimenu>Escaneado en red.</guimenu> </menuchoice>
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Introduzca los nombres de host de los clientes (separados por comas) a los que se va a permitir usar el escáner en <menuchoice> <guimenu>Valores de configuración del servidor</guimenu> <guimenu>Clientes permitidos para saned</guimenu> </menuchoice> y salga del recuadro de configuración con <guimenu>Aceptar.</guimenu>
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+
+ <sect2 id="sec.y2.hw.scan.network_client">
+  <title>Escaneado desde la red</title><indexterm> <primary>escaneado</primary> <secondary>configuración</secondary> <tertiary>red</tertiary></indexterm><indexterm> <primary>YaST</primary> <secondary>escáner</secondary> <tertiary>red</tertiary></indexterm><indexterm> <primary>configuración</primary> <secondary>escáner</secondary> <tertiary>red</tertiary></indexterm>
+  <para>
+   Para usar un escáner compartido en la red, siga estos pasos:
+  </para>
+  <procedure>
+   <step performance="required">
+    <para>
+     Inicie YaST y seleccione <menuchoice> <guimenu>Hardware</guimenu> <guimenu>Escáner</guimenu> </menuchoice>. 
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Abra el menú de configuración del escáner de red con la opción <menuchoice> <guimenu>Otro</guimenu> <guimenu>Escaneado en red.</guimenu> </menuchoice>
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Introduzca el nombre de host del equipo donde está conectado el escáner en <menuchoice> <guimenu>Valores de configuración del cliente</guimenu> <guimenu>Servidores utilizados por el metacontrolador net.</guimenu></menuchoice>
+    </para>
+   </step>
+   <step performance="required">
+    <para>
+     Para salir, haga clic en <guimenu>Aceptar.</guimenu> El escáner de red aparece ahora en la ventana Configuración del escáner y está listo para usarse.
+    </para>
+   </step>
+  </procedure>
+ </sect2>
+</sect1>

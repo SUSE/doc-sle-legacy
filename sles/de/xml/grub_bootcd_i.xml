@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
+"novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="grub_bootcd_i.xml" id="sec.grub.bootcd">
+ <title>Erstellen von Boot-CDs</title><indexterm> <primary>Datenträger</primary> <secondary>booten</secondary> </indexterm>
+
+ <para>
+  Wenn beim Booten Ihres Systems unter Verwendung eines Bootmanagers Probleme auftreten oder wenn der Bootmanager auf Ihrer Festplatte nicht installiert werden kann, ist es auch möglich, eine bootfähige CD mit allen für Linux erforderlichen Startdateien zu erstellen. Hierfür muss ein CD-Brenner in Ihrem System installiert sein.
+ </para>
+
+ <para>
+  Für die Erstellung eines bootfähigen CD-ROM mit GRUB ist lediglich eine spezielle Form von <emphasis>stage2</emphasis> namens <filename>stage2_eltorito</filename> erforderlich sowie, optional, eine benutzerdefinierte Datei <filename>menu.lst</filename>. Die klassischen Dateien <filename>stage1</filename> und <filename>stage2</filename> sind nicht erforderlich.
+ </para>
+
+ <procedure>
+  <title>Erstellen von Boot-CDs</title>
+  <step performance="required">
+   <para>
+    Wechseln Sie in ein Verzeichnis, in dem das ISO-Image erstellt werden soll, beispielsweise: <command>cd</command> <filename>/tmp</filename>
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Erstellen Sie ein Unterverzeichnis für GRUB und wechseln Sie in das neu erstellte <filename>iso</filename>-Verzeichnis:
+   </para>
+<screen>mkdir -p iso/boot/grub &amp;&amp; cd iso</screen>
+  </step>
+  <step performance="required">
+   <para>
+    Kopieren Sie den Kernel, die Dateien <filename>stage2_eltorito</filename>, <filename>initrd</filename>, <filename>menu.lst</filename> und <filename>/message</filename> nach <filename>iso/boot/</filename>:
+   </para>
+<screen>cp /boot/vmlinuz boot/
+cp /boot/initrd boot/
+cp /boot/message boot/
+cp /usr/lib/grub/stage2_eltorito boot/grub
+cp /boot/grub/menu.lst boot/grub</screen>
+   <para>
+    
+    In bestimmten Fällen (beispielsweise beim Booten mehrerer Betriebssysteme) sollten Sie auch <filename>/boot/grub/device.map</filename> in <filename>boot/grub</filename> kopieren.  
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Ersetzen Sie die Einträge <literal>root (hd<replaceable>x</replaceable>, <replaceable>y</replaceable>)</literal> durch <literal>root (cd)</literal>, sodass sie auf das CD-ROM-Gerät verweisen. Sie müssen unter Umständen auch die Pfade zur Meldungsdatei, zum Kernel und zur initrd-Datei anpassen, so dass sie auf <filename>/boot/message</filename>, <filename>/boot/vmlinuz</filename> bzw. <filename>/boot/initrd</filename> verweisen. Nachdem Sie die Anpassungen durchgeführt haben, sollte <filename>menu.lst</filename> wie im folgenden Beispiel aussehen:
+   </para>
+<screen>timeout 8
+default 0
+gfxmenu (cd)/boot/message
+
+title Linux
+   root (cd)
+   kernel /boot/vmlinuz root=/dev/sda5 vga=794 resume=/dev/sda1 \
+   splash=verbose showopts
+   initrd /boot/initrd</screen>
+   <para>
+    Verwenden Sie <option>splash=silent</option> anstelle von <option>splash=verbose</option>, um zu vermeiden, dass beim Bootvorgang Bootmeldungen angezeigt werden.
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    Erstellen Sie das ISO-Image mit dem folgenden Befehl:
+   </para>
+<screen>genisoimage -R -b boot/grub/stage2_eltorito -no-emul-boot \
+-boot-load-size 4 -boot-info-table -iso-level 2 -input-charset utf-8 \
+-o grub.iso /tmp/iso</screen>
+  </step>
+  <step performance="required">
+   <para>
+    Schreiben Sie die so erstellte Datei namens <filename>grub.iso</filename> unter Verwendung Ihres bevorzugten Dienstprogramms auf eine CD. Brennen Sie das ISO-Image nicht als Datendatei, sondern verwenden Sie die Option zum Brennen eines CD-Images, die in Ihrem Dienstprogramm angeboten wird.
+   </para>
+  </step>
+ </procedure>
+</sect1>
