@@ -1,0 +1,429 @@
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+[
+  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
+  <!ENTITY % entities SYSTEM "entity-decl.ent">
+  %entities;
+]>
+
+ <sect1 id="sec.ha.geo.booth">
+  <title>Setting Up the Booth Services</title>
+  <para>The default booth configuration is &booth.conf;. This file must be 
+    the same on all sites of your &geo; cluster, including the
+    arbitrator or arbitrators. To keep the booth configuration synchronous 
+    across all sites and arbitrators, use &csync;, as described in <xref
+     linkend="sec.ha.geo.booth.sync"/>. </para>
+  
+   
+  <para>&booth-multi-tenancy; For details on how to configure booth for
+   multiple &geo; clusters, refer to <xref linkend="sec.ha.geo.booth.multi"
+   />. </para>
+  
+  <sect2 id="sec.ha.geo.booth.default">
+   <title>Default Booth Setup</title>
+   <para>To configure all parameters needed for booth, edit the booth
+    configuration files manually. </para>
+   <example id="ex.ha.booth.conf.default">
+    <title>A Booth Configuration File</title>
+      <!--taroth 2014-08-21: not sure if it makes sense that all tickets
+      configured here should have similar options and values or if we should
+      rather show different options and values for individual tickets - dejan,
+      please check! - dejan (bnc#896673): It makes sense for the network parameters 
+      to be shared between tickets as the parties communicating are the same 
+      (parameters 6-9)-->
+    <screen><?dbsuse-fo font-size="0.75em"?>transport = UDP <co id="co.ha.geo.booth.config.transport"/>
+port = 9929 <co id="co.ha.geo.booth.config.port"/>
+arbitrator = 147.2.207.14 <co id="co.ha.geo.booth.config.arbitrator"/>
+site =  192.168.201.151 <co id="co.ha.geo.booth.config.site"/>
+site =  192.168.202.151 <xref linkend="co.ha.geo.booth.config.site" xrefstyle="select:label nopage"/>
+ticket = "ticket-nfs" <co id="co.ha.geo.booth.config.ticket"/>
+     expire = 600 <co id="co.ha.geo.booth.config.expiry"/>
+     timeout = 10 <co id="co.ha.geo.booth.config.timeout"/>
+     retries = 5 <co id="co.ha.geo.booth.config.retries"/>
+     renewal-freq = 30 <co id="co.ha.geo.booth.config.renewal"/>
+     before-acquire-handler<co id="co.ha.geo.booth.config.handler"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<co 
+     id="co.ha.geo.booth.config.script"/>&nbsp;ms_drbd_nfs<co  id="co.ha.geo.booth.config.rsc"/>
+     acquire-after = 60 <co id="co.ha.geo.booth.config.acquire-after"/>
+ticket = "&ticket1;" <xref linkend="co.ha.geo.booth.config.ticket" xrefstyle="select:label nopage"/>
+     expire = 600 <xref linkend="co.ha.geo.booth.config.expiry" xrefstyle="select:label nopage"/>
+     timeout = 10 <xref linkend="co.ha.geo.booth.config.timeout" xrefstyle="select:label nopage"/>
+     retries = 5 <xref linkend="co.ha.geo.booth.config.retries" xrefstyle="select:label nopage"/>
+     renewal-freq = 30 <xref linkend="co.ha.geo.booth.config.renewal" xrefstyle="select:label nopage"/>
+     before-acquire-handler<xref linkend="co.ha.geo.booth.config.handler" 
+     xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
+     linkend="co.ha.geo.booth.config.script" xrefstyle="select:label nopage"/>&nbsp;db-1 <xref
+     linkend="co.ha.geo.booth.config.rsc" xrefstyle="select:label nopage"/>
+     acquire-after = 60 <xref linkend="co.ha.geo.booth.config.acquire-after" xrefstyle="select:label nopage"/>
+ticket = "&ticket2;" <xref linkend="co.ha.geo.booth.config.ticket" xrefstyle="select:label nopage"/>
+     expire = 600 <xref linkend="co.ha.geo.booth.config.expiry" xrefstyle="select:label nopage"/>
+     timeout = 10 <xref linkend="co.ha.geo.booth.config.timeout" xrefstyle="select:label nopage"/>
+     retries = 5 <xref linkend="co.ha.geo.booth.config.retries" xrefstyle="select:label nopage"/>
+     renewal-freq = 30 <xref linkend="co.ha.geo.booth.config.renewal" xrefstyle="select:label nopage"/>
+     before-acquire-handler<xref linkend="co.ha.geo.booth.config.handler" 
+     xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
+     linkend="co.ha.geo.booth.config.script" xrefstyle="select:label nopage"/>&nbsp;db-8 <xref
+     linkend="co.ha.geo.booth.config.rsc" xrefstyle="select:label nopage"/>
+     acquire-after = 60 <xref linkend="co.ha.geo.booth.config.acquire-after" xrefstyle="select:label nopage"/>
+    </screen>
+    <calloutlist>
+     <callout arearefs="co.ha.geo.booth.config.transport">
+      <para>&booth-transport; Currently, this parameter can therefore be omitted.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.port">
+      <para> &booth-port; When not using the default port (<literal>9929</literal>), choose a port that is not 
+       already used for different services. Make sure to open the port in the
+       nodes&apos; and arbitrators&apos; firewalls. The booth clients use TCP to communicate with the 
+       &boothd;. Booth will always bind and listen to both UDP and TCP ports.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.arbitrator">
+      <para>&booth-arbitrator; Add an entry for each 
+       arbitrator you use in your &geo; cluster setup.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.site">
+      <para> &booth-site; Add an entry for each site you use in your
+       &geo; cluster setup. Make sure to insert the correct virtual IP
+       addresses (<systemitem>IPaddr2</systemitem>) for each site, otherwise the
+       booth mechanism will not work correctly. For details on how to configure the virtual IP for
+       booth, see <xref linkend="pro.ha.geo.setup.rsc.boothd"/>. Booth works with both IPv4 and
+       IPv6 addresses.
+       <!--taroth 2014-08-21: https://fate.suse.com/316122: booth should support IPv6 in full 
+        (prio: important--></para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.ticket">
+     <para>&booth-ticket; For each ticket, add a <literal>ticket</literal> entry. In this
+      example, the ticket <literal>ticket-nfs</literal> will be used for failover of NFS and DRBD in the
+      following. See <xref linkend="sec.ha.geo.drbd"/> for details.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.expiry">
+      <para> Optional parameter. Defines the ticket&apos;s expiry time in seconds. A site that
+       has been granted a ticket will renew the ticket regularly. If booth does not receive any
+       information about renewal of the ticket within the defined expiry time, the ticket will be
+       revoked and granted to another site. If no expiry time is specified, the ticket will expire
+       after <literal>600</literal> seconds by default. The parameter should not be set to a value
+       less than 120 seconds.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.timeout">
+      <para> Optional parameter. Defines a timeout period in seconds. After that time, booth will
+       resend packets if it did not receive a reply within this period. The timeout defined should
+       be long enough to allow packets to reach other booth members (all arbitrators and
+       sites).</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.retries">
+      <para> Optional parameter. Defines how many times booth retries sending packets before giving
+       up waiting for confirmation by other sites. Values smaller than <literal>3</literal> are
+       invalid and will prevent booth from starting.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.renewal">
+      <para> Optional parameter. Sets the ticket renewal frequency period. Ticket renewal occurs
+       every half expiry time by default. If the network reliability is often reduced over prolonged
+       periods, it is advisable to renew more often. Before every renewal the
+        <literal>before-acquire-handler</literal> is run. </para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.handler">
+      <para> Optional parameter. If set, the specified command will be called before &boothd;
+       tries to acquire or renew a ticket. On exit code other than <literal>0</literal>,
+       &boothd; relinquishes the ticket.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.script">
+      <para>The <filename>service-runnable</filename> script referenced here is included in the
+       product as an example. It is a simple script based on <command>crm_simulate</command>. It can
+       be used to test whether a particular cluster resource <emphasis>can</emphasis> be run on the
+       current cluster site. That means, it checks if the cluster is healthy enough to run the
+       resource (all resource dependencies are fulfilled, the cluster partition has quorum, no dirty nodes,
+       etc.). For example, if a service in the dependency-chain has a failcount of
+        <literal>INFINITY</literal> on all available nodes, the service cannot be run on that site.
+       In that case, it is of no use to claim the ticket.</para>
+      </callout>
+     <callout arearefs="co.ha.geo.booth.config.rsc">
+      <para>The resource to be tested by the <literal>before-acquire-handler</literal> (in this
+       case, by the <filename>service-runnable</filename> script). You need to reference the
+       resource that is protected by the respective ticket. In this example, resource
+        <literal>db-1</literal> is protected by <literal>&ticket1;</literal> whereas
+        <literal>db-8</literal> is protected by <literal>&ticket2;</literal>. The resource for DRBD
+       (<literal>ms_drbd_nfs</literal>) is protected by the ticket <literal>ticket-nfs</literal>.</para>
+     </callout>
+     <callout arearefs="co.ha.geo.booth.config.acquire-after">
+      <para>Optional parameter. After a ticket is lost, booth will wait this time in addition before
+       acquiring the ticket. This is to allow for the site that lost the ticket to relinquish the
+       resources, by either stopping them or fencing a node. A typical delay might be
+        <literal>60</literal> seconds, but ultimately it depends on the protected resources and the
+       fencing configuration. The default value is <literal>0</literal>.</para>
+      <para>If you are unsure how long stopping or demoting the resources or fencing a node may take
+       (depending on the <literal>loss-policy</literal>), use this parameter to prevent resources
+       from running on two sites at the same time.</para>
+     </callout>
+    </calloutlist>
+    
+   </example>
+   
+   <procedure id="pro.ha.geo.setup.booth.config.edit">
+    <title>Manually Editing The Booth Configuration File</title>
+    <step>
+     <para> Log in to a cluster node as &rootuser; or equivalent. </para>
+    </step>
+    <step>
+     <para> Copy the example booth configuration file
+       <filename>/etc/booth/booth.conf.example</filename> to
+      &booth.conf;.</para>
+    </step>
+    <step>
+     <para>Edit &booth.conf; according to <xref
+       linkend="ex.ha.booth.conf.default"/>.</para>
+    </step>
+    <step>
+     <para>Verify your changes and save the file. </para>
+    </step>
+    <step>
+     <para>On all cluster nodes and arbitrators, open the port in the firewall
+      that you have configured for booth. See <xref
+       linkend="ex.ha.booth.conf.default"/>, position <xref
+       linkend="co.ha.geo.booth.config.port"/>. </para>
+    </step>
+   </procedure>
+
+
+  </sect2>
+
+  <sect2 id="sec.ha.geo.booth.multi">
+   <title>Booth Setup for Multiple Tenants</title>
+   <!--taroth 2014-08-07:  https://fate.suse.com/316123:
+    Multi-tenancy for booth (prio: important)-->
+   <para>&booth-multi-tenancy;</para>
+   <para>
+    Let us assume you have two
+    &geo; clusters, one in EMEA (Europe, the Middle East and Africa), and
+    one in the Asia-Pacific region (APAC). </para>
+   <para>To use the same arbitrator for both &geo; clusters, create two
+    configuration files in the <filename>/etc/booth</filename> directory:
+     <filename>/etc/booth/emea.conf</filename> and
+     <filename>/etc/booth/apac.conf</filename>. Both must minimally differ in
+    the following parameters:</para>
+   <itemizedlist>
+    <listitem>
+     <para>The port used for the communication of the booth instances.</para>
+    </listitem>
+    <listitem>
+     <para>The sites belonging to the different &geo; clusters that the
+      arbitrator is used for.</para>
+    </listitem>
+   </itemizedlist>
+
+   <example id="ex.ha.conf.booth.multi-1">
+    <title>
+     <filename>/etc/booth/apac.conf</filename>
+    </title>
+    <screen><?dbsuse-fo font-size="0.75em"?>transport = UDP <xref linkend="co.ha.geo.booth.config.transport" xrefstyle="select:label nopage"/>
+port = 9133 <xref linkend="co.ha.geo.booth.config.port" xrefstyle="select:label nopage"/>
+arbitrator = 147.2.207.14 <xref linkend="co.ha.geo.booth.config.arbitrator" xrefstyle="select:label nopage"/>
+site = &slpip; <xref linkend="co.ha.geo.booth.config.site" xrefstyle="select:label nopage"/>
+site = &proxyip; <xref linkend="co.ha.geo.booth.config.site" xrefstyle="select:label nopage"/>
+ticket ="tkt-db-apac-intern" <xref linkend="co.ha.geo.booth.config.ticket"/>
+     timeout = 10 
+     retries = 5 
+     renewal-freq = 60 
+     before-acquire-handler<xref linkend="co.ha.geo.booth.config.handler" 
+      xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
+       linkend="co.ha.geo.booth.config.script" xrefstyle="select:label nopage"/>&nbsp;db-apac-intern <xref
+        linkend="co.ha.geo.booth.config.rsc" xrefstyle="select:label nopage"/> 
+ticket = "tkt-db-apac-cust" <xref linkend="co.ha.geo.booth.config.ticket" xrefstyle="select:label nopage"/>
+     timeout = 10 
+     retries = 5 
+     renewal-freq = 60 
+     before-acquire-handler&nbsp;=&nbsp;/usr/share/booth/service-runnable&nbsp;db-apac-cust</screen>
+   </example>
+
+   <example id="ex.ha.conf.booth.multi-2">
+    <title>
+     <filename>/etc/booth/emea.conf</filename>
+    </title>
+    <screen><?dbsuse-fo font-size="0.75em"?>transport = UDP <xref linkend="co.ha.geo.booth.config.transport" xrefstyle="select:label nopage"/>
+port = 9150 <xref linkend="co.ha.geo.booth.config.port" xrefstyle="select:label nopage"/>
+arbitrator = 147.2.207.14 <xref linkend="co.ha.geo.booth.config.arbitrator" xrefstyle="select:label nopage"/>
+site = 192.168.201.151 <xref linkend="co.ha.geo.booth.config.site" xrefstyle="select:label nopage"/>
+site = 192.168.202.151 <xref linkend="co.ha.geo.booth.config.site" xrefstyle="select:label nopage"/>
+ticket = "tkt-sap-crm" <xref linkend="co.ha.geo.booth.config.ticket"/>
+     expire = 900 
+     renewal-freq = 60 
+     before-acquire-handler<xref linkend="co.ha.geo.booth.config.handler" 
+      xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
+       linkend="co.ha.geo.booth.config.script" xrefstyle="select:label nopage"/>&nbsp;sap-crm <xref
+        linkend="co.ha.geo.booth.config.rsc" xrefstyle="select:label nopage"/>
+ticket = "tkt-sap-prod" <xref linkend="co.ha.geo.booth.config.ticket" xrefstyle="select:label nopage"/>
+     expire = 600 
+     renewal-freq = 60 
+     before-acquire-handler&nbsp;=&nbsp;/usr/share/booth/service-runnable&nbsp;sap-prod</screen>
+   </example>
+
+   <calloutlist>
+    <callout arearefs="co.ha.geo.booth.config.transport">
+     <para>&booth-transport; Currently, this parameter can therefore be omitted.</para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.port">
+     <para>&booth-port; The configuration files use different ports to allow
+      for start of multiple booth instances on the same arbitrator.</para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.arbitrator">
+     <para>&booth-arbitrator; In the examples above, we use the same
+      arbitrator for different &geo; clusters.</para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.site">
+     <para>&booth-site; The sites defined in both booth configuration files
+      are different, because they belong to two different &geo; clusters.
+     </para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.ticket">
+     <para>&booth-ticket; Theoretically the same ticket names can be defined
+      in different booth configuration files&mdash;the tickets will not
+      interfere because they are part of different &geo; clusters that are
+      managed by different booth instances. However, (for better overview) we
+      advise to use distinct ticket names for each &geo; cluster as shown in
+      the examples above.</para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.handler">
+     <para> Optional parameter. If set, the specified command will be called before &boothd;
+      tries to acquire or renew a ticket. On exit code other than <literal>0</literal>,
+      &boothd; relinquishes the ticket.</para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.script">
+     <para>The <filename>service-runnable</filename> script referenced here is included in the
+      product as an example. It is a simple script based on <command>crm_simulate</command>. It can
+      be used to test whether a particular cluster resource <emphasis>can</emphasis> be run on the
+      current cluster site. That means, it checks if the cluster is healthy enough to run the
+      resource (all resource dependencies are fulfilled, the cluster partition has quorum, no dirty nodes,
+      etc.). For example, if a service in the dependency-chain has a failcount of
+      <literal>INFINITY</literal> on all available nodes, the service cannot be run on that site.
+      In that case, it is of no use to claim the ticket.</para>
+    </callout>
+    <callout arearefs="co.ha.geo.booth.config.rsc">
+     <para>The resource to be tested by the <literal>before-acquire-handler</literal> (in this
+      case, by the <filename>service-runnable</filename> script). You need to reference the
+      resource that is protected by the respective ticket. </para>
+    </callout>
+   </calloutlist>
+
+   <procedure>
+    <title>Using the Same Arbitrator for Different &geo; Clusters</title>
+    <step>
+     <para>Create different booth configuration files in
+       <filename>/etc/booth</filename> as shown in <xref
+       linkend="ex.ha.conf.booth.multi-1"/> and <xref
+       linkend="ex.ha.conf.booth.multi-2"/>. 
+     </para>
+    </step>
+    <step>
+     <para>On the arbitrator, open the ports that are defined in any of the
+      booth configuration files in <filename>/etc/booth</filename>.</para>
+    </step>
+    <step>
+     <para>On the nodes belonging to the individual &geo; clusters that the
+      arbitrator is used for, open the port that is used for the respective
+      booth instance.</para>
+    </step>
+    <step>
+     <para>Synchronize the respective booth configuration files across all
+      cluster nodes and arbitrators that use the same booth configuration. For
+      details, see <xref linkend="sec.ha.geo.booth.sync"/>.</para>
+    </step>
+    <step>
+     <para>On the arbitrator, start the individual booth instances as described
+      in <xref linkend="vle.ha.geo.setup.booth.service.arbitrator"/> for
+      multi-tenancy setups.</para>
+    </step>
+    <step>
+     <para>On the individual &geo; clusters, start the booth service as
+      described in <xref linkend="vle.ha.geo.setup.booth.service.sites"
+      />.</para>
+    </step>
+   </procedure>
+  </sect2>
+
+ <sect2 id="sec.ha.geo.booth.sync">
+  <title>Synchronizing the Booth Configuration to All Sites and Arbitrators</title>
+ <note>
+   <title>Use the Same Booth Configuration On All Sites and Arbitrators</title>
+   <para>To make booth work correctly, all cluster nodes and arbitrators within one &geo;
+    cluster must use the same booth configuration.</para>
+   <para>You can use &csync; to synchronize the booth configuration. For details, see <xref
+     linkend="sec.ha.geo.booth.sync.csync2.setup"/> and <xref
+     linkend="sec.ha.geo.booth.sync.csync2.start"/>.</para>
+   <para> In case of any booth configuration changes, make sure to update the configuration files
+    accordingly on all parties and to restart the booth services as described in <xref
+     linkend="sec.ha.geo.setup.booth.reconfig"/>. </para>
+  </note>
+
+ </sect2>
+
+  <sect2 id="sec.ha.geo.setup.booth.service">
+   <title>Enabling and Starting the Booth Services</title>
+  
+   <variablelist>
+    <varlistentry id="vle.ha.geo.setup.booth.service.sites">
+     <term>Starting the Booth Services on Cluster Sites</term>
+     <listitem>
+      <para>The booth service for each cluster site is managed by the booth
+       resource group configured in <xref linkend="pro.ha.geo.setup.rsc.boothd"
+       />. To start one instance of the booth service per site, start the respective
+       booth resource group on each cluster site.</para>
+     </listitem>
+    </varlistentry>
+    <varlistentry id="vle.ha.geo.setup.booth.service.arbitrator">
+     <term>Starting the Arbitrators</term>
+     <!--taroth 2014-08-11: https://bugzilla.novell.com/show_bug.cgi?id=877817: [Test
+      Case 1378526] [316123] booth - Configuring startup 'complicated'-->
+     <listitem>
+      <para>If you want to configure the booth service to start at boot time, use the following
+       command:</para>
+      <screen>&prompt.root;chkconfig booth-arbitrator on</screen>
+      <para>After the service has been enabled from command line, &yast; &ycc_runlevel; can
+       be used to manage the service.</para>
+      <itemizedlist>
+       <listitem>
+       <para>If you are using the default setup as described in <xref
+         linkend="sec.ha.geo.booth.default"/>, only <filename>/etc/booth/booth.conf</filename> is
+        configured. In that case, log in to each machine you want to use as arbitrator and use the
+        following command to start the booth service:</para>
+        <screen>&prompt.root;rcbooth-arbitrator start</screen>
+       </listitem>
+       <listitem>
+        <para>If you are running booth in multi-tenancy mode as described in <xref
+          linkend="sec.ha.geo.booth.multi"/>, you have configured multiple booth configuration files
+         in <filename>/etc/booth</filename>. In that case, the following command with start
+         arbitrators for <emphasis>all</emphasis> configuration files found in
+         <filename>/etc/booth</filename>:</para>
+        <screen>&prompt.root;rcbooth-arbitrator start</screen>
+        </listitem>
+      </itemizedlist>
+      <para>The booth service is started in arbitrator mode. It can communicate with all other
+       booth daemons but in contrast to the booth daemons running on the cluster sites, it cannot be
+       granted a ticket. Booth arbitrators take part in elections only. Otherwise, they are
+       dormant.</para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ 
+  <sect2 id="sec.ha.geo.setup.booth.reconfig">
+   <title>Reconfiguring Booth While Running</title>
+   <!--taroth 2014-08-26: https://fate.suse.com/316126: 
+    reconfiguration of boothd while running (prio: important)-->
+   <para>In case you need to change the booth configuration while the booth
+    services are already running, proceed as follows:
+  </para>
+   <procedure>
+    <step>
+     <para>Adjust the booth configuration files as desired.</para>
+    </step>
+    <step>
+     <para>Synchronize the updated booth configuration files to all cluster
+      nodes and arbitrators that are part of your &geo; cluster. For
+      details, see <xref linkend="sec.ha.geo.sync"/>.</para>
+    </step>
+    <step>
+     <!--taroth 2014-08-26: https://bugzilla.novell.com/show_bug.cgi?id=891399-->
+     <para>Restart the booth services on the arbitrators and cluster sites as
+      described in <xref linkend="sec.ha.geo.setup.booth.service"/>. This does
+      not have any effect on tickets that have already been granted to
+      sites.</para>
+    </step>
+   </procedure>
+  </sect2>
+ </sect1>
