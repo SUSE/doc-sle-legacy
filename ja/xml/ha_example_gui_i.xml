@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="ha_example_gui_i.xml" id="sec.ha.quickstart.gui">
+ <title>GUIによるリソースの設定</title>
+
+ <para>
+  サンプルのクラスタリソースを作成して別のサーバにマイグレートすると、クラスタが正常に機能していることの確認に役立ちます。設定とマイグレートのシンプルなリソースは、IPアドレスです。
+ </para>
+
+ <procedure id="proc.ha.quickstart.gui">
+  <title>IPアドレスクラスタリソースを作成する</title>
+  <step performance="required">
+   <para>
+    <xref linkend="sec.ha.configuration.gui.intro.connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    左側のペインで<guimenu>リソース</guimenu>ビューに切り替え、右側のペインで、変更するグループを選択して<guimenu>編集</guimenu>をクリックします。次のウィンドウには、そのリソースに定義された基本的なグループパラメータとメタ属性とプリミティブが表示されます。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    <guimenu>プリミティブ</guimenu>タブをクリックして、<guimenu>追加</guimenu>をクリックします。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    次のダイアログで、次のパラメータを設定してIPアドレスをグループのサブリソースとして追加します。
+   </para>
+   <substeps performance="required">
+    <step performance="required">
+     <para>
+      固有の［<literal>ID</literal>］を入力します。たとえば、「<literal>myIP</literal>」です。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>クラス</guimenu>リストで、リソースエージェントクラスとして<guimenu>ocf</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      OCFリソースエージェントの<guimenu>プロバイダ</guimenu>として、<guimenu>heartbeat</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>タイプ</guimenu>リストで、リソースエージェントとして<guimenu>IPaddr</guimenu>を選択します。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>進む</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>Instance Attribute (インスタンス属性)</guimenu>タブで、<guimenu>IP</guimenu>エントリを選択して<guimenu>編集</guimenu>をクリックします(または<guimenu>IP</guimenu>エントリをダブルクリックします)。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>値</guimenu>として、目的のIPアドレスを入力します。たとえば、「<literal>10.10.0.1</literal>」と入力して、<guimenu>OK</guimenu>をクリックします。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      新規インスタンス属性を<guimenu>追加</guimenu>して、<literal>nic</literal>を<guimenu>名前</guimenu>に、<literal>eth0</literal>を<guimenu>値</guimenu>に指定して<guimenu>OK</guimenu>をクリックします。
+     </para>
+     <para>
+      名前と値は、ハードウェア構成、およびHigh Availability Extensionソフトウェアのインストール中に選択したメディア構成とは独立しています。
+     </para>
+    </step>
+   </substeps>
+  </step>
+  <step performance="required">
+   <para>
+    すべてのパラメータを目的どおりに設定したら、<guimenu>OK</guimenu>をクリックして、そのリソースの設定を完了します。設定ダイアログが閉じて、メインウィンドウに変更されたリソースが表示されます。
+   </para>
+  </step>
+ </procedure>
+
+ <para>
+  リソースをPacemaker GUIで起動するには、左側のペインの<guimenu>管理</guimenu>を選択します。右側のペインで、リソースを右クリックして<guimenu>開始</guimenu>を選択します(またはツールバーから開始します)。
+ </para>
+
+ <para>
+  IPアドレスリソースを別のノード(<literal>satum</literal>)にマイグレートするには、次のようにします。
+ </para>
+
+ <procedure>
+  <title>リソースを他のノードへマイグレートする</title>
+  <step performance="required">
+   <para>
+    左側のペインの<guimenu>管理</guimenu>ビューに切り替え、次に右側のペインのIPアドレスリソースを右クリックして<guimenu>Migrate Resource (リソースのマイグレート)</guimenu>を選択します。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    新規ウィンドウで、<guimenu>To Node (マイグレート先ノード)</guimenu>ドロップダウンリストで<literal>satum</literal>を選択し、選択したリソースをノード<literal>satum</literal>に移動します。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    リソースを一時的にマイグレートするには、<guimenu>Duration (期間)</guimenu>をアクティブにしてリソースが新規ノードにマイグレートされる時間を入力します。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    <guimenu>OK</guimenu>をクリックして、マイグレーションを確認します。
+   </para>
+  </step>
+ </procedure>
+</sect1>

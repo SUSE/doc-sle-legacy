@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="ha_example_cli_i.xml">
+ <title>リソースの手動設定</title>
+
+ <para>
+  リソースは、コンピュータが提供するあらゆる種類のサービスです。リソースは、LSBスクリプトまたはOCFスクリプトであるRA (リソースエージェント)によって制御されている場合、High Availabilityに認識されます。すべてのリソースは<command>crm</command>コマンドで、またはXMLとしてCIB(Cluster Information Base)の<literal>resources</literal>セクションで設定されます。 
+ </para>
+
+ <para>
+  IPアドレス<systemitem class="ipaddress">10.10.0.1</systemitem>をリソースとして現在の設定に追加するには、<command>crm</command>コマンドを使用します。
+ </para>
+
+
+
+ <procedure id="proc.ha.quickstart.man">
+  <title>IPアドレスクラスタリソースを作成する</title>
+  <step performance="required">
+   <para>
+    シェルを開き<systemitem class="username">root</systemitem>になります。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    「<command>crm</command> <option>configure</option>」と入力して、内部シェルを開きます。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    IPアドレスリソースを作成します。
+   </para>
+<screen>crm(live)configure# <command>resource</command><command>primitive</command> myIP ocf:heartbeat:IPaddr params ip=10.10.0.1</screen>
+  </step>
+ </procedure>
+
+ <note>
+  <para>
+   リソースをHigh Availabilityで構成する場合、同じリソースを<command>init</command>で初期化できません。高可用性はすべてのサービスのstartまたはstopアクションを実施します。
+  </para>
+ </note>
+
+ <para>
+  設定が正常に終了した場合、新規リソースはクラスタのランダムノードで始動された<command>crm_mon</command>に表示されます。
+ </para>
+
+ <para>
+  リソースを別のノードにマイグレートするには、次のようにします。
+ </para>
+
+ <procedure>
+  <title>リソースを他のノードへマイグレートする</title>
+  <step performance="required">
+   <para>
+    シェルを起動して<systemitem class="username">root</systemitem>ユーザになります。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    リソース<literal>myip</literal>をノード<systemitem>saturn</systemitem>にマイグレートします。
+   </para>
+<screen><command>crm</command> resource <command>migrate</command> myIP saturn</screen>
+  </step>
+ </procedure>
+</sect1>

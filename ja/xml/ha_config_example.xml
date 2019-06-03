@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<appendix xml:base="ha_config_example.xml" id="cha.ha.config.example">
+ <title>OCFS2およびcLVMの設定例</title>
+ <para>
+  次の設定例は、OCFS2、cLVM、または両方を使用するためのリソースを設定するのに役立ちます。下の設定は完全なクラスタ設定を表すものではなく、抽出のみで、OCFS2およびcLVMに必要なすべてのリソースを含み、その他必要な可能性のあるリソースは無視しています。属性および属性の値は個々のセットアップに合わせて調整する必要がある場合があります。
+ </para>
+ <example id="ex.ha.config.ocfs2.clvm">
+  <title>CFS2およびcLVMのクラスタ設定</title>
+
+<screen>primitive clvm ocf:lvm2:clvmd \
+     params daemon_timeout="30" 
+primitive dlm ocf:pacemaker:controld \
+     op monitor interval="60" timeout="60"
+primitive o2cb ocf:ocfs2:o2cb \
+     op monitor interval="60" timeout="60"
+primitive ocfs2-1 ocf:heartbeat:Filesystem \
+     params device="/dev/sdb1" directory="/mnt/shared" fstype="ocfs2" options="acl" \
+     op monitor interval="20" timeout="40"
+primitive sbd_stonith stonith:external/sbd \
+     params pcmk_delay_max="15" \
+     op monitor interval="15" timeout="15"
+primitive vg1 ocf:heartbeat:LVM \
+     params volgrpname="cluster-vg" \
+     op monitor interval="60" timeout="60"
+group base-group dlm o2cb clvm vg1 ocfs2-1
+clone base-clone base-group \
+     meta interleave="true"
+  </screen>
+ </example>
+ <para>
+  ベースグループ(複数のプリミティブを含む)およびベースクローンを使っての設定により、セットアップ全体が簡略化され、ベースグループは内部コロケーションと順序付けを持ち、次の2つのリソースを別として、常に同じ状態が保たれます。
+ </para>
+ <itemizedlist mark="bullet" spacing="normal">
+  <listitem>
+   <para>
+    <systemitem class="resource">vg1</systemitem> - ボリュームグループのリソース。セットアップがcVLMを含む場合、このリソースのみ設定します。それ以外の場合は、これはクラスタ設定およびベースグループから省略します。 
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <systemitem class="resource">ocfs2-1</systemitem> - OCFS2ファイルシステム取付けのリソース。セットアップがOCFS2を含む場合、このリソースのみ設定します。それ以外の場合は、これはクラスタ設定およびベースグループから省略します。 
+   </para>
+  </listitem>
+ </itemizedlist>
+ <para>
+  <xref linkend="ex.ha.config.ocfs2.clvm"/>で言及されるその他すべてのリソースはセットアップに関係なくクラスタ内で設定でき、実行します。
+ </para>
+</appendix>

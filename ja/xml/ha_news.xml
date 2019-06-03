@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<appendix xml:base="ha_news.xml" id="cha.ha.changes">
+ <title>新機能</title>
+ <para>
+  以降のセクションでは、バージョン移行に伴う重要なソフトウェア変更の概要を示します。この概要では、たとえば、基本設定の完全な再設定が行われたか、設定ファイルが他の場所へ移動されたか、または他の顕著な変更が行われたかどうかを示しています。
+ </para>
+ <para>
+  詳細と最新情報については、それぞれのプロダクトバージョンのリリースノートを参照してください。これらは、<filename>/usr/share/doc/release-notes</filename>にあるインストール済みシステム、またはオンライン(<ulink url="https://www.suse.com/releasenotes/"/>)で入手できます。
+ </para>
+ <sect1 id="sec.ha.changes.sle11">
+  <title>バージョン10 SP3からバージョン11への変更点</title>
+
+  <para>
+   SUSE Linux Enterprise Server 11では、クラスタスタックがHeartbeatからOpenAISに変更されています。OpenAISは、業界標準のAPIとしてService Availability Forumが発行しているApplication Interface Specification (AIS)を実装しています。SUSE Linux Enterprise Server 10のクラスタリソースマネージャも残っていますが、大幅に機能が強化され、OpenAISに移植され、現在はPacemakerと呼ばれています。
+  </para>
+
+  <para>
+   SUSE® Linux Enterprise Server 10 SP3からSUSE Linux Enterprise Server 11へのHigh Availabilityコンポーネントの変更内容の詳細については、以降のセクションを参照してください。
+  </para>
+
+  <sect2 id="sec.ha.changes.sle11.new">
+   <title>新しく追加された機能</title>
+   <variablelist>
+    <varlistentry id="vle.ha.news.fail">
+     <term>マイグレーションのしきい値と失敗タイムアウト</term>
+     <listitem>
+      <para>
+       High Availability Extensionに、マイグレーションのしきい値と失敗タイムアウトの概念が含まれるようになりました。新しいノードへのマイグレートを行う基準となるリソースの失敗回数を定義できます。デフォルトでは、管理者がリソースの失敗回数を手動でリセットするまで、ノードは失敗したリソースを実行できなくなります。ただし、リソースの<literal>failure-timeout</literal>オプションを設定することで、リソースの失敗回数を失効させることができます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry id="vle.ha.news.defaults">
+     <term>リソースと操作のデフォルト</term>
+     <listitem>
+      <para>
+       リソースオプションと操作にグローバルなデフォルトを設定できるようになりました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>オフラインの設定変更のサポート</term>
+     <listitem>
+      <para>
+       設定をアトミックに更新する前に、一連の変更の影響をプレビューすることが望ましい場合が多くあります。設定の<quote>シャドーイング</quote>コピーを作成して、実行前にコマンドラインインタフェースで編集し、アクティブなクラスタ設定を個別に変更できるようになりました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>ルール、オプション、操作セットの再利用</term>
+     <listitem>
+      <para>
+       ルール、instance_attributes、meta_attributes、および操作セットは、1度定義しておけば、複数の箇所で参照できます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>CIB内の特定操作に対するXPath式の使用</term>
+     <listitem>
+      <para>
+       CIBでXPathベースの<literal>create</literal>、<literal>modify</literal>、<literal>delete</literal>操作が使用できるようになりました。詳細は、<command>cibadmin</command>のヘルプテキストを参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>多次元のコロケーションと順序の制約</term>
+     <listitem>
+      <para>
+       一連のコロケーションリソースを作成する場合、これまではリソースグループを定義するか(設計を必ずしも正確に表現していない場合があった)、個別の制約として各関係を定義するかのいずれかが可能でした。その結果、リソースや組み合わせの数が増加するにつれて、制約も膨大なものになることもありました。今回、<literal>resource_sets</literal>の定義によって別な形式でコロケーションの制約を指定できるようになりました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>クラスタ化されていないマシンからのCIBへの接続</term>
+     <listitem>
+      <para>
+       Pacemakerがマシンにインストールされていれば、マシン自体がクラスタに属していない場合でもクラスタに接続できます。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>反復アクションを既知の回数トリガ</term>
+     <listitem>
+      <para>
+       デフォルトでは、リソースの開始時刻に対して相対的に反復アクションがスケジュールされますが、これが適切ではない場合がありました。操作を相対的に実施する日付/時刻を指定するため、操作の間隔開始時刻を設定します。クラスタはこの時刻を使用して、開始時刻+(間隔 * N)で操作を開始するように、適切な開始遅延を計算します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.ha.changes.sle11.changed">
+   <title>変更された機能</title>
+   <variablelist>
+    <varlistentry id="vle.ha.news.options">
+     <term>リソースとクラスタオプションに関する命名規則</term>
+     <listitem>
+      <para>
+       すべてのリソースとクラスタオプションには、アンダースコア(_)の代わりにダッシュ(-)を使用するようになりました。たとえば<literal>master_max</literal>メタオプションは、<literal>master-max</literal>という名前に変更されました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>master_slave</literal>リソースの名前変更 </term>
+     <listitem>
+      <para>
+       <literal>master_slave</literal>リソースは、<literal>master</literal>という名前に変更されました。マスタリソースは、2つのモードのいずれかで実行可能な特殊なクローンタイプです。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>属性のコンテナタグ</term>
+     <listitem>
+      <para>
+       <literal>attributes</literal>コンテナタグは削除されました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>前提条件の操作フィールド</term>
+     <listitem>
+      <para>
+       <literal>pre-req</literal>操作フィールドは、<literal>requires</literal>という名前に変更されました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>操作間隔</term>
+     <listitem>
+      <para>
+       すべての操作に間隔を指定する必要があります。開始および停止操作の場合、間隔は<literal>0</literal>(ゼロ)に設定する必要があります。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>コロケーション属性と順序の制約</term>
+     <listitem>
+      <para>
+       コロケーション属性および順序の制約の名前をわかりやすく変更しました。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>障害によるマイグレーションのためのクラスタオプション</term>
+     <listitem>
+      <para>
+       <literal>resource-failure-stickiness</literal>クラスタオプションは、<literal>migration-threshold</literal>クラスタオプションに替わりました。<xref linkend="vle.ha.news.fail"/>も参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>コマンドラインツールの引数</term>
+     <listitem>
+      <para>
+       コマンドラインツールの引数が一定になりました。<xref linkend="vle.ha.news.options"/>も参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>XMLの検証と解析</term>
+     <listitem>
+      <para>
+       クラスタ設定はXMLで作成されます。従来のDTD(文書型定義)の代わりに、より強力なRELAX NGスキーマを使用して、構造とコンテンツのパターンを定義するようになりました。<literal>libxml2</literal>はパーサとして使用します。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>id</literal>フィールド</term>
+     <listitem>
+      <para>
+       <literal>id</literal>フィールドは、次の制限を持つXML IDになりました。
+      </para>
+      <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+        <para>
+         IDにコロンを含めることはできません。
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         IDは数字から開始できません。
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         IDはグローバルに固有なものでなければなりません(そのタグで固有なだけではなく)。
+        </para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>他のオブジェクトの参照</term>
+     <listitem>
+      <para>
+       一部のフィールド(リソースへの参照が制約されるフィールドなど)はIDREFです。これは、設定を有効にするためには、それらのフィールドが既存のリソースまたはオブジェクトを参照する必要があることを意味します。そのため、別な場所で参照されているオブジェクトの削除は失敗します。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.ha.changes.sle11.removed">
+   <title>削除された機能</title>
+   <variablelist>
+    <varlistentry>
+     <term>リソースメタオプションの設定</term>
+     <listitem>
+      <para>
+       リソースメタオプションを最上位の属性として設定できなくなりました。代わりにメタ属性を使用してください。<command>crm_resource</command>のマニュアルページも参照してください。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>グローバルデフォルトの設定</term>
+     <listitem>
+      <para>
+       リソースと操作デフォルトは<literal>crm_conﬁg</literal>から読み込まれなくなりました。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp1">
+  <title>バージョン11からバージョン11 SP1への変更点</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>クラスタ設定ファイル</term>
+    <listitem>
+     <para>
+      主要なクラスタ設定ファイルが<filename>/etc/ais/openais.conf</filename>から<filename>/etc/corosync/corosync.conf</filename>へ変更されました。両方のファイルは非常によく似ています。SUSE Linux Enterprise High Availability Extension 11からSP1にアップグレードするときに、スクリプトがこれらのファイル間のわずかな違いを処理します。
+
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ローリングアップグレード</term>
+    <listitem>
+     <para>
+      既存のクラスタを最小限のダウンタイムでマイグレートするために、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>では、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11から11 SP1への<quote>ローリングアップグレード</quote>を実行できます。 クラスタをオンラインにしたまま、次々とノードをアップグレードします。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>自動クラスタ展開</term>
+    <listitem>
+     <para>
+      クラスタの展開を容易にするため、AutoYaSTでは、既存ノードをクローンできます。AutoYaSTは、インストールデータと設定データを含むAutoYaSTロファイルを使用して、ユーザの介入なしで、自動的に、1つ以上のSUSE Linux Enterpriseシステムをインストールするためのシステムです。このプロファイルによって、インストールする対象と、インストールしたシステムが最終的に完全に使用準備が整ったシステムになるように設定する方法がAutoYaSTに指示されます。このプロファイルは、さまざまな方法で、大量展開に使用できます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>設定ファイルの転送 </term>
+    <listitem>
+     <para>
+      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>には、クラスタ内の全ノード間で設定ファイルを複製するためのツール、Csync2が付属しています。 このツールは、多数のホストを処理できます。また、一定のサブグループのホストだけでファイルを同期することも可能です。Csync2との同期を必要とするファイルとホスト名を設定するにはYaSTを使用します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>クラスタ管理用Webインターフェイス</term>
+    <listitem>
+     <para>
+      High Availability Extensionには、管理作業用のWebベースのユーザインタフェースであるHA Web Konsole (Hawk)も付属しています。このインターフェイスを使用すると、Linux以外のコンピュータからも、Linuxクラスタを監視および管理できます。このインタフェースは、システムにグラフィカルユーザインタフェースがなかったり、使用できない場合も理想的なソリューションです。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>リソース設定用テンプレート </term>
+    <listitem>
+     <para>
+      コマンドラインインターフェイスを使用してリソースを作成および設定する際に、さまざまなリソーステンプレートから選択して、素早く容易に設定できるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>負荷ベースのリソース配置</term>
+    <listitem>
+     <para>
+      特定のノードが<emphasis>提供する</emphasis>容量と特定のリソースが<emphasis>要求する</emphasis>容量を定義し、クラスタで配置ストラテジの1つを選択することによって、リソースをそれらの負荷インパクトに従って配置して、クラスタパフォーマンスの低下を防ぐことができます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>クラスタ対応型アクティブ/アクティブRAID 1</term>
+    <listitem>
+     <para>
+      <systemitem class="daemon">cmirrord</systemitem>の使用によって、2つの独立したSANから回復力の早いストレージ設定を作成できるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>読み取り専用GFS2のサポート</term>
+    <listitem>
+     <para>
+      GFS2からOCFS2への移行を容易にするため、GFS2ファイルシステムを読み取り専用モードでマウントして、OCFS2ファイルシステムにデータをコピーできます。OCFS2は<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>によって完全にサポートされています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>OCFS2用SCTPサポート </term>
+    <listitem>
+     <para>
+      冗長リングが設定されている場合、OCFS2とDLMは、自動的に、ネットワークデバイスボンディングから独立したSCTPによる冗長通信パスを使用します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>ストレージ保護</term>
+    <listitem>
+     <para>
+      データ破損からストレージを保護するためにセキュリティレイヤを追加するには、IOフェンシング(<literal>external/sbd</literal>フェンシングデバイスによる)と<systemitem class="resource">sfex</systemitem>リソースエージェントの組み合わせを使用して、排他的なストレージアクセスを確保できます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Sambaクラスタリング</term>
+    <listitem>
+     <para>
+      High Availability Extensionが、トリビアルデータベースのクラスタ実装であるCTDBをサポートするようになりました。これにより、クラスタ化されたSambaサーバを設定できるようになり、異機種環境にもHigh Availabilityソリューションを提供できるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>IP負荷分散用YaSTモジュール</term>
+    <listitem>
+     <para>
+      新しいモジュールでは、グラフィカルユーザインタフェースによるカーネルベースの負荷分散の設定が可能です。これは、Linux仮想サーバを管理し、実サーバを監視するユーザスペースデーモン<systemitem class="daemon">ldirectord</systemitem>のフロントエンドです。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp2">
+  <title>バージョン11 SP1からバージョン11 SP2への変更点</title>
+
+  <variablelist>
+   <varlistentry>
+    <term><xref linkend="cha.ha.geo" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      ローカルクラスタとメトロエリアクラスタの他に、<phrase role="productnamereg"><phrase os="sles">SUSE® Linux Enterprise High Availability Extension</phrase></phrase> <phrase role="productnumber"><phrase os="sles">11 SP4</phrase></phrase>は、マルチサイトクラスタもサポートしています。これは、それぞれひとつのローカルクラスタで持った複数の地理的に離れたサイトを持てることを意味します。これらクラスタ間のフェールオーバーは、より高いレベルのエンティティである<literal>booth</literal>によって管理されます。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>の個別オプションとして、マルチサイトクラスタに対するサポートが提供されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="cha.ha.acl" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      クラスタ設定の任意の部分に対してきめ細かいアクセス権を定義するための、ACLがサポートされました。この機能をCRMで有効にした場合、クラスタ管理ツールで利用できる機能は、ユーザに割り当てられた役割とアクセス権によって決まります。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.installation.setup.auto" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      クラスタセットアップを短時間で容易に行えるようにするための、ブートストラップスクリプト<filename>sleha-init</filename>および<filename>sleha-join</filename>を使用できます。これらはそれぞれ、1ノードクラスタを数分程度で設定して動作させるためのもの、そして他のノードを参加させるためのものです。ブートストラッププロセス中に設定されたオプションは、YaSTクラスタモジュールで後で変更できます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Corosyncユニキャストモード</term>
+    <listitem>
+     <para>
+      デフォルトは依然マルチキャストですが、ノード間の通信のためにユニキャストを使用することもサポートされました。詳細については、<xref linkend="sec.ha.installation.setup.channels"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>HA Web Konsole (Hawk)</term>
+    <listitem>
+     <para>
+      Hawkの機能が大幅に強化されました。グローバルクラスタのプロパティ、基本タイプと詳細タイプのリソース、制約およびリソース監視を設定できるようになりました。Hawkは、クラスタステータスの詳細な分析のために、クラスタレポート(<literal>hb_report</literal>)を生成します。クラスタの履歴を表示できます。また、シミュレータにより、可能性のある障害シナリオを検討することができます。詳細については、<xref linkend="cha.ha.config.hawk"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.basics.resources.templates" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      よく似たリソースの設定を容易にするため、どのクラスタ管理ツールでも、リソーステンプレートを定義して、プリミティブや特定のタイプの制約で参照できるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>仮想化とクラウドの統合</term>
+    <listitem>
+     <para>
+      リソースを負荷インパクトに基づいて配置できるよう、High Availability Extensionは、ノードの容量とリソースの要件の両方を自動的に検出するようになりました。仮想マシンの最小要件(たとえば、XenまたはKVMゲストに割り当てられるメモリまたはCPUコア数)は、リソースエージェントが検出できます。使用属性(要件または容量を定義するために使用される)は、自動的にCIBに追加されます。詳細については、<xref linkend="sec.ha.config.basics.utilization"/>を参照してください。
+     </para>
+
+     <para>
+      ノードのネットワーク接続が、多数の並列XenまたはKVMのライブ移行のために過負荷になるのを防ぐため、新しいグローバルクラスタプロパティ、<literal>migration-limit</literal>が導入されました。これにより、TEが1つのノードで並列に実行できるマイグレーションジョブの数を制限することができます。デフォルトは<literal>-1</literal>に設定されていますが、これは、並列移行数の制限はないことを示しています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>conntrackツール</term>
+    <listitem>
+     <para>
+       クラスタノード間の接続ステータスを同期するため、High Availability Extensionは<systemitem class="resource">conntrack-tools</systemitem>を使用します。これによって、カーネル内の接続トラッキングシステムとやり取りでき、iptablesでの<emphasis>ステートフルな</emphasis>パケット検査を可能になります。詳細については、<xref linkend="sec.ha.installation.setup.conntrackd"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>並列SSH (<command>pssh</command>)</term>
+    <listitem>
+     <para>
+      ノードごとにログインせずにすべてのクラスタノードでコマンドを実行するには、<command>pssh</command>を使用します。詳細については、<xref linkend="sec.ha.troubleshooting.misc"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><command>crm resource secret</command>
+    </term>
+    <listitem>
+     <para>
+      STONITHまたは他のリソースのパスワードを、<filename>cib.xml</filename>とは独立に設定するには、<command>crm resource secret</command>を使用します。詳細については、<xref linkend="sec.ha.config.crm.setpwd"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Sambaクラスタリング </term>
+    <listitem>
+     <para>
+      Active Directoryドメインに参加するCTDBの機能は改良されました。詳細については、<xref linkend="sec.ha.samba.ad"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="cha.ha.rear" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      Rear (Relaxおよび回復)は、障害復旧イメージを作成するための管理者ツールセットです。障害復旧情報はネットワークを通して、またはローカルでハードディスク、USBデバイス、DVD/CD-R、テープなどに保存できます。バックアップデータはNFS (Network File System)に保存されます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>OCFS2上のクォータ</term>
+    <listitem>
+     <para>
+      OCFS2ファイルシステム上でクォータを使用するには、適切なクォータ機能またはオプションを使用して、ファイルシステムを作成し、マウントします。オプションは<literal>ursquota</literal> (個々のユーザのためのクォータ)または<literal>grpquota</literal> (グループのためのクォータ)です。
+     </para>
+    </listitem>
+   </varlistentry>
+
+
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp3">
+  <title>バージョン11 SP2からバージョン11 SP3への変更点</title>
+
+  <variablelist>
+   <varlistentry>
+    <term><xref linkend="cha.ha.config.hawk" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      ここでもHawkの機能が強化されています。たとえば、Hawkによる新機能の<guimenu>Cluster Dashboard</guimenu>を使用して、複数のクラスタを監視できます。Hawkのシミュレータでも、ノードのステータスを変更したり、リソースや制約を追加または編集したり、シミュレータ実行のためのクラスタ設定を変更したりできるようになりました。これ以外にも、HA Web Konsoleでは多くの詳細な機能が強化されています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Pacemaker GUI</term>
+    <listitem>
+     <para>
+      X11ベースのPacemaker GUIは保守モードに移行し、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11のライフサイクル間で新機能を受け取ることはスケジュールされていません。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 12では、HA Web Konsole (Hawk)がHigh Availability Extensionのデフォルトのグラフィカルユーザインタフェースになる予定です。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="pro.ha.installation.setup.sleha-remove" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      <command>sleha-remove</command>ブートストラップスクリプトにより、クラスタから1つのノードを簡単に削除できるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.hawk.maint.mode" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      1つのノードを保守モードにする必要がある場合があります。クラスタが4つ以上のノードで構成されている場合は、1つのノードを保守モードにして、その他のノードで通常の操作を続行することが簡単にできます。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.manual_config.group" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      crmシェルのグループコマンドが強化されグループの変更が可能になりました。リソースのグループへの追加、リソースのグループからの削除、グループメンバーの順序変更が可能になっています。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>グループの使用属性</term>
+    <listitem>
+     <para>
+      使用属性を持つ複数のリソースがグループ化されていたり、これらにコロケーション制約がある場合、High Availability Extensionではそのことを考慮に入れます。可能な場合、これらのリソースは、<emphasis>すべての</emphasis>容量要件を満たすことができるノードに配置されます。使用属性の詳細については、<xref linkend="sec.ha.config.basics.utilization"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>デフォルトのプローブタイムアウト</term>
+    <listitem>
+     <para>
+      リソースの監視操作に特定のタイムアウトが設定されていない場合、CRMがプローブのタイムアウトを自動的に計算するようになりました。詳細については、<xref linkend="sec.ha.config.basics.timeouts"/>を参照してください。これまでは、特定のタイムアウトが設定されていない場合、プローブのデフォルトのタイムアウトはクラスタ全体の<systemitem>デフォルトの操作タイムアウト</systemitem>を継承していました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.basics.monitor.health" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      ノードがディスク容量が使い尽くしたために、そこに割り当てられたリソースを適切に管理できなくなることを避けるため、High Availability Extensionでは、<systemitem>ocf:pacemaker:SysInfo</systemitem>というリソースエージェントが提供されています。これを使用して、ディスクパーティションに関するノードのヘルスを監視します。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.basics.remote.nagios"/>
+    </term>
+    <listitem>
+     <para>
+      
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>クラスタダイアグラム</term>
+    <listitem>
+     <para>
+      crmシェルとHawkの両方で、CIB内で設定されたノードとリソースのグラフィカル表現の表示機能が提供されるようになりました。詳細については、<xref linkend="sec.ha.manual_config.diagram"/>と<xref linkend="sec.ha.config.hawk.intro.main"/>を参照してください。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.netbond.hotpug.yast" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      ボンディングスレーブのインタフェースを別のものに置き換える必要が生じることがあります。たとえば、それぞれのネットワークデバイスに常に障害が発生する場合などです。このソリューションはボンディングスレーブのホットプラグを設定するためのもので、YaSTによってサポートされるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.clvm.config.cmirrord" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      High Availability Extensionは<systemitem>cmirrord</systemitem>でRAID 10をサポートします。1つのミラーログに複数の物理ボリュームを追加できるようになりました。 さらに、<command>lvcreate</command>コマンドの<option>mirrored</option>オプションもサポートされ、一時的に切断されたミラーを非常に速く再同期できるようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.samba.ad" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      YaSTは、Active Directoryドメインを追加するためのCTDB機能をサポートするようになりました。
+     </para>
+    </listitem>
+   </varlistentry>
+  
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp4">
+  <title>バージョン11 SP3からバージョン11 SP4への変更点</title>
+  <variablelist>
+   <varlistentry>
+    <term>全般</term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>クラスタ名、ノード名、クラスタリソース、および制約で一貫性のある命名スキームを導入し、それをマニュアルに適用しました<xref linkend="app.naming"/>を参照してください。(Fate#314938)。</para>
+      </listitem>
+      <listitem>
+       <para>crmシェル例の一貫性を改善しました。</para>
+      </listitem>
+      <listitem>
+       <para>エージェントリストを記述した「<citetitle>HA OCFエージェント</citetitle>」の章を削除しました。この削除に伴い、「<citetitle>トラブルシューティングとリファレンス</citetitle>」の部分も削除し、<xref linkend="app.ha.troubleshooting" xrefstyle="select:title"/>の章を付録に移動しました。</para>
+      </listitem>
+      <listitem>
+       <para>Geo Clustering for SUSE Linux Enterprise High Availability Extensionのマニュアルを別のドキュメントに移動しました(Fate#316120)。地理的に離れたクラスタの使用方法および設定方法の詳細については、『Geo Clustering for SUSE Linux Enterprise High Availability Extensionクイックスタート』を参照してください。<ulink url="http://www.suse.com/documentation/"/>または<filename>/usr/share/doc/manual/sle-ha-geo-manuals_en/</filename>の下にあるインストール済みシステムから入手できます。</para>
+      </listitem>
+      <listitem>
+       <para><literal>master-slave</literal>リソースの用語を変更しました。現在はアップストリームマニュアルで<literal>multi-state</literal>リソースと呼ばれています。</para>
+      </listitem>
+      <listitem>
+       <para>スクリーンショットを更新しました。</para>
+      </listitem>
+      <listitem>
+       <para><command>hb_report</command>と<command>crm_report</command>の両方を詳細なクラスタレポートを作成するためのコマンドラインツールとして記載しました。</para>
+      </listitem>
+      <listitem>
+       <para>テクニカルフィードバックに基づいて、マニュアルに対してさまざまなバグの修正と追加を行いました。</para>
+      </listitem>
+     
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.concepts"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>一貫性の理由から、マルチサイトクラスタから地理的に離れた(またはGeo)クラスタに用語を変更しました。</para>
+      </listitem>
+      <listitem>
+       <para>アドオン製品としての<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>およびGeo Clustering for SUSE Linux Enterprise High Availability Extensionの可用性に関するセクションを追加しました(<xref linkend="sec.ha.availability"/>)。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.requirements"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>コンテンツを再構築しました。</para>
+      </listitem>
+      <listitem>
+       <para>非標準のSSHポート使用時におけるクラスタレポートの作成方法を記載しました(Fate#314906)。詳細については、<xref linkend="vle.ha.req.ssh"/>を参照してください。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.installation"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para><citetitle>No-Start-on-Bootパラメータ</citetitle>に関するメモを追加しました(Fate#317778)。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.config.basics"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <xref linkend="sec.ha.config.basics.global.stonith"/>では、グローバルクラスタオプション<literal>stonith-enabled</literal>が<literal>false</literal>に設定される場合のDLMサービスのポリシー変更について記載しています(Fate#315195)。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="sec.ha.config.basics.tags"/>では、コロケーションや、それらの間の順序関係を作成しないで、概念的に関連するリソースをグループ化する新しいオプションについて説明しています(Fate#318109)。 </para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="sec.ha.config.basics.constraints.rscset"/>では、制約を定義するための別のフォーマットとしてリソースセットの概念について説明しています。 </para>
+      </listitem>
+      <listitem>
+       <para>クラスタ全体を保守モードに設定するオプションも記載するため、<xref linkend="sec.ha.config.basics.maint.mode"/>を再構築しました。</para>
+      </listitem>
+      <listitem>
+       <para><literal>pacemaker_remote</literal>サービスの属性を<xref linkend="tab.ha.basics.meta"/>に追加し、新しいセクションとして<xref linkend="sec.ha.config.basics.remote"/>を追加しました。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.config.hawk"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para><xref linkend="cha.ha.config.basics"/>で説明されている新機能を反映させるため、章を更新しました。</para>
+      </listitem>
+      <listitem>
+       <para>Geoクラスタに関連するすべてのHawk機能の説明を別のドキュメントに移動しました。新しい『Geo Clustering for SUSE Linux Enterprise High Availability Extensionクイックスタート』<citetitle/>(<ulink url="http://www.suse.com/documentation/"/>から入手可能)を参照してください。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.manual_config"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para><xref linkend="sec.ha.manual_config.constraints.weak-bond"/>を追加しました(Fate#314917)。</para>
+      </listitem>
+       <listitem>
+        <para>リソースのタグ付けに関するセクションを追加しました(Fate#318109): <xref linkend="sec.ha.manual_config.tag"/>。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="cha.ha.config.basics"/>で説明されている新機能を反映させるため、章を更新しました。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.fencing"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>STONITHリソースのクローン作成が不要になったので、例から削除しました。</para>
+      </listitem>
+      <listitem>
+       <para>テスト専用のSTONITHデバイスをいくつか削除しました。</para>
+      </listitem>
+      <listitem>
+       <para><literal>external/kdumpcheck</literal>リソースエージェントを削除し、代わりに<literal>fence_kdump</literal>リソースエージェントの設定例を追加しました。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.acl"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para><xref linkend="sec.ha.acl.config.hawk"/>を追加しました。</para>
+      </listitem>
+      <listitem>
+       <para>CIB検証バージョンのアップグレード後に使用可能になる新しいACL機能に従って章を更新しました。詳細については、<xref linkend="note.ha.cib.upgrade"/>を参照してください。</para>
+       <para><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3からアップグレードする一方で、それまで使用してきたCIBバージョンを保持している場合は、『High Availability Guide for <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3』の「<citetitle>アクセス制御リスト</citetitle>」の章を参照してください。<ulink url="http://www.suse.com/documentation/"/>から入手できます。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.storage.protect"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.watchdog"/>: ウォッチドッグおよびウォッチドッグタイマにアクセスする他のソフトウェアに関するメモを追加しました(<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=891340"/>)。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.watchdog"/>: ブート時にウォッチドッグドライバをロードする方法を追加しました(<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=892344"/>)。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.fencing"/>: <literal>msgwait</literal>タイムアウト(<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=891346"/>)に関連した<literal>stonith-timeout</literal>の長さに関するアドバイスを追加しました。 </para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.sbd.daemon"/>を調整しました(<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=891499"/>)。</para>
+      </listitem>
+      <listitem>
+       <para><literal>no-quorum-policy=ignore</literal>によってクラスタに発生するダブルフェンシングを、STONITHリソース設定に<literal>pcmk_delay_max</literal>パラメータを使用することで回避する方法について説明しています(Fate#31713)。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.rear"/></term>
+    <listitem>
+     <para>この章は全面的に改訂され、Rearバージョン<literal>1.16</literal>に更新されました。</para>
+     <para><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4には、RPMパッケージ<systemitem class="resource">rear</systemitem>に付属するバージョン<literal>1.10.0</literal>およびRPMパッケージ<systemitem class="resource">rear116</systemitem>に付属するバージョン<literal>1.16</literal>の2つのバージョンのRearが付属しています。Rearバージョン<literal>1.10.0</literal>のマニュアルについては、『High Availability Guide for <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3』を参照してください。<ulink url="http://www.suse.com/documentation/"/>から入手できます。</para>
+    </listitem>
+   </varlistentry>
+   
+   
+   <varlistentry>
+    <term><xref linkend="app.ha.troubleshooting"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>非標準のSSHポート使用時におけるクラスタレポートの作成方法を記載しました(Fate#314906)。詳細については、<xref linkend="vle.ha.crm_report"/>を参照してください。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><citetitle>HA OCFエージェント</citetitle></term>
+    <listitem>
+     <para>この章は削除されました。OCFリソースエージェントに関する最新情報は、<xref linkend="sec.ha.manual_config.ocf"/>で説明されているように、インストール済みシステムで表示できます。</para></listitem>
+   </varlistentry>
+   
+   
+   <varlistentry>
+    <term><xref linkend="app.naming"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>このマニュアルで使用する命名スキームについて説明している新しい付録。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="app.ha.migration"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>用語の定義が追加されました: <xref linkend="sec.ha.migration.terminology"/>。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="sec.ha.migration.sle11.sp4"/>が<xref linkend="sec.ha.migration.upgrade"/>に追加されました。 </para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="sec.ha.update"/>が追加されました。
+       </para></listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+
+   </variablelist>
+
+   
+   
+   
+   
+   
+   
+   
+
+ </sect1>
+</appendix>
