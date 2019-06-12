@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<appendix xml:base="ha_config_example.xml" id="cha.ha.config.example">
+ <title>OCFS2 和 cLVM 的示例配置</title>
+ <para>
+  下面是可帮助您设置资源以便使用 OCFS2 和/或 cLVM 的示例配置。下面的配置并不是完整群集配置，只是摘录，其中包括 OCFS2 和 cLVM 需要的所有资源，并忽略您可能需要的任何其他资源。属性和属性值可能需要根据特定设置调整。
+ </para>
+ <example id="ex.ha.config.ocfs2.clvm">
+  <title>OCFS2 和 cLVM 的群集配置</title>
+
+<screen>primitive clvm ocf:lvm2:clvmd \
+     params daemon_timeout="30" 
+primitive dlm ocf:pacemaker:controld \
+     op monitor interval="60" timeout="60"
+primitive o2cb ocf:ocfs2:o2cb \
+     op monitor interval="60" timeout="60"
+primitive ocfs2-1 ocf:heartbeat:Filesystem \
+     params device="/dev/sdb1" directory="/mnt/shared" fstype="ocfs2" options="acl" \
+     op monitor interval="20" timeout="40"
+primitive sbd_stonith stonith:external/sbd \
+     params pcmk_delay_max="15" \
+     op monitor interval="15" timeout="15"
+primitive vg1 ocf:heartbeat:LVM \
+     params volgrpname="cluster-vg" \
+     op monitor interval="60" timeout="60"
+group base-group dlm o2cb clvm vg1 ocfs2-1
+clone base-clone base-group \
+     meta interleave="true"
+  </screen>
+ </example>
+ <para>
+  配置如果采用基本组（包括若干原始基元）和基本克隆，则可简化总体设置：基本组有内部共置和排序功能并始终保持不变，但以下两个资源除外：
+ </para>
+ <itemizedlist mark="bullet" spacing="normal">
+  <listitem>
+   <para>
+    <systemitem class="resource">vg1</systemitem> - 卷组的资源。只有在设置包含 cVLM 时才配置此资源。否则在群集配置和基本组中忽略该资源。
+   </para>
+  </listitem>
+  <listitem>
+   <para>
+    <systemitem class="resource">ocfs2-1</systemitem> - 用于装入 OCFS2 文件系统的资源。只有在设置包含 OCFS2 时才配置此资源。否则在群集配置和基本组中忽略该资源。
+   </para>
+  </listitem>
+ </itemizedlist>
+ <para>
+  <xref linkend="ex.ha.config.ocfs2.clvm"/>中提及的所有其他资源都可配置并在群集中运行，无论设置如何。
+ </para>
+</appendix>

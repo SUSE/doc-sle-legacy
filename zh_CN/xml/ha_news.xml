@@ -1,0 +1,835 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE appendix PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<appendix xml:base="ha_news.xml" id="cha.ha.changes">
+ <title>新增功能</title>
+ <para>
+  以下部分概述了版本之间的最重要软件修改。此摘要指出了基本设置是否已完全重配置、配置文件是否已移至其他位置或者发生的其他重要更改等信息。
+ </para>
+ <para>
+  有关更多细节和最新信息，请参考各自产品版本的发行说明。可以从已安装系统中获取：<filename>/usr/share/doc/release-notes</filename>，或在线获取：<ulink url="https://www.suse.com/releasenotes/"/>。
+ </para>
+ <sect1 id="sec.ha.changes.sle11">
+  <title>版本 10 SP3 到版本 11</title>
+
+  <para>
+   使用 SUSE Linux Enterprise Server 11，群集堆栈已经从 Heartbeat 更改为 OpenAIS。OpenAIS 实施由服务可用性论坛 (Service Availability Forum) 发布的行业标准 API - 应用程序界面规范 (AIS)。已保留并大大地改进了 SUSE Linux Enterprise Server 10 中的群集资源管理器，并将其迁移到 OpenAIS 中，现被称为 Pacemaker。
+  </para>
+
+  <para>
+   有关从 SUSE® Linux Enterprise Server 10 SP3 到 SUSE Linux Enterprise Server 11 中 High Availability 组件的更改的更多详细信息，请参见以下部分。
+  </para>
+
+  <sect2 id="sec.ha.changes.sle11.new">
+   <title>新增功能</title>
+   <variablelist>
+    <varlistentry id="vle.ha.news.fail">
+     <term>迁移阈值和故障超时</term>
+     <listitem>
+      <para>
+       High Availability Extension 现在新增了迁移阈值和故障超时的概念。可以对资源定义一个故障数量，达到此数量后资源将迁移到新节点。默认情况下，将不再允许节点运行出现故障的资源，直到管理员手动重设置资源的故障计数。但也可以通过设置资源的 <literal>failure-timeout</literal> 选项来使资源失效。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry id="vle.ha.news.defaults">
+     <term>资源和操作默认值</term>
+     <listitem>
+      <para>
+       现在可以设置资源选项和操作的全局默认值。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>支持脱机配置更改</term>
+     <listitem>
+      <para>
+       在以原子方式更新配置之前，通常希望预览一系列更改的效果。现在，您可以先创建可使用命令行界面编辑的配置的<quote>阴影</quote>副本，然后再提交它，从而以原子方式更改活动群集配置。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>重用规则、选项和操作集</term>
+     <listitem>
+      <para>
+       规则、instance_attributes、meta_attributes 和操作集可定义一次并在多处引用。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>对 CIB 中的某些操作使用 XPath 表达式</term>
+     <listitem>
+      <para>
+       现在 CIB 接受基于 XPath 的 <literal>create</literal>、<literal>modify</literal>、<literal>delete</literal> 操作。有关更多信息，请参见 <command>cibadmin</command> 帮助文本。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>多维共置和排序约束</term>
+     <listitem>
+      <para>
+       为创建一个配置资源集，以前您可以定义一个资源组（无法总是准确地表达此设计）或将每种关系定义为单独的约束，导致约束随着资源和组合的数量增长而激增。现在还可以使用共置约束的另一种形式，即定义 <literal>resource_sets</literal>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>从非群集的服务器连接到 CIB</term>
+     <listitem>
+      <para>
+       如果服务器上安装了 Pacemaker，则即使服务器本身不是群集的一部分，也可以连接到群集。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>在已知时间触发重现操作</term>
+     <listitem>
+      <para>
+       默认情况下，重现操作是根据资源启动的时间来计划的，但这并不总令人满意。要指定操作应根据的日期/时间，请设置操作的间隔-起始时间。群集使用此时间计算正确的启动-延迟，这样操作将在起始时间 +（间隔 * N）时发生。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.ha.changes.sle11.changed">
+   <title>变更功能</title>
+   <variablelist>
+    <varlistentry id="vle.ha.news.options">
+     <term>资源和群集选项的命名约定</term>
+     <listitem>
+      <para>
+       现在所有资源和群集选项都使用连字符 (-) 代替下划线 (_)。例如，<literal>master_max</literal> 元选项已重命名为 <literal>master-max</literal>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>重命名 <literal>master_slave</literal> 资源 </term>
+     <listitem>
+      <para>
+       <literal>master_slave</literal> 资源已重命名为 <literal>master</literal>。主资源是一种特殊类型的克隆，可按两种模式之一运行。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>属性的容器标记</term>
+     <listitem>
+      <para>
+       <literal>attributes</literal> 容器标记已删除。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>先决条件的操作字段</term>
+     <listitem>
+      <para>
+       <literal>pre-req</literal> 操作字段已重命名为 <literal>requires</literal>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>操作间隔</term>
+     <listitem>
+      <para>
+       所有操作都必须有间隔。对于启动/停止操作，间隔必须设置为 <literal>0</literal>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>共置和排序约束的属性</term>
+     <listitem>
+      <para>
+       为了清晰起见，已对共置和排序约束的属性进行了重命名。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>因故障而迁移的群集选项</term>
+     <listitem>
+      <para>
+       <literal>resource-failure-stickiness</literal> 群集选项已替换为 <literal>migration-threshold</literal> 群集选项。另请参见<xref linkend="vle.ha.news.fail"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>命令行工具的自变量</term>
+     <listitem>
+      <para>
+       已使命令行工具的自变量保持一致。另请参见<xref linkend="vle.ha.news.options"/>。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>验证和分析 XML</term>
+     <listitem>
+      <para>
+       群集配置是用 XML 编写的。现在，一种更强大的 RELAX-NG 纲要已取代文档类型定义 (DTD)，用于定义结构和内容的模式。<literal>libxml2</literal> 用作分析器。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term><literal>id</literal> 字段</term>
+     <listitem>
+      <para>
+       <literal>id</literal> 字段现在是具有以下限制的 XML ID：
+      </para>
+      <itemizedlist mark="bullet" spacing="normal">
+       <listitem>
+        <para>
+         ID 不能包含冒号。
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         ID 不能以数字开始。
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         ID 必须是全局唯一的（不只是对标记唯一）。
+        </para>
+       </listitem>
+      </itemizedlist>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>参考其他对象</term>
+     <listitem>
+      <para>
+       某些字段（如引用资源的限制中的字段）是 IDREF。这意味着它们必须引用现有资源或对象才能使配置有效。因此将无法删除在别处有引用的对象。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+
+  <sect2 id="sec.ha.changes.sle11.removed">
+   <title>删除功能</title>
+   <variablelist>
+    <varlistentry>
+     <term>设置资源元选项</term>
+     <listitem>
+      <para>
+       不再能将资源元选项设置为顶级属性。改为使用元属性。另请参见 <command>crm_resource</command> 手册页。
+      </para>
+     </listitem>
+    </varlistentry>
+    <varlistentry>
+     <term>设置全局默认值</term>
+     <listitem>
+      <para>
+       不再从 <literal>crm_config</literal> 读取资源和操作默认值。
+      </para>
+     </listitem>
+    </varlistentry>
+   </variablelist>
+  </sect2>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp1">
+  <title>版本 11 到版本 11 SP1</title>
+
+  <variablelist>
+   <varlistentry>
+    <term>群集配置文件</term>
+    <listitem>
+     <para>
+      主群集配置文件已从 <filename>/etc/ais/openais.conf</filename> 更改为 <filename>/etc/corosync/corosync.conf</filename>。这两个文件很相似。当从 SUSE Linux Enterprise High Availability Extension 升级到 SP1 时，这些文件间的脚本有一些细微的差异。
+
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>滚动升级</term>
+    <listitem>
+     <para>
+      为了在最短的停机时间内迁移现有的群集，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 允许您从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 <quote>滚动升级</quote>到 11 SP1。一个接一个地升级节点时，群集仍处于联机状态。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>自动群集部署</term>
+    <listitem>
+     <para>
+      为了方便群集部署，AutoYaST 允许复制现有的节点。AutoYaST 是使用包含安装和配置数据的 AutoYaST 配置文件自动安装一个或多个 SUSE Linux Enterprise 系统而无需用户干预的系统。该配置文件会告知 AutoYaST 要安装的内容以及如何配置已安装好的系统，以便最终获得一个完整的即用型系统。此配置文件可用于以不同方式进行大批量部署。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>配置文件的传送 </term>
+    <listitem>
+     <para>
+      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 附有用于复制群集中所有节点的配置文件的 Csync2。它能处理任意数量的主机，还可以只在特定主机子组间同步文件。使用 YaST 可配置主机名和应通过 Csync2 同步的文件。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>群集管理的 Web 界面</term>
+    <listitem>
+     <para>
+      High Availability Extension 现在还包括 HA Web Konsole (Hawk) - 用于管理任务的基于 Web 的用户界面。它还可用于从非 Linux 计算机监视和管理 Linux 群集。如果系统未提供或不支持图形用户界面，它还是理想的解决方案。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>资源配置模板 </term>
+    <listitem>
+     <para>
+      使用命令行界面创建和配置资源时，现在可以从各种资源模板中进行选择，以更快、更方便地进行配置。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>根据负载放置资源</term>
+    <listitem>
+     <para>
+      通过定义特定节点<emphasis>提供</emphasis>的容量、特定资源<emphasis>需要</emphasis>的容量，以及通过选择群集中的若干放置策略之一，可以根据资源负载影响来布置资源，以避免降低群集性能。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>群集感知的主动/主动 RAID1</term>
+    <listitem>
+     <para>
+      现在可以使用 <systemitem class="daemon">cmirrord</systemitem> 从两个独立的 SAN 创建能迅速从灾难中恢复的储存配置。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>只读 GFS2 支持</term>
+    <listitem>
+     <para>
+      为了便于从 GFS2 迁移到 OCFS2，可以采用只读模式装入 GFS2 文件系统，以将数据复制到 OCFS2 文件系统。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 完全支持 OCFS2。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>OCFS2 的 SCTP 支持 </term>
+    <listitem>
+     <para>
+      如果配置了冗余环，OCFS2 和 DLM 可通过独立于网络设备绑定的 SCIP 自动使用冗余通讯路径。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>储存保护</term>
+    <listitem>
+     <para>
+      为提供附加安全层来保护储存的数据免受损坏，可以使用 IO 屏蔽（使用 <literal>external/sbd</literal> 屏蔽设备）和 <systemitem class="resource">sfex</systemitem> 资源代理的组合来确保对储存内容的排它访问。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Samba 群集</term>
+    <listitem>
+     <para>
+      High Availability Extension 现在支持 CTDB - 普通数据库的群集实现。它允许您配置群集 Samba 服务器 - 为异构环境提供高可用性解决方案。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>用于 IP 负载平衡的 YaST 模块</term>
+    <listitem>
+     <para>
+      该新模块允许使用图形用户界面配置基于内核的负载平衡。它是 <systemitem class="daemon">ldirectord</systemitem> 的前端，用于管理 Linux Virtual Server 和监控真实的服务器的用户空间守护程序。
+     </para>
+    </listitem>
+   </varlistentry>
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp2">
+  <title>版本 11 SP1 到版本 11 SP2</title>
+
+  <variablelist>
+   <varlistentry>
+    <term><xref linkend="cha.ha.geo" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      除本地群集和市内区域群集外，<phrase role="productnamereg"><phrase os="sles">SUSE® Linux Enterprise High Availability Extension</phrase></phrase><phrase role="productnumber"><phrase os="sles">11 SP4</phrase></phrase> 还支持多站点群集。这意味着，每个本地群集可以有多个地域分散的站点。这些群集之间的故障转移由更高级的实体、所谓的 <literal>booth</literal> 进行协调。对于多站点群集的支持是 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 提供的一个独立选项。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="cha.ha.acl" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      支持定义更精细的访问权限来访问群集配置 ACL 的各个部分。如果在 CRM 中启用了此功能，则群集管理工具中的可用功能取决于指派给用户的角色和访问权限。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.installation.setup.auto" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      如需便捷地设置群集，可以使用引导脚本 <filename>sleha-init</filename> 和 <filename>sleha-join</filename> 以便在数分钟内启动并运行单个节点群集，并相应地让其他节点加入。在引导过程中设置的任何选项都可稍后使用 YaST 群集模块进行修改。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Corosync 单播模式</term>
+    <listitem>
+     <para>
+      虽然默认模式仍为多播，但现在还支持对节点间的通讯使用单模模式。有关更多信息，请参考<xref linkend="sec.ha.installation.setup.channels"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>HA Web Konsole (Hawk)</term>
+    <listitem>
+     <para>
+      Hawk 的功能已经大大的扩展。现在可以配置全局群集属性、基本和高级类型的资源、约束和资源监视。为了对群集状态进行详细分析，Hawk 会生成一个群集报告 (<literal>hb_report</literal>)。您可以使用模拟器查看群集历史记录或浏览可能的故障情境。有关详细信息，请参见<xref linkend="cha.ha.config.hawk"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.basics.resources.templates" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      为了方便配置类似资源，所有群集管理工具现在都允许定义资源模板，以便在原始资源或特定类型的约束中进行引用。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>虚拟化和云集成</term>
+    <listitem>
+     <para>
+      为了根据负载影响布置资源，High Availability Extension 现在既能自动检测节点的容量，也能自动检测资源所需的容量。资源代理可以检测到虚拟机的最低要求（例如，指派给 Xen 或 KVM guest 的内存，或者 CPU 内核的数量）。利用率属性（用于定义要求或容量）将会自动添加到 CIB 中。有关更多信息，请参考<xref linkend="sec.ha.config.basics.utilization"/>。
+     </para>
+
+     <para>
+      为了防止节点的网络连接由于大量并行 Xen 或 KVM 实时迁移而超载，引入了新的全局群集属性 <literal>migration-limit</literal>。它允许您限制 TE 在一个节点上可以并行执行的迁移作业数。默认情况下，此属性设置为 <literal>-1</literal>，表示并行迁移数不受限制。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>conntrack 工具</term>
+    <listitem>
+     <para>
+      为了同步群集节点之间的连接状态，High Availability Extension 会使用 <systemitem class="resource">conntrack-tools</systemitem>。使用这些工具可与内核内连接跟踪系统交互，以便对 iptables 启用<emphasis>有状态</emphasis>包检测。有关更多信息，请参考<xref linkend="sec.ha.installation.setup.conntrackd"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>并行 SSH (<command>pssh</command>)</term>
+    <listitem>
+     <para>
+      要在所有群集节点上执行命令时无需登录每个节点，请使用 <command>pssh</command>。 有关更多信息，请参考<xref linkend="sec.ha.troubleshooting.misc"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><command>crm resource secret</command>
+    </term>
+    <listitem>
+     <para>
+      要为 STONITH 或其他独立于 <filename>cib.xml</filename> 的资源设置密码，请使用 <command>crm resource secret</command>。有关更多信息，请参考<xref linkend="sec.ha.config.crm.setpwd"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Samba 群集 </term>
+    <listitem>
+     <para>
+      加入 Active Directory 域的 CTDB 功能已得到改进。有关更多信息，请参见<xref linkend="sec.ha.samba.ad"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="cha.ha.rear" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      Rear (Relax and Recover)是用于创建灾难恢复映像的管理员工具集。灾难恢复信息可通过网络储存，也可本地储存在硬盘、USB 设备、DVD/CD-R、磁带或类似设备上。备份数据储存在网络文件系统 (NFS) 上。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>OCFS2 上的定额</term>
+    <listitem>
+     <para>
+      要在 OCFS2 文件系统上使用定额，请选用合适的定额功能或装入选项创建并装入文件系统：<literal>ursquota</literal>（用于单个用户的定额）或 <literal>grpquota</literal>（用于组的定额）。
+     </para>
+    </listitem>
+   </varlistentry>
+
+
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp3">
+  <title>版本 11 SP2 到版本 11 SP3</title>
+
+  <variablelist>
+   <varlistentry>
+    <term><xref linkend="cha.ha.config.hawk" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      Hawk 的功能已经再次扩展。例如，您可以使用 Hawk 的<guimenu>群集仪表板</guimenu>监控多个群集。Hawk 模拟器现在也允许您更改节点的状态，添加或编辑资源以及约束，或更改群集配置以便于模拟器的运行。除此之外还增强了 HA Web Konsole 的许多其他详细信息。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>Pacemaker GUI</term>
+    <listitem>
+     <para>
+      基于 X11 的 Pacemaker GUI 现在处于维护模式，在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 的生命周期未安排接收新的功能。对于 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 12，HA Web Konsole (Hawk) 将会成为 High Availability Extension 的默认图形用户界面。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="pro.ha.installation.setup.sleha-remove" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      <command>sleha-remove</command> 引导脚本现在更容易删除群集中的单个节点。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.hawk.maint.mode" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      有时候需要将单个节点设置为维护模式。如果您的群集包含 3 个以上的节点，则可以轻松地将其中一个节点设置为维护模式，而其他节点则继续执行常规操作。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.manual_config.group" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      crm 壳层的组命令已扩展至允许修改组，可以向组中添加资源、从组中删除资源以及更改组成员的顺序。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>组的利用率属性</term>
+    <listitem>
+     <para>
+      如果将具有利用率属性的多个资源组合或设置共置约束，则 High Availability Extension 会考虑此情况。如有可能，资源将被放置到可以满足<emphasis>所有</emphasis>容量要求的节点上。有关利用属性的详细信息，请参阅<xref linkend="sec.ha.config.basics.utilization"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>默认探测超时</term>
+    <listitem>
+     <para>
+      如果针对该资源的监控操作没有配置特定超时，则 CRM 即会自动计算探测超时。有关详细信息，请参见<xref linkend="sec.ha.config.basics.timeouts"/>。截止目前，如果没有配置特定超时，探测的默认超时会继承该群集范围<systemitem>默认操作超时</systemitem>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.basics.monitor.health" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      为避免节点耗尽磁盘空间而使得系统不足以管理已分配给该节点的任何资源，High Availability Extension 提供了一个资源代理 <systemitem>ocf:pacemaker:SysInfo</systemitem>。使用此代理可监视节点在磁盘分区占用方面的状况。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.config.basics.remote.nagios"/>
+    </term>
+    <listitem>
+     <para>
+      
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term>群集图表</term>
+    <listitem>
+     <para>
+      crm 壳层和 Hawk 现提供显示节点的图形表示和 CIB 中配置的资源的可能性。有关细节，请参见<xref linkend="sec.ha.manual_config.diagram"/> 和<xref linkend="sec.ha.config.hawk.intro.main"/>。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.netbond.hotpug.yast" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      在某些情况下，例如相应的网络设备不断出现故障时，必须使用另一个接口来取代绑定的从属接口。解决方案是设置 YaST 现支持的绑定从属的热插拔。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.clvm.config.cmirrord" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      High Availability Extension 支持 <systemitem>cmirrord</systemitem> 中的 RAID 10：现在可以为每个镜像图例添加多个物理卷。同时，系统还支持 <command>lvcreate</command> 命令中的<option>镜像</option>选项，也就是说暂时打破的镜像能更快地实现再同步。
+     </para>
+    </listitem>
+   </varlistentry>
+   <varlistentry>
+    <term><xref linkend="sec.ha.samba.ad" xrefstyle="select:title"/>
+    </term>
+    <listitem>
+     <para>
+      YaST 现支持 CTDB 功能加入活动目录域。
+     </para>
+    </listitem>
+   </varlistentry>
+  
+  </variablelist>
+ </sect1>
+ <sect1 id="sec.ha.changes.sle11.sp4">
+  <title>版本 11 SP3 到版本 11 SP4</title>
+  <variablelist>
+   <varlistentry>
+    <term>常规</term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>针对群集名称、节点名称、群集资源和约束引入了一致的命名模式，并已在文档中应用了该命名模式。参见<xref linkend="app.naming"/>。(Fate#314938)。</para>
+      </listitem>
+      <listitem>
+       <para>改进了 crm 外壳示例的一致性。</para>
+      </listitem>
+      <listitem>
+       <para>去除了包含代理列表的“<citetitle>HA OCF 代理</citetitle>”一章。因此，也去除了“<citetitle>查错和参考</citetitle>”部分，并将<xref linkend="app.ha.troubleshooting" xrefstyle="select:title"/>一章移到了附录中。</para>
+      </listitem>
+      <listitem>
+       <para>已将 Geo Clustering for SUSE Linux Enterprise High Availability Extension 的文档转移到一份独立的文档 (Fate#316120)。有关如何使用和设置地理位置分散的群集的细节，请参见《Quick Start Geo Clustering for SUSE Linux Enterprise High Availability Extension》（Geo Clustering for SUSE Linux Enterprise High Availability Extension 快速入门）。可以从 <ulink url="http://www.suse.com/documentation/"/> 或者所安装系统的 <filename>/usr/share/doc/manual/sle-ha-geo-manuals_en/</filename> 下找到该文档。</para>
+      </listitem>
+      <listitem>
+       <para>更改了<literal>主-从</literal>资源的术语，在上游文档中，此类资源现在称为<literal>多状态</literal>资源。</para>
+      </listitem>
+      <listitem>
+       <para>更新了屏幕截图。</para>
+      </listitem>
+      <listitem>
+       <para>介绍了 <command>hb_report</command> 和 <command>crm_report</command> 都可用作创建详细群集报告的命令行工具。</para>
+      </listitem>
+      <listitem>
+       <para>根据技术反馈修正了手册中的许多 bug 并添加了大量内容。</para>
+      </listitem>
+     
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.concepts"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>为了保持一致，已将术语“多站点群集”更改为地理位置分散的（或地域）群集。</para>
+      </listitem>
+      <listitem>
+       <para>添加了有关以外接式附件产品提供 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 和 Geo Clustering for SUSE Linux Enterprise High Availability Extension 的章节：<xref linkend="sec.ha.availability"/>。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.requirements"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>重新组织了内容。</para>
+      </listitem>
+      <listitem>
+       <para>介绍了在使用非标准 SSH 端口时如何创建群集报告 (Fate#314906)。请参见 <xref linkend="vle.ha.req.ssh"/>。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.installation"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>添加了注释“<citetitle>No-Start-on-Boot 参数</citetitle>”(Fate#317778)。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.config.basics"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>
+        <xref linkend="sec.ha.config.basics.global.stonith"/>介绍了当全局群集选项 <literal>stonith-enabled</literal> 设置为 <literal>false</literal> 时 DLM 服务中发生的策略更改 (Fate#315195)。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="sec.ha.config.basics.tags"/>介绍了一个新选项，可使用该选项对概念上相关的资源进行分组，而无需在这些资源之间创建任何共置或顺序关系 (Fate#318109)。 </para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="sec.ha.config.basics.constraints.rscset"/>解释了资源集的概念，资源集可以充当定义约束时使用的备用格式。 </para>
+      </listitem>
+      <listitem>
+       <para>重新组织了<xref linkend="sec.ha.config.basics.maint.mode"/>，以另行介绍用于将整个群集设置成维护模式的选项。</para>
+      </listitem>
+      <listitem>
+       <para>在<xref linkend="tab.ha.basics.meta"/>中添加了 <literal>pacemaker_remote</literal> 服务的属性，并添加了新的章节：<xref linkend="sec.ha.config.basics.remote"/>。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.config.hawk"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>更新了该章，以反映<xref linkend="cha.ha.config.basics"/>中所述的新功能。</para>
+      </listitem>
+      <listitem>
+       <para>与地域群集相关的所有 Hawk 功能的介绍已移至单独的文档。请参见 <ulink url="http://www.suse.com/documentation/"/> 上的新文档《<citetitle>Geo Clustering for SUSE Linux Enterprise High Availability Extension Quick Start</citetitle>》（Geo Clustering for SUSE Linux Enterprise High Availability Extension 快速入门）。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.manual_config"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>添加了<xref linkend="sec.ha.manual_config.constraints.weak-bond"/> (Fate#314917)。</para>
+      </listitem>
+       <listitem>
+        <para>添加了有关标记资源的章节 (Fate#318109)：<xref linkend="sec.ha.manual_config.tag"/>。</para>
+      </listitem>
+      <listitem>
+       <para>更新了该章，以反映<xref linkend="cha.ha.config.basics"/>中所述的新功能。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.fencing"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>从示例中去除了有关克隆 STONITH 资源的内容，因为不再需要用到这些信息。</para>
+      </listitem>
+      <listitem>
+       <para>去除了一些仅用于测试的 STONITH 设备。</para>
+      </listitem>
+      <listitem>
+       <para>去除了 <literal>external/kdumpcheck</literal> 资源代理，并添加了 <literal>fence_kdump</literal> 资源代理的示例配置。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.acl"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>添加了<xref linkend="sec.ha.acl.config.hawk"/>。</para>
+      </listitem>
+      <listitem>
+       <para>根据升级 CIB 验证版本后提供的新 ACL 功能更新了章节。有关细节，请参见<xref linkend="note.ha.cib.upgrade"/>。</para>
+       <para>如果您已从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升级并保留了以前的 CIB 版本，请参见《<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 高可用性指南》中的“<citetitle>访问控制列表</citetitle>”一章。网址：<ulink url="http://www.suse.com/documentation/"/>。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.storage.protect"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.watchdog"/>：添加了有关检查包以及访问检查包计时器的其他软件的说明 (<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=891340"/>)。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.watchdog"/>：添加了有关如何在引导时装载检查包驱动程序的信息 (<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=892344"/>)。</para>
+      </listitem>
+      <listitem>
+       <para><xref linkend="pro.ha.storage.protect.fencing"/>：添加了与 <literal>msgwait</literal> 超时相关的 <literal>stonith-timeout</literal> 长度建议 (<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=891346"/>)。 </para>
+      </listitem>
+      <listitem>
+       <para>调整了<xref linkend="pro.ha.storage.protect.sbd.daemon"/> (<ulink url="https://bugzilla.suse.com/show_bug.cgi?id=891499"/>)。</para>
+      </listitem>
+      <listitem>
+       <para>介绍如何通过使用 <literal>pcmk_delay_max</literal> 参数进行 STONITH 资源配置，来避免采用 <literal>no-quorum-policy=ignore</literal> 设置的群集发生双重屏蔽 (Fate#31713)。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="cha.ha.rear"/></term>
+    <listitem>
+     <para>本章内容进行了彻底修订，已更新为 Rear 版本 <literal>1.16</literal>。</para>
+     <para><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 附带了两个 Rear 版本：版本 <literal>1.10.0</literal>（包含在 RPM 包 <systemitem class="resource">rear</systemitem> 中）和版本 <literal>1.16</literal>（包含在 RPM 包 <systemitem class="resource">rear116</systemitem> 中）。有关 Rear 版本 <literal>1.10.0</literal> 的文档，请参见《<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 高可用性指南》。网址：<ulink url="http://www.suse.com/documentation/"/>。</para>
+    </listitem>
+   </varlistentry>
+   
+   
+   <varlistentry>
+    <term><xref linkend="app.ha.troubleshooting"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>介绍了在使用非标准 SSH 端口时如何创建群集报告 (Fate#314906)。请参见 <xref linkend="vle.ha.crm_report"/>。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><citetitle>HA OCF 代理</citetitle></term>
+    <listitem>
+     <para>已去除此章。可以根据<xref linkend="sec.ha.manual_config.ocf"/>中所述，在安装的系统中查看有关 OCF 资源代理的最新信息。</para></listitem>
+   </varlistentry>
+   
+   
+   <varlistentry>
+    <term><xref linkend="app.naming"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>解释文档中所用命名模式的新附录。</para>
+      </listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+   
+   <varlistentry>
+    <term><xref linkend="app.ha.migration"/></term>
+    <listitem>
+     <itemizedlist mark="bullet" spacing="normal">
+      <listitem>
+       <para>添加了术语定义：<xref linkend="sec.ha.migration.terminology"/>。</para>
+      </listitem>
+      <listitem>
+       <para>在<xref linkend="sec.ha.migration.upgrade"/>中添加了<xref linkend="sec.ha.migration.sle11.sp4"/>。 </para>
+      </listitem>
+      <listitem>
+       <para>添加了<xref linkend="sec.ha.update"/>。
+       </para></listitem>
+     </itemizedlist>
+    </listitem>
+   </varlistentry>
+
+   </variablelist>
+
+   
+   
+   
+   
+   
+   
+   
+
+ </sect1>
+</appendix>

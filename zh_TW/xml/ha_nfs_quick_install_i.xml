@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:novdoc-profile.xsl"
+  type="text/xml" 
+  title="Profiling step"?>
+<sect1 xml:base="ha_nfs_quick_install_i.xml" id="sec_ha_quick_nfs_prereq">
+ <title>Prerequisites and Installation</title>
+
+ <para>
+  Before you proceed with <xref linkend="sec_ha_quick_nfs_initial"/>, make
+  sure that the following prerequisites are fulfilled.
+ </para>
+
+ <sect2 id="sec_ha_quick_nfs_prereq_pkg">
+  <title>Software Requirements</title>
+  <itemizedlist os="sles" mark="bullet" spacing="normal">
+   <listitem>
+
+    <para>
+     SUSE® Linux Enterprise Server 11 is installed on all nodes that will be part of the cluster.
+     All available online updates for the product are installed.
+    </para>
+   </listitem>
+   <listitem>
+
+    <para>
+     SUSE Linux Enterprise High Availability Extension 11 is installed on all nodes that will be part of the
+     cluster. All available online updates for the product are installed.
+    </para>
+   </listitem>
+  </itemizedlist>
+  <para os="sles">
+   For instructions on how to install the High Availability Extension as add-on on top of SUSE Linux Enterprise Server,
+   refer to <xref linkend="sec.ha.installation.add-on"/>.
+  </para>
+  <para>
+   In order to create a highly available NFS service, you need to have the
+   following software packages installed:
+  </para>
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para os="sles">
+     <systemitem class="resource">pacemaker</systemitem>: A cluster resource
+     management framework which you will use to automatically start, stop,
+     monitor, and migrate resources.
+    </para>
+    
+   </listitem>
+   <listitem>
+    <para os="sles">
+     <systemitem class="resource">corosync</systemitem>: A
+     cluster messaging layer. Pacemaker is capable of using two cluster
+     messaging layers: <literal>Heartbeat</literal> or
+     <literal>Corosync</literal>. Corosync is the only supported
+     Pacemaker messaging layer in SUSE Linux Enterprise 11.
+    </para>
+    
+   </listitem>
+   <listitem>
+    <para os="sles">
+     <systemitem class="resource">drbd-utils</systemitem> and
+     <systemitem class="resource">drbd-kmp-</systemitem><replaceable>your_kernel</replaceable>:
+     Both belong to DRBD, the Kernel block-level synchronous replication
+     facility which serves as an imported shared-nothing cluster building
+     block.
+    </para>
+    
+   </listitem>
+   <listitem>
+    <para os="sles">
+     <systemitem class="resource">lvm2</systemitem>: Linux
+     Logical Volume Management, version 2, which you may use for easy and
+     flexible data management including online volume expansion and
+     point-in-time snapshots.
+    </para>
+    
+   </listitem>
+   <listitem>
+    <para os="sles">
+     <systemitem class="resource">nfs-kernel-server</systemitem>:
+     The in-kernel Linux NFS daemon. It serves locally mounted file systems
+     out to clients via the NFS network protocol.
+    </para>
+    
+   </listitem>
+  </itemizedlist>
+  <important os="sles">
+   <title>Product Registration And Updates</title>
+   <para>
+    Proper registration at Novell Customer Center is mandatory for the system to receive
+    updates. During the registration process, the respective online update
+    repositories are automatically configured.
+   </para>
+   <para>
+    The repositories for installation and update automatically provide the
+    package versions needed for the setup of highly available NFS storage as
+    described in this document.
+   </para>
+  </important>
+  <note>
+   <title>Package Dependencies</title>
+   <para os="sles">
+    You may be required to install packages other than the above-mentioned
+    ones due to package dependencies. However, when using a package
+    management utility such as <command>zypper</command> or YaST, these
+    dependencies are automatically taken care of.
+   </para>
+   
+  </note>
+ </sect2>
+
+ <sect2 id="sec_ha_quick_nfs_prereq_services">
+  <title>Services at Boot Time</title>
+  <para os="sles">
+   After you have installed the required packages, take care of a few
+   settings applying to your boot process.
+  </para>
+  
+  <para os="sles">
+   Use <literal>chkconfig</literal>, <literal>insserv</literal> or
+   <guimenu>YaST System Services (Runlevel)</guimenu> to make sure that:
+  </para>
+  
+  <itemizedlist mark="bullet" spacing="normal">
+   <listitem>
+    <para>
+     OpenAIS <emphasis>does</emphasis> start automatically on system boot.
+     This will also start Pacemaker.
+    </para>
+   </listitem>
+   <listitem>
+    <para>
+     The <literal>drbd</literal> init script <emphasis>does not</emphasis>
+     start automatically on system boot. Pacemaker takes care of all
+     DRBD-related functionality—the init script is not needed for this
+     purpose.
+    </para>
+   </listitem>
+  </itemizedlist>
+ </sect2>
+</sect1>

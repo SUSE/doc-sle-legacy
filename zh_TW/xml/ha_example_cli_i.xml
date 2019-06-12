@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="ha_example_cli_i.xml">
+ <title>手動設定資源</title>
+
+ <para>
+  資源是電腦提供之任何類型的服務。當由 LSB 程序檔或 OCF 程序檔等資源代辦控制資源時，High Availability 會識別這些資源。可以使用 <command>crm</command> 指令或以 <literal>resources</literal> 區段的 CIB (叢集資訊庫) 中的 XML 設定所有資源。 
+ </para>
+
+ <para>
+  若要新增 IP 位址 <systemitem class="ipaddress">10.10.0.1</systemitem> 做為目前組態的資源，請使用 <command>crm</command> 指令：
+ </para>
+
+
+
+ <procedure id="proc.ha.quickstart.man">
+  <title>建立 IP 位址叢集資源</title>
+  <step performance="required">
+   <para>
+    開啟外圍程序，切換為 <systemitem class="username">root</systemitem> 身分。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    輸入 <command>crm</command> <option>configure</option> 開啟內部外圍程序。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    建立 IP 位址資源：
+   </para>
+<screen>crm(live)configure# <command>resource</command><command>primitive</command> myIP ocf:heartbeat:IPaddr params ip=10.10.0.1</screen>
+  </step>
+ </procedure>
+
+ <note>
+  <para>
+   使用 High Availability 設定資源後，該資源不應透過 <command>init</command> 啟始化。High Availability 負責所有服務的啟動或停止動作。
+  </para>
+ </note>
+
+ <para>
+  若組態設定成功，<command>crm_mon</command> 中會顯示一個新的資源，該資源將在叢集的一個隨機節點上啟動。
+ </para>
+
+ <para>
+  若要將資源移轉至其他節點，請執行以下步驟：
+ </para>
+
+ <procedure>
+  <title>將資源移轉至其他節點</title>
+  <step performance="required">
+   <para>
+    啟動外圍程序，並切換為 <systemitem class="username">root</systemitem> 使用者。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    將資源 <literal>myip</literal> 移轉至節點 <systemitem>saturn</systemitem>：
+   </para>
+<screen><command>crm</command> resource <command>migrate</command> myIP saturn</screen>
+  </step>
+ </procedure>
+</sect1>

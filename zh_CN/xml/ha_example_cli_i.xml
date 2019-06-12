@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="ha_example_cli_i.xml">
+ <title>手动配置资源</title>
+
+ <para>
+  计算机提供的任何类型的服务都称为资源。当它们可能由 RA（资源代理）（为 LSB 脚本或 OCF 脚本）控制时，High Availability 即会知晓这些资源。所有资源都可以使用 <command>crm</command> 命令进行配置，或在 CIB（群集信息库）的 <literal>resources</literal> 部分配置为 XML。 
+ </para>
+
+ <para>
+  要将 IP 地址 <systemitem class="ipaddress">10.10.0.1</systemitem> 作为资源添加到当前配置中，请使用 <command>crm</command> 命令：
+ </para>
+
+
+
+ <procedure id="proc.ha.quickstart.man">
+  <title>创建 IP 地址群集资源</title>
+  <step performance="required">
+   <para>
+    打开外壳并转换为<systemitem class="username"> root </systemitem>用户。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    输入 <command>crm</command> <option>configure</option> 打开内壳。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    创建 IP 地址资源：
+   </para>
+<screen>crm(live)configure# <command>resource</command><command>primitive</command> myIP ocf:heartbeat:IPaddr params ip=10.10.0.1</screen>
+  </step>
+ </procedure>
+
+ <note>
+  <para>
+   使用 High Availability 配置资源时，不应通过 <command>init</command> 初始化相同的资源。高可用性负责所有服务的启动或停止操作。
+  </para>
+ </note>
+
+ <para>
+  如果配置成功，新资源将显示在 <command>crm_mon</command> 中，它在群集的随机节点上启动。
+ </para>
+
+ <para>
+  要将资源迁移到其他节点，请执行以下操作：
+ </para>
+
+ <procedure>
+  <title>将资源迁移到其他节点</title>
+  <step performance="required">
+   <para>
+    启动壳层并成为 <systemitem class="username">root</systemitem> 用户。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    将资源 <literal>myip</literal> 迁移到节点 <systemitem>saturn</systemitem>：
+   </para>
+<screen><command>crm</command> resource <command>migrate</command> myIP saturn</screen>
+  </step>
+ </procedure>
+</sect1>

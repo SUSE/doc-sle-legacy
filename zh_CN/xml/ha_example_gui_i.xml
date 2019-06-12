@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<!--
+*********************************
+Please see LICENSE.txt for this document's license.
+*********************************
+-->
+<sect1 xml:base="ha_example_gui_i.xml" id="sec.ha.quickstart.gui">
+ <title>使用 GUI 配置资源</title>
+
+ <para>
+  创建样本群集资源并将它迁移到其他服务器可帮助您进行测试，以确保群集运行正确。要配置和迁移的简单资源就是 IP 地址。
+ </para>
+
+ <procedure id="proc.ha.quickstart.gui">
+  <title>创建 IP 地址群集资源</title>
+  <step performance="required">
+   <para>
+    按<xref linkend="sec.ha.configuration.gui.intro.connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    在左窗格中，切换到 <guimenu>Resources</guimenu>（资源）视图；在右窗格中，选择要修改的组并单击 <guimenu>Edit</guimenu>（编辑）。下一个窗口将显示为该资源定义的基本组参数以及元属性和原始资源。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    单击 <guimenu>Primitives</guimenu>（原始）选项卡并单击 <guimenu>Add</guimenu>（添加）。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    在下一个对话框中，若要将 IP 地址添加为组的子资源，请设置以下参数：
+   </para>
+   <substeps performance="required">
+    <step performance="required">
+     <para>
+      输入唯一的 <literal>ID</literal>，例如 <literal>myIP</literal>
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      从 <guimenu>Class</guimenu>（类）列表中，选择 <guimenu>ocf</guimenu> 作为资源代理类。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在 OCF 资源代理的 <guimenu>Provider</guimenu>（提供程序）中，选择 <guimenu>heartbeat</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      从 <guimenu>Type</guimenu>（类型）列表中，选择 <guimenu>IPaddr</guimenu> 作为资源代理。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      单击 <guimenu>Forward</guimenu>（前进）。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      在<guimenu>实例属性</guimenu>选项卡中，选择 <guimenu>IP</guimenu> 项并单击<guimenu>编辑</guimenu>（或双击 <guimenu>IP</guimenu> 项）。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      输入所需的 IP 地址作为<guimenu>值</guimenu>（例如，<literal>10.10.0.1</literal>）并单击<guimenu>确定</guimenu>。
+     </para>
+    </step>
+    <step performance="required">
+     <para>
+      <guimenu>添加</guimenu>新的实例属性，并将<guimenu>名称</guimenu>指定为 <literal>nic</literal>，将<guimenu>值</guimenu>指定为 <literal>eth0</literal>，然后单击<guimenu>确定</guimenu>。
+     </para>
+     <para>
+      名称和值取决于您的硬件配置和安装 High Availability Extension 软件期间选择的媒体配置。
+     </para>
+    </step>
+   </substeps>
+  </step>
+  <step performance="required">
+   <para>
+    根据意愿设置所有参数后，请单击<guimenu>确定</guimenu>完成此资源的配置。配置对话框关闭，主窗口显示已修改的资源。
+   </para>
+  </step>
+ </procedure>
+
+ <para>
+  要使用 Pacemaker GUI 启动资源，请在左侧窗格中选择<guimenu>管理</guimenu>。在右侧窗格中，右键单击资源并选择<guimenu>启动</guimenu>（或从工具栏启动资源）。
+ </para>
+
+ <para>
+  要将 IP 地址资源迁移到其他节点 (<literal>saturn)</literal>，请按如下操作：
+ </para>
+
+ <procedure>
+  <title>将资源迁移到其他节点</title>
+  <step performance="required">
+   <para>
+    切换到左侧窗格中的<guimenu>管理</guimenu>视图，然后右键单击右侧窗格中的 IP 地址资源，并选择<guimenu>迁移资源</guimenu>。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    在新窗口中，从<guimenu>目标节点</guimenu>下拉列表中选择 <literal>saturn</literal> 以将选定的资源移到节点 <literal>saturn</literal> 上。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    如果只想临时迁移资源，请激活<guimenu>持续时间</guimenu>并输入时间范围，在该时间段内资源应迁移到新的节点。
+   </para>
+  </step>
+  <step performance="required">
+   <para>
+    单击<guimenu>确定</guimenu>确认迁移。
+   </para>
+  </step>
+ </procedure>
+</sect1>
