@@ -5,14 +5,14 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_drbd.xml" id="cha.ha.drbd">
+<chapter xml:base="ha_drbd.xml" id="cha-ha-drbd">
  <title>DRBD</title>
  <abstract>
   <para>
    <emphasis>分散複製ブロックデバイス</emphasis>(DRBD*)を使用すると、IPネットワーク内の2つの異なるサイトに位置する2つのブロックデバイスのミラーを作成できます。OpenAISと共に使用すると、DRBDは分散高可用性Linuxクラスタをサポートします。この章では、DRBDのインストールとセットアップの方法を示します。
   </para>
  </abstract>
- <sect1 id="sec.ha.drbd.overview">
+ <sect1 id="sec-ha-drbd-overview">
   <title>概念の概要</title>
 
   <para>
@@ -28,10 +28,10 @@ Please see LICENSE.txt for this document's license.
   </important>
 
   <para>
-   DRBDは、Linuxカーネルモジュールであり、下端のI/Oスケジューラと上端のファイルシステムの間に存在しています(<xref linkend="fig.ha.drbd.concept"/>参照)。DRBDと通信するには、高レベルのコマンド<command>drbdadm</command>を使用します。柔軟性を最大にするため、DRBDには、低レベルのツール<command>drbdsetup</command>が付いてきます。
+   DRBDは、Linuxカーネルモジュールであり、下端のI/Oスケジューラと上端のファイルシステムの間に存在しています(<xref linkend="fig-ha-drbd-concept"/>参照)。DRBDと通信するには、高レベルのコマンド<command>drbdadm</command>を使用します。柔軟性を最大にするため、DRBDには、低レベルのツール<command>drbdsetup</command>が付いてきます。
   </para>
 
-  <figure id="fig.ha.drbd.concept">
+  <figure id="fig-ha-drbd-concept">
    <title>Linux内でのDRBDの位置</title>
    <mediaobject>
     <imageobject role="fo">
@@ -86,18 +86,18 @@ Please see LICENSE.txt for this document's license.
    たとえば、rawデバイスのサイズが1024MBの場合、DRBDデバイスは、1023MBしかデータ用に使用できません。70KBは隠され、メタデータ用に予約されています。<filename>/dev/drbd<replaceable>N</replaceable></filename>を介した既存のキロバイトへのアクセスは、それがユーザデータ用でないので、すべて失敗します。
   </para>
  </sect1>
- <sect1 id="sec.ha.drbd.install">
+ <sect1 id="sec-ha-drbd-install">
   <title>DRBDサービスのインストール</title>
 
   <para>
-   DRBDに必要なパッケージをインストールするには、<xref linkend="part.install"/>で説明されているように、High Availability Extensionアドオン製品をネットワーククラスタの両方のSUSE Linux Enterprise Serverコンピュータにインストールします。High Availability Extensionをインストールすると、DRBDプログラムファイルもインストールされます。
+   DRBDに必要なパッケージをインストールするには、<xref linkend="part-install"/>で説明されているように、High Availability Extensionアドオン製品をネットワーククラスタの両方のSUSE Linux Enterprise Serverコンピュータにインストールします。High Availability Extensionをインストールすると、DRBDプログラムファイルもインストールされます。
   </para>
 
   <para>
-   クラスタのスタックを完了する必要がなく、DRBDを使用したいだけの場合、<xref linkend="tab.ha.drbd.rpmfiles"/>を参照してください。DRBDのすべてのRPMパッケージのリストが含まれています。<systemitem>drbd</systemitem>パッケージは最近、別々のパッケージに分けられました。
+   クラスタのスタックを完了する必要がなく、DRBDを使用したいだけの場合、<xref linkend="tab-ha-drbd-rpmfiles"/>を参照してください。DRBDのすべてのRPMパッケージのリストが含まれています。<systemitem>drbd</systemitem>パッケージは最近、別々のパッケージに分けられました。
   </para>
 
-  <table id="tab.ha.drbd.rpmfiles">
+  <table id="tab-ha-drbd-rpmfiles">
    <title>DRBD RPMパッケージ</title>
    <tgroup cols="2">
     <thead>
@@ -249,7 +249,7 @@ Please see LICENSE.txt for this document's license.
    <systemitem class="username">root</systemitem>用に永続的に使用するには、ファイル<filename>/root/.bashrc</filename>を拡張し、前の行を挿入します。
   </para>
  </sect1>
- <sect1 id="sec.ha.drbd.configure">
+ <sect1 id="sec-ha-drbd-configure">
   <title>DRBDサービスの設定</title>
 
   <note><title>必要な調整</title>
@@ -268,7 +268,7 @@ Please see LICENSE.txt for this document's license.
    DRBDを手動で設定するには、次の手順に従います。
   </para>
 
-  <procedure id="step.drbd.configure">
+  <procedure id="step-drbd-configure">
    <title>DRBDの手動設定</title>
    <step performance="required">
      <para>クラスタがすでにDRBDを使用している場合は、クラスタを保守モードにします。</para>
@@ -314,27 +314,27 @@ include "drbd.d/*.res";</screen>
       <para>
        ファイル<filename>/etc/drbd.d/r0.res</filename>を作成し、状況に合わせて行を変更し、ファイルを保存します。
       </para>
-<screen>resource r0 { <co id="co.drbd.config.r0"/>
-  device /dev/drbd0; <co id="co.drbd.config.device"/>
-  disk /dev/sda1; <co id="co.drbd.config.disk"/>
-  meta-disk internal; <co id="co.drbd.config.meta-disk"/>
-  on alice { <co id="co.drbd.config.resname"/>
-    address  192.168.1.10:7788; <co id="co.drbd.config.address"/>
+<screen>resource r0 { <co id="co-drbd-config-r0"/>
+  device /dev/drbd0; <co id="co-drbd-config-device"/>
+  disk /dev/sda1; <co id="co-drbd-config-disk"/>
+  meta-disk internal; <co id="co-drbd-config-meta-disk"/>
+  on alice { <co id="co-drbd-config-resname"/>
+    address  192.168.1.10:7788; <co id="co-drbd-config-address"/>
   }
-  on bob { <xref linkend="co.drbd.config.resname" xrefstyle="selec:nopage"/>
-    address 192.168.1.11:7788; <xref linkend="co.drbd.config.address" xrefstyle="selec:nopage"/>
+  on bob { <xref linkend="co-drbd-config-resname" xrefstyle="selec:nopage"/>
+    address 192.168.1.11:7788; <xref linkend="co-drbd-config-address" xrefstyle="selec:nopage"/>
   }
   syncer {
-    rate  7M; <co id="co.drbd.config.syncer-rate"/>
+    rate  7M; <co id="co-drbd-config-syncer-rate"/>
   }
 }</screen>
       <calloutlist>
-       <callout arearefs="co.drbd.config.r0">
+       <callout arearefs="co-drbd-config-r0">
         <para>
          必要なサービスへのいくつかの関連付けを許可する名前。たとえば、<systemitem>nfs</systemitem>、<systemitem>http</systemitem>、<systemitem>mysql_0</systemitem>、<systemitem>postgres_wal</systemitem>など。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.device">
+       <callout arearefs="co-drbd-config-device">
 
         <para>
          DRBD用デバイス名とそのマイナー番号。
@@ -346,27 +346,27 @@ include "drbd.d/*.res";</screen>
          <literal>drbd0 minor 0</literal> (<literal>/dev/</literal>は必要に応じて指定します)または<literal>/dev/drbd0</literal>
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.disk">
+       <callout arearefs="co-drbd-config-disk">
         <para>
          ノード間で複製されるrawデバイス。ただし、この例では、デバイスは両方のノードで同じです。異なるデバイスが必要な場合は、<literal>disk</literal>パラメータを<literal>on</literal>ホストに移動します。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.meta-disk">
+       <callout arearefs="co-drbd-config-meta-disk">
         <para>
          meta-diskパラメータには、通常、値<literal>internal</literal>が含まれますが、メタデータを保持する明示的なデバイスを指定することもできです。詳細については、<ulink url="http://www.drbd.org/users-guide-emb/ch-internals.html#s-metadata"/>を参照してください。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.resname">
+       <callout arearefs="co-drbd-config-resname">
         <para>
          <literal>on</literal>セクションでは、この設定文が適用されるホストを記述します。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.address">
+       <callout arearefs="co-drbd-config-address">
         <para>
          それぞれのノードのIPアドレスとポート番号。リソースごとに、通常、<literal>7788</literal>から始まる別個のポートが必要です。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.syncer-rate">
+       <callout arearefs="co-drbd-config-syncer-rate">
         <para>
          同期レート。このレートは、ディスク帯域幅およびネットワーク帯域幅の3分の1に設定します。これは、再同期を制限するだけで、レプリケーションは制限しません。
         </para>
@@ -459,7 +459,7 @@ m:res  cs         ro                 ds                 p  mounted  fstype
    または、YaSTを使用してDRBDを設定するには、次の手順を実行します。
   </para>
 
-  <procedure id="pro.drbd.configure.yast">
+  <procedure id="pro-drbd-configure-yast">
    <title>YaSTを使用してDRBDを設定</title>
    <step performance="required">
     <para>
@@ -469,10 +469,10 @@ m:res  cs         ro                 ds                 p  mounted  fstype
    </step>
    <step performance="required">
     <para>
-     リソースの実際の設定は、<guimenu>ソース設定</guimenu>で実行されます(<xref linkend="fig.ha.drbd.yast.resconfig"/>を参照)。
+     リソースの実際の設定は、<guimenu>ソース設定</guimenu>で実行されます(<xref linkend="fig-ha-drbd-yast-resconfig"/>を参照)。
     </para>
     
-    <figure id="fig.ha.drbd.yast.resconfig">
+    <figure id="fig-ha-drbd-yast-resconfig">
      <title>リソース設定</title>
      <mediaobject>
       <imageobject role="fo">
@@ -613,14 +613,14 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.drbd.test">
+ <sect1 id="sec-ha-drbd-test">
   <title>DRBDサービスのテスト</title>
 
   <para>
    インストールと設定のプロシージャが予期どおりの結果となった場合は、DRBD機能の基本的なテストを実行できます。このテストは、DRDBソフトウェアの機能を理解する上でも役立ちます。
   </para>
 
-  <procedure id="pro.drbd.test">
+  <procedure id="pro-drbd-test">
    <step performance="required">
     <para>
      alice上でDRBDサービスをテストします。
@@ -746,12 +746,12 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </step>
    <step performance="required">
     <para>
-     サービスを自動的に起動させ、サーバに問題が発生した場合はフェールオーバーさせるためには、OpenAISでDRBDを高可用性サービスとして設定できます。OpenAIS for SUSE Linux Enterprise 11のインストールと設定については、<xref linkend="part.config"/>を参照してください。
+     サービスを自動的に起動させ、サーバに問題が発生した場合はフェールオーバーさせるためには、OpenAISでDRBDを高可用性サービスとして設定できます。OpenAIS for SUSE Linux Enterprise 11のインストールと設定については、<xref linkend="part-config"/>を参照してください。
     </para>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.drbd.tuning">
+ <sect1 id="sec-ha-drbd-tuning">
   <title>DRBDのチューニング</title>
 
   <para>
@@ -793,14 +793,14 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
     </listitem>
   </orderedlist>
  </sect1>
- <sect1 id="sec.ha.drbd.trouble">
+ <sect1 id="sec-ha-drbd-trouble">
   <title>DRBDのトラブルシュート</title>
 
   <para>
    DRBDセットアップには、多数の異なるコンポーネントが使用され、別のソースから問題が発生することがあります。以降のセクションでは、一般的なシナリオをいくつか示し、さまざまなソリューションを推奨します。
   </para>
 
-  <sect2 id="sec.ha.drbd.trouble.config">
+  <sect2 id="sec-ha-drbd-trouble-config">
    <title>環境設定</title>
    <para>
     初期のDRBDセットアップが予期どおりに機能しない場合は、おそらく、環境設定に問題があります。
@@ -840,7 +840,7 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </procedure>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.hostnames">
+  <sect2 id="sec-ha-drbd-hostnames">
    <title>ホスト名</title>
    <para>
     DRBDの場合、ホスト名の大文字と小文字が区別され(<systemitem>Node0</systemitem>は<systemitem>node0</systemitem>とは異なるホストであるとみなされる)、カーネルに格納されているホスト名と比較されます(<command>uname -n</command>出力を参照)。
@@ -850,14 +850,14 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.port">
+  <sect2 id="sec-ha-drbd-port">
    <title>TCPポート7788</title>
    <para>
     システムがピアに接続できない場合は、ローカルファイアウォールに問題のある可能性があります。DRBDは、デフォルトでは、TCPポート<literal>7788</literal>を使用して、もう一方のノード にアクセスします。このポートを両方のノード からアクセスできるかどうか確認してください。
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.trouble.broken">
+  <sect2 id="sec-ha-drbd-trouble-broken">
    <title>DRBDデバイスが再起動後に破損した</title>
    <para>
     DRBDサブシステムが実際のどのデバイスが最新データを保持しているか認識していない場合、スプリットブレイン受験に変更されます。この場合、それぞれのDRBDサブシステムがセカンダリとして機動され、互いに接続しません。この場合、ログ記録データに、次のメッセージが出力されることがあります。
@@ -875,7 +875,7 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
     <para>このコマンドは、あるノードのデータをピアのデータで上書きすることによって問題を解決するため、両方のノードで一貫したビューが得られます。</para>
   </sect2>
  </sect1>
- <sect1 id="sec.ha.drbd.more">
+ <sect1 id="sec-ha-drbd-more">
   <title>詳細情報</title>
 
   <para>
@@ -890,7 +890,7 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </listitem>
    <listitem>
     <para>
-     詳細については、<xref linkend="art_ha_quick_nfs"/>を参照してください。
+     詳細については、<xref linkend="art-ha-quick-nfs"/>を参照してください。
     </para>
    </listitem>
    <listitem>

@@ -5,14 +5,14 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_drbd.xml" id="cha.ha.drbd">
+<chapter xml:base="ha_drbd.xml" id="cha-ha-drbd">
  <title>DRBD</title>
  <abstract>
   <para>
    通过<emphasis>分布式复制块设备</emphasis> (DRBD*)，您可以为位于 IP 网络上两个不同站点的两个块设备创建镜像。当和 OpenAIS 一起使用时，DRBD 支持分布式高可用性 Linux 群集。本章说明如何安装和设置 DRBD。
   </para>
  </abstract>
- <sect1 id="sec.ha.drbd.overview">
+ <sect1 id="sec-ha-drbd-overview">
   <title>概念概述</title>
 
   <para>
@@ -28,10 +28,10 @@ Please see LICENSE.txt for this document's license.
   </important>
 
   <para>
-   DRBD 是 Linux 内核模块，位于下端的 I/O 调度程序与上端的文件系统之间，请参见<xref linkend="fig.ha.drbd.concept"/>。要与 DRBD 通讯，用户需使用高级别命令 <command>drbdadm</command>。为了提供最大的灵活性，DRBD 附带了低级别工具 <command>drbdsetup</command>。
+   DRBD 是 Linux 内核模块，位于下端的 I/O 调度程序与上端的文件系统之间，请参见<xref linkend="fig-ha-drbd-concept"/>。要与 DRBD 通讯，用户需使用高级别命令 <command>drbdadm</command>。为了提供最大的灵活性，DRBD 附带了低级别工具 <command>drbdsetup</command>。
   </para>
 
-  <figure id="fig.ha.drbd.concept">
+  <figure id="fig-ha-drbd-concept">
    <title>DRBD 在 Linux 中的位置</title>
    <mediaobject>
     <imageobject role="fo">
@@ -86,18 +86,18 @@ Please see LICENSE.txt for this document's license.
    例如，如果原始设备大小为 1024 MB，则 DRBD 设备仅有 1023 MB 可用于数据存储，而大约保留 70 KB 的隐藏容量用于存储元数据。通过 <filename>/dev/drbd<replaceable>N</replaceable></filename> 访问剩余 KB 的任何尝试都会失败，因为这些 KB 不可用于存储用户数据。
   </para>
  </sect1>
- <sect1 id="sec.ha.drbd.install">
+ <sect1 id="sec-ha-drbd-install">
   <title>安装 DRBD 服务</title>
 
   <para>
-   要安装 DRBD 所需的包，请按<xref linkend="part.install"/>中所述在联网群集中的两台 SUSE Linux Enterprise Server 计算机上安装 High Availability Extension 附加产品。安装 High Availability Extension 时还安装 DRBD 程序文件。
+   要安装 DRBD 所需的包，请按<xref linkend="part-install"/>中所述在联网群集中的两台 SUSE Linux Enterprise Server 计算机上安装 High Availability Extension 附加产品。安装 High Availability Extension 时还安装 DRBD 程序文件。
   </para>
 
   <para>
-   如果不需要完整群集堆栈而只需使用 DRBD，请参考<xref linkend="tab.ha.drbd.rpmfiles"/>。它包含用于 DRBD 的所有 RPM 程序包的列表。近来，<systemitem>drbd</systemitem> 包已分为单独的包。
+   如果不需要完整群集堆栈而只需使用 DRBD，请参考<xref linkend="tab-ha-drbd-rpmfiles"/>。它包含用于 DRBD 的所有 RPM 程序包的列表。近来，<systemitem>drbd</systemitem> 包已分为单独的包。
   </para>
 
-  <table id="tab.ha.drbd.rpmfiles">
+  <table id="tab-ha-drbd-rpmfiles">
    <title>DRBD RPM 包</title>
    <tgroup cols="2">
     <thead>
@@ -249,7 +249,7 @@ Please see LICENSE.txt for this document's license.
    要将其永久用于 <systemitem class="username">root</systemitem>，请创建或扩展文件 <filename>/root/.bashrc</filename> 并插入上一行。
   </para>
  </sect1>
- <sect1 id="sec.ha.drbd.configure">
+ <sect1 id="sec-ha-drbd-configure">
   <title>配置 DRBD 服务</title>
 
   <note><title>所需的调整</title>
@@ -268,7 +268,7 @@ Please see LICENSE.txt for this document's license.
    要手动设置 DRBD，请按如下操作：
   </para>
 
-  <procedure id="step.drbd.configure">
+  <procedure id="step-drbd-configure">
    <title>手动配置 DRBD</title>
    <step performance="required">
      <para>如果群集已在使用 DRBD，请将群集置于维护模式：</para>
@@ -314,27 +314,27 @@ include "drbd.d/*.res";</screen>
       <para>
        创建文件 <filename>/etc/drbd.d/r0.res</filename>，根据具体情况更改行，然后保存：
       </para>
-<screen>resource r0 { <co id="co.drbd.config.r0"/>
-  device /dev/drbd0; <co id="co.drbd.config.device"/>
-  disk /dev/sda1; <co id="co.drbd.config.disk"/>
-  meta-disk internal; <co id="co.drbd.config.meta-disk"/>
-  on alice { <co id="co.drbd.config.resname"/>
-    address  192.168.1.10:7788; <co id="co.drbd.config.address"/>
+<screen>resource r0 { <co id="co-drbd-config-r0"/>
+  device /dev/drbd0; <co id="co-drbd-config-device"/>
+  disk /dev/sda1; <co id="co-drbd-config-disk"/>
+  meta-disk internal; <co id="co-drbd-config-meta-disk"/>
+  on alice { <co id="co-drbd-config-resname"/>
+    address  192.168.1.10:7788; <co id="co-drbd-config-address"/>
   }
-  on bob { <xref linkend="co.drbd.config.resname" xrefstyle="selec:nopage"/>
-    address 192.168.1.11:7788; <xref linkend="co.drbd.config.address" xrefstyle="selec:nopage"/>
+  on bob { <xref linkend="co-drbd-config-resname" xrefstyle="selec:nopage"/>
+    address 192.168.1.11:7788; <xref linkend="co-drbd-config-address" xrefstyle="selec:nopage"/>
   }
   syncer {
-    rate  7M; <co id="co.drbd.config.syncer-rate"/>
+    rate  7M; <co id="co-drbd-config-syncer-rate"/>
   }
 }</screen>
       <calloutlist>
-       <callout arearefs="co.drbd.config.r0">
+       <callout arearefs="co-drbd-config-r0">
         <para>
          方便与需要这些资源的服务建立某种关联的名称。例如 <systemitem>nfs</systemitem>、<systemitem>http</systemitem>、<systemitem>mysql_0</systemitem>、<systemitem>postgres_wal</systemitem> 等。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.device">
+       <callout arearefs="co-drbd-config-device">
 
         <para>
          DRBD 的设备名及其次要编号。
@@ -346,27 +346,27 @@ include "drbd.d/*.res";</screen>
          <literal>drbd0 minor 0</literal>（<literal>/dev/</literal> 是可选的）或 <literal>/dev/drbd0</literal>
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.disk">
+       <callout arearefs="co-drbd-config-disk">
         <para>
          在节点间复制的原始设备。请注意，在本例中，两个节点上的设备相同。如果需要不同的设备，请将 <literal>disk</literal> 参数移到 <literal>on</literal> 主机中。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.meta-disk">
+       <callout arearefs="co-drbd-config-meta-disk">
         <para>
          元磁盘参数通常包含值 <literal>internal</literal>，但可以明确指定一个设备来保存元数据。有关详细信息，请参见<ulink url="http://www.drbd.org/users-guide-emb/ch-internals.html#s-metadata"/>。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.resname">
+       <callout arearefs="co-drbd-config-resname">
         <para>
          <literal>on</literal> 部分指定了此配置语句要应用到的主机。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.address">
+       <callout arearefs="co-drbd-config-address">
         <para>
          各个节点的 IP 地址和端口号。每个资源都需要单独的端口，通常从 <literal>7788</literal> 开始。
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.syncer-rate">
+       <callout arearefs="co-drbd-config-syncer-rate">
         <para>
          同步率。将其设置为磁盘和网络带宽中较小者的三分之一。它仅限制重新同步，而不限制复制。
         </para>
@@ -459,7 +459,7 @@ m:res  cs         ro                 ds                 p  mounted  fstype
    或者，要使用 YaST 配置 DRBD，请按照以下操作继续：
   </para>
 
-  <procedure id="pro.drbd.configure.yast">
+  <procedure id="pro-drbd-configure-yast">
    <title>使用 YaST 配置 DRBD</title>
    <step performance="required">
     <para>
@@ -469,10 +469,10 @@ m:res  cs         ro                 ds                 p  mounted  fstype
    </step>
    <step performance="required">
     <para>
-     资源的实际配置可在<guimenu>资源配置</guimenu>中完成（请参见<xref linkend="fig.ha.drbd.yast.resconfig"/>）。
+     资源的实际配置可在<guimenu>资源配置</guimenu>中完成（请参见<xref linkend="fig-ha-drbd-yast-resconfig"/>）。
     </para>
     
-    <figure id="fig.ha.drbd.yast.resconfig">
+    <figure id="fig-ha-drbd-yast-resconfig">
      <title>资源配置</title>
      <mediaobject>
       <imageobject role="fo">
@@ -613,14 +613,14 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.drbd.test">
+ <sect1 id="sec-ha-drbd-test">
   <title>测试 DRBD 服务</title>
 
   <para>
    如果安装和配置过程和预期一样，则您就准备好运行 DRBD 功能的基本测试了。此测试还有助于了解该软件的工作原理。
   </para>
 
-  <procedure id="pro.drbd.test">
+  <procedure id="pro-drbd-test">
    <step performance="required">
     <para>
      在 alice 上测试 DRBD 服务。
@@ -746,12 +746,12 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </step>
    <step performance="required">
     <para>
-     要使服务在服务器有问题时自动启动并实现故障转移，可以使用 OpenAIS 将 DRBD 设置为高可用性服务。有关为 SUSE Linux Enterprise 11 安装和配置 OpenAIS 的信息，请参见<xref linkend="part.config"/>
+     要使服务在服务器有问题时自动启动并实现故障转移，可以使用 OpenAIS 将 DRBD 设置为高可用性服务。有关为 SUSE Linux Enterprise 11 安装和配置 OpenAIS 的信息，请参见<xref linkend="part-config"/>
     </para>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.drbd.tuning">
+ <sect1 id="sec-ha-drbd-tuning">
   <title>调整 DRBD</title>
 
   <para>
@@ -793,14 +793,14 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
     </listitem>
   </orderedlist>
  </sect1>
- <sect1 id="sec.ha.drbd.trouble">
+ <sect1 id="sec-ha-drbd-trouble">
   <title>DRBD 查错</title>
 
   <para>
    DRBD 设置涉及很多不同的组件，因此产生问题的来源可能多种多样。以下各部分包括多个常用方案和多种建议解决方案。
   </para>
 
-  <sect2 id="sec.ha.drbd.trouble.config">
+  <sect2 id="sec-ha-drbd-trouble-config">
    <title>配置</title>
    <para>
     如果初始 DRBD 设置不符合预期，说明配置中可能有错误。
@@ -840,7 +840,7 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </procedure>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.hostnames">
+  <sect2 id="sec-ha-drbd-hostnames">
    <title>主机名</title>
    <para>
     对于 DRBD，主机名区分大小写（<systemitem>Node0</systemitem> 和 <systemitem>node0</systemitem> 是不同的主机），并将与内核中储存的主机名进行比较（参见 <command>uname -n</command> 输出）。
@@ -850,14 +850,14 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.port">
+  <sect2 id="sec-ha-drbd-port">
    <title>TCP 端口 7788</title>
    <para>
     如果系统无法连接到对等体，说明本地防火墙可能有问题。默认情况下，DRBD 使用 TCP 端口 <literal>7788</literal> 访问另一个节点。确保在两个节点上该端口均可访问。
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.trouble.broken">
+  <sect2 id="sec-ha-drbd-trouble-broken">
    <title>DRBD 设备在重引导后损坏</title>
    <para>
     如果 DRBD 不知道哪个实际设备保管了最新数据，它就会变为节点分裂状态。在这种情况下，DRBD 子系统将分别成为次系统，并且互不相连。在这种情况下，可以在日志记录数据中找到以下讯息：
@@ -875,7 +875,7 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
     <para>通过使用对等体的数据重写一个节点的数据，以此确保两个节点上的视图保持一致，该问题可得到解决。</para>
   </sect2>
  </sect1>
- <sect1 id="sec.ha.drbd.more">
+ <sect1 id="sec-ha-drbd-more">
   <title>更多信息</title>
 
   <para>
@@ -890,7 +890,7 @@ scp /etc/drbd.d/*  bob:/etc/drbd.d/</screen>
    </listitem>
    <listitem>
     <para>
-     请参见 <xref linkend="art_ha_quick_nfs"/>。
+     请参见 <xref linkend="art-ha-quick-nfs"/>。
     </para>
    </listitem>
    <listitem>

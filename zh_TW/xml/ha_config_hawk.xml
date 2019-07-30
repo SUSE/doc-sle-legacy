@@ -5,7 +5,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_config_hawk.xml" id="cha.ha.config.hawk">
+<chapter xml:base="ha_config_hawk.xml" id="cha-ha-config-hawk">
  <title>設定和管理叢集資源 (Web 介面)</title>
  <abstract>
   <para>
@@ -16,14 +16,14 @@ Please see LICENSE.txt for this document's license.
    本章對 Hawk 做了介紹，說明設定和管理叢集資源的基本任務：修改全域叢集選項，建立基本與進階類型的資源 (群組和複製品)，設定條件約束，指定容錯移轉節點與錯誤回復節點，設定資源監控，啟動、清理或移除資源，以及手動移轉資源。Hawk 會產生叢集報告 (<literal>hb_report</literal>)，以提供對叢集狀態的詳細分析。您可以檢視叢集歷程，或使用模擬器瞭解可能會發生的失敗情況。
   </para>
  </abstract>
- <sect1 id="sec.ha.config.hawk.intro">
+ <sect1 id="sec-ha-config-hawk-intro">
   <title>Hawk — 綜覽</title>
 
   <para>
    使用 Hawk 的 Web 介面，在非 Linux 機器上也可以監控和管理 Linux 叢集。此外，如果您的系統只提供了精簡的圖形使用者介面，那麼 Hawk 將是一個理想的解決方案。
   </para>
 
-  <sect2 id="sec.ha.config.hawk.intro.connect">
+  <sect2 id="sec-ha-config-hawk-intro-connect">
    <title>啟動 Hawk 及登入</title>
    <para>
     該 Web 介面包含在 <systemitem class="resource">hawk</systemitem> 套件中。您要使用 Hawk 與之連接的所有叢集節點上都必須安裝該套件，而在要透過 Hawk 存取某個叢集節點的機器上，只需有一個啟用了 JavaScript 和 Cookie 的 (圖形) 網頁瀏覽器即可建立連接。
@@ -32,9 +32,9 @@ Please see LICENSE.txt for this document's license.
     若要使用 Hawk，您要透過 Web 介面與之連接的節點上必須啟動相應的 Web 服務。
    </para>
    <para>
-    如果您已使用 <systemitem class="resource">sleha-bootstrap</systemitem> 套件中的程序檔設定了叢集，則 Hawk 服務現已啟動。此時，請跳過<xref linkend="pro.ha.hawk.service"/>並繼續執行<xref linkend="pro.ha.hawk.login"/>。
+    如果您已使用 <systemitem class="resource">sleha-bootstrap</systemitem> 套件中的程序檔設定了叢集，則 Hawk 服務現已啟動。此時，請跳過<xref linkend="pro-ha-hawk-service"/>並繼續執行<xref linkend="pro-ha-hawk-login"/>。
    </para>
-   <procedure id="pro.ha.hawk.service">
+   <procedure id="pro-ha-hawk-service">
     <title>啟動 Hawk 服務</title>
     <step performance="required">
      <para>
@@ -70,7 +70,7 @@ Please see LICENSE.txt for this document's license.
      請在您要使用 Hawk 與之連接的所有節點上執行此操作。
     </para>
    </note>
-   <procedure id="pro.ha.hawk.login">
+   <procedure id="pro-ha-hawk-login">
     <title>登入 Hawk Web 介面</title>
     <para>
      Hawk Web 介面使用 HTTPS 通訊協定和連接埠 <literal>7630</literal>。
@@ -102,7 +102,7 @@ Please see LICENSE.txt for this document's license.
        若仍要繼續，您可以在瀏覽器中新增一個例外以略過此警告。
       </para>
       <para>
-       如需關於如何將自行簽署的證書取代為官方證書管理中心所簽署證書的資訊，請參閱<xref linkend="vle.ha.hawk.certificate"/>。
+       如需關於如何將自行簽署的證書取代為官方證書管理中心所簽署證書的資訊，請參閱<xref linkend="vle-ha-hawk-certificate"/>。
       </para>
      </note>
     </step>
@@ -122,13 +122,13 @@ Please see LICENSE.txt for this document's license.
    </procedure>
   </sect2>
 
-  <sect2 id="sec.ha.config.hawk.intro.main">
+  <sect2 id="sec-ha-config-hawk-intro-main">
    <title>主螢幕︰叢集狀態</title>
    
    <para>
     登入後，Hawk 會顯示<guimenu>叢集狀態</guimenu>螢幕。該螢幕會顯示最重要的全域叢集參數及叢集節點與資源之狀態的摘要。以下色碼用於顯示節點和資源的狀態：
    </para>
-   <itemizedlist id="il.ha.config.hawk.colors" mark="bullet" spacing="normal">
+   <itemizedlist id="il-ha-config-hawk-colors" mark="bullet" spacing="normal">
     <title>Hawk 色碼</title>
     <listitem>
      <para>
@@ -155,7 +155,7 @@ Please see LICENSE.txt for this document's license.
     除了色碼以外，Hawk 還會在<guimenu>叢集狀態</guimenu>螢幕的所有檢視窗中顯示節點、資源、票證狀態的相應圖示以及錯誤訊息的圖示。
    </para>
    <para>
-    如果資源發生了故障，螢幕頂部會以紅色顯示一則包含詳細資料的錯誤訊息。若要分析故障原因，請按一下錯誤訊息。如此會自動開啟 Hawk 的<guimenu>歷程總管</guimenu>，並觸發時間跨度為 20 分鐘 (發生故障前 10 分鐘至發生故障後 10 分鐘) 的資料收集。如需詳細資訊，請參閱<xref linkend="pro.ha.config.hawk.history.explorer"/>。
+    如果資源發生了故障，螢幕頂部會以紅色顯示一則包含詳細資料的錯誤訊息。若要分析故障原因，請按一下錯誤訊息。如此會自動開啟 Hawk 的<guimenu>歷程總管</guimenu>，並觸發時間跨度為 20 分鐘 (發生故障前 10 分鐘至發生故障後 10 分鐘) 的資料收集。如需詳細資訊，請參閱<xref linkend="pro-ha-config-hawk-history-explorer"/>。
    </para>
    <figure pgwide="0">
     <title>Hawk — 叢集狀態 (摘要檢視)</title>
@@ -205,7 +205,7 @@ Please see LICENSE.txt for this document's license.
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
-      <guimenu>模擬器</guimenu>。如需詳細資訊，請參閱<xref linkend="sec.ha.config.hawk.simulator"/>。
+      <guimenu>模擬器</guimenu>。如需詳細資訊，請參閱<xref linkend="sec-ha-config-hawk-simulator"/>。
      </para>
     </listitem>
 
@@ -213,7 +213,7 @@ Please see LICENSE.txt for this document's license.
      <para>
       <guimenu>叢集圖表</guimenu>。選取此項將以圖形顯示 CIB 中設定的節點及資源。該圖表還會顯示各資源與節點指定之間的順序及並存關係 (分數)。
      </para>
-     <figure id="fig.ha.cluster.diagram" pgwide="0">
+     <figure id="fig-ha-cluster-diagram" pgwide="0">
       <title>Hawk — 叢集圖表</title>
       <mediaobject>
        <imageobject role="fo">
@@ -227,7 +227,7 @@ Please see LICENSE.txt for this document's license.
     </listitem>
     <listitem>
      <para>
-      <guimenu>叢集報告</guimenu> (<command>hb_report</command>)。如需詳細資訊，請參閱<xref linkend="sec.ha.config.hawk.crm_report"/>。
+      <guimenu>叢集報告</guimenu> (<command>hb_report</command>)。如需詳細資訊，請參閱<xref linkend="sec-ha-config-hawk-crm-report"/>。
      </para>
     </listitem>
    </itemizedlist>
@@ -240,44 +240,44 @@ Please see LICENSE.txt for this document's license.
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
-      <guimenu>叢集狀態</guimenu>：如需詳細資料，請參閱<xref linkend="sec.ha.config.hawk.intro.main"/>。
+      <guimenu>叢集狀態</guimenu>：如需詳細資料，請參閱<xref linkend="sec-ha-config-hawk-intro-main"/>。
      </para>
     </listitem>
     <listitem>
      <para>
-      <guimenu>歷程總管</guimenu>：如需詳細資料，請參閱<xref linkend="pro.ha.config.hawk.history.explorer"/>。
+      <guimenu>歷程總管</guimenu>：如需詳細資料，請參閱<xref linkend="pro-ha-config-hawk-history-explorer"/>。
      </para>
     </listitem>
     <listitem>
      <para>
-      <guimenu>設定精靈</guimenu>：如需詳細資料，請參閱<xref linkend="sec.ha.config.hawk.wizard"/>。
+      <guimenu>設定精靈</guimenu>：如需詳細資料，請參閱<xref linkend="sec-ha-config-hawk-wizard"/>。
      </para>
     </listitem>
     <listitem>
      <para>
-      <guimenu>叢集組態</guimenu>：如需詳細資料，請參閱<xref linkend="sec.ha.config.hawk.global"/>。
+      <guimenu>叢集組態</guimenu>：如需詳細資料，請參閱<xref linkend="sec-ha-config-hawk-global"/>。
      </para>
     </listitem>
     <listitem>
      <para>
-      <guimenu>存取控制清單</guimenu>：如需詳細資料，請參閱<xref linkend="cha.ha.acl"/>。
+      <guimenu>存取控制清單</guimenu>：如需詳細資料，請參閱<xref linkend="cha-ha-acl"/>。
      </para>
     </listitem>
     <listitem>
      <para>
-      <guimenu>資源</guimenu>：如需詳細資料，請參閱<xref linkend="sec.ha.config.hawk.rsc"/>。
+      <guimenu>資源</guimenu>：如需詳細資料，請參閱<xref linkend="sec-ha-config-hawk-rsc"/>。
      </para>
     </listitem>
     <listitem>
      <para>
-      <guimenu>條件約束</guimenu>：如需詳細資料，請參閱<xref linkend="sec.ha.config.hawk.rsc"/>。
+      <guimenu>條件約束</guimenu>：如需詳細資料，請參閱<xref linkend="sec-ha-config-hawk-rsc"/>。
      </para>
     </listitem>
    </itemizedlist>
    <note>
     <title>Hawk 的可用功能</title>
     <para>
-     依預設，以 <systemitem class="username">root</systemitem> 或 <systemitem class="username">hacluster</systemitem> 身分登入的使用者對於所有叢集組態任務都擁有完整的讀-寫存取權限。不過，您可以使用<xref linkend="cha.ha.acl" xrefstyle="select:title"/> 來定義精細的存取權限。
+     依預設，以 <systemitem class="username">root</systemitem> 或 <systemitem class="username">hacluster</systemitem> 身分登入的使用者對於所有叢集組態任務都擁有完整的讀-寫存取權限。不過，您可以使用<xref linkend="cha-ha-acl" xrefstyle="select:title"/> 來定義精細的存取權限。
     </para>
     <para>
      如果 CRM 中啟用了 ACL，則 Hawk 的可用功能取決於指定給您的使用者角色和存取權限。此外，Hawk 的下列功能只能由使用者 <systemitem class="username">hacluster</systemitem> 執行：
@@ -302,7 +302,7 @@ Please see LICENSE.txt for this document's license.
    </note>
   </sect2>
  </sect1>
- <sect1 id="sec.ha.config.hawk.global">
+ <sect1 id="sec-ha-config-hawk-global">
   <title>設定全域叢集選項</title>
 
   <para>
@@ -312,21 +312,21 @@ Please see LICENSE.txt for this document's license.
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <xref linkend="sec.ha.config.basics.global.quorum" xrefstyle="select:title"/>
+     <xref linkend="sec-ha-config-basics-global-quorum" xrefstyle="select:title"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <xref linkend="sec.ha.config.basics.global.stonith" xrefstyle="select:title"/>
+     <xref linkend="sec-ha-config-basics-global-stonith" xrefstyle="select:title"/>
     </para>
    </listitem>
   </itemizedlist>
 
-  <procedure id="pro.ha.config.hawk.global">
+  <procedure id="pro-ha-config-hawk-global">
    <title>修改全域叢集選項</title>
    <step performance="required">
     <para>
-     啟動網頁瀏覽器並依<xref linkend="sec.ha.config.hawk.intro.connect"/> 所述登入叢集。
+     啟動網頁瀏覽器並依<xref linkend="sec-ha-config-hawk-intro-connect"/> 所述登入叢集。
     </para>
    </step>
    <step performance="required">
@@ -369,7 +369,7 @@ Please see LICENSE.txt for this document's license.
      </step>
      <step performance="required">
       <para>
-       若要從 CRM 組態中移除某個內容，請按一下該內容旁邊的減號圖示。如果某個內容被刪除，叢集會將該內容視為具有預設值。如需預設值的詳細資料，請參閱 <xref linkend="sec.ha.config.basics.meta.attr"/>。
+       若要從 CRM 組態中移除某個內容，請按一下該內容旁邊的減號圖示。如果某個內容被刪除，叢集會將該內容視為具有預設值。如需預設值的詳細資料，請參閱 <xref linkend="sec-ha-config-basics-meta-attr"/>。
       </para>
      </step>
      <step performance="required">
@@ -396,7 +396,7 @@ Please see LICENSE.txt for this document's license.
      </step>
      <step performance="required">
       <para>
-       若要移除資源預設值或操作預設值，請按一下參數旁邊的減號圖示。如果沒有為<guimenu>資源預設值</guimenu>和<guimenu>操作預設值</guimenu>指定值，叢集會使用<xref linkend="sec.ha.config.basics.meta.attr"/> 及<xref linkend="sec.ha.config.basics.operations"/> 中所述的預設值。
+       若要移除資源預設值或操作預設值，請按一下參數旁邊的減號圖示。如果沒有為<guimenu>資源預設值</guimenu>和<guimenu>操作預設值</guimenu>指定值，叢集會使用<xref linkend="sec-ha-config-basics-meta-attr"/> 及<xref linkend="sec-ha-config-basics-operations"/> 中所述的預設值。
       </para>
      </step>
     </substeps>
@@ -412,7 +412,7 @@ Please see LICENSE.txt for this document's license.
  </sect1>
  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ha_hawk_rsc_config_i.xml" parse="xml"/>
  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ha_hawk_rsc_manage_i.xml" parse="xml"/>
- <sect1 id="sec.ha.config.hawk.dashboard">
+ <sect1 id="sec-ha-config-hawk-dashboard">
 
 
   <title>監控多個叢集</title>
@@ -425,7 +425,7 @@ Please see LICENSE.txt for this document's license.
    <guimenu>叢集儀表板</guimenu>中所顯示的叢集資訊儲存在永久的 cookie 中。這表示您需要決定要在<guimenu>叢集儀表板</guimenu>上檢視的 Hawk 例項，之後就必須永遠使用該例項。要實現此目的，執行 Hawk 的機器甚至不需要屬於任何叢集，它可以是獨立的、不相關的系統。
   </para>
 
-  <procedure id="pro.ha.config.hawk.dashboard">
+  <procedure id="pro-ha-config-hawk-dashboard">
    <title>使用 Hawk 監控多個叢集</title>
    <itemizedlist mark="bullet" spacing="normal">
     <title>必要條件</title>
@@ -529,14 +529,14 @@ Please see LICENSE.txt for this document's license.
 
 
  </sect1>
- <sect1 id="sec.ha.config.hawk.geo">
+ <sect1 id="sec-ha-config-hawk-geo">
   <title>適用於地理叢集的 Hawk</title>
 
   <para>
    如需與地理位置分散叢集 (地理叢集) 相關之 Hawk 功能的詳細資料，請參閱《<citetitle>Quick Start Geo Clustering for <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase></citetitle>》(Geo Clustering for SUSE Linux Enterprise High Availability Extension 快速入門)。
   </para>
  </sect1>
- <sect1 id="sec.ha.config.hawk.trouble">
+ <sect1 id="sec-ha-config-hawk-trouble">
   <title>疑難排解</title>
 
   <variablelist>
@@ -559,7 +559,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </varlistentry>
-   <varlistentry id="vle.ha.hawk.certificate">
+   <varlistentry id="vle-ha-hawk-certificate">
     <term>取代自行簽署的證書</term>
     <listitem>
      <para>
@@ -592,7 +592,7 @@ Please see LICENSE.txt for this document's license.
     <term><guimenu>叢集儀表板</guimenu>：無法連接至主機</term>
     <listitem>
      <para>
-      如果將叢集新增至 Hawk 的儀表板時失敗，請檢查<xref linkend="pro.ha.config.hawk.dashboard"/> 中列出的必要條件。
+      如果將叢集新增至 Hawk 的儀表板時失敗，請檢查<xref linkend="pro-ha-config-hawk-dashboard"/> 中列出的必要條件。
      </para>
     </listitem>
    </varlistentry>

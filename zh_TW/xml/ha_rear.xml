@@ -5,7 +5,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_rear.xml" id="cha.ha.rear">
+<chapter xml:base="ha_rear.xml" id="cha-ha-rear">
  <title>使用 Rear 進行災難備援</title>
  <abstract>
   <para> Relax-and-Recover (以前稱為 <quote>ReaR</quote>，本章中縮寫為 Rear) 是由系統管理員使用的災難備援架構。Rear 是一個 Bash 程序檔集合，您需要依據要在發生災難時加以保護的特定線上環境調整這些程序檔。</para>
@@ -13,14 +13,14 @@ Please see LICENSE.txt for this document's license.
   
  </abstract>
  
-  <sect1 id="sec.ha.rear.concept">
+  <sect1 id="sec-ha-rear-concept">
   <title>概念綜覽</title>
   
  
   <para>以下幾節介紹了一般性的災難備援概念，以及您要使用 Rear 成功復原所需執行的基本步驟。此外，還提供了一些關於 Rear 要求、目前產品隨附的 Rear 版本、要注意的一些限制、案例和備份工具的指導。</para>
    
    
-   <sect2 id="sec.ha.rear.concept.drp">
+   <sect2 id="sec-ha-rear-concept-drp">
     <title>建立災難備援計畫</title>
     
     <para>
@@ -61,19 +61,19 @@ Please see LICENSE.txt for this document's license.
     </itemizedlist>
    </sect2>
   
-  <sect2 id="sec.ha.rear.concept.recovery">
+  <sect2 id="sec-ha-rear-concept-recovery">
    <title>災難備援意味著什麼？</title>
    <para>如果線上環境中的某個系統已經損毀 (可能出於任何原因，例如，硬體損壞、組態不當或軟體問題)，您需要重新建立該系統。可以在相同的硬體或者相容的替代硬體上重新建立。重新建立系統並不只是意味著從備份中還原檔案，還包括準備系統的儲存區 (與檔案系統、分割區或掛接點相關)，以及重新安裝開機載入程式。</para>
   </sect2>
    
-  <sect2 id="sec.ha.rear.concept.basics">
+  <sect2 id="sec-ha-rear-concept-basics">
    <title>災難備援如何與 Rear 一起運作？</title>
    <para>在系統正常運作時建立檔案的備份，並在復原媒體上建立復原系統。該復原系統包含一個復原安裝程式。</para>
    <para>當系統已經損毀時，您可以更換受損的硬體 (如果需要)，將復原系統從復原媒體開機，然後啟動復原安裝程式。復原安裝程式會重新建立系統：首先，它會準備儲存區 (分割區、檔案系統、掛接點)，然後從備份中還原檔案。最後，它會重新安裝開機載入程式。 </para>
   </sect2>
    
    
-  <sect2 id="sec.ha.rear.concept.requirements">
+  <sect2 id="sec-ha-rear-concept-requirements">
    <title>Rear 要求</title>
    <para>
     若要使用 Rear，您至少需要兩個相同的系統：用來執行線上環境的機器，以及相同的測試機器。這裡所指的<quote>相同</quote>，舉例而言就是使用相同核心驅動程式的網路卡，可以用其中一個來取代另一個。 </para>
@@ -83,7 +83,7 @@ Please see LICENSE.txt for this document's license.
    </warning>
   </sect2>
   
-  <sect2 id="sec.ha.rear.concept.versions">
+  <sect2 id="sec-ha-rear-concept-versions">
    <title>Rear 版本</title>
    <para><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 隨附了兩個 Rear 版本：</para>
    <itemizedlist mark="bullet" spacing="normal">
@@ -96,12 +96,12 @@ Please see LICENSE.txt for this document's license.
    </itemizedlist>
    <important>
     <para>如果您透過 Rear 版本 1.10.0 實作的災難備援程序已經過測試並且功能完備，則您<emphasis>不</emphasis>需要升級該版本。在這種情況下，請保留 Rear 套件，並且不要變更您的災難備援方法！</para>
-    <para>但是，如果 Rear 版本 1.10.0 不能滿足您的特定需求 (另請參閱<xref linkend="sec.ha.rear.concept.limit" xrefstyle="select:label"/>)，您可以手動升級到 Rear 版本 1.16。<systemitem class="resource">rear</systemitem> 和 <systemitem class="resource">rear116</systemitem> 套件被有意設定為相互衝突，以防止另一個版本意外地取代所安裝的版本。</para>
+    <para>但是，如果 Rear 版本 1.10.0 不能滿足您的特定需求 (另請參閱<xref linkend="sec-ha-rear-concept-limit" xrefstyle="select:label"/>)，您可以手動升級到 Rear 版本 1.16。<systemitem class="resource">rear</systemitem> 和 <systemitem class="resource">rear116</systemitem> 套件被有意設定為相互衝突，以防止另一個版本意外地取代所安裝的版本。</para>
     <para>每次升級 Rear 版本時，都必須仔細重新驗證您的特定災難備援程序是否仍然發揮作用。</para>
    </important>
   </sect2>
   
-  <sect2 id="sec.ha.rear.concept.limit">
+  <sect2 id="sec-ha-rear-concept-limit">
    <title>針對 Btrfs 的限制</title>
     <para>如果您使用 Btrfs，會存在以下限制。</para>
    
@@ -126,40 +126,40 @@ Please see LICENSE.txt for this document's license.
     </variablelist>
   </sect2>
   
-  <sect2 id="sec.ha.rear.concept.scenarios">
+  <sect2 id="sec-ha-rear-concept-scenarios">
    <title>案例和備份工具</title>
-   <para>Rear 能夠建立可從本地媒體 (例如硬碟、隨身碟、DVD/CD-R) 或透過 PXE 開機的災難備援系統 (包括一個特定的復原安裝程式)。可以依照<xref linkend="ex.ha.rear.nfs-server-backup" xrefstyle="select:label"/>所述，將備份資料儲存在網路檔案系統 (例如 NFS) 中。
+   <para>Rear 能夠建立可從本地媒體 (例如硬碟、隨身碟、DVD/CD-R) 或透過 PXE 開機的災難備援系統 (包括一個特定的復原安裝程式)。可以依照<xref linkend="ex-ha-rear-nfs-server-backup" xrefstyle="select:label"/>所述，將備份資料儲存在網路檔案系統 (例如 NFS) 中。
     </para>
-   <para>Rear 不會取代檔案備份，而是對其進行補充。依預設，Rear 支援一般 <command>tar</command> 指令和多種協力廠商備份工具 (例如 Tivoli Storage Manager、QNetix Galaxy、Symantec NetBackup、EMC NetWorker 或 HP DataProtector)。如需將 Rear 與 EMC NetWorker (用做備份工具) 一起使用的範例組態，請參閱<xref linkend="ex.ha.rear.config.EMC" xrefstyle="select:label"/>。</para>
+   <para>Rear 不會取代檔案備份，而是對其進行補充。依預設，Rear 支援一般 <command>tar</command> 指令和多種協力廠商備份工具 (例如 Tivoli Storage Manager、QNetix Galaxy、Symantec NetBackup、EMC NetWorker 或 HP DataProtector)。如需將 Rear 與 EMC NetWorker (用做備份工具) 一起使用的範例組態，請參閱<xref linkend="ex-ha-rear-config-EMC" xrefstyle="select:label"/>。</para>
   </sect2>
   
   
-  <sect2 id="sec.ha.rear.concept.overview">
+  <sect2 id="sec-ha-rear-concept-overview">
    <title>基本步驟</title>
    <para>若要在發生災難時使用 Rear 成功復原，需要執行以下基本步驟： </para>
 
    
    <variablelist>
      <varlistentry>
-     <term><xref linkend="sec.ha.rear.config" xrefstyle="select:title"/></term>
+     <term><xref linkend="sec-ha-rear-config" xrefstyle="select:title"/></term>
      <listitem>
       <para>這會涉及到一些任務，例如，編輯 Rear 組態檔案、調整 Bash 程序檔，以及設定您要使用的備份解決方案。 </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><xref linkend="sec.ha.rear.mkbackup" xrefstyle="select:title"/></term>
+     <term><xref linkend="sec-ha-rear-mkbackup" xrefstyle="select:title"/></term>
      <listitem>
       <para>在要保護的系統處於正常運作狀態時，使用 <command>rear mkbackup</command> 指令建立檔案備份，並產生包含系統特定 Rear 復原安裝程式的復原系統。</para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><xref linkend="sec.ha.rear.testing" xrefstyle="select:title"/></term>
+     <term><xref linkend="sec-ha-rear-testing" xrefstyle="select:title"/></term>
      <listitem>
-      <para> 每當使用 Rear 建立災難備援媒體後，都要全面測試災難備援程序。所用測試機器上的硬體，必須與線上環境中的硬體<emphasis>相同</emphasis>。如需詳細資訊，請參閱<xref linkend="sec.ha.rear.concept.requirements"/>。</para>
+      <para> 每當使用 Rear 建立災難備援媒體後，都要全面測試災難備援程序。所用測試機器上的硬體，必須與線上環境中的硬體<emphasis>相同</emphasis>。如需詳細資訊，請參閱<xref linkend="sec-ha-rear-concept-requirements"/>。</para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><xref linkend="sec.ha.rear.recover" xrefstyle="select:title"/></term>
+     <term><xref linkend="sec-ha-rear-recover" xrefstyle="select:title"/></term>
      <listitem>
       <para>發生災難後，更換任何受損的硬體 (如果需要)。然後，將 Rear 復原系統開機，並使用 <command>rear recover</command> 指令啟動復原安裝程式。
      </para>
@@ -169,7 +169,7 @@ Please see LICENSE.txt for this document's license.
   </sect2>
  </sect1>
   
- <sect1 id="sec.ha.rear.config">
+ <sect1 id="sec-ha-rear-config">
   <title>設定 Rear 和您的備份解決方案</title>
   <para>若要設定 Rear，您至少需要編輯 Rear 組態檔案 <filename>/etc/rear/local.conf</filename>，此外可以根據需要編輯屬於 Rear 架構一部分的 Bash 程序檔。 </para>
   <para>具體而言，您需要定義 Rear 應執行的以下任務：</para>
@@ -200,7 +200,7 @@ Please see LICENSE.txt for this document's license.
   <para>變更 Rear 組態檔案後，執行以下指令並檢查該指令的輸出：</para>
    <screen>rear dump</screen>
   
-  <example id="ex.ha.rear.nfs-server-backup">
+  <example id="ex-ha-rear-nfs-server-backup">
    <title>使用 NFS 伺服器儲存檔案備份</title>
    <para>Rear 可以在多種不同的情況下使用。以下範例使用 NFS 伺服器做為檔案備份的儲存區。
    </para>
@@ -220,7 +220,7 @@ Please see LICENSE.txt for this document's license.
     </step>
   </procedure>
   
-  <example id="ex.ha.rear.config.EMC">
+  <example id="ex-ha-rear-config-EMC">
    <title>使用 EMC NetWorker 等協力廠商備份工具</title>
    <para> 若要使用協力廠商備份工具代替 <command>tar</command>，您需要在 Rear 組態檔案中進行相應的設定。</para>
    <para>以下是 EMC NetWorker 的範例組態。將此組態片段新增至 <filename>/etc/rear/local.conf</filename> 中，並依據您的設定調整該片段：</para>
@@ -234,9 +234,9 @@ Please see LICENSE.txt for this document's license.
   
  </sect1>
 
- <sect1 id="sec.ha.rear.mkbackup">
+ <sect1 id="sec-ha-rear-mkbackup">
  <title>建立復原安裝系統</title>
-  <para>依照<xref linkend="sec.ha.rear.config" xrefstyle="select:label"/>所述設定 Rear 後，使用以下指令建立復原安裝系統 (包括 Rear 復原安裝程式) 和檔案備份：</para>
+  <para>依照<xref linkend="sec-ha-rear-config" xrefstyle="select:label"/>所述設定 Rear 後，使用以下指令建立復原安裝系統 (包括 Rear 復原安裝程式) 和檔案備份：</para>
   <screen>rear -d  -D mkbackup</screen> 
   <para>該指令會執行以下步驟： </para>
  
@@ -258,10 +258,10 @@ Please see LICENSE.txt for this document's license.
  </orderedlist>
 </sect1>
  
- <sect1 id="sec.ha.rear.testing">
+ <sect1 id="sec-ha-rear-testing">
   <title>測試復原程序</title>
 
-  <para> 建立復原系統後，在具有相同硬體的測試機器上測試復原程序。並請參閱<xref linkend="sec.ha.rear.concept.requirements"/>。確定測試機器的設定正確，並且可以取代您的主要機器運作。
+  <para> 建立復原系統後，在具有相同硬體的測試機器上測試復原程序。並請參閱<xref linkend="sec-ha-rear-concept-requirements"/>。確定測試機器的設定正確，並且可以取代您的主要機器運作。
    </para>
 
   <warning>
@@ -269,10 +269,10 @@ Please see LICENSE.txt for this document's license.
    <para>必須在機器上全面測試災難備援程序。請定期測試復原程序，以確定一切如預期運作。 </para>
   </warning>
 
-  <procedure id="pro.ha.rear.testing">
+  <procedure id="pro-ha-rear-testing">
    <title>在測試機器上執行災難備援</title>
    <step performance="required">
-    <para>將您在<xref linkend="sec.ha.rear.mkbackup" xrefstyle="select:label"/>中建立的復原系統燒錄到 DVD 或 CD 上，以建立復原媒體。或者，您可以透過 PXE 使用網路開機。</para>
+    <para>將您在<xref linkend="sec-ha-rear-mkbackup" xrefstyle="select:label"/>中建立的復原系統燒錄到 DVD 或 CD 上，以建立復原媒體。或者，您可以透過 PXE 使用網路開機。</para>
    </step>
    <step performance="required">
     <para>從復原媒體將測試機器開機。 </para>
@@ -286,20 +286,20 @@ Please see LICENSE.txt for this document's license.
    <step performance="required">
     <para> 輸入以下指令來啟動復原安裝程式：</para>
     <screen>rear -d -D recover</screen>
-    <para>如需 Rear 在此過程中執行之步驟的詳細資料，請參閱<xref linkend="ol.ha.rear.recovers.steps"/>。 </para>
+    <para>如需 Rear 在此過程中執行之步驟的詳細資料，請參閱<xref linkend="ol-ha-rear-recovers-steps"/>。 </para>
    </step>
    <step performance="required">
     <para>完成復原程序後，檢查是否已成功地重新建立系統，並且該系統是否可在線上環境中取代原始系統。</para>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.rear.recover">
+ <sect1 id="sec-ha-rear-recover">
   <title>從災難中復原</title>
-  <para>如果發生災難，請視需要更換任何受損的硬體。然後依照<xref linkend="pro.ha.rear.testing" xrefstyle="select:label"/>所述，使用已修復的機器 (或使用已經測試並可取代原始系統運作的相同機器) 繼續操作。</para>
+  <para>如果發生災難，請視需要更換任何受損的硬體。然後依照<xref linkend="pro-ha-rear-testing" xrefstyle="select:label"/>所述，使用已修復的機器 (或使用已經測試並可取代原始系統運作的相同機器) 繼續操作。</para>
   
 <para><command>rear recover</command> 指令將執行以下步驟：</para>  
   
-  <orderedlist id="ol.ha.rear.recovers.steps" spacing="normal">
+  <orderedlist id="ol-ha-rear-recovers-steps" spacing="normal">
    <title>復原程序</title>
    <listitem>
    <para>
@@ -320,7 +320,7 @@ Please see LICENSE.txt for this document's license.
   </sect1>
  
   
- <sect1 id="sec.ha.rear.more">
+ <sect1 id="sec-ha-rear-more">
   <title>更多資訊</title>
 
 

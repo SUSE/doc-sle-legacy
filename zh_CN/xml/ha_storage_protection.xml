@@ -5,7 +5,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_storage_protection.xml" id="cha.ha.storage.protect">
+<chapter xml:base="ha_storage_protection.xml" id="cha-ha-storage-protect">
  <title>储存保护</title>
  <abstract>
 
@@ -25,14 +25,14 @@ Please see LICENSE.txt for this document's license.
    本章介绍利用储存区本身的 IO 屏蔽机制，后面是对附加保护层（用于确保对储存区的排它访问）的描述。这两套机制可以结合起来使用，以提供更高的保护级别。
   </para>
  </abstract>
- <sect1 id="sec.ha.storage.protect.fencing">
+ <sect1 id="sec-ha-storage-protect-fencing">
   <title>基于储存区的屏蔽</title>
 
   <para>
    您可以使用一个或多个 STONITH 块设备 (SBD)、<literal>watchdog</literal> 支持和 <literal>external/sbd</literal> STONITH 代理来可靠地避免节点分裂状况。
   </para>
 
-  <sect2 id="sec.ha.storage.protect.fencing.oview">
+  <sect2 id="sec-ha-storage-protect-fencing-oview">
    <title>概述</title>
    <para>
     在所有节点都可访问共享储存的环境中，设备的某个小分区会格式化，以用于 SBD。该分区的大小取决于所用磁盘的块大小（对于块大小为 512 字节的标准 SCSI 磁盘，该分区大小为 1 MB；块大小为 4 KB 的 DASD 磁盘需要 4 MB）。配置完相应的守护程序后，它在其余群集堆栈启动之前将在每个节点上都处于联机状态。它在所有其他群集组件都关闭之后才终止，从而确保了群集资源绝不会在没有 SBD 监督的情况下被激活。
@@ -53,7 +53,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-  <sect2 id="sec.ha.storage.protect.fencing.number">
+  <sect2 id="sec-ha-storage-protect-fencing-number">
    <title>SBD 设备的数量</title>
    <para>
     SBD 支持使用 1 到 3 个设备：
@@ -89,7 +89,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
 
-  <sect2 id="sec.ha.storageprotection.fencing.setup">
+  <sect2 id="sec-ha-storageprotection-fencing-setup">
    <title>设置基于储存区的保护</title>
    <para>
     以下步骤是设置基于储存区的保护所必需的：
@@ -97,27 +97,27 @@ Please see LICENSE.txt for this document's license.
    <procedure>
     <step performance="required">
      <para>
-      <xref linkend="pro.ha.storage.protect.sbd.create" xrefstyle="select:title"/>
+      <xref linkend="pro-ha-storage-protect-sbd-create" xrefstyle="select:title"/>
      </para>
     </step>
     <step performance="required">
      <para>
-      <xref linkend="pro.ha.storage.protect.watchdog" xrefstyle="select:title"/>
+      <xref linkend="pro-ha-storage-protect-watchdog" xrefstyle="select:title"/>
      </para>
     </step>
     <step performance="required">
      <para>
-      <xref linkend="pro.ha.storage.protect.sbd.daemon" xrefstyle="select:title"/>
+      <xref linkend="pro-ha-storage-protect-sbd-daemon" xrefstyle="select:title"/>
      </para>
     </step>
     <step performance="required">
      <para>
-      <xref linkend="pro.ha.storage.protect.sbd.test" xrefstyle="select:title"/>
+      <xref linkend="pro-ha-storage-protect-sbd-test" xrefstyle="select:title"/>
      </para>
     </step>
     <step performance="required">
      <para>
-      <xref linkend="pro.ha.storage.protect.fencing" xrefstyle="select:title"/>
+      <xref linkend="pro-ha-storage-protect-fencing" xrefstyle="select:title"/>
      </para>
     </step>
    </procedure>
@@ -145,7 +145,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </itemizedlist>
    </important>
-   <sect3 id="pro.ha.storage.protect.sbd.create">
+   <sect3 id="pro-ha-storage-protect-sbd-create">
     <title>创建 SBD 分区</title>
     <para>
      建议在设备启动时创建一个 1MB 的分区。如果 SBD 设备驻留在多路径组上，则需要调整 SBD 所用的超时，因为 MPIO 的沿路径检测可能导致一些等待时间。<literal>msgwait</literal> 超时后，将假定此消息已传递到节点。对于多路径，这应是 MPIO 检测路径故障并切换到下一个路径所需的时间。您可能需要在自己的环境中对此进行测试。如果节点上运行的 SBD 守护程序未足够快速地更新检查包计时器，则节点会自行终止。在特定的环境中测试选择的超时。如果只对一个 SBD 设备使用多路径储存，请密切关注发生的故障转移延迟。
@@ -181,14 +181,14 @@ Please see LICENSE.txt for this document's license.
        如果 SBD 设备驻留在多路径组中，请调整 SBD 所用的超时。这可以在初始化 SBD 设备时指定（所有超时的单位都是秒）：
       </para>
 
-<screen><prompt role="root">root # </prompt><command>/usr/sbin/sbd</command> -d /dev/<replaceable>SBD</replaceable> -4 180<co id="co.msgwait"/> -1 90<co id="co.watchdog"/> create</screen>
+<screen><prompt role="root">root # </prompt><command>/usr/sbin/sbd</command> -d /dev/<replaceable>SBD</replaceable> -4 180<co id="co-msgwait"/> -1 90<co id="co-watchdog"/> create</screen>
       <calloutlist>
-       <callout arearefs="co.msgwait">
+       <callout arearefs="co-msgwait">
         <para>
          <option>-4</option> 选项用于指定 <literal>msgwait</literal> 超时。 在以上示例中，超时设置为 <literal>180</literal> 秒。
         </para>
        </callout>
-       <callout arearefs="co.watchdog">
+       <callout arearefs="co-watchdog">
         <para>
          <option>-1</option> 选项用于指定 <literal>watchdog</literal> 超时。在以上示例中，超时设置为 <literal>90</literal> 秒。
         </para>
@@ -213,7 +213,7 @@ Timeout (msgwait)  : 10</screen>
      正如您看到的，超时数也储存在报头中，以确保所有参与的节点在这方面都一致。
     </para>
    </sect3>
-   <sect3 id="pro.ha.storage.protect.watchdog">
+   <sect3 id="pro-ha-storage-protect-watchdog">
     <title>设置软件检查包</title>
     <para>在未被其他软件使用的情况下，检查包可以在出现 SBD 故障时保护系统。</para>
      
@@ -222,7 +222,7 @@ Timeout (msgwait)  : 10</screen>
      </important>
      
      <para>
-     在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 中，默认会启用内核中的检查包支持：本产品随附了多个不同的内核模块，可提供特定于硬件的检查包驱动程序。High Availability Extension 使用 SBD 守护程序作为<quote>供给</quote>检查包的软件组件。如果按<xref linkend="pro.ha.storage.protect.sbd.daemon"/>中进行了配置，使用 <command>rcopenais <option>start</option></command> 将相应节点联机时会自动启动 SBD 守护程序。
+     在 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 中，默认会启用内核中的检查包支持：本产品随附了多个不同的内核模块，可提供特定于硬件的检查包驱动程序。High Availability Extension 使用 SBD 守护程序作为<quote>供给</quote>检查包的软件组件。如果按<xref linkend="pro-ha-storage-protect-sbd-daemon"/>中进行了配置，使用 <command>rcopenais <option>start</option></command> 将相应节点联机时会自动启动 SBD 守护程序。
     </para>
     <para>
      在系统引导过程中，一般会自动装载适用于您硬件的检查包驱动程序。<literal>softdog</literal> 是最通用的驱动程序，但建议使用带有实际硬件集成的驱动程序。例如：
@@ -252,7 +252,7 @@ Timeout (msgwait)  : 10</screen>
      <para>以下<quote>公式</quote>大致表达了这三个值之间的关系：
     </para>
      
-     <example id="ex.ha.storage.protect.sbd-timings">
+     <example id="ex-ha-storage-protect-sbd-timings">
        <title>使用 SBD 作为 STONITH 设备的群集计时</title>
        <screen>Timeout (msgwait) = (Timeout (watchdog) * 2)
 stonith-timeout = Timeout (msgwait) + 20%</screen>
@@ -275,7 +275,7 @@ Timeout (msgwait)  : 40
      <para>如果您要设置新群集，<command>sleha-init</command> 命令会考虑上述因素。</para>
     <para>如需 SBD 相关计时变量的更多细节，请参见 <ulink url="https://www.suse.com/support/kb/doc.php?id=7011346"/> 上的《<citetitle>SBD Operation Guidelines for HAE Clusters</citetitle>》（HAE 群集的 SBD 操作指南）。</para>
    </sect3>
-   <sect3 id="pro.ha.storage.protect.sbd.daemon">
+   <sect3 id="pro-ha-storage-protect-sbd-daemon">
     <title>启动 SBD 守护程序</title>
     <para>
      SBD 守护程序是群集堆栈的关键部分。只要群集堆栈正在运行，此守护程序就必须运行，即使群集堆栈的一部分已崩溃时也是如此，这样才能屏蔽节点。
@@ -306,7 +306,7 @@ Timeout (msgwait)  : 40
      </step>
     </procedure>
    </sect3>
-   <sect3 id="pro.ha.storage.protect.sbd.test">
+   <sect3 id="pro-ha-storage-protect-sbd-test">
     <title>测试 SBD</title>
     <procedure>
      <step performance="required">
@@ -336,7 +336,7 @@ Timeout (msgwait)  : 40
      </step>
     </procedure>
    </sect3>
-   <sect3 id="pro.ha.storage.protect.fencing">
+   <sect3 id="pro-ha-storage-protect-fencing">
     <title>配置屏蔽资源</title>
     <para>
      要完成 SBD 设置，请将 SBD 配置为 CIB 中的 STONITH/屏蔽机制。
@@ -354,17 +354,17 @@ Timeout (msgwait)  : 40
       <para>输入以下内容：</para>
       
       <screen><prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-enabled="true"
-<prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-timeout="40s" <co id="co.ha.sbd.stonith-timeout"/>
+<prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-timeout="40s" <co id="co-ha-sbd-stonith-timeout"/>
 <prompt role="custom">crm(live)configure# </prompt><command>primitive</command> stonith_sbd stonith:external/sbd \
-   pcmk_delay_max="30" <co id="co.ha.sbd.pcmk_delay_max"/></screen>
+   pcmk_delay_max="30" <co id="co-ha-sbd-pcmk-delay-max"/></screen>
       <para> 不需要克隆资源。由于节点槽是自动分配的，因此无需定义手动主机列表。 </para>
       <calloutlist>
-       <callout arearefs="co.ha.sbd.stonith-timeout">
+       <callout arearefs="co-ha-sbd-stonith-timeout">
          
         
         <para>为 <literal>stonith-timeout</literal> 设置哪个值取决于 <literal>msgwait</literal> 超时。<literal>msgwait</literal> 超时应大于底层 IO 系统的最大允许超时。例如，普通 SCSI 磁盘的最大允许超时为 30 秒。如果您将 <literal>msgwait</literal> 超时设置为 30 秒，则将 <literal>stonith-timeout</literal> 设置为 40 秒比较合适。</para>
        </callout>
-       <callout arearefs="co.ha.sbd.pcmk_delay_max">
+       <callout arearefs="co-ha-sbd-pcmk-delay-max">
         <para><literal>pcmk_delay_max</literal> 参数将为屏蔽设备上的 STONITH 操作启用随机延迟。该参数的值指定在执行 STONITH 设备的启动操作之前需要等待的最长时间。由于检测环故障、成为 DC 和启动 STONITH 资源需要花费一定的时间，因此，请不要将此值设得太小（否则，先前的 DC 总是会先启动屏蔽操作）。 </para>
        </callout>
       </calloutlist>
@@ -391,7 +391,7 @@ Timeout (msgwait)  : 40
    </sect3>
   </sect2>
  </sect1>
- <sect1 id="sec.ha.storageprotection.exstoract">
+ <sect1 id="sec-ha-storageprotection-exstoract">
   <title>确保储存区的排它激活</title>
 
   <para>
@@ -402,7 +402,7 @@ Timeout (msgwait)  : 40
    根据设计意图，sfex 不能用于需要执行并发操作的工作负载（如 OCFS2），而是用作传统故障转移式工作负载的保护层。这实际上与 SCSI-2 保留相类似，但更具一般性。
   </para>
 
-  <sect2 id="sec.ha.storageprotection.exstoract.description">
+  <sect2 id="sec-ha-storageprotection-exstoract-description">
    <title>概述</title>
    <para>
     在共享储存环境中，储存区的一个小分区专门设置为储存一个或多个锁。
@@ -415,7 +415,7 @@ Timeout (msgwait)  : 40
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.storageprotection.exstoract.requirements">
+  <sect2 id="sec-ha-storageprotection-exstoract-requirements">
    <title>设置</title>
    <para>
     以下内容可帮助您了解如何创建用于 sfex 的共享分区以及如何为 CIB 中的 sfex 锁配置资源。单个 sfex 分区可保存任意数量的锁，默认值为 1，需要为每个锁分配 1 KB 的储存空间。
@@ -490,7 +490,7 @@ Timeout (msgwait)  : 40
    </procedure>
   </sect2>
  </sect1>
- <sect1 id="sec.ha.storage.moreinfo">
+ <sect1 id="sec-ha-storage-moreinfo">
   <title>更多信息</title>
 
   <para>

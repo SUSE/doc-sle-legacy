@@ -5,7 +5,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_acl.xml" id="cha.ha.acl">
+<chapter xml:base="ha_acl.xml" id="cha-ha-acl">
  <title>存取控制清單</title>
  <abstract>
   <para>
@@ -19,10 +19,10 @@ Please see LICENSE.txt for this document's license.
  
  <note>
   <title>CIB 驗證版本與 ACL 的差異</title>
-  <para>僅當您的 CIB 是由 <literal>pacemaker-2.0</literal> 或更高 CIB 語法版本驗證時，此 ACL 文件才適用。如需關於如何檢查這一點以及升級 CIB 版本的詳細資料，請參閱<xref linkend="note.ha.cib.upgrade"/>。 </para>
+  <para>僅當您的 CIB 是由 <literal>pacemaker-2.0</literal> 或更高 CIB 語法版本驗證時，此 ACL 文件才適用。如需關於如何檢查這一點以及升級 CIB 版本的詳細資料，請參閱<xref linkend="note-ha-cib-upgrade"/>。 </para>
   <para>如果您已從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升級並保留了以前的 CIB 版本，請參閱《<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 高可用性指南》中的「<citetitle>存取控制清單</citetitle>」一章。此文件位於 <ulink url="http://www.suse.com/documentation/"/>。</para>
  </note>
- <sect1 id="sec.ha.acl.require">
+ <sect1 id="sec-ha-acl-require">
   <title>要求和必要條件</title>
 
   <para>
@@ -77,7 +77,7 @@ Please see LICENSE.txt for this document's license.
    若要使用 ACL，您需要瞭解一些 XPath 方面的知識。XPath 是一種用於在 XML 文件中選取節點的語言。請參閱 <ulink url="http://en.wikipedia.org/wiki/XPath"/> 或在 <ulink url="http://www.w3.org/TR/xpath/"/> 上查詢規格。
   </para>
  </sect1>
- <sect1 id="sec.ha.acl.enable">
+ <sect1 id="sec-ha-acl-enable">
   <title>在叢集中啟用 ACL</title>
 
   <para>
@@ -87,14 +87,14 @@ Please see LICENSE.txt for this document's license.
 <screen><prompt role="root">root # </prompt><command>crm</command> configure property enable-acl=true</screen>
 
   <para>
-   也可以依照<xref linkend="pro.ha.acl.enable.hawk"/>所述使用 Hawk。
+   也可以依照<xref linkend="pro-ha-acl-enable-hawk"/>所述使用 Hawk。
   </para>
 
-  <procedure id="pro.ha.acl.enable.hawk">
+  <procedure id="pro-ha-acl-enable-hawk">
    <title>使用 Hawk 啟用 ACL</title>
    <step performance="required">
     <para>
-     啟動網頁瀏覽器並依<xref linkend="sec.ha.config.hawk.intro.connect"/> 所述登入叢集。
+     啟動網頁瀏覽器並依<xref linkend="sec-ha-config-hawk-intro-connect"/> 所述登入叢集。
     </para>
    </step>
    <step performance="required">
@@ -114,7 +114,7 @@ Please see LICENSE.txt for this document's license.
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.acl.basics">
+ <sect1 id="sec-ha-acl-basics">
   <title>ACL 的基本知識</title>
 
   <para>
@@ -141,24 +141,24 @@ Please see LICENSE.txt for this document's license.
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <xref linkend="sec.ha.acl.config.xpath"/>。您需要瞭解基礎 XML 的結構才能建立 ACL 規則。
+     <xref linkend="sec-ha-acl-config-xpath"/>。您需要瞭解基礎 XML 的結構才能建立 ACL 規則。
     </para>
    </listitem>
    <listitem>
     <para>
-     <xref linkend="sec.ha.acl.config.tag"/>。建立要套用至相符物件的簡寫語法與 ACL 規則。
+     <xref linkend="sec-ha-acl-config-tag"/>。建立要套用至相符物件的簡寫語法與 ACL 規則。
     </para>
    </listitem>
   </itemizedlist>
 
-  <sect2 id="sec.ha.acl.config.xpath">
+  <sect2 id="sec-ha-acl-config-xpath">
    <title>透過 XPath 運算式設定 ACL 規則</title>
    <para>
-    若要透過 XPath 管理 ACL 規則，您需要瞭解基礎 XML 的結構。使用以下指令擷取結構，該指令將以 XML 格式顯示您的叢集組態 (請參閱<xref linkend="ex.ha.acl.excerpt" xrefstyle="select:label nopage"/>)：
+    若要透過 XPath 管理 ACL 規則，您需要瞭解基礎 XML 的結構。使用以下指令擷取結構，該指令將以 XML 格式顯示您的叢集組態 (請參閱<xref linkend="ex-ha-acl-excerpt" xrefstyle="select:label nopage"/>)：
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure show xml</screen>
    
-   <example id="ex.ha.acl.excerpt">
+   <example id="ex-ha-acl-excerpt">
     <title>XML 中的叢集組態摘錄</title>
 <screen>&lt;num_updates="59" 
       dc-uuid="175704363"
@@ -191,9 +191,9 @@ Please see LICENSE.txt for this document's license.
     您可以使用 XPath 語言在此 XML 文件中尋找節點。例如，若要選取根節點 (<literal>cib</literal>)，請使用 XPath 運算式 <literal>/cib</literal>。若要尋找全域叢集組態，請使用 XPath 運算式 <literal>/cib/configuration/crm_config</literal>。
    </para>
    <para>
-    例如，<xref linkend="tab.ha.acl.operator"/>顯示了用於建立<quote>operator</quote>角色的參數 (存取類型和 XPath 運算式)。具有此角色的使用者僅可執行第二欄中所述的任務 — 他們既不能重新設定任何資源 (例如，變更參數或操作)，也不能變更並存或順序條件約束的組態。
+    例如，<xref linkend="tab-ha-acl-operator"/>顯示了用於建立<quote>operator</quote>角色的參數 (存取類型和 XPath 運算式)。具有此角色的使用者僅可執行第二欄中所述的任務 — 他們既不能重新設定任何資源 (例如，變更參數或操作)，也不能變更並存或順序條件約束的組態。
    </para>
-   <table id="tab.ha.acl.operator">
+   <table id="tab-ha-acl-operator">
     <title>Operator 角色 — 存取類型和 XPath 運算式</title>
     <tgroup cols="2">
      <thead>
@@ -308,7 +308,7 @@ Please see LICENSE.txt for this document's license.
   </sect2>
 
   
-   <sect2 id="sec.ha.acl.config.tag">
+   <sect2 id="sec-ha-acl-config-tag">
    <title>透過縮寫設定 ACL 規則</title>
    <para>
     不想處理 XML 結構的使用者可以使用更簡單的方法， 
@@ -316,7 +316,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     例如，您可以考慮使用如下 Xpath：
    </para>
-    <screen>//*[@id='rsc1']</screen>
+    <screen>//*[@id="rsc1"]</screen>
     <para>它會尋找 ID 為 <literal>rsc1</literal> 的所有 XML 節點。
      </para>
    <para>
@@ -333,16 +333,16 @@ Please see LICENSE.txt for this document's license.
    
    </sect2>
   </sect1>
- <sect1 id="sec.ha.acl.config.hbgui">
+ <sect1 id="sec-ha-acl-config-hbgui">
   <title>使用 Pacemaker GUI 設定 ACL</title>
 
-  <para> 下面的程序說明如何透過定義 <literal>monitor</literal> 角色並將其指定給使用者，來設定對叢集組態的唯讀存取權。您也可以依照<xref linkend="sec.ha.acl.config.hawk"/>和<xref linkend="pro.ha.acl.crm"/>所述，使用 Hawk 或 crmsh 來實現此目的。 </para>
+  <para> 下面的程序說明如何透過定義 <literal>monitor</literal> 角色並將其指定給使用者，來設定對叢集組態的唯讀存取權。您也可以依照<xref linkend="sec-ha-acl-config-hawk"/>和<xref linkend="pro-ha-acl-crm"/>所述，使用 Hawk 或 crmsh 來實現此目的。 </para>
 
-  <procedure id="pro.ha.acl.hbgui">
+  <procedure id="pro-ha-acl-hbgui">
    <title>使用 Pacemaker GUI 新增 monitor 角色並指定使用者</title>
    <step performance="required">
     <para>
-     啟動 Pacemaker GUI，並依<xref linkend="sec.ha.configuration.gui.intro.connect"/> 所述登入。
+     啟動 Pacemaker GUI，並依<xref linkend="sec-ha-configuration-gui-intro-connect"/> 所述登入。
     </para>
    </step>
    <step performance="required">
@@ -365,27 +365,27 @@ Please see LICENSE.txt for this document's license.
        選擇<guimenu>ACL 角色</guimenu>。一個視窗即會開啟，您可在其中新增組態選項。
       </para>
      </step>
-     <step id="st.ha.acl.config.hbgui.id" performance="required">
+     <step id="st-ha-acl-config-hbgui-id" performance="required">
       <para>
        在<guimenu>ID</guimenu>文字欄位中新增一個唯一識別碼，例如 <literal>monitor</literal>。
       </para>
      </step>
-     <step id="st.ha.acl.config.hbgui.add" performance="required">
+     <step id="st-ha-acl-config-hbgui-add" performance="required">
       <para>
        按一下<guimenu>新增</guimenu>並選擇權限 (<guimenu>讀取</guimenu>、<guimenu>寫入</guimenu>、或<guimenu>拒絕</guimenu>)。本範例中選取<guimenu>讀取</guimenu>。
       </para>
      </step>
-     <step id="st.ha.acl.config.hbgui.xpath" performance="required">
+     <step id="st-ha-acl-config-hbgui-xpath" performance="required">
       <para>
        在<guimenu>Xpath</guimenu>文字欄位中輸入 XPath 運算式 <literal>/cib</literal>。按一下<guimenu>確定</guimenu>繼續。
       </para>
       <para>
-       附註：如果您有資源或條件約束，也可以使用<xref linkend="sec.ha.acl.config.tag"/> 中所述的簡寫語法。 
+       附註：如果您有資源或條件約束，也可以使用<xref linkend="sec-ha-acl-config-tag"/> 中所述的簡寫語法。 
       </para>
      </step>
      <step performance="required">
       <para>
-       如果您有其他條件，請重複這些步驟 (<xref linkend="st.ha.acl.config.hbgui.add"/>與<xref linkend="st.ha.acl.config.hbgui.xpath"/>)。在本例中，情況並非如此，因此您的角色已完成，此時您可以按一下<guimenu>確定</guimenu>關閉視窗。
+       如果您有其他條件，請重複這些步驟 (<xref linkend="st-ha-acl-config-hbgui-add"/>與<xref linkend="st-ha-acl-config-hbgui-xpath"/>)。在本例中，情況並非如此，因此您的角色已完成，此時您可以按一下<guimenu>確定</guimenu>關閉視窗。
       </para>
      </step>
     </substeps>
@@ -412,25 +412,25 @@ Please see LICENSE.txt for this document's license.
      </step>
      <step performance="required">
       <para>
-       按一下並使用<xref linkend="st.ha.acl.config.hbgui.id"/>中指定的角色名稱。
+       按一下並使用<xref linkend="st-ha-acl-config-hbgui-id"/>中指定的角色名稱。
       </para>
      </step>
     </substeps>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.acl.config.hawk">
+ <sect1 id="sec-ha-acl-config-hawk">
   <title>使用 Hawk 設定 ACL</title>
   
   <para>
-   下面的程序說明如何透過定義 <literal>monitor</literal> 角色並將其指定給使用者，來設定對叢集組態的唯讀存取權。您也可以依照<xref linkend="pro.ha.acl.crm"/>所述使用 crmsh 來實現此目的。
+   下面的程序說明如何透過定義 <literal>monitor</literal> 角色並將其指定給使用者，來設定對叢集組態的唯讀存取權。您也可以依照<xref linkend="pro-ha-acl-crm"/>所述使用 crmsh 來實現此目的。
   </para>
   
-  <procedure id="pro.ha.acl.hawk">
+  <procedure id="pro-ha-acl-hawk">
    <title>使用 Hawk 新增 Monitor 角色並指定使用者</title>
    <step performance="required">
     <para>
-     啟動網頁瀏覽器並依<xref linkend="sec.ha.config.hawk.intro.connect"/> 所述登入叢集。
+     啟動網頁瀏覽器並依<xref linkend="sec-ha-config-hawk-intro-connect"/> 所述登入叢集。
     </para>
    </step>
    <step performance="required">
@@ -525,18 +525,18 @@ Please see LICENSE.txt for this document's license.
   </procedure>
   
   <para>
-   若要設定對資源或條件約束的存取權限，也可以依照<xref linkend="sec.ha.acl.config.tag"/>所述使用簡寫語法。 
+   若要設定對資源或條件約束的存取權限，也可以依照<xref linkend="sec-ha-acl-config-tag"/>所述使用簡寫語法。 
   </para>
  </sect1>
  
- <sect1 id="sec.ha.acl.config.crm">
+ <sect1 id="sec-ha-acl-config-crm">
   <title>使用 crmsh 設定 ACL</title>
 
   <para>
    下面的程序說明如何透過定義 <literal>monitor</literal> 角色並將其指定給使用者，來設定對叢集組態的唯讀存取權。
   </para>
 
-  <procedure id="pro.ha.acl.crm">
+  <procedure id="pro-ha-acl-crm">
    <title>使用 crmsh 新增 Monitor 角色並指定使用者</title>
    <step performance="required">
     <para>
@@ -592,7 +592,7 @@ Please see LICENSE.txt for this document's license.
   </procedure>
 
   <para>
-   若要設定對資源或條件約束的存取權限，也可以依照<xref linkend="sec.ha.acl.config.tag"/>所述使用簡寫語法。 
+   若要設定對資源或條件約束的存取權限，也可以依照<xref linkend="sec-ha-acl-config-tag"/>所述使用簡寫語法。 
   </para>
  </sect1>
  

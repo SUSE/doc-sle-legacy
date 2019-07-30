@@ -5,7 +5,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<appendix xml:base="ha_migration.xml" id="app.ha.migration">
+<appendix xml:base="ha_migration.xml" id="app-ha-migration">
  <title>升級叢集和更新軟體套件</title>
  <abstract>
   <para>
@@ -13,7 +13,7 @@ Please see LICENSE.txt for this document's license.
   </para>
  </abstract>
  
- <sect1 id="sec.ha.migration.terminology">
+ <sect1 id="sec-ha-migration-terminology">
   <title>術語</title>
   
   <para>
@@ -59,7 +59,7 @@ Please see LICENSE.txt for this document's license.
   </variablelist>
  </sect1>
  
- <sect1 id="sec.ha.migration.upgrade">
+ <sect1 id="sec-ha-migration-upgrade">
   <title>將叢集升級到產品的最新版本</title>
   
   <para>
@@ -84,7 +84,7 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </itemizedlist>
   </important>
- <sect2 id="sec.ha.migration.sle11">
+ <sect2 id="sec-ha-migration-sle11">
   <title>從 SLES 10 升級到 SLE HA 11</title>
 
    <important>
@@ -103,22 +103,22 @@ Please see LICENSE.txt for this document's license.
   <orderedlist spacing="normal">
    <listitem>
     <para>
-     <xref linkend="pro.ha.migration.sle11.prep" xrefstyle="select:title"/>
+     <xref linkend="pro-ha-migration-sle11-prep" xrefstyle="select:title"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <xref linkend="pro.ha.migration.sle11.install" xrefstyle="select:title"/>
+     <xref linkend="pro-ha-migration-sle11-install" xrefstyle="select:title"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <xref linkend="pro.ha.migration.sle11.test" xrefstyle="select:title"/>
+     <xref linkend="pro-ha-migration-sle11-test" xrefstyle="select:title"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <xref linkend="pro.ha.migration.sle11.convert" xrefstyle="select:title"/>
+     <xref linkend="pro-ha-migration-sle11-convert" xrefstyle="select:title"/>
     </para>
    </listitem>
   </orderedlist>
@@ -134,12 +134,12 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <sect3 id="sec.ha.migration.sle11.prep">
+  <sect3 id="sec-ha-migration-sle11-prep">
    <title>準備與備份</title>
    <para>
     在將叢集升級到產品的下一版本並相應地轉換資料之前，需要對目前的叢集做一些準備工作。
    </para>
-   <procedure id="pro.ha.migration.sle11.prep">
+   <procedure id="pro-ha-migration-sle11-prep">
     <title>準備 SUSE Linux Enterprise Server 10 SP4 叢集</title>
     <step performance="required">
      <para>
@@ -190,19 +190,19 @@ Please see LICENSE.txt for this document's license.
     </step>
     <step performance="required">
      <para>
-      如果您擁有 EVMS2 資源，請將非 LVM EVMS2 磁碟區轉換為 SUSE Linux Enterprise Server 10 上相容的磁碟區。在轉換過程中 (請參閱<xref linkend="sec.ha.migration.sle11.convert"/>)，這些磁碟區將轉變並歸入 LVM2 磁碟區群組。轉換之後，請務必使用 <command>vgchange -c y</command> 將各個磁碟區群組標示為高可用性叢集的成員。
+      如果您擁有 EVMS2 資源，請將非 LVM EVMS2 磁碟區轉換為 SUSE Linux Enterprise Server 10 上相容的磁碟區。在轉換過程中 (請參閱<xref linkend="sec-ha-migration-sle11-convert"/>)，這些磁碟區將轉變並歸入 LVM2 磁碟區群組。轉換之後，請務必使用 <command>vgchange -c y</command> 將各個磁碟區群組標示為高可用性叢集的成員。
 
      </para>
     </step>
    </procedure>
   </sect3>
 
-  <sect3 id="sec.ha.migration.sle11.install">
+  <sect3 id="sec-ha-migration-sle11-install">
    <title>升級/安裝</title>
    <para>
     準備好叢集並備份好檔案之後，便可以在叢集節點上執行 SUSE Linux Enterprise 11 的全新安裝。
    </para>
-   <procedure id="pro.ha.migration.sle11.install">
+   <procedure id="pro-ha-migration-sle11-install">
     <title>升級到 SUSE Linux Enterprise 11</title>
     <step performance="required">
      <para>
@@ -211,13 +211,13 @@ Please see LICENSE.txt for this document's license.
     </step>
     <step performance="required">
      <para>
-      在所有叢集節點上，將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 做為 SUSE Linux Enterprise Server 的附加產品進行安裝。如需詳細資訊，請參閱<xref linkend="sec.ha.installation.add-on"/>。
+      在所有叢集節點上，將 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 做為 SUSE Linux Enterprise Server 的附加產品進行安裝。如需詳細資訊，請參閱<xref linkend="sec-ha-installation-add-on"/>。
      </para>
     </step>
    </procedure>
   </sect3>
 
-  <sect3 id="sec.ha.migration.sle11.convert">
+  <sect3 id="sec-ha-migration-sle11-convert">
    <title>資料轉換</title>
    <para>
     安裝 SUSE Linux Enterprise Server 11 和 High Availability Extension 之後，便可開始轉換資料。High Availability Extension 隨附的轉換程序檔已經過周密設定，但它並不能在完全自動的模式下完成所有設定。它會警告您它所進行的變更，但仍需要您的互動和決定。您需要瞭解叢集的詳細情況，因為最終是由您來確認這些變更是否有意義。轉換程序檔位於 <filename>/usr/lib/heartbeat</filename> 中 (若您使用的是 64 位元系統，則位於 <filename>/usr/lib64/heartbeat</filename> 中)。
@@ -228,7 +228,7 @@ Please see LICENSE.txt for this document's license.
      為了讓您熟悉轉換程序，我們強烈建議您先進行轉換測試 (不做任何變更)。您可以使用相同的測試目錄來執行重複的測試回合，但只需複製一次檔案。
     </para>
    </note>
-   <procedure id="pro.ha.migration.sle11.test">
+   <procedure id="pro-ha-migration-sle11-test">
     <title>測試轉換</title>
     <step performance="required">
      <para>
@@ -262,7 +262,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    <para>
     如需轉換階段的詳細資訊，請參閱所安裝之 High Availability Extension 中的 <filename>/usr/share/doc/packages/pacemaker/README.hb2openais</filename>。
    </para>
-   <procedure id="pro.ha.migration.sle11.convert">
+   <procedure id="pro-ha-migration-sle11-convert">
     <title>轉換資料</title>
     <para>
      執行測試回合並檢查輸出之後，便可以開始轉換資料。您只需在<emphasis>一個</emphasis>節點上執行轉換。主叢集組態 (CIB) 會自動複寫到其他節點中。轉換程序檔會自動複製需要複寫的所有其他檔案。
@@ -298,7 +298,7 @@ $ crm_verify -V -x cib-out.xml</screen>
     </step>
    </procedure>
    <para>
-    成功完成轉換後，依<xref linkend="sec.ha.installation.start"/> 中所述啟動新的叢集堆疊。
+    成功完成轉換後，依<xref linkend="sec-ha-installation-start"/> 中所述啟動新的叢集堆疊。
    </para>
    <para>
     完成升級後，就不能重新回復到 SUSE Linux Enterprise Server 10。
@@ -306,14 +306,14 @@ $ crm_verify -V -x cib-out.xml</screen>
 
   </sect3>
 
-  <sect3 id="sec.ha.migration.sle11.more">
+  <sect3 id="sec-ha-migration-sle11-more">
    <title>更多資訊</title>
    <para>
     如需轉換程序檔和轉換階段的更多詳細資料，請參閱所安裝之 High Availability Extension 中的 <filename>/usr/share/doc/packages/pacemaker/README.hb2openais</filename>。
    </para>
   </sect3>
  </sect2>
- <sect2 id="sec.ha.migration.sle11.sp1">
+ <sect2 id="sec-ha-migration-sle11-sp1">
   <title>從 SLE HA 11 升級到 SLE HA 11 SP1</title>
 
    <note>
@@ -325,12 +325,12 @@ $ crm_verify -V -x cib-out.xml</screen>
 
 
 
-  <procedure id="pro.ha.migration.rolling.upgrade">
+  <procedure id="pro-ha-migration-rolling-upgrade">
    <title>執行滾存升級</title>
 
     <warning>
      <title>在更新期間處於使用中狀態的叢集堆疊</title>
-     <para> 若要更新執行中叢集之成員節點上的任何軟體套件，應先<emphasis>停止</emphasis><emphasis>該節點</emphasis>上的叢集堆疊，然後再開始更新軟體。在某些情況下 (請參閱<xref linkend="il.ha.update.cond"/>)，您還可以將叢集置於維護模式 (自 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 開始提供此模式)。 </para>
+     <para> 若要更新執行中叢集之成員節點上的任何軟體套件，應先<emphasis>停止</emphasis><emphasis>該節點</emphasis>上的叢集堆疊，然後再開始更新軟體。在某些情況下 (請參閱<xref linkend="il-ha-update-cond"/>)，您還可以將叢集置於維護模式 (自 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 開始提供此模式)。 </para>
      <para>
       如果某個節點上的叢集資源管理員在軟體更新期間處於使用中狀態，可能會導致出現不可預知的結果，例如圍籬區隔使用中的節點。
      </para>
@@ -346,12 +346,12 @@ $ crm_verify -V -x cib-out.xml</screen>
      檢查您的系統備份是否最新、能否還原。
     </para>
    </step>
-   <step id="step.ha.migration.upgrade.tolatest" performance="required">
+   <step id="step-ha-migration-upgrade-tolatest" performance="required">
     <para>
      執行從 SUSE Linux Enterprise Server 11 到 SUSE Linux Enterprise Server 11 SP1 的升級程序，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP1 的升級程序。如需如何升級產品的相關資訊，請參閱《SUSE Linux Enterprise Server 11 SP1 部署指南》中的「<citetitle>更新 SUSE Linux Enterprise</citetitle>」一章。
     </para>
    </step>
-   <step id="step.ha.migration.upgrade.ais" performance="required">
+   <step id="step-ha-migration-upgrade-ais" performance="required">
     <para>
      在已升級的節點上重新啟動 OpenAIS/Corosync，讓節點重新加入叢集︰
     </para>
@@ -364,7 +364,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    </step>
   </procedure>
  </sect2>
- <sect2 id="sec.ha.migration.sle11.sp2">
+ <sect2 id="sec-ha-migration-sle11-sp2">
   <title>從 SLE HA 11 SP1 升級到 SLE HA 11 SP2</title>
 
   <para>
@@ -372,13 +372,13 @@ $ crm_verify -V -x cib-out.xml</screen>
   </para>
 
   <para>
-   依照<xref linkend="pro.ha.migration.rolling.upgrade"/> 所述繼續，同時注意以下兩個差異：
+   依照<xref linkend="pro-ha-migration-rolling-upgrade"/> 所述繼續，同時注意以下兩個差異：
   </para>
 
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     在<xref linkend="step.ha.migration.upgrade.tolatest" xrefstyle="select:name"/> 中，從 SUSE Linux Enterprise Server 11 SP1 升級到 SUSE Linux Enterprise Server 11 SP2，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP1 升級到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP2。
+     在<xref linkend="step-ha-migration-upgrade-tolatest" xrefstyle="select:name"/> 中，從 SUSE Linux Enterprise Server 11 SP1 升級到 SUSE Linux Enterprise Server 11 SP2，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP1 升級到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP2。
     </para>
 
     <para>
@@ -387,7 +387,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    </listitem>
    <listitem>
     <para>
-     由於 SP2 隨附了核心更新，請在<xref linkend="step.ha.migration.upgrade.tolatest" xrefstyle="select:name"/> 與<xref linkend="step.ha.migration.upgrade.ais"/> 之間將節點重新開機。
+     由於 SP2 隨附了核心更新，請在<xref linkend="step-ha-migration-upgrade-tolatest" xrefstyle="select:name"/> 與<xref linkend="step-ha-migration-upgrade-ais"/> 之間將節點重新開機。
     </para>
    </listitem>
   </itemizedlist>
@@ -399,7 +399,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    </para>
   </important>
  </sect2>
- <sect2 id="sec.ha.migration.sle11.sp3">
+ <sect2 id="sec-ha-migration-sle11-sp3">
   <title>從 SLE HA 11 SP2 升級到 SLE HA 11 SP3</title>
 
   <para>
@@ -407,7 +407,7 @@ $ crm_verify -V -x cib-out.xml</screen>
   </para>
 
   <para>
-   依照<xref linkend="pro.ha.migration.rolling.upgrade"/> 所述繼續，並注意以下差異：在<xref linkend="step.ha.migration.upgrade.tolatest" xrefstyle="select:name"/> 中，從 SUSE Linux Enterprise Server 11  SP2 升級到 SUSE Linux Enterprise Server 11 SP3，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP2 升級到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3。
+   依照<xref linkend="pro-ha-migration-rolling-upgrade"/> 所述繼續，並注意以下差異：在<xref linkend="step-ha-migration-upgrade-tolatest" xrefstyle="select:name"/> 中，從 SUSE Linux Enterprise Server 11  SP2 升級到 SUSE Linux Enterprise Server 11 SP3，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP2 升級到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3。
   </para>
 
   <important>
@@ -418,7 +418,7 @@ $ crm_verify -V -x cib-out.xml</screen>
   </important>
  </sect2>
   
-  <sect2 id="sec.ha.migration.sle11.sp4">
+  <sect2 id="sec-ha-migration-sle11-sp4">
    <title>從 SLE HA 11 SP3 升級到 SLE HA 11 SP4</title>
    
    <para>
@@ -426,10 +426,10 @@ $ crm_verify -V -x cib-out.xml</screen>
    </para>
    
    <para>
-    依照<xref linkend="pro.ha.migration.rolling.upgrade"/> 所述繼續，並注意以下差異：在<xref linkend="step.ha.migration.upgrade.tolatest" xrefstyle="select:name"/> 中，從 SUSE Linux Enterprise Server 11  SP3 升級到 SUSE Linux Enterprise Server 11 SP4，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升級到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4。
+    依照<xref linkend="pro-ha-migration-rolling-upgrade"/> 所述繼續，並注意以下差異：在<xref linkend="step-ha-migration-upgrade-tolatest" xrefstyle="select:name"/> 中，從 SUSE Linux Enterprise Server 11  SP3 升級到 SUSE Linux Enterprise Server 11 SP4，以及從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升級到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4。
    </para>
    
-   <note id="note.ha.cib.upgrade">
+   <note id="note-ha-cib-upgrade">
     <title>升級 CIB 語法版本</title>
     <para>標記 (用於對資源分組) 和某些 ACL 功能僅適用於 <literal>pacemaker-2.0</literal> 或更高的 CIB 語法版本。(若要檢查版本，請執行 <command>cibadmin -Q |grep validate-with</command>)。如果您已從 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升級，則 CIB 版本預設<emphasis>不會</emphasis>升級。若要手動升級到最新的 CIB 版本，請使用下列其中一個指令：</para>
     <screen><prompt role="root">root # </prompt>cibadmin --upgrade --force</screen>
@@ -446,12 +446,12 @@ $ crm_verify -V -x cib-out.xml</screen>
   </sect2>
   
  </sect1>
- <sect1 id="sec.ha.update">
+ <sect1 id="sec-ha-update">
   <title>更新叢集節點上的軟體套件</title>
   
   <warning>
    <title>在更新期間處於使用中狀態的叢集堆疊</title>
-   <para> 若要更新執行中叢集之成員節點上的任何軟體套件，應先<emphasis>停止</emphasis><emphasis>該節點</emphasis>上的叢集堆疊，然後再開始更新軟體。在某些情況下 (請參閱<xref linkend="il.ha.update.cond"/>)，您還可以將叢集置於維護模式 (自 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 開始提供此模式)。 </para>
+   <para> 若要更新執行中叢集之成員節點上的任何軟體套件，應先<emphasis>停止</emphasis><emphasis>該節點</emphasis>上的叢集堆疊，然後再開始更新軟體。在某些情況下 (請參閱<xref linkend="il-ha-update-cond"/>)，您還可以將叢集置於維護模式 (自 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 開始提供此模式)。 </para>
    <para>
     如果某個節點上的叢集資源管理員在軟體更新期間處於使用中狀態，可能會導致出現不可預知的結果，例如圍籬區隔使用中的節點。
    </para>
@@ -461,7 +461,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    在節點上安裝任何套件更新之前，請檢查以下幾點：
   </para>
   
-  <itemizedlist id="il.ha.update.cond" mark="bullet" spacing="normal">
+  <itemizedlist id="il-ha-update-cond" mark="bullet" spacing="normal">
    <title>停止叢集堆疊的條件</title>
    <listitem>
     <para>
@@ -484,7 +484,7 @@ $ crm_verify -V -x cib-out.xml</screen>
   <screen><prompt role="root">root # </prompt><command>crm</command> configure property maintenance-mode=true</screen>
   
   <para>
-   如需維護模式的詳細資料，請參閱<xref linkend="sec.ha.config.basics.maint.mode"/>。
+   如需維護模式的詳細資料，請參閱<xref linkend="sec-ha-config-basics-maint-mode"/>。
   </para>
   
   
@@ -501,7 +501,7 @@ $ crm_verify -V -x cib-out.xml</screen>
   <screen><prompt role="root">root # </prompt>rcopenais start</screen>
  </sect1>
  
- <sect1 id="sec.ha.migration.more">
+ <sect1 id="sec-ha-migration-more">
   <title>更多資訊</title>
 
   <para>
