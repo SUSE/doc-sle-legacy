@@ -7,7 +7,7 @@
 
 <!--taroth 2014-08-11: https://fate.suse.com/316223: [docu] sync and change config files (prio: mandatory)-->
 
-  <sect1 id="sec.ha.geo.sync">
+  <sect1 id="sec-ha-geo-sync">
    <title>Synchronizing Configuration Files Across All Sites and Arbitrators</title>
 
  <para>To replicate important configuration files across all nodes in the cluster and across
@@ -33,14 +33,14 @@
     
  
      
-   <sect2 id="sec.ha.geo.booth.sync.csync2.setup">
+   <sect2 id="sec-ha-geo-booth-sync-csync2-setup">
       <title>&csync; Setup for &geo; Clusters</title>
       <para>How to set up &csync; for individual clusters with &yast; is explained in the
        <citetitle>&haguide;</citetitle> for &productname;, chapter <citetitle>Installation and
         Basic Setup</citetitle>, section <citetitle>Transferring the Configuration to All
          Nodes</citetitle>. However, &yast; cannot handle more complex &csync; setups, like those
        that are needed for &geo; clusters. For the following setup, as shown in 
-       <xref linkend="fig.ha.geo.csync.config"/>, configure
+       <xref linkend="fig-ha-geo-csync-config"/>, configure
        &csync; manually by editing the configuration files.</para>
 
    
@@ -59,9 +59,9 @@
      </itemizedlist>
 
      <para>For an overview of the multiple &csync; configuration files for the two
-      synchronization groups, see <xref linkend="fig.ha.geo.csync.config"/>.</para>
+      synchronization groups, see <xref linkend="fig-ha-geo-csync-config"/>.</para>
 
-   <figure id="fig.ha.geo.csync.config">
+   <figure id="fig-ha-geo-csync-config">
     <title>Example &csync; Setup for &geo; Clusters</title>
     <mediaobject>
      <imageobject role="fo">
@@ -76,11 +76,11 @@
    </figure>
    <para>Authentication key files and their references are displayed in red. The names of
     &csync; configuration files are displayed in blue, and their references are displayed in green. For
-    details, refer to  <xref linkend="vl.fig.ha.geo.csync.config.files"/>.</para>
+    details, refer to  <xref linkend="vl-fig-ha-geo-csync-config-files"/>.</para>
     
-    <variablelist id="vl.fig.ha.geo.csync.config.files" >
+    <variablelist id="vl-fig-ha-geo-csync-config-files" >
      <title>Example &csync; Setup: Configuration Files</title>
-     <varlistentry id="vle.ha.geo.csync.csync2.cfg">
+     <varlistentry id="vle-ha-geo-csync-csync2-cfg">
       <term><filename>/etc/csync2/csync2.cfg</filename></term>
       <listitem>
        <para>The main &csync; configuration file. It is kept short and simple on purpose and
@@ -103,7 +103,7 @@
        </itemizedlist>
       </listitem>
      </varlistentry>
-     <varlistentry id="vle.ha.geo.csync.ha_local.cfg">
+     <varlistentry id="vle-ha-geo-csync-ha-local-cfg">
       <term><filename>/etc/csync2/ha_local.cfg</filename></term>
       <listitem>
        <para>This file concerns only the local cluster. It specifies a list of files to be
@@ -129,7 +129,7 @@
         </listitem>
        </itemizedlist>
        <para>The rest of the file list depends on your specific cluster setup. The files listed in
-         <xref linkend="fig.ha.geo.csync.config"/> are only examples. If you also want to
+         <xref linkend="fig-ha-geo-csync-config"/> are only examples. If you also want to
         synchronize files for any site-specific applications, include them in
          <filename>ha_local.cfg</filename>, too. Even though <filename>ha_local.cfg</filename> is
         targeted at the nodes belonging to one site of your &geo; cluster, the content may be
@@ -137,7 +137,7 @@
         groups may be necessary. </para>
       </listitem>
      </varlistentry>
-     <varlistentry id="vle.ha.geo.csync.ha_global.cfg">
+     <varlistentry id="vle-ha-geo-csync-ha-global-cfg">
       <term> <filename>/etc/csync2.cfg/ha_global.cfg</filename></term>
       <listitem>
        <para>This file defines the &csync; synchronization group <literal>ha_global</literal>.
@@ -159,7 +159,7 @@
           <filename>/etc/booth/booth.conf</filename>, the default booth configuration file. In case
           you are using a booth setup for multiple tenants, replace this file with the different
           booth configuration files that you have created. See <xref
-           linkend="sec.ha.geo.booth.multi"/> for details.</para>
+           linkend="sec-ha-geo-booth-multi"/> for details.</para>
         </listitem>
         <listitem>
          <para><filename>/etc/drbd.conf</filename> and <filename>/etc/drbd.d</filename> (if you are
@@ -188,7 +188,7 @@
       reference <filename>ha_global.cfg</filename> though.</para>
     </note>
    </sect2>
-   <sect2 id="sec.ha.geo.booth.sync.csync2.start">
+   <sect2 id="sec-ha-geo-booth-sync-csync2-start">
     <title>Synchronizing Changes with &csync;</title>
   
     <para>
@@ -220,14 +220,14 @@
       <screen>csync2 -k <replaceable>NAME_OF_KEYFILE</replaceable></screen>
       <para>However, do <emphasis>not</emphasis> regenerate the key file on any other member of the
        same group.</para>
-      <para>With regard to <xref linkend="fig.ha.geo.csync.config"/>, this would result in the
+      <para>With regard to <xref linkend="fig-ha-geo-csync-config"/>, this would result in the
        following key files: <filename>/etc/csync2/ha_global.key</filename> and one local key
        (<filename>/etc/csync2/ha_local.key</filename>) per
        site. </para>
      </step>
      <step>
       <para>Copy each key file to <emphasis>all</emphasis> members of the respective synchronization
-       group. With regard to <xref linkend="fig.ha.geo.csync.config"/>:</para>
+       group. With regard to <xref linkend="fig-ha-geo-csync-config"/>:</para>
       <substeps>
        <step>
         <para>Copy <filename>/etc/csync2/ha_global.key</filename> to 
@@ -260,7 +260,7 @@ chkconfig xinetd on</screen>
      </step>
     </procedure>
     
-    <procedure id="pro.ha.geo.setup.csync2.start">
+    <procedure id="pro-ha-geo-setup-csync2-start">
      <title>Synchronizing Files with &csync;</title>
     <step>
      <para>To initially synchronize all files once, execute the following command 

@@ -9,7 +9,7 @@
 For the next release:
 * bnc#577381: drbd disks are set to StandAlone after network restart
 -->
-<chapter id="cha.ha.drbd">
+<chapter id="cha-ha-drbd">
  <title>DRBD</title>
  <abstract>
   <para>
@@ -20,7 +20,7 @@ For the next release:
    you how to install and set up DRBD.
   </para>
  </abstract>
- <sect1 id="sec.ha.drbd.overview">
+ <sect1 id="sec-ha-drbd-overview">
   <title>Conceptual Overview</title>
 
   <para>
@@ -47,13 +47,13 @@ For the next release:
    DRBD is a Linux Kernel module and sits between the I/O scheduler at the
    lower end and the file system at the upper end, see
    <xref
-    linkend="fig.ha.drbd.concept"/>. To communicate with DRBD,
+    linkend="fig-ha-drbd-concept"/>. To communicate with DRBD,
    users use the high-level command <command>drbdadm</command>. For maximum
    flexibility DRBD comes with the low-level tool
    <command>drbdsetup</command>.
   </para>
 
-  <figure id="fig.ha.drbd.concept">
+  <figure id="fig-ha-drbd-concept">
    <title>Position of DRBD within Linux</title>
    <mediaobject>
     <imageobject role="fo">
@@ -121,25 +121,25 @@ For the next release:
    fails because it is not available for user data.
   </para>
  </sect1>
- <sect1 id="sec.ha.drbd.install">
+ <sect1 id="sec-ha-drbd-install">
   <title>Installing DRBD Services</title>
 
   <para>
    To install the needed packages for DRBD, install the &hasi; Add-On
    product on both &sls; machines in your networked cluster as described in
    <xref
-    linkend="part.install"/>. Installing &hasi; also installs the
+    linkend="part-install"/>. Installing &hasi; also installs the
    DRBD program files.
   </para>
 
   <para>
    If you do not need the complete cluster stack but just want to use DRBD,
-   refer to <xref linkend="tab.ha.drbd.rpmfiles"/>. It contains a list of
+   refer to <xref linkend="tab-ha-drbd-rpmfiles"/>. It contains a list of
    all RPM packages for DRBD. Recently, the <systemitem>drbd</systemitem>
    package has been split into separate packages.
   </para>
 
-  <table id="tab.ha.drbd.rpmfiles">
+  <table id="tab-ha-drbd-rpmfiles">
    <title>DRBD RPM Packages</title>
    <tgroup cols="2">
     <thead>
@@ -297,7 +297,7 @@ For the next release:
    <filename>/root/.bashrc</filename> and insert the previous line.
   </para>
  </sect1>
- <sect1 id="sec.ha.drbd.configure">
+ <sect1 id="sec-ha-drbd-configure">
   <title>Configuring the DRBD Service</title>
 
   <note><title>Adjustments Needed</title>
@@ -324,7 +324,7 @@ For the next release:
    To set up DRBD manually, proceed as follows:
   </para>
 
-  <procedure id="step.drbd.configure">
+  <procedure id="step-drbd-configure">
    <title>Manually Configuring DRBD</title>
    <step>
      <para>Put your cluster in maintenance mode, if the cluster is already
@@ -382,24 +382,24 @@ include "drbd.d/*.res";</screen>
        Create the file <filename>/etc/drbd.d/r0.res</filename>, change the
        lines according to your situation, and save it:
       </para>
-<screen>resource r0 { <co id="co.drbd.config.r0"/>
-  device /dev/drbd0; <co id="co.drbd.config.device"/>
-  disk /dev/sda1; <co id="co.drbd.config.disk"/>
-  meta-disk internal; <co id="co.drbd.config.meta-disk"/>
-  on &node1; { <co id="co.drbd.config.resname"/>
-    address  &subnetI;.10:7788; <co id="co.drbd.config.address"/>
+<screen>resource r0 { <co id="co-drbd-config-r0"/>
+  device /dev/drbd0; <co id="co-drbd-config-device"/>
+  disk /dev/sda1; <co id="co-drbd-config-disk"/>
+  meta-disk internal; <co id="co-drbd-config-meta-disk"/>
+  on &node1; { <co id="co-drbd-config-resname"/>
+    address  &subnetI;.10:7788; <co id="co-drbd-config-address"/>
   }
-  on &node2; { <xref linkend="co.drbd.config.resname"
+  on &node2; { <xref linkend="co-drbd-config-resname"
    xrefstyle="selec:nopage"/>
-    address &subnetI;.11:7788; <xref linkend="co.drbd.config.address"
+    address &subnetI;.11:7788; <xref linkend="co-drbd-config-address"
    xrefstyle="selec:nopage"/>
   }
   syncer {
-    rate  7M; <co id="co.drbd.config.syncer-rate"/>
+    rate  7M; <co id="co-drbd-config-syncer-rate"/>
   }
 }</screen>
       <calloutlist>
-       <callout arearefs="co.drbd.config.r0">
+       <callout arearefs="co-drbd-config-r0">
         <para>
          Name that allows some association to the service that needs them.
          For example, <systemitem>nfs</systemitem>, 
@@ -408,7 +408,7 @@ include "drbd.d/*.res";</screen>
           <systemitem>postgres_wal</systemitem>, etc.
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.device">
+       <callout arearefs="co-drbd-config-device">
 <!--taroth 2010-08-16: fix for bnc#623524-->
         <para>
          The device name for DRBD and its minor number.
@@ -425,7 +425,7 @@ include "drbd.d/*.res";</screen>
          or <literal>/dev/drbd0</literal>
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.disk">
+       <callout arearefs="co-drbd-config-disk">
         <para>
          The raw device that is replicated between nodes. Note, in this example
          the devices are the same on both nodes. If you need different
@@ -433,7 +433,7 @@ include "drbd.d/*.res";</screen>
          <literal>on</literal> host.
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.meta-disk">
+       <callout arearefs="co-drbd-config-meta-disk">
         <para>
          The meta-disk parameter usually contains the value
          <literal>internal</literal>, but it is possible to specify an
@@ -442,20 +442,20 @@ include "drbd.d/*.res";</screen>
          for more information.
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.resname">
+       <callout arearefs="co-drbd-config-resname">
         <para>
          The <literal>on</literal> section states which host this configuration
           statement applies to.
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.address">
+       <callout arearefs="co-drbd-config-address">
         <para>
          The IP address and port number of the respective node. Each
          resource needs an individual port, usually starting with
          <literal>7788</literal>.
         </para>
        </callout>
-       <callout arearefs="co.drbd.config.syncer-rate">
+       <callout arearefs="co-drbd-config-syncer-rate">
         <para>
          The synchronization rate. Set it to one third of the lower of 
          the disk- and network bandwidth. It only limits the resynchronization, 
@@ -562,7 +562,7 @@ m:res  cs         ro                 ds                 p  mounted  fstype
    Alternatively, to use &yast; to configure DRBD, proceed as follows:
   </para>
 
-  <procedure id="pro.drbd.configure.yast">
+  <procedure id="pro-drbd-configure-yast">
    <title>Using &yast; to Configure DRBD</title>
    <step>
     <para>
@@ -581,12 +581,12 @@ m:res  cs         ro                 ds                 p  mounted  fstype
     <para>
      The actual configuration of the resource is done in <guimenu>Resource
      Configuration</guimenu> (see
-     <xref linkend="fig.ha.drbd.yast.resconfig"/>).
+     <xref linkend="fig-ha-drbd-yast-resconfig"/>).
     </para>
     <remark>taroth 2015-03-17: just noticed that the screenshot does neither reflect 
      the new node names (alice, bob), nor the corrections by Phil - todo for next release:
      fix! </remark>
-    <figure id="fig.ha.drbd.yast.resconfig">
+    <figure id="fig-ha-drbd-yast-resconfig">
      <title>Resource Configuration</title>
      <mediaobject>
       <imageobject role="fo">
@@ -758,7 +758,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.drbd.test">
+ <sect1 id="sec-ha-drbd-test">
   <title>Testing the DRBD Service</title>
 
   <para>
@@ -767,7 +767,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    with understanding how the software works.
   </para>
 
-  <procedure id="pro.drbd.test">
+  <procedure id="pro-drbd-test">
    <step>
     <para>
      Test the DRBD service on &node1;.
@@ -904,12 +904,12 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
      To get the service to automatically start and fail over if the server
      has a problem, you can set up DRBD as a high availability service with
      &ais;. For information about installing and configuring &ais; for &sle;
-     11 see <xref linkend="part.config"/>.
+     11 see <xref linkend="part-config"/>.
     </para>
    </step>
   </procedure>
  </sect1>
- <sect1 id="sec.ha.drbd.tuning">
+ <sect1 id="sec-ha-drbd-tuning">
   <title>Tuning DRBD</title>
 
   <para>
@@ -963,7 +963,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
     </listitem>
   </orderedlist>
  </sect1>
- <sect1 id="sec.ha.drbd.trouble">
+ <sect1 id="sec-ha-drbd-trouble">
   <title>Troubleshooting DRBD</title>
 
   <para>
@@ -972,7 +972,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    scenarios and recommend various solutions.
   </para>
 
-  <sect2 id="sec.ha.drbd.trouble.config">
+  <sect2 id="sec-ha-drbd-trouble-config">
    <title>Configuration</title>
    <para>
     If the initial DRBD setup does not work as
@@ -1021,7 +1021,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    </procedure>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.hostnames">
+  <sect2 id="sec-ha-drbd-hostnames">
    <title>Host Names</title>
    <para>
     For DRBD, host names are case-sensitive (<systemitem>Node0</systemitem>
@@ -1036,7 +1036,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.port">
+  <sect2 id="sec-ha-drbd-port">
    <title>TCP Port 7788</title>
    <para>
     If your system cannot connect to the peer, this might be a problem
@@ -1046,7 +1046,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    </para>
   </sect2>
 
-  <sect2 id="sec.ha.drbd.trouble.broken">
+  <sect2 id="sec-ha-drbd-trouble-broken">
    <title>DRBD Devices Broken after Reboot</title>
    <para>
     In cases when DRBD does not know which of the real devices holds the
@@ -1071,7 +1071,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
     nodes.</para>
   </sect2>
  </sect1>
- <sect1 id="sec.ha.drbd.more">
+ <sect1 id="sec-ha-drbd-more">
   <title>For More Information</title>
 
   <para>
@@ -1086,7 +1086,7 @@ scp /etc/drbd.d/*  &node2;:/etc/drbd.d/</screen>
    </listitem>
    <listitem>
     <para>
-     See <xref linkend="art_ha_quick_nfs"/>.
+     See <xref linkend="art-ha-quick-nfs"/>.
     </para>
    </listitem>
    <listitem>
