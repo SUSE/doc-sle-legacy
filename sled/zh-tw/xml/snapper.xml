@@ -7,7 +7,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="snapper.xml" id="cha.snapper">
+<chapter xml:base="snapper.xml" id="cha-snapper">
  <title>使用 Snapper 執行快照/復原</title>
  <abstract>
   <para>
@@ -22,14 +22,14 @@ Please see LICENSE.txt for this document's license.
    依預設，<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop </phrase></phrase>上的 Snapper 與 <literal>Btrfs</literal> 設為用作 YaST 與 zypper 所執行之系統變更的<quote>復原工具</quote>。在執行 YaST 模組或 zypper 的前後，系統會分別建立一個快照。Snapper 可讓您比較這兩個快照，並提供回復這兩個快照之間的差異的方法。這些工具還提供系統備份，方法是建立系統子磁碟區的每小時快照。
   </para>
  </abstract>
- <sect1 id="sec.snapper.requirements">
+ <sect1 id="sec-snapper-requirements">
   <title>要求</title>
 
   <para>
    由於 <literal>Btrfs</literal> 是 <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 上唯一一個支援快照的檔案系統，因此要<quote>建立快照</quote>的所有分割區或子磁碟區上都需要它。
   </para>
 
-  <sect2 id="sec.snapper.requires.diskspace">
+  <sect2 id="sec-snapper-requires-diskspace">
    <title>快照與磁碟空間</title>
    <para>
     建立快照時，快照和原件都會指向檔案系統中的同一區塊。因此，快照最初並不佔用額外的磁碟空間。如果原始檔案系統中的資料經過修改，則會複製變更後的資料區塊，同時保留快照的舊資料區塊。因此，快照便會佔用與已修改資料相同的空間。這樣，經過一段時間之後，快照配置的空間不斷增大。因而，從包含快照的 <literal>Btrfs</literal> 檔案系統刪除檔案可能<emphasis>無法</emphasis>釋放磁碟空間！
@@ -56,11 +56,11 @@ Please see LICENSE.txt for this document's license.
     </para>
    </tip>
    <para>
-    Snapper 還可用於在格式為 ext3 或 XFS 之簡易佈建的 LVM 磁碟區上建立和管理快照 (請參閱<xref linkend="sec.snapper.lvm"/>)。
+    Snapper 還可用於在格式為 ext3 或 XFS 之簡易佈建的 LVM 磁碟區上建立和管理快照 (請參閱<xref linkend="sec-snapper-lvm"/>)。
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.snapper.auto">
+ <sect1 id="sec-snapper-auto">
   <title>使用 Snapper 復原系統變更</title>
 
   <para>
@@ -71,7 +71,7 @@ Please see LICENSE.txt for this document's license.
    預設會為根分割區及其子磁碟區設定上述的自動快照。為了讓這些快照可供其他分割區 (例如 <filename>/home</filename>) 使用，您可以建立自定組態。
   </para>
 
-  <sect2 id="sec.snapper.yast">
+  <sect2 id="sec-snapper-yast">
    <title>復原 YaST 和 Zypper 變更</title>
    <para>
     如果您在安裝期間使用 <literal>Btrfs</literal> 設定根分割區，系統將會自動安裝 Snapper (已預先設定為用於復原 YaST 或 Zypper 所做的變更)。每當您啟動 YaST 模組或 Zypper 交易時，都會建立兩個快照：擷取啟動模組之前檔案系統狀態的<quote>前快照</quote>，以及完成模組之後的<quote>後快照</quote>。
@@ -85,7 +85,7 @@ Please see LICENSE.txt for this document's license.
    <important>
     <title>限制</title>
     <para>
-     請確定在嘗試使用 Snapper 的復原機制之前，您知悉 Snapper 的局限性。如需詳細資料，請參閱<xref linkend="sec.snapper.limits"/>。
+     請確定在嘗試使用 Snapper 的復原機制之前，您知悉 Snapper 的局限性。如需詳細資料，請參閱<xref linkend="sec-snapper-limits"/>。
     </para>
    </important>
    <note>
@@ -94,7 +94,7 @@ Please see LICENSE.txt for this document's license.
      依預設，系統會保留最後 100 個 YaST 和 zypper 快照。如果超出此數量，系統將會刪除最舊的快照。
     </para>
    </note>
-   <procedure id="proc.snapper.yast.yast">
+   <procedure id="proc-snapper-yast-yast">
     <title>使用 YaST <guimenu>Snapper</guimenu> 模組復原變更</title>
     <step performance="required">
      <para>
@@ -170,7 +170,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-   <procedure id="proc.snapper.yast.cmdline">
+   <procedure id="proc-snapper-yast-cmdline">
     <title>使用 <command>snapper</command> 指令復原變更</title>
     <step performance="required">
      <para>
@@ -272,23 +272,23 @@ Please see LICENSE.txt for this document's license.
    </procedure>
   </sect2>
 
-  <sect2 id="sec.snapper.backup">
+  <sect2 id="sec-snapper-backup">
    <title>使用 Snapper 從每小時備份還原檔案</title>
    <para>
     除了 YaST 和 zypper 快照之外，Snapper 還會按小時建立系統分割區 (<filename>/</filename>) 的快照。您可以使用這些備份快照來還原遭意外刪除或修改但無法復原的檔案。利用 Snapper 的差異比對功能，您還可以瞭解在特定時間點執行了哪些修改。
    </para>
    <para>
-    每小時備份快照屬於<literal>單一</literal>類型，並以描述<literal>時間軸</literal>標示。若要從這些快照還原檔案，請依<xref linkend="proc.snapper.yast.yast"/> 或<xref linkend="proc.snapper.yast.cmdline"/> 中所述繼續操作。
+    每小時備份快照屬於<literal>單一</literal>類型，並以描述<literal>時間軸</literal>標示。若要從這些快照還原檔案，請依<xref linkend="proc-snapper-yast-yast"/> 或<xref linkend="proc-snapper-yast-cmdline"/> 中所述繼續操作。
    </para>
    <note>
     <title>快照的儲存時間</title>
     <para>
-     依預設，系統會保留過去十天、十個月或十年的第一個快照。如需詳細資料，請參閱<xref linkend="ex.snapper.config.timeline"/>。
+     依預設，系統會保留過去十天、十個月或十年的第一個快照。如需詳細資料，請參閱<xref linkend="ex-snapper-config-timeline"/>。
     </para>
    </note>
   </sect2>
 
-  <sect2 id="sec.snapper.config">
+  <sect2 id="sec-snapper-config">
    <title>建立和修改 Snapper 組態</title>
    <para>
     Snapper 的行為方式在組態檔案中加以定義；每個分割區或 <literal>Btrfs</literal> 子磁碟區的行為都是特定的。這些組態檔案位於 <filename>/etc/snapper/configs/</filename> 下。隨 Snapper 一起安裝之 <filename>/</filename> 目錄的預設組態名為<filename>根</filename>。它會建立並管理 YaST 和 Zypper 快照，以及 <filename>/</filename> 的每小時備份快照。
@@ -302,15 +302,15 @@ Please see LICENSE.txt for this document's license.
    <para>
     若要建立新的 Snapper 組態，請執行 <command>snapper create-config</command>：
    </para>
-<screen>snapper -c www-data<co id="snapper.create.name"/> create-config
-   /srv/www<co id="snapper.create.volume"/></screen>
+<screen>snapper -c www-data<co id="snapper-create-name"/> create-config
+   /srv/www<co id="snapper-create-volume"/></screen>
    <calloutlist>
-    <callout arearefs="snapper.create.name">
+    <callout arearefs="snapper-create-name">
      <para>
       組態檔案的名稱。
      </para>
     </callout>
-    <callout arearefs="snapper.create.volume">
+    <callout arearefs="snapper-create-volume">
      <para>
       要建立快照之分割區或 <literal>Btrfs</literal> 子磁碟區的掛裝點。
      </para>
@@ -327,7 +327,7 @@ Please see LICENSE.txt for this document's license.
     </para>
 <screen>snapper -c www-data create-config -t my_defaults /srv/www</screen>
    </tip>
-   <sect3 id="sec.snapper.config.modify">
+   <sect3 id="sec-snapper-config-modify">
     <title>調整組態檔案</title>
     <para>
      若要調整組態檔案，您需要使用編輯器對它進行修改。它包含格式為<literal><replaceable>鍵</replaceable>=<replaceable>值</replaceable></literal>的鍵/值組。您只能變更<replaceable>值</replaceable>。
@@ -418,7 +418,7 @@ Please see LICENSE.txt for this document's license.
        <para>
         要以小時、天、月和年保留的快照數量。
        </para>
-       <example id="ex.snapper.config.timeline">
+       <example id="ex-snapper-config-timeline">
         <title>時間軸組態範例</title>
 <screen>TIMELINE_CREATE="yes"
         TIMELINE_CLEANUP="yes"
@@ -459,7 +459,7 @@ Please see LICENSE.txt for this document's license.
      </varlistentry>
     </variablelist>
    </sect3>
-   <sect3 id="sec.snapper.config.user">
+   <sect3 id="sec-snapper-config-user">
     <title>以一般使用者身分使用 Snapper</title>
     <para>
      依預設，Snapper 只能由 <systemitem class="username">root</systemitem> 使用者使用。但是，在下列情況中，某些群組或使用者需要能夠建立快照或透過回復至快照來復原變更：
@@ -491,13 +491,13 @@ Please see LICENSE.txt for this document's license.
      </para>
      <step performance="required">
       <para>
-       若不存在，請為使用者應該能夠在其上使用 Snapper 的分割區或子磁碟區建立 Snapper 組態。如需指示，請參閱<xref linkend="sec.snapper.config"/>。範例：
+       若不存在，請為使用者應該能夠在其上使用 Snapper 的分割區或子磁碟區建立 Snapper 組態。如需指示，請參閱<xref linkend="sec-snapper-config"/>。範例：
       </para>
 <screen>snapper --config web_data create /srv/www</screen>
      </step>
      <step performance="required">
       <para>
-       組態檔案將在 <filename>/etc/snapper/configs/<replaceable>名稱</replaceable></filename>下建立，其中「名稱」是您在上一步中使用 <option>-c/--config</option> 指定的值 (例如 <filename>/etc/snapper/configs/web_data</filename>)。根據您的需求調整該值；如需詳細資料，請參閱<xref linkend="sec.snapper.config.modify"/>。
+       組態檔案將在 <filename>/etc/snapper/configs/<replaceable>名稱</replaceable></filename>下建立，其中「名稱」是您在上一步中使用 <option>-c/--config</option> 指定的值 (例如 <filename>/etc/snapper/configs/web_data</filename>)。根據您的需求調整該值；如需詳細資料，請參閱<xref linkend="sec-snapper-config-modify"/>。
       </para>
      </step>
      <step performance="required">
@@ -520,7 +520,7 @@ Please see LICENSE.txt for this document's license.
    </sect3>
   </sect2>
 
-  <sect2 id="sec.snapper.disable">
+  <sect2 id="sec-snapper-disable">
    <title>停用自動快照</title>
    <para>
     如果您在安裝期間使用 <literal>Btrfs</literal> 設定了根分割區，Snapper 將會自動每小時建立系統的快照，以及 YaST 和 zypper 交易的前快照與後快照。上述每個任務都可以按如下所示停用：
@@ -555,7 +555,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
  </sect1>
- <sect1 id="sec.snapper.manage">
+ <sect1 id="sec-snapper-manage">
   <title>手動建立和管理快照</title>
 
   <para>
@@ -563,10 +563,10 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <para>
-   所有 Snapper 操作都會對現有組態進行 (如需詳細資料，請參閱<xref linkend="sec.snapper.config"/>)。您只能為存在組態的分割區或子磁碟區建立快照。預設會使用系統組態 (<literal>根</literal>)。如果您要為您自己的組態建立或管理快照，則必須明確選擇它。您可以使用 YaST 中的<guimenu>目前組態</guimenu>下拉式功能表，或在指令行上指定 <option>-c</option> (<command>snapper <option>-c</option> <replaceable>我的組態</replaceable> <replaceable>指令</replaceable></command>)。
+   所有 Snapper 操作都會對現有組態進行 (如需詳細資料，請參閱<xref linkend="sec-snapper-config"/>)。您只能為存在組態的分割區或子磁碟區建立快照。預設會使用系統組態 (<literal>根</literal>)。如果您要為您自己的組態建立或管理快照，則必須明確選擇它。您可以使用 YaST 中的<guimenu>目前組態</guimenu>下拉式功能表，或在指令行上指定 <option>-c</option> (<command>snapper <option>-c</option> <replaceable>我的組態</replaceable> <replaceable>指令</replaceable></command>)。
   </para>
 
-  <sect2 id="sec.snapper.manage.metadata">
+  <sect2 id="sec-snapper-manage-metadata">
    <title>快照中繼資料</title>
    <para>
     每個快照都包含快照本身和一些中繼資料。建立快照時，您還需要指定中繼資料。修改快照即表示變更其中繼資料 — 您無法修改其內容。下列中繼資料適用於每個快照：
@@ -574,7 +574,7 @@ Please see LICENSE.txt for this document's license.
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
-      <emphasis role="bold">類型</emphasis>：快照類型，請參閱<xref linkend="sec.snapper.manage.metadata.type"/> 以取得詳細資料。此資料無法變更。
+      <emphasis role="bold">類型</emphasis>：快照類型，請參閱<xref linkend="sec-snapper-manage-metadata-type"/> 以取得詳細資料。此資料無法變更。
      </para>
     </listitem>
     <listitem>
@@ -599,11 +599,11 @@ Please see LICENSE.txt for this document's license.
     </listitem>
     <listitem>
      <para>
-      <emphasis role="bold">清理演算法</emphasis>：快照的清理演算法，請參閱<xref linkend="sec.snapper.manage.metadata.cleanup"/> 以取得詳細資料。
+      <emphasis role="bold">清理演算法</emphasis>：快照的清理演算法，請參閱<xref linkend="sec-snapper-manage-metadata-cleanup"/> 以取得詳細資料。
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec.snapper.manage.metadata.type">
+   <sect3 id="sec-snapper-manage-metadata-type">
     <title>快照類型</title>
     <para>
      Snapper 知道三種不同類型的快照：前、後與單一。實際上，它們並無差異，但是 Snapper 會以不同的方式處理它們。
@@ -637,10 +637,10 @@ Please see LICENSE.txt for this document's license.
      </varlistentry>
     </variablelist>
    </sect3>
-   <sect3 id="sec.snapper.manage.metadata.cleanup">
+   <sect3 id="sec-snapper-manage-metadata-cleanup">
     <title>清理演算法</title>
     <para>
-     Snapper 提供了三種用於清理舊快照的演算法。每日 cron 工作中會執行這些演算法。清理頻率本身是在分割區或子磁碟區的 Snapper 組態中加以定義 (如需詳細資料，請參閱<xref linkend="sec.snapper.config.modify"/>)。
+     Snapper 提供了三種用於清理舊快照的演算法。每日 cron 工作中會執行這些演算法。清理頻率本身是在分割區或子磁碟區的 Snapper 組態中加以定義 (如需詳細資料，請參閱<xref linkend="sec-snapper-config-modify"/>)。
     </para>
     <variablelist>
      <varlistentry>
@@ -671,7 +671,7 @@ Please see LICENSE.txt for this document's license.
    </sect3>
   </sect2>
 
-  <sect2 id="sec.snapper.manage.create">
+  <sect2 id="sec-snapper-manage-create">
    <title>建立快照</title>
    <para>
     可透過執行 <command>snapper create</command> 或在 YaST 模組 <guimenu>Snapper</guimenu> 中按一下<guimenu>建立</guimenu>建立快照。下列範例說明如何從指令行建立快照。透過 YaST 介面可便於採用這兩種建立方法。
@@ -741,7 +741,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
 
-  <sect2 id="sec.snapper.manage.modify">
+  <sect2 id="sec-snapper-manage-modify">
    <title>修改快照中繼資料</title>
    <para>
     Snapper 可讓您修改快照的描述、清理演算法和使用者資料，所有其他中繼資料則無法變更。下列範例說明如何從指令行修改快照。透過 YaST 介面可便於採用這兩種建立方法。
@@ -774,7 +774,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
 
-  <sect2 id="sec.snapper.manage.delete">
+  <sect2 id="sec-snapper-manage-delete">
    <title>刪除快照</title>
    <para>
     若要使用 YaST <guimenu>Snapper </guimenu> 模組刪除快照，請從清單中選擇快照，然後按一下<guimenu>刪除</guimenu>。
@@ -811,36 +811,36 @@ Please see LICENSE.txt for this document's license.
    <tip>
     <title>舊快照佔用較多磁碟空間</title>
     <para>
-     如果您要刪除快照以釋放硬碟上的空間 (如需詳細資料，請參閱<xref linkend="sec.snapper.requires.diskspace"/>)，請確定先刪除舊快照。快照越舊，它佔用的磁碟空間就越多。
+     如果您要刪除快照以釋放硬碟上的空間 (如需詳細資料，請參閱<xref linkend="sec-snapper-requires-diskspace"/>)，請確定先刪除舊快照。快照越舊，它佔用的磁碟空間就越多。
     </para>
    </tip>
    <para>
-    快照也可由每日 cron 工作自動刪除。如需詳細資訊，請參閱<xref linkend="sec.snapper.manage.metadata.cleanup"/>。
+    快照也可由每日 cron 工作自動刪除。如需詳細資訊，請參閱<xref linkend="sec-snapper-manage-metadata-cleanup"/>。
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.snapper.limits">
+ <sect1 id="sec-snapper-limits">
   <title>限制</title>
 
   <para>
    雖然 <literal>Btrfs</literal> 及 Snapper 已備妥可用於線上，但是它們仍在持續不斷地進行進一步開發。目前存在下列限制。計劃在後續版本中解決這些問題。
   </para>
 
-  <sect2 id="sec.snapper.limits.consistency">
+  <sect2 id="sec-snapper-limits-consistency">
    <title>資料一致性</title>
    <para>
     在建立快照時，沒有任何一種機制可確保資料的一致性。在建立快照的同時寫入檔案 (例如資料庫)，都將導致檔案損毀或部分寫入。還原此類檔案將會導致問題。因此，強烈建議您<emphasis>始終</emphasis>仔細檢閱已變更檔案及其差異的清單。僅還原確實需要歸屬於要復原之動作的檔案。
    </para>
   </sect2>
 
-  <sect2 id="sec.snapper.limits.user">
+  <sect2 id="sec-snapper-limits-user">
    <title>回復使用者新增</title>
    <para>
     <filename>/home</filename> 通常位於獨立的分割區上。此類獨立分割區不屬於用於執行 YaST 復原的預設組態。因此，在使用 Snapper 復原使用者新增時，不會刪除使用者的主分割區。強烈建議您使用 YaST <guimenu>使用者和群組管理</guimenu>工具來移除使用者。
    </para>
   </sect2>
 
-  <sect2 id="sec.snapper.limits.kernel">
+  <sect2 id="sec-snapper-limits-kernel">
    <title>不對 <filename>/boot</filename> 和開機載入程式的變更執行任何復原</title>
    <para>
     目前，<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 不能從 <literal>Btrfs</literal> 分割區開機。因此，當對系統分割區使用 <literal>Btrfs</literal> 時，會在安裝過程中為 <filename>/boot</filename> 建立獨立分割區。因為 <filename>/boot</filename> 不支援快照，所以下列限制適用於 YaST/zypper 復原：
@@ -865,7 +865,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
  </sect1>
- <sect1 id="sec.snapper.faqs">
+ <sect1 id="sec-snapper-faqs">
   <title>常見問題解答</title>
 
   <variablelist>
@@ -931,11 +931,11 @@ Please see LICENSE.txt for this document's license.
    </varlistentry>
   </variablelist>
  </sect1>
- <sect1 id="sec.snapper.lvm">
+ <sect1 id="sec-snapper-lvm">
   <title>對簡易佈建的 LVM 磁碟區使用 Snapper</title>
 
   <para>
-   除了針對 <literal>Btrfs</literal> 檔案系統建立快照之外，snapper 還支援針對格式為 ext3 或 XFS 之簡易佈建的 LVM 磁碟區<quote>建立快照</quote> (但<emphasis>不</emphasis>支援對一般 LVM 磁碟區建立快照)。如需詳細資訊及設定指示，請參閱<xref linkend="sec.yast2.system.lvm"/>。
+   除了針對 <literal>Btrfs</literal> 檔案系統建立快照之外，snapper 還支援針對格式為 ext3 或 XFS 之簡易佈建的 LVM 磁碟區<quote>建立快照</quote> (但<emphasis>不</emphasis>支援對一般 LVM 磁碟區建立快照)。如需詳細資訊及設定指示，請參閱<xref linkend="sec-yast2-system-lvm"/>。
   </para>
 
   <para>
@@ -945,7 +945,7 @@ Please see LICENSE.txt for this document's license.
 <screen>snapper -c lvm create-config --fstype="lvm(xfs)" /thin_lvm</screen>
 
   <para>
-   您可以依<xref linkend="sec.snapper.config.modify"/> 中所述根據需求調整此組態。現在，您可以使用 Snapper 來建立和管理快照、還原檔案以及復原變更 (如上所述)。
+   您可以依<xref linkend="sec-snapper-config-modify"/> 中所述根據需求調整此組態。現在，您可以使用 Snapper 來建立和管理快照、還原檔案以及復原變更 (如上所述)。
   </para>
  </sect1>
 </chapter>

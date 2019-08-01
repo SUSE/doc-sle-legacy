@@ -7,14 +7,14 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="bootconcept.xml" id="cha.boot">
+<chapter xml:base="bootconcept.xml" id="cha-boot">
  <title>Inicializando e configurando um sistema Linux</title><indexterm> <primary>inicializando</primary> </indexterm>
  <abstract>
   <para>
    O boot de um sistema Linux envolve componentes diferentes. O próprio hardware é inicializado pelo BIOS, que inicia o Kernel por meio de um carregador de boot. Depois disso, o processo de boot com <systemitem>init</systemitem> e os níveis de execução são totalmente controlados pelo sistema operacional. O conceito de nível de execução permite que você mantenha configurações para uso diário, e também execute tarefas de manutenção no sistema.
   </para>
  </abstract>
- <sect1 id="sec.boot.proc">
+ <sect1 id="sec-boot-proc">
   <title>Processo de boot do Linux</title>
 
   <para>
@@ -34,7 +34,7 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title>Carregador de boot</title>
      <para>
-      O primeiro setor de dados físico de 512 bytes do primeiro disco rígido é carregado na memória principal e o <emphasis>carregador de boot</emphasis> existente no início desse setor assume o controle. Os comandos executados pelo carregador de boot determinam a parte restante do processo de boot. Desse modo, os primeiros 512 bytes do primeiro disco rígido são chamados de MBR <emphasis>(Master Boot Record)</emphasis>. O carregador de boot passa o controle para o sistema operacional real, neste caso, o Kernel do Linux. Mais informações sobre o GRUB, o carregador de boot do Linux, podem ser encontradas no <xref linkend="cha.grub"/>.
+      O primeiro setor de dados físico de 512 bytes do primeiro disco rígido é carregado na memória principal e o <emphasis>carregador de boot</emphasis> existente no início desse setor assume o controle. Os comandos executados pelo carregador de boot determinam a parte restante do processo de boot. Desse modo, os primeiros 512 bytes do primeiro disco rígido são chamados de MBR <emphasis>(Master Boot Record)</emphasis>. O carregador de boot passa o controle para o sistema operacional real, neste caso, o Kernel do Linux. Mais informações sobre o GRUB, o carregador de boot do Linux, podem ser encontradas no <xref linkend="cha-grub"/>.
       
      </para>
     </formalpara>
@@ -43,7 +43,7 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title>Kernel e <systemitem>initramfs</systemitem></title>
      <para>
-      Para passar o controle do sistema, o carregador de boot carrega na memória o kernel e um sistema de arquivos inicial baseado em RAM (<systemitem>initramfs</systemitem>). O conteúdo do <systemitem>initramfs</systemitem> pode ser usado diretamente pelo Kernel. O <systemitem>initramfs</systemitem> contém um pequeno executável chamado <systemitem>init</systemitem> que faz a montagem do sistema de arquivos raiz real. Se forem necessários drivers de hardware especiais para acessar o armazenamento em massa, eles deverão estar em <systemitem>initramfs</systemitem>. Para obter mais informações sobre o <systemitem>initramfs</systemitem>, consulte a <xref linkend="sec.boot.initrd"/>. 
+      Para passar o controle do sistema, o carregador de boot carrega na memória o kernel e um sistema de arquivos inicial baseado em RAM (<systemitem>initramfs</systemitem>). O conteúdo do <systemitem>initramfs</systemitem> pode ser usado diretamente pelo Kernel. O <systemitem>initramfs</systemitem> contém um pequeno executável chamado <systemitem>init</systemitem> que faz a montagem do sistema de arquivos raiz real. Se forem necessários drivers de hardware especiais para acessar o armazenamento em massa, eles deverão estar em <systemitem>initramfs</systemitem>. Para obter mais informações sobre o <systemitem>initramfs</systemitem>, consulte a <xref linkend="sec-boot-initrd"/>. 
      </para>
     </formalpara>
    </listitem>
@@ -51,7 +51,7 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title><systemitem/>init no initramfs<systemitem/></title>
      <para>
-      Este programa executa todas as ações necessárias para montar o sistema de arquivos raiz apropriado, por exemplo, passar a funcionalidade de Kernel para o sistema de arquivos e os drivers de dispositivo necessários aos controladores de armazenamento em massa com <systemitem class="service">udev</systemitem>. Uma vez encontrado o sistema de arquivos raiz, ele é verificado quanto a erros e montado. Se esse procedimento for bem-sucedido, o <systemitem>initramfs</systemitem> será limpo e o programa <systemitem>init</systemitem> no sistema de arquivos raiz será executado. Para obter mais informações sobre o <systemitem>init</systemitem>, consulte a <xref linkend="sec.boot.linuxrc"/>. Há mais informações a respeito do <systemitem class="service">udev</systemitem> no <xref linkend="cha.udev"/>.
+      Este programa executa todas as ações necessárias para montar o sistema de arquivos raiz apropriado, por exemplo, passar a funcionalidade de Kernel para o sistema de arquivos e os drivers de dispositivo necessários aos controladores de armazenamento em massa com <systemitem class="service">udev</systemitem>. Uma vez encontrado o sistema de arquivos raiz, ele é verificado quanto a erros e montado. Se esse procedimento for bem-sucedido, o <systemitem>initramfs</systemitem> será limpo e o programa <systemitem>init</systemitem> no sistema de arquivos raiz será executado. Para obter mais informações sobre o <systemitem>init</systemitem>, consulte a <xref linkend="sec-boot-linuxrc"/>. Há mais informações a respeito do <systemitem class="service">udev</systemitem> no <xref linkend="cha-udev"/>.
      </para>
     </formalpara>
    </listitem>
@@ -59,13 +59,13 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title><systemitem>init</systemitem></title>
      <para>
-      O <systemitem>init</systemitem> realiza a inicialização do sistema em diversos níveis, oferecendo funcionalidades diferentes. O <systemitem>init</systemitem> está descrito na <xref linkend="sec.boot.init"/>.
+      O <systemitem>init</systemitem> realiza a inicialização do sistema em diversos níveis, oferecendo funcionalidades diferentes. O <systemitem>init</systemitem> está descrito na <xref linkend="sec-boot-init"/>.
      </para>
     </formalpara>
    </listitem>
   </orderedlist>
 
-  <sect2 id="sec.boot.initrd">
+  <sect2 id="sec-boot-initrd">
    <title><systemitem>initramfs</systemitem></title>
    <para>
     <systemitem>initramfs</systemitem> é um pequeno arquivo cpio que pode ser carregado pelo Kernel em um disco RAM. Ele fornece um ambiente Linux mínimo que permite a execução de programas antes da montagem do sistema de arquivos raiz. Esse ambiente Linux mínimo é carregado na memória pelas rotinas de BIOS e não têm requisitos de hardware específicos, além de memória suficiente. O <systemitem>initramfs</systemitem> deve sempre fornecer um executável chamado <systemitem>init</systemitem> que deve executar o programa <systemitem>init</systemitem> real no sistema de arquivos raiz para a continuação do processo de boot.
@@ -84,7 +84,7 @@ Please see LICENSE.txt for this document's license.
    </important>
   </sect2>
 
-  <sect2 id="sec.boot.linuxrc">
+  <sect2 id="sec-boot-linuxrc">
    <title>init no <systemitem>initramfs</systemitem></title>
    <para>
     O principal objetivo do <systemitem>init</systemitem> no <systemitem>initramfs</systemitem> é preparar a montagem e o acesso ao sistema de arquivos raiz real. Dependendo da configuração do sistema, o <systemitem>init</systemitem> será responsável pelas tarefas a seguir.
@@ -113,11 +113,11 @@ Please see LICENSE.txt for this document's license.
      <term>Gerenciamento de configurações RAID e LVM</term>
      <listitem>
       <para>
-       Se você tiver configurado o sistema para armazenar o sistema de arquivos raiz no RAID ou no LVM, o <systemitem>init</systemitem> configurará o LVM ou o RAID para permitir acesso posterior ao sistema de arquivos raiz. Obtenha informações sobre RAID e LVM no <xref linkend="cha.advdisk"/>.
+       Se você tiver configurado o sistema para armazenar o sistema de arquivos raiz no RAID ou no LVM, o <systemitem>init</systemitem> configurará o LVM ou o RAID para permitir acesso posterior ao sistema de arquivos raiz. Obtenha informações sobre RAID e LVM no <xref linkend="cha-advdisk"/>.
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry id="ve.net">
+    <varlistentry id="ve-net">
      <term>Gerenciamento de conexões de rede</term>
      <listitem>
       <para>
@@ -143,7 +143,7 @@ Please see LICENSE.txt for this document's license.
      <term>Inicialização do reconhecimento de hardware e carregamento dos módulos kernel adequados</term>
      <listitem>
       <para>
-       Como mencionado na <xref linkend="sec.boot.initrd"/>, o processo de boot é iniciado com um conjunto mínimo de drivers que pode ser usado com a maioria das configurações de hardware. O <systemitem>init</systemitem> inicia um processo de exploração de hardware que determina o conjunto de drivers adequado à sua configuração de hardware. Os nomes dos módulos necessários ao processo de boot são gravados em <systemitem>INITRD_MODULES</systemitem>, localizado em <filename>/etc/sysconfig/kernel</filename>. Esses nomes são usados para gerar um <systemitem>initramfs</systemitem> personalizado necessário para inicializar o sistema. Se os módulos não forem necessários para o boot, mas forem para coldplug, eles serão gravados em <filename>/etc/sysconfig/hardware/hwconfig-*</filename>. Todos os dispositivos descritos com arquivos de configuração nesse diretório são inicializados durante o processo de boot.
+       Como mencionado na <xref linkend="sec-boot-initrd"/>, o processo de boot é iniciado com um conjunto mínimo de drivers que pode ser usado com a maioria das configurações de hardware. O <systemitem>init</systemitem> inicia um processo de exploração de hardware que determina o conjunto de drivers adequado à sua configuração de hardware. Os nomes dos módulos necessários ao processo de boot são gravados em <systemitem>INITRD_MODULES</systemitem>, localizado em <filename>/etc/sysconfig/kernel</filename>. Esses nomes são usados para gerar um <systemitem>initramfs</systemitem> personalizado necessário para inicializar o sistema. Se os módulos não forem necessários para o boot, mas forem para coldplug, eles serão gravados em <filename>/etc/sysconfig/hardware/hwconfig-*</filename>. Todos os dispositivos descritos com arquivos de configuração nesse diretório são inicializados durante o processo de boot.
       </para>
      </listitem>
     </varlistentry>
@@ -166,27 +166,27 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
  </sect1>
- <sect1 id="sec.boot.init">
-  <title>O processo do <systemitem>init</systemitem></title><indexterm id="idx.init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>arquivos de configuração</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
+ <sect1 id="sec-boot-init">
+  <title>O processo do <systemitem>init</systemitem></title><indexterm id="idx-init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>arquivos de configuração</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
 
   <para>
    O programa <systemitem>init</systemitem> tem ID de processo 1. Ele é responsável por inicializar o sistema da maneira necessária. O <systemitem>init</systemitem> é iniciado diretamente pelo Kernel e resiste ao sinal 9, que normalmente elimina processos. Todos os outros programas são iniciados diretamente pelo <systemitem>init</systemitem> ou por um de seus processos filho.
   </para>
 
   <para>
-   <systemitem/>O init é configurado centralmente no arquivo <filename>/etc/inittab</filename> em que os <emphasis>níveis de execução</emphasis> são definidos (consulte a <xref linkend="sec.boot.runlevel"/>). O arquivo também especifica os serviços e os daemons disponíveis em cada um dos níveis de execução. Dependendo das entradas em <filename>/etc/inittab</filename><systemitem>, vários scripts são executados pelo init</systemitem>. Por padrão, o primeiro script iniciado após o boot é o <filename>/etc/init.d/boot</filename>. Após concluída a fase de inicialização do sistema, o nível de execução do sistema muda para o padrão com o script <filename>/etc/init.d/rc</filename>. Para fins de clareza, esses scripts, chamados <emphasis>scripts init</emphasis>, residem no diretório <filename>/etc/init.d</filename> (consulte a <xref linkend="sec.boot.init.skripte"/>). <indexterm><primary>scripts</primary><secondary>init.d</secondary> </indexterm>
+   <systemitem/>O init é configurado centralmente no arquivo <filename>/etc/inittab</filename> em que os <emphasis>níveis de execução</emphasis> são definidos (consulte a <xref linkend="sec-boot-runlevel"/>). O arquivo também especifica os serviços e os daemons disponíveis em cada um dos níveis de execução. Dependendo das entradas em <filename>/etc/inittab</filename><systemitem>, vários scripts são executados pelo init</systemitem>. Por padrão, o primeiro script iniciado após o boot é o <filename>/etc/init.d/boot</filename>. Após concluída a fase de inicialização do sistema, o nível de execução do sistema muda para o padrão com o script <filename>/etc/init.d/rc</filename>. Para fins de clareza, esses scripts, chamados <emphasis>scripts init</emphasis>, residem no diretório <filename>/etc/init.d</filename> (consulte a <xref linkend="sec-boot-init-skripte"/>). <indexterm><primary>scripts</primary><secondary>init.d</secondary> </indexterm>
   </para>
 
   <para>
    Todo o processo de inicialização e encerramento do sistema é mantido pelo <systemitem>init</systemitem>. Desse ponto de vista, o Kernel pode ser considerado um processo em segundo plano para manter todos os outros processos e ajustar o tempo de CPU e o acesso ao hardware de acordo com as solicitações de outros programas.
-  </para><indexterm class="endofrange" startref="idx.init"/>
+  </para><indexterm class="endofrange" startref="idx-init"/>
 
-  <sect2 id="sec.boot.runlevel">
-   <title>Níveis de execução</title><indexterm id="idx.runlevels" class="startofrange"> <primary>níveis de execução</primary> </indexterm> <indexterm> <primary>arquivos de configuração</primary> <secondary>inittab</secondary> </indexterm>
+  <sect2 id="sec-boot-runlevel">
+   <title>Níveis de execução</title><indexterm id="idx-runlevels" class="startofrange"> <primary>níveis de execução</primary> </indexterm> <indexterm> <primary>arquivos de configuração</primary> <secondary>inittab</secondary> </indexterm>
    <para>
-    No Linux, os <emphasis>níveis de execução</emphasis> definem como o sistema é iniciado e quais serviços estão disponíveis no sistema em execução. Após o boot, o sistema é iniciado conforme definido em <filename>/etc/inittab</filename> na linha <literal>initdefault</literal>. Normalmente, é <literal>3</literal> ou <literal>5</literal>. Consulte a <xref linkend="tab.boot.runlevel"/>. Como alternativa, é possível especificar o nível de execução durante o boot (adicionando o número do nível de execução no prompt de boot, por exemplo). Os parâmetros que não forem avaliados diretamente pelo próprio Kernel serão passados para o <systemitem>init</systemitem>. Para inicializar no nível de execução 3, adicione o número 3 ao prompt de boot.
+    No Linux, os <emphasis>níveis de execução</emphasis> definem como o sistema é iniciado e quais serviços estão disponíveis no sistema em execução. Após o boot, o sistema é iniciado conforme definido em <filename>/etc/inittab</filename> na linha <literal>initdefault</literal>. Normalmente, é <literal>3</literal> ou <literal>5</literal>. Consulte a <xref linkend="tab-boot-runlevel"/>. Como alternativa, é possível especificar o nível de execução durante o boot (adicionando o número do nível de execução no prompt de boot, por exemplo). Os parâmetros que não forem avaliados diretamente pelo próprio Kernel serão passados para o <systemitem>init</systemitem>. Para inicializar no nível de execução 3, adicione o número 3 ao prompt de boot.
    </para>
-   <table id="tab.boot.runlevel">
+   <table id="tab-boot-runlevel">
     <title>Níveis de execução disponíveis</title>
     <tgroup cols="2">
      <thead>
@@ -355,7 +355,7 @@ Please see LICENSE.txt for this document's license.
     <para>
      <indexterm> <primary>arquivos de configuração</primary> <secondary>inittab</secondary> </indexterm> Se <filename>/etc/inittab</filename> for danificado, o sistema poderá não ser inicializado adequadamente. Portanto, seja extremamente cuidadoso ao editar <filename>/etc/inittab</filename>. Sempre deixe que o <systemitem>init</systemitem> leia novamente <filename>/etc/inittab</filename> com o comando <command>telinit <option>q</option></command> antes de reinicializar a máquina.
     </para>
-   </warning><indexterm id="idx.runlevels_changing" class="startofrange"> <primary>níveis de execução</primary> <secondary>mudando</secondary> </indexterm>
+   </warning><indexterm id="idx-runlevels-changing" class="startofrange"> <primary>níveis de execução</primary> <secondary>mudando</secondary> </indexterm>
    <para>
     Geralmente, há duas situações quando os níveis de execução são mudados. Primeiro, os scripts de parada do nível de execução atual são iniciados, fechando alguns programas essenciais ao nível de execução atual. Em seguida, os scripts do novo nível de execução são iniciados. Na maioria dos casos, vários programas são iniciados. Por exemplo, ocorre o seguinte quando o nível de execução 3 muda para 5:
    </para>
@@ -383,11 +383,11 @@ Please see LICENSE.txt for this document's license.
    </orderedlist>
    <para>
     Ao mudar para o mesmo nível de execução que o atual, o <systemitem>init</systemitem> somente verifica as mudanças em <filename>/etc/inittab</filename> e inicia as etapas apropriadas, por exemplo, para iniciar um <command>getty</command> em outra interface. A mesma funcionalidade pode ser obtida com o comando <command>telinit q</command>.
-   </para><indexterm class="endofrange" startref="idx.runlevels_changing"/><indexterm class="endofrange" startref="idx.runlevels"/>
+   </para><indexterm class="endofrange" startref="idx-runlevels-changing"/><indexterm class="endofrange" startref="idx-runlevels"/>
   </sect2>
 
-  <sect2 id="sec.boot.init.skripte">
-   <title>Scripts Init</title><indexterm id="idx.init_scripts" class="startofrange"> <primary>init</primary> <secondary>scripts</secondary> </indexterm> <indexterm id="idx.scripts_init.d" class="startofrange"> <primary>scripts</primary> <secondary>init.d</secondary> </indexterm>
+  <sect2 id="sec-boot-init-skripte">
+   <title>Scripts Init</title><indexterm id="idx-init-scripts" class="startofrange"> <primary>init</primary> <secondary>scripts</secondary> </indexterm> <indexterm id="idx-scripts-init-d" class="startofrange"> <primary>scripts</primary> <secondary>init.d</secondary> </indexterm>
    <para>
     Há dois tipos de scripts em <filename>/etc/init.d</filename>:
    </para>
@@ -412,9 +412,9 @@ Please see LICENSE.txt for this document's license.
     </varlistentry>
    </variablelist>
    <para>
-    Todos os scripts estão localizados em <filename>/etc/init.d</filename>. Scripts que são executados durante o boot são chamados através de links simbólicos de <filename>/etc/init.d/boot.d</filename>. Os scripts para mudança do nível de execução são chamados através de links simbólicos em um dos subdiretórios (<filename>/etc/init.d/rc0.d</filename> para <filename>/etc/init.d/rc6.d</filename>). Isso só serve para fins de clareza, além de evitar scripts duplicados se forem usados em vários níveis de execução. Como todos os scripts podem ser executados como de início ou de parada, eles devem entender os parâmetros <option>start</option> e <option>stop</option>. Os scripts também entendem as opções <option>restart</option>, <option>reload</option>, <option>force-reload</option> e <option>status. </option> Essas diversas opções são explicadas na <xref linkend="tab.boot.initscript.opt"/>. Os scripts executados diretamente pelo <systemitem>init</systemitem> não têm esses links. Eles são executados independentemente do nível de execução, quando necessário.
+    Todos os scripts estão localizados em <filename>/etc/init.d</filename>. Scripts que são executados durante o boot são chamados através de links simbólicos de <filename>/etc/init.d/boot.d</filename>. Os scripts para mudança do nível de execução são chamados através de links simbólicos em um dos subdiretórios (<filename>/etc/init.d/rc0.d</filename> para <filename>/etc/init.d/rc6.d</filename>). Isso só serve para fins de clareza, além de evitar scripts duplicados se forem usados em vários níveis de execução. Como todos os scripts podem ser executados como de início ou de parada, eles devem entender os parâmetros <option>start</option> e <option>stop</option>. Os scripts também entendem as opções <option>restart</option>, <option>reload</option>, <option>force-reload</option> e <option>status. </option> Essas diversas opções são explicadas na <xref linkend="tab-boot-initscript-opt"/>. Os scripts executados diretamente pelo <systemitem>init</systemitem> não têm esses links. Eles são executados independentemente do nível de execução, quando necessário.
    </para>
-   <table id="tab.boot.initscript.opt">
+   <table id="tab-boot-initscript-opt">
     <title>Opções possíveis do script <systemitem>init</systemitem></title>
     <tgroup cols="2">
      <thead>
@@ -566,16 +566,16 @@ Please see LICENSE.txt for this document's license.
    <warning>
     <title>Scripts Init com falha podem desligar o sistema</title>
     <para>
-     Scripts <systemitem>init</systemitem> com falha podem desligar sua máquina. Edite esses scripts com muito cuidado e, se possível, submeta-os a testes detalhados no ambiente multiusuário. Encontre informações úteis sobre scripts <systemitem>init</systemitem> na <xref linkend="sec.boot.runlevel"/>.
+     Scripts <systemitem>init</systemitem> com falha podem desligar sua máquina. Edite esses scripts com muito cuidado e, se possível, submeta-os a testes detalhados no ambiente multiusuário. Encontre informações úteis sobre scripts <systemitem>init</systemitem> na <xref linkend="sec-boot-runlevel"/>.
     </para>
    </warning>
    <para>
     Para criar um script <systemitem>init</systemitem> personalizado para determinado programa ou serviço, use o arquivo <filename>/etc/init.d/skeleton</filename> como modelo. Grave uma cópia desse arquivo com o novo nome e edite o programa relevante e nomes de arquivos, caminhos e outros detalhes necessários. Você também pode precisar aprimorar o script com suas próprias partes, de modo que as ações corretas sejam acionadas pelo procedimento <systemitem>init</systemitem>.
    </para>
    <para>
-    O bloco <literal>INIT INFO</literal> na parte superior é uma parte necessária do script e deve ser editada. Consulte o <xref linkend="aus.boot.init.skripte.add.initinfo"/>.
+    O bloco <literal>INIT INFO</literal> na parte superior é uma parte necessária do script e deve ser editada. Consulte o <xref linkend="aus-boot-init-skripte-add-initinfo"/>.
    </para>
-   <example id="aus.boot.init.skripte.add.initinfo">
+   <example id="aus-boot-init-skripte-add-initinfo">
     <title>Um bloco INIT INFO mínimo</title>
 <screen>### BEGIN INIT INFO
 # Provides:          FOO
@@ -590,17 +590,17 @@ Please see LICENSE.txt for this document's license.
     Na primeira linha do bloco <literal>INFO</literal>, após <literal>Provides:</literal>, especifique o nome do programa ou serviço controlado pelo script init. <systemitem/> Nas linhas <literal>Required-Start:</literal> e <literal>Required-Stop:</literal>, especifique todos os serviços que precisam continuar em execução quando o próprio serviço for interrompido. Essas informações são usadas posteriormente para gerar a numeração dos nomes de script, como encontrada nos diretórios de nível de execução. Depois de <literal>Default-Start:</literal> e <literal>Default-Stop:</literal>, especifique os níveis de execução em que o serviço deve ser iniciado ou parado automaticamente. Por fim, para <literal>Description:</literal>, forneça uma breve descrição do serviço em questão.
    </para>
    <para>
-    Para criar os links dos diretórios de nível de execução (<filename>/etc/init.d/rc?.d/</filename>) para os scripts correspondentes em <filename>/etc/init.d/</filename>, digite o comando <command>insserv <replaceable>new-script-name</replaceable></command>. <command>insserv</command> avalia o cabeçalho <literal>INIT INFO</literal> para criar os links necessários aos scripts de início e parada nos diretórios de nível de execução (<filename>/etc/init.d/rc?.d/</filename>). O programa também se encarrega da ordem correta de início e parada para cada nível de execução, incluindo os números necessários nos nomes desses links. Se você preferir uma ferramenta gráfica para criar esses links, use o editor de runlevel fornecido pelo YaST, como descrito na <xref linkend="sec.boot.runlevel.edit"/>.
+    Para criar os links dos diretórios de nível de execução (<filename>/etc/init.d/rc?.d/</filename>) para os scripts correspondentes em <filename>/etc/init.d/</filename>, digite o comando <command>insserv <replaceable>new-script-name</replaceable></command>. <command>insserv</command> avalia o cabeçalho <literal>INIT INFO</literal> para criar os links necessários aos scripts de início e parada nos diretórios de nível de execução (<filename>/etc/init.d/rc?.d/</filename>). O programa também se encarrega da ordem correta de início e parada para cada nível de execução, incluindo os números necessários nos nomes desses links. Se você preferir uma ferramenta gráfica para criar esses links, use o editor de runlevel fornecido pelo YaST, como descrito na <xref linkend="sec-boot-runlevel-edit"/>.
    </para>
    <para>
     Se um script já existir em <filename>/etc/init.d/</filename>, deve ser integrado ao esquema de runlevel existente. Crie os links nos diretórios de runlevel imediatamente com insserv ou por meio do serviço correspondente no editor de runlevel do YaST. <command/> As mudanças serão aplicadas durante a próxima reinicialização, e o novo serviço será iniciado automaticamente.
    </para>
    <para>
     Não defina esses links manualmente. Se houver algum erro no bloco <literal>INFO</literal>, surgirão problemas quando <command>insserv</command> for executado posteriormente para algum outro serviço. O serviço adicionado manualmente será removido na próxima execução de <command>insserv</command> para esse script.
-   </para><indexterm class="endofrange" startref="idx.init_scripts"/><indexterm class="endofrange" startref="idx.scripts_init.d"/>
+   </para><indexterm class="endofrange" startref="idx-init-scripts"/><indexterm class="endofrange" startref="idx-scripts-init-d"/>
   </sect2>
 
-  <sect2 id="sec.boot.runlevel.edit">
+  <sect2 id="sec-boot-runlevel-edit">
    <title>Configurando serviços do sistema (runlevel) com o YaST</title><indexterm> <primary>YaST</primary> <secondary>níveis de execução</secondary> </indexterm> <indexterm> <primary>níveis de execução</primary> <secondary>editando no YaST</secondary> </indexterm>
    <para>
     Depois que o módulo do YaST é iniciado em <menuchoice> <guimenu>YaST</guimenu> <guimenu>Sistema</guimenu> <guimenu>Serviços do Sistema (Nível de Execução)</guimenu> </menuchoice>, ele exibe uma visão geral que lista todos os serviços disponíveis e o status atual de cada um deles (desabilitado ou habilitado). Decida se o módulo deve ser usado no <guimenu>Modo Simples</guimenu> ou no <guimenu>Modo de Especialista</guimenu>. O <guimenu>Modo Simples</guimenu> padrão deve ser suficiente na maior parte dos casos. A coluna à esquerda mostra o nome do serviço, a coluna ao centro indica seu status atual e a coluna à direita fornece uma descrição resumida. Para o serviço selecionado, uma descrição mais detalhada é fornecida na parte inferior da janela. Para habilitar um serviço, selecione-o na tabela e, em seguida, selecione <guimenu>Habilitar</guimenu>. As mesmas etapas se aplicam para desabilitar um serviço.
@@ -609,7 +609,7 @@ Please see LICENSE.txt for this document's license.
     Para ter mais controle sobre os níveis de execução em que um serviço é iniciado ou parado ou para mudar o nível de execução padrão, selecione primeiro <guimenu>Modo de Especialista</guimenu>. O nível de execução padrão atual ou o <quote>initdefault</quote> (o nível de execução em que o sistema é inicializado por padrão) é exibido na parte superior. Normalmente, o nível de execução padrão de um sistema <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> é o 5 (modo multiusuário completo com rede e X). Uma alternativa adequada poderia ser o nível de execução 3 (modo multiusuário completo com rede).
    </para>
    <para>
-    Esta caixa de diálogo do YaST permite a seleção de um dos runlevels (como listado na <xref linkend="tab.boot.runlevel"/>) como o novo padrão. Além disso, use a tabela mostrada nessa janela para habilitar ou desabilitar serviços e daemons individuais. A tabela lista os serviços e daemons disponíveis, mostra se eles estão habilitados no sistema e, se estiverem, para quais níveis de execução. Após selecionar uma das linhas com o mouse, clique nas caixas de seleção que representam os níveis de execução (<guimenu>B</guimenu>, <guimenu>0</guimenu>, <guimenu>1</guimenu>, <guimenu>2</guimenu>, <guimenu>3</guimenu>, <guimenu>5</guimenu>, <guimenu>6</guimenu> e <guimenu>S</guimenu>) para definir os níveis de execução em que o serviço ou daemon selecionado deve estar em execução. O nível de execução 4 é indefinido para permitir a criação de um nível de execução personalizado. Uma breve descrição do serviço ou daemon selecionado no momento é fornecida abaixo da visão geral da tabela.
+    Esta caixa de diálogo do YaST permite a seleção de um dos runlevels (como listado na <xref linkend="tab-boot-runlevel"/>) como o novo padrão. Além disso, use a tabela mostrada nessa janela para habilitar ou desabilitar serviços e daemons individuais. A tabela lista os serviços e daemons disponíveis, mostra se eles estão habilitados no sistema e, se estiverem, para quais níveis de execução. Após selecionar uma das linhas com o mouse, clique nas caixas de seleção que representam os níveis de execução (<guimenu>B</guimenu>, <guimenu>0</guimenu>, <guimenu>1</guimenu>, <guimenu>2</guimenu>, <guimenu>3</guimenu>, <guimenu>5</guimenu>, <guimenu>6</guimenu> e <guimenu>S</guimenu>) para definir os níveis de execução em que o serviço ou daemon selecionado deve estar em execução. O nível de execução 4 é indefinido para permitir a criação de um nível de execução personalizado. Uma breve descrição do serviço ou daemon selecionado no momento é fornecida abaixo da visão geral da tabela.
    </para>
    <warning>
     <title>Configurações de nível de execução defeituosas podem danificar o sistema</title>
@@ -617,7 +617,7 @@ Please see LICENSE.txt for this document's license.
      Configurações de nível de execução defeituosas podem tornar o sistema inutilizável. Antes de aplicar as mudanças, tenha absoluta certeza sobre suas consequências.
     </para>
    </warning>
-   <figure id="fig.yast2.runlevel">
+   <figure id="fig-yast2-runlevel">
     <title>Serviços do Sistema (Nível de Execução)</title>
     <mediaobject>
      <imageobject role="fo">
@@ -633,8 +633,8 @@ Please see LICENSE.txt for this document's license.
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.boot.sysconfig">
-  <title>Configuração do sistema via <filename>/etc/sysconfig</filename></title><indexterm> <primary>configurando</primary> </indexterm> <indexterm id="idx.scripts_SuSEconfig" class="startofrange"> <primary>scripts</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx.configuration_files_sysconfig" class="startofrange"> <primary>arquivos de configuração</primary> <secondary>sysconfig</secondary> </indexterm>
+ <sect1 id="sec-boot-sysconfig">
+  <title>Configuração do sistema via <filename>/etc/sysconfig</filename></title><indexterm> <primary>configurando</primary> </indexterm> <indexterm id="idx-scripts-SuSEconfig" class="startofrange"> <primary>scripts</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx-configuration-files-sysconfig" class="startofrange"> <primary>arquivos de configuração</primary> <secondary>sysconfig</secondary> </indexterm>
 
   <para>
    A configuração principal do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> é controlada pelos arquivos de configuração em <filename>/etc/sysconfig</filename>. Os arquivos individuais em <filename>/etc/sysconfig</filename> são lidos somente pelos scripts para os quais são relevantes. Isso garante que as configurações de rede, por exemplo, somente precisem ser analisadas pelos scripts relacionados à rede.
@@ -644,7 +644,7 @@ Please see LICENSE.txt for this document's license.
    Há duas maneiras de editar a configuração do sistema. Use o Editor sysconfig do YaST ou edite manualmente os arquivos de configuração.
   </para>
 
-  <sect2 id="sec.boot.sysconfig.edit">
+  <sect2 id="sec-boot-sysconfig-edit">
    <title>Mudando a configuração do sistema usando o Editor sysconfig do YaST</title><indexterm> <primary>YaST</primary><secondary>editor sysconfig</secondary></indexterm>
    <para>
     O editor sysconfig do YaST dispõe de um front end fácil de usar para a configuração do sistema. Sem conhecimento do local real da variável de configuração que precisa ser mudada, você pode apenas usar a função de pesquisa incorporada desse módulo, mudar o valor dessa variável conforme necessário e permitir que o YaST se encarregue de aplicar essas mudanças, atualizando as configurações que dependem dos valores definidos no <filename>sysconfig</filename> e reiniciando os serviços.
@@ -655,7 +655,7 @@ Please see LICENSE.txt for this document's license.
      Não modifique os arquivos <filename>/etc/sysconfig</filename> se você não tiver experiência e conhecimento prévios. Isso pode causar sérios danos ao sistema. Os arquivos em <filename>/etc/sysconfig</filename> contêm um pequeno comentário sobre cada variável para explicar seu efeito real.
     </para>
    </warning>
-   <figure id="fig.yast2.sysconfig">
+   <figure id="fig-yast2-sysconfig">
     <title>Configuração do sistema usando o Editor sysconfig</title>
     <mediaobject>
      <imageobject role="fo">
@@ -675,7 +675,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-  <sect2 id="sec.boot.sysconfig.man">
+  <sect2 id="sec-boot-sysconfig-man">
    <title>Mudando manualmente a configuração do sistema</title>
    <para>
     Para mudar manualmente a configuração do sistema, faça o seguinte
@@ -718,7 +718,7 @@ Please see LICENSE.txt for this document's license.
     <para>
      <indexterm> <primary>scripts</primary> <secondary>SuSEconfig</secondary> <tertiary>desabilitando</tertiary> </indexterm> <indexterm> <primary>arquivos de configuração</primary> <secondary>suseconfig</secondary> </indexterm> Para desabilitar a configuração automatizada do sistema pelo SuSEconfig, defina a variável <systemitem>ENABLE_SUSECONFIG</systemitem> em <filename>/etc/sysconfig/suseconfig</filename> como <literal>no</literal>. Não desabilite o SuSEconfig se quiser usar o suporte de instalação do SUSE. Também é possível desabilitar parcialmente a configuração automática.
     </para>
-   </tip><indexterm class="endofrange" startref="idx.scripts_SuSEconfig"/><indexterm class="endofrange" startref="idx.configuration_files_sysconfig"/>
+   </tip><indexterm class="endofrange" startref="idx-scripts-SuSEconfig"/><indexterm class="endofrange" startref="idx-configuration-files-sysconfig"/>
   </sect2>
  </sect1>
 </chapter>
