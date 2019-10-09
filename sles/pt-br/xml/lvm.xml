@@ -7,11 +7,11 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="lvm.xml" id="sec.yast2.system.lvm">
+<sect1 xml:base="lvm.xml" id="sec-yast2-system-lvm">
  <title>Configuração do LVM</title><indexterm> <primary>YaST</primary> <secondary>LVM</secondary></indexterm><indexterm> <primary>LVM</primary> <secondary>YaST</secondary></indexterm><indexterm> <primary>Gerenciador de Volumes Lógicos</primary> <see>LVM</see></indexterm>
 
  <para>
-  Esta seção descreve resumidamente os princípios por trás do Gerenciador de Volumes Lógicos (LVM) e seus recursos para várias finalidades. Na <xref linkend="sec.yast2.system.lvm.yast"/>, aprenda como configurar o LVM com o YaST.
+  Esta seção descreve resumidamente os princípios por trás do Gerenciador de Volumes Lógicos (LVM) e seus recursos para várias finalidades. Na <xref linkend="sec-yast2-system-lvm-yast"/>, aprenda como configurar o LVM com o YaST.
  </para>
 
  <warning>
@@ -20,12 +20,12 @@ Please see LICENSE.txt for this document's license.
   </para>
  </warning>
 
- <sect2 id="sec.yast2.system.lvm.explained">
+ <sect2 id="sec-yast2-system-lvm-explained">
   <title>Gerenciador de Volumes Lógicos</title>
   <para>
-   O LVM permite uma distribuição flexível do espaço do disco rígido em vários sistemas de arquivos. Ele foi desenvolvido porque, às vezes, a necessidade de mudar a segmentação do espaço no disco rígido surge logo após a realização do particionamento inicial. Como é difícil modificar partições em um sistema em execução, o LVM fornece um pool virtual, ou seja, VG (Volume Group — Grupo de Volume) de espaço em memória com base no qual os LVs (Logical Volumes — Volumes Lógicos) podem ser criados conforme o necessário. O sistema operacional acessa esses LVs, em vez de acessar as partições físicas. Os grupos de volume podem ocupar mais de um disco, de forma que vários discos ou partes deles possam constituir um único grupo de volume. Dessa forma, o LVM oferece um tipo de abstração do espaço em disco físico, permitindo que a segmentação seja modificada de maneira muito mais fácil e segura do que no reparticionamento físico. É possível encontrar outras informações sobre o particionamento físico na <xref linkend="sec.IB.part.typen"/> e na<xref linkend="sec.yast2.i_y2_part_expert"/>.
+   O LVM permite uma distribuição flexível do espaço do disco rígido em vários sistemas de arquivos. Ele foi desenvolvido porque, às vezes, a necessidade de mudar a segmentação do espaço no disco rígido surge logo após a realização do particionamento inicial. Como é difícil modificar partições em um sistema em execução, o LVM fornece um pool virtual, ou seja, VG (Volume Group — Grupo de Volume) de espaço em memória com base no qual os LVs (Logical Volumes — Volumes Lógicos) podem ser criados conforme o necessário. O sistema operacional acessa esses LVs, em vez de acessar as partições físicas. Os grupos de volume podem ocupar mais de um disco, de forma que vários discos ou partes deles possam constituir um único grupo de volume. Dessa forma, o LVM oferece um tipo de abstração do espaço em disco físico, permitindo que a segmentação seja modificada de maneira muito mais fácil e segura do que no reparticionamento físico. É possível encontrar outras informações sobre o particionamento físico na <xref linkend="sec-IB-part-typen"/> e na<xref linkend="sec-yast2-i-y2-part-expert"/>.
   </para>
-  <figure id="fig.lvm.explained.schematic">
+  <figure id="fig-lvm-explained-schematic">
    <title>Particionamento físico versus LVM</title>
    <mediaobject>
     <imageobject role="fo">
@@ -37,7 +37,7 @@ Please see LICENSE.txt for this document's license.
    </mediaobject>
   </figure>
   <para>
-   <xref linkend="fig.lvm.explained.schematic"/> A  compara o particionamento físico (esquerda) com a segmentação do LVM (direita). Do lado esquerdo, um único disco foi dividido em três partições físicas (PART), cada uma com um ponto de montagem (MP) atribuído para que o sistema operacional possa obter acesso. Do lado direito, dois discos foram divididos em duas e três partições físicas cada. Foram definidos dois grupos de volume (VG1 e VG2) do LVM. O VG1 contém duas partições do DISCO 1 e uma do DISCO 2. O VG2 contém as duas partições restantes do DISCO 2. No LVM, as partições físicas do disco incorporadas a um grupo de volume são chamadas de PVs (physical volumes — volumes físicos). Dentro dos grupos de volume, quatro volumes lógicos (LVs) (LV 1 a LV 4) foram definidos. Eles podem ser usados pelo sistema operacional por meio dos pontos de montagem associados. A fronteira entre os diferentes LVs não precisa estar alinhada com as fronteiras das partições. Veja a fronteira entre LV1 e LV2 neste exemplo.
+   <xref linkend="fig-lvm-explained-schematic"/> A  compara o particionamento físico (esquerda) com a segmentação do LVM (direita). Do lado esquerdo, um único disco foi dividido em três partições físicas (PART), cada uma com um ponto de montagem (MP) atribuído para que o sistema operacional possa obter acesso. Do lado direito, dois discos foram divididos em duas e três partições físicas cada. Foram definidos dois grupos de volume (VG1 e VG2) do LVM. O VG1 contém duas partições do DISCO 1 e uma do DISCO 2. O VG2 contém as duas partições restantes do DISCO 2. No LVM, as partições físicas do disco incorporadas a um grupo de volume são chamadas de PVs (physical volumes — volumes físicos). Dentro dos grupos de volume, quatro volumes lógicos (LVs) (LV 1 a LV 4) foram definidos. Eles podem ser usados pelo sistema operacional por meio dos pontos de montagem associados. A fronteira entre os diferentes LVs não precisa estar alinhada com as fronteiras das partições. Veja a fronteira entre LV1 e LV2 neste exemplo.
   </para>
   <para>
    Recursos do LVM:
@@ -86,10 +86,10 @@ Please see LICENSE.txt for this document's license.
   </sect3>
  </sect2>
 
- <sect2 id="sec.yast2.system.lvm.yast">
+ <sect2 id="sec-yast2-system-lvm-yast">
   <title>Configuração do LVM com o YaST</title>
   <para>
-   A configuração do YaST LVM pode ser feita através do Particionador Técnico do YaST (consulte a <xref linkend="sec.yast2.i_y2_part_expert"/>) no item <guimenu>Gerenciamento de Volumes</guimenu> do painel <guimenu>Tela do Sistema</guimenu>. O Particionador Técnico permite editar e apagar partições existentes e também criar partições novas que precisam ser usadas com o LVM. A primeira tarefa consiste em criar PVs que forneçam espaço para um grupo de volumes:
+   A configuração do YaST LVM pode ser feita através do Particionador Técnico do YaST (consulte a <xref linkend="sec-yast2-i-y2-part-expert"/>) no item <guimenu>Gerenciamento de Volumes</guimenu> do painel <guimenu>Tela do Sistema</guimenu>. O Particionador Técnico permite editar e apagar partições existentes e também criar partições novas que precisam ser usadas com o LVM. A primeira tarefa consiste em criar PVs que forneçam espaço para um grupo de volumes:
   </para>
   <procedure>
    <step performance="required">
@@ -121,7 +121,7 @@ Please see LICENSE.txt for this document's license.
   <sect3>
    <title>Criando grupos de volume</title>
    <para>
-    Se não houver nenhum grupo de volume no sistema, adicione um (veja a <xref linkend="fig.lvm.yast.volgrp"/>). É possível criar grupos adicionais clicando em <guimenu>Gerenciamento de Volumes</guimenu> no painel <guimenu>Visão do Sistema</guimenu> e depois em <guimenu>Adicionar Grupo de Volume</guimenu>. Um único grupo de volume geralmente é suficiente.
+    Se não houver nenhum grupo de volume no sistema, adicione um (veja a <xref linkend="fig-lvm-yast-volgrp"/>). É possível criar grupos adicionais clicando em <guimenu>Gerenciamento de Volumes</guimenu> no painel <guimenu>Visão do Sistema</guimenu> e depois em <guimenu>Adicionar Grupo de Volume</guimenu>. Um único grupo de volume geralmente é suficiente.
    </para>
    <procedure>
     <step performance="required">
@@ -145,7 +145,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-   <figure id="fig.lvm.yast.volgrp">
+   <figure id="fig-lvm-yast-volgrp">
     <title>Criando um grupo de volume</title>
     <mediaobject>
      <imageobject role="fo">
@@ -165,7 +165,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     Depois que o grupo de volume for preenchido com PVs, defina os LVs que o sistema operacional usará na próxima caixa de diálogo. Escolha o grupo de volumes atual e mude para a guia <guimenu>Volumes Lógicos</guimenu>. <guimenu>Adicione</guimenu>, <guimenu>Edite</guimenu>, <guimenu>Redimensione</guimenu> e <guimenu>Apague</guimenu> LVs conforme necessário até todo o espaço no grupo de volume ser ocupado. Atribua pelo menos um LV a cada grupo de volumes.
    </para>
-   <figure id="fig.lvm.yast.mgmt">
+   <figure id="fig-lvm-yast-mgmt">
     <title>Gerenciamento de volume lógico</title>
     <mediaobject>
      <imageobject role="fo">

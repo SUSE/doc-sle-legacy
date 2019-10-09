@@ -7,23 +7,23 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="zseries_rescue_initrd.xml" id="sec.zseries.rescue">
+<sect1 xml:base="zseries_rescue_initrd.xml" id="sec-zseries-rescue">
  <title>IBM System z:　initrdのレスキューシステムとしての使用</title>
 
  <para>
   SUSE® Linux Enterprise Server for IBM System zのカーネルをアップグレードまたは変更した場合、何らかの原因でシステムが不整合な状態で再起動されると、インストールされているシステムのIPL標準処理が失敗する可能性があります。一般的にこの問題は、アップデートされたSUSE Linux Enterprise Serverカーネルをインストールした後で、IPLレコードをアップデートするziplプログラムをまだ実行していない場合に発生します。この場合、レスキューシステムとして標準のインストールパッケージを使用して、そこからziplプログラムを実行してIPLレコードをアップデートしてください。
  </para><indexterm> <primary>レスキューシステム</primary> </indexterm>
 
- <sect2 id="sec.zseries.rescue.ipling">
+ <sect2 id="sec-zseries-rescue-ipling">
   <title>レスキューシステムのIPL処理</title>
   <important>
    <title>インストールデータを利用できるようにする</title>
    <para>
-    この方法を使用する場合、SUSE Linux Enterprise Server for IBM System zのインストールデータが利用可能でなければなりません。詳細については、<xref linkend="sec.prep.makeavail"/>を参照してください。また、SUSE Linux Enterprise Serverのルートファイルシステムを含むデバイスのチャネル番号、およびデバイス内のパーティション番号が必要になります。
+    この方法を使用する場合、SUSE Linux Enterprise Server for IBM System zのインストールデータが利用可能でなければなりません。詳細については、<xref linkend="sec-prep-makeavail"/>を参照してください。また、SUSE Linux Enterprise Serverのルートファイルシステムを含むデバイスのチャネル番号、およびデバイス内のパーティション番号が必要になります。
    </para>
   </important>
   <para>
-   まず、SUSE Linux Enterprise Server for IBM System zのインストールシステムをIPL (再起動)します(<xref linkend="sec.zseries.prep"/>を参照)。IPL処理すると、ネットワークアダプタのリストが表示されます。
+   まず、SUSE Linux Enterprise Server for IBM System zのインストールシステムをIPL (再起動)します(<xref linkend="sec-zseries-prep"/>を参照)。IPL処理すると、ネットワークアダプタのリストが表示されます。
   </para>
   <para>
    レスキューシステムを開始するには<guimenu>インストール処理またはシステムを開始する</guimenu>を選択してから<guimenu>レスキューシステムを開始する</guimenu>を選択します。次に、インストール環境に応じて、ネットワークアダプタやインストールソースに関するパラメータを指定する必要があります。レスキューシステムがロードされ、ログインプロンプトが表示されます。
@@ -36,7 +36,7 @@ Rescue login:</screen>
   </para>
  </sect2>
 
- <sect2 id="sec.zseries.rescue.configure_disks">
+ <sect2 id="sec-zseries-rescue-configure-disks">
   <title>ディスクの設定</title>
   <para>
    この状態では、設定されているディスクはありません。作業を続行する前に、ディスクを設定する必要があります。
@@ -86,7 +86,7 @@ Rescue login:</screen>
   </procedure>
  </sect2>
 
- <sect2 id="sec.zseries.rescue.mount">
+ <sect2 id="sec-zseries-rescue-mount">
   <title>ルートデバイスのマウント</title>
   <para>
    必要なディスクがすべてオンラインになったら、ルートデバイスをマウントします。ここでは、DASDの2番目のパーティション(<literal>/dev/dasda2</literal>)にルートデバイスがあると仮定します。この場合、使用するコマンドは<command>mount /dev/dasda2 /mnt</command>になります。
@@ -100,7 +100,7 @@ Rescue login:</screen>
   <para>
    mount<command>コマンドを実行するだけでも、ファイルシステムが正しくマウントされたかどうかを確認することができます。</command>
   </para>
-  <example id="ex.zseries.rescue.mount.mount_output">
+  <example id="ex-zseries-rescue-mount-mount-output">
    <title>mountコマンドの出力</title>
    <screen>SuSE Instsys suse:/ # mount
 shmfs on /newroot type shm (rw,nr_inodes=10240)
@@ -110,24 +110,24 @@ virtual-proc-filesystem on /proc type proc (rw)
   </example>
  </sect2>
 
- <sect2 id="sec.zseries.rescue.chroot">
+ <sect2 id="sec-zseries-rescue-chroot">
   <title>マウントされているファイルシステムの変更</title>
   <para>
    <literal>zipl</literal>コマンド実行時に、レスキューシステムからではなく、インストール済みシステムのルートデバイスから設定ファイルを読み込ませるためには、<command>chroot</command>コマンドを使ってルートデバイスをインストール済みシステムに変更します。
   </para>
-  <example id="ex.zseries.rescue.chroot">
+  <example id="ex-zseries-rescue-chroot">
    <title>chrootを使ったマウントするファイルシステムの変更</title>
    <screen>SuSE Instsys suse:/ # cd /mnt 
 SuSE Instsys suse:/mnt # chroot /mnt</screen>
   </example>
  </sect2>
 
- <sect2 id="sec.zseries.rescue.zipl">
+ <sect2 id="sec-zseries-rescue-zipl">
   <title>ziplの実行</title>
   <para>
    次に、<command>zipl</command>を実行して、IPLレコードを正しい値に書き換えます。
   </para>
-  <example id="ex.zseries.rescue.zipl">
+  <example id="ex-zseries-rescue-zipl">
    <title>ziplを使ったIPLレコードのインストール</title>
    <screen>sh-2.05b# zipl 
 building bootmap : /boot/zipl/bootmap 
@@ -140,18 +140,18 @@ Syncing disks....
   </example>
  </sect2>
 
- <sect2 id="sec.zseries.rescue.exit">
+ <sect2 id="sec-zseries-rescue-exit">
   <title>レスキューシステムの終了</title>
   <para>
    レスキューシステムを終了するには、まず<command>chroot</command>コマンドで開かれたシェルを<command>exit</command>コマンドで終了します。データ消失を防ぐために、<command>sync</command>コマンドを使って、バッファ上にあるまだ書き込まれていないデータをすべてディスクに書き込みます。次に、レスキューシステムのルートディレクトリに移動して、SUSE Linux Enterprise Server for IBM System zルートデバイスをアンマウントします。
   </para>
-  <example id="ex.zseries.rescue.exit.umount">
+  <example id="ex-zseries-rescue-exit-umount">
    <title>ファイルシステムのアンマウント</title>
    <screen>SuSE Instsys suse:/mnt # cd / 
 SuSE Instsys suse:/ # umount /mnt</screen>
   </example>
   <para>
-   最後に、<command>halt</command>コマンドを実行して、レスキューシステムを終了します。<xref linkend="sec.s390.inst.reipl"/>で説明されているように、SUSE Linux Enterprise ServerシステムのIPL処理が行われます。
+   最後に、<command>halt</command>コマンドを実行して、レスキューシステムを終了します。<xref linkend="sec-s390-inst-reipl"/>で説明されているように、SUSE Linux Enterprise ServerシステムのIPL処理が行われます。
   </para>
  </sect2>
 </sect1>

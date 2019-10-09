@@ -7,11 +7,11 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="lvm.xml" id="sec.yast2.system.lvm">
+<sect1 xml:base="lvm.xml" id="sec-yast2-system-lvm">
  <title>LVM 配置</title><indexterm> <primary>YaST</primary> <secondary>LVM</secondary></indexterm><indexterm> <primary>LVM</primary> <secondary>YaST</secondary></indexterm><indexterm> <primary>逻辑卷管理器</primary> <see>LVM</see></indexterm>
 
  <para>
-  本节简要介绍逻辑卷管理器 (LVM) 背后的原理，以及它的多功能特性。在<xref linkend="sec.yast2.system.lvm.yast"/>中，将学习如何用 YaST 设置 LVM。
+  本节简要介绍逻辑卷管理器 (LVM) 背后的原理，以及它的多功能特性。在<xref linkend="sec-yast2-system-lvm-yast"/>中，将学习如何用 YaST 设置 LVM。
  </para>
 
  <warning>
@@ -20,12 +20,12 @@ Please see LICENSE.txt for this document's license.
   </para>
  </warning>
 
- <sect2 id="sec.yast2.system.lvm.explained">
+ <sect2 id="sec-yast2-system-lvm-explained">
   <title>逻辑卷管理器</title>
   <para>
-   LVM 支持在多个文件系统上灵活分配硬盘空间。开发逻辑卷管理器是因为有时只有在初始分区完成后才需要更改硬盘空间的分段。因为在运行的系统中修改分区比较困难，LVM 提供了内存空间的虚拟池（卷组，简称 VG），如果需要，可以从中生成逻辑卷 (LV)。操作系统访问这些逻辑卷而不是物理分区。卷组可以占据多个磁盘，这样多个磁盘或部分磁盘可以构成一个 VG。LVM 以这种方式提供了一种对物理磁盘空间的抽象，从而能够以比物理分区更方便、更安全的方式更改硬盘空间的分段。<xref linkend="sec.IB.part.typen"/>和<xref linkend="sec.yast2.i_y2_part_expert"/>中提供了有关物理分区的背景信息。
+   LVM 支持在多个文件系统上灵活分配硬盘空间。开发逻辑卷管理器是因为有时只有在初始分区完成后才需要更改硬盘空间的分段。因为在运行的系统中修改分区比较困难，LVM 提供了内存空间的虚拟池（卷组，简称 VG），如果需要，可以从中生成逻辑卷 (LV)。操作系统访问这些逻辑卷而不是物理分区。卷组可以占据多个磁盘，这样多个磁盘或部分磁盘可以构成一个 VG。LVM 以这种方式提供了一种对物理磁盘空间的抽象，从而能够以比物理分区更方便、更安全的方式更改硬盘空间的分段。<xref linkend="sec-IB-part-typen"/>和<xref linkend="sec-yast2-i-y2-part-expert"/>中提供了有关物理分区的背景信息。
   </para>
-  <figure id="fig.lvm.explained.schematic">
+  <figure id="fig-lvm-explained-schematic">
    <title>物理分区与 LVM</title>
    <mediaobject>
     <imageobject role="fo">
@@ -37,7 +37,7 @@ Please see LICENSE.txt for this document's license.
    </mediaobject>
   </figure>
   <para>
-   <xref linkend="fig.lvm.explained.schematic"/>比较物理分区（左）和 lvm 分段（右）。在左侧，将一个磁盘分成 3 个物理分区 (PART)，每个分区指派了一个安装点 (MP)，以便操作系统可以访问它们。在右侧，有两个磁盘，一个磁盘分为 2 个物理分区，另一个磁盘分为 3 个物理分区。定义了两个 LVM 卷组（VG1 和 VG2）。VG1 包含 DISK1 中的 2 个分区和 DISK2 中的 1 个分区。VG2 包含 DISK2 中剩余的 2 个分区。在 LVM 中，将卷组中包含的物理磁盘分区称为物理卷 (PV)。在卷组中，定义了 4 个 LV（LV 1 至 LV 4）。操作系统可以通过关联的安装点使用它们。不同 LV 之间的边界不需要按任何分区边界对齐。请参见本示例中 LV 1 和 LV 2 之间的边界。
+   <xref linkend="fig-lvm-explained-schematic"/>比较物理分区（左）和 lvm 分段（右）。在左侧，将一个磁盘分成 3 个物理分区 (PART)，每个分区指派了一个安装点 (MP)，以便操作系统可以访问它们。在右侧，有两个磁盘，一个磁盘分为 2 个物理分区，另一个磁盘分为 3 个物理分区。定义了两个 LVM 卷组（VG1 和 VG2）。VG1 包含 DISK1 中的 2 个分区和 DISK2 中的 1 个分区。VG2 包含 DISK2 中剩余的 2 个分区。在 LVM 中，将卷组中包含的物理磁盘分区称为物理卷 (PV)。在卷组中，定义了 4 个 LV（LV 1 至 LV 4）。操作系统可以通过关联的安装点使用它们。不同 LV 之间的边界不需要按任何分区边界对齐。请参见本示例中 LV 1 和 LV 2 之间的边界。
   </para>
   <para>
    LVM 功能：
@@ -86,10 +86,10 @@ Please see LICENSE.txt for this document's license.
   </sect3>
  </sect2>
 
- <sect2 id="sec.yast2.system.lvm.yast">
+ <sect2 id="sec-yast2-system-lvm-yast">
   <title>使用 YaST 配置 LVM</title>
   <para>
-   YaST LVM 配置可以通过 YaST 专家分区程序（请参见<xref linkend="sec.yast2.i_y2_part_expert"/>）中<guimenu>系统视图</guimenu>窗格内的<guimenu>卷管理</guimenu>项目来访问。专家分区程序用于编辑和删除现有分区，还可创建需要用于 LVM 的新分区。第一个任务是创建用于向卷组提供空间的 PV：
+   YaST LVM 配置可以通过 YaST 专家分区程序（请参见<xref linkend="sec-yast2-i-y2-part-expert"/>）中<guimenu>系统视图</guimenu>窗格内的<guimenu>卷管理</guimenu>项目来访问。专家分区程序用于编辑和删除现有分区，还可创建需要用于 LVM 的新分区。第一个任务是创建用于向卷组提供空间的 PV：
   </para>
   <procedure>
    <step performance="required">
@@ -121,7 +121,7 @@ Please see LICENSE.txt for this document's license.
   <sect3>
    <title>创建卷组</title>
    <para>
-    如果系统上不存在卷组，则您必须添加一个（请参见<xref linkend="fig.lvm.yast.volgrp"/>）。可以通过在<guimenu>系统视图</guimenu>窗格中单击<guimenu>卷管理</guimenu>，然后单击<guimenu>添加卷组</guimenu>来创建其他组。通常一个卷组就已足够。
+    如果系统上不存在卷组，则您必须添加一个（请参见<xref linkend="fig-lvm-yast-volgrp"/>）。可以通过在<guimenu>系统视图</guimenu>窗格中单击<guimenu>卷管理</guimenu>，然后单击<guimenu>添加卷组</guimenu>来创建其他组。通常一个卷组就已足够。
    </para>
    <procedure>
     <step performance="required">
@@ -145,7 +145,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-   <figure id="fig.lvm.yast.volgrp">
+   <figure id="fig-lvm-yast-volgrp">
     <title>创建卷组</title>
     <mediaobject>
      <imageobject role="fo">
@@ -165,7 +165,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     在用 PV 填充卷组后，请定义操作系统应在下一个对话框中使用的 LV。选择当前卷组，然后切换到<guimenu>逻辑卷</guimenu>选项卡。根据需要<guimenu>添加</guimenu>、<guimenu>编辑</guimenu><guimenu>删除</guimenu> LV 以及对 LV <guimenu>调整大小</guimenu>，直到卷组中的所有空间都用完为止。请为每个卷组至少指派一个 LV。
    </para>
-   <figure id="fig.lvm.yast.mgmt">
+   <figure id="fig-lvm-yast-mgmt">
     <title>逻辑卷管理</title>
     <mediaobject>
      <imageobject role="fo">

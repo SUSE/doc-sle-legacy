@@ -7,14 +7,14 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="bootconcept.xml" id="cha.boot">
+<chapter xml:base="bootconcept.xml" id="cha-boot">
  <title>引导和配置 Linux 系统</title><indexterm><primary>引导</primary></indexterm>
  <abstract>
   <para>
    引导 Linux 系统涉及不同组件。BIOS 初始化硬件本身，并通过引导加载程序启动内核。之后，<systemitem>init</systemitem> 的引导进程及运行级别将完全受操作系统控制。runlevel 概念使您可以维护日常使用的设置，也可以对系统执行维护任务。
   </para>
  </abstract>
- <sect1 id="sec.boot.proc">
+ <sect1 id="sec-boot-proc">
   <title>Linux 引导进程</title>
 
   <para>
@@ -34,7 +34,7 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title>引导加载程序</title>
      <para>
-      第一块硬盘的前 512 个字节的物理数据扇区将被装载到主储存器中，位于此扇区开始位置的<emphasis>引导加载程序</emphasis>将接管系统控制。引导加载程序执行的命令决定了引导进程剩余的部分。因此，第一块硬盘的前 512 个字节被称为<emphasis>主引导记录</emphasis> (MBR)。引导加载程序随后将控制权交给实际的操作系统（在本例中即 Linux 内核）。有关 Linux 引导加载程序 GRUB 的详细信息，可以在<xref linkend="cha.grub"/>中找到。<phrase os="sles">对于网络引导，BIOS 充当了引导加载程序。它从引导服务器启动映像，然后启动系统。这完全不依赖本地硬盘。</phrase>
+      第一块硬盘的前 512 个字节的物理数据扇区将被装载到主储存器中，位于此扇区开始位置的<emphasis>引导加载程序</emphasis>将接管系统控制。引导加载程序执行的命令决定了引导进程剩余的部分。因此，第一块硬盘的前 512 个字节被称为<emphasis>主引导记录</emphasis> (MBR)。引导加载程序随后将控制权交给实际的操作系统（在本例中即 Linux 内核）。有关 Linux 引导加载程序 GRUB 的详细信息，可以在<xref linkend="cha-grub"/>中找到。<phrase os="sles">对于网络引导，BIOS 充当了引导加载程序。它从引导服务器启动映像，然后启动系统。这完全不依赖本地硬盘。</phrase>
      </para>
     </formalpara>
    </listitem>
@@ -42,7 +42,7 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title>内核和 <systemitem>initramfs</systemitem></title>
      <para>
-      为了传递系统控制，引导加载程序将内核和基于 RAM 的初始文件系统 (<systemitem>initramfs</systemitem>) 装载到内存中。内核可以直接使用 <systemitem>initramfs</systemitem> 的内容。<systemitem>initramfs</systemitem> 包含一个小的可执行文件，称为 <systemitem>init</systemitem>，可以处理真实 root 文件系统的装入。如果需要特殊硬盘驱动程序才能访问大容量储存，则这些程序必须在 <systemitem>initramfs</systemitem> 中。有关 <systemitem>initramfs</systemitem> 的详细信息，请参见<xref linkend="sec.boot.initrd"/>。<phrase os="sles">如果系统没有本地硬盘，则 <systemitem>initramfs</systemitem> 必须向内核提供 root 文件系统。这应该通过网络块设备（如 iSCSI 或 SAN）的帮助进行，但也可以使用 NFS 作为 root 设备。</phrase>
+      为了传递系统控制，引导加载程序将内核和基于 RAM 的初始文件系统 (<systemitem>initramfs</systemitem>) 装载到内存中。内核可以直接使用 <systemitem>initramfs</systemitem> 的内容。<systemitem>initramfs</systemitem> 包含一个小的可执行文件，称为 <systemitem>init</systemitem>，可以处理真实 root 文件系统的装入。如果需要特殊硬盘驱动程序才能访问大容量储存，则这些程序必须在 <systemitem>initramfs</systemitem> 中。有关 <systemitem>initramfs</systemitem> 的详细信息，请参见<xref linkend="sec-boot-initrd"/>。<phrase os="sles">如果系统没有本地硬盘，则 <systemitem>initramfs</systemitem> 必须向内核提供 root 文件系统。这应该通过网络块设备（如 iSCSI 或 SAN）的帮助进行，但也可以使用 NFS 作为 root 设备。</phrase>
      </para>
     </formalpara>
    </listitem>
@@ -50,7 +50,7 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title><systemitem/>initramfs 中的 init<systemitem/></title>
      <para>
-      此程序执行装入正确 root 文件系统所需的所有操作，如为所需的文件系统提供内核功能以及为带有 <systemitem class="service">udev</systemitem> 的大容量储存控制器提供设备驱动程序。找到 root 文件系统后，对其进行错误检查并装入。如果此操作成功，将清除 <systemitem>initramfs</systemitem> 并执行 root 文件系统上的 <systemitem>init</systemitem> 程序。有关 <systemitem>init</systemitem> 的详细信息，请参见<xref linkend="sec.boot.linuxrc"/>。有关 <systemitem class="service">udev</systemitem> 的详细信息，请参见<xref linkend="cha.udev"/>。
+      此程序执行装入正确 root 文件系统所需的所有操作，如为所需的文件系统提供内核功能以及为带有 <systemitem class="service">udev</systemitem> 的大容量储存控制器提供设备驱动程序。找到 root 文件系统后，对其进行错误检查并装入。如果此操作成功，将清除 <systemitem>initramfs</systemitem> 并执行 root 文件系统上的 <systemitem>init</systemitem> 程序。有关 <systemitem>init</systemitem> 的详细信息，请参见<xref linkend="sec-boot-linuxrc"/>。有关 <systemitem class="service">udev</systemitem> 的详细信息，请参见<xref linkend="cha-udev"/>。
      </para>
     </formalpara>
    </listitem>
@@ -58,13 +58,13 @@ Please see LICENSE.txt for this document's license.
     <formalpara>
      <title><systemitem>init</systemitem></title>
      <para>
-      <systemitem>init</systemitem> 通过提供不同功能的多个不同级别来处理实际的系统引导。有关 <systemitem>init</systemitem> 的介绍，请参见<xref linkend="sec.boot.init"/>。
+      <systemitem>init</systemitem> 通过提供不同功能的多个不同级别来处理实际的系统引导。有关 <systemitem>init</systemitem> 的介绍，请参见<xref linkend="sec-boot-init"/>。
      </para>
     </formalpara>
    </listitem>
   </orderedlist>
 
-  <sect2 id="sec.boot.initrd">
+  <sect2 id="sec-boot-initrd">
    <title><systemitem>initramfs</systemitem></title>
    <para>
     <systemitem>initramfs</systemitem> 是一个内核可以装载到 RAM 磁盘的小型 cpio 归档。它提供了一个最小的 Linux 环境，可在装入实际 root 文件系统之前执行程序。这个最小的 Linux 环境由 BIOS 例程装载进内存，而且除了需要足够的内存外没有特别的硬件要求。<systemitem>initramfs</systemitem> 必须始终提供一个名为 <systemitem>init</systemitem> 的可执行文件，该文件应该执行 root 文件系统中实际的 <systemitem>init</systemitem> 程序以使引导进程继续进行。
@@ -83,7 +83,7 @@ Please see LICENSE.txt for this document's license.
    </important>
   </sect2>
 
-  <sect2 id="sec.boot.linuxrc">
+  <sect2 id="sec-boot-linuxrc">
    <title><systemitem>initramfs</systemitem> 上的 init</title>
    <para>
     <systemitem>initramfs</systemitem> 上的 <systemitem>init</systemitem> 的主要用途是准备真实 root 文件系统的装入和访问。<systemitem>init</systemitem> 负责以下任务，具体取决于您的系统配置。
@@ -112,11 +112,11 @@ Please see LICENSE.txt for this document's license.
      <term>管理 RAID 和 LVM 设置</term>
      <listitem>
       <para>
-       如果将系统配置为在 RAID 或 LVM 下保存 root 文件系统，则 <systemitem>init</systemitem> 将设置 LVM 或 RAID 以支持稍后对 root 文件系统的访问。在<xref linkend="cha.advdisk"/>中查找关于 RAID 和 LVM 的信息。
+       如果将系统配置为在 RAID 或 LVM 下保存 root 文件系统，则 <systemitem>init</systemitem> 将设置 LVM 或 RAID 以支持稍后对 root 文件系统的访问。在<xref linkend="cha-advdisk"/>中查找关于 RAID 和 LVM 的信息。
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry id="ve.net">
+    <varlistentry id="ve-net">
      <term>管理网络配置</term>
      <listitem>
       <para>
@@ -144,7 +144,7 @@ Please see LICENSE.txt for this document's license.
      <term>启动硬件识别并装载适当的内核模块</term>
      <listitem>
       <para>
-       如<xref linkend="sec.boot.initrd"/> 中所述，引导进程从可用于大多数硬件配置的一组最小的驱动程序开始。<systemitem>init</systemitem> 将启动初始硬件扫描进程，以确定适合您的硬件配置的一组驱动程序。引导进程所需的模块名写进 <systemitem>/etc/sysconfig/kernel</systemitem> 中的 <filename>INITRD_MODULES</filename>。这些名称用于生成引导系统所需的自定义 <systemitem>initramfs</systemitem>。如果模块不是用于引导，而是用于冷插入，则模块要写进 <filename>/etc/sysconfig/hardware/hwconfig-*</filename>。本目录下用配置文件描述的所有设备均要在引导过程中进行初始化。
+       如<xref linkend="sec-boot-initrd"/> 中所述，引导进程从可用于大多数硬件配置的一组最小的驱动程序开始。<systemitem>init</systemitem> 将启动初始硬件扫描进程，以确定适合您的硬件配置的一组驱动程序。引导进程所需的模块名写进 <systemitem>/etc/sysconfig/kernel</systemitem> 中的 <filename>INITRD_MODULES</filename>。这些名称用于生成引导系统所需的自定义 <systemitem>initramfs</systemitem>。如果模块不是用于引导，而是用于冷插入，则模块要写进 <filename>/etc/sysconfig/hardware/hwconfig-*</filename>。本目录下用配置文件描述的所有设备均要在引导过程中进行初始化。
       </para>
      </listitem>
     </varlistentry>
@@ -167,27 +167,27 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
  </sect1>
- <sect1 id="sec.boot.init">
-  <title><systemitem>init</systemitem> 进程</title><indexterm id="idx.init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>配置文件</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
+ <sect1 id="sec-boot-init">
+  <title><systemitem>init</systemitem> 进程</title><indexterm id="idx-init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>配置文件</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
 
   <para>
    <systemitem>init</systemitem> 程序是进程 ID 为 1 的进程，负责按所要求的方式初始化系统。<systemitem>init</systemitem> 由内核直接启动，并且抵制信号 9（该信号通常会终止进程）。所有其他程序由 <systemitem>init</systemitem> 直接启动，或由它的其中一个子进程启动。
   </para>
 
   <para>
-   <systemitem>init</systemitem> 在 <filename>/etc/inittab</filename> 文件中集中配置，其中<emphasis>运行级别</emphasis>已定义（请参见<xref linkend="sec.boot.runlevel"/>）。该文件还指定了在每个运行级别有哪些服务和守护程序可用。根据 <filename>/etc/inittab</filename> 中的项，<systemitem>init</systemitem> 将运行若干个脚本。默认情况下，引导后启动的第一个脚本为 <filename>/etc/init.d/boot</filename>。完成系统初始化阶段后，系统将使用 <filename>/etc/init.d/rc</filename> 脚本把运行级别更改为默认运行级别。为了清楚起见，这些称作 <emphasis>init 脚本</emphasis>的脚本都位于目录 <filename>/etc/init.d</filename> 中（请参见<xref linkend="sec.boot.init.skripte"/>）。<indexterm><primary>脚本</primary><secondary>init.d</secondary> </indexterm>
+   <systemitem>init</systemitem> 在 <filename>/etc/inittab</filename> 文件中集中配置，其中<emphasis>运行级别</emphasis>已定义（请参见<xref linkend="sec-boot-runlevel"/>）。该文件还指定了在每个运行级别有哪些服务和守护程序可用。根据 <filename>/etc/inittab</filename> 中的项，<systemitem>init</systemitem> 将运行若干个脚本。默认情况下，引导后启动的第一个脚本为 <filename>/etc/init.d/boot</filename>。完成系统初始化阶段后，系统将使用 <filename>/etc/init.d/rc</filename> 脚本把运行级别更改为默认运行级别。为了清楚起见，这些称作 <emphasis>init 脚本</emphasis>的脚本都位于目录 <filename>/etc/init.d</filename> 中（请参见<xref linkend="sec-boot-init-skripte"/>）。<indexterm><primary>脚本</primary><secondary>init.d</secondary> </indexterm>
   </para>
 
   <para>
    启动和关闭系统的整个过程是由 <systemitem>init</systemitem> 维护的。从这一点来看，可以将内核视为一个后台进程，其任务是维护所有其他进程，以及根据其他程序的请求来调整 CPU 时间和硬件访问。
-  </para><indexterm class="endofrange" startref="idx.init"/>
+  </para><indexterm class="endofrange" startref="idx-init"/>
 
-  <sect2 id="sec.boot.runlevel">
-   <title>运行级别</title><indexterm id="idx.runlevels" class="startofrange"><primary>运行级别</primary></indexterm><indexterm><primary>配置文件</primary><secondary>inittab</secondary></indexterm>
+  <sect2 id="sec-boot-runlevel">
+   <title>运行级别</title><indexterm id="idx-runlevels" class="startofrange"><primary>运行级别</primary></indexterm><indexterm><primary>配置文件</primary><secondary>inittab</secondary></indexterm>
    <para>
-    在 Linux 中，<emphasis>运行级别</emphasis>定义了系统如何启动以及正在运行的系统中有哪些服务可用。在引导后，系统会按照 <filename>/etc/inittab</filename> 中的 <literal>initdefault</literal> 行所定义的方式启动。通常是 <literal>3</literal> 或 <literal>5</literal>。请参见<xref linkend="tab.boot.runlevel"/>。也可以选择在引导时指定运行级别（例如，在引导提示符后添加运行级别号）。不直接由内核本身评估的任何参数均将传递给 <systemitem>init</systemitem>。要引导到 runlevel 3，只需向引导提示符添加一个数字 3。
+    在 Linux 中，<emphasis>运行级别</emphasis>定义了系统如何启动以及正在运行的系统中有哪些服务可用。在引导后，系统会按照 <filename>/etc/inittab</filename> 中的 <literal>initdefault</literal> 行所定义的方式启动。通常是 <literal>3</literal> 或 <literal>5</literal>。请参见<xref linkend="tab-boot-runlevel"/>。也可以选择在引导时指定运行级别（例如，在引导提示符后添加运行级别号）。不直接由内核本身评估的任何参数均将传递给 <systemitem>init</systemitem>。要引导到 runlevel 3，只需向引导提示符添加一个数字 3。
    </para>
-   <table id="tab.boot.runlevel">
+   <table id="tab-boot-runlevel">
     <title>可用运行级别</title>
     <tgroup cols="2">
      <thead>
@@ -356,7 +356,7 @@ Please see LICENSE.txt for this document's license.
     <para>
      <indexterm> <primary>配置文件</primary> <secondary>inittab</secondary> </indexterm> 如果 <filename>/etc/inittab</filename> 损坏，则可能无法正常引导系统。因此，在编辑 <filename>/etc/inittab</filename> 时要特别小心。在重引导计算机前，使 <systemitem>init</systemitem> 使用命令 <command>telinit <option>q</option></command> 重读 <filename>/etc/inittab</filename>。
     </para>
-   </warning><indexterm id="idx.runlevels_changing" class="startofrange"><primary>运行级别</primary><secondary>更改</secondary></indexterm>
+   </warning><indexterm id="idx-runlevels-changing" class="startofrange"><primary>运行级别</primary><secondary>更改</secondary></indexterm>
    <para>
     通常情况下，更改运行级别时会发生两件事情。首先是启动当前运行级别的停止脚本，同时关闭当前运行级别必需的一些程序。然后启动新运行级别的启动脚本。在大多数情况下，这时会启动多个程序。例如，将运行级别从 3 更改到 5 时会发生以下情况：
    </para>
@@ -384,11 +384,11 @@ Please see LICENSE.txt for this document's license.
    </orderedlist>
    <para>
     当更改为与当前运行级别相同的运行级别时，<systemitem>init</systemitem> 仅检查 <filename>/etc/inittab</filename> 的更改，并启动相应的步骤（例如，在另一个界面上启动 <command>getty</command> 所需的步骤）。使用命令 <command>telinit q</command> 也达到到相同的作用。
-   </para><indexterm class="endofrange" startref="idx.runlevels_changing"/><indexterm class="endofrange" startref="idx.runlevels"/>
+   </para><indexterm class="endofrange" startref="idx-runlevels-changing"/><indexterm class="endofrange" startref="idx-runlevels"/>
   </sect2>
 
-  <sect2 id="sec.boot.init.skripte">
-   <title>Init 脚本</title><indexterm id="idx.init_scripts" class="startofrange"> <primary>init</primary> <secondary>脚本</secondary> </indexterm> <indexterm id="idx.scripts_init.d" class="startofrange"> <primary>脚本</primary> <secondary>init.d</secondary> </indexterm>
+  <sect2 id="sec-boot-init-skripte">
+   <title>Init 脚本</title><indexterm id="idx-init-scripts" class="startofrange"> <primary>init</primary> <secondary>脚本</secondary> </indexterm> <indexterm id="idx-scripts-init-d" class="startofrange"> <primary>脚本</primary> <secondary>init.d</secondary> </indexterm>
    <para>
     <filename>/etc/init.d</filename> 中有两种类型的脚本：
    </para>
@@ -413,9 +413,9 @@ Please see LICENSE.txt for this document's license.
     </varlistentry>
    </variablelist>
    <para>
-    所有脚本位于 <filename>/etc/init.d</filename> 中。引导时运行的脚本是通过指向 <filename>/etc/init.d/boot.d</filename> 的符号链接调用的。用于更改运行级别的脚本也是通过符号链接从一个子目录（<filename>/etc/init.d/rc0.d</filename> 到 <filename>/etc/init.d/rc6.d</filename>）进行调用的。这仅仅是为了清楚起见，并避免在多个运行级别中使用时出现重复脚本。因为每个脚本既可以作为启动脚本也可以作为停止脚本来执行，这些脚本必须理解 <option>start</option> 和 <option>stop</option> 参数。这些脚本还必须理解 <option>restart</option>、<option>reload</option>、<option>force-reload</option> 和 <option>status</option> 选项。对这些不同的选项进行了解释。<xref linkend="tab.boot.initscript.opt"/> 由 <systemitem>init</systemitem> 直接运行的脚本没有这些链接。需要时，可以从运行级别独立运行它们。
+    所有脚本位于 <filename>/etc/init.d</filename> 中。引导时运行的脚本是通过指向 <filename>/etc/init.d/boot.d</filename> 的符号链接调用的。用于更改运行级别的脚本也是通过符号链接从一个子目录（<filename>/etc/init.d/rc0.d</filename> 到 <filename>/etc/init.d/rc6.d</filename>）进行调用的。这仅仅是为了清楚起见，并避免在多个运行级别中使用时出现重复脚本。因为每个脚本既可以作为启动脚本也可以作为停止脚本来执行，这些脚本必须理解 <option>start</option> 和 <option>stop</option> 参数。这些脚本还必须理解 <option>restart</option>、<option>reload</option>、<option>force-reload</option> 和 <option>status</option> 选项。对这些不同的选项进行了解释。<xref linkend="tab-boot-initscript-opt"/> 由 <systemitem>init</systemitem> 直接运行的脚本没有这些链接。需要时，可以从运行级别独立运行它们。
    </para>
-   <table id="tab.boot.initscript.opt">
+   <table id="tab-boot-initscript-opt">
     <title>可能的 <systemitem>init</systemitem> 脚本选项</title>
     <tgroup cols="2">
      <thead>
@@ -567,16 +567,16 @@ Please see LICENSE.txt for this document's license.
    <warning>
     <title>有问题的 init 脚本可能会使您的系统暂停</title>
     <para>
-     有问题的 <systemitem>init</systemitem> 脚本可能会使您的计算机挂起。应认真编辑这些脚本，如果可能，应在多用户环境中对它们进行严格测试。在<xref linkend="sec.boot.runlevel"/> 中可以找到有关 <systemitem>init</systemitem> 脚本的有用信息。
+     有问题的 <systemitem>init</systemitem> 脚本可能会使您的计算机挂起。应认真编辑这些脚本，如果可能，应在多用户环境中对它们进行严格测试。在<xref linkend="sec-boot-runlevel"/> 中可以找到有关 <systemitem>init</systemitem> 脚本的有用信息。
     </para>
    </warning>
    <para>
     要为给定程序或服务创建自定义 <systemitem>init</systemitem> 脚本，请使用文件 <filename>/etc/init.d/skeleton</filename> 作为模板。以新名称保存此文件的副本，然后根据需要编辑相关程序和文件名、路径及其他细节。您可能还需要用自己的部分来增强此脚本，以便 <systemitem>init</systemitem> 过程可以触发正确的操作。
    </para>
    <para>
-    位于顶部的 <literal>INIT INFO</literal> 块是脚本的一个必需部分，应进行编辑。请参见<xref linkend="aus.boot.init.skripte.add.initinfo"/>。
+    位于顶部的 <literal>INIT INFO</literal> 块是脚本的一个必需部分，应进行编辑。请参见<xref linkend="aus-boot-init-skripte-add-initinfo"/>。
    </para>
-   <example id="aus.boot.init.skripte.add.initinfo">
+   <example id="aus-boot-init-skripte-add-initinfo">
     <title>最小的 INIT INFO 块</title>
 <screen>### BEGIN INIT INFO
 # Provides:          FOO
@@ -591,17 +591,17 @@ Please see LICENSE.txt for this document's license.
     在 <literal>INFO</literal> 块第一行上 <literal>Provides:</literal> 后，指定由此 init 脚本控制的程序或服务的名称。<systemitem/>在 <literal>Required-Start:</literal> 和 <literal>Required-Stop:</literal> 行中，指定停止服务本身时仍需运行的所有服务。这些信息稍后用于生成脚本名的编号（可以在运行级别目录中找到）。在 <literal>Default-Start:</literal> 和 <literal>Default-Stop:</literal> 后，指定应自动启动或停止的服务所在的运行级别。最后，在 <literal>Description:</literal> 下，提供对相关服务的简短描述。
    </para>
    <para>
-    要创建从运行级别目录 (<filename>/etc/init.d/rc?.d/</filename>) 到 <filename>/etc/init.d/</filename> 中相应脚本的链接，请输入命令 <command>insserv <replaceable>new-script-name</replaceable></command>。<command>insserv</command> 对 <literal>INIT INFO</literal> 标题进行评估，以便为运行级别目录 (<filename>/etc/init.d/rc?.d/</filename>) 中的启动和停止脚本创建所需的链接。此程序还负责保证每个运行级别的启动和停止顺序正确无误，方法是在这些链接的名称中包含必要的数字。如果要使用图形工具来创建这样的链接，请按照<xref linkend="sec.boot.runlevel.edit"/>中说明的方法使用 YaST 提供的运行级别编辑器。
+    要创建从运行级别目录 (<filename>/etc/init.d/rc?.d/</filename>) 到 <filename>/etc/init.d/</filename> 中相应脚本的链接，请输入命令 <command>insserv <replaceable>new-script-name</replaceable></command>。<command>insserv</command> 对 <literal>INIT INFO</literal> 标题进行评估，以便为运行级别目录 (<filename>/etc/init.d/rc?.d/</filename>) 中的启动和停止脚本创建所需的链接。此程序还负责保证每个运行级别的启动和停止顺序正确无误，方法是在这些链接的名称中包含必要的数字。如果要使用图形工具来创建这样的链接，请按照<xref linkend="sec-boot-runlevel-edit"/>中说明的方法使用 YaST 提供的运行级别编辑器。
    </para>
    <para>
     如果应将已存在于 <filename>/etc/init.d/</filename> 中的脚本集成到现有运行级别方案中，请立即通过 insserv 或启用 YaST 的运行级别编辑器中的相应服务在运行级别目录中创建链接。<command/>您的更改将在下次重引导时生效 — 新服务将自动启动。
    </para>
    <para>
     不要手动设置这些链接。如果 <literal>INFO</literal> 块中出错，则在稍后为其他服务运行 <command>insserv</command> 时将会出现问题。下次为此脚本运行 <command>insserv</command> 时将删除手动添加的服务。
-   </para><indexterm class="endofrange" startref="idx.init_scripts"/><indexterm class="endofrange" startref="idx.scripts_init.d"/>
+   </para><indexterm class="endofrange" startref="idx-init-scripts"/><indexterm class="endofrange" startref="idx-scripts-init-d"/>
   </sect2>
 
-  <sect2 id="sec.boot.runlevel.edit">
+  <sect2 id="sec-boot-runlevel-edit">
    <title>使用 YaST 配置系统服务（运行级别）</title><indexterm> <primary>YaST</primary> <secondary>运行级别</secondary> </indexterm> <indexterm> <primary>运行级别</primary> <secondary>在 YaST 中编辑</secondary> </indexterm>
    <para>
     使用 <menuchoice><guimenu>YaST</guimenu> <guimenu>系统</guimenu> <guimenu>系统服务（运行级别）</guimenu></menuchoice>启动此 YaST 模块后，它将显示一个概要，列出所有可用的服务和每个服务的当前状态（已禁用或已启用）。确定是以<guimenu>简单方式</guimenu>还是以<guimenu>专家方式</guimenu>使用此模块。默认的<guimenu>简单方式</guimenu>足以完成大多数操作。左边的列显示服务的名称，中间的列指示其当前状态，而右边的列则给出简短描述。窗口下部提供了对所选服务的更为详细的描述。若要启用某个服务，请首先在表中选定它，然后选择<guimenu>启用</guimenu>。同样的步骤可用于禁用服务。
@@ -610,7 +610,7 @@ Please see LICENSE.txt for this document's license.
     要对所启动或停止的服务所在运行级别进行更具体的控制，或者更改默认运行级别，请先选择<guimenu>专家方式</guimenu>。将在顶部显示当前默认的运行级别或 <quote>initdefault</quote>（默认情况下将系统引导至的运行级别）。通常情况下，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 系统的默认运行级别是 5（有网络和 X 的完全多用户模式）。运行级别 3（有网络的完全多用户方式）是合适的替代选择。
    </para>
    <para>
-    此 YaST 对话框用于选择一个运行级别（如<xref linkend="tab.boot.runlevel"/>中所列）作为新的默认运行级别。此外，可使用此窗口中的表来启用或禁用各个服务和守护程序。此表列出可用的服务和守护程序，显示它们当前是否已在您的系统上启用，如果已启用，则指示它们用于哪些运行级别。用鼠标选择其中的一行后，请单击表示运行级别（<guimenu>B</guimenu>、<guimenu>0</guimenu>、<guimenu>1</guimenu>、<guimenu>2</guimenu>、<guimenu>3</guimenu>、<guimenu>5</guimenu>、<guimenu>6</guimenu> 和 <guimenu>S</guimenu>）的复选框来确定所选服务或守护程序的运行级别。未对运行级别 4 进行定义，目的是供用户创建自定义运行级别。表概要下方提供了当前所选服务或守护程序的简要描述。
+    此 YaST 对话框用于选择一个运行级别（如<xref linkend="tab-boot-runlevel"/>中所列）作为新的默认运行级别。此外，可使用此窗口中的表来启用或禁用各个服务和守护程序。此表列出可用的服务和守护程序，显示它们当前是否已在您的系统上启用，如果已启用，则指示它们用于哪些运行级别。用鼠标选择其中的一行后，请单击表示运行级别（<guimenu>B</guimenu>、<guimenu>0</guimenu>、<guimenu>1</guimenu>、<guimenu>2</guimenu>、<guimenu>3</guimenu>、<guimenu>5</guimenu>、<guimenu>6</guimenu> 和 <guimenu>S</guimenu>）的复选框来确定所选服务或守护程序的运行级别。未对运行级别 4 进行定义，目的是供用户创建自定义运行级别。表概要下方提供了当前所选服务或守护程序的简要描述。
    </para>
    <warning>
     <title>有问题的运行级别设置可能会对您的系统造成损害</title>
@@ -618,7 +618,7 @@ Please see LICENSE.txt for this document's license.
      有问题的运行级别设置可能会导致系统无法使用。在应用您的更改之前，请确保您清楚这些设置可能产生的结果。
     </para>
    </warning>
-   <figure id="fig.yast2.runlevel">
+   <figure id="fig-yast2-runlevel">
     <title>系统服务（运行级别）</title>
     <mediaobject>
      <imageobject role="fo">
@@ -634,8 +634,8 @@ Please see LICENSE.txt for this document's license.
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.boot.sysconfig">
-  <title>通过 <filename>/etc/sysconfig</filename> 配置系统</title><indexterm> <primary>配置</primary> </indexterm> <indexterm id="idx.scripts_SuSEconfig" class="startofrange"> <primary>脚本</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx.configuration_files_sysconfig" class="startofrange"> <primary>配置文件</primary> <secondary>sysconfig</secondary> </indexterm>
+ <sect1 id="sec-boot-sysconfig">
+  <title>通过 <filename>/etc/sysconfig</filename> 配置系统</title><indexterm> <primary>配置</primary> </indexterm> <indexterm id="idx-scripts-SuSEconfig" class="startofrange"> <primary>脚本</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx-configuration-files-sysconfig" class="startofrange"> <primary>配置文件</primary> <secondary>sysconfig</secondary> </indexterm>
 
   <para>
    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的主配置是由 <filename>/etc/sysconfig</filename> 中的配置文件控制的。只有与 <filename>/etc/sysconfig</filename> 中的各个文件相关的脚本才会读取它们。这样有很多好处，例如确保了网络设置只需要由与网络相关的脚本来分析。
@@ -645,7 +645,7 @@ Please see LICENSE.txt for this document's license.
    可以使用两种方法编辑系统配置。使用 YaST sysconfig 编辑器或手工编辑配置文件。
   </para>
 
-  <sect2 id="sec.boot.sysconfig.edit">
+  <sect2 id="sec-boot-sysconfig-edit">
    <title>使用 YaST sysconfig 编辑器更改系统配置</title><indexterm> <primary>YaST</primary> <secondary>sysconfig editor</secondary> </indexterm>
    <para>
     YaST sysconfig 编辑器提供了一种易于使用的前端供您进行系统配置。您无需了解需要更改的配置变量的实际位置，只需使用该模块的内置搜索功能，就可以根据需要更改配置变量的值，并让 YaST 负责应用这些更改以及根据 <filename>sysconfig</filename> 中设置的值更新配置和重新动服务。
@@ -656,7 +656,7 @@ Please see LICENSE.txt for this document's license.
      如果没有足够的经验和知识，切勿修改 <filename>/etc/sysconfig</filename> 文件。否则可能会对您的系统造成巨大损害。<filename>/etc/sysconfig </filename>中的文件包含对每个变量的简短注释，解释了这些变量的实际作用。
     </para>
    </warning>
-   <figure id="fig.yast2.sysconfig">
+   <figure id="fig-yast2-sysconfig">
     <title>使用 sysconfig 编辑器进行系统配置</title>
     <mediaobject>
      <imageobject role="fo">
@@ -676,7 +676,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-  <sect2 id="sec.boot.sysconfig.man">
+  <sect2 id="sec-boot-sysconfig-man">
    <title>手动更改系统配置</title>
    <para>
     要手动更改系统配置，请执行如下操作
@@ -719,7 +719,7 @@ Please see LICENSE.txt for this document's license.
     <para>
      <indexterm><primary>脚本</primary><secondary>SuSEconfig</secondary><tertiary>禁用</tertiary></indexterm><indexterm><primary>配置文件</primary><secondary>suseconfig</secondary></indexterm>要禁用 SuSEconfig 设定的自动系统配置，请将 <filename>/etc/sysconfig/suseconfig</filename> 中的变量 <systemitem>ENABLE_SUSECONFIG</systemitem> 设置为 <literal>no</literal>。如果要使用 SUSE 安装支持，请不要禁用 SUSEconfig。也可以部分禁用自动配置。
     </para>
-   </tip><indexterm class="endofrange" startref="idx.scripts_SuSEconfig"/><indexterm class="endofrange" startref="idx.configuration_files_sysconfig"/>
+   </tip><indexterm class="endofrange" startref="idx-scripts-SuSEconfig"/><indexterm class="endofrange" startref="idx-configuration-files-sysconfig"/>
   </sect2>
  </sect1>
 </chapter>

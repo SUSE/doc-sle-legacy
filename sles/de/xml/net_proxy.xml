@@ -7,7 +7,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_proxy.xml" id="cha.squid">
+<chapter xml:base="net_proxy.xml" id="cha-squid">
  <title>Der Squid-Proxyserver</title><indexterm> <primary>Squid</primary> </indexterm> <indexterm> <primary>Proxys</primary> <see>Squid</see> </indexterm>
  <abstract>
   <para>
@@ -20,24 +20,24 @@ Please see LICENSE.txt for this document's license.
  <para>
   <indexterm> <primary>Squid</primary><secondary>Funktionen</secondary> </indexterm> Neben dem eigentlichen Caching bietet Squid eine breite Palette von Funktionen, wie die Verteilung der Last auf mehrere miteinander kommunizierende Hierarchien von Proxyservern, die Definition strenger Zugriffssteuerungslisten für alle Clients, die auf den Proxy zugreifen, das Zulassen oder Verweigern des Zugriffs auf bestimmte Webseiten mithilfe anderer Anwendungen und das Erstellen von Statistiken zu häufig besuchten Webseiten zur Bewertung der Internetgewohnheiten des Benutzers. Squid ist kein generischer Proxy. Er fungiert normalerweise nur bei HTTP-Verbindungen als Proxy. Außerdem unterstützt er die Protokolle FTP, Gopher, SSL und WAIS, nicht jedoch andere Internetprotokolle, wie Real Audio, News oder Video-Konferenzen. Da Squid nur das UDP-Protokoll für die Bereitstellung von Kommunikation zwischen verschiedenen Caches unterstützt, werden zahlreiche andere Multimedia-Programme nicht unterstützt.
  </para>
- <sect1 id="sec.squid.cacheinfos">
+ <sect1 id="sec-squid-cacheinfos">
   <title>Einige Tatsachen zu Proxy-Caches</title>
 
   <para>
    Als Proxy-Cache kann Squid auf verschiedene Weise verwendet werden. In Kombination mit einer Firewall kann er die Sicherheit unterstützen. Mehrere Proxies können gemeinsam verwendet werden. Außerdem kann er ermitteln, welche Objekttypen für wie lange im Cache gespeichert werden sollen.
   </para>
 
-  <sect2 id="sec.squid.security">
+  <sect2 id="sec-squid-security">
    <title>Squid und Sicherheit</title><indexterm> <primary>Squid</primary> <secondary>Sicherheit</secondary> </indexterm> <indexterm> <primary>Sicherheit</primary> <secondary>Squid</secondary> </indexterm>
    <para>
     Squid kann zusammen mit einer Firewall verwendet werden, um interne Netzwerke mithilfe eines Proxy-Caches gegen Zugriffe von außen zu schützen. Die Firewall verweigert allen Clients Zugriff auf externe Dienste mit Ausnahme von Squid. Alle Webverbindungen müssen vom Proxy erstellt werden. Bei dieser Konfiguration steuert Squid den gesamten Webzugriff.
    </para>
    <para>
-    <indexterm> <primary>Squid</primary><secondary>Sicherheit</secondary> </indexterm> Wenn zur Firewall-Konfiguration eine DMZ gehört, sollte der Proxy in dieser Zone betrieben werden. In <xref linkend="sec.squid.proxyconfigtrans"/> wird die Implementierung eines <emphasis>transparenten</emphasis> Proxys beschrieben. Dadurch wird die Konfiguration der Clients erleichtert, da sie in diesem Fall keine Informationen zum Proxy benötigen.
+    <indexterm> <primary>Squid</primary><secondary>Sicherheit</secondary> </indexterm> Wenn zur Firewall-Konfiguration eine DMZ gehört, sollte der Proxy in dieser Zone betrieben werden. In <xref linkend="sec-squid-proxyconfigtrans"/> wird die Implementierung eines <emphasis>transparenten</emphasis> Proxys beschrieben. Dadurch wird die Konfiguration der Clients erleichtert, da sie in diesem Fall keine Informationen zum Proxy benötigen.
    </para>
   </sect2>
 
-  <sect2 id="sec.squid.morecaches">
+  <sect2 id="sec-squid-morecaches">
    <title>Mehrere Caches</title><indexterm> <primary>Squid</primary> <secondary>Caches</secondary> </indexterm>
    <para>
     Mehrere Instanzen von Squid können für den Austausch von Objekten konfiguriert werden. Dadurch verringert sich die Gesamtlast im System und die Wahrscheinlichkeit, ein Objekt zu finden, das bereits im lokalen Netzwerk vorhanden ist, erhöht sich. Außerdem können Cache-Hierarchien konfiguriert werden, sodass ein Cache Objektanforderungen an gleichgeordnete Caches oder einen übergeordneten Cache weiterleiten kann, sodass er Objekte aus einem anderen Cache im lokalen Netzwerk oder direkt von der Quelle erhält.
@@ -58,7 +58,7 @@ Please see LICENSE.txt for this document's license.
    </tip>
   </sect2>
 
-  <sect2 id="sec.squid.latching">
+  <sect2 id="sec-squid-latching">
    <title>Caching von Internetobjekten</title><indexterm> <primary>Squid</primary> <secondary>Objektstatus</secondary> </indexterm>
    <para>
     Nicht alle im Netzwerk verfügbaren Objekte sind statisch. Es gibt eine Vielzahl dynamisch erstellter CGI-Seiten, Besucherzähler und verschlüsselter SSL-Inhaltsdokumente. Derartige Objekte werden nicht im Cache gespeichert, da sie sich bei jedem Zugriff ändern.
@@ -71,14 +71,14 @@ Please see LICENSE.txt for this document's license.
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.sysneeds">
+ <sect1 id="sec-squid-sysneeds">
   <title>Systemanforderungen</title><indexterm> <primary>Squid</primary> <secondary>Systemanforderungen</secondary> </indexterm>
 
   <para>
    Die wichtigste Aufgabe besteht darin, die maximale Netzwerklast zu ermitteln, die das System tragen muss. Daher muss besonders auf die Belastungsspitzen geachtet werden, die mehr als das Vierfache des Tagesdurchschnitts betragen können. Im Zweifelsfall ist es vorzuziehen, die Systemanforderungen zu hoch einzuschätzen, da es zu erheblichen Einbußen in der Qualität des Diensts führen kann, wenn Squid an der Grenze seiner Leistungsfähigkeit arbeitet. Die folgenden Abschnitte widmen sich den einzelnen Systemfaktoren in der Reihenfolge ihrer Wichtigkeit.
   </para>
 
-  <sect2 id="sec.squid.sysneeds.disk">
+  <sect2 id="sec-squid-sysneeds-disk">
    <title>Festplatten</title>
    <para>
     Da Geschwindigkeit beim Caching eine wichtige Rolle spielt, muss diesem Faktor besondere Aufmerksamkeit gewidmet werden. Bei Festplatten wird dieser Parameter als <emphasis>random seek time</emphasis> (Zufallszugriffszeit, gemessen in Millisekunden) beschrieben. Da die Datenblöcke, die Squid von der Festplatte liest oder auf die Festplatte schreibt, eher klein zu sein scheinen, ist die Zugriffszeit der Festplatte entscheidender als ihr Datendurchsatz. Für die Zwecke von Proxies sind Festplatten mit hoher Rotationsgeschwindigkeit wohl die bessere Wahl, da bei diesen der Lese-Schreib-Kopf schneller an die gewünschte Stelle gebracht werden kann. Eine Möglichkeit zur Systembeschleunigung besteht in der gleichzeitigen Verwendung mehrerer Festplatten oder im Einsatz von Striping-RAID-Arrays.
@@ -95,7 +95,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </sect2>
 
-  <sect2 id="sec.squid.ram">
+  <sect2 id="sec-squid-ram">
    <title>RAM</title><indexterm> <primary>Squid</primary> <secondary>RAM und</secondary> </indexterm>
    <para>
     Der von Squid benötigte Arbeitsspeicher (RAM) steht in direktem Verhältnis zur Anzahl der Objekte im Cache. Außerdem speichert Squid Cache-Objekt-Bezüge und häufig angeforderte Objekte im Hauptspeicher, um das Abrufen dieser Daten zu beschleunigen. RAM ist wesentlich schneller als eine Festplatte.
@@ -104,19 +104,19 @@ Please see LICENSE.txt for this document's license.
     Außerdem gibt es andere Daten, die Squid im Arbeitsspeicher benötigt, beispielsweise eine Tabelle mit allen IP-Adressen, einen exakten Domänennamen-Cache, die am häufigsten angeforderten Objekte, Zugriffssteuerungslisten, Puffer usw.
    </para>
    <para>
-    Es ist sehr wichtig, dass genügend Arbeitsspeicher für den Squid-Vorgang zur Verfügung steht, da die Systemleistung erheblich eingeschränkt ist, wenn ein Wechsel auf die Festplatte erforderlich ist. Das Werkzeug cachemgr.cgi kan für die Arbeitsspeicherverwaltung des Cache verwendet werden. Dieses Werkzeug wird in <xref linkend="sec.squid.cachemgr"/> behandelt.
+    Es ist sehr wichtig, dass genügend Arbeitsspeicher für den Squid-Vorgang zur Verfügung steht, da die Systemleistung erheblich eingeschränkt ist, wenn ein Wechsel auf die Festplatte erforderlich ist. Das Werkzeug cachemgr.cgi kan für die Arbeitsspeicherverwaltung des Cache verwendet werden. Dieses Werkzeug wird in <xref linkend="sec-squid-cachemgr"/> behandelt.
 
    </para>
   </sect2>
 
-  <sect2 id="sec.squid.cpu">
+  <sect2 id="sec-squid-cpu">
    <title>Prozessor</title><indexterm> <primary>Squid</primary> <secondary>CPU und</secondary> </indexterm>
    <para>
     Die Verwendung von Squid bringt keine intensive CPU-Auslastung mit sich. Die Prozessorlast wird nur erhöht, während die Inhalte des Cache geladen oder überprüft werden. Durch die Verwendung eines Computers mit mehreren Prozessoren wird die Systemleistung nicht erhöht. Um die Effizienz zu steigern, sollten vielmehr schnellere Festplatten oder ein größerer Arbeitsspeicher verwendet werden.
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.start">
+ <sect1 id="sec-squid-start">
   <title>Starten von Squid</title><indexterm> <primary>Squid</primary> <secondary>starten</secondary></indexterm>
 
   <para>
@@ -133,7 +133,7 @@ Please see LICENSE.txt for this document's license.
     Geben Sie zum Starten von Squid als <systemitem class="username">root</systemitem> in der Kommandozeile den Befehl <command>rcsquid <option>start</option></command> ein. Beim ersten Start muss zunächst die Verzeichnisstruktur des Cache in <filename>/var/cache/squid</filename> definiert werden. Dies geschieht automatisch über das Startskript <filename>/etc/init.d/squid</filename> und kann einige Sekunden oder sogar Minuten in Anspruch nehmen. Wenn rechts in grüner Schrift <literal>done</literal> angezeigt wird, wurde Squid erfolgreich geladen. Um die Funktionsfähigkeit von Squid im lokalen System zu testen, geben Sie <option>localhost</option> als Proxy und <option>3128</option> als Port im Browser an.
    </para>
    <para>
-    Um Benutzern aus dem lokalen System und anderen Systemen den Zugriff auf Squid und das Internet zu ermöglichen, müssen Sie den Eintrag in den Konfigurationsdateien <filename>/etc/squid/squid.conf</filename> von <option>http_access deny all</option> in <option>http_access allow all</option> ändern. Beachten Sie dabei jedoch, dass dadurch jedem der vollständige Zugriff auf Squid ermöglicht wird. Daher sollten Sie ACLs definieren, die den Zugriff auf den Proxy steuern. Weitere Informationen hierzu finden Sie in <xref linkend="sec.squid.acl"/>.
+    Um Benutzern aus dem lokalen System und anderen Systemen den Zugriff auf Squid und das Internet zu ermöglichen, müssen Sie den Eintrag in den Konfigurationsdateien <filename>/etc/squid/squid.conf</filename> von <option>http_access deny all</option> in <option>http_access allow all</option> ändern. Beachten Sie dabei jedoch, dass dadurch jedem der vollständige Zugriff auf Squid ermöglicht wird. Daher sollten Sie ACLs definieren, die den Zugriff auf den Proxy steuern. Weitere Informationen hierzu finden Sie in <xref linkend="sec-squid-acl"/>.
    </para><indexterm> <primary>Squid</primary> <secondary>Stoppen</secondary> </indexterm>
    <para>
     Nach der Bearbeitung der Konfigurationsdatei <filename>/etc/squid/squid.conf</filename> muss Squid die Konfigurationsdatei erneut laden. Verwenden Sie hierfür <command>rcsquid <option>reload</option></command>. Alternativ können Sie mit <command>rcsquid <option>restart</option></command> einen vollständigen Neustart von Squid durchführen.
@@ -148,7 +148,7 @@ Please see LICENSE.txt for this document's license.
     </para>
    </warning><indexterm> <primary>Squid</primary> <secondary>Protokolldateien</secondary> </indexterm> <indexterm> <primary>Protokolldateien</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Fehlersuche</secondary> </indexterm>
    <para>
-    Wenn Squid nach kurzer Zeit nicht mehr funktioniert, obwohl das Programm erfolgreich gestartet wurde, überprüfen Sie, ob ein fehlerhafter Namenservereintrag vorliegt oder ob die Datei <filename>/etc/resolv.conf</filename> fehlt. Squid protokolliert die Ursache eines Startfehlers in der Datei <filename>/var/log/squid/cache.log</filename>. Wenn Squid beim Booten des Systems automatisch geladen werden soll, müssen Sie Squid mithilfe des YaST-Runlevel-Editors für die gewünschten Runlevels aktivieren. Weitere Informationen hierzu finden Sie unter <xref linkend="sec.boot.runlevel.edit"/>.
+    Wenn Squid nach kurzer Zeit nicht mehr funktioniert, obwohl das Programm erfolgreich gestartet wurde, überprüfen Sie, ob ein fehlerhafter Namenservereintrag vorliegt oder ob die Datei <filename>/etc/resolv.conf</filename> fehlt. Squid protokolliert die Ursache eines Startfehlers in der Datei <filename>/var/log/squid/cache.log</filename>. Wenn Squid beim Booten des Systems automatisch geladen werden soll, müssen Sie Squid mithilfe des YaST-Runlevel-Editors für die gewünschten Runlevels aktivieren. Weitere Informationen hierzu finden Sie unter <xref linkend="sec-boot-runlevel-edit"/>.
    </para><indexterm> <primary>Squid</primary> <secondary>Deinstallieren</secondary> </indexterm>
    <para>
     Durch eine Deinstallation von Squid werden weder die Cache-Hierarchie noch die Protokolldateien entfernt. Um diese zu entfernen, müssen Sie das Verzeichnis <filename>/var/cache/squid</filename> manuell löschen.
@@ -158,14 +158,14 @@ Please see LICENSE.txt for this document's license.
   <sect2>
    <title>Lokaler DNS-Server</title><indexterm> <primary>DNS</primary> <secondary>Squid und</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>DNS</secondary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>named.conf</secondary> </indexterm>
    <para>
-    Die Einrichtung eines lokalen DNS-Servers ist sinnvoll, selbst wenn er nicht seine eigene Domäne verwaltet. Er fungiert dann einfach als Nur-Cache-Namenserver und kann außerdem DNS-Anforderungen über die Root-Namenserver auflösen, ohne dass irgendeine spezielle Konfiguration erforderlich ist (siehe <xref linkend="sec.dns.bind"/>). Wie dies durchgeführt werden kann, hängt davon ab, ob Sie bei der Konfiguration der Internetverbindung dynamisches DNS auswählen.
+    Die Einrichtung eines lokalen DNS-Servers ist sinnvoll, selbst wenn er nicht seine eigene Domäne verwaltet. Er fungiert dann einfach als Nur-Cache-Namenserver und kann außerdem DNS-Anforderungen über die Root-Namenserver auflösen, ohne dass irgendeine spezielle Konfiguration erforderlich ist (siehe <xref linkend="sec-dns-bind"/>). Wie dies durchgeführt werden kann, hängt davon ab, ob Sie bei der Konfiguration der Internetverbindung dynamisches DNS auswählen.
    </para>
    <variablelist>
     <varlistentry>
      <term>Dynamisches DNS</term>
      <listitem>
       <para>
-       Normalerweise wird bei dynamischem DNS der DNS-Server während des Aufbaus der Internetverbindung vom Anbieter festgelegt und die lokale Datei <filename>/etc/resolv.conf</filename> wird automatisch angepasst. Dieses Verhalten wird in der Datei <filename>/etc/sysconfig/network/config</filename> mit der sysconfig-Variablen <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> gesteuert. Legen Sie <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> mit dem YaST-sysconfig-Editor auf <systemitem class="constant">""</systemitem> fest (weitere Informationen hierzu finden Sie unter <xref linkend="sec.boot.sysconfig.edit"/>). Geben Sie anschließend den lokalen DNS-Server in der Datei <filename>/etc/resolv.conf</filename> ein. Verwenden Sie die IP-Adresse <systemitem class="ipaddress">127.0.0.1</systemitem> für <systemitem class="domainname">localhost</systemitem>. Auf diese Weise kann Squid immer den lokalen Namenserver finden, wenn er gestartet wird.
+       Normalerweise wird bei dynamischem DNS der DNS-Server während des Aufbaus der Internetverbindung vom Anbieter festgelegt und die lokale Datei <filename>/etc/resolv.conf</filename> wird automatisch angepasst. Dieses Verhalten wird in der Datei <filename>/etc/sysconfig/network/config</filename> mit der sysconfig-Variablen <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> gesteuert. Legen Sie <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> mit dem YaST-sysconfig-Editor auf <systemitem class="constant">""</systemitem> fest (weitere Informationen hierzu finden Sie unter <xref linkend="sec-boot-sysconfig-edit"/>). Geben Sie anschließend den lokalen DNS-Server in der Datei <filename>/etc/resolv.conf</filename> ein. Verwenden Sie die IP-Adresse <systemitem class="ipaddress">127.0.0.1</systemitem> für <systemitem class="domainname">localhost</systemitem>. Auf diese Weise kann Squid immer den lokalen Namenserver finden, wenn er gestartet wird.
       </para>
       
       <para>
@@ -190,7 +190,7 @@ Please see LICENSE.txt for this document's license.
    </tip>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.configfile">
+ <sect1 id="sec-squid-configfile">
   <title>Die Konfigurationsdatei /etc/squid/squid.conf</title><indexterm> <primary>Squid</primary> <secondary>Konfigurieren</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>squid.conf</secondary> </indexterm>
 
   <para>
@@ -329,7 +329,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
 
-  <sect2 id="sec.squid.acl">
+  <sect2 id="sec-squid-acl">
    <title>Optionen für die Zugriffssteuerung</title><indexterm> <primary>Squid</primary> <secondary>ACLs</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Berechtigungen</secondary> </indexterm>
    <para>
     Squid bietet ein detailliertes System für die Steuerung des Zugriffs auf den Proxy. Durch die Implementierung von ACLs kann es problemlos und umfassend konfiguriert werden. Dazu gehören Listen mit Regeln, die nacheinander verarbeitet werden. Die ACLs müssen zuerst definiert werden, bevor sie verwendet werden können. Einige Standard-ACLs, wie beispielsweise <emphasis>all</emphasis> und <emphasis>localhost</emphasis>, sind bereits vorhanden. Die bloße Definition einer ACL bedeutet jedoch noch nicht, dass sie tatsächlich angewendet wird. Dies geschieht nur in Verbindung mit <emphasis>http_access</emphasis>-Regeln.
@@ -426,7 +426,7 @@ http_access deny all
    </variablelist>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.proxyconfigtrans">
+ <sect1 id="sec-squid-proxyconfigtrans">
   <title>Konfigurieren eines transparenten Proxy</title><indexterm> <primary>Proxys</primary> <secondary>Transparent</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Transparent Proxys</secondary> </indexterm>
 
   <para>
@@ -466,7 +466,7 @@ http_access deny all
   <sect2>
    <title>Firewall-Konfiguration mit SuSEfirewall2</title><indexterm> <primary>Squid</primary> <secondary>Firewalls und</secondary> </indexterm> <indexterm> <primary>Firewalls</primary> <secondary>Squid und</secondary> </indexterm>
    <para>
-    Leiten Sie nun alle eingehenden Anforderungen über die Firewall mithilfe einer Port-Weiterleitungsregel an den Squid-Port um. Verwenden Sie dazu das beigefügte Werkzeug SuSEFirewall2 (in <xref linkend="sec.fire.SuSE.yast"/> beschrieben). Die Konfigurationsdatei dieses Programms finden Sie in <filename>/etc/sysconfig/SuSEfirewall2</filename>. Die Konfigurationsdatei besteht aus gut dokumentierten Einträgen. Um einen transparenten Proxy festzulegen, müssen Sie mehrere Firewall-Optionen konfigurieren:
+    Leiten Sie nun alle eingehenden Anforderungen über die Firewall mithilfe einer Port-Weiterleitungsregel an den Squid-Port um. Verwenden Sie dazu das beigefügte Werkzeug SuSEFirewall2 (in <xref linkend="sec-fire-SuSE-yast"/> beschrieben). Die Konfigurationsdatei dieses Programms finden Sie in <filename>/etc/sysconfig/SuSEfirewall2</filename>. Die Konfigurationsdatei besteht aus gut dokumentierten Einträgen. Um einen transparenten Proxy festzulegen, müssen Sie mehrere Firewall-Optionen konfigurieren:
    </para>
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
@@ -502,7 +502,7 @@ FW_SERVICE_DNS="yes"
    <para>
     Die wichtigste Option ist Option Nummer <option>15</option>:
    </para>
-   <example id="dat.fw.opt15">
+   <example id="dat-fw-opt15">
     <title>Firewall-Konfiguration: Option 15</title>
 <screen># 15.)
 # Which accesses to services should be redirected to a local port on
@@ -534,11 +534,11 @@ FW_REDIRECT="192.168.0.0/16,0/0,tcp,80,3128"
     Um die Firewall mit der neuen Konfiguration zu starten, müssen Sie einen Eintrag in der Datei <filename>/etc/sysconfig/SuSEfirewall2</filename> ändern. Der Eintrag <systemitem>START_FW</systemitem> muss auf <literal>„yes“</literal> gesetzt werden.
    </para>
    <para>
-    <indexterm> <primary>Protokolldateien</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Protokolldateien</secondary> </indexterm> Starten Sie Squid wie in <xref linkend="sec.squid.start"/> gezeigt. Sehen Sie sich die Squid-Protokolle unter <filename>/var/log/squid/access.log</filename> an, um zu überprüfen, ob alles ordnungsgemäß funktioniert. <indexterm> <primary>Ports</primary> <secondary>Absuchen</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Transparente Proxies</secondary> </indexterm> Führen Sie eine Port-Absuche auf dem Computer von einem Computer außerhalb Ihres Netzwerks durch, um zu überprüfen, ob alle Ports korrekt konfiguriert sind. Nur die Webdienste (Port 80) sollten verfügbar sein. Die Befehlssyntax für das Scannen der Ports mit nmap lautet <command>nmap</command><option>-O IP_address</option>.
+    <indexterm> <primary>Protokolldateien</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Protokolldateien</secondary> </indexterm> Starten Sie Squid wie in <xref linkend="sec-squid-start"/> gezeigt. Sehen Sie sich die Squid-Protokolle unter <filename>/var/log/squid/access.log</filename> an, um zu überprüfen, ob alles ordnungsgemäß funktioniert. <indexterm> <primary>Ports</primary> <secondary>Absuchen</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Transparente Proxies</secondary> </indexterm> Führen Sie eine Port-Absuche auf dem Computer von einem Computer außerhalb Ihres Netzwerks durch, um zu überprüfen, ob alle Ports korrekt konfiguriert sind. Nur die Webdienste (Port 80) sollten verfügbar sein. Die Befehlssyntax für das Scannen der Ports mit nmap lautet <command>nmap</command><option>-O IP_address</option>.
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.cachemgr">
+ <sect1 id="sec-squid-cachemgr">
   <title>cachemgr.cgi</title><indexterm> <primary>Squid</primary> <secondary>Statistiken</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>cachemgr.cgi</secondary> </indexterm>
 
   <para>
@@ -548,7 +548,7 @@ FW_REDIRECT="192.168.0.0/16,0/0,tcp,80,3128"
   <sect2>
    <title>Einrichtung</title><indexterm> <primary>Squid</primary> <secondary>Apache</secondary> </indexterm> <indexterm> <primary>Apache</primary> <secondary>Squid</secondary> </indexterm>
    <para>
-    Zunächst muss ein Webserver in Ihrem System ausgeführt werden. Konfigurieren Sie Apache, wie in <xref linkend="cha.apache2"/> beschrieben. Um zu überprüfen, ob Apache bereits ausgeführt wird, geben Sie als <systemitem class="username">root</systemitem> den Befehl <command>rcapache</command><option>status ein</option>. Wenn eine Meldung der folgenden Art angezeigt wird:
+    Zunächst muss ein Webserver in Ihrem System ausgeführt werden. Konfigurieren Sie Apache, wie in <xref linkend="cha-apache2"/> beschrieben. Um zu überprüfen, ob Apache bereits ausgeführt wird, geben Sie als <systemitem class="username">root</systemitem> den Befehl <command>rcapache</command><option>status ein</option>. Wenn eine Meldung der folgenden Art angezeigt wird:
    </para>
 <screen>
 Checking for service httpd: OK 
@@ -581,9 +581,9 @@ http_access allow manager localhost
 http_access deny manager
 </screen>
    <para>
-    Diese Regeln setzen voraus, dass der Webserver und Squid auf demselben Computer ausgeführt werden. Wenn die Kommunikation zwischen Cache-Manager und Squid von dem Webserver auf einem anderen Computer ihren Ausgang nimmt, müssen Sie eine zusätzliche ACL aufnehmen, wie in <xref linkend="dat.acl"/> beschrieben.
+    Diese Regeln setzen voraus, dass der Webserver und Squid auf demselben Computer ausgeführt werden. Wenn die Kommunikation zwischen Cache-Manager und Squid von dem Webserver auf einem anderen Computer ihren Ausgang nimmt, müssen Sie eine zusätzliche ACL aufnehmen, wie in <xref linkend="dat-acl"/> beschrieben.
    </para>
-   <example id="dat.acl">
+   <example id="dat-acl">
     <title>Zugriffsregeln</title>
 <screen>
 acl manager proto cache_object
@@ -592,9 +592,9 @@ acl webserver src 192.168.1.7/255.255.255.255 # webserver IP
 </screen>
    </example>
    <para>
-    Fügen Sie dann die Regeln in <xref linkend="dat.access"/> hinzu, um den Zugriff vom Webserver zu gestatten.
+    Fügen Sie dann die Regeln in <xref linkend="dat-access"/> hinzu, um den Zugriff vom Webserver zu gestatten.
    </para>
-   <example id="dat.access">
+   <example id="dat-access">
     <title>Zugriffsregeln</title>
 <screen>
 http_access allow manager localhost
@@ -617,7 +617,7 @@ http_access deny manager
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.squidguard">
+ <sect1 id="sec-squid-squidguard">
   <title>squidGuard</title><indexterm> <primary>Squid</primary> <secondary>squidGuard</secondary> </indexterm>
 
   <para>
@@ -716,7 +716,7 @@ redirect_children 4
    Abschließend kann Squid die neue Konfiguration laden, indem Sie <command>rcsquid</command> <option>reload</option> ausführen. Testen Sie nun Ihre Einstellungen mit einem Browser.
   </para>
  </sect1>
- <sect1 id="sec.squid.calamaris">
+ <sect1 id="sec-squid-calamaris">
   <title>Erstellung von Cache-Berichten mit Calamaris</title><indexterm> <primary>Squid</primary> <secondary>Calamaris</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>Berichte</secondary> </indexterm>
 
   <para>
@@ -780,7 +780,7 @@ cat access.log.{10..1} access.log | calamaris -a -w \
 
   
  </sect1>
- <sect1 id="sec.squid.moreinfo">
+ <sect1 id="sec-squid-moreinfo">
   <title>Weiterführende Informationen</title>
 
   <para>

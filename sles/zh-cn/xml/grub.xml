@@ -7,7 +7,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="grub.xml" id="cha.grub">
+<chapter xml:base="grub.xml" id="cha-grub">
  <title>引导加载程序 GRUB</title><indexterm> <primary>引导</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
  <abstract>
   <para>
@@ -21,7 +21,7 @@ Please see LICENSE.txt for this document's license.
   </para>
  </note>
  <para>
-  本章主要介绍引导加载程序 GRUB 的引导管理和配置。<xref linkend="cha.boot"/> 中将引导过程作为一个整体进行了介绍。引导加载程序代表计算机 (BIOS) 和操作系统 (<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>) 之间的接口。引导加载程序的配置直接影响到操作系统的启动。
+  本章主要介绍引导加载程序 GRUB 的引导管理和配置。<xref linkend="cha-boot"/> 中将引导过程作为一个整体进行了介绍。引导加载程序代表计算机 (BIOS) 和操作系统 (<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>) 之间的接口。引导加载程序的配置直接影响到操作系统的启动。
  </para>
  <para>
   本章经常出现以下术语，可能需要进行解释：
@@ -45,7 +45,7 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </varlistentry>
  </variablelist>
- <sect1 id="sec.grub.basic">
+ <sect1 id="sec-grub-basic">
   <title>使用 GRUB 引导</title><indexterm> <primary>GRUB</primary><secondary>引导</secondary></indexterm><indexterm><primary>安装</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>引导</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>配置</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>命令</primary><secondary>grub</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>命令</secondary></indexterm>
 
   <para>
@@ -69,7 +69,7 @@ Please see LICENSE.txt for this document's license.
     <term><filename>/boot/grub/menu.lst</filename><indexterm><primary>GRUB</primary><secondary>menu.lst</secondary></indexterm></term>
     <listitem>
      <para>
-      此文件包含有关可通过 GRUB 进行引导的分区或操作系统的所有信息。没有这些信息，GRUB 命令行将提示用户如何继续（请参见<xref linkend="sec.grub.menu.change"/>获取详细信息）。
+      此文件包含有关可通过 GRUB 进行引导的分区或操作系统的所有信息。没有这些信息，GRUB 命令行将提示用户如何继续（请参见<xref linkend="sec-grub-menu-change"/>获取详细信息）。
      </para>
     </listitem>
    </varlistentry>
@@ -104,20 +104,20 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <para>
-   在 GRUB 中，在引导前可以更改所有引导参数。例如，可以通过这种方式更正编辑菜单文件时出现的错误。还可以在输入提示符处以交互方式输入引导命令。有关详细信息，请参见<xref linkend="sec.grub.menu.change"/>。GRUB 能够在引导前确定内核和 <filename>initrd</filename> 的位置。通过这种方式，您甚至可以引导在引导加载程序配置中不存在任何项的已安装操作系统。
+   在 GRUB 中，在引导前可以更改所有引导参数。例如，可以通过这种方式更正编辑菜单文件时出现的错误。还可以在输入提示符处以交互方式输入引导命令。有关详细信息，请参见<xref linkend="sec-grub-menu-change"/>。GRUB 能够在引导前确定内核和 <filename>initrd</filename> 的位置。通过这种方式，您甚至可以引导在引导加载程序配置中不存在任何项的已安装操作系统。
   </para>
 
   <para>
    GRUB 实际上以两个版本存在：作为引导加载程序，以及作为 <filename>/usr/sbin/grub</filename> 中的普通 Linux 程序。后者称为 <emphasis>GRUB 外壳</emphasis>。它在已安装系统中提供 GRUB 的仿真，并且可用来安装 GRUB 或在应用新设置之前对其进行测试。将 GRUB 作为引导加载程序安装在硬盘或软盘上的功能以 <command>setup</command> 命令的形式集成在 GRUB 中。当装载了 Linux 后在 GRUB shell 中可用。
   </para>
 
-  <sect2 id="sec.grub.menu">
+  <sect2 id="sec-grub-menu">
    <title>文件 <filename>/boot/grub/menu.lst</filename></title><indexterm> <primary>配置文件</primary><secondary>menu.lst</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>引导菜单</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>menu.lst</secondary></indexterm>
    <para>
     带有引导菜单的图形启动屏幕基于 GRUB 配置文件 <filename>/boot/grub/menu.lst</filename>，该文件包含有关可以通过菜单引导的所有分区或操作系统的所有信息。
    </para>
    <para>
-    每次引导系统时，GRUB 都从文件系统装载菜单文件。出于此原因，不必每次更改文件后都重安装 GRUB。使用 YaST 引导加载程序修改 GRUB 配置，如<xref linkend="sec.boot.yast2.config"/>中所述。
+    每次引导系统时，GRUB 都从文件系统装载菜单文件。出于此原因，不必每次更改文件后都重安装 GRUB。使用 YaST 引导加载程序修改 GRUB 配置，如<xref linkend="sec-boot-yast2-config"/>中所述。
    </para>
    <para>
     菜单文件中包含命令。语法非常简单。每行都包含一条命令，后跟可选参数，可选参数之间用空格隔开，就像在外壳中一样。出于历史原因，某些命令允许在第一个参数前使用 <literal>=</literal>。注释以井号 (<literal>#</literal>) 开头。
@@ -130,7 +130,7 @@ Please see LICENSE.txt for this document's license.
    </para>
 <screen>chainloader (hd0,3)+1</screen>
    <para>
-    GRUB 中的设备名在<xref linkend="sec.grub.devices"/>中有所解释。此示例指定第一个硬盘第四个分区中的第一个块。
+    GRUB 中的设备名在<xref linkend="sec-grub-devices"/>中有所解释。此示例指定第一个硬盘第四个分区中的第一个块。
    </para>
    <para>
     使用命令 <literal>kernel</literal> 指定内核映像。第一个参数是指向分区中内核映像的路径。命令行上的其他参数将被传递到内核。
@@ -145,9 +145,9 @@ Please see LICENSE.txt for this document's license.
     每个菜单项的末尾都间接指定 <literal>boot</literal> 命令，因此无需将其写入菜单文件中。但是，如果以交互方式使用 GRUB 进行引导，则必须在最后输入 <literal>boot</literal> 命令。该命令本身没有参数。它只引导装载的内核映像或指定的链装载程序。
    </para>
    <para>
-    在写入所有菜单项之后，将其中一项定义为 <literal>default</literal> 项。否则，将使用第一项（项 <literal>0</literal>）。您还可以指定在一段时间后引导默认项的超时值（以秒为单位）。<literal>timeout</literal> 和 <literal>default</literal> 通常在各菜单项前面。示例文件在 <xref linkend="sec.grub.menu.example"/> 中有所介绍。
+    在写入所有菜单项之后，将其中一项定义为 <literal>default</literal> 项。否则，将使用第一项（项 <literal>0</literal>）。您还可以指定在一段时间后引导默认项的超时值（以秒为单位）。<literal>timeout</literal> 和 <literal>default</literal> 通常在各菜单项前面。示例文件在 <xref linkend="sec-grub-menu-example"/> 中有所介绍。
    </para>
-   <sect3 id="sec.grub.devices">
+   <sect3 id="sec-grub-devices">
     <title>硬盘和分区的命名约定</title><indexterm> <primary>GRUB</primary><secondary>设备名</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>分区名</secondary></indexterm>
     <para>
      GRUB 用于硬盘和分区的命名约定不同于普通 Linux 设备使用的命名约定。它更类似于 BIOS 执行的简单磁盘枚举，而语法类似于一些 BSD 衍生程序中使用的语法。在 GRUB 中，分区的编号从 0 开始。它表示 (<filename>hd0,0</filename>) 是第一块硬盘的第一个分区。在普通台式机上，作为 Primary Master（第一个 IDE 控制器上的主设备）连接的硬盘所对应的 Linux 设备名为 <filename>/dev/sda1</filename>。
@@ -165,38 +165,38 @@ Please see LICENSE.txt for this document's license.
      GRUB 依赖于 BIOS 设备，它不区分 PATA (IDE)、SATA、SCSI 和硬件 RAID 设备。BIOS 或其他控制器识别的所有硬盘将按照 BIOS 中显示的引导顺序进行编号。
     </para>
     <para>
-     不过，通常不能将 Linux 设备名准确映射为 BIOS 设备名。它借助某种算法生成这一映射并将其保存到文件 <filename>device.map</filename> 中，可以根据需要对该文件进行编辑。有关文件 <filename>device.map</filename> 的信息在<xref linkend="sec.grub.map"/> 中有所介绍。
+     不过，通常不能将 Linux 设备名准确映射为 BIOS 设备名。它借助某种算法生成这一映射并将其保存到文件 <filename>device.map</filename> 中，可以根据需要对该文件进行编辑。有关文件 <filename>device.map</filename> 的信息在<xref linkend="sec-grub-map"/> 中有所介绍。
     </para>
     <para>
      完整的 GRUB 路径包含写在括号中的设备名和指向指定分区的文件系统中文件的路径。路径以斜线开头。例如，在具有一个 PATA (IDE) 硬盘（其第一个分区中包含 Linux）的系统上，可以按如下方式指定可引导内核：
     </para>
 <screen>(hd0,0)/boot/vmlinuz</screen>
    </sect3>
-   <sect3 id="sec.grub.menu.example">
+   <sect3 id="sec-grub-menu-example">
     <title>示例菜单文件</title>
     <para>
      以下示例说明了 GRUB 菜单文件的结构。此示例安装包括 <filename>/dev/sda5</filename> 下的 Linux 引导分区、<filename>/dev/sda7</filename> 下的根分区和 <filename>/dev/sda1</filename> 下的 Windows 安装。
     </para>
     
-<screen>gfxmenu (hd0,4)/boot/message<co id="grub.menu.example.gfxmenu"/>
-color white/blue black/light-gray<co id="grub.menu.example.color"/>
-default 0<co id="grub.menu.example.default"/>
-timeout 8<co id="grub.menu.example.timeout"/>
+<screen>gfxmenu (hd0,4)/boot/message<co id="grub-menu-example-gfxmenu"/>
+color white/blue black/light-gray<co id="grub-menu-example-color"/>
+default 0<co id="grub-menu-example-default"/>
+timeout 8<co id="grub-menu-example-timeout"/>
 
-title linux<co id="grub.menu.example.linux"/>
+title linux<co id="grub-menu-example-linux"/>
    root (hd0,4)
    kernel /boot/vmlinuz root=/dev/sda7 vga=791 resume=/dev/sda9
    initrd /boot/initrd
 
-title windows<co id="grub.menu.example.windows"/>
+title windows<co id="grub-menu-example-windows"/>
    rootnoverify (hd0,0)
    chainloader +1
 
-title floppy<co id="grub.menu.example.floppy"/>
+title floppy<co id="grub-menu-example-floppy"/>
    rootnoverify (hd0,0)
    chainloader (fd0)+1
 
-title failsafe<co id="grub.menu.example.failsafe"/>
+title failsafe<co id="grub-menu-example-failsafe"/>
    root (hd0,4)
    kernel /boot/vmlinuz.shipped root=/dev/sda7 ide=nodma \
    apm=off acpi=off vga=normal nosmp maxcpus=0 3 noresume
@@ -205,22 +205,22 @@ title failsafe<co id="grub.menu.example.failsafe"/>
      第一块定义了启动屏幕的配置：
     </para>
     <calloutlist>
-     <callout arearefs="grub.menu.example.gfxmenu">
+     <callout arearefs="grub-menu-example-gfxmenu">
       <para>
        背景图像 <literal>message</literal> 位于 <filename>/dev/sda5</filename> 分区的 <filename>/boot</filename> 目录中。
       </para>
      </callout>
-     <callout arearefs="grub.menu.example.color">
+     <callout arearefs="grub-menu-example-color">
       <para>
        颜色模式：白色（前景）、蓝色（背景）、黑色（所选内容）、浅灰色（所选内容的背景）。颜色方案对启动屏幕没有任何影响，它只影响通过按 <keycap>Esc</keycap> 键退出启动屏幕后所访问的可自定义的 GRUB 菜单。
       </para>
      </callout>
-     <callout arearefs="grub.menu.example.default">
+     <callout arearefs="grub-menu-example-default">
       <para>
        会默认引导第一个 (<literal>0</literal>) 菜单项 <literal>title linux</literal>。
       </para>
      </callout>
-     <callout arearefs="grub.menu.example.timeout">
+     <callout arearefs="grub-menu-example-timeout">
       <para>
        如果 8 秒钟后无任何用户输入，GRUB 将自动引导默认项。要检测自动引导，请删除 <literal>timeout</literal> 行。如果设置 <literal>timeout 0</literal>，GRUB 将立即引导默认项。
       </para>
@@ -230,32 +230,32 @@ title failsafe<co id="grub.menu.example.failsafe"/>
      第二块（也就是最大的块）列出了各个可引导的操作系统。各个操作系统的不同部分由 <literal>title</literal> 引出。
     </para>
     <calloutlist>
-     <callout arearefs="grub.menu.example.linux">
+     <callout arearefs="grub-menu-example-linux">
       <para>
        第一项 (<literal>title linux</literal>) 负责引导 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>。内核 (<literal>vmlinuz</literal>) 位于第一块硬盘的第一个逻辑分区（引导分区）。内核参数（例如根分区和 VGA 方式）也被追加在此处。根分区是根据 Linux 命名约定 (<filename>/dev/sda7/</filename>) 指定的，因为此信息将由内核读取，与 GRUB 无关。<literal>initrd</literal> 也位于第一块硬盘的第一个逻辑分区中。
       </para>
      </callout>
-     <callout arearefs="grub.menu.example.windows">
+     <callout arearefs="grub-menu-example-windows">
       <para>
        第二项负责装载 Windows。Windows 将从第一块硬盘的第一个分区 (<filename>hd0,0</filename>) 引导。命令 <literal>chainloader +1</literal> 将导致 GRUB 读取并执行指定分区的第一个扇区。
       </para>
      </callout>
-     <callout arearefs="grub.menu.example.floppy">
+     <callout arearefs="grub-menu-example-floppy">
       <para>
        下一项支持从软盘进行引导，而无需修改 BIOS 设置。
       </para>
      </callout>
-     <callout arearefs="grub.menu.example.failsafe">
+     <callout arearefs="grub-menu-example-failsafe">
       <para>
        引导选项 <literal>failsafe</literal> 用一组内核参数启动 Linux，这些参数使 Linux 甚至可以在有问题的系统上引导。
       </para>
      </callout>
     </calloutlist>
     <para>
-     您随时都可根据需要更改菜单文件。GRUB 会在下次引导时使用修改后的设置。使用 YaST 或所选的编辑器对文件进行永久编辑。或者，使用 GRUB 的编辑功能以交互方式临时进行更改（请参见<xref linkend="sec.grub.menu.change"/>）。
+     您随时都可根据需要更改菜单文件。GRUB 会在下次引导时使用修改后的设置。使用 YaST 或所选的编辑器对文件进行永久编辑。或者，使用 GRUB 的编辑功能以交互方式临时进行更改（请参见<xref linkend="sec-grub-menu-change"/>）。
     </para>
    </sect3>
-   <sect3 id="sec.grub.menu.change">
+   <sect3 id="sec-grub-menu-change">
     <title>在引导过程中编辑菜单项</title><indexterm> <primary>GRUB</primary><secondary>菜单编辑器</secondary></indexterm>
     <para>
      在图形引导菜单中，使用箭头键选择要引导的操作系统。如果选择 Linux 系统，则可以在引导提示符处输入其他引导参数。若要直接编辑个别菜单项，请按 <keycap>Esc</keycap> 键退出启动屏幕并进入 GRUB 基于文本的菜单，然后按 <keycap>E</keycap> 键。通过这种方式进行的更改仅适用于当前引导，不会被永久采用。
@@ -263,7 +263,7 @@ title failsafe<co id="grub.menu.example.failsafe"/>
     <important>
      <title>引导过程中的键盘布局</title>
      <para>
-      US 键盘布局是引导时唯一可用的键盘布局。请参见<xref linkend="fig.trouble.install.keyboard_us"/>。
+      US 键盘布局是引导时唯一可用的键盘布局。请参见<xref linkend="fig-trouble-install-keyboard-us"/>。
      </para>
     </important>
     <para>
@@ -285,7 +285,7 @@ title failsafe<co id="grub.menu.example.failsafe"/>
    </sect3>
   </sect2>
 
-  <sect2 id="sec.grub.map">
+  <sect2 id="sec-grub-map">
    <title>文件 device.map</title><indexterm> <primary>GRUB </primary> <secondary>device.map</secondary></indexterm>
    <para>
     文件 <filename>device.map</filename> 将 GRUB 和 BIOS 设备名映射为 Linux 设备名。在包含 PATA (IDE) 和 SCSI 硬盘的混合系统中，GRUB 必须通过特殊过程尝试确定引导顺序，因为 GRUB 不能访问 BIOS 上有关引导顺序的信息。GRUB 会将此分析的结果保存在文件 <filename>/boot/grub/device.map</filename> 中。BIOS 中的引导顺序设为 PATA 先于 SCSI 的系统的示例 <filename>device.map</filename> 文件可能如下所示：
@@ -314,7 +314,7 @@ title failsafe<co id="grub.menu.example.failsafe"/>
 <screen>grub --batch &lt; /etc/grub.conf</screen>
   </sect2>
 
-  <sect2 id="sec.grub.conf">
+  <sect2 id="sec-grub-conf">
    <title>文件 /etc/grub.conf</title><indexterm> <primary>配置文件</primary><secondary>grub.conf</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>grub.conf</secondary></indexterm><indexterm><primary>配置</primary><secondary>GRUB</secondary></indexterm>
    <para>
     除了 <filename>menu.lst</filename> 和 <filename>device.map</filename> 之外，第三个重要的 GRUB 配置文件就是 <filename>/etc/grub.conf</filename>。此文件包含 GRUB 外壳正确安装引导加载程序所需的命令、参数和选项：
@@ -326,7 +326,7 @@ title failsafe<co id="grub.menu.example.failsafe"/>
    </para>
   </sect2>
 
-  <sect2 id="sec.grub.sysconfig">
+  <sect2 id="sec-grub-sysconfig">
    <title>文件 <filename>/etc/sysconfig/bootloader</filename></title><indexterm> <primary>GRUB</primary> <secondary>sysconfig/bootloader</secondary></indexterm>
    <para>
     仅在使用 YaST 配置引导加载程序时以及每次安装新内核时会用到此配置文件。它由 perl-bootloader 库评估，此库会相应地修改引导加载程序配置文件（例如，对于 GRUB 为 <filename>/boot/grub/menu.lst</filename>）。<filename>/etc/sysconfig/bootloader</filename> 不是特定于 GRUB 的配置文件，其值会应用于 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 上安装的任何引导加载程序。
@@ -343,7 +343,7 @@ title failsafe<co id="grub.menu.example.failsafe"/>
      </term>
      <listitem>
       <para>
-       指定在系统上安装的引导加载程序（例如 GRUB 或 LILO）。不要修改，而是使用 YaST 更改引导加载程序，如<xref linkend="pro.boot.yast2.config.loader"/>中所述。
+       指定在系统上安装的引导加载程序（例如 GRUB 或 LILO）。不要修改，而是使用 YaST 更改引导加载程序，如<xref linkend="pro-boot-yast2-config-loader"/>中所述。
       </para>
      </listitem>
     </varlistentry>
@@ -544,7 +544,7 @@ title failsafe<co id="grub.menu.example.failsafe"/>
    </variablelist>
   </sect2>
 
-  <sect2 id="sec.grub.password">
+  <sect2 id="sec-grub-password">
    <title>设置引导口令</title><indexterm> <primary>GRUB </primary> <secondary>引导口令</secondary></indexterm>
    <para>
     即使是在引导操作系统之前，GRUB 也支持对文件系统的访问。没有 root 权限的用户可以访问 Linux 系统中的文件，而一旦引导系统后，他们将无权访问这些文件。要阻止此类访问或防止用户引导某些操作系统，请设置引导口令。
@@ -602,7 +602,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
  </sect1>
 
  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_yast_i.xml" parse="xml"/>
- <sect1 id="sec.grub.entfernen">
+ <sect1 id="sec-grub-entfernen">
   <title>卸载 Linux 引导加载程序</title><indexterm> <primary>卸装</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>卸装</primary><secondary>Linux</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>卸装</secondary></indexterm><indexterm><primary>Linux</primary><secondary>卸装</secondary></indexterm>
 
   <para>
@@ -614,7 +614,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
   </para>
  </sect1>
  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_bootcd_i.xml" parse="xml"/>
- <sect1 id="sec.boot.screen">
+ <sect1 id="sec-boot-screen">
   <title>图形 SUSE 屏幕</title><indexterm> <primary>引导</primary> <secondary>图形</secondary> </indexterm> <indexterm> <primary>控制台</primary> <secondary>图形</secondary> </indexterm>
 
   <para>
@@ -634,7 +634,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     <term>默认禁用 SUSE 屏幕。</term>
     <listitem>
      <para>
-      将内核参数 <option>splash=0</option> 添加到您的引导加载程序配置中。<xref linkend="cha.grub"/> 提供了有关此内容的详细信息。但是，如果您倾向于使用文本方式（这是早期版本中的默认方式），请设置 <option>vga=normal</option>。
+      将内核参数 <option>splash=0</option> 添加到您的引导加载程序配置中。<xref linkend="cha-grub"/> 提供了有关此内容的详细信息。但是，如果您倾向于使用文本方式（这是早期版本中的默认方式），请设置 <option>vga=normal</option>。
      </para>
     </listitem>
    </varlistentry>
@@ -654,7 +654,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
    </varlistentry>
   </variablelist>
  </sect1>
- <sect1 id="sec.grub.probs">
+ <sect1 id="sec-grub-probs">
   <title>查错</title><indexterm> <primary>GRUB</primary><secondary>查错</secondary></indexterm>
 
   <para>
@@ -712,7 +712,7 @@ title windows
    </varlistentry>
   </variablelist>
  </sect1>
- <sect1 id="sec.grub.info">
+ <sect1 id="sec-grub-info">
   <title>更多信息</title>
 
   <para>

@@ -7,7 +7,7 @@
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_proxy.xml" id="cha.squid">
+<chapter xml:base="net_proxy.xml" id="cha-squid">
  <title>Squid 代理伺服器</title><indexterm> <primary>Squid</primary> </indexterm> <indexterm> <primary>代理</primary> <see>Squid</see> </indexterm>
  <abstract>
   <para>
@@ -20,24 +20,24 @@ Please see LICENSE.txt for this document's license.
  <para>
   <indexterm> <primary>Squid</primary> <secondary>功能</secondary></indexterm> 除了實際快取之外，Squid 還提供眾多功能，例如將負載分散到互相通訊的代理伺服器階層、為所有存取代理的用戶端定義嚴格的存取控制清單、允許或拒絕使用其他應用程式來存取特定網頁，以及產生經常瀏覽之網頁的統計資料，以評估使用者的瀏覽習慣。Squid 不是一般的代理。一般而言，它只會代理 HTTP 連接。此外，也支援 FTP、Gopher、SSL 以及 WAIS 等通訊協定，但不支援其他網際網路通訊協定，例如 Real Audio、新聞或視訊會議。因為 Squid 只支援 UDP 通訊協定提供不同快取之間的通訊，許多其他的多媒體程式並不支援。
  </para>
- <sect1 id="sec.squid.cacheinfos">
+ <sect1 id="sec-squid-cacheinfos">
   <title>關於代理快取的說明</title>
 
   <para>
    當 Squid 做為代理快取記憶體時，使用方法有多種。若與防火牆合併，它有助於提高安全性。多個代理可一起使用。它也可以判斷應該快取物件類型和持續的時間長短。
   </para>
 
-  <sect2 id="sec.squid.security">
+  <sect2 id="sec-squid-security">
    <title>Squid 以及安全性</title><indexterm> <primary>Squid</primary> <secondary>安全性</secondary> </indexterm> <indexterm> <primary>安全性</primary> <secondary>Squid</secondary> </indexterm>
    <para>
     Squid 可與防火牆配合使用，以便使用代理快取記憶體來保護內部網路不受外部的存取。防火牆將會拒絕所有的用戶端存取 Squid 以外的外部服務。所有的網路連接都必須由代理來建立。藉由這種組態方式，Squid 可完全控制網頁存取。
    </para>
    <para>
-    <indexterm> <primary>Squid</primary> <secondary>安全性</secondary> </indexterm> 如果防火牆組態包含 DMZ，則代理應在此區域中操作。<xref linkend="sec.squid.proxyconfigtrans"/> 將描述如何執行「<emphasis>透明</emphasis>」代理。這簡化了用戶端的組態，因為在此情況下，它們不需要有關代理的任何資訊。
+    <indexterm> <primary>Squid</primary> <secondary>安全性</secondary> </indexterm> 如果防火牆組態包含 DMZ，則代理應在此區域中操作。<xref linkend="sec-squid-proxyconfigtrans"/> 將描述如何執行「<emphasis>透明</emphasis>」代理。這簡化了用戶端的組態，因為在此情況下，它們不需要有關代理的任何資訊。
    </para>
   </sect2>
 
-  <sect2 id="sec.squid.morecaches">
+  <sect2 id="sec-squid-morecaches">
    <title>多個快取</title><indexterm> <primary>Squid</primary> <secondary>快取記憶體</secondary> </indexterm>
    <para>
     經過設定之後，可在多個 Squid 例項之間交換物件。這樣可以減少系統的總負載，並可增加在本地網路中找到現有物件的機會。您也可以設定快取階層，使快取可以將物件要求轉送至同層級的快取或上層快取──這將使其從區域網路的另一個快取或直接從來源取得物件。
@@ -58,7 +58,7 @@ Please see LICENSE.txt for this document's license.
    </tip>
   </sect2>
 
-  <sect2 id="sec.squid.latching">
+  <sect2 id="sec-squid-latching">
    <title>快取網際網路物件</title><indexterm> <primary>Squid</primary> <secondary>物件狀態</secondary> </indexterm>
    <para>
     網路中所有可用的物件並不全是靜態。其中有許多動態產生的 CGI 頁面、訪客計數器以及加密的 SSL 內容文件。諸如此類的物件是不會被快取的，因為每次存取它們時，它們都會改變。
@@ -71,14 +71,14 @@ Please see LICENSE.txt for this document's license.
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.sysneeds">
+ <sect1 id="sec-squid-sysneeds">
   <title>系統需求</title><indexterm> <primary>Squid</primary> <secondary>系統需求</secondary> </indexterm>
 
   <para>
    最重要的事情是要決定系統必須承受的最大網路負載。因此需要特別注意負載峰值，峰值有可能超出日均值的四倍。當存在疑問時，最好高估系統的需求，因為如果讓 Squid 在接近其容量的限制下工作，有可能會造成服務品質的嚴重損失。接下來的小節將依重要順序指出系統因素。
   </para>
 
-  <sect2 id="sec.squid.sysneeds.disk">
+  <sect2 id="sec-squid-sysneeds-disk">
    <title>硬碟</title>
    <para>
     速度在快取處理過程中扮演很重要的角色，因此應該特別注意這個因素。對硬碟而言，此參數可稱為「<emphasis>隨機搜尋時間」</emphasis>，以毫秒為單位。因為 Squid 所讀取或寫入硬碟的資料區塊通常都相當的小，所以硬碟的搜尋時間比其資料輸送量還要重要。如果要使用代理，最好選擇具有高旋轉速的硬碟，因為這種硬碟可以較快的速度將讀寫頭放置在所需的位置。有一個方法可能可以增加系統的速度，就是同時使用多個磁碟或是運用分段 RAID 陣列。
@@ -95,7 +95,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </sect2>
 
-  <sect2 id="sec.squid.ram">
+  <sect2 id="sec-squid-ram">
    <title>RAM</title><indexterm> <primary>Squid</primary> <secondary>RAM</secondary> </indexterm>
    <para>
     Squid 所需的記憶體容量 (RAM) 與快取記憶體中的物件數量直接相關。Squid 也會將快取記憶體物件的參照以及常要求的物件儲存在主記憶體中以加速此資料的擷取速度。隨機存取記憶體比硬碟的速度快很多。
@@ -104,19 +104,19 @@ Please see LICENSE.txt for this document's license.
     除此之外，Squid 需要在記憶體中保留其他的資料，例如所有已處理 IP 位址的表格、精確的網域名稱快取、最常要求的物件、存取控制清單、緩衝區等等。
    </para>
    <para>
-    為 Squid 處理程序保留足夠的記憶體是非常重要的，因為若使用磁碟進行交換，系統效能就會大幅地降低。cachemgr.cgi 工具可用於快取記憶體管理。此工具會在<xref linkend="sec.squid.cachemgr"/> 中加以介紹。
+    為 Squid 處理程序保留足夠的記憶體是非常重要的，因為若使用磁碟進行交換，系統效能就會大幅地降低。cachemgr.cgi 工具可用於快取記憶體管理。此工具會在<xref linkend="sec-squid-cachemgr"/> 中加以介紹。
 
    </para>
   </sect2>
 
-  <sect2 id="sec.squid.cpu">
+  <sect2 id="sec-squid-cpu">
    <title>CPU</title><indexterm> <primary>Squid</primary> <secondary>CPU</secondary> </indexterm>
    <para>
     Squid 不是一個需要密集使用 CPU 的程式。只有在載入或檢查快取記憶體的內容時，才會增加處理器的負載。使用多處理器的機器並不能提升系統的效能。若要提升效率，最好買更快的磁碟或新增更多的記憶體。
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.start">
+ <sect1 id="sec-squid-start">
   <title>啟動 Squid</title><indexterm> <primary>Squid</primary> <secondary>啟動</secondary> </indexterm>
 
   <para>
@@ -133,7 +133,7 @@ Please see LICENSE.txt for this document's license.
     若要啟動 Squid，請以 <systemitem class="username">root</systemitem> 的身分在指令行中輸入 <command>rcsquid <option>start</option></command>。第一次啟動時，必須先在 <filename>/var/cache/squid</filename> 中定義快取記憶體的目錄結構。目錄的定義可由 <filename>/etc/init.d/squid</filename> 啟動程序檔自動完成，這可能需要花費數秒鐘，甚至幾分鐘。如果 <literal>done</literal> 以綠色出現在右邊，則表示已成功載入 Squid。若要在本地系統上測試 Squid 的功能，請在瀏覽器中輸入 <option>localhost</option> 做為代理，並輸入 <option>3128</option> 做為埠。
    </para>
    <para>
-    若要允許本地系統和其他系統的使用者存取 Squid 和網際網路，請將 <filename>/etc/squid/squid.conf</filename> 組態檔中的 <option>http_access deny all</option> 項目變更為 <option>http_access allow all</option>。然而，當您這麼做時，請考量到此動作將使 Squid 可供任何人完全存取。因此，請定義控制代理存取權限的 ACL。如需關於此的詳細資訊，請參閱 <xref linkend="sec.squid.acl"/>。
+    若要允許本地系統和其他系統的使用者存取 Squid 和網際網路，請將 <filename>/etc/squid/squid.conf</filename> 組態檔中的 <option>http_access deny all</option> 項目變更為 <option>http_access allow all</option>。然而，當您這麼做時，請考量到此動作將使 Squid 可供任何人完全存取。因此，請定義控制代理存取權限的 ACL。如需關於此的詳細資訊，請參閱 <xref linkend="sec-squid-acl"/>。
    </para><indexterm> <primary>Squid</primary> <secondary>停止</secondary> </indexterm>
    <para>
     在修改 <filename>/etc/squid/squid.conf</filename> 組態檔後，Squid 必須重新載入組態檔。請使用 <command>rcsquid <option>reload</option></command> 完成此動作。或者也可以使用 <command>rcsquid <option>restart</option></command> 徹底重新啟動 Squid。
@@ -148,7 +148,7 @@ Please see LICENSE.txt for this document's license.
     </para>
    </warning><indexterm> <primary>Squid</primary> <secondary>記錄檔案</secondary> </indexterm> <indexterm> <primary>記錄檔案</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>疑難排解</secondary> </indexterm>
    <para>
-    如果 Squid 在成功啟動後，仍然於一小段時間後即停止運作，請檢查是否有錯誤的名稱伺服器項目，或者是否缺少 <filename>/etc/resolv.conf</filename> 檔案。Squid 會在 <filename>/var/log/squid/cache.log</filename> 檔案中記錄啟動失敗的原因。如果在系統開機時，應該自動載入 Squid，請使用 YaST runlevel 編輯器，將 Squid 以所要的 runlevel 啟動。請參閱<xref linkend="sec.boot.runlevel.edit"/>。
+    如果 Squid 在成功啟動後，仍然於一小段時間後即停止運作，請檢查是否有錯誤的名稱伺服器項目，或者是否缺少 <filename>/etc/resolv.conf</filename> 檔案。Squid 會在 <filename>/var/log/squid/cache.log</filename> 檔案中記錄啟動失敗的原因。如果在系統開機時，應該自動載入 Squid，請使用 YaST runlevel 編輯器，將 Squid 以所要的 runlevel 啟動。請參閱<xref linkend="sec-boot-runlevel-edit"/>。
    </para><indexterm> <primary>Squid</primary> <secondary>解除安裝</secondary> </indexterm>
    <para>
     解除安裝 Squid 時不會移除快取記憶體階層或記錄檔。若要移除這些階層，請手動刪除 <filename>/var/cache/squid</filename> 目錄。
@@ -158,14 +158,14 @@ Please see LICENSE.txt for this document's license.
   <sect2>
    <title>本地 DNS 伺服器</title><indexterm> <primary>DNS</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>DNS</secondary> </indexterm> <indexterm> <primary>組態檔案</primary> <secondary>named.conf </secondary> </indexterm>
    <para>
-    即使本地 DNS 伺服器不管理自己的網域，也可以設定本地 DNS 伺服器。它可以做為僅供快取的名稱伺服器，也可以透過根 名稱伺服器來解析 DNS 要求，而不需任何特殊的組態 (請參閱<xref linkend="sec.dns.bind"/>)。如何達成此目的，取決於您在設定網際網路連接的組態時是否選擇了動態 DNS。
+    即使本地 DNS 伺服器不管理自己的網域，也可以設定本地 DNS 伺服器。它可以做為僅供快取的名稱伺服器，也可以透過根 名稱伺服器來解析 DNS 要求，而不需任何特殊的組態 (請參閱<xref linkend="sec-dns-bind"/>)。如何達成此目的，取決於您在設定網際網路連接的組態時是否選擇了動態 DNS。
    </para>
    <variablelist>
     <varlistentry>
      <term>動態 DNS</term>
      <listitem>
       <para>
-       一般而言，使用動態 DNS 時，會由提供者在建立網際網路連接期間設定 DNS 伺服器，且 <filename>/etc/resolv.conf</filename> 本地檔案會自動進行調整。此行為由 <filename>/etc/sysconfig/network/config</filename> 檔案透過 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> sysconfig 變數進行控制。使用 YaST sysconfig 編輯器將 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> 設定為 <systemitem class="constant">""</systemitem> (請參閱<xref linkend="sec.boot.sysconfig.edit"/>)。然後在 <filename>/etc/resolv.conf</filename> 檔案中輸入本地 DNS 伺服器，以 <systemitem class="domainname">127.0.0.1</systemitem> 做為 <systemitem class="ipaddress">localhost</systemitem> 的 IP 位址。這樣一來在啟動時，Squid 就可以永遠找到本地名稱伺服器。
+       一般而言，使用動態 DNS 時，會由提供者在建立網際網路連接期間設定 DNS 伺服器，且 <filename>/etc/resolv.conf</filename> 本地檔案會自動進行調整。此行為由 <filename>/etc/sysconfig/network/config</filename> 檔案透過 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> sysconfig 變數進行控制。使用 YaST sysconfig 編輯器將 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> 設定為 <systemitem class="constant">""</systemitem> (請參閱<xref linkend="sec-boot-sysconfig-edit"/>)。然後在 <filename>/etc/resolv.conf</filename> 檔案中輸入本地 DNS 伺服器，以 <systemitem class="domainname">127.0.0.1</systemitem> 做為 <systemitem class="ipaddress">localhost</systemitem> 的 IP 位址。這樣一來在啟動時，Squid 就可以永遠找到本地名稱伺服器。
       </para>
       
       <para>
@@ -190,7 +190,7 @@ Please see LICENSE.txt for this document's license.
    </tip>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.configfile">
+ <sect1 id="sec-squid-configfile">
   <title>/etc/squid/squid.conf 組態檔案</title><indexterm> <primary>Squid</primary> <secondary>設定</secondary> </indexterm> <indexterm> <primary>設定</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>組態檔案</primary> <secondary>squid.conf</secondary> </indexterm>
 
   <para>
@@ -329,7 +329,7 @@ Please see LICENSE.txt for this document's license.
    </variablelist>
   </sect2>
 
-  <sect2 id="sec.squid.acl">
+  <sect2 id="sec-squid-acl">
    <title>存取控制的選項</title><indexterm> <primary>Squid</primary> <secondary>ACL</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>許可權</secondary> </indexterm>
    <para>
     Squid 會提供一個詳細系統來控制代理存取。透過執行 ACL，可以輕鬆並完整地設定該系統。這牽涉到列出依序處理之規則的清單。在使用 ACL 前必須先進行定義。某些預設的 ACL，例如 <emphasis>all</emphasis> 與 <emphasis>localhost</emphasis> 已經存在。然而，僅定義 ACL 並不代表實際上會套用。這只會發生在連接 <emphasis>http_access</emphasis> 規則使用時。
@@ -426,7 +426,7 @@ http_access deny all
    </variablelist>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.proxyconfigtrans">
+ <sect1 id="sec-squid-proxyconfigtrans">
   <title>設定操作順暢的代理</title><indexterm> <primary>代理</primary> <secondary>透明</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>操透明代理</secondary> </indexterm>
 
   <para>
@@ -466,7 +466,7 @@ http_access deny all
   <sect2>
    <title>使用 SuSEfirewall2 的防火牆組態</title><indexterm> <primary>Squid</primary> <secondary>防火牆</secondary> </indexterm> <indexterm> <primary>防火牆</primary> <secondary>Squid</secondary> </indexterm>
    <para>
-    現在，請使用連接埠轉遞規則，透過防火牆將所有的內送要求重新導向至 Squid 埠。若要這麼做，請使用<xref linkend="sec.fire.SuSE.yast"/>中說明的隨附工具 SuSEfirewall2。其組態檔位於 <filename>/etc/sysconfig/SuSEfirewall2</filename>。組態檔由詳細記錄的項目所組成。若要設定操作順暢的代理，您必須設定數個防火牆選項：
+    現在，請使用連接埠轉遞規則，透過防火牆將所有的內送要求重新導向至 Squid 埠。若要這麼做，請使用<xref linkend="sec-fire-SuSE-yast"/>中說明的隨附工具 SuSEfirewall2。其組態檔位於 <filename>/etc/sysconfig/SuSEfirewall2</filename>。組態檔由詳細記錄的項目所組成。若要設定操作順暢的代理，您必須設定數個防火牆選項：
    </para>
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
@@ -502,7 +502,7 @@ FW_SERVICE_DNS="yes"
    <para>
     最重要的選項是選項數字 <option>15</option>：
    </para>
-   <example id="dat.fw.opt15">
+   <example id="dat-fw-opt15">
     <title>防火牆組態︰選項 15</title>
 <screen># 15.)
 # Which accesses to services should be redirected to a local port on
@@ -534,11 +534,11 @@ FW_REDIRECT="192.168.0.0/16,0/0,tcp,80,3128"
     若要啟動防火牆並使用它所包含的新組態，請在 <filename>/etc/sysconfig/SuSEfirewall2</filename> 檔案中變更項目。<systemitem>START_FW</systemitem> 項目必須設為 <literal>"yes"</literal>。
    </para>
    <para>
-    <indexterm> <primary>記錄檔案</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>記錄檔案</secondary> </indexterm> 啟動 Squid，如<xref linkend="sec.squid.start"/> 所示。若要確認一切正常，請查看 <filename>/var/log/squid/access.log</filename> 中的 Squid 記錄。<indexterm><primary>埠</primary><secondary>掃描</secondary></indexterm><indexterm><primary>Squid</primary><secondary>操作順暢的 Proxy</secondary></indexterm> 若要確認是否已正確設定所有的埠，請從網路之外的任何電腦執行機器上的埠掃描。只應開啟 Web 服務 (埠 80)。若要以 nmap 掃描連接埠，指令語法為 <command>nmap</command> <option>-O IP_address</option>。
+    <indexterm> <primary>記錄檔案</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>記錄檔案</secondary> </indexterm> 啟動 Squid，如<xref linkend="sec-squid-start"/> 所示。若要確認一切正常，請查看 <filename>/var/log/squid/access.log</filename> 中的 Squid 記錄。<indexterm><primary>埠</primary><secondary>掃描</secondary></indexterm><indexterm><primary>Squid</primary><secondary>操作順暢的 Proxy</secondary></indexterm> 若要確認是否已正確設定所有的埠，請從網路之外的任何電腦執行機器上的埠掃描。只應開啟 Web 服務 (埠 80)。若要以 nmap 掃描連接埠，指令語法為 <command>nmap</command> <option>-O IP_address</option>。
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.cachemgr">
+ <sect1 id="sec-squid-cachemgr">
   <title>cachemgr.cgi</title><indexterm> <primary>Squid</primary> <secondary>統計資料</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>cachemgr.cgi </secondary> </indexterm>
 
   <para>
@@ -548,7 +548,7 @@ FW_REDIRECT="192.168.0.0/16,0/0,tcp,80,3128"
   <sect2>
    <title>設定</title><indexterm> <primary>Squid</primary> <secondary>Apache</secondary> </indexterm> <indexterm> <primary>Apache</primary> <secondary>Squid</secondary> </indexterm>
    <para>
-    首先，需要在系統上執行網頁伺服器。依<xref linkend="cha.apache2"/> 中所述方式設定 Apache。若要檢查 Apache 是否已在執行，請以 <systemitem class="username">root</systemitem> 的身分輸入 <command>rcapache</command> <option>status</option> 指令。如果出現像這類的訊息：
+    首先，需要在系統上執行網頁伺服器。依<xref linkend="cha-apache2"/> 中所述方式設定 Apache。若要檢查 Apache 是否已在執行，請以 <systemitem class="username">root</systemitem> 的身分輸入 <command>rcapache</command> <option>status</option> 指令。如果出現像這類的訊息：
    </para>
 <screen>
 Checking for service httpd: OK 
@@ -581,9 +581,9 @@ http_access allow manager localhost
 http_access deny manager
 </screen>
    <para>
-    這些規則是假設網頁伺服器與 Squid 在相同的機器上執行。如果快取管理員與 Squid 之間的通訊是源自於另一部電腦上的網頁伺服器，請依 <xref linkend="dat.acl"/> 所述包含一個額外的 ACL。
+    這些規則是假設網頁伺服器與 Squid 在相同的機器上執行。如果快取管理員與 Squid 之間的通訊是源自於另一部電腦上的網頁伺服器，請依 <xref linkend="dat-acl"/> 所述包含一個額外的 ACL。
    </para>
-   <example id="dat.acl">
+   <example id="dat-acl">
     <title>存取規則</title>
 <screen>
 acl manager proto cache_object
@@ -592,9 +592,9 @@ acl webserver src 192.168.1.7/255.255.255.255 # webserver IP
 </screen>
    </example>
    <para>
-    然後新增 <xref linkend="dat.access"/> 中的規則，以允許從網頁伺服器存取。
+    然後新增 <xref linkend="dat-access"/> 中的規則，以允許從網頁伺服器存取。
    </para>
-   <example id="dat.access">
+   <example id="dat-access">
     <title>存取規則</title>
 <screen>
 http_access allow manager localhost
@@ -617,7 +617,7 @@ http_access deny manager
    </para>
   </sect2>
  </sect1>
- <sect1 id="sec.squid.squidguard">
+ <sect1 id="sec-squid-squidguard">
   <title>squidGuard</title><indexterm> <primary>Squid</primary> <secondary> squidGuard</secondary> </indexterm>
 
   <para>
@@ -716,7 +716,7 @@ redirect_children 4
    最後，執行 <command>rcsquid</command> <option>reload</option>，讓 Squid 載入新的組態。現在，請使用瀏覽器測試您的設定值。
   </para>
  </sect1>
- <sect1 id="sec.squid.calamaris">
+ <sect1 id="sec-squid-calamaris">
   <title>使用 Calamaris 產生快取報告</title><indexterm> <primary>Squid</primary> <secondary>Calamaris</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>報告 </secondary> </indexterm>
 
   <para>
@@ -780,7 +780,7 @@ cat access.log.{10..1} access.log | calamaris -a -w \
 
   
  </sect1>
- <sect1 id="sec.squid.moreinfo">
+ <sect1 id="sec-squid-moreinfo">
   <title>更多資訊</title>
 
   <para>
