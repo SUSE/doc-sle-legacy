@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet href="urn:x-suse:xslt:profiling:novdoc-profile.xsl"
-                 type="text/xml"
-                 title="Profiling step"?>
-<!DOCTYPE article PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-                      "novdocx.dtd"
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE article
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "IGNORE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 <!-- fs 2011-07-18:
 
@@ -54,37 +53,35 @@ Berthold
      config file generation part (lxc.network.link)
 
 -->
-<?provo dirname="lxcquick/"?>
-<article lang="en" id="art-lxcquick">
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:lang="en" xml:id="art-lxcquick">
 <?suse-quickstart columns="no"? version="2"?>
  <title>&lxcquick;</title>
  <subtitle>&productname; &productnumber;</subtitle>
- <articleinfo>
-  <author><firstname>SUSE</firstname><surname>Documentation Team</surname>
+ <info>
+  <author><personname><firstname>SUSE</firstname><surname>Documentation Team</surname></personname>
   </author>
   <productnumber>&productnumber;</productnumber><productname>&productname;</productname><date>
 <?dbtimestamp format="B d, Y" ?></date>
- </articleinfo>
- <abstract>
-  <para>
-   &lxc; is a lightweight <quote>virtualization</quote> method to run
-   multiple virtual units (containers, akin to <quote>chroot</quote>)
-   simultaneously on a single control host. Containers are isolated with
-   Kernel Control Groups (cgroups) and Kernel Namespaces.
-  </para>
+  <abstract>
+   <para>
+    &lxc; is a lightweight <quote>virtualization</quote> method to run multiple
+    virtual units (containers, akin to <quote>chroot</quote>) simultaneously on
+    a single control host. Containers are isolated with Kernel Control Groups
+    (cgroups) and Kernel Namespaces.
+   </para>
 
-  <para>
-   &lxc; provides an operating system-level virtualization where the
-   <emphasis>Kernel</emphasis> controls the isolated containers. With other
-   full virtualization solutions like &xen;, &kvm;, or &libvirt; the
-   <emphasis>processor</emphasis> simulates a complete hardware environment
-   and controls its virtual machines.
-  </para>
- </abstract>
+   <para>
+    &lxc; provides an operating system-level virtualization where the
+    <emphasis>Kernel</emphasis> controls the isolated containers. With other
+    full virtualization solutions like &xen;, &kvm;, or &libvirt; the
+    <emphasis>processor</emphasis> simulates a complete hardware environment
+    and controls its virtual machines.
+   </para>
+  </abstract>
+ </info>
 <!-- ========================================================= -->
- <sect1 id="sec-lxc-terminology">
+ <section xml:id="sec-lxc-terminology">
   <title>Terminology</title>
-
   <variablelist>
    <varlistentry>
     <term>chroot</term>
@@ -92,10 +89,10 @@ Berthold
      <para>
       A <emphasis>change root</emphasis> (chroot, or change root jail) is a
       section in the file system which is isolated from the rest of the file
-      system. For this purpose, the <command>chroot</command> command is
-      used to change the root of the file system. A program which is
-      executed in such a <quote>chroot jail</quote> cannot access files
-      outside the designated directory tree.
+      system. For this purpose, the <command>chroot</command> command is used
+      to change the root of the file system. A program which is executed in
+      such a <quote>chroot jail</quote> cannot access files outside the
+      designated directory tree.
      </para>
     </listitem>
    </varlistentry>
@@ -104,9 +101,9 @@ Berthold
     <listitem>
      <para>
       Kernel Control Groups (commonly referred to as just
-      <quote>cgroups</quote>) are a Kernel feature that allows aggregating
-      or partitioning tasks (processes) and all their children into
-      hierarchical organized groups to isolate resources.
+      <quote>cgroups</quote>) are a Kernel feature that allows aggregating or
+      partitioning tasks (processes) and all their children into hierarchical
+      organized groups to isolate resources.
      </para>
     </listitem>
    </varlistentry>
@@ -141,25 +138,23 @@ Berthold
     <term>&lxc; Host Server</term>
     <listitem>
      <para>
-      The system that contains the &lxc; system and provides the containers
-      and management control capabilities through cgroups.
+      The system that contains the &lxc; system and provides the containers and
+      management control capabilities through cgroups.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
+ </section>
 <!-- ========================================================= -->
- <sect1 id="sec-lxc-overview">
+ <section xml:id="sec-lxc-overview">
   <title>Overview</title>
-
   <para>
-   Conceptually, &lxc; can be seen as an improved
-   <emphasis>chroot</emphasis> technique. The difference is that a chroot
-   environment separates only the file system, whereas &lxc; goes further
-   and provides resource management and control via cgroups.
+   Conceptually, &lxc; can be seen as an improved <emphasis>chroot</emphasis>
+   technique. The difference is that a chroot environment separates only the
+   file system, whereas &lxc; goes further and provides resource management and
+   control via cgroups.
   </para>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <title>Benefits of &lxc;</title>
    <listitem>
     <para>
@@ -179,13 +174,12 @@ Berthold
     </para>
    </listitem>
   </itemizedlist>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <title>Limitations of &lxc;</title>
    <listitem>
     <para>
-     All &lxc; containers are running inside the host system's Kernel and
-     not with a different Kernel.
+     All &lxc; containers are running inside the host system's Kernel and not
+     with a different Kernel.
     </para>
    </listitem>
    <listitem>
@@ -196,8 +190,7 @@ Berthold
    <listitem>
     <para>
      <remark>toms 2012-03-09: TODO: Check with Frederic next time</remark>
-     &lxc; is not a full virtualization stack like &xen;, &kvm;, or
-     &libvirt;.
+     &lxc; is not a full virtualization stack like &xen;, &kvm;, or &libvirt;.
     </para>
    </listitem>
    <listitem>
@@ -207,22 +200,20 @@ Berthold
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 <!-- ========================================================= -->
- <sect1 id="sec-lxc-setup-host">
+ <section xml:id="sec-lxc-setup-host">
   <title>Setting up an &lxc; Host</title>
-
   <para>
    The &lxc; host provides the cgroups and controls all containers.
   </para>
-
-  <procedure id="pro-lxc-setup">
+  <procedure xml:id="pro-lxc-setup">
    <title>Preparing an &lxc; Host</title>
    <step>
     <para>
      Install the following packages:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        lxc
@@ -241,7 +232,7 @@ Berthold
     </itemizedlist>
     <para os="osuse">
      In case you have a desktop Kernel installed, remove it with the command
-     <command >zypper</command> <command>rm</command>
+     <command>zypper</command> <command>rm</command>
      <option>kernel-desktop</option>. Install the default Kernel and reboot
      your machine.
     </para>
@@ -252,18 +243,17 @@ Berthold
     </para>
 <screen>lxc-checkconfig</screen>
     <para>
-     You should see the words <literal>enabled</literal> on each checked
-     item.
+     You should see the words <literal>enabled</literal> on each checked item.
     </para>
    </step>
    <step>
     <para>
-     If you want to access the virtual container's ethernet interface,
-     create a network bridge. A network bridge allows to share the network
-     link on the physical interface of the host
+     If you want to access the virtual container's ethernet interface, create a
+     network bridge. A network bridge allows to share the network link on the
+     physical interface of the host
      (<systemitem class="etheraddress">eth0</systemitem>):
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Open &yast; and go to <menuchoice> <guimenu>Network Device</guimenu>
@@ -302,7 +292,7 @@ Berthold
     <para>
      If you have created a network bridge, assign its interface zone:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Start &yast; and go to <menuchoice> <guimenu>Security &amp;
@@ -317,8 +307,7 @@ Berthold
      <step>
       <para>
        Select your bridge device (usually
-       <systemitem
-            class="etheraddress">br0</systemitem>).
+       <systemitem class="etheraddress">br0</systemitem>).
       </para>
      </step>
      <step>
@@ -335,30 +324,25 @@ Berthold
     </substeps>
    </step>
   </procedure>
-
   <para>
    &lxc; starts the cgroup service automatically. The &lxc; host is now
    prepared for setting up containers.
   </para>
- </sect1>
+ </section>
 <!-- ========================================================= -->
- <sect1 id="sec-lxc-setup-yast">
+ <section xml:id="sec-lxc-setup-yast">
   <title>Setting up &lxc; Containers with &yast;</title>
-
   <para>
    A container is a <quote>virtual machine</quote> that can be started,
-   stopped, connected, or disconnected in &yast;. The two last actions are
-   only available in the GUI version, not when &yast; running in text mode.
-   If you use &yast; in a text console, use the
-   <command>lxc-console</command> command as described in
-   <xref linkend="pro-lxc-operating"/>.
+   stopped, connected, or disconnected in &yast;. The two last actions are only
+   available in the GUI version, not when &yast; running in text mode. If you
+   use &yast; in a text console, use the <command>lxc-console</command> command
+   as described in <xref linkend="pro-lxc-operating"/>.
   </para>
-
   <para>
    To set up an &lxc; container with &yast;, proceed as follows:
   </para>
-
-  <procedure id="pro-lxc-creating-yast">
+  <procedure xml:id="pro-lxc-creating-yast">
    <title>Creating a Container with &yast;</title>
    <step>
     <para>
@@ -387,11 +371,11 @@ Berthold
      click <guimenu>Configure Network...</guimenu> to configure a bridge.
     </para>
    </step>
-   <step id="st-lxc-creating-yast-pw">
+   <step xml:id="st-lxc-creating-yast-pw">
     <para>
-     If needed, enter a password to log in to a &lxc; container. If you
-     leave the password field empty, the standard password
-     <quote>root</quote> is used for this container.
+     If needed, enter a password to log in to a &lxc; container. If you leave
+     the password field empty, the standard password <quote>root</quote> is
+     used for this container.
     </para>
    </step>
    <step>
@@ -402,13 +386,12 @@ Berthold
    </step>
    <step>
     <para>
-     After &yast; has finished the preparation, click
-     <guimenu>Start</guimenu> to launch the &lxc; container.
+     After &yast; has finished the preparation, click <guimenu>Start</guimenu>
+     to launch the &lxc; container.
     </para>
    </step>
   </procedure>
-
-  <procedure id="pro-lxc-operating-yast">
+  <procedure xml:id="pro-lxc-operating-yast">
    <title>Starting, Accessing, and Stopping Your Container with &yast;</title>
    <step>
     <para>
@@ -417,15 +400,13 @@ Berthold
    </step>
    <step>
     <para>
-     Click the <guimenu>Connect</guimenu> button. A new terminal window
-     opens.
+     Click the <guimenu>Connect</guimenu> button. A new terminal window opens.
     </para>
    </step>
    <step>
     <para>
      Log in with user &rootuser; and your password from
-     <xref
-          linkend="st-lxc-creating-yast-pw"/> of
+     <xref linkend="st-lxc-creating-yast-pw"/> of
      <xref linkend="pro-lxc-creating-yast"/>. If you did not set a password,
      use <quote>root</quote>.
     </para>
@@ -442,8 +423,8 @@ Berthold
    </step>
    <step>
     <para>
-     Click the <guimenu>Disconnect</guimenu> button to close the terminal.
-     It is still possible to reconnect to your container by clicking
+     Click the <guimenu>Disconnect</guimenu> button to close the terminal. It
+     is still possible to reconnect to your container by clicking
      <guimenu>Connect</guimenu>.
     </para>
    </step>
@@ -454,50 +435,47 @@ Berthold
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-lxc-setup-container">
+ </section>
+ <section xml:id="sec-lxc-setup-container">
   <title>Setting up &lxc; Containers Manually</title>
-
   <para>
    A container is a <quote>virtual machine</quote> that can be started,
    stopped, frozen, or cloned (to name but a few tasks). To set up an &lxc;
    container, proceed as follows:
   </para>
-
-  <procedure id="pro-lxc-creating">
+  <procedure xml:id="pro-lxc-creating">
    <title>Creating a Container Manually</title>
-   <step id="st-lxc-create-config">
+   <step xml:id="st-lxc-create-config">
     <para>
      Create a configuration file (name <filename>lxc_vps0.conf</filename> in
-     this example) with the container name in it and edit it according to
-     the following example:
+     this example) with the container name in it and edit it according to the
+     following example:
     </para>
-<screen>lxc.utsname = vps0 <co id="co-lxc-cfg-utsname"/>
-lxc.network.type = veth <co id="co-lxc-cfg-type"/>
-lxc.network.flags = up <co id="co-lxc-cfg-flags"/>
-lxc.network.link = br0 <co id="co-lxc-cfg-link"/>
-lxc.network.hwaddr = &wsImac; <co id="co-lxc-cfg-hwaddr"/>
-lxc.network.ipv4 = &subnetI;.10 <co id="co-lxc-cfg-ipv4"/>
-lxc.network.name = eth0 <co id="co-lxc-cfg-name"/></screen>
+<screen>lxc.utsname = vps0 <co xml:id="co-lxc-cfg-utsname"/>
+lxc.network.type = veth <co xml:id="co-lxc-cfg-type"/>
+lxc.network.flags = up <co xml:id="co-lxc-cfg-flags"/>
+lxc.network.link = br0 <co xml:id="co-lxc-cfg-link"/>
+lxc.network.hwaddr = &wsImac; <co xml:id="co-lxc-cfg-hwaddr"/>
+lxc.network.ipv4 = &subnetI;.10 <co xml:id="co-lxc-cfg-ipv4"/>
+lxc.network.name = eth0 <co xml:id="co-lxc-cfg-name"/></screen>
     <calloutlist>
      <callout arearefs="co-lxc-cfg-utsname">
       <para>
-       Container name, should also be used when naming the configuration
-       file
+       Container name, should also be used when naming the configuration file
       </para>
      </callout>
      <callout arearefs="co-lxc-cfg-type">
       <para>
-       Type of network virtualization to be used for the container. The
-       option <option>veth</option> defines a peer network device. It is
-       created with one side assigned to the container and the other side is
-       attached to a bridge by the <option>lxc.network.link</option> option.
+       Type of network virtualization to be used for the container. The option
+       <option>veth</option> defines a peer network device. It is created with
+       one side assigned to the container and the other side is attached to a
+       bridge by the <option>lxc.network.link</option> option.
       </para>
      </callout>
      <callout arearefs="co-lxc-cfg-flags">
       <para>
-       Network actions. The value <literal>up</literal> in this case
-       activates the network.
+       Network actions. The value <literal>up</literal> in this case activates
+       the network.
       </para>
      </callout>
      <callout arearefs="co-lxc-cfg-link">
@@ -507,17 +485,15 @@ lxc.network.name = eth0 <co id="co-lxc-cfg-name"/></screen>
      </callout>
      <callout arearefs="co-lxc-cfg-hwaddr">
       <para>
-       Allocated MAC address of the virtual interface. This MAC address
-       needs to be unique in your network and different from the host MAC
-       address.
+       Allocated MAC address of the virtual interface. This MAC address needs
+       to be unique in your network and different from the host MAC address.
       </para>
      </callout>
      <callout arearefs="co-lxc-cfg-ipv4">
       <para>
        IPv4 address assigned to the virtualized interface. Use the address
-       <systemitem class="ipaddress">0.0.0.0</systemitem> to make use of
-       DHCP. Use <literal>lxc.network.ipv6</literal> if you need IPv6
-       support.
+       <systemitem class="ipaddress">0.0.0.0</systemitem> to make use of DHCP.
+       Use <literal>lxc.network.ipv6</literal> if you need IPv6 support.
 <!-- fs 2011-09-28:
     lxc.network.ipv6 is missing in your example, please add. I wasn't able to
        find out which value to use when wanting DHCP, please ask the devs
@@ -537,23 +513,21 @@ lxc.network.name = eth0 <co id="co-lxc-cfg-name"/></screen>
     </calloutlist>
     <para>
      More example files can be found in
-     <filename>/usr/share/doc/packages/lxc/examples/</filename>. Find
-     details about all options in the <command>lxc.conf</command> man page.
+     <filename>/usr/share/doc/packages/lxc/examples/</filename>. Find details
+     about all options in the <command>lxc.conf</command> man page.
     </para>
    </step>
    <step>
     <para>
      Create a container by using the configuration file from
-     <xref linkend="st-lxc-create-config"/><phrase
-       os="sles;sled">.
-     A list of available templates is located in
-     <filename>/usr/share/lxc/templates/</filename>.</phrase><phrase
-         os="osuse">:</phrase>
+     <xref linkend="st-lxc-create-config"/><phrase os="sles;sled">. A list of
+     available templates is located in
+     <filename>/usr/share/lxc/templates/</filename>.</phrase><phrase os="osuse">:</phrase>
     </para>
 <screen>lxc-create -t <replaceable>TEMPLATE</replaceable> -f lxc.conf -n <replaceable>CONTAINER</replaceable></screen>
     <para>
-     <replaceable>CONTAINER</replaceable> needs to be replaced by the value
-     you specified for <literal>lxc.utsname</literal> in the config file,
+     <replaceable>CONTAINER</replaceable> needs to be replaced by the value you
+     specified for <literal>lxc.utsname</literal> in the config file,
      <literal>vps0</literal> in this example. Replace the placeholder
      <replaceable>TEMPLATE</replaceable> with your preferred template name.
     </para>
@@ -573,8 +547,8 @@ lxc.network.name = eth0 <co id="co-lxc-cfg-name"/></screen>
      </listitem>
     </itemizedlist>-->
     <para>
-     Downloading and installing the base packages for &opensuse; or &sls;
-     will take some time. The container will be created in
+     Downloading and installing the base packages for &opensuse; or &sls; will
+     take some time. The container will be created in
      <filename>/var/lib/lxc/<replaceable>CONTAINER</replaceable></filename>,
      and their configuration files will be stored under
      <filename>/etc/lxc/</filename>.
@@ -632,14 +606,13 @@ chroot: failed to run command `chpasswd': No such file or directory
     <para>
      Finalize the configuration of the container:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Change the root path to the installed &lxc; container with the
        <command>chroot</command> command:
       </para>
-<screen>chroot /var/lib/lxc/<replaceable
-          >CONTAINER_NAME</replaceable>/rootfs/</screen>
+<screen>chroot /var/lib/lxc/<replaceable>CONTAINER_NAME</replaceable>/rootfs/</screen>
      </step>
      <step>
       <para>
@@ -668,8 +641,7 @@ chroot: failed to run command `chpasswd': No such file or directory
     </substeps>
    </step>
   </procedure>
-
-  <procedure id="pro-lxc-operating">
+  <procedure xml:id="pro-lxc-operating">
    <title>Starting, Accessing, and Stopping Your Container Manually</title>
    <step>
     <para>
@@ -692,13 +664,11 @@ chroot: failed to run command `chpasswd': No such file or directory
 lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
    </step>
   </procedure>
-
 <!-- /usr/share/doc/packages/lxc/examples/*.conf -->
- </sect1>
+ </section>
 <!-- ========================================================= -->
- <sect1 id="sec-lxc-startup">
+ <section xml:id="sec-lxc-startup">
   <title>Starting Containers at Boot Time</title>
-
   <para>
    &lxc; containers can be started at boot time. However, you need to follow
    certain conventions. Every container has a subdirectory with its name in
@@ -707,18 +677,15 @@ lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
    once. There you place your configuration file (named
    <filename>config</filename>).
   </para>
-
   <para>
    To set up the automatic start of &lxc; containers, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
-     Activate the cgroup service with <command>insserv
-     boot.cgroup</command>. This has to be done only once to enable this
-     service at boot time. The command will populate the
-     <filename>/sys/fs/cgroup</filename> directory.
+     Activate the cgroup service with <command>insserv boot.cgroup</command>.
+     This has to be done only once to enable this service at boot time. The
+     command will populate the <filename>/sys/fs/cgroup</filename> directory.
     </para>
    </step>
    <step>
@@ -735,31 +702,29 @@ lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
    </step>
    <step>
     <para>
-     Run <command>/etc/init.d/boot.cgroup <option>start</option></command>
-     to set up cgroups properly.
+     Run <command>/etc/init.d/boot.cgroup</command> <option>start</option> to
+     set up cgroups properly.
     </para>
    </step>
    <step>
     <para>
-     Run <command>/etc/init.d/lxc <option>start</option></command> to start
+     Run <command>/etc/init.d/lxc</command> <option>start</option> to start
      your containers.
     </para>
    </step>
    <step>
     <para>
-     Wait a few seconds and run <command>/etc/init.d/lxc
-     <option>list</option></command> to print the state of all your
-     containers.
+     Wait a few seconds and run <command>/etc/init.d/lxc</command>
+     <option>list</option> to print the state of all your containers.
     </para>
    </step>
   </procedure>
-
   <para>
    After this procedure, your &lxc; containers are correctly configured. To
    start it automatically next time you boot your computer, use
    <command>insserv lxc</command>.
   </para>
- </sect1>
+ </section>
 <!--
     toms 2011-09-27: According to Frederic, LXC inside libvirt is
     currently not supported as it is up to now not feature complete.
@@ -771,15 +736,14 @@ lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
   </sect1>
 -->
 <!-- ========================================================= -->
- <sect1 id="sec-lxc-moreinfo">
+ <section xml:id="sec-lxc-moreinfo">
   <title>For More Information</title>
-
   <variablelist>
    <varlistentry>
     <term>&lxc; Home Page</term>
     <listitem>
      <para>
-      <ulink url="http://lxc.sourceforge.net"/>
+      <link xlink:href="http://lxc.sourceforge.net"/>
      </para>
     </listitem>
    </varlistentry>
@@ -787,9 +751,7 @@ lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
     <term>Kernel Control Groups (cgroups)</term>
     <listitem>
      <para>
-      <ulink
-            url="http://www.suse.com/doc/sles11/book_sle_tuning/data/cha_tuning_cgroups.html"
-          />
+      <link xlink:href="http://www.suse.com/doc/sles11/book_sle_tuning/data/cha_tuning_cgroups.html"/>
      </para>
     </listitem>
    </varlistentry>
@@ -797,9 +759,7 @@ lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
     <term>Managing Virtual Machines with libvirt</term>
     <listitem>
      <para>
-      <ulink
-            url="http://www.suse.com/doc/sles11/book_sles_kvm/data/part_managing_virtual.html"
-          />
+      <link xlink:href="http://www.suse.com/doc/sles11/book_sles_kvm/data/part_managing_virtual.html"/>
      </para>
     </listitem>
    </varlistentry>
@@ -807,11 +767,11 @@ lxc-destroy -n <replaceable>CONTAINER_NAME</replaceable></screen>
     <term>&lxc; Container Driver</term>
     <listitem>
      <para>
-      <ulink url="http://libvirt.org/drvlxc.html"/>
+      <link xlink:href="http://libvirt.org/drvlxc.html"/>
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="common_copyright_quick.xml"/>
+ </section>
+ <xi:include href="common_copyright_quick.xml" parse="xml"/>
 </article>

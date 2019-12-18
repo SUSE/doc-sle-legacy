@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter  PUBLIC 
-  "-//Novell//DTD NovDoc XML V1.0//EN" 
-  "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 <!--PM's doc requirements:
   FUSE file system usage (NEW)
@@ -13,62 +14,51 @@
    2.Listing of provided FUSE modules (d)
 -->
 <!-- fs 2010-02-23: No FUSE plug-ings in SLE, see bnc #577500 -->
-<chapter id="cha-fuse">
- <title>Accessing File Systems with FUSE</title><indexterm>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-fuse">
+ <title>Accessing File Systems with FUSE</title>
+ <info>
+  <abstract>
+   <para>
+    FUSE is the acronym for <emphasis>file system in userspace</emphasis>. This
+    means you can configure and mount a file system as an unprivileged user.
+    Normally, you have to be <systemitem class="username">root</systemitem> for
+    this task. FUSE alone is a kernel module. Combined with plug-ins, it allows
+    you to extend FUSE to access almost all file systems like remote SSH
+    connections, ISO images, and more.
+   </para>
+  </abstract>
+ </info><indexterm>
  <primary>FUSE</primary></indexterm>
- <abstract>
-  <para>
-   FUSE is the acronym for <emphasis>file system in userspace</emphasis>.
-   This means you can configure and mount a file system as an unprivileged
-   user. Normally, you have to be
-   <systemitem class="username">root</systemitem> for this task. FUSE alone
-   is a kernel module. Combined with plug-ins, it allows you to extend FUSE
-   to access almost all file systems like remote SSH connections, ISO
-   images, and more.
-  </para>
- </abstract>
- <sect1 id="sec-fuse-config">
+ <section xml:id="sec-fuse-config">
   <title>Configuring FUSE</title><indexterm>
-
   <primary>FUSE</primary>
-
   <secondary>configuring</secondary></indexterm>
-
   <para>
    Before you can use FUSE, you have to install the package
-   <systemitem
-   class="resource">fuse</systemitem>. Depending which file
-   system you want to use, you need additional plug-ins available as
-   separate packages. <phrase
-   os="osuse">Use &yast; to search for these
-   packages and use <literal>fuse</literal> or <literal>file
-   system</literal> as keywords.</phrase><phrase os="sles; sled">FUSE
-   plug-ins are not shipped with &sle;.</phrase>
+   <systemitem class="resource">fuse</systemitem>. Depending which file system
+   you want to use, you need additional plug-ins available as separate
+   packages. <phrase os="osuse">Use &yast; to search for these packages and use
+   <literal>fuse</literal> or <literal>file system</literal> as
+   keywords.</phrase><phrase os="sles; sled">FUSE plug-ins are not shipped with
+   &sle;.</phrase>
   </para>
-
   <para>
-   Generally you do not have to configure FUSE, you just use it. However, it
-   is a good idea to create a directory where all your mount points are
-   combined. For example, you can create a directory
-   <filename>~/mounts</filename> and insert your subdirectories for your
-   different file systems there.
+   Generally you do not have to configure FUSE, you just use it. However, it is
+   a good idea to create a directory where all your mount points are combined.
+   For example, you can create a directory <filename>~/mounts</filename> and
+   insert your subdirectories for your different file systems there.
   </para>
- </sect1>
- <sect1 id="sec-fuse-ntfs" os="osuse">
+ </section>
+ <section xml:id="sec-fuse-ntfs" os="osuse">
   <title>Mounting an NTFS Partition</title><indexterm>
-
   <primary>FUSE</primary>
-
   <secondary>ntfs-3g</secondary></indexterm><indexterm>
-
   <primary>ntfs-3g</primary></indexterm>
-
   <para>
    NTFS, the <emphasis>New Technology File System</emphasis>, is the default
    file system of Windows. To mount a Windows partition as a normal user,
    proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -85,19 +75,17 @@
    <step>
     <para>
      Find out which Windows partition you need. Use &yast; and start the
-     partitioner module to see which partition belongs to Windows, but do
-     not modify anything. Alternatively, become
-     <systemitem
-     class="username">root</systemitem> and execute
-     <command>/sbin/fdisk <option>-l</option></command>. Look for partitions
+     partitioner module to see which partition belongs to Windows, but do not
+     modify anything. Alternatively, become
+     <systemitem class="username">root</systemitem> and execute
+     <command>/sbin/fdisk</command> <option>-l</option>. Look for partitions
      with a partition type of <literal>HPFS/NTFS</literal>.
     </para>
    </step>
    <step>
     <para>
      Mount the partition in read-write mode. Replace the placeholder
-     <replaceable>DEVICE</replaceable> with your respective Windows
-     partition:
+     <replaceable>DEVICE</replaceable> with your respective Windows partition:
     </para>
 <screen>ntfs-3g /dev/<replaceable>DEVICE</replaceable> <replaceable>MOUNT POINT</replaceable></screen>
     <para>
@@ -109,8 +97,8 @@
      The command <command>ntfs-3g</command> uses the current user (uid) and
      group id (gid) to mount the given device. If you want to set the write
      permissions to a different user, use the command <command>id</command>
-     <option>USER</option> to get the output of the uid and gid values. Set
-     it with:
+     <option>USER</option> to get the output of the uid and gid values. Set it
+     with:
     </para>
 <screen>id tux
 uid=1000(tux) gid=100(users) Gruppen=100(users),16(dialout),33(video)
@@ -120,27 +108,21 @@ ntfs-3g /dev/<replaceable>DEVICE</replaceable> <replaceable>MOUNT POINT</replace
     </para>
    </step>
   </procedure>
-
   <para>
-   To unmount the resource, run <command>fusermount -u <replaceable>MOUNT
-   POINT</replaceable></command>.
+   To unmount the resource, run <command>fusermount -u</command>
+   <replaceable>MOUNT POINT</replaceable>.
   </para>
- </sect1>
- <sect1 id="sec-fuse-sshfs"  os="osuse">
+ </section>
+ <section xml:id="sec-fuse-sshfs" os="osuse">
   <title>Mounting Remote File System with SSHFS</title><indexterm>
-
   <primary>FUSE</primary>
-
   <secondary>sshfs</secondary></indexterm><indexterm>
-
   <primary>sshfs</primary></indexterm>
-
   <para>
-   SSH, the secure shell network protocol, can be used to exchange data
-   between two computers using a secure channel. To establish a SSH
-   connection through FUSE, proceed as follows:
+   SSH, the secure shell network protocol, can be used to exchange data between
+   two computers using a secure channel. To establish a SSH connection through
+   FUSE, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -149,10 +131,9 @@ ntfs-3g /dev/<replaceable>DEVICE</replaceable> <replaceable>MOUNT POINT</replace
    </step>
    <step>
     <para>
-     Create a directory that is to be used as a mount point. A good idea is
-     to use <filename>~/mounts/<replaceable>HOST</replaceable></filename>.
-     Replace <replaceable>HOST</replaceable> with the name of your remote
-     computer.
+     Create a directory that is to be used as a mount point. A good idea is to
+     use <filename>~/mounts/<replaceable>HOST</replaceable></filename>. Replace
+     <replaceable>HOST</replaceable> with the name of your remote computer.
     </para>
    </step>
    <step>
@@ -167,27 +148,20 @@ ntfs-3g /dev/<replaceable>DEVICE</replaceable> <replaceable>MOUNT POINT</replace
     </para>
    </step>
   </procedure>
-
   <para>
-   To unmount the resource, run <command>fusermount -u <replaceable>MOUNT
-   POINT</replaceable></command>.
+   To unmount the resource, run <command>fusermount -u</command>
+   <replaceable>MOUNT POINT</replaceable>.
   </para>
- </sect1>
- <sect1 id="sec-fuse-iso" os="osuse">
+ </section>
+ <section xml:id="sec-fuse-iso" os="osuse">
   <title>Mounting an ISO File System</title><indexterm>
-
   <primary>fuseiso</primary></indexterm><indexterm>
-
   <primary>FUSE</primary>
-
   <secondary>fuseiso</secondary></indexterm>
-
   <para>
    To look into an ISO image, you can mount it with the
-   <systemitem
-   class="resource">fuseiso</systemitem> package:
+   <systemitem class="resource">fuseiso</systemitem> package:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -207,26 +181,21 @@ ntfs-3g /dev/<replaceable>DEVICE</replaceable> <replaceable>MOUNT POINT</replace
 <screen>fuseiso <replaceable>ISO_IMAGE</replaceable> <replaceable>MOUNT POINT</replaceable></screen>
    </step>
   </procedure>
-
   <para>
-   You can only read content from the ISO image, but you cannot write back.
-   To unmount the resource, use <command>fusermount -u <replaceable>MOUNT
-   POINT</replaceable></command>.
+   You can only read content from the ISO image, but you cannot write back. To
+   unmount the resource, use <command>fusermount -u</command>
+   <replaceable>MOUNT POINT</replaceable>.
   </para>
- </sect1>
- <sect1 id="sec-fuse-plugins">
+ </section>
+ <section xml:id="sec-fuse-plugins">
   <title>Available FUSE Plug-ins</title><indexterm>
-
   <primary>FUSE</primary>
-
   <secondary>plug-ins</secondary></indexterm>
-
   <para>
    FUSE is dependent on plug-ins. The following table lists common plug-ins.
    <phrase os="sles; sled">FUSE plug-ins are not shipped with &sle;.</phrase>
   </para>
-
-  <table id="tab-fuse-plugins">
+  <table xml:id="tab-fuse-plugins">
    <title>Available FUSE Plug-ins</title>
    <tgroup cols="2">
     <tbody>
@@ -353,13 +322,12 @@ ntfs-3g /dev/<replaceable>DEVICE</replaceable> <replaceable>MOUNT POINT</replace
     </tbody>
    </tgroup>
   </table>
- </sect1>
- <sect1 id="sec-fuse-moreinfo">
+ </section>
+ <section xml:id="sec-fuse-moreinfo">
   <title>For More Information</title>
-
   <para>
-   See the home page <ulink url="http://fuse.sourceforge.net"/> of FUSE for
-   more information.
+   See the home page <link xlink:href="http://fuse.sourceforge.net"/> of FUSE
+   for more information.
   </para>
- </sect1>
+ </section>
 </chapter>
