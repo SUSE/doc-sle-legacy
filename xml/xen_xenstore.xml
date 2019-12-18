@@ -1,51 +1,49 @@
-<?xml version="1.0"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
-  [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-xen-xenstore">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-xen-xenstore">
  <title>&xenstore;: Configuration Database Shared between Domains</title>
+ <info/>
  <para>
-  This section introduces basic information about &xenstore;, its role in
-  the &xen; environment, the directory structure of files used by
-  &xenstore;, and the description of &xenstore;'s commands.
+  This section introduces basic information about &xenstore;, its role in the
+  &xen; environment, the directory structure of files used by &xenstore;, and
+  the description of &xenstore;'s commands.
  </para>
- <sect1>
+ <section>
   <title>Introduction</title>
-
   <para>
    &xenstore; is a database of configuration and status information shared
    between &vmguest;s and the management tools running in &dom0;. &vmguest;s
    and the management tools read and write to &xenstore; to convey
-   configuration information, status updates, and state changes. The
-   &xenstore; database is managed by &dom0; and supports simple operations
-   such as reading and writing a key. &vmguest;s and management tools can be
-   notified of any changes in &xenstore; by watching entries of interest.
-   Note that it is not possible to restart the
-   <systemitem>xenstored</systemitem> service.
+   configuration information, status updates, and state changes. The &xenstore;
+   database is managed by &dom0; and supports simple operations such as reading
+   and writing a key. &vmguest;s and management tools can be notified of any
+   changes in &xenstore; by watching entries of interest. Note that it is not
+   possible to restart the <systemitem>xenstored</systemitem> service.
   </para>
-
   <para>
    &xenstore; is located on &dom0; in a single database file
    <filename>/var/lib/xenstored/tdb</filename> (<literal>tdb</literal>
    represents <emphasis>tree database</emphasis>).
   </para>
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>File System Interface</title>
-
   <para>
-   &xenstore; database content is represented by a virtual file system
-   similar to <filename>/proc</filename> (for more information on
-   <filename>/proc</filename>, see <xref
-    linkend="sec-util-proc"/>). The
-   tree has three main paths: <filename>/vm</filename>,
+   &xenstore; database content is represented by a virtual file system similar
+   to <filename>/proc</filename> (for more information on
+   <filename>/proc</filename>, see <xref linkend="sec-util-proc"/>). The tree
+   has three main paths: <filename>/vm</filename>,
    <filename>/local/domain</filename>, and <filename>/tool</filename>.
   </para>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      <filename>/vm</filename> - stores information about the &vmguest;
@@ -54,8 +52,8 @@
    </listitem>
    <listitem>
     <para>
-     <filename>/local/domain</filename> - stores information about &vmguest;
-     on the local node.
+     <filename>/local/domain</filename> - stores information about &vmguest; on
+     the local node.
     </para>
    </listitem>
    <listitem>
@@ -65,28 +63,25 @@
     </para>
    </listitem>
   </itemizedlist>
-
   <tip>
    <para>
-    Each &vmguest; has two different ID numbers. The <emphasis>universal
-    unique identifier</emphasis> (UUID) remains the same even if the
-    &vmguest; is migrated to another machine. The <emphasis>domain
-    identifier</emphasis> (DOMID) is an identification number that represents a
-    particular running instance. It typically changes when the &vmguest; is
-    migrated to another machine.
+    Each &vmguest; has two different ID numbers. The <emphasis>universal unique
+    identifier</emphasis> (UUID) remains the same even if the &vmguest; is
+    migrated to another machine. The <emphasis>domain identifier</emphasis>
+    (DOMID) is an identification number that represents a particular running
+    instance. It typically changes when the &vmguest; is migrated to another
+    machine.
    </para>
   </tip>
-
-  <sect2>
+  <section>
    <title>&xenstore; Commands</title>
    <para>
-    The file system structure of the &xenstore; database can be operated
-    with the following commands:
+    The file system structure of the &xenstore; database can be operated with
+    the following commands:
    </para>
    <variablelist>
     <varlistentry>
-     <term><command>xenstore-ls</command>
-     </term>
+     <term><command>xenstore-ls</command></term>
      <listitem>
       <para>
        Displays the full dump of the &xenstore; database.
@@ -94,8 +89,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-read <option>path_to_xenstore_entry</option></command>
-     </term>
+     <term><command>xenstore-read</command> <option>path_to_xenstore_entry</option></term>
      <listitem>
       <para>
        Displays the value of the specified &xenstore; entry.
@@ -103,8 +97,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-exists <option>xenstore_path</option></command>
-     </term>
+     <term><command>xenstore-exists</command> <option>xenstore_path</option></term>
      <listitem>
       <para>
        Reports whether the specified &xenstore; path exists.
@@ -112,8 +105,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-list <option>xenstore_path</option></command>
-     </term>
+     <term><command>xenstore-list</command> <option>xenstore_path</option></term>
      <listitem>
       <para>
        Displays all the children entries of the specified &xenstore; path.
@@ -121,8 +113,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-write <option>path_to_xenstore_entry</option></command>
-     </term>
+     <term><command>xenstore-write</command> <option>path_to_xenstore_entry</option></term>
      <listitem>
       <para>
        Updates the value of the specified &xenstore; entry.
@@ -130,8 +121,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-rm <option>xenstore_path</option></command>
-     </term>
+     <term><command>xenstore-rm</command> <option>xenstore_path</option></term>
      <listitem>
       <para>
        Removes the specified &xenstore; entry or directory.
@@ -139,8 +129,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-chmod <option>xenstore_path</option><option>mode</option></command>
-     </term>
+     <term><command>xenstore-chmod</command> <option>xenstore_path</option><option>mode</option></term>
      <listitem>
       <para>
        Updates the read/write permission on the specified &xenstore; path.
@@ -148,34 +137,32 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-control</command>
-     </term>
+     <term><command>xenstore-control</command></term>
      <listitem>
       <para>
-       Sends a command to the <systemitem>xenstored</systemitem> back-end,
-       such as triggering an integrity check.
+       Sends a command to the <systemitem>xenstored</systemitem> back-end, such
+       as triggering an integrity check.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
-
-  <sect2 id="xenstore-vm">
+  </section>
+  <section xml:id="xenstore-vm">
    <title><filename>/vm</filename></title>
    <para>
-    The <filename>/vm</filename> path is indexed by the UUID of each
-    &vmguest;, and stores configuration information such as the number of
-    virtual CPUs and the amount of allocated memory. There is a
-    <filename>/vm/&lt;uuid></filename> directory for each &vmguest;. To list
+    The <filename>/vm</filename> path is indexed by the UUID of each &vmguest;,
+    and stores configuration information such as the number of virtual CPUs and
+    the amount of allocated memory. There is a
+    <filename>/vm/&lt;uuid&gt;</filename> directory for each &vmguest;. To list
     the directory content, use <command>xenstore-list</command>.
    </para>
 <screen># xenstore-list /vm
 00000000-0000-0000-0000-000000000000
 9b30841b-43bc-2af9-2ed3-5a649f466d79-1</screen>
    <para>
-    The first line of the output belongs to &dom0;, and the second one to
-    a running &vmguest;. The following command lists all the entries related
-    to the &vmguest;:
+    The first line of the output belongs to &dom0;, and the second one to a
+    running &vmguest;. The following command lists all the entries related to
+    the &vmguest;:
    </para>
 <screen># xenstore-list /vm/9b30841b-43bc-2af9-2ed3-5a649f466d79-1
 image
@@ -203,53 +190,47 @@ name</screen>
 <screen># xenstore-read /vm/9b30841b-43bc-2af9-2ed3-5a649f466d79-1/vcpus
 1</screen>
    <para>
-    A list of some of the <filename>/vm/&lt;uuid></filename> entries
+    A list of some of the <filename>/vm/&lt;uuid&gt;</filename> entries
     follows:
    </para>
    <variablelist>
     <varlistentry>
-     <term><literal>uuid</literal>
-     </term>
+     <term><literal>uuid</literal></term>
      <listitem>
       <para>
-       UUID of the &vmguest;. It does not change during the migration
-       process.
+       UUID of the &vmguest;. It does not change during the migration process.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>on_reboot</literal>
-     </term>
+     <term><literal>on_reboot</literal></term>
      <listitem>
       <para>
-       Specifies whether to destroy or restart the &vmguest; in response to
-       a reboot request.
+       Specifies whether to destroy or restart the &vmguest; in response to a
+       reboot request.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>on_poweroff</literal>
-     </term>
+     <term><literal>on_poweroff</literal></term>
      <listitem>
       <para>
-       Specifies whether to destroy or restart the &vmguest; in response to
-       a halt request.
+       Specifies whether to destroy or restart the &vmguest; in response to a
+       halt request.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>on_crash</literal>
-     </term>
+     <term><literal>on_crash</literal></term>
      <listitem>
       <para>
-       Specifies whether to destroy or restart the &vmguest; in response to
-       a crash.
+       Specifies whether to destroy or restart the &vmguest; in response to a
+       crash.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>vcpus</literal>
-     </term>
+     <term><literal>vcpus</literal></term>
      <listitem>
       <para>
        Number of virtual CPUs allocated to the &vmguest;.
@@ -257,8 +238,7 @@ name</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>vcpu_avail</literal>
-     </term>
+     <term><literal>vcpu_avail</literal></term>
      <listitem>
       <para>
        Bitmask of active virtual CPUs for the &vmguest;. The bitmask has a
@@ -268,8 +248,7 @@ name</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>name</literal>
-     </term>
+     <term><literal>name</literal></term>
      <listitem>
       <para>
        The name of the &vmguest;.
@@ -279,7 +258,7 @@ name</screen>
    </variablelist>
    <para>
     Regular &vmguest;s (not &dom0;) make use of the
-    <filename>/vm/&lt;uuid>/image</filename> path:
+    <filename>/vm/&lt;uuid&gt;/image</filename> path:
    </para>
 <screen># xenstore-list /vm/9b30841b-43bc-2af9-2ed3-5a649f466d79-1/image
 ostype
@@ -294,8 +273,7 @@ display</screen>
    </para>
    <variablelist>
     <varlistentry>
-     <term><literal>ostype</literal>
-     </term>
+     <term><literal>ostype</literal></term>
      <listitem>
       <para>
        The OS type of the &vmguest;.
@@ -303,8 +281,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>kernel</literal>
-     </term>
+     <term><literal>kernel</literal></term>
      <listitem>
       <para>
        The path on &dom0; to the kernel for the &vmguest;.
@@ -312,8 +289,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>cmdline</literal>
-     </term>
+     <term><literal>cmdline</literal></term>
      <listitem>
       <para>
        The kernel command line for the &vmguest; used when booting.
@@ -321,8 +297,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>ramdisk</literal>
-     </term>
+     <term><literal>ramdisk</literal></term>
      <listitem>
       <para>
        The path on &dom0; to the ramdisk for the &vmguest;.
@@ -330,40 +305,35 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>dmargs</literal>
-     </term>
+     <term><literal>dmargs</literal></term>
      <listitem>
       <para>
-      Shows arguments passed to the &qemu; process. If you look at the &qemu;
-      process with <command>ps</command>, you should see the same arguments as
-      in <filename>/vm/&lt;uuid>/image/dmargs</filename>.
+       Shows arguments passed to the &qemu; process. If you look at the &qemu;
+       process with <command>ps</command>, you should see the same arguments as
+       in <filename>/vm/&lt;uuid&gt;/image/dmargs</filename>.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
-
-  <sect2>
-   <title><filename>/local/domain/&lt;domid></filename></title>
+  </section>
+  <section>
+   <title><filename>/local/domain/&lt;domid&gt;</filename></title>
    <para>
     This path is indexed by the running domain (&vmguest;) ID, and contains
-    information about the running &vmguest;. Remember that the domain ID changes
-    during &vmguest; migration. The following entries are available:
+    information about the running &vmguest;. Remember that the domain ID
+    changes during &vmguest; migration. The following entries are available:
    </para>
    <variablelist>
     <varlistentry>
-     <term><literal>vm</literal>
-     </term>
+     <term><literal>vm</literal></term>
      <listitem>
       <para>
-       The path of the <filename>/vm</filename> directory for this
-       &vmguest;.
+       The path of the <filename>/vm</filename> directory for this &vmguest;.
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>on_reboot, on_poweroff, on_crash, name</literal>
-     </term>
+     <term><literal>on_reboot, on_poweroff, on_crash, name</literal></term>
      <listitem>
       <para>
        See identical options in <xref linkend="xenstore-vm"/>
@@ -371,8 +341,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>domid</literal>
-     </term>
+     <term><literal>domid</literal></term>
      <listitem>
       <para>
        Domain identifier for the &vmguest;.
@@ -380,8 +349,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>cpu</literal>
-     </term>
+     <term><literal>cpu</literal></term>
      <listitem>
       <para>
        The current CPU to which the &vmguest; is pinned.
@@ -389,8 +357,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>cpu_weight</literal>
-     </term>
+     <term><literal>cpu_weight</literal></term>
      <listitem>
       <para>
        The weight assigned to the &vmguest; for scheduling purposes. Higher
@@ -401,27 +368,24 @@ display</screen>
    </variablelist>
    <para>
     Apart from the individual entries described above, there are also several
-    subdirectories under <filename>/local/domain/&lt;domid></filename>,
+    subdirectories under <filename>/local/domain/&lt;domid&gt;</filename>,
     containing specific entries. To see all entries available, refer to
-    <ulink
-     url="http://wiki.xen.org/wiki/XenStore_Reference">&xenstore;
-    Reference</ulink>.
+    <link xlink:href="http://wiki.xen.org/wiki/XenStore_Reference">&xenstore;
+    Reference</link>.
    </para>
    <variablelist>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/memory</literal>
-     </term>
+     <term><literal>/local/domain/&lt;domid&gt;/memory</literal></term>
      <listitem>
       <para>
        Contains memory information.
-       <literal>/local/domain/&lt;domid>/memory/target</literal> contains
+       <literal>/local/domain/&lt;domid&gt;/memory/target</literal> contains
        target memory size for the &vmguest; (in kilobytes).
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/console</literal>
-     </term>
+     <term><literal>/local/domain/&lt;domid&gt;/console</literal></term>
      <listitem>
       <para>
        Contains information about a console used by the &vmguest;.
@@ -429,8 +393,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/backend</literal>
-     </term>
+     <term><literal>/local/domain/&lt;domid&gt;/backend</literal></term>
      <listitem>
       <para>
        Contains information all back-end devices used by the &vmguest;. The
@@ -439,8 +402,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/device</literal>
-     </term>
+     <term><literal>/local/domain/&lt;domid&gt;/device</literal></term>
      <listitem>
       <para>
        Contains information about the front-end devices for the &vmguest;.
@@ -448,8 +410,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/device-misc</literal>
-     </term>
+     <term><literal>/local/domain/&lt;domid&gt;/device-misc</literal></term>
      <listitem>
       <para>
        Contains miscellaneous information about devices.
@@ -457,8 +418,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/store</literal>
-     </term>
+     <term><literal>/local/domain/&lt;domid&gt;/store</literal></term>
      <listitem>
       <para>
        Contains information about the &vmguest;'s store.
@@ -466,6 +426,6 @@ display</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

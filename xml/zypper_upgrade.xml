@@ -1,11 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect2
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<sect2 id="sec-update-zypper">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-update-zypper">
  <title>Distribution Upgrade with zypper</title><indexterm>
  <primary>zypper</primary>
  <secondary>upgrading</secondary></indexterm><indexterm>
@@ -13,14 +16,14 @@
  <secondary>zypper</secondary></indexterm>
  <para>
   With the <command>zypper</command> command line utility you can upgrade to
-  the next version of the distribution. Most importantly, you can initiate
-  the system upgrade process from within the running system.
+  the next version of the distribution. Most importantly, you can initiate the
+  system upgrade process from within the running system.
  </para>
  <para>
-  This feature is attractive for advanced users who want to run remote
-  upgrades or upgrades on many similarly configured systems.
+  This feature is attractive for advanced users who want to run remote upgrades
+  or upgrades on many similarly configured systems.
  </para>
- <sect3>
+ <section>
   <title>Before Starting the Upgrade with zypper</title>
   <para>
    To avoid unexpected errors during the upgrade process using
@@ -33,154 +36,193 @@
    12.3 online updates are successfully applied.
   </para>
 <!-- SLE part is moved to sle_update.xml -->
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     Close as many applications and unneeded services as possible and log
-     out all regular users.
+     Close as many applications and unneeded services as possible and log out
+     all regular users.
     </para>
    </listitem>
    <listitem os="osuse">
     <para>
-     Disable third party or &obs; repositories before starting the upgrade,
-     or lower the priority of these repositories to make sure packages from
-     the default system repositories will get preference. Enable them again
-     after the upgrade and edit their version string to match the version
-     number of the distribution of the upgraded now running system.
+     Disable third party or &obs; repositories before starting the upgrade, or
+     lower the priority of these repositories to make sure packages from the
+     default system repositories will get preference. Enable them again after
+     the upgrade and edit their version string to match the version number of
+     the distribution of the upgraded now running system.
     </para>
    </listitem>
    <listitem os="sled;sles">
     <para>
-     Disable third party repositories before starting the upgrade, or lower
-     the priority of these repositories to make sure packages from the
-     default system repositories will get preference. Enable them again
-     after the upgrade and edit their version string to match the version
-     number of the distribution of the upgraded now running system.
+     Disable third party repositories before starting the upgrade, or lower the
+     priority of these repositories to make sure packages from the default
+     system repositories will get preference. Enable them again after the
+     upgrade and edit their version string to match the version number of the
+     distribution of the upgraded now running system.
     </para>
    </listitem>
    <listitem os="sled;sles">
-    <para>Make sure to have the system registered. f this is not done already, it 
-      can either be registered by using the <guimenu>&ncc; Configuration</guimenu>
-      module in &yast; or by using the <command>suse_register</command> commandline
-      tool. This will add update sources to the system.
+    <para>
+     Make sure to have the system registered. f this is not done already, it
+     can either be registered by using the <guimenu>&ncc;
+     Configuration</guimenu> module in &yast; or by using the
+     <command>suse_register</command> commandline tool. This will add update
+     sources to the system.
     </para>
    </listitem>
   </itemizedlist>
   <para os="osuse">
    For more information, see
-   <ulink
-   url="http://en.opensuse.org/SDB:System_upgrade"/>.
+   <link xlink:href="http://en.opensuse.org/SDB:System_upgrade"/>.
   </para>
   <warning>
-    <title>Perform Upgrades from Reboot</title>
-    <para>The upgrade process has to be done completely from beginning to reboot. 
-      There is only a limited chance to revert changes. 
-      Furthermore, the server has to be connected online during the whole process.
-</para>
+   <title>Perform Upgrades from Reboot</title>
+   <para>
+    The upgrade process has to be done completely from beginning to reboot.
+    There is only a limited chance to revert changes. Furthermore, the server
+    has to be connected online during the whole process.
+   </para>
   </warning>
- </sect3>
- <sect3>
+ </section>
+ <section>
   <title>The Upgrade Procedure</title>
   <warning>
    <title>Check Your System Backup</title>
    <para>
     Before actually starting the upgrade procedure, check that your system
-    backup is up-to-date and restorable. This is especially important
-    because you must enter many of the following steps manually.
+    backup is up-to-date and restorable. This is especially important because
+    you must enter many of the following steps manually.
    </para>
   </warning>
   
   &note-key;
   
   <para>
-   The program <command>zypper</command> supports long and short command
-   names. For example, you can abbreviate <command>zypper install</command>
-   as <command>zypper in</command>. In the following text, the short
-   variants are used.
-  </para> 
-  <para>Log in as &rootuser; and perform the following steps:</para>
- 
+   The program <command>zypper</command> supports long and short command names.
+   For example, you can abbreviate <command>zypper install</command> as
+   <command>zypper in</command>. In the following text, the short variants are
+   used.
+  </para>
+  <para>
+   Log in as &rootuser; and perform the following steps:
+  </para>
   <procedure>
-    <!-- https://www.suse.com/support/kb/doc.php?id=7012368 -->
-    <step>
-      <para>Refresh all services and repositories:</para>
-      <screen>zypper ref -s</screen>
-    </step>
-    <step id="st-update-zypper-proc-softwarestack">
-      <para>Install any package management updates:</para>
-      <screen>zypper up -t patch</screen>
-      <para>For more information, see <xref linkend="cha-onlineupdate-you"/>.</para>
-    </step>
-    <step>
-    <para>Repeat <xref linkend="st-update-zypper-proc-softwarestack"/> to install
+<!-- https://www.suse.com/support/kb/doc.php?id=7012368 -->
+   <step>
+    <para>
+     Refresh all services and repositories:
+    </para>
+<screen>zypper ref -s</screen>
+   </step>
+   <step xml:id="st-update-zypper-proc-softwarestack">
+    <para>
+     Install any package management updates:
+    </para>
+<screen>zypper up -t patch</screen>
+    <para>
+     For more information, see <xref linkend="cha-onlineupdate-you"/>.
+    </para>
+   </step>
+   <step>
+    <para>
+     Repeat <xref linkend="st-update-zypper-proc-softwarestack"/> to install
      all available updates for your system.
     </para>
-    <para>Sidenote: If you want o use the above command in a script for an unattended upgrade, use
-          the command: </para>
-    <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
+    <para>
+     Sidenote: If you want o use the above command in a script for an
+     unattended upgrade, use the command:
+    </para>
+<screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
    </step>
-    <step>
-      <para>Read the migration product informations from <filename>/etc/products.d/*.prod</filename>.
-        The installed products contain information about distribution upgrades and which migration 
-        products should be installed to perform the migration.
-        Install them with the following commands:
+   <step>
+    <para>
+     Read the migration product informations from
+     <filename>/etc/products.d/*.prod</filename>. The installed products
+     contain information about distribution upgrades and which migration
+     products should be installed to perform the migration. Install them with
+     the following commands:
+    </para>
+    <substeps performance="required">
+     <step>
+      <para>
+       Extract the product information:
       </para>
-      <substeps>
-        <step>
-          <para>Extract the product information:</para>
-          <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
-          <para>A sample output could be as follows:</para>
-          <screen>SUSE_SLES-SP3-migration
+<screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
+      <para>
+       A sample output could be as follows:
+      </para>
+<screen>SUSE_SLES-SP3-migration
 sle-sdk-SP3-migration</screen>
-        </step>
-        <step>
-          <para>Install these migration products (example):</para>
-          <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
-        </step>
-        <step>
-          <para>Register the products in order to get the corresponding update repositories:</para>
-          <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
-          <warning>
-            <title>Enable Additional Repository for &sleda; Users</title>
-            <para>Some devel packages have been moved from the <literal>SLED11-SP2</literal>
-                installation media to the <literal>SLED11-Extras</literal> repository. In order to
-                avoid dependency conflicts during upgrade, enable this repository before performing
-                the actual upgrade. Execute <command>yast2 repositories</command> and enable
-                  <literal>SLED11-Extras</literal> there. On &slsa; this extra step is not needed. </para>
-          </warning>
-        </step>
-      </substeps>      
-    </step>
-    
-    <step>
-      <para>Refresh services and repositores:</para>
-      <screen>zypper ref -s</screen>
-    </step>
-    <step>
-        <para>Check the repositories using <command>zypper lr</command>. If needed, disable the
-          SP1/SP2 <systemitem>Pool/Core/Updates</systemitem> repositories manually and enable the
-          new SP3 (<systemitem>SP3-Pool</systemitem>, <systemitem>SP3-Updates</systemitem>)
-          repositories:</para>
-      <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
+     </step>
+     <step>
+      <para>
+       Install these migration products (example):
+      </para>
+<screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
+     </step>
+     <step>
+      <para>
+       Register the products in order to get the corresponding update
+       repositories:
+      </para>
+<screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+      <warning>
+       <title>Enable Additional Repository for &sleda; Users</title>
+       <para>
+        Some devel packages have been moved from the
+        <literal>SLED11-SP2</literal> installation media to the
+        <literal>SLED11-Extras</literal> repository. In order to avoid
+        dependency conflicts during upgrade, enable this repository before
+        performing the actual upgrade. Execute <command>yast2
+        repositories</command> and enable <literal>SLED11-Extras</literal>
+        there. On &slsa; this extra step is not needed.
+       </para>
+      </warning>
+     </step>
+    </substeps>
+   </step>
+   <step>
+    <para>
+     Refresh services and repositores:
+    </para>
+<screen>zypper ref -s</screen>
+   </step>
+   <step>
+    <para>
+     Check the repositories using <command>zypper lr</command>. If needed,
+     disable the SP1/SP2 <systemitem>Pool/Core/Updates</systemitem>
+     repositories manually and enable the new SP3
+     (<systemitem>SP3-Pool</systemitem>, <systemitem>SP3-Updates</systemitem>)
+     repositories:
+    </para>
+<screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
 zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
-    </step>
-    <step>
-      <para>Perform a dist upgrade by using the following command (example for &slsa;, adjust catalog 
-        names in case &sleda; is updated):</para>
-      <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
-      <para>You can add more catalogs here if needed, for example, in case addon products are installed.
-        Zypper will report that it will delete the migration product and update the main products. 
-        Confirm the message to continue updating the rpm packages.</para>
-    </step>
-    <step>
-      <para>After the upgrade is finished, register the new products again:</para>
-      <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
-    </step>
-    <step>
-      <para>Reboot the system:</para>
-      <screen>shutdown -r</screen>
-    </step>
+   </step>
+   <step>
+    <para>
+     Perform a dist upgrade by using the following command (example for &slsa;,
+     adjust catalog names in case &sleda; is updated):
+    </para>
+<screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
+    <para>
+     You can add more catalogs here if needed, for example, in case addon
+     products are installed. Zypper will report that it will delete the
+     migration product and update the main products. Confirm the message to
+     continue updating the rpm packages.
+    </para>
+   </step>
+   <step>
+    <para>
+     After the upgrade is finished, register the new products again:
+    </para>
+<screen>suse_register -d 2 -L /root/.suse_register.log</screen>
+   </step>
+   <step>
+    <para>
+     Reboot the system:
+    </para>
+<screen>shutdown -r</screen>
+   </step>
   </procedure>
-   
- </sect3>
-</sect2>
+ </section>
+</section>

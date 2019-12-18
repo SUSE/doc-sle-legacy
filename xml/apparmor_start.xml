@@ -1,12 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-start">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-start">
+<?dbfo-need height="20em"?>
  <title>Getting Started</title>
+ <info/>
  <para>
   Prepare a successful deployment of &naa; on your system by carefully
   considering the following items:
@@ -15,44 +20,39 @@
   <step>
    <para>
     Determine the applications to profile. Read more on this in
-    <xref
-     linkend="sec-aaintro-start-choose"/>.
+    <xref linkend="sec-aaintro-start-choose"/>.
    </para>
   </step>
   <step>
    <para>
     Build the needed profiles as roughly outlined in
-    <xref linkend="sec-aaintro-start-build"
-    />. Check the results and
-    adjust the profiles when necessary.
+    <xref linkend="sec-aaintro-start-build"/>. Check the results and adjust the
+    profiles when necessary.
    </para>
   </step>
   <step>
    <para>
-    Keep track of what is happening on your system by running &aa; reports
-    and dealing with security events. Refer to
+    Keep track of what is happening on your system by running &aa; reports and
+    dealing with security events. Refer to
     <xref linkend="sec-aaintro-start-report"/>.
    </para>
   </step>
   <step>
    <para>
-    Update your profiles whenever your environment changes or you need to
-    react to security events logged by &aa;'s reporting tool. Refer to
+    Update your profiles whenever your environment changes or you need to react
+    to security events logged by &aa;'s reporting tool. Refer to
     <xref linkend="sec-aaintro-start-update"/>.
    </para>
   </step>
  </procedure>
-<?dbfo-need height="20em"?>
- <sect1 id="sec-aaintro-install">
+ <section xml:id="sec-aaintro-install">
   <title>Installing &naa;</title>
-
   <para>
    &naa; is installed and running on any installation of &productnamereg; by
    default, regardless of what patterns are installed. The packages listed
    below are needed for a fully-functional instance of &aa;
   </para>
-
-  <itemizedlist spacing="compact">
+  <itemizedlist spacing="compact" mark="bullet">
    <listitem>
     <para>
      <systemitem class="resource">apparmor-docs</systemitem>
@@ -94,23 +94,21 @@
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="sec-aaintro-enable">
+ </section>
+ <section xml:id="sec-aaintro-enable">
   <title>Enabling and Disabling &naa;</title>
-
   <para>
    &naa; is configured to run by default on any fresh installation of
    &productname;. There are two ways of toggling the status of &aa;:
   </para>
-
   <variablelist>
    <varlistentry>
     <term>Using &yast; System Services (Runlevel)</term>
     <listitem>
      <para>
       Disable or enable &aa; by removing or adding its boot script to the
-      sequence of scripts executed on system boot. Status changes are
-      applied on reboot.
+      sequence of scripts executed on system boot. Status changes are applied
+      on reboot.
      </para>
     </listitem>
    </varlistentry>
@@ -118,23 +116,19 @@
     <term>Using &naa; Control Panel</term>
     <listitem>
      <para>
-      Toggle the status of &naa; in a running system by switching it off or
-      on using the &yast; &naa; Control Panel. Changes made here are applied
+      Toggle the status of &naa; in a running system by switching it off or on
+      using the &yast; &naa; Control Panel. Changes made here are applied
       instantaneously. The Control Panel triggers a stop or start event for
-      &aa; and removes or adds its boot script in the system's boot
-      sequence.
+      &aa; and removes or adds its boot script in the system's boot sequence.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
-
 <?dbfo-need height="15em"?>
-
   <para>
    To disable &aa; permanently (by removing it from the sequence of scripts
    executed on system boot) proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -165,19 +159,16 @@
     </para>
    </step>
   </procedure>
-
   <para>
    &aa; will not be initialized on reboot, and stays inactive until you
-   reenable it. Reenabling a service using the &yast; Runlevel tool is
-   similar to disabling it.
+   reenable it. Reenabling a service using the &yast; Runlevel tool is similar
+   to disabling it.
   </para>
-
   <para>
    Toggle the status of &aa; in a running system by using the &aa; Control
    Panel. These changes take effect as soon as you apply them and survive a
    reboot of the system. To toggle &aa;'s status, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -202,80 +193,64 @@
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-aaintro-start-choose">
+ </section>
+ <section xml:id="sec-aaintro-start-choose">
   <title>Choosing the Applications to Profile</title>
-
   <para>
    You only need to protect the programs that are exposed to attacks in your
-   particular setup, so only use profiles for those applications you
-   actually run. Use the following list to determine the most likely
-   candidates:
+   particular setup, so only use profiles for those applications you actually
+   run. Use the following list to determine the most likely candidates:
   </para>
-
 <?dbfo-need height="10em"?>
-
-  <simplelist>
-   <member>Network Agents</member>
-   <member>Web Applications</member>
-   <member>Cron Jobs</member>
+  <simplelist><member>Network Agents</member><member>Web Applications</member><member>Cron Jobs</member>
   </simplelist>
-
   <para>
    To find out which processes are currently running with open network ports
    and might need a profile to confine them, run
    <command>aa-unconfined</command> as &rootuser;.
   </para>
-
-  <example id="ex-unconfined">
+  <example xml:id="ex-unconfined">
    <title>Output of <command>aa-unconfined</command></title>
-   <screen>19848 /usr/sbin/cupsd not confined
+<screen>19848 /usr/sbin/cupsd not confined
 19887 /usr/sbin/sshd not confined
 19947 /usr/lib/postfix/master not confined
 29205 /usr/sbin/sshd confined by '/usr/sbin/sshd (enforce)'</screen>
   </example>
-
   <para>
    Each of the processes in the above example labeled <literal>not
-   confined</literal> might need a custom profile to confine it. Those
-   labeled <literal>confined by</literal> are already protected by &aa;.
+   confined</literal> might need a custom profile to confine it. Those labeled
+   <literal>confined by</literal> are already protected by &aa;.
   </para>
-
   <tip>
    <title>For More Information</title>
    <para>
-    For more information about choosing the the right applications to
-    profile, refer to <xref
-     linkend="sec-apparm-concept-determine"/>.
+    For more information about choosing the the right applications to profile,
+    refer to <xref linkend="sec-apparm-concept-determine"/>.
    </para>
   </tip>
- </sect1>
- <sect1 id="sec-aaintro-start-build">
+ </section>
+ <section xml:id="sec-aaintro-start-build">
   <title>Building and Modifying Profiles</title>
-
   <para>
    &naa; on &productname; ships with a pre-configured set of profiles for the
    most important applications. In addition, you can use &aa; to create your
    own profiles for any application you want.
   </para>
-
   <para>
    There are two ways of managing profiles. One is to use the graphical
-   front-end provided by the &yast; &naa; modules and the other is to use
-   the command line tools provided by the &aa; suite itself. Both methods
-   basically work the same way.
+   front-end provided by the &yast; &naa; modules and the other is to use the
+   command line tools provided by the &aa; suite itself. Both methods basically
+   work the same way.
   </para>
-
   <para>
    For each application, perform the following steps to create a profile:
   </para>
-
-  <procedure id="proc-genprof">
-   <step id="st-genprof1">
+  <procedure xml:id="proc-genprof">
+   <step xml:id="st-genprof1">
     <para>
      As &rootuser;, let &aa; create a rough outline of the application's
-     profile by running <command>aa-genprof
-     <replaceable>programname</replaceable></command>
+     profile by running <command>aa-genprof</command>
+     <replaceable>programname</replaceable>
     </para>
     <para>
      <emphasis>or</emphasis>
@@ -288,21 +263,20 @@
     </para>
     <para>
      A basic profile is outlined and &aa; is put into learning mode, which
-     means that it logs any activity of the program you are executing, but
-     does not yet restrict it.
+     means that it logs any activity of the program you are executing, but does
+     not yet restrict it.
     </para>
    </step>
-   <step id="st-genprof2">
+   <step xml:id="st-genprof2">
     <para>
      Run the full range of the application's actions to let &aa; get a very
      specific picture of its activities.
     </para>
    </step>
-   <step id="st-genprof3">
+   <step xml:id="st-genprof3">
     <para>
-     Let &aa; analyze the log files generated in
-     <xref linkend="st-genprof2"/> by typing <keycap>S</keycap> in
-     <command>aa-genprof</command>.
+     Let &aa; analyze the log files generated in <xref linkend="st-genprof2"/>
+     by typing <keycap>S</keycap> in <command>aa-genprof</command>.
     </para>
     <para>
      <emphasis>or</emphasis>
@@ -314,95 +288,73 @@
      completed.
     </para>
     <para>
-     &aa; scans the logs it recorded during the application's run and asks
-     you to set the access rights for each event that was logged. Either set
-     them for each file or use globbing.
+     &aa; scans the logs it recorded during the application's run and asks you
+     to set the access rights for each event that was logged. Either set them
+     for each file or use globbing.
     </para>
    </step>
    <step>
     <para>
-     Depending on the complexity of your application, it might be necessary
-     to repeat <xref
-      linkend="st-genprof2"/> and
-     <xref linkend="st-genprof3"/>. Confine the application, exercise it
-     under the confined conditions, and process any new log events. To
-     properly confine the full range of an application's capabilities, you
-     might be required to repeat this procedure often.
+     Depending on the complexity of your application, it might be necessary to
+     repeat <xref linkend="st-genprof2"/> and <xref linkend="st-genprof3"/>.
+     Confine the application, exercise it under the confined conditions, and
+     process any new log events. To properly confine the full range of an
+     application's capabilities, you might be required to repeat this procedure
+     often.
     </para>
    </step>
-   <step id="st-genprof4">
+   <step xml:id="st-genprof4">
     <para>
-     Once all access permissions are set, your profile is set to enforce
-     mode. The profile is applied and &aa; restricts the application
-     according to the profile just created.
+     Once all access permissions are set, your profile is set to enforce mode.
+     The profile is applied and &aa; restricts the application according to the
+     profile just created.
     </para>
     <para>
-     If you started <command>aa-genprof</command> on an application that had
-     an existing profile that was in complain mode, this profile remains in
-     learning mode upon exit of this learning cycle. For more information
-     about changing the mode of a profile, refer to
-     <xref
-      linkend="sec-apparm-commandline-profiling-summary-complain"/>
-     and
-     <xref
-      linkend="sec-apparm-commandline-profiling-summary-enforce"/>.
+     If you started <command>aa-genprof</command> on an application that had an
+     existing profile that was in complain mode, this profile remains in
+     learning mode upon exit of this learning cycle. For more information about
+     changing the mode of a profile, refer to
+     <xref linkend="sec-apparm-commandline-profiling-summary-complain"/> and
+     <xref linkend="sec-apparm-commandline-profiling-summary-enforce"/>.
     </para>
    </step>
   </procedure>
-
   <para>
    Test your profile settings by performing every task you need with the
-   application you just confined. Normally, the confined program runs
-   smoothly and you do not notice &aa; activities at all. However, if you
-   notice certain misbehavior with your application, check the system logs
-   and see if &aa; is too tightly confining your application. Depending on
-   the log mechanism used on your system, there are several places to look
-   for &aa; log entries:
+   application you just confined. Normally, the confined program runs smoothly
+   and you do not notice &aa; activities at all. However, if you notice certain
+   misbehavior with your application, check the system logs and see if &aa; is
+   too tightly confining your application. Depending on the log mechanism used
+   on your system, there are several places to look for &aa; log entries:
   </para>
-
-  <simplelist>
-   <member><filename>/var/log/audit/audit.log</filename>
-   </member>
-   <member><filename>/var/log/messages</filename>
-   </member>
-   <member><filename>dmesg</filename>
-   </member>
+  <simplelist><member><filename>/var/log/audit/audit.log</filename></member><member><filename>/var/log/messages</filename></member><member><filename>dmesg</filename></member>
   </simplelist>
-
   <para>
-   To adjust the profile, analyze the log messages relating to this
-   application again as described in <xref linkend="st-genprof3"/>.
-   Determine the access rights or restrictions when prompted.
+   To adjust the profile, analyze the log messages relating to this application
+   again as described in <xref linkend="st-genprof3"/>. Determine the access
+   rights or restrictions when prompted.
   </para>
-
   <tip>
    <title>For More Information</title>
    <para>
     For more information about profile building and modification, refer to
-    <xref
-     linkend="cha-apparm-profiles"/>,
-    <xref linkend="cha-apparm-yast"/>, and
-    <xref
-     linkend="cha-apparm-commandline"/>.
+    <xref linkend="cha-apparm-profiles"/>, <xref linkend="cha-apparm-yast"/>,
+    and <xref linkend="cha-apparm-commandline"/>.
    </para>
   </tip>
- </sect1>
- <sect1 id="sec-aaintro-start-report">
+ </section>
+ <section xml:id="sec-aaintro-start-report">
   <title>Configuring &naa; Event Notification and Reports</title>
-
   <para/>
-
   <para>
-   Set up event notification in &naa; so you can review security events.
-   Event Notification is an &naa; feature that informs a specified e-mail
-   recipient when systemic &naa; activity occurs under the chosen severity
-   level. This feature is currently available in the &yast; interface.
+   Set up event notification in &naa; so you can review security events. Event
+   Notification is an &naa; feature that informs a specified e-mail recipient
+   when systemic &naa; activity occurs under the chosen severity level. This
+   feature is currently available in the &yast; interface.
   </para>
-
   <para>
    To set up event notification in &yast;, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -413,19 +365,17 @@
    <step>
     <para>
      Start &yast;. Then select <menuchoice> <guimenu>&naa;</guimenu>
-     <guimenu>&aa; Control Panel</guimenu> </menuchoice>. In
-     <guimenu>Security Event Notification</guimenu>, select
-     <guimenu>Configure</guimenu>.
+     <guimenu>&aa; Control Panel</guimenu> </menuchoice>. In <guimenu>Security
+     Event Notification</guimenu>, select <guimenu>Configure</guimenu>.
     </para>
    </step>
    <step>
     <para>
      For each record type (<guimenu>Terse</guimenu>,
-     <guimenu>Summary</guimenu>, and <guimenu>Verbose</guimenu>), set a
-     report frequency, enter the e-mail address that should receive the
-     reports, and determine the severity of events to log. To include
-     unknown events in the event reports, check <guimenu>Include Unknown
-     Severity Events</guimenu>.
+     <guimenu>Summary</guimenu>, and <guimenu>Verbose</guimenu>), set a report
+     frequency, enter the e-mail address that should receive the reports, and
+     determine the severity of events to log. To include unknown events in the
+     event reports, check <guimenu>Include Unknown Severity Events</guimenu>.
     </para>
     <note>
      <title>Selecting Events to Log</title>
@@ -442,38 +392,34 @@
     </para>
    </step>
   </procedure>
-
   <para>
-   Using &naa; reports, you can read important &naa; security events
-   reported in the log files without manually sifting through the cumbersome
-   messages only useful to the <command>aa-logprof</command> tool. You can
-   decrease the size of the report by filtering by date range or program
-   name.
+   Using &naa; reports, you can read important &naa; security events reported
+   in the log files without manually sifting through the cumbersome messages
+   only useful to the <command>aa-logprof</command> tool. You can decrease the
+   size of the report by filtering by date range or program name.
   </para>
-
   <para>
    To configure the &aa; reports, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
-     Start &yast;. Select <menuchoice> <guimenu>&naa;</guimenu>
-     <guimenu>&aa; Reports</guimenu> </menuchoice>.
+     Start &yast;. Select <menuchoice> <guimenu>&naa;</guimenu> <guimenu>&aa;
+     Reports</guimenu> </menuchoice>.
     </para>
    </step>
    <step>
     <para>
-     Select the type of report to examine or configure from
-     <guimenu>Executive Security Summary</guimenu>, <guimenu>Applications
-     Audit</guimenu>, and <guimenu>Security Incident Report</guimenu>.
+     Select the type of report to examine or configure from <guimenu>Executive
+     Security Summary</guimenu>, <guimenu>Applications Audit</guimenu>, and
+     <guimenu>Security Incident Report</guimenu>.
     </para>
    </step>
    <step>
     <para>
-     Edit the report generation frequency, e-mail address, export format,
-     and location of the reports by selecting <guimenu>Edit</guimenu> and
-     providing the requested data.
+     Edit the report generation frequency, e-mail address, export format, and
+     location of the reports by selecting <guimenu>Edit</guimenu> and providing
+     the requested data.
     </para>
    </step>
    <step>
@@ -494,34 +440,29 @@
     </para>
    </step>
   </procedure>
-
   <tip>
    <title>For More Information</title>
    <para>
-    For more information about configuring event notification in &naa;,
-    refer to <xref
-     linkend="sec-apparm-managing-config-sen"/>. Find
-    more information about report configuration in
+    For more information about configuring event notification in &naa;, refer
+    to <xref linkend="sec-apparm-managing-config-sen"/>. Find more information
+    about report configuration in
     <xref linkend="sec-apparm-managing-config-reports"/>.
    </para>
   </tip>
- </sect1>
- <sect1 id="sec-aaintro-start-update">
+ </section>
+ <section xml:id="sec-aaintro-start-update">
   <title>Updating Your Profiles</title>
-
   <para>
    Software and system configurations change over time. As a result, your
-   profile setup for &aa; might need some fine-tuning from time to time.
-   &aa; checks your system log for policy violations or other &aa; events
-   and lets you adjust your profile set accordingly. Any application
-   behavior that is outside of any profile definition can also be addressed
-   using the <guimenu>Update Profile Wizard</guimenu>.
+   profile setup for &aa; might need some fine-tuning from time to time. &aa;
+   checks your system log for policy violations or other &aa; events and lets
+   you adjust your profile set accordingly. Any application behavior that is
+   outside of any profile definition can also be addressed using the
+   <guimenu>Update Profile Wizard</guimenu>.
   </para>
-
   <para>
    To update your profile set, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -531,8 +472,8 @@
    </step>
    <step>
     <para>
-     Adjust access or execute rights to any resource or for any executable
-     that has been logged when prompted.
+     Adjust access or execute rights to any resource or for any executable that
+     has been logged when prompted.
     </para>
    </step>
    <step>
@@ -542,14 +483,12 @@
     </para>
    </step>
   </procedure>
-
   <tip>
    <title>For More Information</title>
    <para>
     For more information about updating your profiles from the system logs,
-    refer to <xref
-     linkend="sec-apparm-yast-update"/>.
+    refer to <xref linkend="sec-apparm-yast-update"/>.
    </para>
   </tip>
- </sect1>
+ </section>
 </chapter>

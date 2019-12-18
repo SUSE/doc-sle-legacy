@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet href="urn:x-suse:xslt:profiling:novdoc-profile.xsl"
-                 type="text/xml" 
-                 title="Profiling step"?>
-<!DOCTYPE article PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-                      "novdocx.dtd"
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE article
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "IGNORE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<?provo dirname="installquick/"?>
-<article id="art-sles-xen2kvmquick" lang="en">
-<?suse-quickstart color="suse"?>
- <title>&xen; to &kvm; Migration Guide</title>
- <subtitle>&productname; &productnumber;</subtitle>
- <articleinfo>
-  <productnumber>&productnumber;</productnumber><productname>&productname;</productname>
- </articleinfo>
- <abstract>
+
+
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="art-sles-xen2kvmquick" xml:lang="en"><?suse-quickstart color="suse"?><title>&xen; to &kvm; Migration Guide</title><subtitle>&productname; &productnumber;</subtitle><info><productnumber>&productnumber;</productnumber><productname>&productname;</productname><abstract>
   <para>
    As the &kvm; virtualization solution is becoming more and more popular
    among server administrators, many of them need a path to migrate their
@@ -27,23 +20,28 @@
    to &kvm;. Information and procedures introduced in this helps you smooth
    the migration.
   </para>
- </abstract>
+ </abstract></info>
+
+ 
+ 
+ 
+ 
  <important>
   <para>
    The migration procedure described in this document is not fully supported
    by SUSE. We provide it as a guidance only.
   </para>
  </important>
- <sect1>
+ <section>
   <title>&xen; to &kvm; Manual Migration</title>
 
-  <para></para>
+  <para/>
 
-  <sect2>
+  <section>
    <title>General Outline</title>
    <para>
     The preferred solution to manage virtual machines is based on
-    <systemitem>libvirt</systemitem> (See <ulink url="http://libvirt.org/"/>
+    <systemitem>libvirt</systemitem> (See <link xlink:href="http://libvirt.org/"/>
     for more details). It has several notable advantages over the manual way
     of defining/running virtual machines &mdash;
     <systemitem>libvirt</systemitem> is cross-platform, supports many
@@ -88,9 +86,9 @@
      are advised to shut down the original &xen; &vmguest;.
     </para>
    </warning>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Back Up the &xen; &vmguest;</title>
    <para>
     To back up your &xen; &vmguest;, follow these steps:
@@ -119,7 +117,7 @@ Id Name                 State
      <para>
       Backup its configuration to an XML file.
      </para>
-<screen># virsh dumpxml SLES11SP3 > sles11sp3.xml</screen>
+<screen># virsh dumpxml SLES11SP3 &gt; sles11sp3.xml</screen>
     </step>
     <step>
      <para>
@@ -136,9 +134,9 @@ Id Name                 State
 <screen># virsh start SLES11SP3</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Changes Specific to Paravirtualized Guests</title>
    <para>
     Apply the following changes if you are migrating a paravirtualized &xen;
@@ -153,7 +151,7 @@ Id Name                 State
      anymore.
     </para>
    </important>
-   <sect3>
+   <section>
     <title>Install the Default Kernel</title>
     <warning>
      <para>
@@ -168,7 +166,7 @@ Id Name                 State
      guests as they usually contain a special &xen; Kernel, and often do not
      have a complete GRUB boot loader installed.
     </para>
-    <orderedlist>
+    <orderedlist spacing="normal">
      <listitem>
       <para>
        Update the <filename>/etc/sysconfig/kernel</filename> file. Change
@@ -235,7 +233,7 @@ Id Name                 State
        (<menuchoice><guimenu>System</guimenu><guimenu>Boot
        Loader</guimenu></menuchoice>), or manually:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          In your favorite text editor, open
@@ -278,16 +276,16 @@ Id Name                 State
       </para>
      </listitem>
     </orderedlist>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>Update the Guest for Boot under &kvm;</title>
-    <orderedlist>
+    <orderedlist spacing="normal">
      <listitem>
       <para>
        Update the <filename>/etc/inittab</filename> file to use default
        serial console:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          Comment the line containing <literal>xvc0</literal>.
@@ -308,17 +306,17 @@ Id Name                 State
       </para>
      </listitem>
     </orderedlist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2>
+  <section>
    <title>Update the &xen; &vmguest; Configuration</title>
    <para>
     This section describes how to export the configuration of the original
     &xen; &vmguest;, and what particular changes to apply to it to be able
     to import it as a &kvm; guest into <systemitem>libvirt</systemitem>.
    </para>
-   <sect3>
+   <section>
     <title>Export the &xen; &vmguest; Configuration</title>
     <para>
      First export the configuration of the guest and save it to a file. A
@@ -363,11 +361,11 @@ Id Name                 State
      <para>
       You can find detailed information on the libvirt XML format for
       &vmguest; description at
-      <ulink url="http://libvirt.org/formatdomain.html"/>.
+      <link xlink:href="http://libvirt.org/formatdomain.html"/>.
      </para>
     </tip>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>General Changes to the Guest Configuration</title>
     <para>
      You have to make a few general changes to the exported &xen; guest XML
@@ -391,7 +389,7 @@ Id Name                 State
       an XPath equivalent <literal>/domain/name</literal> will be used.
      </para>
     </tip>
-    <orderedlist>
+    <orderedlist spacing="normal">
      <listitem>
       <para>
        Change the <literal>type</literal> attribute of the
@@ -442,7 +440,7 @@ Id Name                 State
        For each disk associated with the paravirtualized (PV) guest, change
        the following:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          Change the <literal>name</literal> attribute of the
@@ -473,7 +471,7 @@ Id Name                 State
       <para>
        For each network interface card, do the following changes:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          If there is <literal>model</literal> defined in
@@ -555,8 +553,8 @@ Id Name                 State
       Otherwise the &vmguest; will refuse to boot in the &kvm; environment.
      </para>
     </tip>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>The Target &kvm; Guest Configuration</title>
     <para>
      After having applied all the modifications mentioned above, you end up
@@ -601,10 +599,10 @@ Id Name                 State
      <filename>/etc/libvirt/qemu</filename>. Suppose you save the file as
      <filename>SLES11SP3.xml</filename>.
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2>
+  <section>
    <title>Migrate the &vmguest;</title>
    <para>
     After you updated the &vmguest; configuration, and applied necessary
@@ -651,7 +649,7 @@ Id Name                 State
  Domain SLES11SP3 started</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
 <!-- cancelled for now...
   <sect2>
@@ -668,7 +666,7 @@ Id Name                 State
    </para>
   </sect2>
 -->
- </sect1>
+ </section>
 <!-- cancelled for now...
  <sect1>
   <title>&xen; to &kvm; Migration Using the virt-v2v Tool</title>
@@ -678,31 +676,28 @@ Id Name                 State
   </para>
  </sect1>
  -->
- <sect1>
+ <section>
   <title>For more information</title>
 
   <para>
-   For more information on libvirt, see <ulink url="http://libvirt.org"/>.
+   For more information on libvirt, see <link xlink:href="http://libvirt.org"/>.
   </para>
 
   <para>
    You can find more details on libvirt XML format at
-   <ulink
-    url="http://libvirt.org/formatdomain.html"/>.
+   <link xlink:href="http://libvirt.org/formatdomain.html"/>.
   </para>
 
   <para>
    For more information on &xen; administration, see
-   <ulink
-    url="https://www.suse.com/documentation/sles11/book_xen/data/book_xen.html"/>.
+   <link xlink:href="https://www.suse.com/documentation/sles11/book_xen/data/book_xen.html"/>.
   </para>
 
   <para>
    For more information on virtualization with &kvm;, see
-   <ulink
-    url="https://www.suse.com/documentation/sles11/book_kvm/data/book_kvm.html"/>.
+   <link xlink:href="https://www.suse.com/documentation/sles11/book_kvm/data/book_kvm.html"/>.
   </para>
- </sect1>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="common_copyright_quick.xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="common_gfdl1.2_i.xml"/>
+ </section>
+ <xi:include href="common_copyright_quick.xml" parse="xml"/>
+ <xi:include href="common_gfdl1.2_i.xml" parse="xml"/>
 </article>
