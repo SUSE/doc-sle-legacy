@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 <!--
  
@@ -14,43 +17,42 @@
 
  http://www.clusterlabs.org/wiki/Example_configurations
 -->
-<chapter id="cha-ha-manual-config">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-ha-manual-config">
  <title>Configuring and Managing Cluster Resources (Command Line)</title>
- <abstract>
-  <para>
-   To configure and manage cluster resources, either use the graphical user
-   interface (the &hbgui;) or the <command>crm</command> command line
-   utility. For the GUI approach, refer to
-   <xref
-    linkend="cha-ha-configuration-gui"/>.
-  </para>
+ <info>
+  <abstract>
+   <para>
+    To configure and manage cluster resources, either use the graphical user
+    interface (the &hbgui;) or the <command>crm</command> command line utility.
+    For the GUI approach, refer to <xref linkend="cha-ha-configuration-gui"/>.
+   </para>
 
-  <para>
-   This chapter introduces <command>crm</command>, the command line tool and
-   covers an overview of this tool, how to use templates, and mainly
-   configuring and managing cluster resources: creating basic and advanced
-   types of resources (groups and clones), configuring constraints,
-   specifying failover nodes and failback nodes, configuring resource
-   monitoring, starting, cleaning up or removing resources, and migrating
-   resources manually.
-  </para>
- </abstract>
+   <para>
+    This chapter introduces <command>crm</command>, the command line tool and
+    covers an overview of this tool, how to use templates, and mainly
+    configuring and managing cluster resources: creating basic and advanced
+    types of resources (groups and clones), configuring constraints, specifying
+    failover nodes and failback nodes, configuring resource monitoring,
+    starting, cleaning up or removing resources, and migrating resources
+    manually.
+   </para>
+  </abstract>
+ </info>
  <note>
   <title>User Privileges</title>
   <para>
    Sufficient privileges are necessary to manage a cluster. The
-   <command>crm</command> command and its subcommands need to be run either
-   as &rootuser; user or as the CRM owner user (typically the user
-   <systemitem
-    class="username">hacluster</systemitem>).
+   <command>crm</command> command and its subcommands need to be run either as
+   &rootuser; user or as the CRM owner user (typically the user
+   <systemitem class="username">hacluster</systemitem>).
   </para>
   <para>
    However, the <option>user</option> option allows you to run
-   <command>crm</command> and its subcommands as a regular (unprivileged)
-   user and to change its ID using <command>sudo</command> whenever
-   necessary. For example, with the following command <command>crm</command>
-   will use <systemitem class="username">hacluster</systemitem> as the
-   privileged user ID:
+   <command>crm</command> and its subcommands as a regular (unprivileged) user
+   and to change its ID using <command>sudo</command> whenever necessary. For
+   example, with the following command <command>crm</command> will use
+   <systemitem class="username">hacluster</systemitem> as the privileged user
+   ID:
   </para>
 <screen>&prompt.root;<command>crm</command> options user hacluster</screen>
   <para>
@@ -58,30 +60,24 @@
    <command>sudo</command> does not ask for a password.
   </para>
  </note>
- <sect1 id="sec-ha-manual-config-crm">
+ <section xml:id="sec-ha-manual-config-crm">
   <title>&crmsh;&mdash;Overview</title>
-
   <para>
    The <command>crm</command> command has several subcommands which manage
    resources, CIBs, nodes, resource agents, and others. It offers a thorough
-   help system with embedded examples. All examples follow a naming
-   convention described in
-   <xref linkend="app-naming" 
-        xrefstyle="select:label"/>.
+   help system with embedded examples. All examples follow a naming convention
+   described in <xref linkend="app-naming" xrefstyle="select:label"/>.
   </para>
-
   <para>
    Help can be accessed in several ways:
   </para>
-
   <tip>
    <title>Distinguish Between Shell Prompt and Interactive crm Prompt</title>
    <para>
     To make all the code and examples more readable, this chapter uses the
-    following notations between shell prompts and the interactive crm
-    prompt:
+    following notations between shell prompts and the interactive crm prompt:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Shell prompt for user &rootuser;:
@@ -97,13 +93,12 @@
     </listitem>
    </itemizedlist>
   </tip>
-
-  <sect2 id="sec-ha-manual-config-crm-help">
+  <section xml:id="sec-ha-manual-config-crm-help">
    <title>Getting Help</title>
    <para>
     Help can be accessed in several ways:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       To output the usage of <command>crm</command> and its command line
@@ -143,29 +138,28 @@
     </listitem>
    </itemizedlist>
    <para>
-    Almost all output of the <command>help</command> subcommand (do not mix
-    it up with the <option>--help</option> option) opens a text viewer. This
-    text viewer allows you to scroll up or down and read the help text more
+    Almost all output of the <command>help</command> subcommand (do not mix it
+    up with the <option>--help</option> option) opens a text viewer. This text
+    viewer allows you to scroll up or down and read the help text more
     comfortably. To leave the text viewer, press the <keycap>Q</keycap> key.
    </para>
-   <tip id="tip-crm-tabcompletion">
+   <tip xml:id="tip-crm-tabcompletion">
     <title>Use Tab Completion in Bash and Interactive Shell</title>
     <para>
      The &crmsh; supports full tab completion in Bash directly, not only for
      the interactive shell. For example, typing <literal>crm help
-     config</literal><keycap function="tab"/> will complete the word just
-     like in the interactive shell.
+     config</literal><keycap function="tab"/> will complete the word just like
+     in the interactive shell.
     </para>
    </tip>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-crm-run">
+  </section>
+  <section xml:id="sec-ha-manual-config-crm-run">
    <title>Executing &crmsh;'s Subcommands</title>
    <para>
     The <command>crm</command> command itself can be used in the following
     ways:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <formalpara>
       <title>Directly</title>
@@ -182,8 +176,8 @@
      <formalpara>
       <title>As crm Shell Script</title>
       <para>
-       Use <command>crm</command> and its subcommands in a script. This can
-       be done in two ways:
+       Use <command>crm</command> and its subcommands in a script. This can be
+       done in two ways:
       </para>
      </formalpara>
 <screen>&prompt.root;<command>crm</command> -f script.cli
@@ -196,10 +190,10 @@
 <command>status</command>
 <command>node</command> list</screen>
      <para>
-      Any line starting with the hash symbol (#) is a comment and is
-      ignored. If a line is too long, insert a backslash (\) at the end and
-      continue in the next line. It is recommended to indent lines that
-      belong to a certain subcommand to improve readability.
+      Any line starting with the hash symbol (#) is a comment and is ignored.
+      If a line is too long, insert a backslash (\) at the end and continue in
+      the next line. It is recommended to indent lines that belong to a certain
+      subcommand to improve readability.
      </para>
     </listitem>
     <listitem>
@@ -207,25 +201,24 @@
       <title>Interactive as Internal Shell</title>
       <para>
        Type <command>crm</command> to enter the internal shell. The prompt
-       changes to <literal>&crm.live;</literal>. With
-       <command>help</command> you can get an overview of the available
-       subcommands. As the internal shell has different levels of
-       subcommands, you can <quote>enter</quote> one by typing this
-       subcommand and press <keycap function="enter"/>.
+       changes to <literal>&crm.live;</literal>. With <command>help</command>
+       you can get an overview of the available subcommands. As the internal
+       shell has different levels of subcommands, you can <quote>enter</quote>
+       one by typing this subcommand and press <keycap function="enter"/>.
       </para>
      </formalpara>
      <para>
       For example, if you type <command>resource</command> you enter the
       resource management level. Your prompt changes to
-      <literal>&crm.live;resource#</literal>. If you want to leave the
-      internal shell, use the commands <command>quit</command>,
-      <command>bye</command>, or <command>exit</command>. If you need to go
-      one level back, use <command>back</command>, <command>up</command>,
-      <command>end</command>, or <command>cd</command>.
+      <literal>&crm.live;resource#</literal>. If you want to leave the internal
+      shell, use the commands <command>quit</command>, <command>bye</command>,
+      or <command>exit</command>. If you need to go one level back, use
+      <command>back</command>, <command>up</command>, <command>end</command>,
+      or <command>cd</command>.
      </para>
      <para>
-      You can enter the level directly by typing <command>crm</command> and
-      the respective subcommand(s) without any options and hit
+      You can enter the level directly by typing <command>crm</command> and the
+      respective subcommand(s) without any options and hit
       <keycap function="enter"/>.
      </para>
      <para>
@@ -244,35 +237,31 @@
     <option>-w</option>, you can enable it later with the user preference's
     <command>wait</command> set to <literal>yes</literal> (<command>options
     wait yes</command>). If this option is enabled, <command>crm</command>
-    waits until the transition is finished. Whenever a transaction is
-    started, dots are printed to indicate progress. Synchronous command
-    execution is only applicable for commands like <command>resource
-    start</command>.
+    waits until the transition is finished. Whenever a transaction is started,
+    dots are printed to indicate progress. Synchronous command execution is
+    only applicable for commands like <command>resource start</command>.
    </para>
    <note>
     <title>Differentiate Between Management and Configuration Subcommands</title>
     <para>
-     The <command>crm</command> tool has management capability (the
-     subcommands <command>resource</command> and <command>node</command>)
-     and can be used for configuration (<command>cib</command>,
-     <command>configure</command>).
+     The <command>crm</command> tool has management capability (the subcommands
+     <command>resource</command> and <command>node</command>) and can be used
+     for configuration (<command>cib</command>, <command>configure</command>).
     </para>
    </note>
    <para>
-    The following subsections give you an overview of some important aspects
-    of the <command>crm</command> tool.
+    The following subsections give you an overview of some important aspects of
+    the <command>crm</command> tool.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-ocf">
+  </section>
+  <section xml:id="sec-ha-manual-config-ocf">
    <title>Displaying Information about OCF Resource Agents</title>
    <para>
-    As you need to deal with resource agents in your cluster configuration
-    all the time, the <command>crm</command> tool contains the
+    As you need to deal with resource agents in your cluster configuration all
+    the time, the <command>crm</command> tool contains the
     <command>ra</command> command. Use it to show information about resource
     agents and to manage them (for additional information, see also
-    <xref
-     linkend="sec-ha-config-basics-raclasses"/>):
+    <xref linkend="sec-ha-config-basics-raclasses"/>):
    </para>
 <screen>&prompt.root;<command>crm</command> ra
 &prompt.crm.ra;</screen>
@@ -298,8 +287,7 @@ ManageVE            Pure-FTPd           Raid1               Route
 SAPDatabase         SAPInstance         SendArp             ServeRAID
 ...</screen>
    <para>
-    An overview of a resource agent can be viewed with
-    <command>info</command>:
+    An overview of a resource agent can be viewed with <command>info</command>:
    </para>
 <screen>&prompt.crm.ra;<command>info</command> ocf:linbit:drbd
 This resource agent manages a DRBD* resource
@@ -334,25 +322,22 @@ Operations' defaults (advisory minimum):
     <para>
      In the former example we used the internal shell of the
      <command>crm</command> command. However, you do not necessarily need to
-     use it. You get the same results if you add the respective subcommands
-     to <command>crm</command>. For example, you can list all the OCF
-     resource agents by entering <command>crm</command> <option>ra list
-     ocf</option> in your shell.
+     use it. You get the same results if you add the respective subcommands to
+     <command>crm</command>. For example, you can list all the OCF resource
+     agents by entering <command>crm</command> <option>ra list ocf</option> in
+     your shell.
     </para>
    </tip>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-template">
+  </section>
+  <section xml:id="sec-ha-manual-config-template">
    <title>Using Configuration Templates</title>
 <!-- Info from https://bugzilla.novell.com/show_bug.cgi?id=541490 -->
    <para>
-    Configuration templates are ready-made cluster configurations for the
-    crm shell. Do not confuse them with the <emphasis>resource
-    templates</emphasis> (as described in
-    <xref 
-        linkend="sec-ha-manual-config-rsc-template"/>). Those are
-    templates for the <emphasis>cluster</emphasis> and not for the crm
-    shell.
+    Configuration templates are ready-made cluster configurations for the crm
+    shell. Do not confuse them with the <emphasis>resource templates</emphasis>
+    (as described in <xref linkend="sec-ha-manual-config-rsc-template"/>).
+    Those are templates for the <emphasis>cluster</emphasis> and not for the
+    crm shell.
    </para>
    <para>
     Configuration templates require minimum effort to be tailored to the
@@ -361,10 +346,10 @@ Operations' defaults (advisory minimum):
     customization.
    </para>
    <para>
-    The following procedure shows how to create a simple yet functional
-    Apache configuration:
+    The following procedure shows how to create a simple yet functional Apache
+    configuration:
    </para>
-   <procedure id="pro-ha-manual-config-template">
+   <procedure xml:id="pro-ha-manual-config-template">
     <step>
      <para>
       Log in as &rootuser; and start the <command>crm</command> interactive
@@ -376,7 +361,7 @@ Operations' defaults (advisory minimum):
      <para>
       Create a new configuration from a configuration template:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         Switch to the <command>template</command> subcommand:
@@ -406,7 +391,7 @@ INFO: pulling in template virtual-ip</screen>
      <para>
       Define your parameters:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         List the configuration you have created:
@@ -414,22 +399,19 @@ INFO: pulling in template virtual-ip</screen>
 <screen>&prompt.crm.conf.templ;<command>list</command>
 g-intranet</screen>
       </step>
-      <step id="st-config-cli-show">
+      <step xml:id="st-config-cli-show">
        <para>
-        Display the minimum required changes that need to be filled out by
-        you:
+        Display the minimum required changes that need to be filled out by you:
        </para>
 <screen>&prompt.crm.conf.templ;<command>show</command>
 ERROR: 23: required parameter ip not set
 ERROR: 61: required parameter id not set
 ERROR: 65: required parameter configfile not set</screen>
       </step>
-      <step id="st-config-cli-edit">
+      <step xml:id="st-config-cli-edit">
        <para>
-        Invoke your preferred text editor and fill out all lines that have
-        been displayed as errors in
-        <xref
-         linkend="st-config-cli-show"/>:
+        Invoke your preferred text editor and fill out all lines that have been
+        displayed as errors in <xref linkend="st-config-cli-show"/>:
        </para>
 <screen>&prompt.crm.conf.templ;<command>edit</command></screen>
       </step>
@@ -450,10 +432,9 @@ ERROR: 65: required parameter configfile not set</screen>
     </step>
     <step>
      <para>
-      Show the configuration and check whether it is valid (bold text
-      depends on the configuration you have entered in
-      <xref
-       linkend="st-config-cli-edit" xrefstyle="select:label"/>):
+      Show the configuration and check whether it is valid (bold text depends
+      on the configuration you have entered in
+      <xref linkend="st-config-cli-edit" xrefstyle="select:label"/>):
      </para>
 <screen>&prompt.crm.conf.templ;<command>show</command>
 primitive virtual-ip ocf:heartbeat:IPaddr \
@@ -480,9 +461,9 @@ group <emphasis role="strong">g-intranet</emphasis> \
     </step>
    </procedure>
    <para>
-    It is possible to simplify the commands even more, if you know the
-    details. The above procedure can be summarized with the following
-    command on the shell:
+    It is possible to simplify the commands even more, if you know the details.
+    The above procedure can be summarized with the following command on the
+    shell:
    </para>
 <screen>&prompt.root;<command>crm</command> configure template \
    new g-intranet apache params \
@@ -491,21 +472,19 @@ group <emphasis role="strong">g-intranet</emphasis> \
     If you are inside your internal <command>crm</command> shell, use the
     following command:
    </para>
-<screen>&prompt.crm.conf.templ;<command
->new</command> intranet apache params \
+<screen>&prompt.crm.conf.templ;<command>new</command> intranet apache params \
    configfile="/etc/apache2/httpd.conf" ip="192.168.1.101"</screen>
    <para>
     However, the previous command only creates its configuration from the
     configuration template. It does not apply nor commit it to the CIB.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-shadowconfig">
+  </section>
+  <section xml:id="sec-ha-manual-config-shadowconfig">
    <title>Testing with Shadow Configuration</title>
    <para>
-    A shadow configuration is used to test different configuration
-    scenarios. If you have created several shadow configurations, you can
-    test them one by one to see the effects of your changes.
+    A shadow configuration is used to test different configuration scenarios.
+    If you have created several shadow configurations, you can test them one by
+    one to see the effects of your changes.
    </para>
    <para>
     The usual process looks like this:
@@ -557,15 +536,14 @@ INFO: myNewConfig shadow CIB created</screen>
 &prompt.crm;</screen>
     </step>
    </procedure>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-debugging">
+  </section>
+  <section xml:id="sec-ha-manual-config-debugging">
    <title>Debugging Your Configuration Changes</title>
    <para>
     Before loading your configuration changes back into the cluster, it is
     recommended to review your changes with <command>ptest</command>. The
-    <command>ptest</command> command can show a diagram of actions that will
-    be induced by committing the changes. You need the
+    <command>ptest</command> command can show a diagram of actions that will be
+    induced by committing the changes. You need the
     <systemitem>graphviz</systemitem> package to display the diagrams. The
     following example is a transcript, adding a monitor operation:
    </para>
@@ -580,39 +558,34 @@ primitive fence-&node2; stonith:apcsmart \
         op monitor interval="120m" timeout="60s"
 &prompt.crm.conf;<emphasis role="strong">ptest</emphasis>
 &prompt.crm.conf;commit</screen>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-diagram">
+  </section>
+  <section xml:id="sec-ha-manual-config-diagram">
    <title>Cluster Diagram</title>
    <para>
     To output a cluster diagram as shown in
-    <xref 
-    linkend="fig-ha-cluster-diagram"/>, use the command
-    <command>crm</command> <command>configure graph</command>. It displays
-    the current configuration on its current window, therefore requiring
-    X11.
+    <xref linkend="fig-ha-cluster-diagram"/>, use the command
+    <command>crm</command> <command>configure graph</command>. It displays the
+    current configuration on its current window, therefore requiring X11.
    </para>
    <para>
     If you prefer Scalable Vector Graphics (SVG), use the following command:
    </para>
 <screen>&prompt.root;<command>crm</command> configure graph dot config.svg svg</screen>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 <!--<sect1 id="sec-ha-manual-config-adminrights">
   <title>Setting Multilevel Administration Rights</title>
   <remark>FATE#304867 Multilevel administration rights for CIB</remark>
   <para></para>
  </sect1>-->
- <sect1 id="sec-ha-config-crm-global">
+ <section xml:id="sec-ha-config-crm-global">
   <title>Configuring Global Cluster Options</title>
-
   <para>
-   Global cluster options control how the cluster behaves when confronted
-   with certain situations. The predefined values can usually be kept.
-   However, to make key functions of your cluster work correctly, you need
-   to adjust the following parameters after basic cluster setup:
+   Global cluster options control how the cluster behaves when confronted with
+   certain situations. The predefined values can usually be kept. However, to
+   make key functions of your cluster work correctly, you need to adjust the
+   following parameters after basic cluster setup:
   </para>
-
   <procedure>
    <title>Modifying Global Cluster Options With <command>crm</command></title>
    <step>
@@ -623,8 +596,7 @@ primitive fence-&node2; stonith:apcsmart \
    </step>
    <step>
     <para>
-     Use the following commands to set the options for two-node clusters
-     only:
+     Use the following commands to set the options for two-node clusters only:
     </para>
 <screen>&prompt.crm.conf;<command>property</command> no-quorum-policy=ignore
 &prompt.crm.conf;<command>property</command> stonith-enabled=true</screen>
@@ -655,33 +627,29 @@ property $id="cib-bootstrap-options" \
 &prompt.crm.conf;<command>exit</command></screen>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-config-crm-resources">
+ </section>
+ <section xml:id="sec-ha-config-crm-resources">
   <title>Configuring Cluster Resources</title>
-
   <para>
-   As a cluster administrator, you need to create cluster resources for
-   every resource or application you run on servers in your cluster. Cluster
+   As a cluster administrator, you need to create cluster resources for every
+   resource or application you run on servers in your cluster. Cluster
    resources can include Web sites, e-mail servers, databases, file systems,
    virtual machines, and any other server-based applications or services you
    want to make available to users at all times.
   </para>
-
   <para>
    For an overview of resource types you can create, refer to
    <xref linkend="sec-ha-config-basics-resources-types"/>.
   </para>
-
-  <sect2 id="sec-ha-manual-config-create">
+  <section xml:id="sec-ha-manual-config-create">
    <title>Creating Cluster Resources</title>
    <para>
-    There are three types of RAs (Resource Agents) available with the
-    cluster (for background information, see
-    <xref
-     linkend="sec-ha-config-basics-raclasses"/>). To add a new
-    resource to the cluster, proceed as follows:
+    There are three types of RAs (Resource Agents) available with the cluster
+    (for background information, see
+    <xref linkend="sec-ha-config-basics-raclasses"/>). To add a new resource to
+    the cluster, proceed as follows:
    </para>
-   <procedure id="pro-ha-manual-config-create">
+   <procedure xml:id="pro-ha-manual-config-create">
     <step>
      <para>
       Log in as &rootuser; and start the <command>crm</command> tool:
@@ -695,12 +663,11 @@ property $id="cib-bootstrap-options" \
 <screen>&prompt.crm.conf;<command>primitive</command> myIP ocf:heartbeat:IPaddr \
      params ip=127.0.0.99 op monitor interval=60s</screen>
      <para>
-      The previous command configures a <quote>primitive</quote> with the
-      name <literal>myIP</literal>. You need to choose a class (here
+      The previous command configures a <quote>primitive</quote> with the name
+      <literal>myIP</literal>. You need to choose a class (here
       <literal>ocf</literal>), provider (<literal>heartbeat</literal>), and
       type (<literal>IPaddr</literal>). Furthermore, this primitive expects
-      other parameters like the IP address. Change the address to your
-      setup.
+      other parameters like the IP address. Change the address to your setup.
      </para>
     </step>
     <step>
@@ -725,38 +692,35 @@ property $id="cib-bootstrap-options" \
     <literal>stop</literal>, <literal>restart</literal>,
     <literal>reload</literal>, <literal>force-reload</literal>, and
     <literal>status</literal> as explained in
-    <ulink
-    url="http://www.linux-foundation.org/spec/refspecs/LSB_1.3.0/gLSB/gLSB/iniscrptact.html"/>.
+    <link
+    xlink:href="http://www.linux-foundation.org/spec/refspecs/LSB_1.3.0/gLSB/gLSB/iniscrptact.html"/>.
     </para>
     
     </sect2>-->
-  </sect2>
-
+  </section>
 <!-- FATE#310319 -->
-
-  <sect2 id="sec-ha-manual-config-rsc-template">
+  <section xml:id="sec-ha-manual-config-rsc-template">
    <title>Creating Resource Templates</title>
    <para>
     If you want to create several resources with similar configurations, a
     resource template simplifies the task. See also
-    <xref linkend="sec-ha-config-basics-constraints-templates"/> for some
-    basic background information. Do not confuse them with the
-    <quote>normal</quote> templates from
-    <xref linkend="sec-ha-manual-config-template"/>. Use the
+    <xref linkend="sec-ha-config-basics-constraints-templates"/> for some basic
+    background information. Do not confuse them with the <quote>normal</quote>
+    templates from <xref linkend="sec-ha-manual-config-template"/>. Use the
     <command>rsc_template</command> command to get familiar with the syntax:
    </para>
 <screen>&prompt.root;<command>crm</command> configure rsc_template
-usage: rsc_template &lt;name> [&lt;class>:[&lt;provider>:]]&lt;type>
-        [params &lt;param>=&lt;value> [&lt;param>=&lt;value>...]]
-        [meta &lt;attribute>=&lt;value> [&lt;attribute>=&lt;value>...]]
-        [utilization &lt;attribute>=&lt;value> [&lt;attribute>=&lt;value>...]]
+usage: rsc_template &lt;name&gt; [&lt;class&gt;:[&lt;provider&gt;:]]&lt;type&gt;
+        [params &lt;param&gt;=&lt;value&gt; [&lt;param&gt;=&lt;value&gt;...]]
+        [meta &lt;attribute&gt;=&lt;value&gt; [&lt;attribute&gt;=&lt;value&gt;...]]
+        [utilization &lt;attribute&gt;=&lt;value&gt; [&lt;attribute&gt;=&lt;value&gt;...]]
         [operations id_spec
-            [op op_type [&lt;attribute>=&lt;value>...] ...]]</screen>
+            [op op_type [&lt;attribute&gt;=&lt;value&gt;...] ...]]</screen>
    <para>
-    For example, the following command creates a new resource template with
-    the name <literal>BigVM</literal> derived from the
-    <literal>ocf:heartbeat:Xen</literal> resource and some default values
-    and operations:
+    For example, the following command creates a new resource template with the
+    name <literal>BigVM</literal> derived from the
+    <literal>ocf:heartbeat:Xen</literal> resource and some default values and
+    operations:
    </para>
 <screen>&prompt.crm.conf;<command>rsc_template</command> BigVM ocf:heartbeat:Xen \
    params allow_mem_management="true" \
@@ -764,16 +728,15 @@ usage: rsc_template &lt;name> [&lt;class>:[&lt;provider>:]]&lt;type>
    op stop timeout=10m \
    op start timeout=10m</screen>
    <para>
-    Once you defined the new resource template, you can use it in primitives
-    or reference it in order, colocation, or rsc_ticket constraints. To
-    reference the resource template, use the <literal>@</literal> sign:
+    Once you defined the new resource template, you can use it in primitives or
+    reference it in order, colocation, or rsc_ticket constraints. To reference
+    the resource template, use the <literal>@</literal> sign:
    </para>
 <screen>&prompt.crm.conf;<command>primitive</command> MyVM1 @BigVM \
    params xmfile="/etc/xen/shared-vm/MyVM1" name="MyVM1"</screen>
    <para>
     The new primitive MyVM1 is going to inherit everything from the BigVM
-    resource templates. For example, the equivalent of the above two would
-    be:
+    resource templates. For example, the equivalent of the above two would be:
    </para>
 <screen>&prompt.crm.conf;<command>primitive</command> MyVM1 ocf:heartbeat:Xen \
    params xmfile="/etc/xen/shared-vm/MyVM1" name="MyVM1" \
@@ -792,12 +755,11 @@ usage: rsc_template &lt;name> [&lt;class>:[&lt;provider>:]]&lt;type>
    <para>
     A resource template may be referenced in constraints to stand for all
     primitives which are derived from that template. This helps to produce a
-    more concise and clear cluster configuration. Resource template
-    references are allowed in all constraints except location constraints.
-    Colocation constraints may not contain more than one template reference.
+    more concise and clear cluster configuration. Resource template references
+    are allowed in all constraints except location constraints. Colocation
+    constraints may not contain more than one template reference.
    </para>
-  </sect2>
-
+  </section>
 <!--  <sect2 id="sec-ha-manual-config-example">
    <title>Example Configuration for an NFS Server</title>
    <para>
@@ -991,8 +953,7 @@ group nfs_group nfs_res ip_res
    </sect3>
   </sect2>
 -->
-
-  <sect2 id="sec-ha-manual-create-stonith">
+  <section xml:id="sec-ha-manual-create-stonith">
    <title>Creating a &stonith; Resource</title>
    <para>
     From the <command>crm</command> perspective, a &stonith; device is just
@@ -1024,10 +985,10 @@ ipmilan                    meatware                   nw_rpc100s
 rcd_serial                 rps10                      suicide
 wti_mpc                    wti_nps</screen>
     </step>
-    <step id="st-ha-manual-create-stonith-type">
+    <step xml:id="st-ha-manual-create-stonith-type">
      <para>
-      Choose a &stonith; type from the above list and view the list of
-      possible options. Use the following command:
+      Choose a &stonith; type from the above list and view the list of possible
+      options. Use the following command:
      </para>
 <screen>&prompt.crm;<command>ra</command> info stonith:external/ipmi
 IPMI STONITH external device (stonith:external/ipmi)
@@ -1070,10 +1031,9 @@ Operations' defaults (advisory minimum):
     </step>
     <step>
      <para>
-      Create the &stonith; resource with the <literal>stonith</literal>
-      class, the type you have chosen in
-      <xref linkend="st-ha-manual-create-stonith-type" xrefstyle="select:label nopage"
-      />,
+      Create the &stonith; resource with the <literal>stonith</literal> class,
+      the type you have chosen in
+      <xref linkend="st-ha-manual-create-stonith-type" xrefstyle="select:label nopage"/>,
       and the respective parameters if needed, for example:
      </para>
 <screen>&prompt.crm;<command>configure</command>
@@ -1084,33 +1044,31 @@ Operations' defaults (advisory minimum):
     op monitor interval=60m timeout=120s  </screen>
     </step>
    </procedure>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-constraints">
+  </section>
+  <section xml:id="sec-ha-manual-config-constraints">
    <title>Configuring Resource Constraints</title>
    <para>
     Having all the resources configured is only one part of the job. Even if
     the cluster knows all needed resources, it might still not be able to
-    handle them correctly. For example, try not to mount the file system on
-    the slave node of DRBD (in fact, this would fail with DRBD). Define
-    constraints to make these kind of information available to the cluster.
+    handle them correctly. For example, try not to mount the file system on the
+    slave node of DRBD (in fact, this would fail with DRBD). Define constraints
+    to make these kind of information available to the cluster.
    </para>
    <para>
     For more information about constraints, see
-    <xref
-    linkend="sec-ha-config-basics-constraints"/>.
+    <xref linkend="sec-ha-config-basics-constraints"/>.
    </para>
-   <sect3 id="sec-ha-manual-config-constraints-locational">
+   <section xml:id="sec-ha-manual-config-constraints-locational">
     <title>Locational Constraints</title>
     <para>
-     The <command>location</command> command defines on which nodes a
-     resource may be run, may not be run or is preferred to be run.
+     The <command>location</command> command defines on which nodes a resource
+     may be run, may not be run or is preferred to be run.
     </para>
     <para>
-     This type of constraint may be added multiple times for each resource.
-     All <literal>location</literal> constraints are evaluated for a given
-     resource. A simple example that expresses a preference to run the
-     resource <literal>fs1</literal> on the node with the name
+     This type of constraint may be added multiple times for each resource. All
+     <literal>location</literal> constraints are evaluated for a given
+     resource. A simple example that expresses a preference to run the resource
+     <literal>fs1</literal> on the node with the name
      <systemitem class="server">&node1;</systemitem> to 100 would be the
      following:
     </para>
@@ -1148,11 +1106,11 @@ Operations' defaults (advisory minimum):
     rule pingd: defined pingd</screen>
     <para>
      Another use case for location constraints are grouping primitives as a
-     <emphasis>resource set</emphasis>. This can be useful if several
-     resources depend on, for example, a ping attribute for network
-     connectivity. In former times, the <literal>-inf/ping</literal> rules
-     needed to be duplicated several times in the configuration, making it
-     unnecessarily complex.
+     <emphasis>resource set</emphasis>. This can be useful if several resources
+     depend on, for example, a ping attribute for network connectivity. In
+     former times, the <literal>-inf/ping</literal> rules needed to be
+     duplicated several times in the configuration, making it unnecessarily
+     complex.
     </para>
     <para>
      The following example creates a resource set
@@ -1164,25 +1122,24 @@ Operations' defaults (advisory minimum):
 &prompt.crm.conf;<command>location</command> loc-&node1; { vip1 vip2 } inf: &node1; </screen>
     <para>
      In some cases it is much more efficient and convenient to use resource
-     patterns for your <command>location</command> command. A resource
-     pattern is a regular expression between two slashes. For example, the
-     above virtual IP addresses can be all matched with the following:
+     patterns for your <command>location</command> command. A resource pattern
+     is a regular expression between two slashes. For example, the above
+     virtual IP addresses can be all matched with the following:
     </para>
 <screen>&prompt.crm.conf;<command>location</command>  loc-&node1; /vip.*/ inf: &node1;</screen>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-collocational">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-collocational">
     <title>Colocational Constraints</title>
     <para>
-     The <command>colocation</command> command is used to define what
-     resources should run on the same or on different hosts.
+     The <command>colocation</command> command is used to define what resources
+     should run on the same or on different hosts.
     </para>
     <para>
      It is only possible to set a score of either +inf or -inf, defining
-     resources that must always or must never run on the same node. It is
-     also possible to use non-infinite scores. In that case the colocation
-     is called <emphasis>advisory</emphasis> and the cluster may decide not
-     to follow them in favor of not stopping other resources if there is a
-     conflict.
+     resources that must always or must never run on the same node. It is also
+     possible to use non-infinite scores. In that case the colocation is called
+     <emphasis>advisory</emphasis> and the cluster may decide not to follow
+     them in favor of not stopping other resources if there is a conflict.
     </para>
     <para>
      For example, to run the resources with the IDs
@@ -1196,11 +1153,11 @@ Operations' defaults (advisory minimum):
     -->
 <screen>&prompt.crm.conf;<command>colocation</command> nfs_on_filesystem inf: nfs_group filesystem_resource</screen>
     <para>
-     For a master slave configuration, it is necessary to know if the
-     current node is a master in addition to running the resource locally.
+     For a master slave configuration, it is necessary to know if the current
+     node is a master in addition to running the resource locally.
     </para>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-weak-bond">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-weak-bond">
     <title>Collocating Sets for Resources Without Dependency</title>
 <!-- FATE#314917 -->
     <para>
@@ -1210,8 +1167,7 @@ Operations' defaults (advisory minimum):
     </para>
     <para>
      Use the command <command>weak-bond</command> if you want to place
-     resources on the same node, but without any action if one of them
-     fails.
+     resources on the same node, but without any action if one of them fails.
     </para>
 <screen>&prompt.root;<command>crm</command> configure assist weak-bond RES1 RES2</screen>
     <para>
@@ -1219,23 +1175,22 @@ Operations' defaults (advisory minimum):
      resource and a colocation constraint with the given resources
      automatically.
     </para>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-ordering">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-ordering">
     <title>Ordering Constraints</title>
     <para>
      The <command>order</command> command defines a sequence of action.
     </para>
     <para>
      Sometimes it is necessary to provide an order of resource actions or
-     operations. For example, you cannot mount a file system before the
-     device is available to a system. Ordering constraints can be used to
-     start or stop a service right before or after a different resource
-     meets a special condition, such as being started, stopped, or promoted
-     to master.
+     operations. For example, you cannot mount a file system before the device
+     is available to a system. Ordering constraints can be used to start or
+     stop a service right before or after a different resource meets a special
+     condition, such as being started, stopped, or promoted to master.
     </para>
     <para>
-     Use the following command in the <command>crm</command> shell to
-     configure an ordering constraint:
+     Use the following command in the <command>crm</command> shell to configure
+     an ordering constraint:
     </para>
 <!-- order ID score-type: FIRST-RSC[:ACTION] THEN-RSC[:ACTION] 
      
@@ -1243,20 +1198,18 @@ Operations' defaults (advisory minimum):
      
      Example: order c_apache_1 mandatory: apache:start ip_1
     -->
-<screen>&prompt.crm.conf;<command
- >order</command> nfs_after_filesystem mandatory: filesystem_resource nfs_group</screen>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-example">
+<screen>&prompt.crm.conf;<command>order</command> nfs_after_filesystem mandatory: filesystem_resource nfs_group</screen>
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-example">
     <title>Constraints for the Example Configuration</title>
     <para>
      The example used for this section would not work without additional
-     constraints. It is essential that all resources run on the same machine
-     as the master of the DRBD resource. The DRBD resource must be master
-     before any other resource starts. Trying to mount the DRBD device when
-     it is not the master simply fails. The following constraints must be
-     fulfilled:
+     constraints. It is essential that all resources run on the same machine as
+     the master of the DRBD resource. The DRBD resource must be master before
+     any other resource starts. Trying to mount the DRBD device when it is not
+     the master simply fails. The following constraints must be fulfilled:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        The file system must always be on the same node as the master of the
@@ -1267,8 +1220,8 @@ Operations' defaults (advisory minimum):
      </listitem>
      <listitem>
       <para>
-       The NFS server and the IP address must be on the same node as the
-       file system.
+       The NFS server and the IP address must be on the same node as the file
+       system.
       </para>
 <screen>&prompt.crm.conf;<command>colocation</command> nfs_with_fs inf: \
    nfs_group filesystem_resource</screen>
@@ -1290,23 +1243,22 @@ Operations' defaults (advisory minimum):
     drbd_resource:promote filesystem_resource:start</screen>
      </listitem>
     </itemizedlist>
-   </sect3>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-failover">
+   </section>
+  </section>
+  <section xml:id="sec-ha-manual-config-failover">
    <title>Specifying Resource Failover Nodes</title>
    <para>
     To determine a resource failover, use the meta attribute
-    migration-threshold. In case failcount exceeds migration-threshold on
-    all nodes, the resource will remain stopped. For example:
+    migration-threshold. In case failcount exceeds migration-threshold on all
+    nodes, the resource will remain stopped. For example:
    </para>
 <!-- Example (rsc is r1): -->
 <screen>&prompt.crm.conf;<command>location</command> rsc1-&node1; rsc1 100: &node1;</screen>
    <para>
     Normally, rsc1 prefers to run on &node1;. If it fails there,
-    migration-threshold is checked and compared to the failcount. If
-    failcount >= migration-threshold then it is migrated to the node with
-    the next best preference.
+    migration-threshold is checked and compared to the failcount. If failcount
+    &gt;= migration-threshold then it is migrated to the node with the next
+    best preference.
    </para>
    <para>
     Start failures set the failcount to inf depend on the
@@ -1314,38 +1266,32 @@ Operations' defaults (advisory minimum):
     fencing. If there is no STONITH defined, the resource will not migrate.
    </para>
    <para>
-    For an overview, refer to
-    <xref
-    linkend="sec-ha-config-basics-failover"/>.
+    For an overview, refer to <xref linkend="sec-ha-config-basics-failover"/>.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-failback">
+  </section>
+  <section xml:id="sec-ha-manual-config-failback">
    <title>Specifying Resource Failback Nodes (Resource Stickiness)</title>
    &failback-nodes;
    <para>
-    For an overview, refer to
-    <xref
-    linkend="sec-ha-config-basics-failback"/>.
+    For an overview, refer to <xref linkend="sec-ha-config-basics-failback"/>.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-utilization">
+  </section>
+  <section xml:id="sec-ha-manual-config-utilization">
    <title>Configuring Placement of Resources Based on Load Impact</title>
    <para>
     Some resources may have specific capacity requirements such as minimum
-    amount of memory. Otherwise, they may fail to start completely or run
-    with degraded performance.
+    amount of memory. Otherwise, they may fail to start completely or run with
+    degraded performance.
    </para>
    <para>
-    To take this into account, the &hasi; allows you to specify the
-    following parameters:
+    To take this into account, the &hasi; allows you to specify the following
+    parameters:
    </para>
    <remark>dejan 2011-11-24: It is not clear whether location 
       constraints have any influence on resource placement in case 
       placement-strategy is set to something other than default. 
       Or is it explained elsewhere?</remark>
-   <orderedlist>
+   <orderedlist spacing="normal">
     <listitem>
      <para>
       The capacity a certain node <emphasis>provides</emphasis>.
@@ -1368,22 +1314,22 @@ Operations' defaults (advisory minimum):
     <xref linkend="sec-ha-config-basics-utilization"/>.
    </para>
    <para>
-    To configure the resource's requirements and the capacity a node
-    provides, use utilization attributes.
+    To configure the resource's requirements and the capacity a node provides,
+    use utilization attributes.
 <!-- as described in
     <xref linkend="pro-ha-config-gui-capacity"/>.-->
     <remark>taroth 2013-12-04:
      todo - check if this can be done with hawk and adjust link accordingly</remark>
-    You can name the utilization attributes according to your preferences
-    and define as many name/value pairs as your configuration needs. In
-    certain cases, some agents update the utilization themselves, for
-    example the <systemitem class="resource">VirtualDomain</systemitem>.
+    You can name the utilization attributes according to your preferences and
+    define as many name/value pairs as your configuration needs. In certain
+    cases, some agents update the utilization themselves, for example the
+    <systemitem class="resource">VirtualDomain</systemitem>.
    </para>
    <para>
     In the following example, we assume that you already have a basic
-    configuration of cluster nodes and resources. You now additionally want
-    to configure the capacities a certain node provides and the capacity a
-    certain resource requires.
+    configuration of cluster nodes and resources. You now additionally want to
+    configure the capacities a certain node provides and the capacity a certain
+    resource requires.
 <!--The procedure of adding utilization
      attributes is basically the same and only differs in
      <xref
@@ -1411,8 +1357,8 @@ Operations' defaults (advisory minimum):
      --><replaceable>NODE_1</replaceable> utilization memory=16384<!--
       --> cpu=8</screen>
      <para>
-      With these values, <replaceable>NODE_1</replaceable> would be assumed
-      to provide 16GB of memory and 8 CPU cores to resources.
+      With these values, <replaceable>NODE_1</replaceable> would be assumed to
+      provide 16GB of memory and 8 CPU cores to resources.
      </para>
     </step>
     <step>
@@ -1465,26 +1411,25 @@ Operations' defaults (advisory minimum):
     params xmfile="/etc/xen/shared-vm/vm4"
 &prompt.crm.conf;<command>property</command> placement-strategy="minimal"</screen>
    <para>
-    With all three nodes up, xenA will be placed onto a node first, followed
-    by xenD. xenB and xenC would either be allocated together or one of them
-    with xenD.
+    With all three nodes up, xenA will be placed onto a node first, followed by
+    xenD. xenB and xenC would either be allocated together or one of them with
+    xenD.
    </para>
    <para>
-    If one node failed, too little total memory would be available to host
-    them all. xenA would be ensured to be allocated, as would xenD. However,
-    only one of xenB or xenC could still be placed, and since their priority
-    is equal, the result is not defined yet. To resolve this ambiguity as
-    well, you would need to set a higher priority for either one.
+    If one node failed, too little total memory would be available to host them
+    all. xenA would be ensured to be allocated, as would xenD. However, only
+    one of xenB or xenC could still be placed, and since their priority is
+    equal, the result is not defined yet. To resolve this ambiguity as well,
+    you would need to set a higher priority for either one.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-monitor">
+  </section>
+  <section xml:id="sec-ha-manual-config-monitor">
    <title>Configuring Resource Monitoring</title>
 <!--<remark>Add the new monitor command: $ crm configure monitor usage: monitor &lt;rsc>[:&lt;role>]
     &lt;interval>[:&lt;timeout>] </remark>-->
    <para>
-    To monitor a resource, there are two possibilities: either define a
-    monitor operation with the <command>op</command> keyword or use the
+    To monitor a resource, there are two possibilities: either define a monitor
+    operation with the <command>op</command> keyword or use the
     <command>monitor</command> command. The following example configures an
     Apache resource and monitors it every 60 seconds with the
     <literal>op</literal> keyword:
@@ -1500,20 +1445,18 @@ Operations' defaults (advisory minimum):
 &prompt.crm.conf;<command>monitor</command> apache 60s:30s</screen>
    <para>
     For an overview, refer to
-    <xref
-    linkend="sec-ha-config-basics-monitoring"/>.
+    <xref linkend="sec-ha-config-basics-monitoring"/>.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-group">
+  </section>
+  <section xml:id="sec-ha-manual-config-group">
    <title>Configuring a Cluster Resource Group</title>
 <!--Text mostly copied from "Advanced Configuration"-->
    <para>
     One of the most common elements of a cluster is a set of resources that
     needs to be located together. Start sequentially and stop in the reverse
-    order. To simplify this configuration we support the concept of groups.
-    The following example creates two primitives (an IP address and an
-    e-mail resource):
+    order. To simplify this configuration we support the concept of groups. The
+    following example creates two primitives (an IP address and an e-mail
+    resource):
    </para>
    <procedure>
     <step>
@@ -1542,50 +1485,43 @@ Operations' defaults (advisory minimum):
    </procedure>
    <remark>toms 2013-03-28: FATE#313193:</remark>
    <para>
-    To change the order of a group member, use the
-    <command>modgroup</command> command from the
-    <command>configure</command> subcommand. Use the following commands to
-    move the primitive <literal>Email</literal> before
+    To change the order of a group member, use the <command>modgroup</command>
+    command from the <command>configure</command> subcommand. Use the following
+    commands to move the primitive <literal>Email</literal> before
     <literal>Public-IP</literal>. (This is just to demonstrate the feature):
    </para>
-<screen>&prompt.crm.conf;<command>modgroup</command
- > g-shortcut add p.lsb-exim before p.public-ip</screen>
+<screen>&prompt.crm.conf;<command>modgroup</command> g-shortcut add p.lsb-exim before p.public-ip</screen>
    <para>
     In case you want to remove a resource from a group (for example,
     <literal>Email</literal>), use this command:
    </para>
-<screen>&prompt.crm.conf;<command>modgroup</command
- > g-shortcut remove p.lsb-exim</screen>
+<screen>&prompt.crm.conf;<command>modgroup</command> g-shortcut remove p.lsb-exim</screen>
    <para>
     For an overview, refer to
-    <xref
-    linkend="sec-ha-config-basics-resources-advanced-groups"/>.
+    <xref linkend="sec-ha-config-basics-resources-advanced-groups"/>.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-clone">
+  </section>
+  <section xml:id="sec-ha-manual-config-clone">
    <title>Configuring a Clone Resource</title>
 <!-- Text mostly copied from "Advanced Configuration" -->
    <para>
 <!-- FIXME -->
-    Clones were initially conceived as a convenient way to start N instances
-    of an IP resource and have them distributed throughout the cluster for
-    load balancing. They have turned out to be useful for several other
-    purposes, including integrating with DLM, the fencing subsystem and
-    OCFS2. You can clone any resource, provided the resource agent supports
-    it.
+    Clones were initially conceived as a convenient way to start N instances of
+    an IP resource and have them distributed throughout the cluster for load
+    balancing. They have turned out to be useful for several other purposes,
+    including integrating with DLM, the fencing subsystem and OCFS2. You can
+    clone any resource, provided the resource agent supports it.
    </para>
    <para>
     Learn more about cloned resources in
-    <xref 
-    linkend="sec-ha-config-basics-resources-advanced-clones"/>.
+    <xref linkend="sec-ha-config-basics-resources-advanced-clones"/>.
    </para>
-   <sect3 id="sec-ha-manual-config-clone-anonymous">
+   <section xml:id="sec-ha-manual-config-clone-anonymous">
     <title>Creating Anonymous Clone Resources</title>
     <para>
-     To create an anonymous clone resource, first create a primitive
-     resource and then refer to it with the <command>clone</command>
-     command. Do the following:
+     To create an anonymous clone resource, first create a primitive resource
+     and then refer to it with the <command>clone</command> command. Do the
+     following:
     </para>
     <procedure>
      <step>
@@ -1608,7 +1544,7 @@ Operations' defaults (advisory minimum):
 <screen>&prompt.crm.conf;<command>clone</command> cl-apache Apache </screen>
      </step>
     </procedure>
-   </sect3>
+   </section>
 <!-- 
     <sect2 id="sec-ha-manual-config-clone-globally" os="notdefinied">
     <title>Creating Globally Unique Clone Resources</title>
@@ -1616,12 +1552,12 @@ Operations' defaults (advisory minimum):
     <para> FIXME </para>
     </sect2>
    -->
-   <sect3 id="sec-ha-manual-config-clone-stateful">
+   <section xml:id="sec-ha-manual-config-clone-stateful">
     <title>Creating Stateful/Multi-State Clone Resources</title>
     <para>
-     To create a stateful clone resource, first create a primitive resource
-     and then the multi-state resource. The multi-state resource must
-     support at least promote and demote operations.
+     To create a stateful clone resource, first create a primitive resource and
+     then the multi-state resource. The multi-state resource must support at
+     least promote and demote operations.
     </para>
     <procedure>
      <step>
@@ -1646,23 +1582,21 @@ Operations' defaults (advisory minimum):
 <screen>&prompt.crm.conf;<command>ms</command> ms-rsc my-rsc</screen>
      </step>
     </procedure>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-crm">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-crm">
   <title>Managing Cluster Resources</title>
-
   <para>
    Apart from the possibility to configure your cluster resources, the
    <command>crm</command> tool also allows you to manage existing resources.
    The following subsections gives you an overview.
   </para>
-
-  <sect2 id="sec-ha-manual-config-start">
+  <section xml:id="sec-ha-manual-config-start">
    <title>Starting a New Cluster Resource</title>
    <para>
-    To start a new cluster resource you need the respective identifier.
-    Proceed as follows:
+    To start a new cluster resource you need the respective identifier. Proceed
+    as follows:
    </para>
    <procedure>
     <step>
@@ -1686,16 +1620,15 @@ Operations' defaults (advisory minimum):
 <screen>&prompt.crm.res;<command>start</command>&nbsp;<replaceable>ID</replaceable></screen>
     </step>
    </procedure>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-cleanup">
+  </section>
+  <section xml:id="sec-ha-manual-config-cleanup">
    <title>Cleaning Up Resources</title>
    <para>
     A resource will be automatically restarted if it fails, but each failure
     raises the resource's failcount. If a
-    <literal>migration-threshold</literal> has been set for that resource,
-    the node will no longer be allowed to run the resource as soon as the
-    number of failures has reached the migration threshold.
+    <literal>migration-threshold</literal> has been set for that resource, the
+    node will no longer be allowed to run the resource as soon as the number of
+    failures has reached the migration threshold.
    </para>
    <procedure>
     <step>
@@ -1721,9 +1654,8 @@ Resource Group: dlm-clvm:1
 <screen>&prompt.root;<command>crm</command> resource cleanup dlm</screen>
     </step>
    </procedure>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-remove">
+  </section>
+  <section xml:id="sec-ha-manual-config-remove">
    <title>Removing a Cluster Resource</title>
    <para>
     Proceed as follows to remove a cluster resource:
@@ -1742,8 +1674,8 @@ Resource Group: dlm-clvm:1
      </para>
 <screen>&prompt.crm;<command>resource</command> status</screen>
      <para>
-      For example, the output can look like this (whereas myIP is the
-      relevant identifier of your resource):
+      For example, the output can look like this (whereas myIP is the relevant
+      identifier of your resource):
      </para>
 <screen>myIP    (ocf::IPaddr:heartbeat) ...</screen>
     </step>
@@ -1761,36 +1693,33 @@ Resource Group: dlm-clvm:1
 <screen>&prompt.crm;<command>configure</command> commit</screen>
     </step>
    </procedure>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-migrate">
+  </section>
+  <section xml:id="sec-ha-manual-config-migrate">
    <title>Migrating a Cluster Resource</title>
    <para>
-    Although resources are configured to automatically fail over (or
-    migrate) to other nodes of the cluster in the event of a hardware or
-    software failure, you can also manually move a resource to another node
-    in the cluster using either the &hbgui; or the command line.
+    Although resources are configured to automatically fail over (or migrate)
+    to other nodes of the cluster in the event of a hardware or software
+    failure, you can also manually move a resource to another node in the
+    cluster using either the &hbgui; or the command line.
    </para>
    <para>
-    Use the <command>migrate</command> command for this task. For example,
-    to migrate the resource <literal>ipaddress1</literal> to a cluster node
-    named <systemitem class="domainname">&node2;</systemitem>, use these
-    commands:
+    Use the <command>migrate</command> command for this task. For example, to
+    migrate the resource <literal>ipaddress1</literal> to a cluster node named
+    <systemitem class="domainname">&node2;</systemitem>, use these commands:
    </para>
 <screen>&prompt.root;<command>crm</command> resource
 &prompt.crm.res;<command>migrate</command> ipaddress1 &node2;</screen>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-tag">
+  </section>
+  <section xml:id="sec-ha-manual-config-tag">
    <title>Grouping/Tagging Resources</title>
 <!-- https://fate.suse.com/315101 -->
    <para>
-    Tags are a way to refer to multiple resources at once, without creating
-    any colocation or ordering relationship between them. This can be useful
-    for grouping conceptually related resources. For example, if you have
-    several resources related to a database, create a tag called
-    <literal>databases</literal> and add all resources related to the
-    database to this tag:
+    Tags are a way to refer to multiple resources at once, without creating any
+    colocation or ordering relationship between them. This can be useful for
+    grouping conceptually related resources. For example, if you have several
+    resources related to a database, create a tag called
+    <literal>databases</literal> and add all resources related to the database
+    to this tag:
    </para>
 <screen>&prompt.root;<command>crm</command> configure databases: db1 db2 db3</screen>
    <para>
@@ -1801,35 +1730,34 @@ Resource Group: dlm-clvm:1
     Similarly, you can stop them all too:
    </para>
 <screen>&prompt.root;<command>crm</command> resource stop databases</screen>
-   
    <note>
     <title>Upgrading the CIB Syntax Version</title>
-    <para>Tags (for grouping resources) and some ACL features only work with the
-     CIB syntax version <literal>pacemaker-2.0</literal> or higher. For details
-     on how to check this and upgrade the CIB version, see the instructions in
-     the <citetitle>&haguide;</citetitle> for &productname;
-     &productnumber;, section <citetitle> Upgrading from SLE HA 11 SP3 to SLE
-      HA 11 SP4</citetitle>.
+    <para>
+     Tags (for grouping resources) and some ACL features only work with the CIB
+     syntax version <literal>pacemaker-2.0</literal> or higher. For details on
+     how to check this and upgrade the CIB version, see the instructions in the
+     <citetitle>&haguide;</citetitle> for &productname; &productnumber;,
+     section <citetitle> Upgrading from SLE HA 11 SP3 to SLE HA 11
+     SP4</citetitle>.
     </para>
    </note>
-  </sect2>
-
-  <sect2 id="sec-ha-manual-config-cli-maint-mode">
+  </section>
+  <section xml:id="sec-ha-manual-config-cli-maint-mode">
    <title>Using Maintenance Mode</title>
 <!--   <remark>toms 2013-03-28: FATE#313381</remark>-->
    
    &maint-mode-basics;
    <para>
-    With regard to that, &hasi; provides <literal>maintenance</literal>
-    options on several levels:
+    With regard to that, &hasi; provides <literal>maintenance</literal> options
+    on several levels:
    </para>
    <variablelist>
     <varlistentry>
      <term>Applying Maintenance Mode to your Cluster</term>
      <listitem>
       <para>
-       In case you want to put the whole cluster in maintenance mode, use
-       the following command:
+       In case you want to put the whole cluster in maintenance mode, use the
+       following command:
       </para>
 <screen>&prompt.root;<command>crm</command> configure property maintenance-mode=true</screen>
      </listitem>
@@ -1842,14 +1770,14 @@ Resource Group: dlm-clvm:1
        If your cluster consists of more than 3 nodes, you can 
        easily set one node to maintenance mode, while the other nodes 
        continue their normal operation.-->
-       For example, to put the node <literal>&node1;</literal> into
-       maintenance mode:
+       For example, to put the node <literal>&node1;</literal> into maintenance
+       mode:
       </para>
 <screen>&prompt.root;<command>crm</command> node maintenance &node1;</screen>
       <para>
-       The <command>crm status</command> command will show the maintenance
-       mode for &node1; and no more resources will be allocated to that
-       node. To remove the maintenance flag from the node, use:
+       The <command>crm status</command> command will show the maintenance mode
+       for &node1; and no more resources will be allocated to that node. To
+       remove the maintenance flag from the node, use:
       </para>
 <screen>&prompt.root;<command>crm</command> node ready &node1;</screen>
      </listitem>
@@ -1870,90 +1798,72 @@ Resource Group: dlm-clvm:1
    &warning-maint-mode;
    
    <para>
-    For more details on what happens to the resources and the cluster while
-    in maintenance mode, see
-    <xref linkend="sec-ha-config-basics-maint-mode"/>.
+    For more details on what happens to the resources and the cluster while in
+    maintenance mode, see <xref linkend="sec-ha-config-basics-maint-mode"/>.
    </para>
-  </sect2>
-</sect1>
+  </section>
+ </section>
 <!-- FATE#309125 -->
- <sect1 id="sec-ha-config-crm-setpwd">
+ <section xml:id="sec-ha-config-crm-setpwd">
   <title>Setting Passwords Independent of <filename>cib.xml</filename></title>
-
   <para>
-   In case your cluster configuration contains sensitive information, such
-   as passwords, it should be stored in local files. That way, these
-   parameters will never be logged or leaked in support reports.
+   In case your cluster configuration contains sensitive information, such as
+   passwords, it should be stored in local files. That way, these parameters
+   will never be logged or leaked in support reports.
   </para>
-
   <para>
    Before using <command>secret</command>, better run the
    <command>show</command> command first to get an overview of all your
    resources:
   </para>
-
 <screen>&prompt.root;<command>crm</command> configure show
 primitive mydb ocf:heartbeat:mysql \
    params replication_user=admin ...</screen>
-
   <para>
    If you want to set a password for the above <literal>mydb</literal>
    resource, use the following commands:
   </para>
-
 <screen>&prompt.root;<command>crm</command> resource secret mydb set passwd linux
 INFO: syncing /var/lib/heartbeat/lrm/secrets/mydb/passwd to [your node list]</screen>
-
   <para>
    You can get the saved password back with:
   </para>
-
 <screen>&prompt.root;<command>crm</command> resource secret mydb show passwd
 linux</screen>
-
   <para>
    Note that the parameters need to be synchronized between nodes; the
    <command>crm resource secret</command> command will take care of that. We
    highly recommend to only use this command to manage secret parameters.
   </para>
- </sect1>
+ </section>
 <!-- FATE#310358, #310174, #310172 -->
- <sect1 id="sec-ha-config-crm-history">
+ <section xml:id="sec-ha-config-crm-history">
   <title>Retrieving History Information</title>
-
   <para>
-   Investigating the cluster history is a complex task. To simplify this
-   task, the crm shell contains the <command>history</command> command with
-   its subcommands. It is assumed SSH is configured correctly.
+   Investigating the cluster history is a complex task. To simplify this task,
+   the crm shell contains the <command>history</command> command with its
+   subcommands. It is assumed SSH is configured correctly.
   </para>
-
   <para>
    Each cluster moves states, migrates resources, or starts important
    processes. All these actions can be retrieved by subcommands of
    <command>history</command>. Alternatively, use &hawk; as explained in
    <xref linkend="pro-ha-config-hawk-history-explorer"/>.
   </para>
-
   <para>
    By default, all <command>history</command> commands look at the events of
-   the last hour. To change this time frame, use the
-   <command>limit</command> subcommand. The syntax is:
+   the last hour. To change this time frame, use the <command>limit</command>
+   subcommand. The syntax is:
   </para>
-
 <screen>&prompt.root;<command>crm</command> history
-&prompt.crm.hist;<command>limit</command> <replaceable
-  >FROM_TIME</replaceable> [<replaceable>TO_TIME</replaceable>]</screen>
-
+&prompt.crm.hist;<command>limit</command> <replaceable>FROM_TIME</replaceable> [<replaceable>TO_TIME</replaceable>]</screen>
   <para>
    Some valid examples include:
   </para>
-
   <variablelist>
    <varlistentry>
-    <term><command>limit</command><literal>4:00pm</literal>
-    </term>
-    <term><command>limit</command><literal>16:00</literal>
-    </term>
+    <term><command>limit</command><literal>4:00pm</literal></term>
+    <term><command>limit</command><literal>16:00</literal></term>
     <listitem>
      <para>
       Both commands mean the same, today at 4pm.
@@ -1961,8 +1871,7 @@ linux</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>limit</command><literal>2012/01/12 6pm</literal>
-    </term>
+    <term><command>limit</command><literal>2012/01/12 6pm</literal></term>
     <listitem>
      <para>
       January 12th 2012 at 6pm
@@ -1970,8 +1879,7 @@ linux</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>limit</command><literal>"Sun 5 20:46"</literal>
-    </term>
+    <term><command>limit</command><literal>"Sun 5 20:46"</literal></term>
     <listitem>
      <para>
       In the current year of the current month at Sunday the 5th at 8:46pm
@@ -1979,79 +1887,61 @@ linux</screen>
     </listitem>
    </varlistentry>
   </variablelist>
-
 <!-- On SLE 11 HA SP2: 
     # rpm -q python-dateutil
 python-dateutil-1.4.1-1.20
   -->
-
   <para>
    Find more examples and how to create time frames at
-   <ulink
-    url="http://labix.org/python-dateutil"/>.
+   <link xlink:href="http://labix.org/python-dateutil"/>.
   </para>
-
   <para>
    The <command>info</command> subcommand shows all the parameters which are
    covered by the <command>crm_report</command>:
   </para>
-
 <screen>&prompt.crm.hist;<command>info</command>
 Source: live
 Period: 2012-01-12 14:10:56 - end
 Nodes: &node1;
 Groups: 
 Resources:</screen>
-
   <para>
    To limit <command>crm_report</command> to certain parameters view the
    available options with the subcommand <command>help</command>.
   </para>
-
   <para>
    To narrow down the level of detail, use the subcommand
    <command>detail</command> with a level:
   </para>
-
 <screen>&prompt.crm.hist;<command>detail</command> 2</screen>
-
   <para>
    The higher the number, the more detailed your report will be. Default is
    <literal>0</literal> (zero).
   </para>
-
   <para>
-   After you have set above parameters, use <command>log</command> to show
-   the log messages.
+   After you have set above parameters, use <command>log</command> to show the
+   log messages.
   </para>
-
   <para>
    To display the last transition, use the following command:
   </para>
-
 <screen>&prompt.crm.hist;<command>transition</command> -1
 INFO: fetching new logs, please wait ...</screen>
-
   <para>
    This command fetches the logs and runs <command>dotty</command> (from the
    <systemitem class="resource">graphviz</systemitem> package) to show the
-   transition graph. The shell opens the log file which you can browse with
-   the <keycap
-        function="down"/> and <keycap function="up"/> cursor
-   keys.
+   transition graph. The shell opens the log file which you can browse with the
+   <keycap function="down"/> and <keycap function="up"/> cursor keys.
   </para>
-
   <para>
    If you do not want to open the transition graph, use the
    <option>nograph</option> option:
   </para>
-
 <screen>&prompt.crm.hist;<command>transition</command> -1 nograph</screen>
- </sect1>
- <sect1 id="sec-ha-config-crm-more">
+ </section>
+ <section xml:id="sec-ha-config-crm-more">
   <title>For More Information</title>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      The crm man page.
@@ -2060,7 +1950,7 @@ INFO: fetching new logs, please wait ...</screen>
    <listitem>
     <para>
      Visit the upstream project documentation at
-     <ulink url="http://crmsh.github.io/documentation"/>.
+     <link xlink:href="http://crmsh.github.io/documentation"/>.
     </para>
    </listitem>
    <listitem>
@@ -2069,5 +1959,5 @@ INFO: fetching new logs, please wait ...</screen>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>

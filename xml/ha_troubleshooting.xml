@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 <!--taroth 2011-10-12: toms, please also have a look at dmuhamedagic's
  troubleshooting guide and either refer to it for more info (or include what's
@@ -15,38 +18,38 @@
  * apart from multicast, unicast is also supported now
    => done
 -->
-<chapter id="app-ha-troubleshooting">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="app-ha-troubleshooting">
  <title>Troubleshooting</title>
- <abstract>
-  <para>
-   Strange problems may occur that are not easy to understand, especially
-   when starting to experiment with &ha;. However, there are several
-   utilities that allow you to take a closer look at the &ha; internal
-   processes. This chapter recommends various solutions.
-  </para>
- </abstract>
- <sect1 id="sec-ha-troubleshooting-install">
+ <info>
+  <abstract>
+   <para>
+    Strange problems may occur that are not easy to understand, especially when
+    starting to experiment with &ha;. However, there are several utilities that
+    allow you to take a closer look at the &ha; internal processes. This
+    chapter recommends various solutions.
+   </para>
+  </abstract>
+ </info>
+ <section xml:id="sec-ha-troubleshooting-install">
   <title>Installation and First Steps</title>
-
   <para>
    Troubleshooting difficulties when installing the packages or bringing the
    cluster online.
   </para>
-
   <variablelist>
    <varlistentry>
     <term>Are the HA packages installed?</term>
     <listitem>
      <para>
-      The packages needed for configuring and managing a cluster are
-      included in the <literal>High Availability</literal> installation
-      pattern, available with the &hasi;.
+      The packages needed for configuring and managing a cluster are included
+      in the <literal>High Availability</literal> installation pattern,
+      available with the &hasi;.
      </para>
      <para>
       Check if &hasi; is installed as an add-on to &sls; &productnumber; on
-      each of the cluster nodes and if the <guimenu>High
-      Availability</guimenu> pattern is installed on each of the machines as
-      described in <xref linkend="sec-ha-installation-add-on"/>.
+      each of the cluster nodes and if the <guimenu>High Availability</guimenu>
+      pattern is installed on each of the machines as described in
+      <xref linkend="sec-ha-installation-add-on"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -54,8 +57,8 @@
     <term>Is the initial configuration the same for all cluster nodes?</term>
     <listitem>
      <para>
-      To communicate with each other, all nodes belonging to the same
-      cluster need to use the same <literal>bindnetaddr</literal>,
+      To communicate with each other, all nodes belonging to the same cluster
+      need to use the same <literal>bindnetaddr</literal>,
       <literal>mcastaddr</literal> and <literal>mcastport</literal> as
       described in <xref linkend="sec-ha-installation-setup-manual"/>.
      </para>
@@ -71,31 +74,29 @@
      </para>
      <para>
       All <filename>corosync.conf</filename> settings except for
-      <literal>nodeid</literal> must be the same;
-      <filename>authkey</filename> files on all nodes must be identical.
+      <literal>nodeid</literal> must be the same; <filename>authkey</filename>
+      files on all nodes must be identical.
      </para>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term>Does the Firewall allow communication via the
-            <literal>mcastport</literal>?</term>
+    <term>Does the Firewall allow communication via the <literal>mcastport</literal>?</term>
     <listitem>
      <para>
       If the mcastport used for communication between the cluster nodes is
       blocked by the firewall, the nodes cannot see each other. When
       configuring the initial setup with &yast; or the bootstrap scripts as
       described in <xref linkend="sec-ha-installation-setup-manual"/> and
-      <xref
-       linkend="sec-ha-installation-setup-auto"/>, the firewall
-      settings are usually automatically adjusted.
+      <xref linkend="sec-ha-installation-setup-auto"/>, the firewall settings
+      are usually automatically adjusted.
      </para>
      <para>
       To make sure the mcastport is not blocked by the firewall, check the
       settings in <filename>/etc/sysconfig/SuSEfirewall2</filename> on each
       node. Alternatively, start the &yast; firewall module on each cluster
       node. After clicking <menuchoice> <guimenu>Allowed Service</guimenu>
-      <guimenu>Advanced</guimenu> </menuchoice>, add the mcastport to the
-      list of allowed <guimenu>UDP Ports</guimenu> and confirm your changes.
+      <guimenu>Advanced</guimenu> </menuchoice>, add the mcastport to the list
+      of allowed <guimenu>UDP Ports</guimenu> and confirm your changes.
      </para>
     </listitem>
    </varlistentry>
@@ -111,22 +112,21 @@
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-troubleshooting-log">
+ </section>
+ <section xml:id="sec-ha-troubleshooting-log">
   <title>Logging</title>
-
   <variablelist>
    <varlistentry>
-    <term>Where to find the log files? </term>
+    <term>Where to find the log files?</term>
     <listitem>
      <para>
       For the Pacemaker log files, see the settings configured in the
-      <literal>logging</literal> section of &corosync.conf;. In case the
-      log file specified there should be ignored by Pacemaker, check the
-      logging settings in <filename>/etc/sysconfig/pacemaker</filename>,
-      Pacemaker's own configuration file. In case
-      <literal>PCMK_logfile</literal> is configured there, Pacemaker will
-      use the path that is defined by this parameter.
+      <literal>logging</literal> section of &corosync.conf;. In case the log
+      file specified there should be ignored by Pacemaker, check the logging
+      settings in <filename>/etc/sysconfig/pacemaker</filename>, Pacemaker's
+      own configuration file. In case <literal>PCMK_logfile</literal> is
+      configured there, Pacemaker will use the path that is defined by this
+      parameter.
      </para>
      <para>
       If you need a cluster-wide report showing all relevant log files, see
@@ -135,8 +135,7 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term>I enabled monitoring but there is no trace of monitoring operations in
-          the log files?</term>
+    <term>I enabled monitoring but there is no trace of monitoring operations in the log files?</term>
     <listitem>
      <para>
       The <systemitem class="daemon">lrmd</systemitem> daemon does not log
@@ -147,13 +146,12 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term>I only get a <literal>failed</literal> message. Is it possible to get more
-          information?</term>
+    <term>I only get a <literal>failed</literal> message. Is it possible to get more information?</term>
     <listitem>
      <para>
-      Add the <literal>--verbose</literal> parameter to your commands. If
-      you do that multiple times, the debug output becomes quite verbose.
-      See <filename>/var/log/messages</filename> for useful hints.
+      Add the <literal>--verbose</literal> parameter to your commands. If you
+      do that multiple times, the debug output becomes quite verbose. See
+      <filename>/var/log/messages</filename> for useful hints.
      </para>
     </listitem>
    </varlistentry>
@@ -168,8 +166,8 @@
 <screen>&prompt.root;<command>crm_mon</command> -o -r</screen>
      <para>
       The display is refreshed when the status changes (to cancel this press
-      <keycombo> <keycap function="control"/> <keycap>C</keycap>
-      </keycombo>). An example may look like:
+      <keycombo> <keycap function="control"/> <keycap>C</keycap> </keycombo>).
+      An example may look like:
      </para>
      <example>
       <title>Stopped Resources</title>
@@ -197,14 +195,14 @@ Operations:
       * Node &node1;:</screen>
      </example>
      <para>
-      The &paceex; PDF, available at &clusterlabs-doc;, covers three
-      different recovery types in the <citetitle>How are OCF Return Codes
+      The &paceex; PDF, available at &clusterlabs-doc;, covers three different
+      recovery types in the <citetitle>How are OCF Return Codes
       Interpreted?</citetitle> section.
      </para>
     </listitem>
    </varlistentry>
-   <varlistentry id="vle-ha-crm-report">
-    <!-- FATE#310174 -->
+   <varlistentry xml:id="vle-ha-crm-report">
+<!-- FATE#310174 -->
     <term>How can I create a report with an analysis of all my cluster nodes?</term>
     <listitem>
      <para>
@@ -212,7 +210,7 @@ Operations:
       <command>hb_report</command> to create a report. The tools are used to
       compile:
      </para>
-     <itemizedlist>
+     <itemizedlist mark="bullet" spacing="normal">
       <listitem>
        <para>
         Cluster-wide log files,
@@ -247,8 +245,7 @@ Operations:
      <para>
       Usually run <command>crm_report</command> with the following command:
      </para>
-     <screen>&prompt.root;<command
-      >crm_report</command> -f 0:00 -n &wsI; -n &wsII;</screen>
+<screen>&prompt.root;<command>crm_report</command> -f 0:00 -n &wsI; -n &wsII;</screen>
      <para>
       The command extracts all information since 0am on the hosts &wsI; and
       &wsII; and creates a <literal>*.tar.bz2</literal> archive named
@@ -274,27 +271,26 @@ Operations:
       </para>
      </warning>
      <para>
-      Customize the command execution with further options. For example, if
-      you have an &ais; cluster, you certainly want to add the option
-      <option>-A</option>. In case you have another user who has permissions
-      to the cluster, use the <option>-u</option> option and specify this
-      user (in addition to &rootuser; and
-      <systemitem class="username">hacluster</systemitem>). In case you have
-      a non-standard SSH port, use the <option>-X</option> option to add the
-      port (for example, with the port 3479, use <literal>-X "-p
-       3479"</literal>). Further options can be found in the man page of
+      Customize the command execution with further options. For example, if you
+      have an &ais; cluster, you certainly want to add the option
+      <option>-A</option>. In case you have another user who has permissions to
+      the cluster, use the <option>-u</option> option and specify this user (in
+      addition to &rootuser; and
+      <systemitem class="username">hacluster</systemitem>). In case you have a
+      non-standard SSH port, use the <option>-X</option> option to add the port
+      (for example, with the port 3479, use <literal>-X "-p 3479"</literal>).
+      Further options can be found in the man page of
       <command>crm_report</command>.
      </para>
      <para>
       After <command>crm_report</command> has analyzed all the relevant log
-      files and created the directory (or archive), check the log files for
-      an uppercase <literal>ERROR</literal> string. The most important files
-      in the top level directory of the report are:
+      files and created the directory (or archive), check the log files for an
+      uppercase <literal>ERROR</literal> string. The most important files in
+      the top level directory of the report are:
      </para>
      <variablelist>
       <varlistentry>
-       <term><filename>analysis.txt</filename>
-       </term>
+       <term><filename>analysis.txt</filename></term>
        <listitem>
         <para>
          Compares files that should be identical on all nodes.
@@ -302,8 +298,7 @@ Operations:
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><filename>crm_mon.txt</filename>
-       </term>
+       <term><filename>crm_mon.txt</filename></term>
        <listitem>
         <para>
          Contains the output of the <command>crm_mon</command> command.
@@ -311,8 +306,7 @@ Operations:
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><filename>corosync.txt</filename>
-       </term>
+       <term><filename>corosync.txt</filename></term>
        <listitem>
         <para>
          Contains a copy of the &corosync; configuration file.
@@ -320,13 +314,12 @@ Operations:
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><filename>description.txt</filename>
-       </term>
+       <term><filename>description.txt</filename></term>
        <listitem>
         <para>
-         Contains all cluster package versions on your nodes. There is also
-         the <filename>sysinfo.txt</filename> file which is node specific.
-         It is linked to the top directory.
+         Contains all cluster package versions on your nodes. There is also the
+         <filename>sysinfo.txt</filename> file which is node specific. It is
+         linked to the top directory.
         </para>
        </listitem>
       </varlistentry>
@@ -337,12 +330,10 @@ Operations:
      </para>
     </listitem>
    </varlistentry>
-   
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-troubleshooting-resource">
+ </section>
+ <section xml:id="sec-ha-troubleshooting-resource">
   <title>Resources</title>
-
   <variablelist>
    <varlistentry>
     <term>How can I clean up my resources?</term>
@@ -355,8 +346,7 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       If you leave out the node, the resource is cleaned on all nodes. More
       information can be found in
-      <xref
-              linkend="sec-ha-manual-config-cleanup"/>.
+      <xref linkend="sec-ha-manual-config-cleanup"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -373,21 +363,20 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
     <term>I configured a resource, but it always fails. Why?</term>
     <listitem>
      <para>
-      To check an OCF script use <command>ocf-tester</command>, for
-      instance:
+      To check an OCF script use <command>ocf-tester</command>, for instance:
      </para>
 <screen>ocf-tester -n ip1 -o ip=<replaceable>YOUR_IP_ADDRESS</replaceable> \
   /usr/lib/ocf/resource.d/heartbeat/IPaddr</screen>
      <para>
-      Use <option>-o</option> multiple times for more parameters. The list
-      of required and optional parameters can be obtained by running
+      Use <option>-o</option> multiple times for more parameters. The list of
+      required and optional parameters can be obtained by running
       <command>crm</command> <option>ra</option> <option>info</option>
       <replaceable>AGENT</replaceable>, for example:
      </para>
 <screen>&prompt.root;<command>crm</command> ra info ocf:heartbeat:IPaddr</screen>
      <para>
-      Before running ocf-tester, make sure the resource is not managed by
-      the cluster.
+      Before running ocf-tester, make sure the resource is not managed by the
+      cluster.
      </para>
     </listitem>
    </varlistentry>
@@ -397,9 +386,8 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       If your cluster is a two node cluster, terminating one node will leave
       the remaining node without quorum. Unless you set the
-      <option>no-quorum-policy</option> property to
-      <literal>ignore</literal>, nothing happens. For two-node clusters you
-      need:
+      <option>no-quorum-policy</option> property to <literal>ignore</literal>,
+      nothing happens. For two-node clusters you need:
      </para>
 <screen>property no-quorum-policy="ignore"</screen>
      <para>
@@ -410,13 +398,12 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
       take quite a while to see any obvious sign of problems (if ever).
      </para>
      <para>
-      Yet another possible explanation is that a resource is simply not
-      allowed to run on this node. That may be because of a failure which
-      happened in the past and which was not <quote>cleaned</quote>. Or it
-      may be because of an earlier administrative action, that is a location
-      constraint with a negative score. Such a location constraint is for
-      instance inserted by the <command>crm resource migrate</command>
-      command.
+      Yet another possible explanation is that a resource is simply not allowed
+      to run on this node. That may be because of a failure which happened in
+      the past and which was not <quote>cleaned</quote>. Or it may be because
+      of an earlier administrative action, that is a location constraint with a
+      negative score. Such a location constraint is for instance inserted by
+      the <command>crm resource migrate</command> command.
      </para>
     </listitem>
    </varlistentry>
@@ -425,28 +412,26 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
     <listitem>
      <para>
       If there are no location constraints for a resource, its placement is
-      subject to an (almost) random node choice. You are well advised to
-      always express a preferred node for resources. That does not mean that
-      you need to specify location preferences for <emphasis>all</emphasis>
-      resources. One preference suffices for a set of related (colocated)
-      resources. A node preference looks like this:
+      subject to an (almost) random node choice. You are well advised to always
+      express a preferred node for resources. That does not mean that you need
+      to specify location preferences for <emphasis>all</emphasis> resources.
+      One preference suffices for a set of related (colocated) resources. A
+      node preference looks like this:
      </para>
 <screen>location rsc-prefers-&node1; rsc 100: &node1;</screen>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-troubleshooting-stonith">
+ </section>
+ <section xml:id="sec-ha-troubleshooting-stonith">
   <title>&stonith; and Fencing</title>
-
   <variablelist>
    <varlistentry>
     <term>Why does my &stonith; resource not start?</term>
     <listitem>
      <para>
-      Start (or enable) operation includes checking the status of the
-      device. If the device is not ready, the &stonith; resource will fail
-      to start.
+      Start (or enable) operation includes checking the status of the device.
+      If the device is not ready, the &stonith; resource will fail to start.
      </para>
      <para>
       At the same time the &stonith; plugin will be asked to produce a host
@@ -458,8 +443,8 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       If you want to use single-host management devices such as lights-out
       devices, make sure that the &stonith; resource is
-      <emphasis>not</emphasis> allowed to run on the node which it is
-      supposed to fence. Use an infinitely negative location node preference
+      <emphasis>not</emphasis> allowed to run on the node which it is supposed
+      to fence. Use an infinitely negative location node preference
       (constraint). The cluster will move the &stonith; resource to another
       place where it can start, but not before informing you.
      </para>
@@ -471,19 +456,19 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       Each &stonith; resource must provide a host list. This list may be
       inserted by hand in the &stonith; resource configuration or retrieved
-      from the device itself, for instance from outlet names. That depends
-      on the nature of the &stonith; plugin.
-      <systemitem>stonithd</systemitem> uses the list to find out which
-      &stonith; resource can fence the target node. Only if the node appears
-      in the list can the &stonith; resource shoot (fence) the node.
+      from the device itself, for instance from outlet names. That depends on
+      the nature of the &stonith; plugin. <systemitem>stonithd</systemitem>
+      uses the list to find out which &stonith; resource can fence the target
+      node. Only if the node appears in the list can the &stonith; resource
+      shoot (fence) the node.
      </para>
      <para>
-      If <systemitem>stonithd</systemitem> does not find the node in any of
-      the host lists provided by running &stonith; resources, it will ask
-      <systemitem>stonithd</systemitem> instances on other nodes. If the
-      target node does not show up in the host lists of other
-      <systemitem>stonithd</systemitem> instances, the fencing request ends
-      in a timeout at the originating node.
+      If <systemitem>stonithd</systemitem> does not find the node in any of the
+      host lists provided by running &stonith; resources, it will ask
+      <systemitem>stonithd</systemitem> instances on other nodes. If the target
+      node does not show up in the host lists of other
+      <systemitem>stonithd</systemitem> instances, the fencing request ends in
+      a timeout at the originating node.
      </para>
     </listitem>
    </varlistentry>
@@ -493,21 +478,20 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       Power management devices may give up if there is too much broadcast
       traffic. Space out the monitor operations. Given that fencing is
-      necessary only once in a while (and hopefully never), checking the
-      device status once a few hours is more than enough.
+      necessary only once in a while (and hopefully never), checking the device
+      status once a few hours is more than enough.
      </para>
      <para>
-      Also, some of these devices may refuse to talk to more than one party
-      at the same time. This may be a problem if you keep a terminal or
-      browser session open while the cluster tries to test the status.
+      Also, some of these devices may refuse to talk to more than one party at
+      the same time. This may be a problem if you keep a terminal or browser
+      session open while the cluster tries to test the status.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-troubleshooting-misc">
+ </section>
+ <section xml:id="sec-ha-troubleshooting-misc">
   <title>Miscellaneous</title>
-
   <variablelist>
    <varlistentry>
 <!-- FATE#311413 -->
@@ -516,14 +500,13 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       Use the command <command>pssh</command> for this task. If necessary,
       install <systemitem class="resource">pssh</systemitem>. Create a file
-      (for example <filename>hosts.txt</filename>) where you collect all
-      your IP addresses or host names you want to visit. Make sure you can
-      log in with <command>ssh</command> to each host listed in your
-      <filename>hosts.txt</filename> file. If everything is correctly
-      prepared, execute <command>pssh</command> and use the
-      <filename>hosts.txt</filename> file (option <option>-h</option>) and
-      the interactive mode (option <option>-i</option>) as shown in this
-      example:
+      (for example <filename>hosts.txt</filename>) where you collect all your
+      IP addresses or host names you want to visit. Make sure you can log in
+      with <command>ssh</command> to each host listed in your
+      <filename>hosts.txt</filename> file. If everything is correctly prepared,
+      execute <command>pssh</command> and use the
+      <filename>hosts.txt</filename> file (option <option>-h</option>) and the
+      interactive mode (option <option>-i</option>) as shown in this example:
      </para>
 <screen>pssh -i -h hosts.txt "ls -l /corosync/*.conf"
 [1] 08:28:32 [SUCCESS] root@&wsII;.&exampledomain;
@@ -538,8 +521,8 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       To check the current state of your cluster, use one of the programs
       <literal>crm_mon</literal> or <command>crm</command>
-      <option>status</option>. This displays the current DC and all the
-      nodes and resources known by the current node.
+      <option>status</option>. This displays the current DC and all the nodes
+      and resources known by the current node.
      </para>
     </listitem>
    </varlistentry>
@@ -549,14 +532,14 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
      <para>
       There could be several reasons:
      </para>
-     <itemizedlist>
+     <itemizedlist mark="bullet" spacing="normal">
       <listitem>
        <para>
         Look first in the configuration file
         <filename>/etc/corosync/corosync.conf</filename>. Check if the
-        multicast or unicast address is the same for every node in the
-        cluster (look in the <literal>interface</literal> section with the
-        key <literal>mcastaddr</literal>).
+        multicast or unicast address is the same for every node in the cluster
+        (look in the <literal>interface</literal> section with the key
+        <literal>mcastaddr</literal>).
        </para>
       </listitem>
       <listitem>
@@ -571,10 +554,10 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
       </listitem>
       <listitem>
        <para>
-        Check if the connection between your nodes is broken. Most often,
-        this is the result of a badly configured firewall. This also may be
-        the reason for a <emphasis>split brain</emphasis> condition, where
-        the cluster is partitioned.
+        Check if the connection between your nodes is broken. Most often, this
+        is the result of a badly configured firewall. This also may be the
+        reason for a <emphasis>split brain</emphasis> condition, where the
+        cluster is partitioned.
        </para>
       </listitem>
      </itemizedlist>
@@ -590,21 +573,22 @@ crm resource cleanup <replaceable>rscid</replaceable> [<replaceable>node</replac
   ERROR: Could not load ocfs2_stackglue
 Jan 12 16:04:22 &node1; modprobe: FATAL: Module ocfs2_stackglue not found.</screen>
      <para>
-      In this case the Kernel module <filename>ocfs2_stackglue.ko</filename>
-      is missing. Install the package
-      <filename>ocfs2-kmp-default</filename>,
-      <filename>ocfs2-kmp-pae</filename> or
-      <filename>ocfs2-kmp-xen</filename>, depending on the installed Kernel.
+      In this case the Kernel module <filename>ocfs2_stackglue.ko</filename> is
+      missing. Install the package <filename>ocfs2-kmp-default</filename>,
+      <filename>ocfs2-kmp-pae</filename> or <filename>ocfs2-kmp-xen</filename>,
+      depending on the installed Kernel.
      </para>
     </listitem>
    </varlistentry>
-   <varlistentry id="vle-ha-crmreport">
+   <varlistentry xml:id="vle-ha-crmreport">
 <!-- FATE#310174 -->
     <term>How can I create a report with an analysis of all my cluster nodes?</term>
     <listitem>
-     <para> On the &crmshell;, use <command>crm report</command> to
-            create a report. This tool compiles: </para>
-     <itemizedlist>
+     <para>
+      On the &crmshell;, use <command>crm report</command> to create a report.
+      This tool compiles:
+     </para>
+     <itemizedlist mark="bullet" spacing="normal">
       <listitem>
        <para>
         Cluster-wide log files,
@@ -641,8 +625,8 @@ Jan 12 16:04:22 &node1; modprobe: FATAL: Module ocfs2_stackglue not found.</scre
      </para>
 <screen>&prompt.root;<command>crm report</command> -f 0:00 -n &node1; -n &node2;</screen>
      <para>
-      The command extracts all information since 0am on the hosts &node1;
-      and &node2; and creates a <literal>*.tar.bz2</literal> archive named
+      The command extracts all information since 0am on the hosts &node1; and
+      &node2; and creates a <literal>*.tar.bz2</literal> archive named
       <filename>crm_report-<replaceable>DATE</replaceable>.tar.bz2</filename>
       in the current directory, for example,
       <filename>crm_report-Wed-03-Mar-2012</filename>. If you are only
@@ -665,45 +649,42 @@ Jan 12 16:04:22 &node1; modprobe: FATAL: Module ocfs2_stackglue not found.</scre
       </para>
      </warning>
      <para>
-      Customize the command execution with further options. For example, if
-      you have a Pacemaker cluster, you certainly want to add the option
-      <option>-A</option>. In case you have another user who has permissions
-      to the cluster, use the <option>-u</option> option and specify this
-      user (in addition to &rootuser; and
-      <systemitem class="username">hacluster</systemitem>). In case you have
-      a non-standard SSH port, use the <option>-X</option> option to add the
-      port (for example, with the port 3479, use <literal>-X "-p
-      3479"</literal>). Further options can be found in the man page of
-      <command>crm report</command>.
+      Customize the command execution with further options. For example, if you
+      have a Pacemaker cluster, you certainly want to add the option
+      <option>-A</option>. In case you have another user who has permissions to
+      the cluster, use the <option>-u</option> option and specify this user (in
+      addition to &rootuser; and
+      <systemitem class="username">hacluster</systemitem>). In case you have a
+      non-standard SSH port, use the <option>-X</option> option to add the port
+      (for example, with the port 3479, use <literal>-X "-p 3479"</literal>).
+      Further options can be found in the man page of <command>crm
+      report</command>.
      </para>
      <para>
       After <command>crm report</command> has analyzed all the relevant log
-      files and created the directory (or archive), check the log files for
-      an uppercase <literal>ERROR</literal> string. The most important files
-      in the top level directory of the report are:
+      files and created the directory (or archive), check the log files for an
+      uppercase <literal>ERROR</literal> string. The most important files in
+      the top level directory of the report are:
      </para>
      <variablelist>
       <varlistentry>
-       <term><filename>analysis.txt</filename>
-       </term>
+       <term><filename>analysis.txt</filename></term>
        <listitem>
         <para>
          Compares files that should be identical on all nodes.
         </para>
        </listitem>
       </varlistentry>
-       <varlistentry>
-         <term><filename>corosync.txt</filename>
-         </term>
-         <listitem>
-           <para>
-             Contains a copy of the &corosync; configuration file.
-           </para>
-         </listitem>
-       </varlistentry>
-       <varlistentry>
-       <term><filename>crm_mon.txt</filename>
-       </term>
+      <varlistentry>
+       <term><filename>corosync.txt</filename></term>
+       <listitem>
+        <para>
+         Contains a copy of the &corosync; configuration file.
+        </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><filename>crm_mon.txt</filename></term>
        <listitem>
         <para>
          Contains the output of the <command>crm_mon</command> command.
@@ -711,57 +692,62 @@ Jan 12 16:04:22 &node1; modprobe: FATAL: Module ocfs2_stackglue not found.</scre
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><filename>description.txt</filename>
-       </term>
+       <term><filename>description.txt</filename></term>
        <listitem>
         <para>
-         Contains all cluster package versions on your nodes. There is also
-         the <filename>sysinfo.txt</filename> file which is node specific.
-         It is linked to the top directory.
+         Contains all cluster package versions on your nodes. There is also the
+         <filename>sysinfo.txt</filename> file which is node specific. It is
+         linked to the top directory.
         </para>
-        <para>This file can be used as a template to describe the issue
-        you encountered and post it to <ulink url="https://github.com/ClusterLabs/crmsh/issues"/>.</para>
+        <para>
+         This file can be used as a template to describe the issue you
+         encountered and post it to
+         <link xlink:href="https://github.com/ClusterLabs/crmsh/issues"/>.
+        </para>
        </listitem>
       </varlistentry>
       <varlistentry>
-        <term><filename>members.txt</filename></term>
-        <listitem>
-          <para>A list of all nodes</para>
-        </listitem>
+       <term><filename>members.txt</filename></term>
+       <listitem>
+        <para>
+         A list of all nodes
+        </para>
+       </listitem>
       </varlistentry>
       <varlistentry>
-        <term><filename>sysinfo.txt</filename></term>
-        <listitem>
-          <para>Contains a list of all relevant package names and their
-            versions. Additionally, there is also a list of configuration
-            files which are different from the original RPM package.</para>
-        </listitem>
+       <term><filename>sysinfo.txt</filename></term>
+       <listitem>
+        <para>
+         Contains a list of all relevant package names and their versions.
+         Additionally, there is also a list of configuration files which are
+         different from the original RPM package.
+        </para>
+       </listitem>
       </varlistentry>
      </variablelist>
      <para>
       Node-specific files are stored in a subdirectory named by the node's
-      name. It contains a copy of the directory <filename>/etc</filename>
-      of the respective node.
+      name. It contains a copy of the directory <filename>/etc</filename> of
+      the respective node.
      </para>
     </listitem>
    </varlistentry>
    <varlistentry>
     <term>ERROR: Tag Not Supported by the RNG Schema</term>
     <listitem>
-     <para>See <xref linkend="note-ha-cib-upgrade"/>.</para>
+     <para>
+      See <xref linkend="note-ha-cib-upgrade"/>.
+     </para>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-troubleshooting-moreinfo">
+ </section>
+ <section xml:id="sec-ha-troubleshooting-moreinfo">
   <title>For More Information</title>
-
   <para>
    For additional information about high availability on Linux, including
-   configuring cluster resources and managing and customizing a &ha;
-   cluster, see
-   <ulink
-    url="http://clusterlabs.org/wiki/Documentation"/>.
+   configuring cluster resources and managing and customizing a &ha; cluster,
+   see <link xlink:href="http://clusterlabs.org/wiki/Documentation"/>.
   </para>
- </sect1>
+ </section>
 </chapter>

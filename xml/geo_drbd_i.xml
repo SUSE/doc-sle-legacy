@@ -1,11 +1,16 @@
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 
-<sect1 id="sec-ha-geo-drbd">
+
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-ha-geo-drbd">
  <title>Setting Up DRBD</title>
  <para>For a description of the overall scenario, see <xref linkend="sec-ha-geo-oview"/>. Assuming
   that you have two cluster sites that are connected with a routed IPv4 or IPv6 connection and a
@@ -16,13 +21,13 @@
   disks, partitions, logical volumes etc.) between hosts located on different sites. Failover is
   managed via the booth services, see <xref linkend="vle-ha-geo-components-booth"/>.</para>
  
- <sect2 id="sec-ha-geo-drbd-scenario">
+ <section xml:id="sec-ha-geo-drbd-scenario">
   <title>DRBD Scenario and Basic Steps</title>
 
 
   <para><xref linkend="fig-ha-geo-drbd-setup"/> shows a graphical representation of the setup and
    the resources that we will configure in the following.</para>
-  <figure id="fig-ha-geo-drbd-setup">
+  <figure xml:id="fig-ha-geo-drbd-setup">
    <title>DRBD Setup and Resources</title>
    <mediaobject>
     <imageobject role="fo">
@@ -33,7 +38,7 @@
     </imageobject>
    </mediaobject>
   </figure>
-  <itemizedlist id="il-ha-geo-drbd-scenario">
+  <itemizedlist xml:id="il-ha-geo-drbd-scenario" mark="bullet" spacing="normal">
    <title>Scenario&mdash;Details</title>
    <listitem>
     <para>A file system is to be served across the &geo; cluster via NFS. </para>
@@ -75,50 +80,45 @@
   <procedure>
    <step>
     <para>Edit the DRBD configuration files to include configuration snippets for each &geo;
-     cluster site and the DRBD connection across sites. For details, see the examples in <xref
-      linkend="sec-ha-geo-drbd-cfg"/>.</para>
+     cluster site and the DRBD connection across sites. For details, see the examples in <xref linkend="sec-ha-geo-drbd-cfg"/>.</para>
    </step>
    <step>
-    <para>Configure the cluster resources as explained in <xref linkend="sec-ha-geo-rsc-drbd"
-     />.</para>
+    <para>Configure the cluster resources as explained in <xref linkend="sec-ha-geo-rsc-drbd"/>.</para>
    </step>
    <step>
     <para>Configure booth as described in <xref linkend="sec-ha-geo-booth"/>.</para>
    </step>
    <step>
     <para>Configure synchronization of DRBD and booth configuration files within each local cluster
-     and across the &geo; cluster sites. For details, refer to <xref
-      linkend="sec-ha-geo-sync"/>.</para>
+     and across the &geo; cluster sites. For details, refer to <xref linkend="sec-ha-geo-sync"/>.</para>
    </step>
   </procedure>
- </sect2>
+ </section>
  
  
- <sect2 id="sec-ha-geo-drbd-cfg">
+ <section xml:id="sec-ha-geo-drbd-cfg">
   <title>DRBD Configuration</title>
   <para>Beginning with DRBD 8.3, the DRBD configuration file is split into separate files. They must
    be located in the <filename>/etc/drbd.d/</filename> directory. The following DRBD configuration
-   snippets show a basic DRBD configuration for the scenario mentioned in <xref
-    linkend="il-ha-geo-drbd-scenario"/>. All snippets can be added to a single DRBD resource
+   snippets show a basic DRBD configuration for the scenario mentioned in <xref linkend="il-ha-geo-drbd-scenario"/>. All snippets can be added to a single DRBD resource
    configuration file, for example, <filename>/etc/drbd.d/nfs.res</filename>. This file can then by
-   synchronized using &csync; as described in <xref linkend="sec-ha-geo-booth-sync-csync2-setup"
-   />. Note that the DRBD configuration snippets below are bare-bones&mdash;they do not include
+   synchronized using &csync; as described in <xref linkend="sec-ha-geo-booth-sync-csync2-setup"/>. Note that the DRBD configuration snippets below are bare-bones&mdash;they do not include
    any performance tuning options or similar. For details on how to tune DRBD, see the
     <citetitle>DRBD</citetitle> chapter in the &productname; &admin;, available from
    &suse-onlinedoc;.</para>
-  <example id="ex-ha-geo-drbd-cfg-site1">
+  <example xml:id="ex-ha-geo-drbd-cfg-site1">
    <title>DRBD Configuration Snippet for Site 1 (&cluster1;)</title>
-   <screen>resource nfs-lower-&cluster1; <co id="co-geo-drbd-config-rsc"/>{
-         disk        /dev/volgroup/lv-nfs; <co id="co-geo-drbd-config-disk"/>
-         meta-disk   internal; <co id="co-geo-drbd-config-meta-disk"/>
-         device      /dev/drbd0; <co id="co-geo-drbd-config-device"/>
-         protocol    C;  <co id="co-geo-drbd-config-protocol"/>
+   <screen>resource nfs-lower-&cluster1; <co xml:id="co-geo-drbd-config-rsc"/>{
+         disk        /dev/volgroup/lv-nfs; <co xml:id="co-geo-drbd-config-disk"/>
+         meta-disk   internal; <co xml:id="co-geo-drbd-config-meta-disk"/>
+         device      /dev/drbd0; <co xml:id="co-geo-drbd-config-device"/>
+         protocol    C;  <co xml:id="co-geo-drbd-config-protocol"/>
          net {
-                      shared-secret  "2a9702a6-8747-11e3-9ebb-782bcbd0c11c"; <co id="co-geo-drbd-config-shared-secret"/>
+                      shared-secret  "2a9702a6-8747-11e3-9ebb-782bcbd0c11c"; <co xml:id="co-geo-drbd-config-shared-secret"/>
          }
 
-         on &node1; { <co id="co-geo-drbd-config-resname"/>
-                      address         192.168.201.111:7900; <co id="co-geo-drbd-config-address"/>
+         on &node1; { <co xml:id="co-geo-drbd-config-resname"/>
+                      address         192.168.201.111:7900; <co xml:id="co-geo-drbd-config-address"/>
          }
          on &node2; { <xref linkend="co-geo-drbd-config-resname" xrefstyle="selec:nopage"/>
                       address         192.168.201.112:7900; <xref linkend="co-geo-drbd-config-address" xrefstyle="selec:nopage"/>
@@ -150,24 +150,20 @@
     </callout>
    </calloutlist>
   </example>
-  <example id="ex-ha-geo-drbd-cfg-site2" >
+  <example xml:id="ex-ha-geo-drbd-cfg-site2">
    <title>DRBD Configuration Snippet for Site 2 (&cluster2;)</title>
    <para>The configuration for site 2 (&cluster2;) is nearly identical to that for site 1: you can
     keep the values of most parameters, including the names of the volume group and the logical
     volume. However, the values of the following parameters need to be changed:</para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
-     <para>Name of the DRBD resource (<xref linkend="co-geo-drbd-config-rsc"
-      xrefstyle="select:nopage"/>)</para>
+     <para>Name of the DRBD resource (<xref linkend="co-geo-drbd-config-rsc" xrefstyle="select:nopage"/>)</para>
     </listitem>
     <listitem>
-     <para>Name and local IP addresses of the nodes (<xref linkend="co-geo-drbd-config-resname"
-      xrefstyle="select:nopage"/> and <xref linkend="co-geo-drbd-config-address"
-       xrefstyle="select:nopage"/>).</para>
+     <para>Name and local IP addresses of the nodes (<xref linkend="co-geo-drbd-config-resname" xrefstyle="select:nopage"/> and <xref linkend="co-geo-drbd-config-address" xrefstyle="select:nopage"/>).</para>
     </listitem>
     <listitem>
-     <para>Shared-secret (<xref linkend="co-geo-drbd-config-shared-secret" xrefstyle="select:nopage"
-     />)</para>
+     <para>Shared-secret (<xref linkend="co-geo-drbd-config-shared-secret" xrefstyle="select:nopage"/>)</para>
     </listitem>
    </itemizedlist>
   <screen>resource nfs-lower-&cluster2; <xref linkend="co-geo-drbd-config-rsc" xrefstyle="select:nopage"/>{
@@ -214,27 +210,24 @@
    </calloutlist>
   </example>
    
-<example id="ex-ha-geo-drbd-cfg-cross-site">
+<example xml:id="ex-ha-geo-drbd-cfg-cross-site">
 	<title>DRBD Configuration Snippet for Connection Across Sites</title>
 
-   <screen>resource nfs-upper <co id="co-geo-drbd-config-rsc-cross"/> {
-         disk        /dev/drbd0; <co id="co-geo-drbd-config-disk-cross"/>
+   <screen>resource nfs-upper <co xml:id="co-geo-drbd-config-rsc-cross"/> {
+         disk        /dev/drbd0; <co xml:id="co-geo-drbd-config-disk-cross"/>
          meta-disk   internal; 
-         device      /dev/drbd10; <co id="co-geo-drbd-config-device-cross"/>
-         protocol    A;  <co id="co-geo-drbd-config-protocol-cross"/>
+         device      /dev/drbd10; <co xml:id="co-geo-drbd-config-device-cross"/>
+         protocol    A;  <co xml:id="co-geo-drbd-config-protocol-cross"/>
          net {
-                      shared-secret  "3105dd88-8747-11e3-a7fd-782bcbd0c11c";  <co
-                       id="co-geo-drbd-config-shared-secret-cross"/>
-                      ping-timeout   20; <co id="co-geo-drbd-config-ping-timeout"/>
+                      shared-secret  "3105dd88-8747-11e3-a7fd-782bcbd0c11c";  <co xml:id="co-geo-drbd-config-shared-secret-cross"/>
+                      ping-timeout   20; <co xml:id="co-geo-drbd-config-ping-timeout"/>
          }
 
-         stacked-on-top-of           nfs-lower-&cluster1; { <co id="co-geo-drbd-config-stackedontopof"/>
-                      address        192.168.201.151:7910; <co id="co-geo-drbd-config-address-cross"/>
+         stacked-on-top-of           nfs-lower-&cluster1; { <co xml:id="co-geo-drbd-config-stackedontopof"/>
+                      address        192.168.201.151:7910; <co xml:id="co-geo-drbd-config-address-cross"/>
          }
-         stacked-on-top-of           nfs-lower-&cluster2; { <xref
-          linkend="co-geo-drbd-config-stackedontopof" xrefstyle="select:nopage"/>
-                      address        192.168.202.151:7910; <xref
-                       linkend="co-geo-drbd-config-address-cross" xrefstyle="select:nopage"/>
+         stacked-on-top-of           nfs-lower-&cluster2; { <xref linkend="co-geo-drbd-config-stackedontopof" xrefstyle="select:nopage"/>
+                      address        192.168.202.151:7910; <xref linkend="co-geo-drbd-config-address-cross" xrefstyle="select:nopage"/>
          }
 }</screen>
  <calloutlist>
@@ -277,8 +270,8 @@
   </callout>
  </calloutlist> 
  </example>
-</sect2>
+</section>
  
  
  
-</sect1>
+</section>
