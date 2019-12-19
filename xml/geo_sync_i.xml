@@ -1,13 +1,17 @@
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 
-<!--taroth 2014-08-11: https://fate.suse.com/316223: [docu] sync and change config files (prio: mandatory)-->
 
-  <sect1 id="sec-ha-geo-sync">
+<!--taroth 2014-08-11: https://fate.suse.com/316223: [docu] sync and change config files (prio: mandatory)-->
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-ha-geo-sync">
    <title>Synchronizing Configuration Files Across All Sites and Arbitrators</title>
 
  <para>To replicate important configuration files across all nodes in the cluster and across
@@ -28,12 +32,12 @@
     
  <para>&csync; will contact other servers via a TCP port (by default <literal>6556</literal>),
   and uses xinetd to start remote &csync; instances. For detailed information about &csync;,
-  refer to <ulink url="http://oss.linbit.com/csync2/paper.pdf"/>
+  refer to <link xlink:href="http://oss.linbit.com/csync2/paper.pdf"/>
  </para>
     
  
      
-   <sect2 id="sec-ha-geo-booth-sync-csync2-setup">
+   <section xml:id="sec-ha-geo-booth-sync-csync2-setup">
       <title>&csync; Setup for &geo; Clusters</title>
       <para>How to set up &csync; for individual clusters with &yast; is explained in the
        <citetitle>&haguide;</citetitle> for &productname;, chapter <citetitle>Installation and
@@ -47,7 +51,7 @@
      <para>To adjust &csync; for synchronizing files not only within local clusters but also
       across &geo.dispersed; sites, you need to define two synchronization groups in the
       &csync; configuration:</para>
-     <itemizedlist>
+     <itemizedlist mark="bullet" spacing="normal">
       <listitem>
        <para>A global group <literal>ha_global</literal> (for the files that need to be synchronized
         globally, across all sites and arbitrators belonging to a &geo; cluster).</para>
@@ -61,16 +65,14 @@
      <para>For an overview of the multiple &csync; configuration files for the two
       synchronization groups, see <xref linkend="fig-ha-geo-csync-config"/>.</para>
 
-   <figure id="fig-ha-geo-csync-config">
+   <figure xml:id="fig-ha-geo-csync-config">
     <title>Example &csync; Setup for &geo; Clusters</title>
     <mediaobject>
      <imageobject role="fo">
-      <imagedata fileref="multi-site-csync2.svg" width="100%"
-       format="PNG"/>
+      <imagedata fileref="multi-site-csync2.svg" width="100%" format="PNG"/>
      </imageobject>
      <imageobject role="html">
-      <imagedata fileref="multi-site-csync2.png" width="100%"
-       format="PNG"/>
+      <imagedata fileref="multi-site-csync2.png" width="100%" format="PNG"/>
      </imageobject>
     </mediaobject>
    </figure>
@@ -78,14 +80,14 @@
     &csync; configuration files are displayed in blue, and their references are displayed in green. For
     details, refer to  <xref linkend="vl-fig-ha-geo-csync-config-files"/>.</para>
     
-    <variablelist id="vl-fig-ha-geo-csync-config-files" >
+    <variablelist xml:id="vl-fig-ha-geo-csync-config-files">
      <title>Example &csync; Setup: Configuration Files</title>
-     <varlistentry id="vle-ha-geo-csync-csync2-cfg">
+     <varlistentry xml:id="vle-ha-geo-csync-csync2-cfg">
       <term><filename>/etc/csync2/csync2.cfg</filename></term>
       <listitem>
        <para>The main &csync; configuration file. It is kept short and simple on purpose and
         only contains the following:</para>
-       <itemizedlist>
+       <itemizedlist mark="bullet" spacing="normal">
         <listitem>
          <para>The definition of the synchronization group <literal>ha_local</literal>. The group
           consists of two nodes (<literal>this-site-host-1</literal> and
@@ -103,13 +105,13 @@
        </itemizedlist>
       </listitem>
      </varlistentry>
-     <varlistentry id="vle-ha-geo-csync-ha-local-cfg">
+     <varlistentry xml:id="vle-ha-geo-csync-ha-local-cfg">
       <term><filename>/etc/csync2/ha_local.cfg</filename></term>
       <listitem>
        <para>This file concerns only the local cluster. It specifies a list of files to be
         synchronized only within the <literal>ha_local</literal> synchronization group, as these
         files are specific per cluster. The most important ones are the following:</para>
-       <itemizedlist>
+       <itemizedlist mark="bullet" spacing="normal">
         <listitem>
          <para><filename>/etc/csync2/csync2.cfg</filename>, as this file contains the list of the
           local cluster nodes.</para>
@@ -137,7 +139,7 @@
         groups may be necessary. </para>
       </listitem>
      </varlistentry>
-     <varlistentry id="vle-ha-geo-csync-ha-global-cfg">
+     <varlistentry xml:id="vle-ha-geo-csync-ha-global-cfg">
       <term> <filename>/etc/csync2.cfg/ha_global.cfg</filename></term>
       <listitem>
        <para>This file defines the &csync; synchronization group <literal>ha_global</literal>.
@@ -147,7 +149,7 @@
          <literal>include</literal> statements define the list of files to be synchronized within
         the <literal>ha_global</literal> synchronization group. The most important ones are the
         following:</para>
-       <itemizedlist>
+       <itemizedlist mark="bullet" spacing="normal">
         <listitem>
          <para><filename>/etc/csync2/ha_global.cfg</filename> and
            <filename>/etc/csync2/ha_global.key</filename> (the configuration file for the
@@ -158,8 +160,7 @@
          <para>
           <filename>/etc/booth/booth.conf</filename>, the default booth configuration file. In case
           you are using a booth setup for multiple tenants, replace this file with the different
-          booth configuration files that you have created. See <xref
-           linkend="sec-ha-geo-booth-multi"/> for details.</para>
+          booth configuration files that you have created. See <xref linkend="sec-ha-geo-booth-multi"/> for details.</para>
         </listitem>
         <listitem>
          <para><filename>/etc/drbd.conf</filename> and <filename>/etc/drbd.d</filename> (if you are
@@ -187,13 +188,13 @@
      <para>The arbitrator needs a <filename>csync2.cfg</filename> file, too. It only needs to
       reference <filename>ha_global.cfg</filename> though.</para>
     </note>
-   </sect2>
-   <sect2 id="sec-ha-geo-booth-sync-csync2-start">
+   </section>
+   <section xml:id="sec-ha-geo-booth-sync-csync2-start">
     <title>Synchronizing Changes with &csync;</title>
   
     <para>
      To successfully synchronize the files with &csync;, the following prerequisites must be met:</para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        The same &csync; configuration is available on all machines that belong to the same
@@ -228,7 +229,7 @@
      <step>
       <para>Copy each key file to <emphasis>all</emphasis> members of the respective synchronization
        group. With regard to <xref linkend="fig-ha-geo-csync-config"/>:</para>
-      <substeps>
+      <substeps performance="required">
        <step>
         <para>Copy <filename>/etc/csync2/ha_global.key</filename> to 
          <emphasis>all</emphasis> parties (the arbitrator
@@ -260,7 +261,7 @@ chkconfig xinetd on</screen>
      </step>
     </procedure>
     
-    <procedure id="pro-ha-geo-setup-csync2-start">
+    <procedure xml:id="pro-ha-geo-setup-csync2-start">
      <title>Synchronizing Files with &csync;</title>
     <step>
      <para>To initially synchronize all files once, execute the following command 
@@ -294,7 +295,7 @@ Finished with 1 errors.</screen>
     </procedure>
     <para>
      For more information on the &csync; options, run
-     <command>csync2&nbsp;<option>-help</option></command>.
+     <command>csync2&nbsp;</command> <option>-help</option>.
     </para>
     <note>
      <title>Pushing Synchronization After Any Changes</title>
@@ -305,10 +306,10 @@ Finished with 1 errors.</screen>
      <para>
       Each time you update files that need to be synchronized, you need to
       push the changes to the other machines of the same synchronization group: Run
-      <command>csync2&nbsp;<option>-xv</option></command> on the machine where
+      <command>csync2&nbsp;</command> <option>-xv</option> on the machine where
       you did the changes. If you run the command on any of the other machines
       with unchanged files, nothing will happen.
      </para>
     </note>
-   </sect2>
- </sect1>
+   </section>
+ </section>

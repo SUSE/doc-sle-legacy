@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd" [
- <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
- <!ENTITY % entities SYSTEM "entity-decl.ent">
- %entities;
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 <!--taroth 2010-02-10: todo: https://fate.novell.com/307380
   Testcase
@@ -35,32 +39,31 @@ Testcase Fate#314367:
 -->
 <!--taroth 2010-08-19: for next revision, see also Sander's book (chapter about
 cLVM) for more information and details to integrate here - really helpful-->
-<chapter id="cha-ha-clvm">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-ha-clvm">
  <title>Cluster Logical Volume Manager (cLVM)</title>
- <abstract>
-  <para>
-   When managing shared storage on a cluster, every node must be informed
-   about changes that are done to the storage subsystem. The Linux Volume
-   Manager&nbsp;2 (LVM2), which is widely used to manage local storage, has
-   been extended to support transparent management of volume groups across
-   the whole cluster. Clustered volume groups can be managed using the same
-   commands as local storage.
-  </para>
- </abstract>
- <sect1 id="sec-ha-clvm-overview">
+ <info>
+  <abstract>
+   <para>
+    When managing shared storage on a cluster, every node must be informed
+    about changes that are done to the storage subsystem. The Linux Volume
+    Manager&nbsp;2 (LVM2), which is widely used to manage local storage, has
+    been extended to support transparent management of volume groups across the
+    whole cluster. Clustered volume groups can be managed using the same
+    commands as local storage.
+   </para>
+  </abstract>
+ </info>
+ <section xml:id="sec-ha-clvm-overview">
   <title>Conceptual Overview</title>
-
 <!--<para>
    Internally, cLVM uses the Distributed Lock Manager (DLM) component of the
    cluster stack to coordinate access to the LVM2 metadata. As DLM in turn
    integrates with the other components of the stack such as fencing, the
    integrity of the shared storage is protected at all times.
   </para>-->
-
   <para>
    Clustered LVM is coordinated with different tools:
   </para>
-
   <variablelist>
    <varlistentry>
     <term>Distributed Lock Manager (DLM)</term>
@@ -74,8 +77,8 @@ cLVM) for more information and details to integrate here - really helpful-->
     <term>Logical Volume Manager2 (LVM2)</term>
     <listitem>
      <para>
-      Enables flexible distribution of one file system over several disks.
-      LVM provides a virtual pool of disk space.
+      Enables flexible distribution of one file system over several disks. LVM
+      provides a virtual pool of disk space.
      </para>
     </listitem>
    </varlistentry>
@@ -91,25 +94,22 @@ cLVM) for more information and details to integrate here - really helpful-->
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-clvm-config">
+ </section>
+ <section xml:id="sec-ha-clvm-config">
   <title>Configuration of cLVM</title>
-
   <para>
    Depending on your scenario it is possible to create a RAID&nbsp;1 device
    with cLVM with the following layers:
   </para>
-
   <remark>toms 2010-03-12 (DEV): What are the advantages and disadvantages?</remark>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <formalpara>
      <title>LVM</title>
      <para>
-      This is a very flexible solution if you want to increase or decrease
-      your file system size, add more physical storage, or create snapshots
-      of your file systems. This method is described in
+      This is a very flexible solution if you want to increase or decrease your
+      file system size, add more physical storage, or create snapshots of your
+      file systems. This method is described in
       <xref linkend="sec-ha-clvm-scenario-iscsi"/>.
      </para>
     </formalpara>
@@ -120,8 +120,7 @@ cLVM) for more information and details to integrate here - really helpful-->
      <para>
       This solution only provides RAID&nbsp;0 (striping) and RAID&nbsp;1
       (mirroring). The last method is described in
-      <xref
-       linkend="sec-ha-clvm-scenario-drbd"/>.
+      <xref linkend="sec-ha-clvm-scenario-drbd"/>.
      </para>
     </formalpara>
    </listitem>
@@ -135,62 +134,56 @@ cLVM) for more information and details to integrate here - really helpful-->
     </formalpara>
    </listitem>
   </itemizedlist>
-
   <para>
    Although MD Devices (Linux Software RAID or <command>mdadm</command>)
-   provides all RAID levels, it does not support clusters yet. Therefore it
-   is not covered in the above list.
+   provides all RAID levels, it does not support clusters yet. Therefore it is
+   not covered in the above list.
   </para>
-
   <para>
    Make sure you have fulfilled the following prerequisites:
   </para>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     A shared storage device is available, such as provided by a Fibre
-     Channel, FCoE, SCSI, iSCSI SAN, or DRBD*.
+     A shared storage device is available, such as provided by a Fibre Channel,
+     FCoE, SCSI, iSCSI SAN, or DRBD*.
     </para>
    </listitem>
    <listitem>
     <para>
-     In case of DRBD, both nodes must be primary (as described in the
-     following procedure).
+     In case of DRBD, both nodes must be primary (as described in the following
+     procedure).
     </para>
    </listitem>
    <listitem>
     <para>
      Check if the locking type of LVM2 is cluster-aware. The keyword
-     <literal>locking_type</literal> in
-     <filename>/etc/lvm/lvm.conf</filename> must contain the value 3 (should
-     be the default). Copy the configuration to all nodes, if necessary.
+     <literal>locking_type</literal> in <filename>/etc/lvm/lvm.conf</filename>
+     must contain the value 3 (should be the default). Copy the configuration
+     to all nodes, if necessary.
     </para>
    </listitem>
   </itemizedlist>
-
   <note>
    <title>Create Cluster Resources First</title>
    <para>
     First create your cluster resources as described in
-    <xref linkend="sec-ha-clvm-config-resources"/> and then your LVM
-    volumes. Otherwise it is impossible to remove the volumes later.
+    <xref linkend="sec-ha-clvm-config-resources"/> and then your LVM volumes.
+    Otherwise it is impossible to remove the volumes later.
    </para>
   </note>
-
-  <sect2 id="sec-ha-clvm-config-cmirrord">
+  <section xml:id="sec-ha-clvm-config-cmirrord">
    <title>Configuring Cmirrord</title>
 <!-- FATE#314367,  -->
    <para>
     To track mirror log information in a cluster, the
-    <systemitem
-          class="daemon">cmirrord</systemitem> daemon is
-    used. Cluster mirrors are not possible without this daemon running.
+    <systemitem class="daemon">cmirrord</systemitem> daemon is used. Cluster
+    mirrors are not possible without this daemon running.
    </para>
    <para>
     We assume that <filename>/dev/sda</filename> and
-    <filename>/dev/sdb</filename> are the shared storage devices. Replace
-    these with your own device name(s), if necessary. Proceed as follows:
+    <filename>/dev/sdb</filename> are the shared storage devices. Replace these
+    with your own device name(s), if necessary. Proceed as follows:
    </para>
    <procedure>
     <step>
@@ -240,17 +233,16 @@ cLVM) for more information and details to integrate here - really helpful-->
     </step>
     <step>
      <para>
-      Use <command>lvs</command> to show the progress. If the percentage
-      number has reached 100%, the mirrored disk is successfully
-      synchronized.
+      Use <command>lvs</command> to show the progress. If the percentage number
+      has reached 100%, the mirrored disk is successfully synchronized.
      </para>
     </step>
-    <step id="st-ha-clvm-config-cmirrord-test">
+    <step xml:id="st-ha-clvm-config-cmirrord-test">
      <para>
       To test the clustered volume <filename>/dev/vg/lv</filename>, use the
       following steps:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         Read or write to <filename>/dev/vg/lv</filename>.
@@ -264,8 +256,7 @@ cLVM) for more information and details to integrate here - really helpful-->
       </step>
       <step>
        <para>
-        Activate your LV with <command>lvchange</command>
-        <option>-ay</option>.
+        Activate your LV with <command>lvchange</command> <option>-ay</option>.
        </para>
       </step>
       <step>
@@ -285,8 +276,8 @@ cLVM) for more information and details to integrate here - really helpful-->
    </procedure>
 <!-- FATE#312248: -->
    <para>
-    The current cLVM can only handle one physical volume (PV) per mirror
-    side. If one mirror is actually made up of several PVs that need to be
+    The current cLVM can only handle one physical volume (PV) per mirror side.
+    If one mirror is actually made up of several PVs that need to be
     concatenated or striped, <command>lvcreate</command> does not understand
     this. For this reason, <command>lvcreate</command> and
     <systemitem>cmirrord</systemitem> metadata needs to understand
@@ -294,10 +285,8 @@ cLVM) for more information and details to integrate here - really helpful-->
     RAID10.
    </para>
    <para>
-    To support RAID10 for
-    <systemitem class="daemon"
-          >cmirrord</systemitem>, use the
-    following procedure (assuming that <filename>/dev/sda</filename> and
+    To support RAID10 for <systemitem class="daemon">cmirrord</systemitem>, use
+    the following procedure (assuming that <filename>/dev/sda</filename> and
     <filename>/dev/sdb</filename> are the shared storage devices):
    </para>
    <procedure>
@@ -328,9 +317,9 @@ cLVM) for more information and details to integrate here - really helpful-->
 &prompt.root;<command>pvchange</command> --addtag @b /dev/sdb</screen>
      <para>
       A tag is an unordered keyword or term assigned to the metadata of a
-      storage object. Tagging allows you to classify collections of LVM
-      storage objects in ways that you find useful by attaching an unordered
-      list of tags to their metadata.
+      storage object. Tagging allows you to classify collections of LVM storage
+      objects in ways that you find useful by attaching an unordered list of
+      tags to their metadata.
      </para>
     </step>
     <step>
@@ -351,15 +340,13 @@ cLVM) for more information and details to integrate here - really helpful-->
     &productnumber; <citetitle>&storage;</citetitle>, chapter <citetitle>LVM
     Configuration</citetitle>. It is available from &suse-onlinedoc;.
    </para>
-  </sect2>
-
-  <sect2 id="sec-ha-clvm-config-resources">
+  </section>
+  <section xml:id="sec-ha-clvm-config-resources">
    <title>Creating the Cluster Resources</title>
    <para>
-    Preparing the cluster for use of cLVM includes the following basic
-    steps:
+    Preparing the cluster for use of cLVM includes the following basic steps:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       <xref linkend="pro-ha-clvm-dlmresource" xrefstyle="select:title"/>
@@ -371,7 +358,7 @@ cLVM) for more information and details to integrate here - really helpful-->
      </para>
     </listitem>
    </itemizedlist>
-   <procedure id="pro-ha-clvm-dlmresource">
+   <procedure xml:id="pro-ha-clvm-dlmresource">
     <title>Creating a DLM Resource</title>
 <!--bcn#633216 and lmb's setup proposal on [ha-devel]-->
     <note>
@@ -380,8 +367,7 @@ cLVM) for more information and details to integrate here - really helpful-->
       Both cLVM and OCFS2 need a DLM resource that runs on all nodes in the
       cluster and therefore is usually configured as a clone. If you have a
       setup that includes both OCFS2 and cLVM, configuring
-      <emphasis>one</emphasis> DLM resource for both OCFS2 and cLVM is
-      enough.
+      <emphasis>one</emphasis> DLM resource for both OCFS2 and cLVM is enough.
      </para>
     </note>
     <step>
@@ -391,7 +377,7 @@ cLVM) for more information and details to integrate here - really helpful-->
     </step>
     <step>
      <para>
-      Run <command>crm <option>configure</option></command>.
+      Run <command>crm</command> <option>configure</option>.
      </para>
     </step>
     <step>
@@ -402,10 +388,9 @@ cLVM) for more information and details to integrate here - really helpful-->
     </step>
     <step>
      <para>
-      If you have already configured a DLM resource (and a corresponding
-      base group and base clone), continue with
-      <xref
-       linkend="pro-ha-clvm-lvmresources"/>.
+      If you have already configured a DLM resource (and a corresponding base
+      group and base clone), continue with
+      <xref linkend="pro-ha-clvm-lvmresources"/>.
      </para>
      <para>
       Otherwise, configure a DLM resource and a corresponding base group and
@@ -418,7 +403,7 @@ cLVM) for more information and details to integrate here - really helpful-->
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-clvm-lvmresources">
+   <procedure xml:id="pro-ha-clvm-lvmresources">
     <title>Creating LVM and cLVM Resources</title>
     <step>
      <para>
@@ -427,7 +412,7 @@ cLVM) for more information and details to integrate here - really helpful-->
     </step>
     <step>
      <para>
-      Run <command>crm <option>configure</option></command>.
+      Run <command>crm</command> <option>configure</option>.
      </para>
     </step>
     <step>
@@ -458,18 +443,17 @@ cLVM) for more information and details to integrate here - really helpful-->
       op monitor interval="60" timeout="60"</screen>
      <para>
       In this case, cLVM will protect all logical volumes within the VG from
-      being activated on multiple nodes, as an additional measure of
-      protection for non-clustered applications.
+      being activated on multiple nodes, as an additional measure of protection
+      for non-clustered applications.
      </para>
     </step>
-    <step id="step-ha-clvm-lvmresources-group">
+    <step xml:id="step-ha-clvm-lvmresources-group">
      <para>
-      To ensure that the cLVM and LVM resources are activated cluster-wide,
-      add both primitives to the base group you have created in
-      <xref
-      linkend="pro-ocfs2-resources"/>:
+      To ensure that the cLVM and LVM resources are activated cluster-wide, add
+      both primitives to the base group you have created in
+      <xref linkend="pro-ocfs2-resources"/>:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         Enter
@@ -478,8 +462,8 @@ cLVM) for more information and details to integrate here - really helpful-->
       </step>
       <step>
        <para>
-        In the vi editor that opens, modify the group as follows and save
-        your changes:
+        In the vi editor that opens, modify the group as follows and save your
+        changes:
        </para>
 <screen>&prompt.crm.conf;<command>group</command> base-group dlm clvm vg1 ocfs2-1</screen>
        <important>
@@ -509,16 +493,15 @@ cLVM) for more information and details to integrate here - really helpful-->
      </para>
     </step>
    </procedure>
-  </sect2>
-
-  <sect2 id="sec-ha-clvm-scenario-iscsi">
+  </section>
+  <section xml:id="sec-ha-clvm-scenario-iscsi">
    <title>Scenario: cLVM With iSCSI on SANs</title>
    <para>
-    The following scenario uses two SAN boxes which export their iSCSI
-    targets to several clients. The general idea is displayed in
+    The following scenario uses two SAN boxes which export their iSCSI targets
+    to several clients. The general idea is displayed in
     <xref linkend="fig-ha-clvm-scenario-iscsi"/>.
    </para>
-   <figure id="fig-ha-clvm-scenario-iscsi">
+   <figure xml:id="fig-ha-clvm-scenario-iscsi">
     <title>Setup of iSCSI with cLVM</title>
     <mediaobject>
      <imageobject role="fo">
@@ -577,19 +560,19 @@ cLVM) for more information and details to integrate here - really helpful-->
     
     
    -->
-   <procedure id="pro-ha-clvm-scenario-iscsi-targets">
+   <procedure xml:id="pro-ha-clvm-scenario-iscsi-targets">
     <title>Configuring iSCSI Targets (SAN)</title>
     <step>
      <para>
       Run &yast; and click <menuchoice> <guimenu>Network Services</guimenu>
-      <guimenu>iSCSI Target</guimenu> </menuchoice> to start the iSCSI
-      Server module.
+      <guimenu>iSCSI Target</guimenu> </menuchoice> to start the iSCSI Server
+      module.
      </para>
     </step>
     <step>
      <para>
-      If you want to start the iSCSI target whenever your computer is
-      booted, choose <guimenu>When Booting</guimenu>, otherwise choose
+      If you want to start the iSCSI target whenever your computer is booted,
+      choose <guimenu>When Booting</guimenu>, otherwise choose
       <guimenu>Manually</guimenu>.
      </para>
     </step>
@@ -601,16 +584,16 @@ cLVM) for more information and details to integrate here - really helpful-->
     </step>
     <step>
      <para>
-      Switch to the <guimenu>Global</guimenu> tab. If you need
-      authentication enable incoming or outgoing authentication or both. In
-      this example, we select <guimenu>No Authentication</guimenu>.
+      Switch to the <guimenu>Global</guimenu> tab. If you need authentication
+      enable incoming or outgoing authentication or both. In this example, we
+      select <guimenu>No Authentication</guimenu>.
      </para>
     </step>
     <step>
      <para>
       Add a new iSCSI target:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         Switch to the <guimenu>Targets</guimenu> tab.
@@ -621,7 +604,7 @@ cLVM) for more information and details to integrate here - really helpful-->
         Click <guimenu>Add</guimenu>.
        </para>
       </step>
-      <step id="st-ha-clvm-iscsi-iqn">
+      <step xml:id="st-ha-clvm-iscsi-iqn">
        <para>
         Enter a target name. The name needs to be formatted like this:
        </para>
@@ -629,14 +612,13 @@ cLVM) for more information and details to integrate here - really helpful-->
        <para>
         For more information about the format, refer to <citetitle>Section
         3.2.6.3.1. Type "iqn." (iSCSI Qualified Name) </citetitle> at
-        <ulink
-        url="http://www.ietf.org/rfc/rfc3720.txt"/>.
+        <link xlink:href="http://www.ietf.org/rfc/rfc3720.txt"/>.
        </para>
       </step>
       <step>
        <para>
-        If you want a more descriptive name, you can change it as long as
-        your identifier is unique for your different targets.
+        If you want a more descriptive name, you can change it as long as your
+        identifier is unique for your different targets.
        </para>
       </step>
       <step>
@@ -673,7 +655,7 @@ cLVM) for more information and details to integrate here - really helpful-->
    <para>
     Now set up your iSCSI initiators as follows:
    </para>
-   <procedure id="pro-ha-clvm-scenarios-iscsi-initiator">
+   <procedure xml:id="pro-ha-clvm-scenarios-iscsi-initiator">
     <title>Configuring iSCSI Initiators</title>
     <step>
      <para>
@@ -697,14 +679,14 @@ cLVM) for more information and details to integrate here - really helpful-->
     <step>
      <para>
       Add your IP address and your port of your iSCSI target (see
-      <xref linkend="pro-ha-clvm-scenario-iscsi-targets"/>). Normally, you
-      can leave the port as it is and use the default value.
+      <xref linkend="pro-ha-clvm-scenario-iscsi-targets"/>). Normally, you can
+      leave the port as it is and use the default value.
      </para>
     </step>
     <step>
      <para>
-      If you use authentication, insert the incoming and outgoing user name
-      and password, otherwise activate <guimenu>No Authentication</guimenu>.
+      If you use authentication, insert the incoming and outgoing user name and
+      password, otherwise activate <guimenu>No Authentication</guimenu>.
      </para>
     </step>
     <step>
@@ -713,10 +695,12 @@ cLVM) for more information and details to integrate here - really helpful-->
       the list.
      </para>
     </step>
-    <!--taroth 2015-06-13: https://bugzilla.suse.com/show_bug.cgi?id=920989-->
+<!--taroth 2015-06-13: https://bugzilla.suse.com/show_bug.cgi?id=920989-->
     <step>
-     <para>To test if the iSCSI initiator has been started successfully, select
-      one of the displayed targets and click <guimenu>Log In</guimenu>.</para>
+     <para>
+      To test if the iSCSI initiator has been started successfully, select one
+      of the displayed targets and click <guimenu>Log In</guimenu>.
+     </para>
     </step>
 <!-- commenting for now as those can be replaced with the one step above according to bsc#920989:
  <step>
@@ -758,14 +742,12 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
      </para>
     </step>-->
    </procedure>
-   <procedure id="pro-ha-clvm-scenarios-iscsi-lvm">
+   <procedure xml:id="pro-ha-clvm-scenarios-iscsi-lvm">
     <title>Creating the LVM Volume Groups</title>
     <step>
      <para>
       Open a &rootuser; shell on one of the nodes you have run the iSCSI
-      initiator from
-      <xref
-       linkend="pro-ha-clvm-scenarios-iscsi-initiator"/>.
+      initiator from <xref linkend="pro-ha-clvm-scenarios-iscsi-initiator"/>.
      </para>
     </step>
     <step>
@@ -881,26 +863,24 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
       created in <xref linkend="st-ha-clvm-iscsi-iqn"/>.</para>
     </step>
    </procedure>-->
-  </sect2>
-
+  </section>
 <!--<para>
    To set up a cluster-aware volume group, several tasks must be completed
    successfully:
   </para>-->
-
-  <sect2 id="sec-ha-clvm-scenario-drbd">
+  <section xml:id="sec-ha-clvm-scenario-drbd">
    <title>Scenario: cLVM With DRBD</title>
    <para>
     The following scenarios can be used if you have data centers located in
     different parts of your city, country, or continent.
    </para>
-   <procedure id="pro-ha-clvm-withdrbd">
+   <procedure xml:id="pro-ha-clvm-withdrbd">
     <title>Creating a Cluster-Aware Volume Group With DRBD</title>
     <step>
      <para>
       Create a primary/primary DRBD resource:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         First, set up a DRBD device as primary/secondary as described in
@@ -912,8 +892,8 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
       </step>
       <step>
        <para>
-        Add the following options to your configuration file (usually
-        something like <filename>/etc/drbd.d/r0.res</filename>):
+        Add the following options to your configuration file (usually something
+        like <filename>/etc/drbd.d/r0.res</filename>):
        </para>
 <screen>resource r0 {
   startup {
@@ -952,12 +932,12 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
     </step>
     <step>
      <para>
-      Include the clvmd resource as a clone in the pacemaker configuration,
-      and make it depend on the DLM clone resource. See
+      Include the clvmd resource as a clone in the pacemaker configuration, and
+      make it depend on the DLM clone resource. See
       <xref linkend="pro-ha-clvm-dlmresource"/> for detailed instructions.
-      Before proceeding, confirm that these resources have started
-      successfully on your cluster. You may use <command>crm_mon</command>
-      or the Web interface to check the running services.
+      Before proceeding, confirm that these resources have started successfully
+      on your cluster. You may use <command>crm_mon</command> or the Web
+      interface to check the running services.
      </para>
     </step>
     <step>
@@ -1012,10 +992,9 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
      <para>
       <remark role="grammar">taroth 2011-10-24: comment by bwiedemann: as file system
       mounts or raw usage - *as* raw usage passt nicht - for?</remark>
-      The logical volumes within the VG are now available as file system
-      mounts or raw usage. Ensure that services using them have proper
-      dependencies to collocate them with and order them after the VG has
-      been activated.
+      The logical volumes within the VG are now available as file system mounts
+      or raw usage. Ensure that services using them have proper dependencies to
+      collocate them with and order them after the VG has been activated.
      </para>
     </step>
    </procedure>
@@ -1023,27 +1002,23 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
     After finishing these configuration steps, the LVM2 configuration can be
     done like on any stand-alone workstation.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-clvm-drbd">
+  </section>
+ </section>
+ <section xml:id="sec-ha-clvm-drbd">
   <title>Configuring Eligible LVM2 Devices Explicitly</title>
-
   <para>
-   When several devices seemingly share the same physical volume signature
-   (as can be the case for multipath devices or DRBD), it is recommended to
+   When several devices seemingly share the same physical volume signature (as
+   can be the case for multipath devices or DRBD), it is recommended to
    explicitly configure the devices which LVM2 scans for PVs.
   </para>
-
   <para>
    For example, if the command <command>vgcreate</command> uses the physical
    device instead of using the mirrored block device, DRBD will be confused
    which may result in a split brain condition for DRBD.
   </para>
-
   <para>
    To deactivate a single device for LVM2, do the following:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -1054,15 +1029,14 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
    <step>
     <para>
      The patterns there are handled as regular expressions. A leading
-     <quote>a</quote> means to accept a device pattern to the scan, a
-     leading <quote>r</quote> rejects the devices that follow the device
-     pattern.
+     <quote>a</quote> means to accept a device pattern to the scan, a leading
+     <quote>r</quote> rejects the devices that follow the device pattern.
     </para>
    </step>
    <step>
     <para>
-     To remove a device named <filename>/dev/sdb1</filename>, add the
-     following expression to the filter rule:
+     To remove a device named <filename>/dev/sdb1</filename>, add the following
+     expression to the filter rule:
     </para>
 <screen>"r|^/dev/sdb1$|"</screen>
     <para>
@@ -1092,19 +1066,16 @@ Login to [iface: default, target: iqn.2010-03.de.&wsII;:san1, portal: &wwwip1;,3
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-clvm-more">
+ </section>
+ <section xml:id="sec-ha-clvm-more">
   <title>For More Information</title>
-
   <para>
-   Thorough information is available from the pacemaker mailing list,
-   available at
-   <ulink url="http://www.clusterlabs.org/wiki/Help:Contents"/>.
+   Thorough information is available from the pacemaker mailing list, available
+   at <link xlink:href="http://www.clusterlabs.org/wiki/Help:Contents"/>.
   </para>
-
   <para>
    The official cLVM FAQ can be found at
-   <ulink url="http://sources.redhat.com/cluster/wiki/FAQ/CLVM"/>.
+   <link xlink:href="http://sources.redhat.com/cluster/wiki/FAQ/CLVM"/>.
   </para>
- </sect1>
+ </section>
 </chapter>

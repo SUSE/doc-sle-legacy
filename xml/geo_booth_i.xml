@@ -1,28 +1,31 @@
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 
- <sect1 id="sec-ha-geo-booth">
+
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-ha-geo-booth">
   <title>Setting Up the Booth Services</title>
   <para>The default booth configuration is &booth.conf;. This file must be 
     the same on all sites of your &geo; cluster, including the
     arbitrator or arbitrators. To keep the booth configuration synchronous 
-    across all sites and arbitrators, use &csync;, as described in <xref
-     linkend="sec-ha-geo-booth-sync"/>. </para>
+    across all sites and arbitrators, use &csync;, as described in <xref linkend="sec-ha-geo-booth-sync"/>. </para>
   
    
   <para>&booth-multi-tenancy; For details on how to configure booth for
-   multiple &geo; clusters, refer to <xref linkend="sec-ha-geo-booth-multi"
-   />. </para>
+   multiple &geo; clusters, refer to <xref linkend="sec-ha-geo-booth-multi"/>. </para>
   
-  <sect2 id="sec-ha-geo-booth-default">
+  <section xml:id="sec-ha-geo-booth-default">
    <title>Default Booth Setup</title>
    <para>To configure all parameters needed for booth, edit the booth
     configuration files manually. </para>
-   <example id="ex-ha-booth-conf-default">
+   <example xml:id="ex-ha-booth-conf-default">
     <title>A Booth Configuration File</title>
       <!--taroth 2014-08-21: not sure if it makes sense that all tickets
       configured here should have similar options and values or if we should
@@ -30,38 +33,31 @@
       please check! - dejan (bnc#896673): It makes sense for the network parameters 
       to be shared between tickets as the parties communicating are the same 
       (parameters 6-9)-->
-    <screen><?dbsuse-fo font-size="0.75em"?>transport = UDP <co id="co-ha-geo-booth-config-transport"/>
-port = 9929 <co id="co-ha-geo-booth-config-port"/>
-arbitrator = 147.2.207.14 <co id="co-ha-geo-booth-config-arbitrator"/>
-site =  192.168.201.151 <co id="co-ha-geo-booth-config-site"/>
+    <screen><?dbsuse-fo font-size="0.75em"?>transport = UDP <co xml:id="co-ha-geo-booth-config-transport"/>
+port = 9929 <co xml:id="co-ha-geo-booth-config-port"/>
+arbitrator = 147.2.207.14 <co xml:id="co-ha-geo-booth-config-arbitrator"/>
+site =  192.168.201.151 <co xml:id="co-ha-geo-booth-config-site"/>
 site =  192.168.202.151 <xref linkend="co-ha-geo-booth-config-site" xrefstyle="select:label nopage"/>
-ticket = "ticket-nfs" <co id="co-ha-geo-booth-config-ticket"/>
-     expire = 600 <co id="co-ha-geo-booth-config-expiry"/>
-     timeout = 10 <co id="co-ha-geo-booth-config-timeout"/>
-     retries = 5 <co id="co-ha-geo-booth-config-retries"/>
-     renewal-freq = 30 <co id="co-ha-geo-booth-config-renewal"/>
-     before-acquire-handler<co id="co-ha-geo-booth-config-handler"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<co 
-     id="co-ha-geo-booth-config-script"/>&nbsp;ms_drbd_nfs<co  id="co-ha-geo-booth-config-rsc"/>
-     acquire-after = 60 <co id="co-ha-geo-booth-config-acquire-after"/>
+ticket = "ticket-nfs" <co xml:id="co-ha-geo-booth-config-ticket"/>
+     expire = 600 <co xml:id="co-ha-geo-booth-config-expiry"/>
+     timeout = 10 <co xml:id="co-ha-geo-booth-config-timeout"/>
+     retries = 5 <co xml:id="co-ha-geo-booth-config-retries"/>
+     renewal-freq = 30 <co xml:id="co-ha-geo-booth-config-renewal"/>
+     before-acquire-handler<co xml:id="co-ha-geo-booth-config-handler"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<co xml:id="co-ha-geo-booth-config-script"/>&nbsp;ms_drbd_nfs<co xml:id="co-ha-geo-booth-config-rsc"/>
+     acquire-after = 60 <co xml:id="co-ha-geo-booth-config-acquire-after"/>
 ticket = "&ticket1;" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="select:label nopage"/>
      expire = 600 <xref linkend="co-ha-geo-booth-config-expiry" xrefstyle="select:label nopage"/>
      timeout = 10 <xref linkend="co-ha-geo-booth-config-timeout" xrefstyle="select:label nopage"/>
      retries = 5 <xref linkend="co-ha-geo-booth-config-retries" xrefstyle="select:label nopage"/>
      renewal-freq = 30 <xref linkend="co-ha-geo-booth-config-renewal" xrefstyle="select:label nopage"/>
-     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" 
-     xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
-     linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;db-1 <xref
-     linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
+     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;db-1 <xref linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
      acquire-after = 60 <xref linkend="co-ha-geo-booth-config-acquire-after" xrefstyle="select:label nopage"/>
 ticket = "&ticket2;" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="select:label nopage"/>
      expire = 600 <xref linkend="co-ha-geo-booth-config-expiry" xrefstyle="select:label nopage"/>
      timeout = 10 <xref linkend="co-ha-geo-booth-config-timeout" xrefstyle="select:label nopage"/>
      retries = 5 <xref linkend="co-ha-geo-booth-config-retries" xrefstyle="select:label nopage"/>
      renewal-freq = 30 <xref linkend="co-ha-geo-booth-config-renewal" xrefstyle="select:label nopage"/>
-     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" 
-     xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
-     linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;db-8 <xref
-     linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
+     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;db-8 <xref linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
      acquire-after = 60 <xref linkend="co-ha-geo-booth-config-acquire-after" xrefstyle="select:label nopage"/>
     </screen>
     <calloutlist>
@@ -155,7 +151,7 @@ ticket = "&ticket2;" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="se
     
    </example>
    
-   <procedure id="pro-ha-geo-setup-booth-config-edit">
+   <procedure xml:id="pro-ha-geo-setup-booth-config-edit">
     <title>Manually Editing The Booth Configuration File</title>
     <step>
      <para> Log in to a cluster node as &rootuser; or equivalent. </para>
@@ -166,24 +162,21 @@ ticket = "&ticket2;" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="se
       &booth.conf;.</para>
     </step>
     <step>
-     <para>Edit &booth.conf; according to <xref
-       linkend="ex-ha-booth-conf-default"/>.</para>
+     <para>Edit &booth.conf; according to <xref linkend="ex-ha-booth-conf-default"/>.</para>
     </step>
     <step>
      <para>Verify your changes and save the file. </para>
     </step>
     <step>
      <para>On all cluster nodes and arbitrators, open the port in the firewall
-      that you have configured for booth. See <xref
-       linkend="ex-ha-booth-conf-default"/>, position <xref
-       linkend="co-ha-geo-booth-config-port"/>. </para>
+      that you have configured for booth. See <xref linkend="ex-ha-booth-conf-default"/>, position <xref linkend="co-ha-geo-booth-config-port"/>. </para>
     </step>
    </procedure>
 
 
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-geo-booth-multi">
+  <section xml:id="sec-ha-geo-booth-multi">
    <title>Booth Setup for Multiple Tenants</title>
    <!--taroth 2014-08-07:  https://fate.suse.com/316123:
     Multi-tenancy for booth (prio: important)-->
@@ -197,7 +190,7 @@ ticket = "&ticket2;" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="se
      <filename>/etc/booth/emea.conf</filename> and
      <filename>/etc/booth/apac.conf</filename>. Both must minimally differ in
     the following parameters:</para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>The port used for the communication of the booth instances.</para>
     </listitem>
@@ -207,7 +200,7 @@ ticket = "&ticket2;" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="se
     </listitem>
    </itemizedlist>
 
-   <example id="ex-ha-conf-booth-multi-1">
+   <example xml:id="ex-ha-conf-booth-multi-1">
     <title>
      <filename>/etc/booth/apac.conf</filename>
     </title>
@@ -220,10 +213,7 @@ ticket ="tkt-db-apac-intern" <xref linkend="co-ha-geo-booth-config-ticket"/>
      timeout = 10 
      retries = 5 
      renewal-freq = 60 
-     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" 
-      xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
-       linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;db-apac-intern <xref
-        linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/> 
+     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;db-apac-intern <xref linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
 ticket = "tkt-db-apac-cust" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="select:label nopage"/>
      timeout = 10 
      retries = 5 
@@ -231,7 +221,7 @@ ticket = "tkt-db-apac-cust" <xref linkend="co-ha-geo-booth-config-ticket" xrefst
      before-acquire-handler&nbsp;=&nbsp;/usr/share/booth/service-runnable&nbsp;db-apac-cust</screen>
    </example>
 
-   <example id="ex-ha-conf-booth-multi-2">
+   <example xml:id="ex-ha-conf-booth-multi-2">
     <title>
      <filename>/etc/booth/emea.conf</filename>
     </title>
@@ -243,10 +233,7 @@ site = 192.168.202.151 <xref linkend="co-ha-geo-booth-config-site" xrefstyle="se
 ticket = "tkt-sap-crm" <xref linkend="co-ha-geo-booth-config-ticket"/>
      expire = 900 
      renewal-freq = 60 
-     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" 
-      xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref
-       linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;sap-crm <xref
-        linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
+     before-acquire-handler<xref linkend="co-ha-geo-booth-config-handler" xrefstyle="select:label nopage"/>&nbsp;=&nbsp;/usr/share/booth/service-runnable<xref linkend="co-ha-geo-booth-config-script" xrefstyle="select:label nopage"/>&nbsp;sap-crm <xref linkend="co-ha-geo-booth-config-rsc" xrefstyle="select:label nopage"/>
 ticket = "tkt-sap-prod" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle="select:label nopage"/>
      expire = 600 
      renewal-freq = 60 
@@ -304,9 +291,7 @@ ticket = "tkt-sap-prod" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle=
     <title>Using the Same Arbitrator for Different &geo; Clusters</title>
     <step>
      <para>Create different booth configuration files in
-       <filename>/etc/booth</filename> as shown in <xref
-       linkend="ex-ha-conf-booth-multi-1"/> and <xref
-       linkend="ex-ha-conf-booth-multi-2"/>. 
+       <filename>/etc/booth</filename> as shown in <xref linkend="ex-ha-conf-booth-multi-1"/> and <xref linkend="ex-ha-conf-booth-multi-2"/>.
      </para>
     </step>
     <step>
@@ -330,42 +315,37 @@ ticket = "tkt-sap-prod" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle=
     </step>
     <step>
      <para>On the individual &geo; clusters, start the booth service as
-      described in <xref linkend="vle-ha-geo-setup-booth-service-sites"
-      />.</para>
+      described in <xref linkend="vle-ha-geo-setup-booth-service-sites"/>.</para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
- <sect2 id="sec-ha-geo-booth-sync">
+ <section xml:id="sec-ha-geo-booth-sync">
   <title>Synchronizing the Booth Configuration to All Sites and Arbitrators</title>
  <note>
    <title>Use the Same Booth Configuration On All Sites and Arbitrators</title>
    <para>To make booth work correctly, all cluster nodes and arbitrators within one &geo;
     cluster must use the same booth configuration.</para>
-   <para>You can use &csync; to synchronize the booth configuration. For details, see <xref
-     linkend="sec-ha-geo-booth-sync-csync2-setup"/> and <xref
-     linkend="sec-ha-geo-booth-sync-csync2-start"/>.</para>
+   <para>You can use &csync; to synchronize the booth configuration. For details, see <xref linkend="sec-ha-geo-booth-sync-csync2-setup"/> and <xref linkend="sec-ha-geo-booth-sync-csync2-start"/>.</para>
    <para> In case of any booth configuration changes, make sure to update the configuration files
-    accordingly on all parties and to restart the booth services as described in <xref
-     linkend="sec-ha-geo-setup-booth-reconfig"/>. </para>
+    accordingly on all parties and to restart the booth services as described in <xref linkend="sec-ha-geo-setup-booth-reconfig"/>. </para>
   </note>
 
- </sect2>
+ </section>
 
-  <sect2 id="sec-ha-geo-setup-booth-service">
+  <section xml:id="sec-ha-geo-setup-booth-service">
    <title>Enabling and Starting the Booth Services</title>
   
    <variablelist>
-    <varlistentry id="vle-ha-geo-setup-booth-service-sites">
+    <varlistentry xml:id="vle-ha-geo-setup-booth-service-sites">
      <term>Starting the Booth Services on Cluster Sites</term>
      <listitem>
       <para>The booth service for each cluster site is managed by the booth
-       resource group configured in <xref linkend="pro-ha-geo-setup-rsc-boothd"
-       />. To start one instance of the booth service per site, start the respective
+       resource group configured in <xref linkend="pro-ha-geo-setup-rsc-boothd"/>. To start one instance of the booth service per site, start the respective
        booth resource group on each cluster site.</para>
      </listitem>
     </varlistentry>
-    <varlistentry id="vle-ha-geo-setup-booth-service-arbitrator">
+    <varlistentry xml:id="vle-ha-geo-setup-booth-service-arbitrator">
      <term>Starting the Arbitrators</term>
      <!--taroth 2014-08-11: https://bugzilla.novell.com/show_bug.cgi?id=877817: [Test
       Case 1378526] [316123] booth - Configuring startup 'complicated'-->
@@ -375,17 +355,15 @@ ticket = "tkt-sap-prod" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle=
       <screen>&prompt.root;chkconfig booth-arbitrator on</screen>
       <para>After the service has been enabled from command line, &yast; &ycc_runlevel; can
        be used to manage the service.</para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
-       <para>If you are using the default setup as described in <xref
-         linkend="sec-ha-geo-booth-default"/>, only <filename>/etc/booth/booth.conf</filename> is
+       <para>If you are using the default setup as described in <xref linkend="sec-ha-geo-booth-default"/>, only <filename>/etc/booth/booth.conf</filename> is
         configured. In that case, log in to each machine you want to use as arbitrator and use the
         following command to start the booth service:</para>
         <screen>&prompt.root;rcbooth-arbitrator start</screen>
        </listitem>
        <listitem>
-        <para>If you are running booth in multi-tenancy mode as described in <xref
-          linkend="sec-ha-geo-booth-multi"/>, you have configured multiple booth configuration files
+        <para>If you are running booth in multi-tenancy mode as described in <xref linkend="sec-ha-geo-booth-multi"/>, you have configured multiple booth configuration files
          in <filename>/etc/booth</filename>. In that case, the following command with start
          arbitrators for <emphasis>all</emphasis> configuration files found in
          <filename>/etc/booth</filename>:</para>
@@ -399,9 +377,9 @@ ticket = "tkt-sap-prod" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle=
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
  
-  <sect2 id="sec-ha-geo-setup-booth-reconfig">
+  <section xml:id="sec-ha-geo-setup-booth-reconfig">
    <title>Reconfiguring Booth While Running</title>
    <!--taroth 2014-08-26: https://fate.suse.com/316126: 
     reconfiguration of boothd while running (prio: important)-->
@@ -425,5 +403,5 @@ ticket = "tkt-sap-prod" <xref linkend="co-ha-geo-booth-config-ticket" xrefstyle=
       sites.</para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>

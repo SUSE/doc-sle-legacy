@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd" [
- <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
- <!ENTITY % entities SYSTEM "entity-decl.ent">
- %entities;
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 <!--see:  http://linux-ha.org/wiki/CTDB_%28resource_agent%29
  
@@ -32,41 +36,38 @@
  required this to be on shared storage.  This parameter should not
  be set for current versions of CTDB, and only remains in the RA
  for backwards compatibility.-->
-<chapter id="cha-ha-samba">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-ha-samba">
  <title>Samba Clustering</title>
- <abstract>
-  <para>
-   A clustered Samba server provides a &ha; solution in your heterogeneous
-   networks. This chapter explains some background information and how to
-   set up a clustered Samba server.
-  </para>
- </abstract>
- <sect1 id="sec-ha-samba-overview">
+ <info>
+  <abstract>
+   <para>
+    A clustered Samba server provides a &ha; solution in your heterogeneous
+    networks. This chapter explains some background information and how to set
+    up a clustered Samba server.
+   </para>
+  </abstract>
+ </info>
+ <section xml:id="sec-ha-samba-overview">
   <title>Conceptual Overview</title>
-
   <para>
    Trivial Database (TDB) has been used by Samba for many years. It allows
    multiple applications to write simultaneously. To make sure all write
    operations are successfully performed and do not collide with each other,
    TDB uses an internal locking mechanism.
   </para>
-
   <para>
    Cluster Trivial Database (CTDB) is a small extension of the existing TDB.
-   CTDB is described by the project as a <quote>cluster implementation of
-   the TDB database used by Samba and other projects to store temporary
+   CTDB is described by the project as a <quote>cluster implementation of the
+   TDB database used by Samba and other projects to store temporary
    data</quote>.
   </para>
-
   <para>
    Each cluster node runs a local CTDB daemon. Samba communicates with its
    local CTDB daemon instead of writing directly to its TDB. The daemons
-   exchange metadata over the network, but actual write and read operations
-   are done on a local copy with fast storage. The concept of CTDB is
-   displayed in <xref
-   linkend="fig-ha-samba-overview"/>.
+   exchange metadata over the network, but actual write and read operations are
+   done on a local copy with fast storage. The concept of CTDB is displayed in
+   <xref linkend="fig-ha-samba-overview"/>.
   </para>
-
   <note>
    <title>CTDB For Samba Only</title>
    <para>
@@ -76,12 +77,11 @@
    </para>
    <para>
     CTDB is only supported for completely homogeneous clusters. For example,
-    all nodes in the cluster need to have the same architecture. You cannot
-    mix i586 with x86_64.
+    all nodes in the cluster need to have the same architecture. You cannot mix
+    i586 with x86_64.
    </para>
   </note>
-
-  <figure id="fig-ha-samba-overview">
+  <figure xml:id="fig-ha-samba-overview">
    <title>Structure of a CTDB Cluster</title>
    <mediaobject>
     <imageobject role="fo">
@@ -92,16 +92,14 @@
     </imageobject>
    </mediaobject>
   </figure>
-
   <para>
    A clustered Samba server must share certain data:
   </para>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     Mapping table that associates Unix user and group IDs to Windows users
-     and groups.
+     Mapping table that associates Unix user and group IDs to Windows users and
+     groups.
     </para>
    </listitem>
    <listitem>
@@ -111,25 +109,23 @@
    </listitem>
    <listitem>
     <para>
-     Join information for a member server in a Windows domain must be
-     available on all nodes.
+     Join information for a member server in a Windows domain must be available
+     on all nodes.
     </para>
    </listitem>
    <listitem>
     <para>
-     Metadata has to be available on all nodes, like active SMB sessions,
-     share connections, and various locks.
+     Metadata has to be available on all nodes, like active SMB sessions, share
+     connections, and various locks.
     </para>
    </listitem>
   </itemizedlist>
-
   <para>
-   The goal is that a clustered Samba server with N+1 nodes is faster than
-   with only N nodes. One node is not slower than an unclustered Samba
-   server.
+   The goal is that a clustered Samba server with N+1 nodes is faster than with
+   only N nodes. One node is not slower than an unclustered Samba server.
   </para>
- </sect1>
- <sect1 id="sec-ha-samba-basicconf">
+ </section>
+ <section xml:id="sec-ha-samba-basicconf">
   <title>Basic Configuration</title>
   <remark>taroth 2015-06-08: todo - fix
    https://bugzilla.novell.com/show_bug.cgi?id=921265 for next revision</remark>
@@ -143,18 +139,16 @@
     can be specified for the CTDB resource.
    </para>
   </note>
-
   <para>
    To set up a clustered Samba server, proceed as follows:
   </para>
-
-  <procedure id="pro-ha-samba-basicconf">
+  <procedure xml:id="pro-ha-samba-basicconf">
    <title>Setting Up a Basic Clustered Samba Server</title>
    <step>
     <para>
      Prepare your cluster:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Configure your cluster (&ais;, Pacemaker, OCFS2) as described in this
@@ -163,15 +157,15 @@
      </step>
      <step>
       <para>
-       Configure a shared file system, like OCFS2, and mount it, for
-       example, on <filename>/shared</filename>.
+       Configure a shared file system, like OCFS2, and mount it, for example,
+       on <filename>/shared</filename>.
       </para>
      </step>
      <step>
       <para>
        If you want to turn on POSIX ACLs, enable it:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          For a new OCFS2 file system use:
@@ -182,7 +176,7 @@
         <para>
          For an existing OCFS2 file system use:
         </para>
-        <screen>&prompt.root;<command>tunefs.ocfs2</command> --fs-feature=xattr<!-- 
+<screen>&prompt.root;<command>tunefs.ocfs2</command> --fs-feature=xattr<!--
       --><replaceable>DEVICE</replaceable></screen>
         <para>
          Make sure the <option>acl</option> option is specified in the file
@@ -196,18 +190,12 @@
      </step>
      <step>
       <para>
-       Make sure the services
-       <systemitem
-       class="service">ctdb</systemitem>,
-       <systemitem
-        class="service">smb</systemitem>,
-       <systemitem
-         class="service">nmb</systemitem>, and
-       <systemitem
-          class="service">winbind</systemitem> are
-       disabled:
+       Make sure the services <systemitem class="service">ctdb</systemitem>,
+       <systemitem class="service">smb</systemitem>,
+       <systemitem class="service">nmb</systemitem>, and
+       <systemitem class="service">winbind</systemitem> are disabled:
       </para>
- <screen>&prompt.root;<command>chkconfig</command> ctdb off
+<screen>&prompt.root;<command>chkconfig</command> ctdb off
 <command>chkconfig</command> smb off
 <command>chkconfig</command> nmb off
 <command>chkconfig</command> winbind off</screen>
@@ -218,12 +206,12 @@
     <para>
      Create a directory for the CTDB lock on the shared file system:
     </para>
-    <screen>&prompt.root;<command>mkdir</command> -p /shared/samba/</screen>
+<screen>&prompt.root;<command>mkdir</command> -p /shared/samba/</screen>
    </step>
    <step>
     <para>
-     In <filename>/etc/ctdb/nodes</filename> insert all nodes which contain
-     all private IP addresses of each node in the cluster:
+     In <filename>/etc/ctdb/nodes</filename> insert all nodes which contain all
+     private IP addresses of each node in the cluster:
     </para>
 <screen>&subnetI;.10
 &subnetI;.11</screen>
@@ -233,7 +221,7 @@
      Copy the configuration file to all of your nodes by using
      <command>csync2</command>:
     </para>
-    <screen>&prompt.root;csync2 <option>-xv</option></screen>
+<screen>&prompt.root;csync2 <option>-xv</option></screen>
     <para>
      For more information, see
      <xref linkend="pro-ha-installation-setup-csync2-start"/>.
@@ -311,14 +299,18 @@ Clone Set: dlm-clone
      ip:1       (ocf::heartbeat:IPaddr2):       Started hex-14</screen>
    </step>
    <step>
-    <para>Test from a client machine. On a Linux client, add a user for Samba access:
+    <para>
+     Test from a client machine. On a Linux client, add a user for Samba
+     access:
     </para>
-    <screen>&prompt.root;<command>smbpasswd</command> <option>-a</option>&nbsp;<replaceable>USERNAME</replaceable></screen>
+<screen>&prompt.root;<command>smbpasswd</command> <option>-a</option>&nbsp;<replaceable>USERNAME</replaceable></screen>
    </step>
-   <step><para>Test if you can reach the new user's home directory:</para>
-    <screen>&prompt.root;smbclient -u&nbsp;<replaceable>USERNAME</replaceable>//&subnetII;.222/<replaceable>USERNAME</replaceable></screen>
+   <step>
+    <para>
+     Test if you can reach the new user's home directory:
+    </para>
+<screen>&prompt.root;smbclient -u&nbsp;<replaceable>USERNAME</replaceable>//&subnetII;.222/<replaceable>USERNAME</replaceable></screen>
    </step>
-
 <!-- 
     From Tim:
     Add the IP address to the DNS at your site, so that you can access
@@ -326,27 +318,23 @@ Clone Set: dlm-clone
     => 
    -->
   </procedure>
- </sect1>
- <sect1 id="sec-ha-samba-ad">
+ </section>
+ <section xml:id="sec-ha-samba-ad">
   <title>Joining an Active Directory Domain</title>
-
   <remark>toms 2013-04-02: Needs changes</remark>
-
   <para>
    Active Directory (AD) is a directory service for Windows server systems.
   </para>
-
   <para>
-   The following instructions outline how to join a CTDB cluster to an
-   Active Directory domain:
+   The following instructions outline how to join a CTDB cluster to an Active
+   Directory domain:
   </para>
-
   <procedure>
    <step>
     <para>
-     Consult your Windows Server documentation for instructions on how to
-     set up an Active Directory domain. In this example, we use the
-     following parameters:
+     Consult your Windows Server documentation for instructions on how to set
+     up an Active Directory domain. In this example, we use the following
+     parameters:
     </para>
     <informaltable>
      <tgroup cols="2">
@@ -399,12 +387,10 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
     </para>
    </step>
   </procedure>
-
   <para>
    The next step is to configure the CTDB:
   </para>
-
-  <procedure id="pro-ha-samba-config-ctdb">
+  <procedure xml:id="pro-ha-samba-config-ctdb">
    <title>Configuring CTDB</title>
    <step>
     <para>
@@ -420,8 +406,8 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
    </step>
    <step>
     <para>
-     Open the <filename>/etc/samba/smb.conf</filename> configuration file,
-     add your NetBIOS name, and close the file:
+     Open the <filename>/etc/samba/smb.conf</filename> configuration file, add
+     your NetBIOS name, and close the file:
     </para>
 <screen>[global
     netbios name = CTDB-SERVER</screen>
@@ -443,17 +429,15 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
 <screen>&prompt.root;crm resource start ctdb-clone</screen>
    </step>
   </procedure>
-
   <para>
    Finally, join your cluster to the Active Directory server:
   </para>
-
-  <procedure id="pro-ha-samba-config-join-ad">
+  <procedure xml:id="pro-ha-samba-config-join-ad">
    <title>Joining Active Directory</title>
    <step>
     <para>
-     Make sure the following files are included in &csync;'s configuration
-     to become installed on all cluster hosts:
+     Make sure the following files are included in &csync;'s configuration to
+     become installed on all cluster hosts:
     </para>
 <screen>/etc/samba/smb.conf
 /etc/security/pam_winbind.conf
@@ -462,8 +446,8 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
 /etc/security/pam_mount.conf.xml
 /etc/pam.d/common-session</screen>
     <para>
-     You can also use &yast;'s <guimenu>Configure &csync;</guimenu> module
-     for this task, see <xref linkend="sec-ha-installation-setup-csync2"/>.
+     You can also use &yast;'s <guimenu>Configure &csync;</guimenu> module for
+     this task, see <xref linkend="sec-ha-installation-setup-csync2"/>.
     </para>
    </step>
    <step>
@@ -485,19 +469,16 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-samba-testing">
+ </section>
+ <section xml:id="sec-ha-samba-testing">
   <title>Debugging and Testing Clustered Samba</title>
-
   <para>
-   To debug your clustered Samba server, the following tools which operate
-   on different levels are available:
+   To debug your clustered Samba server, the following tools which operate on
+   different levels are available:
   </para>
-
   <variablelist>
    <varlistentry>
-    <term><command>ctdb_diagnostics</command>
-    </term>
+    <term><command>ctdb_diagnostics</command></term>
     <listitem>
      <para>
       Run this tool to diagnose your clustered Samba server. Detailed debug
@@ -523,22 +504,20 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
 /etc/vsftpd/vsftpd.conf</screen>
      <para>
       If the files <filename>/etc/ctdb/public_addresses</filename> and
-      <filename>/etc/ctdb/static-routes</filename> exist, they will be
-      checked as well.
+      <filename>/etc/ctdb/static-routes</filename> exist, they will be checked
+      as well.
      </para>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>ping_pong</command>
-    </term>
+    <term><command>ping_pong</command></term>
     <listitem>
      <para>
       Check whether your file system is suitable for CTDB with
-      <command>ping_pong</command>. It performs certain tests of your
-      cluster file system like coherence and performance (see
-      <ulink
-              url="http://wiki.samba.org/index.php/Ping_pong"/>)
-      and gives some indication how your cluster may behave under high load.
+      <command>ping_pong</command>. It performs certain tests of your cluster
+      file system like coherence and performance (see
+      <link xlink:href="http://wiki.samba.org/index.php/Ping_pong"/>) and gives
+      some indication how your cluster may behave under high load.
      </para>
     </listitem>
    </varlistentry>
@@ -547,62 +526,57 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
     <term><command>send_arp</command> Tool and <systemitem class="resource">SendArp</systemitem> Resource Agent</term>
     <listitem>
      <para>
-      The <systemitem class="resource">SendArp</systemitem> resource agent
-      is located in <filename>/usr/lib/heartbeat/send_arp</filename> (or
+      The <systemitem class="resource">SendArp</systemitem> resource agent is
+      located in <filename>/usr/lib/heartbeat/send_arp</filename> (or
       <filename>/usr/lib64/heartbeat/send_arp</filename>). The
       <command>send_arp</command> tool sends out a gratuitous ARP (Address
-      Resolution Protocol) packet and can be used for updating other
-      machines' ARP tables. It can help to identify communication problems
-      after a failover process. If you cannot connect to a node or ping it
-      although it shows the clustered IP address for samba, use the
-      <command>send_arp</command> command to test if the nodes only need an
-      ARP table update.
+      Resolution Protocol) packet and can be used for updating other machines'
+      ARP tables. It can help to identify communication problems after a
+      failover process. If you cannot connect to a node or ping it although it
+      shows the clustered IP address for samba, use the
+      <command>send_arp</command> command to test if the nodes only need an ARP
+      table update.
      </para>
      <para>
       For more information, refer to
-      <ulink
-              url="http://wiki.wireshark.org/Gratuitous_ARP"/>.
+      <link xlink:href="http://wiki.wireshark.org/Gratuitous_ARP"/>.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
-
   <para>
    To test certain aspects of your cluster file system proceed as follows:
   </para>
-
   <procedure>
    <title>Test Coherence and Performance of Your Cluster File System</title>
    <step>
     <para>
-     Start the command <command>ping_pong</command> on one node and replace
-     the placeholder <replaceable>N</replaceable> with the amount of nodes
-     plus one. The file
+     Start the command <command>ping_pong</command> on one node and replace the
+     placeholder <replaceable>N</replaceable> with the amount of nodes plus
+     one. The file
      <filename><replaceable>ABSPATH</replaceable>/data.txt</filename> is
-     available in your shared storage and is therefore accessible on all
-     nodes (<replaceable>ABSPATH </replaceable> indicates an absolute path):
+     available in your shared storage and is therefore accessible on all nodes
+     (<replaceable>ABSPATH </replaceable> indicates an absolute path):
     </para>
 <screen><command>ping_pong</command> <replaceable>ABSPATH</replaceable>/data.txt <replaceable>N</replaceable></screen>
     <para>
-     Expect a very high locking rate as you are running only one node. If
-     the program does not print a locking rate, replace your cluster file
-     system.
+     Expect a very high locking rate as you are running only one node. If the
+     program does not print a locking rate, replace your cluster file system.
     </para>
    </step>
    <step>
     <para>
-     Start a second copy of <command>ping_pong</command> on another node
-     with the same parameters.
+     Start a second copy of <command>ping_pong</command> on another node with
+     the same parameters.
     </para>
     <para>
-     Expect to see a dramatic drop in the locking rate. If any of the
-     following applies to your cluster file system, replace it:
+     Expect to see a dramatic drop in the locking rate. If any of the following
+     applies to your cluster file system, replace it:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
-       <command>ping_pong</command> does not print a locking rate per
-       second,
+       <command>ping_pong</command> does not print a locking rate per second,
       </para>
      </listitem>
      <listitem>
@@ -619,44 +593,43 @@ Cluster AD member NETBIOS name = "CTDB-SERVER"</screen>-->
    </step>
    <step>
     <para>
-     Start a third copy of <command>ping_pong</command>. Add another node
-     and note how the locking rates change.
+     Start a third copy of <command>ping_pong</command>. Add another node and
+     note how the locking rates change.
     </para>
    </step>
    <step>
     <para>
      Kill the <command>ping_pong</command> commands one after the other. You
-     should observe an increase of the locking rate until you get back to
-     the single node case. If you did not get the expected behavior, find
-     more information in <xref linkend="cha-ha-ocfs2"/>.
+     should observe an increase of the locking rate until you get back to the
+     single node case. If you did not get the expected behavior, find more
+     information in <xref linkend="cha-ha-ocfs2"/>.
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-samba-moreinfo">
+ </section>
+ <section xml:id="sec-ha-samba-moreinfo">
   <title>For More Information</title>
-
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <ulink url="http://linux-ha.org/wiki/CTDB_(resource_agent)"/>
+     <link xlink:href="http://linux-ha.org/wiki/CTDB_(resource_agent)"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://wiki.samba.org/index.php/CTDB_Setup"/>
+     <link xlink:href="http://wiki.samba.org/index.php/CTDB_Setup"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://ctdb.samba.org"/>
+     <link xlink:href="http://ctdb.samba.org"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://wiki.samba.org/index.php/Samba_%26_Clustering"/>
+     <link xlink:href="http://wiki.samba.org/index.php/Samba_%26_Clustering"/>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>

@@ -1,74 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<!-- 
+<!--
  See advanced example in
  http://sapagents.svn.sourceforge.net/viewvc/sapagents/trunk/SAPInstance?revision=19&view=markup
 
 -->
-<chapter id="cha-ha-agents">
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-ha-agents">
  <title>Adding or Modifying Resource Agents</title>
- <abstract>
-  <para>
-   All tasks that need to be managed by a cluster must be available as a
-   resource. There are two major groups here to consider: resource agents
-   and &stonith; agents. For both categories, you can add your own agents,
-   extending the abilities of the cluster to your own needs.
-  </para>
- </abstract>
- <sect1 id="sec-ha-stonithagents">
+ <info>
+  <abstract>
+   <para>
+    All tasks that need to be managed by a cluster must be available as a
+    resource. There are two major groups here to consider: resource agents and
+    &stonith; agents. For both categories, you can add your own agents,
+    extending the abilities of the cluster to your own needs.
+   </para>
+  </abstract>
+ </info>
+ <section xml:id="sec-ha-stonithagents">
   <title>&stonith; Agents</title>
-
   <para>
-   A cluster sometimes detects that one of the nodes is behaving strangely
-   and needs to remove it. This is called <emphasis>fencing</emphasis> and
-   is commonly done with a &stonith; resource. 
+   A cluster sometimes detects that one of the nodes is behaving strangely and
+   needs to remove it. This is called <emphasis>fencing</emphasis> and is
+   commonly done with a &stonith; resource.
   </para>
-
   <warning>
    <title>External SSH/&stonith; Are Not Supported</title>
    <para>
-    It is impossible to know how SSH might react to other system problems.
-    For this reason, external SSH/&stonith; agents  (like 
-    <literal>stonith:external/ssh</literal>) are not supported for
-    production environments. If you still want to use such agents for testing,
-    install the <systemitem class="resource">libglue-devel</systemitem> package.
+    It is impossible to know how SSH might react to other system problems. For
+    this reason, external SSH/&stonith; agents (like
+    <literal>stonith:external/ssh</literal>) are not supported for production
+    environments. If you still want to use such agents for testing, install the
+    <systemitem class="resource">libglue-devel</systemitem> package.
    </para>
   </warning>
-
   <para>
    To get a list of all currently available &stonith; devices (from the
-   software side), use the command <command>crm ra list stonith</command>.
-   If you do not find your favorite agent, install the <systemitem 
-     class="resource">-devel</systemitem> package.
+   software side), use the command <command>crm ra list stonith</command>. If
+   you do not find your favorite agent, install the
+   <systemitem class="resource">-devel</systemitem> package.
   </para>
-
   <para>
-   As of yet there is no documentation about writing &stonith; agents. If
-   you want to write new &stonith; agents, consult the examples available in
-   the source of the <systemitem class="resource">cluster-glue</systemitem>
+   As of yet there is no documentation about writing &stonith; agents. If you
+   want to write new &stonith; agents, consult the examples available in the
+   source of the <systemitem class="resource">cluster-glue</systemitem>
    package.
   </para>
- </sect1>
- <sect1 id="sec-ha-writingresourceagents">
+ </section>
+ <section xml:id="sec-ha-writingresourceagents">
   <title>Writing OCF Resource Agents</title>
-
   <para>
    All OCF resource agents (RAs) are available in
    <filename>/usr/lib/ocf/resource.d/</filename>, see
-   <xref linkend="sec-ha-config-basics-raclasses"/> for more
-   information. Each resource agent must supported the following operations
-   to control it:
+   <xref linkend="sec-ha-config-basics-raclasses"/> for more information. Each
+   resource agent must supported the following operations to control it:
   </para>
-
   <variablelist>
    <varlistentry>
-    <term><command>start</command>
-    </term>
+    <term><command>start</command></term>
     <listitem>
      <para>
       start or enable the resource
@@ -76,8 +73,7 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>stop</command>
-    </term>
+    <term><command>stop</command></term>
     <listitem>
      <para>
       stop or disable the resource
@@ -85,8 +81,7 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>status</command>
-    </term>
+    <term><command>status</command></term>
     <listitem>
      <para>
       returns the status of the resource
@@ -94,8 +89,7 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>monitor</command>
-    </term>
+    <term><command>monitor</command></term>
     <listitem>
      <para>
       similar to <command>status</command>, but checks also for unexpected
@@ -104,8 +98,7 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>validate</command>
-    </term>
+    <term><command>validate</command></term>
     <listitem>
      <para>
       validate the resource's configuration
@@ -113,8 +106,7 @@
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><command>meta-data</command>
-    </term>
+    <term><command>meta-data</command></term>
     <listitem>
      <para>
       returns information about the resource agent in XML
@@ -122,17 +114,14 @@
     </listitem>
    </varlistentry>
   </variablelist>
-
   <para>
    The general procedure of how to create an OCF RA is like the following:
   </para>
-
   <procedure>
    <step>
     <para>
-     Load the file
-     <filename>/usr/lib/ocf/resource.d/pacemaker/Dummy</filename> as a
-     template.
+     Load the file <filename>/usr/lib/ocf/resource.d/pacemaker/Dummy</filename>
+     as a template.
     </para>
    </step>
    <step>
@@ -141,8 +130,8 @@
      contradictions. For example, if you have a resource group
      <literal>kitchen</literal> with the resource
      <literal>coffee_machine</literal>, add this resource to the directory
-     <filename>/usr/lib/ocf/resource.d/kitchen/</filename>. To access this
-     RA, execute the command <command>crm</command>:
+     <filename>/usr/lib/ocf/resource.d/kitchen/</filename>. To access this RA,
+     execute the command <command>crm</command>:
     </para>
 <screen><command>configure</command><command>primitive</command> coffee_1 <emphasis>ocf:coffee_machine:kitchen</emphasis> ...</screen>
    </step>
@@ -153,12 +142,11 @@
     </para>
    </step>
   </procedure>
-
   <para>
    More details about writing OCF resource agents can be found at
-   <ulink url="http://linux-ha.org/wiki/Resource_Agents"/>. Find special
+   <link xlink:href="http://linux-ha.org/wiki/Resource_Agents"/>. Find special
    information about several concepts at <xref linkend="cha-ha-concepts"/>.
   </para>
- </sect1>
- <xi:include href="ha_error_codes.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
+ </section>
+ <xi:include href="ha_error_codes.xml" parse="xml"/>
 </chapter>

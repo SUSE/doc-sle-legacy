@@ -1,15 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet href="urn:x-suse:xslt:profiling:novdoc-profile.xsl"
-  type="text/xml" 
-  title="Profiling step"?>
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-                      "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
 [
-<!ENTITY % NOVDOC.DEACTIVATE.IDREF "IGNORE">
-<!ENTITY % entities SYSTEM "entity-decl.ent">
-%entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<sect1 id="sec-ha-quick-iscsi-initial">
+
+
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-ha-quick-iscsi-initial">
   <title>Initial Configuration</title>
 
   <para>
@@ -18,7 +19,7 @@
    manager.
   </para>
 
-  <sect2 id="configuring-a-drbd-resource">
+  <section xml:id="configuring-a-drbd-resource">
    <title>Configuring a DRBD resource</title>
    <para>
     First, it is necessary to configure a Pacemaker resource that manages a
@@ -64,9 +65,9 @@ resource iscsivg01 {
     address 10.0.42.2:7790;
   }
 }</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="lvm-configuration">
+  <section xml:id="lvm-configuration">
    <title>LVM Configuration</title>
    <para>
     It is necessary instruct LVM to read Physical Volume signatures from
@@ -102,17 +103,17 @@ resource iscsivg01 {
     Now, create an LVM Volume Group that includes this PV:
    </para>
 <screen>vgcreate iscsivg01 /dev/drbd/by-res/iscsivg01</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="initial-pacemaker-configuration-steps">
+  <section xml:id="initial-pacemaker-configuration-steps">
    <title>Initial Pacemaker configuration steps</title>
    <note>
     <para>
      While this manual covers the configuration of the Pacemaker cluster
      manager, the configuration of the cluster stack that Pacemaker uses is
      beyond the scope of this manual. Please see
-     <ulink url="http://clusterlabs.org/wiki/Initial_Configuration">Initial
-     Configuration</ulink> (from the ClusterLabs Wiki) for details on
+     <link xlink:href="http://clusterlabs.org/wiki/Initial_Configuration">Initial
+     Configuration</link> (from the ClusterLabs Wiki) for details on
      bootstrapping a Pacemaker cluster configuration.
     </para>
    </note>
@@ -120,7 +121,7 @@ resource iscsivg01 {
     In a highly available iSCSI target configuration that involves a 2-node
     cluster, you should
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Disable STONITH;
@@ -145,15 +146,15 @@ crm(live)configure# property stonith-enabled="false"
 crm(live)configure# property no-quorum-policy="ignore"
 crm(live)configure# property default-resource-stickiness="200"
 crm(live)configure# commit</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="creating-an-active-passive-iscsi-configuration">
+  <section xml:id="creating-an-active-passive-iscsi-configuration">
    <title>Creating an Active/Passive iSCSI configuration</title>
    <para>
     An active/passive iSCSI Target consists of the following cluster
     resources:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       A DRBD resource to replicate data, which is switched from and to the
@@ -274,9 +275,9 @@ crm(live)configure# colocation c_iscsivg01_on_drbd \
     Now, our configuration is complete, and may be activated:
    </para>
 <screen>crm(live)configure# commit</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="creating-an-active-active-iscsi-configuration">
+  <section xml:id="creating-an-active-active-iscsi-configuration">
    <title>Creating an Active/Active iSCSI configuration</title>
    <para>
     An active/active iSCSI Target consists of the following cluster
@@ -287,7 +288,7 @@ crm(live)configure# colocation c_iscsivg01_on_drbd \
     Primary and Secondary roles as deemed necessary by the cluster resource
     manager;
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Two LVM Volume Groups, which are made available on whichever node
@@ -441,5 +442,5 @@ crm(live)configure# colocation c_iscsivg02_on_drbd \
     Now, our configuration is complete, and may be activated:
    </para>
 <screen>crm(live)configure# commit</screen>
-  </sect2>
- </sect1>
+  </section>
+ </section>

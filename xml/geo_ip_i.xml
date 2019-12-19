@@ -1,11 +1,16 @@
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 
-<sect1 id="sec-ha-geo-ip-relocation">
+
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-ha-geo-ip-relocation">
  <!--taroth 2014-1120: https://fate.suse.com/316112-->
  <title>Setting Up IP Relocation via DNS Update</title>
  <para><remark>taroth 2015-03-05: not sure this works for SP4 - dejan: your
@@ -15,15 +20,14 @@
   an alternative solution to reconfiguring the routing: You can use dynamic DNS update and instead
   change the IP address for a service.</para>
  <para>The following prerequisites must be fulfilled for this scenario:</para>
- <itemizedlist>
+ <itemizedlist mark="bullet" spacing="normal">
   <listitem>
    <para>The service that needs to fail over is bound to a host name.</para>
   </listitem>
   <listitem>
    <para>Your DNS server must be configured for dynamic DNS updates. For information on how to do
     so with BIND/named, see the named documentation<remark>taroth 2014-11: lmb, do you have a
-     pointer to a specific URL concerning named docs?</remark>, or refer to <ulink
-      url="http://www.semicomplete.com/articles/dynamic-dns-with-dhcp/"/>. 
+     pointer to a specific URL concerning named docs?</remark>, or refer to <link xlink:href="http://www.semicomplete.com/articles/dynamic-dns-with-dhcp/"/>.
     <remark>taroth 2014-11-21: lmb, would you consider the aforementioned link appropriate (WRT to
      our customers and the kind of setup that is needed here)?</remark>More information on how
     to set up DNS, including dynamic update of zone data, can be found in the chapter
@@ -47,12 +51,12 @@
    records: nope, correct as is--> command. <remark>taroth 2014-11-21: lmb, is the following correct? it
    is mentioned in the description of fate#316112, however, your example in c#9 mentions focuses on
    IPv4 only...</remark>The resource agent supports both IPv4 and IPv6. </para>
- <example id="ex-ha-geo-dyn-dns-rsc-config">
+ <example xml:id="ex-ha-geo-dyn-dns-rsc-config">
   <title>Resource Configuration for Dynamic DNS Update</title>
   <screen>primitive dns-update-ip ocf:heartbeat:dnsupdate params \
-  hostname="www.domain.com"<co id="co-dyn-dns-hostname"/> ip="192.168.3.4"<co id="co-dyn-dns-ip"/>\
-  keyfile="<replaceable>/etc/whereever/Kgeo-update*</replaceable>.key"<co id="co-dyn-dns-key"/>\
-  server="192.168.1.1"<co id="co-dyn-dns-srv"/> serverport="53"<co id="co-dyn-dns-srv-port"/></screen>
+  hostname="www.domain.com"<co xml:id="co-dyn-dns-hostname"/> ip="192.168.3.4"<co xml:id="co-dyn-dns-ip"/>\
+  keyfile="<replaceable>/etc/whereever/Kgeo-update*</replaceable>.key"<co xml:id="co-dyn-dns-key"/>\
+  server="192.168.1.1"<co xml:id="co-dyn-dns-srv"/> serverport="53"<co xml:id="co-dyn-dns-srv-port"/></screen>
   <calloutlist>
    <callout arearefs="co-dyn-dns-hostname">
     <para>Host name bound to the service that needs to fail over together with the ticket. The IP
@@ -84,4 +88,4 @@
    &geo; cluster site from the DNS record and changing the IP for a service via dynamic DNS
    update. </para>
  </example>
-</sect1>
+</section>
