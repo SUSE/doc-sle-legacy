@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet href="urn:x-suse:xslt:profiling:novdoc-profile.xsl"
-                 type="text/xml" 
-                 title="Profiling step"?>
-<!DOCTYPE article PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-                      "novdocx.dtd"
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE article
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "IGNORE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<?provo dirname="autoupgrade/"?>
-<article id="art-update-auto" lang="en">
- <?suse-quickstart columns="no" color="novell" version="2"?>
-<!--
-    version="1" color="suse" columns="2"
--->
- <title>Automated Upgrade from &sls; 10 SP3 to 11 SP1</title>
- <subtitle>&productname; &productnumber;</subtitle>
- <articleinfo>
-  <productnumber>&productnumber;</productnumber><productname>&productname;</productname>
- </articleinfo>
- <abstract>
+
+
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="art-update-auto" xml:lang="en"><?suse-quickstart columns="no" color="novell" version="2"?><title>Automated Upgrade from &sls; 10 SP3 to 11 SP1</title><subtitle>&productname; &productnumber;</subtitle><info><productnumber>&productnumber;</productnumber><productname>&productname;</productname><abstract>
   <para>
   The following procedure is a way to do a mass upgrade unattended from
   &sls;&nbsp;10 SP3 to &sls;&nbsp;11 SP1.  Several preparation steps are needed
   to create a suitable AutoYaST profile.  AutoYaST finally will execute
   the upgrade process.
  </para>
- </abstract>
- <sect1 id="sec-update-auto-prep">
+ </abstract></info>
+ 
+<!--
+    version="1" color="suse" columns="2"
+-->
+ 
+ 
+ 
+ 
+ <section xml:id="sec-update-auto-prep">
   <title>Preparing and Applying the Driver Update Disk (DUD)</title>
 
   <para>
@@ -43,7 +41,7 @@
   
   <para>You can use the DUD as follows, alternatively:</para>
 
-  <sect2 id="update-auto-prep-mod">
+  <section xml:id="update-auto-prep-mod">
      <title>
       Modify Contents of the Installation Source (Repository)</title>
 
@@ -62,8 +60,7 @@
         your installation <systemitem>initrd</systemitem>):
        </para>
 
-       <screen
-           >cat /var/adm/unattended_migration.dud >><replaceable>/path/to/your/installation/initrd</replaceable></screen>
+       <screen>cat /var/adm/unattended_migration.dud &gt;&gt;<replaceable>/path/to/your/installation/initrd</replaceable></screen>
 
        <warning>
         <title>Modified <systemitem>initrd</systemitem> Runs Unattended
@@ -74,9 +71,9 @@
         method of upgrade or (auto)installation.
        </para>
        </warning>
-  </sect2>
+  </section>
 
-     <sect2 id="update-auto-prep-kpara">
+     <section xml:id="update-auto-prep-kpara">
       <title>Provide an Additional Kernel Parameter</title>
 
        <para>
@@ -89,8 +86,7 @@
         boot menu add (replace the URI with correct one in your network
         infrastructure):
        </para>
-       <screen
->dud=<replaceable>ftp://host/directory/dud.dud</replaceable></screen>
+       <screen>dud=<replaceable>ftp://host/directory/dud.dud</replaceable></screen>
 
        <para>
         On &zseries;, you must add the parameters to the PARM file; proceed
@@ -105,10 +101,10 @@
          <literal>insecure=1</literal> boot parameter to the
          installation kernel to disable all cryptographical checking
          normally done by Linuxrc.  For more information about Linuxrc,
-         see <ulink url="http://en.opensuse.org/SDB:Linuxrc"/>.
+         see <link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>.
         </para>
        </note>
-     </sect2>
+     </section>
 
 <!--
      <sect2 id="update-auto-prep-parm">
@@ -121,9 +117,9 @@
        </para>
      </sect2>
 -->
- </sect1>
+ </section>
 
- <sect1>
+ <section>
   <title>GRUB Menu Section for Booting into the Upgrade</title>
   <para>
 An alternate way to boot the system is to create an additional section
@@ -133,25 +129,23 @@ installation.  The following example assumes that there is a separate
 <literal>(hd0,0)</literal>:
   </para>
 
-  <screen
->title Upgrade
+  <screen>title Upgrade
     root (hd0,0)
     kernel /upgrade/vmlinuz install=<replaceable>inst_source_url</replaceable> vga=0x314
     initrd /upgrade/initrd
   </screen>
 
   <para>The above example assumes that the installation kernel and the
-  updated <systemitem>initrd</systemitem> (see <xref
-  linkend="update-auto-prep-mod"/>) are located in the
+  updated <systemitem>initrd</systemitem> (see <xref linkend="update-auto-prep-mod"/>) are located in the
   <filename>/boot/upgrade</filename> directory. If the
   <systemitem>initrd</systemitem> is not updated, just append the
   <literal>dud=</literal> parameter.  On &zseries;, you must add the
   parameters to the PARM file&mdash;proceed the same way as you do
   when performing an &ay;-driven installation.
   </para>
- </sect1>
+ </section>
 
- <sect1 id="sec-update-auto-prep-autoyast">
+ <section xml:id="sec-update-auto-prep-autoyast">
   <title>Preparing the &ay; Profile</title>
   <para>
 The &ay; profile for the automated upgrade uses the same file format as
@@ -168,18 +162,18 @@ url="http://www.suse.de/~ug/autoyast_doc/index.html"/>-->.</phrase>
   options by means of the &ay; profile.
   </para>
 
-  <sect2>
+  <section>
    <title>Upgrade</title>
    <para>The upgrade options define the behavior of the dependency
    solver during upgrade:
    </para>
 
-   <screen><![CDATA[<upgrade>
-  <only_installed_packages
-    config:type="boolean">false</only_installed_packages>
-  <stop_on_solver_conflict
-    config:type="boolean">true</stop_on_solver_conflict>
-</upgrade>]]></screen>
+   <screen>&lt;upgrade&gt;
+  &lt;only_installed_packages
+    config:type="boolean"&gt;false&lt;/only_installed_packages&gt;
+  &lt;stop_on_solver_conflict
+    config:type="boolean"&gt;true&lt;/stop_on_solver_conflict&gt;
+&lt;/upgrade&gt;</screen>
 
    <variablelist>
     <varlistentry>
@@ -204,24 +198,24 @@ url="http://www.suse.de/~ug/autoyast_doc/index.html"/>-->.</phrase>
     </varlistentry>
    </variablelist>
 
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Software Selection</title>
    <para>The software selection options define, which components to
    select or deselect in addition to the results of the resolver:</para>
 
-   <screen><![CDATA[<software>
-  <packages config:type="list">
-    <package>autoyast2-installation</package>
-    <package>apparmor-profile-editor</package>
-  </packages>
-  <patterns config:type="list">
-    <pattern>base</pattern>
-  </patterns>
-  <remove-packages config:type="list"/>
-  <remove-patterns config:type="list"/>
-</software>]]></screen>
+   <screen>&lt;software&gt;
+  &lt;packages config:type="list"&gt;
+    &lt;package&gt;autoyast2-installation&lt;/package&gt;
+    &lt;package&gt;apparmor-profile-editor&lt;/package&gt;
+  &lt;/packages&gt;
+  &lt;patterns config:type="list"&gt;
+    &lt;pattern&gt;base&lt;/pattern&gt;
+  &lt;/patterns&gt;
+  &lt;remove-packages config:type="list"/&gt;
+  &lt;remove-patterns config:type="list"/&gt;
+&lt;/software&gt;</screen>
 
    <para>It is especially important to set packages or patterns for
    being selected or deselected in order to resolve package conflicts
@@ -230,19 +224,19 @@ url="http://www.suse.de/~ug/autoyast_doc/index.html"/>-->.</phrase>
    <filename>autoupg_updated.xml</filename> file contains these packages
    and patterns plus those that were selected or deselected for any
    other reason.</para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Backup Before Upgrade</title>
 
    <para>The backup before upgrade options match these features in the
    upgrade proposal.</para>
 
-     <screen><![CDATA[<backup>
-  <sysconfig config:type="boolean">true</sysconfig>
-  <modified config:type="boolean">true</modified>
-  <remove_old config:type="boolean">false</remove_old>
-</backup>]]></screen>
+     <screen>&lt;backup&gt;
+  &lt;sysconfig config:type="boolean"&gt;true&lt;/sysconfig&gt;
+  &lt;modified config:type="boolean"&gt;true&lt;/modified&gt;
+  &lt;remove_old config:type="boolean"&gt;false&lt;/remove_old&gt;
+&lt;/backup&gt;</screen>
 
      <variablelist>
       <varlistentry>
@@ -271,9 +265,9 @@ url="http://www.suse.de/~ug/autoyast_doc/index.html"/>-->.</phrase>
       </varlistentry>
      </variablelist>
 
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Networking</title>
 
    <para>
@@ -281,12 +275,12 @@ url="http://www.suse.de/~ug/autoyast_doc/index.html"/>-->.</phrase>
     following needs to be added to the &ay; profile:
    </para>
 
-   <screen><![CDATA[<networking>
-  <keep_install_network
-    config:type="boolean">true</keep_install_network>
-  <start_immediately
-    config:type="boolean">true</start_immediately>
-</networking>]]></screen>
+   <screen>&lt;networking&gt;
+  &lt;keep_install_network
+    config:type="boolean"&gt;true&lt;/keep_install_network&gt;
+  &lt;start_immediately
+    config:type="boolean"&gt;true&lt;/start_immediately&gt;
+&lt;/networking&gt;</screen>
 
    <para>If your system contains an add-on, which needs to be upgraded,
 always include the add-on information as in the example.  After the
@@ -295,11 +289,11 @@ update repositories.
 <!-- FIXME: point ty ay docs? -->
 See the example of the registration part in
 attached autoupg.xml.</para>
-  </sect2>
+  </section>
 
- </sect1>
+ </section>
 
- <sect1>
+ <section>
   <title>Running the Automated Upgrade</title>
 
   <para>
@@ -308,7 +302,7 @@ attached autoupg.xml.</para>
    ways to pass the profile to the system:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Pass the profile to the kernel command line the same way as for the
@@ -357,9 +351,9 @@ attached autoupg.xml.</para>
    always be asked, which one to upgrade&mdash;there is no way to select it
    in advance.
   </para>
- </sect1>
+ </section>
 
- <sect1>
+ <section>
   <title>Second Stage of the Upgrade</title>
 
   <para>
@@ -392,14 +386,14 @@ attached autoupg.xml.</para>
    repository and updates will not be possible&mdash;unless configured
    later again.
   </para>
- </sect1>
+ </section>
 
- <sect1>
+ <section>
   <title>Limitations and Hints</title>
 
-  <para></para>
+  <para/>
 
-  <sect2>
+  <section>
    <title>&nm; and Registration</title>
 
   <para>
@@ -408,9 +402,9 @@ attached autoupg.xml.</para>
    stage of the upgrade. This prevents the system from performing the
    registration.
   </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Cleaning Up Upgrade Setting</title>
 
    <para>If you do any changes in your system in order to trigger the
@@ -421,35 +415,34 @@ attached autoupg.xml.</para>
     <!-- was:
     http://www.suse.de/~ug/autoyast_doc/createprofile.scripts.html -->
     You can do it automatically with a post-installation script.  Find
-    an example in the &ay; documentation at <ulink
-    url="http://www.suse.com/doc/sles11/book_autoyast/data/createprofile_scripts.html"/>.
+    an example in the &ay; documentation at <link xlink:href="http://www.suse.com/doc/sles11/book_autoyast/data/createprofile_scripts.html"/>.
     A sample script for cleaning up GRUB's <filename>menu.lst</filename> is
     included in the sample <filename>autoupg.xml</filename> file. Make
     sure that the script matches your particular setup and that it does
     not remove more than you actually want!
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>For More Information</title>
 
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Update Media How-To:
-      <ulink url="http://ftp.suse.com/pub/people/hvogel/Update-Media-HOWTO/index.html"/>
+      <link xlink:href="http://ftp.suse.com/pub/people/hvogel/Update-Media-HOWTO/index.html"/>
      </para>
     </listitem>
 
     <listitem>
      <para>
       Linuxrc Documentation:
-      <ulink url="http://en.opensuse.org/SDB:Linuxrc"/>
+      <link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>
      </para>
     </listitem>
    </itemizedlist>
-  </sect2>
+  </section>
 
- </sect1>
+ </section>
 
 </article>

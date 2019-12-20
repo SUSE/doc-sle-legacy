@@ -1,12 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-audit-setup">
- <title>Setting Up the Linux Audit Framework</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-audit-setup"><title>Setting Up the Linux Audit Framework</title><info/>
+ 
  <para>
   This chapter shows how to set up a simple audit scenario. Every step
   involved in configuring and enabling audit is explained in detail. After
@@ -22,13 +27,11 @@
   <step>
    <para>
     Make sure that all required packages are installed:
-    <systemitem class="resource"
-     >audit</systemitem>,
+    <systemitem class="resource">audit</systemitem>,
     <systemitem class="resource">audit-libs</systemitem>, and optionally
     <systemitem class="resource">audit-libs-python</systemitem>. To use the
     log visualization as described in <xref linkend="sec-audit-viz"/>,
-    install <systemitem class="resource"
-     >gnuplot</systemitem> and
+    install <systemitem class="resource">gnuplot</systemitem> and
     <systemitem class="resource">graphviz</systemitem> from the
     &productname; media.
    </para>
@@ -42,8 +45,7 @@
   <step>
    <para>
     Check or modify the basic audit daemon configuration. Refer to
-    <xref
-     linkend="sec-audit-config"/> for details.
+    <xref linkend="sec-audit-config"/> for details.
    </para>
   </step>
   <step>
@@ -61,8 +63,7 @@
   <step>
    <para>
     Generate logs and configure tailor-made reports. Refer to
-    <xref linkend="sec-audit-aurepo"
-    /> for details.
+    <xref linkend="sec-audit-aurepo"/> for details.
    </para>
   </step>
   <step>
@@ -83,7 +84,7 @@
    with <command>rcauditd start</command>.
   </para>
  </important>
- <sect1 id="sec-audit-choose">
+ <section xml:id="sec-audit-choose">
   <title>Determining the Components to Audit</title>
 
   <para>
@@ -92,15 +93,14 @@
    determine which use case best applies to you and your requirements:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      If you require a full security audit for CAPP/EAL certification, enable
      full audit for system calls and configure watches on various
      configuration files and directories, similar to the rule set featured
      in <xref linkend="cha-audit-scenarios"/>. Proceed to
-     <xref
-      linkend="sec-audit-syscall"/>.
+     <xref linkend="sec-audit-syscall"/>.
     </para>
    </listitem>
    <listitem>
@@ -116,13 +116,12 @@
      or security-sensitive data, create a rule set matching these
      requirements. Enable audit as described in
      <xref linkend="sec-audit-syscall"/> and proceed to
-     <xref
-      linkend="sec-audit-aurules"/>.
+     <xref linkend="sec-audit-aurules"/>.
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="sec-audit-config">
+ </section>
+ <section xml:id="sec-audit-config">
   <title>Configuring the Audit Daemon</title>
 
   <para>
@@ -213,8 +212,8 @@ disk_error_action = SUSPEND        ### or HALT</screen>
     parameters.
    </para>
   </tip>
- </sect1>
- <sect1 id="sec-audit-syscall">
+ </section>
+ <section xml:id="sec-audit-syscall">
   <title>Enabling Audit for System Calls</title>
 
   <para>
@@ -268,8 +267,8 @@ disk_error_action = SUSPEND        ### or HALT</screen>
    permanently, set <envar>AUDITD_DISABLE_CONTEXTS</envar> to
    <literal>yes</literal>.
   </para>
- </sect1>
- <sect1 id="sec-audit-aurules">
+ </section>
+ <section xml:id="sec-audit-aurules">
   <title>Setting Up Audit Rules</title>
 
   <para>
@@ -374,8 +373,7 @@ disk_error_action = SUSPEND        ### or HALT</screen>
 
   <para>
    For more information about creating custom rules, refer to
-   <xref linkend="sec-audit-rules"
-   />.
+   <xref linkend="sec-audit-rules"/>.
   </para>
 
   <important>
@@ -394,8 +392,8 @@ disk_error_action = SUSPEND        ### or HALT</screen>
    </para>
    -->
   </important>
- </sect1>
- <sect1 id="sec-audit-aurepo">
+ </section>
+ <section xml:id="sec-audit-aurepo">
   <title>Configuring Audit Reports</title>
 
   <para>
@@ -411,7 +409,7 @@ disk_error_action = SUSPEND        ### or HALT</screen>
    Before setting up audit reporting, consider the following:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      What types of events do you want to monitor by generating regular
@@ -485,7 +483,7 @@ Number of events: 5435</screen>
      <quote>files</quote> record for the number of failed file access
      events:
     </para>
-<screen><command>aureport <option>--failed</option></command>
+<screen><command>aureport</command> <option>--failed</option>
 
 Failed Summary Report
 ======================
@@ -517,7 +515,7 @@ Number of events: 1589</screen>
      To list the files that could not be accessed, run a summary report of
      failed file events:
     </para>
-<screen><command>aureport <option>-f -i --failed --summary</option></command>
+<screen><command>aureport</command> <option>-f -i --failed --summary</option>
 
 Failed File Summary Report
 ===========================
@@ -568,9 +566,9 @@ total  file
     <para>
      Use the event ID to get a detailed record for each item of interest:
     </para>
-<screen><command>ausearch -a <replaceable>7887</replaceable> -i</command>
+<screen><command>ausearch -a</command> <replaceable>7887</replaceable> -i
 ----
-time->Tue Feb 17 16:48:23 2009
+time-&gt;Tue Feb 17 16:48:23 2009
 type=PATH msg=audit(1234885703.090:7889): item=0 name="/etc/sysconfig/displaymanager" inode=369282 dev=08:06 mode=0100644 ouid=0 ogid=0 rdev=00:00
 type=CWD msg=audit(1234885703.090:7889):  cwd="/root"
 type=SYSCALL msg=audit(1234885703.090:7889): arch=c000003e syscall=191 success=no exit=-61 a0=7e1e20 a1=7f90e4cf9187 a2=7fffed5b57d0 a3=84 items=1 ppid=25548 pid=23045 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=pts2 ses=1166 comm="vim" exe="/bin/vim-normal" key=(null)</screen>
@@ -584,8 +582,7 @@ type=SYSCALL msg=audit(1234885703.090:7889): arch=c000003e syscall=191 success=n
     down the reports by using start and end dates and times with your
     <command>aureport</command> commands (<option>-ts</option> and
     <option>-te</option>). For more information, refer to
-    <xref
-     linkend="sec-audit-aureport-gen"/>.
+    <xref linkend="sec-audit-aureport-gen"/>.
    </para>
   </tip>
 
@@ -597,8 +594,8 @@ type=SYSCALL msg=audit(1234885703.090:7889): arch=c000003e syscall=191 success=n
    information about visualizing audit report data, refer to
    <xref linkend="sec-audit-viz"/>.
   </para>
- </sect1>
- <sect1 id="sec-audit-viz">
+ </section>
+ <section xml:id="sec-audit-viz">
   <title>Configuring Log Visualization</title>
 
   <para>
@@ -611,7 +608,7 @@ type=SYSCALL msg=audit(1234885703.090:7889): arch=c000003e syscall=191 success=n
   <para>
    <command>mkbar</command> and <command>mkgraph</command> were created by
    Steve Grubb at Red Hat. They are available from
-   <ulink url="http://people.redhat.com/sgrubb/audit/visualize/"/>. Because
+   <link xlink:href="http://people.redhat.com/sgrubb/audit/visualize/"/>. Because
    the current version of audit in &productname; does not ship with these
    scripts, proceed as follows to make them available on your system:
   </para>
@@ -729,5 +726,5 @@ wget http://people.redhat.com/sgrubb/audit/visualize/mkgraph -O ~/bin/mkgraph</s
    <literal>jpg</literal>. To cover a certain period of time only, use the
    <option>-ts</option> and <option>-te</option> options on aureport.
   </para>
- </sect1>
+ </section>
 </chapter>
