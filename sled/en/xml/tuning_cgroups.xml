@@ -8,19 +8,20 @@
    <!ENTITY % entities SYSTEM "entity-decl.ent">
    %entities;
 ]>
-
-
-<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-cgroups"><title>Kernel Control Groups</title><info><abstract>
-  <para>
-   Kernel Control Groups (abbreviated known as <quote>cgroups</quote>) are a
-   kernel feature that allows aggregating or partitioning tasks (processes)
-   and all their children into hierarchical organized groups. These
-   hierarchical groups can be configured to show a specialized behavior that
-   helps with tuning the system to make best use of available hardware and
-   network resources.
-  </para>
- </abstract></info>
- 
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-cgroups">
+ <title>Kernel Control Groups</title>
+ <info>
+  <abstract>
+   <para>
+    Kernel Control Groups (abbreviated known as <quote>cgroups</quote>) are a
+    kernel feature that allows aggregating or partitioning tasks (processes)
+    and all their children into hierarchical organized groups. These
+    hierarchical groups can be configured to show a specialized behavior that
+    helps with tuning the system to make best use of available hardware and
+    network resources.
+   </para>
+  </abstract>
+ </info>
 <!--
   Also formerly known as task or process containers
 
@@ -42,10 +43,8 @@
   Control Groups for XEN?
   Info Provider: Matthias Eckermann mge@suse.de
 -->
- 
  <section xml:id="sec-tuning-cgroups-overview">
 <!-- Definitions? -->
-
 <!--
  cgroups
  tasks (processes)
@@ -53,13 +52,10 @@
  hierarchies
  parameters
  -->
-
   <title>Technical Overview and Definitions</title>
-
   <para>
    The following terms are used in this chapter:
   </para>
-
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
@@ -68,9 +64,9 @@
    </listitem>
    <listitem>
     <para>
-     In a cgroup there is a set of tasks (processes) associated with a set
-     of subsystems that act as parameters constituting an environment for
-     the tasks.
+     In a cgroup there is a set of tasks (processes) associated with a set of
+     subsystems that act as parameters constituting an environment for the
+     tasks.
     </para>
    </listitem>
    <listitem>
@@ -90,8 +86,8 @@
    <listitem>
 <!-- mge says: <para>Partition tasks (processes) into a one or many groups of tree hierarchies</para> -->
     <para>
-     Every task running in the system is in exactly one of the cgroups in
-     the hierarchy.
+     Every task running in the system is in exactly one of the cgroups in the
+     hierarchy.
     </para>
    </listitem>
 <!--
@@ -105,13 +101,11 @@
  </section>
  <section xml:id="sec-tuning-cgroups-scenario">
   <title>Scenario</title>
-
   <para>
    See the following resource planning scenario for a better understanding
    (source:
    <filename>/usr/src/linux/Documentation/cgroups/cgroups.txt</filename>):
   </para>
-
   <figure xml:id="fig-tuning-cgroups-scenario1">
    <title>Resource Planning</title>
    <mediaobject>
@@ -123,24 +117,19 @@
     </imageobject>
    </mediaobject>
   </figure>
-
   <para>
    Web browsers such as Firefox will be part of the Web network class, while
    the NFS daemons such as (k)nfsd will be part of the NFS network class. On
    the other side, Firefox will share appropriate CPU and memory classes
    depending on whether a professor or student started it.
   </para>
-
 <!-- explain why a need an alternate hierarchy -->
  </section>
  <section xml:id="sec-tuning-cgroups-subsys">
   <title>Control Group Subsystems</title>
-
   <para>
-   The following subsystems are available and can be classified as two
-   types:
+   The following subsystems are available and can be classified as two types:
   </para>
-
   <variablelist>
    <varlistentry>
     <term>Isolation and Special Controllers</term>
@@ -159,28 +148,22 @@
     </listitem>
    </varlistentry>
   </variablelist>
-
   <para>
    Either mount each subsystem separately:
   </para>
-
 <screen>mount -t cgroup -o cpu none /cpu
 mount -t cgroup -o cpuset none /cpuset
   </screen>
-
   <para>
    or all subsystems in one go; you can use an arbitrary device name (e.g.,
    <literal>none</literal>), which will appear in
    <filename>/proc/mounts</filename>:
   </para>
-
 <screen>mount -t cgroup none /sys/fs/cgroup
   </screen>
-
   <para>
    Some additional information on available subsystems:
   </para>
-
   <variablelist>
    <varlistentry>
     <term>Cpuset (Isolation)</term>
@@ -196,10 +179,9 @@ mount -t cgroup -o cpuset none /cpuset
     <term>Freezer (Control)</term>
     <listitem>
      <para>
-      The Freezer subsystem is useful for high-performance computing
-      clusters (HPC clusters). Use it to freeze (stop) all tasks in a group
-      or to stop tasks, if they reach a defined checkpoint. For more
-      information, see
+      The Freezer subsystem is useful for high-performance computing clusters
+      (HPC clusters). Use it to freeze (stop) all tasks in a group or to stop
+      tasks, if they reach a defined checkpoint. For more information, see
       <filename>/usr/src/linux/Documentation/cgroups/freezer-subsystem.txt</filename>.
      </para>
      <para>
@@ -237,16 +219,16 @@ echo THAWED &gt; /freezer/0/freezer.state
     <term>Devices (Isolation)</term>
     <listitem>
      <para>
-      A system administrator can provide a list of devices that can be
-      accessed by processes under cgroups.
+      A system administrator can provide a list of devices that can be accessed
+      by processes under cgroups.
      </para>
 <!--
 Allow/Deny Rule
 Allow/Deny : READ/WRITE/MKNOD
 -->
      <para>
-      It limits access to a device or a file system on a device to only
-      tasks that belong to the specified cgroup. For more information, see
+      It limits access to a device or a file system on a device to only tasks
+      that belong to the specified cgroup. For more information, see
       <filename>/usr/src/linux/Documentation/cgroups/devices.txt</filename>.
      </para>
     </listitem>
@@ -255,8 +237,8 @@ Allow/Deny : READ/WRITE/MKNOD
     <term>Cpuacct (Control)</term>
     <listitem>
      <para>
-      The CPU accounting controller groups tasks using cgroups and accounts
-      the CPU usage of these groups. For more information, see
+      The CPU accounting controller groups tasks using cgroups and accounts the
+      CPU usage of these groups. For more information, see
       <filename>/usr/src/linux/Documentation/cgroups/cpuacct.txt</filename>.
      </para>
     </listitem>
@@ -265,8 +247,8 @@ Allow/Deny : READ/WRITE/MKNOD
     <term>CPU (Resource Control)</term>
     <listitem>
      <para>
-      Share CPU bandwidth between groups with the group scheduling function
-      of CFS (the scheduler). Mechanically complicated.
+      Share CPU bandwidth between groups with the group scheduling function of
+      CFS (the scheduler). Mechanically complicated.
 <!--mdejmek: is cfs explained somewhere before it is mentioned here? what does it stand for? Basically I don't like
        the (the scheduler) here....-->
 <!-- ke: asking mge, 2010-04-29 -->
@@ -322,13 +304,12 @@ Allow/Deny : READ/WRITE/MKNOD
     <listitem>
      <para>
       The blkio (Block IO) controller is now available as a disk I/O
-      controller. With the blkio controller you can currently set policies
-      for proportional bandwidth and for throttling.
+      controller. With the blkio controller you can currently set policies for
+      proportional bandwidth and for throttling.
      </para>
      <para>
-      These are the basic commands to configure proportional weight division
-      of bandwidth by setting weight values in
-      <literal>blkio.weight</literal>:
+      These are the basic commands to configure proportional weight division of
+      bandwidth by setting weight values in <literal>blkio.weight</literal>:
      </para>
 <screen># Setup in /sys/fs/cgroup
 mkdir /sys/fs/cgroup/blkio
@@ -374,15 +355,14 @@ echo "8:16  1048576" &gt; /sys/fs/cgroup/blkio/blkio.throttle.read_bps_device
    </varlistentry>
    <varlistentry>
 <!-- fate#312459 -->
-    <term>Network Traffic (Resource Control)
-   </term>
+    <term>Network Traffic (Resource Control)</term>
     <listitem>
      <para>
-      With <systemitem>cgroup_tc</systemitem>, a network traffic controller
-      is available. It can be used to manage traffic that is associated with
-      the tasks in a cgroup. Additionally, <systemitem>cls_flow</systemitem>
-      can classify packets based on the <literal>tc_classid</literal> field
-      in the packet.
+      With <systemitem>cgroup_tc</systemitem>, a network traffic controller is
+      available. It can be used to manage traffic that is associated with the
+      tasks in a cgroup. Additionally, <systemitem>cls_flow</systemitem> can
+      classify packets based on the <literal>tc_classid</literal> field in the
+      packet.
      </para>
 <!-- This patch provides a simple resource controller (cgroup_tc) based on the
 cgroups infrastructure to manage network traffic. The cgroup_tc resource
@@ -401,7 +381,8 @@ The implementation consists of two parts:
 -->
      <para>
       For example, to limit the traffic from all tasks from a
-      <literal>file_server</literal> cgroup to 100&nbsp;Mbps, proceed as follows:
+      <literal>file_server</literal> cgroup to 100&nbsp;Mbps, proceed as
+      follows:
      </para>
 <screen># create a file_transfer cgroup and assign it a unique classid
 # of 0x10 - this will be used later to direct packets.
@@ -419,8 +400,9 @@ tc class add dev eth0 parent 1: classid 1:10 htb rate 100mbit ceil 100mbit
 tc filter add dev eth0 parent 1: handle 800 protocol ip prio 1 \
   flow map key cgroup-classid baseclass 1:10</screen>
      <para>
-      This example is taken from <link xlink:href="https://lwn.net/Articles/291161/"/>, where you can
-      find more information about this feature.
+      This example is taken from
+      <link xlink:href="https://lwn.net/Articles/291161/"/>, where you can find
+      more information about this feature.
      </para>
     </listitem>
    </varlistentry>
@@ -428,11 +410,8 @@ tc filter add dev eth0 parent 1: handle 800 protocol ip prio 1 \
  </section>
  <section xml:id="sec-tuning-cgroups-usage">
   <title>Using Controller Groups</title>
-
 <!-- libcgroup1 cpuset -->
-
   <para/>
-
   <section xml:id="sec-tuning-cgroups-usage-prer">
    <title>Prerequisites</title>
    <para>
@@ -469,13 +448,12 @@ tc filter add dev eth0 parent 1: handle 800 protocol ip prio 1 \
     </listitem>
    </itemizedlist>
   </section>
-
   <section xml:id="sec-tuning-cgroups-usage-env">
    <title>Checking the Environment</title>
    <para>
-    The kernel shipped with &productname; supports cgroups. There is no need
-    to apply additional patches. Execute <command>lxc-checkconfig</command>
-    to see a cgroups environment similar to the following output:
+    The kernel shipped with &productname; supports cgroups. There is no need to
+    apply additional patches. Execute <command>lxc-checkconfig</command> to see
+    a cgroups environment similar to the following output:
    </para>
 <screen>--- Namespaces ---
 Namespaces: enabled
@@ -511,13 +489,11 @@ grep cgroup /proc/mounts
    <para>
     The following subsystems are available:
 <!-- in SUSE Linux Enterprise Server 11 SP2 -->
-    perf_event, blkio, net_cls, freezer, devices, memory, cpuacct, cpu,
-    cpuset.
+    perf_event, blkio, net_cls, freezer, devices, memory, cpuacct, cpu, cpuset.
 <!-- 11 GA: Disk and network
     subsystem controllers may become available during &sls; 11 lifetime. -->
    </para>
   </section>
-
   <section xml:id="sec-tuning-cgroups-usage-ex-cpusets">
    <title>Example: Cpusets</title>
    <para>
@@ -557,9 +533,8 @@ cat /proc/self/cpuset
 <screen>rmdir /sys/fs/cgroup/cpuset/Charlie
    </screen>
      <para>
-      This fails as long as this cpuset is in use. First, you must remove
-      the inside cpusets or tasks (processes) that belong to it. Check it
-      with:
+      This fails as long as this cpuset is in use. First, you must remove the
+      inside cpusets or tasks (processes) that belong to it. Check it with:
      </para>
 <screen>cat /sys/fs/cgroup/cpuset/Charlie/tasks</screen>
     </step>
@@ -585,7 +560,6 @@ cset proc --list --set Charlie
 cset set --destroy Charlie
  </screen>
   </section>
-
   <section xml:id="sec-tuning-cgroups-usage-ex-cg">
    <title>Example: cgroups</title>
    <para>
@@ -611,8 +585,8 @@ cat cpu.shares
       <listitem>
        <para>
         1024 is the default (for more information, see
-        <filename>/Documentation/scheduler/sched-design-CFS.txt</filename>)
-        = 50% utilization
+        <filename>/Documentation/scheduler/sched-design-CFS.txt</filename>) =
+        50% utilization
        </para>
       </listitem>
       <listitem>
@@ -640,7 +614,6 @@ cat cpu.shares
     </step>
    </procedure>
   </section>
-
 <!--
 More cgroup Functionality
 
@@ -657,7 +630,6 @@ Methods used to place task in proper cgroup
 pam_cgroup (at login); cgexec (task start); cgclassify (task move)
 User space daemon (cgred in /etc/init.d and /etc/sysconfig)
 -->
-
 <!--
 Linux Containers (LXC)
 
@@ -675,7 +647,6 @@ Modifying CGroup parameters: lxc-cgroup
  </section>
  <section xml:id="sec-tuning-cgroups-info">
   <title>For More Information</title>
-
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
@@ -738,14 +709,14 @@ Modifying CGroup parameters: lxc-cgroup
    </listitem>
    <listitem>
     <para>
-     <link xlink:href="http://lwn.net/Articles/243795/"/>&mdash;Corbet, Jonathan:
-     Controlling memory use in containers (2007).
+     <link xlink:href="http://lwn.net/Articles/243795/"/>&mdash;Corbet,
+     Jonathan: Controlling memory use in containers (2007).
     </para>
    </listitem>
    <listitem>
     <para>
-     <link xlink:href="http://lwn.net/Articles/236038/"/>&mdash;Corbet, Jonathan:
-     Process containers (2007).
+     <link xlink:href="http://lwn.net/Articles/236038/"/>&mdash;Corbet,
+     Jonathan: Process containers (2007).
     </para>
    </listitem>
   </itemizedlist>

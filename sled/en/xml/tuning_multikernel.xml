@@ -8,26 +8,26 @@
    <!ENTITY % entities SYSTEM "entity-decl.ent">
    %entities;
 ]>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-multikernel">
+ <title>Installing Multiple Kernel Versions</title>
+ <info>
+  <abstract>
+   <para>
+    &productname; supports the parallel installation of multiple kernel
+    versions. When installing a second kernel, a boot entry and an initrd are
+    automatically created, so no further manual configuration is needed. When
+    rebooting the machine, the newly added kernel is available as an additional
+    boot option.
+   </para>
 
-
-<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-multikernel"><title>Installing Multiple Kernel Versions</title><info><abstract>
-  <para>
-   &productname; supports the parallel installation of multiple kernel
-   versions. When installing a second kernel, a boot entry and an initrd are
-   automatically created, so no further manual configuration is needed. When
-   rebooting the machine, the newly added kernel is available as an
-   additional boot option.
-  </para>
-
-  <para>
-   Using this functionality, you can safely test kernel updates while being
-   able to always fall back to the proven former kernel. To do so, do not
-   use the update tools (such as the &yast; Online Update or the updater
-   applet), but instead follow the process described in this chapter.
-  </para>
- </abstract></info>
- 
- 
+   <para>
+    Using this functionality, you can safely test kernel updates while being
+    able to always fall back to the proven former kernel. To do so, do not use
+    the update tools (such as the &yast; Online Update or the updater applet),
+    but instead follow the process described in this chapter.
+   </para>
+  </abstract>
+ </info>
  <warning>
 <!-- cannot think of a better heading... -->
   <title>Support Entitlement</title>
@@ -43,21 +43,18 @@
   <para>
    It is recommended to check your boot loader config after having installed
    another kernel in order to set the default boot entry of your choice. See
-   <xref linkend="sec-boot-yast2-config"/> for more information. To change
-   the default append line for new kernel installations, adjust
+   <xref linkend="sec-boot-yast2-config"/> for more information. To change the
+   default append line for new kernel installations, adjust
    <filename>/etc/sysconfig/bootloader</filename> prior to installing a new
-   kernel. For more information refer to
-   <xref linkend="sec-grub-sysconfig"/>.
+   kernel. For more information refer to <xref linkend="sec-grub-sysconfig"/>.
   </para>
  </tip>
  <section xml:id="cha-tuning-multikernel-enable">
   <title>Enabling and Configuring Multiversion Support</title>
-
   <para>
-   Installing multiple versions of a software package (multiversion support)
-   is not enabled by default. To enable this feature, proceed as follows:
+   Installing multiple versions of a software package (multiversion support) is
+   not enabled by default. To enable this feature, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -71,7 +68,7 @@
      multiversion for all kernel packages capable of this feature, uncomment
      the following line
     </para>
-    <screen># multiversion = provides:multiversion(kernel)</screen>
+<screen># multiversion = provides:multiversion(kernel)</screen>
    </step>
    <step>
     <para>
@@ -80,7 +77,7 @@
      <literal>multiversion</literal> option in
      <filename>/etc/zypp/zypp.conf</filename>&mdash;for example
     </para>
-    <screen>multiversion = kernel-default,kernel-default-base,kernel-source</screen>
+<screen>multiversion = kernel-default,kernel-default-base,kernel-source</screen>
    </step>
    <step>
     <para>
@@ -88,18 +85,16 @@
     </para>
    </step>
   </procedure>
-
   <section xml:id="cha-tuning-multikernel-enable-keep">
    <title>Automatically Deleting Unused Kernels</title>
    <para>
-    When frequently testing new kernels with multiversion support enabled,
-    the boot menu quickly becomes confusing. Since a
-    <filename>/boot</filename> usually has got limited space you also might
-    run into trouble with <filename>/boot</filename> overflowing. While you
-    may delete unused kernel versions manually with &yast; or Zypper (as
-    described below), you can also configure
-    <systemitem class="library">libzypp</systemitem> to automatically delete
-    kernels no longer used. By default no kernels are deleted.
+    When frequently testing new kernels with multiversion support enabled, the
+    boot menu quickly becomes confusing. Since a <filename>/boot</filename>
+    usually has got limited space you also might run into trouble with
+    <filename>/boot</filename> overflowing. While you may delete unused kernel
+    versions manually with &yast; or Zypper (as described below), you can also
+    configure <systemitem class="library">libzypp</systemitem> to automatically
+    delete kernels no longer used. By default no kernels are deleted.
    </para>
    <procedure>
     <step>
@@ -111,8 +106,8 @@
     <step>
      <para>
       Search for the string <literal>multiversion.kernels</literal> and
-      activate this option by uncommenting the line. This option takes a
-      comma separated list of the following values
+      activate this option by uncommenting the line. This option takes a comma
+      separated list of the following values
      </para>
      <formalpara>
       <title><literal><replaceable>2.6.32.12-0.7 </replaceable></literal>:</title>
@@ -156,20 +151,18 @@
      </para>
      <variablelist>
       <varlistentry>
-       <term><literal>multiversion.kernels = latest,running</literal>
-       </term>
+       <term><literal>multiversion.kernels = latest,running</literal></term>
        <listitem>
         <para>
          Keep the latest kernel and the one currently running one. This is
-         similar to not enabling the multiversion feature at all, except
-         that the old kernel is removed <emphasis>after the next
-         reboot</emphasis> and not immediately after the installation.
+         similar to not enabling the multiversion feature at all, except that
+         the old kernel is removed <emphasis>after the next reboot</emphasis>
+         and not immediately after the installation.
         </para>
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><literal>multiversion.kernels = latest,latest-1,running</literal>
-       </term>
+       <term><literal>multiversion.kernels = latest,latest-1,running</literal></term>
        <listitem>
         <para>
          Keep the last two kernels and the one currently running.
@@ -177,9 +170,7 @@
        </listitem>
       </varlistentry>
       <varlistentry>
-       <term><literal>
-         multiversion.kernels = latest,running,<replaceable>3.0.rc7-test</replaceable></literal>
-       </term>
+       <term><literal> multiversion.kernels = latest,running,<replaceable>3.0.rc7-test</replaceable></literal></term>
        <listitem>
         <para>
          Keep the latest kernel, the one currently running and
@@ -201,7 +192,6 @@
  </section>
  <section xml:id="cha-tuning-multikernel-yast">
   <title>Installing/Removing Multiple Kernel Versions with &yast;</title>
-
   <procedure>
    <step>
     <para>
@@ -230,19 +220,19 @@
    </step>
    <step>
     <para>
-     Select a package and open its <guimenu>Version</guimenu> tab in the
-     bottom pane on the left.
+     Select a package and open its <guimenu>Version</guimenu> tab in the bottom
+     pane on the left.
     </para>
    </step>
    <step>
     <para>
-     To install a package, click its check box. A green check mark indicates
-     it is selected for installation.
+     To install a package, click its check box. A green check mark indicates it
+     is selected for installation.
     </para>
     <para>
-     To remove an already installed package (marked with a white check
-     mark), click its check box until a red <literal>X</literal> indicates it
-     is selected for removal.
+     To remove an already installed package (marked with a white check mark),
+     click its check box until a red <literal>X</literal> indicates it is
+     selected for removal.
     </para>
    </step>
    <step>
@@ -254,14 +244,13 @@
  </section>
  <section xml:id="cha-tuning-multikernel-zypper">
   <title>Installing/Removing Multiple Kernel Versions with zypper</title>
-
   <procedure>
    <step>
     <para>
      Use the command <command>zypper se -s 'kernel*'</command> to display a
      list of all kernel packages available:
     </para>
-    <screen><?dbsuse-fo font-size="7pt"?>S | Name           | Type       | Version         | Arch   | Repository        
+<screen><?dbsuse-fo font-size="7pt"?>S | Name           | Type       | Version         | Arch   | Repository        
 --+----------------+------------+-----------------+--------+-------------------
 v | kernel-default | package    | 2.6.32.10-0.4.1 | x86_64 | Alternative Kernel
 i | kernel-default | package    | 2.6.32.9-0.5.1  | x86_64 | (System Packages) 
@@ -273,13 +262,14 @@ i | kernel-default | package    | 2.6.32.9-0.5.1  | x86_64 | (System Packages)
     <para>
      Specify the exact version when installing:
     </para>
-    <screen>zypper in kernel-default-2.6.32.10-0.4.1</screen>
+<screen>zypper in kernel-default-2.6.32.10-0.4.1</screen>
    </step>
    <step>
     <para>
      When uninstalling a kernel, use the commands <command>zypper se -si
-     'kernel*'</command> to list all kernels installed and <command>zypper rm</command> <replaceable>PACKAGENAME-VERSION</replaceable> to remove
-     the package.
+     'kernel*'</command> to list all kernels installed and <command>zypper
+     rm</command> <replaceable>PACKAGENAME-VERSION</replaceable> to remove the
+     package.
     </para>
    </step>
   </procedure>

@@ -8,45 +8,45 @@
    <!ENTITY % entities SYSTEM "entity-decl.ent">
    %entities;
 ]>
-
-
-<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-autokiwi"><title>Automated Deployment of Preload Images</title><info><abstract>
-  <para>
-   With &kiwi; you are able to create operating system images. This chapter
-   describes the process of deploying a system image to an empty client
-   machine. For this, you have to create a preload image which contains a
-   bootable RAW image. This file contains two important parts: a partition
-   table and the actual operating system. This RAW image will be written to
-   the empty hard disk and the operating system extends to the remaining
-   disk space at first boot.
-  </para>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-autokiwi">
+ <title>Automated Deployment of Preload Images</title>
+ <info>
+  <abstract>
+   <para>
+    With &kiwi; you are able to create operating system images. This chapter
+    describes the process of deploying a system image to an empty client
+    machine. For this, you have to create a preload image which contains a
+    bootable RAW image. This file contains two important parts: a partition
+    table and the actual operating system. This RAW image will be written to
+    the empty hard disk and the operating system extends to the remaining disk
+    space at first boot.
+   </para>
 <!--remark>- Howto create and deploy kiwi images to an empty machine</remark>-->
- </abstract></info>
+  </abstract>
+ </info>
 <!--<title>FIXME: Automated Deployment with &kiwi;</title>-->
- 
- 
  <para>
-  To create such an image, see <xref linkend="sec-kiwi-img"/>. When you
-  build the ISO image, you can find the RAW file in the destination folder.
-  There are many ways to dump a raw image onto a disk.
+  To create such an image, see <xref linkend="sec-kiwi-img"/>. When you build
+  the ISO image, you can find the RAW file in the destination folder. There are
+  many ways to dump a raw image onto a disk.
  </para>
  <itemizedlist mark="bullet" spacing="normal">
   <listitem>
    <para>
-    Plug the disk into a deployment server and just copy the image to the
-    raw device.
+    Plug the disk into a deployment server and just copy the image to the raw
+    device.
    </para>
   </listitem>
   <listitem>
    <para>
-    Provide the raw image by means of a HTTP or FTP server and dump it on
-    the disk of the client machine.
+    Provide the raw image by means of a HTTP or FTP server and dump it on the
+    disk of the client machine.
    </para>
   </listitem>
   <listitem>
    <para>
-    Create a netboot image to get the image and dump it on the disk. This is
-    a good method for mass deployment.
+    Create a netboot image to get the image and dump it on the disk. This is a
+    good method for mass deployment.
    </para>
   </listitem>
   <listitem>
@@ -61,7 +61,6 @@
  </para>
  <section xml:id="sec-autokiwi-manual">
   <title>Deploying system manually from rescue image</title>
-
   <variablelist>
    <varlistentry>
     <term>Deploying with generated ISO file from &kiwi;:</term>
@@ -103,8 +102,8 @@
       </listitem>
       <listitem>
        <para>
-        Log in as <systemitem class="username">root</systemitem>. Do not
-        enter password.
+        Log in as <systemitem class="username">root</systemitem>. Do not enter
+        password.
        </para>
       </listitem>
       <listitem>
@@ -112,15 +111,15 @@
         Configure your network. If you have DHCP available in your network,
         this is merely the command <command>ifup-dhcp eth0</command>. If you
         must do this manually, use the command <command>ip</command> to
-        configure your network. The output starting DHCP also tells you the
-        IP address of the computer.
+        configure your network. The output starting DHCP also tells you the IP
+        address of the computer.
        </para>
       </listitem>
       <listitem>
        <para>
         Listen on an unused port of your network like
-        <systemitem>1234</systemitem> and dump the incoming data to disk
-        with the following command:
+        <systemitem>1234</systemitem> and dump the incoming data to disk with
+        the following command:
        </para>
 <screen>netcat -l -p 1234 &gt; /dev/sda</screen>
       </listitem>
@@ -133,10 +132,10 @@
       </listitem>
       <listitem>
        <para>
-        When the image is transferred, remove the rescue system from your CD
-        or DVD drive and shutdown the client machine. On reboot, the boot
-        loader <literal>GRUB</literal> should be started on the client and
-        the firstboot system will take over.
+        When the image is transferred, remove the rescue system from your CD or
+        DVD drive and shutdown the client machine. On reboot, the boot loader
+        <literal>GRUB</literal> should be started on the client and the
+        firstboot system will take over.
        </para>
       </listitem>
      </orderedlist>
@@ -146,33 +145,28 @@
  </section>
  <section>
   <title>Automated Deployment with PXE Boot</title>
-
   <para>
    When doing mulitple installations of an operating system on similar
-   hardware, it is useful to put some effort into preparing a mass
-   deployment of the operating system and to minimize the time needed for
-   the actual deployment. This chapter describes this process. The goal is
-   to simply plug in a computer, connect it to a network, start a network
-   boot, and wait until it powers down.
+   hardware, it is useful to put some effort into preparing a mass deployment
+   of the operating system and to minimize the time needed for the actual
+   deployment. This chapter describes this process. The goal is to simply plug
+   in a computer, connect it to a network, start a network boot, and wait until
+   it powers down.
   </para>
-
   <para>
-   The following actions have to be performed in order to accomplish this
-   task:
+   The following actions have to be performed in order to accomplish this task:
   </para>
-
   <variablelist>
    <varlistentry>
     <term>Setup a boot and install server</term>
     <listitem>
      <para>
-      A dedicated machine is needed, that should be prepared to offer PXE
-      boot as well as an ftp or Web server to provide a preload image. It is
-      a good idea to give the machine enough memory to hold all necessary
-      installation data in memory. For a default installation, you should
-      have at least 4 GByte of memory. All the necessary tasks can be
-      accomplished with &sls;. For more details, see
-      <xref linkend="sec-autokiwi-instserver"/>.
+      A dedicated machine is needed, that should be prepared to offer PXE boot
+      as well as an ftp or Web server to provide a preload image. It is a good
+      idea to give the machine enough memory to hold all necessary installation
+      data in memory. For a default installation, you should have at least 4
+      GByte of memory. All the necessary tasks can be accomplished with &sls;.
+      For more details, see <xref linkend="sec-autokiwi-instserver"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -181,13 +175,12 @@
     <listitem>
      <para>
       The actual installation is done by the copying of a raw image of the
-      operating system to the new hard disk. All features and settings must
-      be prepared and tested carefully. To provide such an image, &kiwi; can
-      be used (available in the SDK of the &sle; operating system). More
+      operating system to the new hard disk. All features and settings must be
+      prepared and tested carefully. To provide such an image, &kiwi; can be
+      used (available in the SDK of the &sle; operating system). More
       information about image creation with &kiwi; is available in
       <xref linkend="cha-kiwi"/>. For more details about the requirements of
-      the preload image, see
-      <xref linkend="sec-autokiwi-preloadimage"/>.
+      the preload image, see <xref linkend="sec-autokiwi-preloadimage"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -195,9 +188,9 @@
     <term>Create an initial system for deployment</term>
     <listitem>
      <para>
-      This is a task that requires some linux expertise. A description on
-      how this can be achieved by means of an example installation is
-      available at <xref linkend="sec-autokiwi-initrd"/>.
+      This is a task that requires some linux expertise. A description on how
+      this can be achieved by means of an example installation is available at
+      <xref linkend="sec-autokiwi-initrd"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -205,14 +198,12 @@
     <term>Configure the boot server for automatic deployment</term>
     <listitem>
      <para>
-      PXE boot must be told to boot the installation system, that in turn
-      will take the preload image from the server and copy it to the
-      hard disk.
+      PXE boot must be told to boot the installation system, that in turn will
+      take the preload image from the server and copy it to the hard disk.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
-
   <section xml:id="sec-autokiwi-instserver">
    <title>Setup a Boot and Install Server</title>
    <para>
@@ -223,23 +214,22 @@
     <step>
      <para>
       Set up the installation source as described in
-      <xref linkend="sec-deployment-remoteinst-instserver"/>. Choose
-      an HTTP, or FTP network server.
+      <xref linkend="sec-deployment-remoteinst-instserver"/>. Choose an HTTP,
+      or FTP network server.
      </para>
     </step>
     <step>
      <para>
-      Set up a TFTP server to hold a boot image (this image will be created
-      in a later step). This is described in
+      Set up a TFTP server to hold a boot image (this image will be created in
+      a later step). This is described in
       <xref linkend="sec-deployment-remoteinst-boot-tftp"/>.
      </para>
     </step>
     <step>
      <para>
-      Set up a DHCP server to assign IP addresses to all machines and to
-      reveal the location of the TFTP server to the target system. This is
-      described in
-      <xref linkend="sec-deployment-remoteinst-boot-dhcp"/>.
+      Set up a DHCP server to assign IP addresses to all machines and to reveal
+      the location of the TFTP server to the target system. This is described
+      in <xref linkend="sec-deployment-remoteinst-boot-dhcp"/>.
      </para>
     </step>
     <step>
@@ -256,13 +246,12 @@
     compared to slower networks.
    </para>
   </section>
-
   <section xml:id="sec-autokiwi-preloadimage">
    <title>Creating a Preload Image</title>
    <para>
     The process of creating images with &kiwi; is described in
-    <xref linkend="sec-kiwi-img"/>. However, to create a useful image for
-    mass deployment, several considerations should be taken into account:
+    <xref linkend="sec-kiwi-img"/>. However, to create a useful image for mass
+    deployment, several considerations should be taken into account:
    </para>
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
@@ -281,20 +270,20 @@
     <listitem>
      <para>
       Depending on the desired usage of the preload, some effort should be
-      invested in configuring firstboot. Find more details about firstboot
-      in <xref linkend="cha-deployment-firstboot"/>. With this method
-      you can also require the user to do initial configurations at the
-      first bootup of the system.
+      invested in configuring firstboot. Find more details about firstboot in
+      <xref linkend="cha-deployment-firstboot"/>. With this method you can also
+      require the user to do initial configurations at the first bootup of the
+      system.
      </para>
     </listitem>
     <listitem>
      <para>
       Many additional features can be configured into the image, like adding
-      update repositories or doing an update on initial bootup. However, it
-      is impossible to describe all possibilities in this document, and
-      (depending on the requirements) the creation of the preload image
-      requires in-depth knowledge of the imaging system &kiwi;, as well as
-      several other technologies used in &productname;.
+      update repositories or doing an update on initial bootup. However, it is
+      impossible to describe all possibilities in this document, and (depending
+      on the requirements) the creation of the preload image requires in-depth
+      knowledge of the imaging system &kiwi;, as well as several other
+      technologies used in &productname;.
      </para>
     </listitem>
    </itemizedlist>
@@ -303,25 +292,23 @@
     server that you provided on the installation server.
    </para>
   </section>
-
   <section xml:id="sec-autokiwi-initrd">
    <title>Creating a Initial System to Deploy a Preload Image</title>
    <para>
     In order to run an automatic deployment, it is necessary to start an
-    initial linux system on the target computer. During a typical
-    installation, the kernel and initial ram file system are read from some
-    boot medium and started by the bios. The needed functionality can be
-    implemented in the ram file system, which together with the kernel will
-    serve as the initial system.
+    initial linux system on the target computer. During a typical installation,
+    the kernel and initial ram file system are read from some boot medium and
+    started by the bios. The needed functionality can be implemented in the ram
+    file system, which together with the kernel will serve as the initial
+    system.
    </para>
    <para>
     The main features that must be provided by the initial system is the
-    enabling of access to the hard disk and the making available of the
-    network connection. Both of these functions are dependent on the
-    hardware onto which you want to deploy. In theory it is possible to
-    create an initial system from scratch, but to ease this task it is also
-    possible to modify the initial ram file system used by the machine during
-    boot.
+    enabling of access to the hard disk and the making available of the network
+    connection. Both of these functions are dependent on the hardware onto
+    which you want to deploy. In theory it is possible to create an initial
+    system from scratch, but to ease this task it is also possible to modify
+    the initial ram file system used by the machine during boot.
    </para>
    <para>
     The following procedure is just one example of how to create the needed
@@ -344,22 +331,21 @@
      </para>
 <screen>mkinitrd -f busybox -D eth0</screen>
      <para>
-      Note that eth0 represents the ethernet device to which your network
-      cable is attached. The parameter <systemitem>-f busybox</systemitem>
-      adds the multi call binary <systemitem>busybox</systemitem> to the ram
-      file system. After doing this, many standard unix commands are
-      available inside this system.
+      Note that eth0 represents the ethernet device to which your network cable
+      is attached. The parameter <systemitem>-f busybox</systemitem> adds the
+      multi call binary <systemitem>busybox</systemitem> to the ram file
+      system. After doing this, many standard unix commands are available
+      inside this system.
      </para>
     </step>
     <step>
      <para>
-      Copy the new ram file system and the kernel to your boot server with
-      the command:
+      Copy the new ram file system and the kernel to your boot server with the
+      command:
      </para>
 <screen>scp /boot/initrd /boot/vmlinuz &pxename;:</screen>
      <para>
-      Replace &pxename; with the name of your local boot server or ip
-      address.
+      Replace &pxename; with the name of your local boot server or ip address.
      </para>
     </step>
     <step>
@@ -453,23 +439,21 @@ find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
     </step>
    </procedure>
    <para>
-    The initial ram file system is now prepared to take two new kernel
-    command line parameters. The parameter
+    The initial ram file system is now prepared to take two new kernel command
+    line parameters. The parameter
     <systemitem>rawimage=&lt;URL&gt;</systemitem> is used to identify the
     location of the preload image. Any URL that is understood by wget can be
     used. The parameter <systemitem>rawdevice=&lt;device&gt;</systemitem> is
-    used to identify the block device for the hard disk on the target
-    machine.
+    used to identify the block device for the hard disk on the target machine.
    </para>
   </section>
-
   <section>
    <title>Boot Server Configuration</title>
    <para>
     The configuration of the boot server is covered in detail in several
-    different chapters as listed in
-    <xref linkend="sec-autokiwi-instserver"/>. This section should give a
-    checklist that covers steps that are necessary to configure the system.
+    different chapters as listed in <xref linkend="sec-autokiwi-instserver"/>.
+    This section should give a checklist that covers steps that are necessary
+    to configure the system.
    </para>
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
@@ -480,16 +464,15 @@ find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
 <screen>filename "pxelinux.0";
 next-server &pxeip;;</screen>
      <para>
-      In this example, &pxeip; is the ip address of the PXE server
-      &pxename;.
+      In this example, &pxeip; is the ip address of the PXE server &pxename;.
      </para>
     </listitem>
     <listitem>
      <para>
       Configure a PXE server as described in
-      <xref linkend="sec-deployment-remoteinst-boot-pxe"/>. When
-      editing <filename>/srv/tftpboot/pxelinux.cfg/default</filename>, add
-      the following entries:
+      <xref linkend="sec-deployment-remoteinst-boot-pxe"/>. When editing
+      <filename>/srv/tftpboot/pxelinux.cfg/default</filename>, add the
+      following entries:
      </para>
 <screen>default bootinstall
 label bootinstall
@@ -506,11 +489,10 @@ label bootinstall
    </itemizedlist>
    <para>
     Test your setup by booting the target system with PXE network boot. This
-    will automatically copy the prepared preload image to hard disk and
-    switch off the machine when ready.
+    will automatically copy the prepared preload image to hard disk and switch
+    off the machine when ready.
    </para>
   </section>
-
 <!-- outline:
    - install system
    - create initrd with additional network modules, activate -f busybox -D eth?
