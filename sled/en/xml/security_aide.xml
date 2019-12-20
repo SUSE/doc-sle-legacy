@@ -8,83 +8,74 @@
    <!ENTITY % entities SYSTEM "entity-decl.ent">
    %entities;
 ]>
-
-
-<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-aide"><title>Intrusion Detection with &aide;</title><info><abstract>
-  <para>
-   Securing your systems is a mandatory task for any mission-critical system
-   administrator. Because it is impossible to always guarantee that the
-   system is not compromised, it is very important to do extra checks
-   regularly (for example with cron) to ensure that the system is still
-   under your control. This is where &aide;, the <emphasis>Advanced
-   Intrusion Detection Environment</emphasis>, comes into play.
-  </para>
- </abstract></info>
- 
- 
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-aide">
+ <title>Intrusion Detection with &aide;</title>
+ <info>
+  <abstract>
+   <para>
+    Securing your systems is a mandatory task for any mission-critical system
+    administrator. Because it is impossible to always guarantee that the system
+    is not compromised, it is very important to do extra checks regularly (for
+    example with cron) to ensure that the system is still under your control.
+    This is where &aide;, the <emphasis>Advanced Intrusion Detection
+    Environment</emphasis>, comes into play.
+   </para>
+  </abstract>
+ </info>
  <section xml:id="sec-aide-why">
   <title>Why Using &aide;?</title>
-
   <para>
-   An easy check that often can reveal unwanted changes can be done by means
-   of RPM. The package manager has a built-in verify function that checks
-   all the managed files in the system for changes. To verify of all files,
-   run the command <command>rpm -Va</command>. However, this command will
-   also display changes in configuration files and you will have to do some
-   filtering to detect important changes.
+   An easy check that often can reveal unwanted changes can be done by means of
+   RPM. The package manager has a built-in verify function that checks all the
+   managed files in the system for changes. To verify of all files, run the
+   command <command>rpm -Va</command>. However, this command will also display
+   changes in configuration files and you will have to do some filtering to
+   detect important changes.
   </para>
-
   <para>
-   An additional problem to the method with RPM is that an intelligent
-   attacker will modify <command>rpm</command> itself to hide any changes
-   that might have been done by some kind of rootkit which allows the
-   attacker to mask its intrusion and gain root privilege. To solve this,
-   you should implement a secondary check that can also be run completely
-   independent of the installed system.
+   An additional problem to the method with RPM is that an intelligent attacker
+   will modify <command>rpm</command> itself to hide any changes that might
+   have been done by some kind of rootkit which allows the attacker to mask its
+   intrusion and gain root privilege. To solve this, you should implement a
+   secondary check that can also be run completely independent of the installed
+   system.
   </para>
  </section>
  <section xml:id="sec-aide-setup">
   <title>Setting Up an &aide; Database</title>
-
   <important>
    <title>Initialize &aide; Database After Installation</title>
    <para>
     Before you install your system, verify the checksum of your medium (see
-    <xref linkend="sec-trouble-checkingMedia"/>) to make sure you do
-    not use a compromised source. After you have installed the system,
-    initialize the &aide; database. To be really sure that all went well
-    during and after the installation, do an installation directly on the
-    console, without any network attached to the computer. Do not leave the
-    computer unattended or connected to any network before &aide; creates
-    its database.
+    <xref linkend="sec-trouble-checkingMedia"/>) to make sure you do not use a
+    compromised source. After you have installed the system, initialize the
+    &aide; database. To be really sure that all went well during and after the
+    installation, do an installation directly on the console, without any
+    network attached to the computer. Do not leave the computer unattended or
+    connected to any network before &aide; creates its database.
    </para>
   </important>
-
   <para>
-   AIDE is not installed by default on &productname;. To install it, either
-   use <menuchoice><guimenu>Computer</guimenu> <guimenu>Install
+   AIDE is not installed by default on &productname;. To install it, either use
+   <menuchoice><guimenu>Computer</guimenu> <guimenu>Install
    Software</guimenu></menuchoice>, or enter <literal>zypper install
    aide</literal> on the command line as &rootuser;.
   </para>
-
   <para>
    To tell &aide; which attributes of which files should be checked, use the
-   <filename>/etc/aide.conf</filename> configuration file. It must be
-   modified to become the actual configuration. The first section handles
-   general parameters like the location of the &aide; database file. More
-   relevant for local configurations are the <systemitem>Custom
-   Rules</systemitem> and the <systemitem>Directories and Files</systemitem>
-   sections. A typical rule looks like the following:
+   <filename>/etc/aide.conf</filename> configuration file. It must be modified
+   to become the actual configuration. The first section handles general
+   parameters like the location of the &aide; database file. More relevant for
+   local configurations are the <systemitem>Custom Rules</systemitem> and the
+   <systemitem>Directories and Files</systemitem> sections. A typical rule
+   looks like the following:
   </para>
-
 <screen>Binlib     = p+i+n+u+g+s+b+m+c+md5+sha1</screen>
-
   <para>
    After defining the variable <literal>Binlib</literal>, the respective
    checking options are used in the files section. Important options include
    the following:
   </para>
-
   <table xml:id="tab-aide-options">
    <title>Important &aide; Checking Options</title>
    <tgroup cols="2">
@@ -239,21 +230,17 @@
     </tbody>
    </tgroup>
   </table>
-
   <para>
    This is a configuration that checks for all files in
    <filename>/sbin</filename> with the options defined in
-   <literal>Binlib</literal> but omits the
-   <filename>/sbin/conf.d/</filename> directory:
+   <literal>Binlib</literal> but omits the <filename>/sbin/conf.d/</filename>
+   directory:
   </para>
-
 <screen>/sbin  Binlib
 !/sbin/conf.d</screen>
-
   <para>
    To create the &aide; database, proceed as follows:
   </para>
-
   <procedure xml:id="pro-aide-setup-db">
    <step>
     <para>
@@ -275,8 +262,8 @@
     </para>
 <screen>aide --config-check</screen>
     <para>
-     Any output of this command is a hint that the configuration is not
-     valid. For example, if you get the following output:
+     Any output of this command is a hint that the configuration is not valid.
+     For example, if you get the following output:
     </para>
 <screen>aide --config-check
 35:syntax error:!
@@ -284,8 +271,8 @@
 Configuration error</screen>
     <para>
      The error is to be expected in line 36 of
-     <filename>/etc/aide.conf</filename>. Note that the error message
-     contains the last successfully read line of the configuration file.
+     <filename>/etc/aide.conf</filename>. Note that the error message contains
+     the last successfully read line of the configuration file.
     </para>
    </step>
    <step>
@@ -303,9 +290,9 @@ Configuration error</screen>
      <title/>
      <para>
       This step is essential as it avoids compromising your database. It is
-      recommended to use a medium which can be written only once to prevent
-      the database being modified. <emphasis>Never</emphasis> leave the
-      database on the computer which you want to monitor.
+      recommended to use a medium which can be written only once to prevent the
+      database being modified. <emphasis>Never</emphasis> leave the database on
+      the computer which you want to monitor.
      </para>
     </important>
    </step>
@@ -313,11 +300,9 @@ Configuration error</screen>
  </section>
  <section xml:id="sec-aide-check">
   <title>Local &aide; Checks</title>
-
   <para>
    To perform a file system check, proceed as follows:
   </para>
-
   <procedure>
    <step>
     <para>
@@ -327,9 +312,9 @@ Configuration error</screen>
    </step>
    <step>
     <para>
-     After any configuration change, you always have to reinitialize the
-     &aide; database and subsequently move the newly generated database. It
-     is also a good idea to make a backup of this database. See
+     After any configuration change, you always have to reinitialize the &aide;
+     database and subsequently move the newly generated database. It is also a
+     good idea to make a backup of this database. See
      <xref linkend="sec-aide-setup"/> for more information.
     </para>
    </step>
@@ -340,12 +325,10 @@ Configuration error</screen>
 <screen>aide --check</screen>
    </step>
   </procedure>
-
   <para>
    If the output is empty, everything is fine. If &aide; found changes, it
    displays a summary of changes, for example:
   </para>
-
 <screen>aide --check
 AIDE found differences between database and filesystem!!
 
@@ -354,13 +337,11 @@ Summary:
   Added files:                  0
   Removed files:                0
   Changed files:                1 </screen>
-
   <para>
-   To learn about the actual changes, increase the verbose level of the
-   check with the parameter <literal>-V</literal>. For the previous example,
-   this could look like the following:
+   To learn about the actual changes, increase the verbose level of the check
+   with the parameter <literal>-V</literal>. For the previous example, this
+   could look like the following:
   </para>
-
 <screen>aide --check -V
 AIDE found differences between database and filesystem!!
 Start timestamp: 2009-02-18 15:14:10
@@ -386,7 +367,6 @@ Detailed information about changes:
 File: /etc/passwd
   Mtime    : 2009-02-18 15:11:02              , 2009-02-18 15:11:47
   Ctime    : 2009-02-18 15:11:02              , 2009-02-18 15:11:47</screen>
-
   <para>
    In this example, the file <filename>/etc/passwd</filename> was touched to
    demonstrate the effect.
@@ -394,30 +374,26 @@ File: /etc/passwd
  </section>
  <section xml:id="sec-aide-independent">
   <title>System Independent Checking</title>
-
   <para>
    For the risk-averse administrator (and of course this is all about
-   risk-aversion) it is advisable to also run the &aide; binary from a
-   trusted source. This excludes the risk that some attacker also modified
-   the aide binary to hide his traces.
+   risk-aversion) it is advisable to also run the &aide; binary from a trusted
+   source. This excludes the risk that some attacker also modified the aide
+   binary to hide his traces.
   </para>
-
   <para>
    To accomplish this task, &aide; must be run from a rescue system that is
    independent of the installed system. With &productname; it is relatively
-   easy to extend the rescue system with arbitrary programs, and thus add
-   the needed functionality.
+   easy to extend the rescue system with arbitrary programs, and thus add the
+   needed functionality.
   </para>
-
   <para>
    Before you can start using the rescue system, you need to provide two
-   packages to the system. These are included with the same syntax as you
-   would add a driver update disk to the system. For a detailed description
-   about the possibilities of linuxrc that are used for this purpose, see
-   <link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>. In the following, one
-   possible way to accomplish this task is discussed.
+   packages to the system. These are included with the same syntax as you would
+   add a driver update disk to the system. For a detailed description about the
+   possibilities of linuxrc that are used for this purpose, see
+   <link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>. In the following,
+   one possible way to accomplish this task is discussed.
   </para>
-
   <procedure>
    <title>Starting a Rescue System with &aide;</title>
    <step>
@@ -438,8 +414,8 @@ cp DVD1/suse/<replaceable>ARCH</replaceable>/mhash<replaceable>VERSION</replacea
    </step>
    <step>
     <para>
-     Create an info file <filename>/srv/ftp/info.txt</filename> that
-     provides the needed boot parameters for the rescue system:
+     Create an info file <filename>/srv/ftp/info.txt</filename> that provides
+     the needed boot parameters for the rescue system:
     </para>
 <screen>dud:ftp://&ftpname;/aide<replaceable>VERSION</replaceable>.<replaceable>ARCH</replaceable>.rpm
 dud:ftp://&ftpname;/mhash<replaceable>VERSION</replaceable>.<replaceable>ARCH</replaceable>.rpm</screen>
@@ -461,18 +437,15 @@ dud:ftp://&ftpname;/mhash<replaceable>VERSION</replaceable>.<replaceable>ARCH</r
     </para>
    </step>
   </procedure>
-
   <para>
    After the rescue system has booted, the &aide; program is ready for use.
   </para>
  </section>
  <section xml:id="sec-aide-more">
   <title>For More Information</title>
-
   <para>
    Information about &aide; is available at the following places:
   </para>
-
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
@@ -487,9 +460,8 @@ dud:ftp://&ftpname;/mhash<replaceable>VERSION</replaceable>.<replaceable>ARCH</r
    </listitem>
    <listitem>
     <para>
-     In several files below
-     <filename>/usr/share/doc/packages/aide</filename> after installing the
-     <systemitem>aide</systemitem> package.
+     In several files below <filename>/usr/share/doc/packages/aide</filename>
+     after installing the <systemitem>aide</systemitem> package.
     </para>
    </listitem>
    <listitem>
