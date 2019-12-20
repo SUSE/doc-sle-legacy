@@ -1,12 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-tuning-io">
- <title>Tuning I/O Performance</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-io"><title>Tuning I/O Performance</title><info/>
+ 
  <para>
   I/O scheduling controls how input/output operations will be submitted to
   storage. &productname; offers various I/O algorithms&mdash;called
@@ -20,7 +25,7 @@
   network storage systems, for example, each require different tuning
   strategies.
  </para>
- <sect1 id="cha-tuning-io-switch">
+ <section xml:id="cha-tuning-io-switch">
   <title>Switching I/O Scheduling</title>
 
   <para>
@@ -42,8 +47,7 @@
    where <replaceable>SCHEDULER</replaceable> is one of
    <option>cfq</option>, <option>noop</option>, or
    <option>deadline</option>. See
-   <xref
-    linkend="cha-tuning-io-schedulers"/> for details.
+   <xref linkend="cha-tuning-io-schedulers"/> for details.
   </para>
 
   <para>
@@ -51,7 +55,7 @@
    the following command:
   </para>
 
-  <screen>echo <replaceable>SCHEDULER</replaceable> > /sys/block/<replaceable>DEVICE</replaceable>/queue/scheduler</screen>
+  <screen>echo <replaceable>SCHEDULER</replaceable> &gt; /sys/block/<replaceable>DEVICE</replaceable>/queue/scheduler</screen>
 
   <para>
    where <replaceable>SCHEDULER</replaceable> is one of
@@ -67,8 +71,8 @@
     by the device driver.
    </para>
   </note>
- </sect1>
- <sect1 id="cha-tuning-io-schedulers">
+ </section>
+ <section xml:id="cha-tuning-io-schedulers">
   <title>Available I/O Elevators</title>
 
   <para>
@@ -77,7 +81,7 @@
    following command:
   </para>
 
-  <screen>echo <replaceable>VALUE</replaceable> > /sys/block/<replaceable>DEVICE</replaceable>/queue/iosched/<replaceable>TUNABLE</replaceable></screen>
+  <screen>echo <replaceable>VALUE</replaceable> &gt; /sys/block/<replaceable>DEVICE</replaceable>/queue/iosched/<replaceable>TUNABLE</replaceable></screen>
 
   <para>
    where <replaceable>VALUE</replaceable> is the desired value for the
@@ -93,7 +97,7 @@
   <screen>&wsI;:~ # cat /sys/block/sda/queue/scheduler
 noop deadline [cfq]</screen>
 
-  <sect2 id="sec-tuning-io-schedulers-cfq">
+  <section xml:id="sec-tuning-io-schedulers-cfq">
    <title><systemitem class="resource">CFQ</systemitem> (Completely Fair Queuing)</title>
    <para>
     <systemitem class="resource">CFQ</systemitem> is a fairness-oriented
@@ -158,9 +162,9 @@ noop deadline [cfq]</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-tuning-io-schedulers-noop">
+  <section xml:id="sec-tuning-io-schedulers-noop">
    <title><systemitem class="resource">NOOP</systemitem></title>
    <para>
     A trivial scheduler that just passes down the I/O that comes to it.
@@ -171,16 +175,14 @@ noop deadline [cfq]</screen>
     In some cases it can be helpful for devices that do I/O scheduling
     themselves, as intelligent storage, or devices that do not depend on
     mechanical movement, like SSDs. Usually, the
-    <systemitem
-     class="resource">DEADLINE</systemitem> I/O scheduler is
+    <systemitem class="resource">DEADLINE</systemitem> I/O scheduler is
     a better choice for these devices, but due to less overhead
-    <systemitem
-     class="resource">NOOP</systemitem> may produce better
+    <systemitem class="resource">NOOP</systemitem> may produce better
     performance on certain workloads.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-tuning-io-schedulers-deadline">
+  <section xml:id="sec-tuning-io-schedulers-deadline">
    <title><systemitem class="resource">DEADLINE</systemitem></title>
    <para>
     <systemitem class="resource">DEADLINE</systemitem> is a latency-oriented
@@ -195,13 +197,11 @@ noop deadline [cfq]</screen>
    </para>
    <para>
     This scheduler can provide a superior throughput over the
-    <systemitem
-     class="resource">CFQ</systemitem> I/O scheduler in
+    <systemitem class="resource">CFQ</systemitem> I/O scheduler in
     cases where several threads read and write and fairness is not an issue.
     For example, for several parallel readers from a SAN and for databases
     (especially when using <quote>TCQ</quote> disks). The
-    <systemitem
-     class="resource">DEADLINE</systemitem> scheduler has
+    <systemitem class="resource">DEADLINE</systemitem> scheduler has
     the following tunable parameters:
    </para>
    <variablelist>
@@ -238,9 +238,9 @@ noop deadline [cfq]</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="cha-tuning-io-barrier">
+  </section>
+ </section>
+ <section xml:id="cha-tuning-io-barrier">
   <title>I/O Barrier Tuning</title>
 
   <para>
@@ -264,5 +264,5 @@ noop deadline [cfq]</screen>
     corruption and data loss.
    </para>
   </warning>
- </sect1>
+ </section>
 </chapter>

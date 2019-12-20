@@ -1,13 +1,17 @@
-<?xml version="1.0"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
 
-<chapter id="cha-libvirt-connect">
- <title>Connecting and Authorizing</title>
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-libvirt-connect"><title>Connecting and Authorizing</title><info/>
+ 
  <para>
   Having to manage several &vmhost;s, each hosting a couple of &vmguest;s,
   quickly becomes difficult to handle. One of the major benefits of
@@ -21,7 +25,7 @@
   combined with different authorization mechanisms (socket, &pk;, SASL and
   Kerberos).
  </para>
- <sect1 id="sec-libvirt-connect-auth">
+ <section xml:id="sec-libvirt-connect-auth">
   <title>Authentication</title>
 
   <para>
@@ -31,7 +35,7 @@
    authentication techniques on the &vmhost;:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Access control for UNIX sockets with permissions and group ownership.
@@ -57,8 +61,7 @@
     <para>
      Kerberos authentication. This method, available for &libvirtd;
      connections only, is not covered in this manual. Please refer to
-     <ulink
-      url="http://libvirt.org/auth.html#ACL_server_kerberos"/>
+     <link xlink:href="http://libvirt.org/auth.html#ACL_server_kerberos"/>
      for details.
     </para>
    </listitem>
@@ -85,12 +88,11 @@
    When accessing &vmguest;s from remote via TLS/SSL connections, access can
    be indirectly controlled on each client by restricting read permissions
    to the certificate's key file to a certain group. See
-   <xref
-    linkend="sec-libvirt-connect-remote-tls-security"/> for
+   <xref linkend="sec-libvirt-connect-remote-tls-security"/> for
    details.
   </para>
 
-  <sect2 id="sec-libvirt-connect-auth-libvirt">
+  <section xml:id="sec-libvirt-connect-auth-libvirt">
    <title>&libvirtd; Authentication</title>
    <para>
     &libvirtd; authentication is configured in
@@ -124,8 +126,7 @@
     </para>
     <para>
      Alternatively you can configure &libvirt; to allow <quote>system</quote>
-     access to non-privileged users. See <xref
-     linkend="sec-libvirt-connect-connecting-dac"/> for details.
+     access to non-privileged users. See <xref linkend="sec-libvirt-connect-connecting-dac"/> for details.
     </para>
    </note>
    <variablelist>
@@ -162,13 +163,12 @@
      </listitem>
     </varlistentry>
    </variablelist>
-   <sect3 id="sec-libvirt-connect-auth-libvirt-traditional">
+   <section xml:id="sec-libvirt-connect-auth-libvirt-traditional">
     <title>Access Control for UNIX Sockets with Permissions and Group Ownership</title>
     <para>
      In order to grant access for non-&rootuser; accounts, configure the
      sockets to be owned and accessible by a certain group
-     (<systemitem
-      class="groupname">libvirt</systemitem> in the
+     (<systemitem class="groupname">libvirt</systemitem> in the
      following example). This authentication method can be used for local
      and remote SSH connections.
     </para>
@@ -198,9 +198,9 @@
        Change the configuration in
        <filename>/etc/libvirt/libvirtd.conf</filename> as follows:
       </para>
-      <screen>unix_sock_group = "libvirt"<co id="co-libvirt-connect-ssh-group"/>
-       unix_sock_rw_perms = "0770"<co id="co-libvirt-connect-ssh-perms"/>
-       auth_unix_rw = "none"<co id="co-libvirt-connect-ssh-enable"/></screen>
+      <screen>unix_sock_group = "libvirt"<co xml:id="co-libvirt-connect-ssh-group"/>
+       unix_sock_rw_perms = "0770"<co xml:id="co-libvirt-connect-ssh-perms"/>
+       auth_unix_rw = "none"<co xml:id="co-libvirt-connect-ssh-enable"/></screen>
       <calloutlist>
        <callout arearefs="co-libvirt-connect-ssh-group">
         <para>
@@ -228,8 +228,8 @@
       <screen>rclibvirtd restart</screen>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-auth-libvirt-pk">
+   </section>
+   <section xml:id="sec-libvirt-connect-auth-libvirt-pk">
     <title>Local Access Control for UNIX Sockets with &pk;</title>
 <!-- fs 2010-11-12:
      SLE 11 SP1 uses the old PolicyKit version. polkit1 (from openSUSE 11.3
@@ -255,7 +255,7 @@
     <para>
      Two policies for accessing &libvirt;'s sockets exist:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        <emphasis>org.libvirt.unix.monitor</emphasis>: accessing the
@@ -278,7 +278,7 @@
      In order to grant users access to the read-write socket without having
      to provide the &rootuser; password, there are two possibilities:
     </para>
-    <orderedlist>
+    <orderedlist spacing="normal">
      <listitem>
       <para>
        Using the <command>polkit-auth</command> command, you can grant the
@@ -294,9 +294,9 @@ polkit-auth --user &exampleuser; --revoke org.libvirt.unix.manage   # revoke pri
        existing <literal>&lt;config version="0.1"&gt;</literal> and
        <literal>&lt;/config&gt;</literal> tags:
       </para>
-      <screen>&lt;match action="org.libvirt.unix.manage"&gt;<co id="co-libvirt-pk-action"/>
-  &lt;match user="&exampleuser;"&gt;<co id="co-libvirt-pk-user"/>
-    &lt;return result="yes"/&gt;<co id="co-libvirt-pk-priv"/>
+      <screen>&lt;match action="org.libvirt.unix.manage"&gt;<co xml:id="co-libvirt-pk-action"/>
+  &lt;match user="&exampleuser;"&gt;<co xml:id="co-libvirt-pk-user"/>
+    &lt;return result="yes"/&gt;<co xml:id="co-libvirt-pk-priv"/>
   &lt;/match&gt;
 &lt;/match&gt;</screen>
       <calloutlist>
@@ -331,8 +331,8 @@ polkit-auth --user &exampleuser; --revoke org.libvirt.unix.manage   # revoke pri
       </calloutlist>
      </listitem>
     </orderedlist>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-auth-libvirt-sasl">
+   </section>
+   <section xml:id="sec-libvirt-connect-auth-libvirt-sasl">
     <title>Username and Password Authentication with SASL</title>
     <para>
      SASL provides username and password authentication as well as data
@@ -367,7 +367,7 @@ polkit-auth --user &exampleuser; --revoke org.libvirt.unix.manage   # revoke pri
        Change the configuration in
        <filename>/etc/libvirt/libvirtd.conf</filename> as follows:
       </para>
-      <substeps>
+      <substeps performance="required">
        <step>
         <para>
          To enable SASL for TCP connections:
@@ -422,10 +422,10 @@ Again (for verification):
       Avoid this by using <command>virsh</command> in shell mode.
      </para>
     </tip>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-libvirt-connect-auth-vnc">
+  <section xml:id="sec-libvirt-connect-auth-vnc">
    <title>VNC Authentication</title>
    <para>
     Since access to the graphical console of a &vmguest; is not controlled
@@ -447,15 +447,14 @@ Again (for verification):
     Refer to <xref linkend="sec-libvirt-connect-remote-tls-vnc-client"/> for
     details.
    </para>
-   <sect3 id="sec-libvirt-connect-auth-vnc-tls">
+   <section xml:id="sec-libvirt-connect-auth-vnc-tls">
     <title>Username and Password Authentication with SASL</title>
     <para>
      SASL provides username and password authentication as well as data
      encryption. Since SASL maintains its own user database, the users do
      not need to exist on the &vmhost;. As with SASL authentication for
      &libvirt;, you may use SASL on top of TLS/SSL connections. Refer to
-     <xref
-      linkend="sec-libvirt-connect-remote-tls-vnc-client"/> for
+     <xref linkend="sec-libvirt-connect-remote-tls-vnc-client"/> for
      details on configuring these connections.
     </para>
     <para>
@@ -524,8 +523,8 @@ vnc_sasl = 1</screen>
       <command>virt-viewer</command>, and <command>vinagre</command>.
      </para>
     </note>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-auth-vnc-pw">
+   </section>
+   <section xml:id="sec-libvirt-connect-auth-vnc-pw">
     <title>Single Password Authentication</title>
     <para>
      Access to the VNC server may also be controlled by setting a VNC
@@ -634,10 +633,10 @@ vnc_sasl = 1</screen>
       <command>vinagre</command> from version 2.30 on, support both methods.
      </para>
     </warning>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-libvirt-connect-remote">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-libvirt-connect-remote">
   <title>Configuring Remote Connections</title>
 
   <para>
@@ -647,7 +646,7 @@ vnc_sasl = 1</screen>
    remote connections.
   </para>
 
-  <sect2 id="sec-libvirt-connect-remote-ssh">
+  <section xml:id="sec-libvirt-connect-remote-ssh">
    <title>Remote Tunnel over SSH (<literal>qemu+ssh</literal>)</title>
    <para>
     Enabling a remote connection that is tunneled over SSH on the &vmhost;
@@ -664,8 +663,7 @@ vnc_sasl = 1</screen>
    <para>
     User authentication for SSH connections can be done using traditional
     file user/group ownership and permissions as described in
-    <xref
-     linkend="sec-libvirt-connect-auth-libvirt-traditional"/>.
+    <xref linkend="sec-libvirt-connect-auth-libvirt-traditional"/>.
     Connecting as user &exampleuser;
     (<literal>qemu+ssh://&exampleuser;sIVname;/system</literal>) works out of the
     box and does not require additional configuration on the &libvirt; side.
@@ -677,16 +675,14 @@ vnc_sasl = 1</screen>
     This can be avoided by copying your public key to
     <filename>~<replaceable>USER</replaceable>/.ssh/authorized_keys</filename>
     on the &vmhost; as explained in
-    <xref
-     linkend="sec-ssh-authentic-key-copy"/>. Using an ssh-agent on
+    <xref linkend="sec-ssh-authentic-key-copy"/>. Using an ssh-agent on
     the machine from which you are connecting adds even more
-    convenience&mdash;see <xref
-     linkend="sec-ssh-authentic-agent"/> for
+    convenience&mdash;see <xref linkend="sec-ssh-authentic-agent"/> for
     instructions.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-libvirt-connect-remote-tls">
+  <section xml:id="sec-libvirt-connect-remote-tls">
    <title>Remote TLS/SSL Connection with x509 Certificate (<literal>qemu+tls</literal>)</title>
    <para>
     Using TCP connections with TLS/SSL encryption and authentication via
@@ -694,7 +690,7 @@ vnc_sasl = 1</screen>
     a lot more scalable. Use this method if you have to manage several
     &vmhost;s with a varying number of administrators.
    </para>
-   <sect3 id="sec-libvirt-connect-remote-tls-concept">
+   <section xml:id="sec-libvirt-connect-remote-tls-concept">
     <title>Basic concept</title>
     <para>
      Basically, TLS (Transport Layer Security) encrypts the communication
@@ -725,16 +721,14 @@ vnc_sasl = 1</screen>
       computers are allowed to communicate in a certain direction.
       Restricting access to certain users can indirectly be achieved on the
       client side by restricting access to the certificates. Refer to
-      <xref
-       linkend="sec-libvirt-connect-remote-tls-security"/> for
+      <xref linkend="sec-libvirt-connect-remote-tls-security"/> for
       details. &libvirt; also supports user authentication on the server
       with SASL. Read more in
-      <xref
-       linkend="sec-libvirt-connect-remote-tls-sasl"/>.
+      <xref linkend="sec-libvirt-connect-remote-tls-sasl"/>.
      </para>
     </important>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-remote-tls-server">
+   </section>
+   <section xml:id="sec-libvirt-connect-remote-tls-server">
     <title>Configuring the &vmhost;</title>
     <para>
      The &vmhost; is the machine receiving connections. Therefore, the
@@ -791,8 +785,8 @@ vnc_sasl = 1</screen>
       restart &libvirtd; in case you change the certificates.
      </para>
     </important>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-remote-tls-client">
+   </section>
+   <section xml:id="sec-libvirt-connect-remote-tls-client">
     <title>Configuring the Client and Testing the Setup</title>
     <para>
      The client is the machine initiating connections. Therefore the
@@ -839,8 +833,8 @@ vnc_sasl = 1</screen>
       </para>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-remote-tls-vnc">
+   </section>
+   <section xml:id="sec-libvirt-connect-remote-tls-vnc">
     <title>Enabling VNC for TLS/SSL connections</title>
     <para>
      Currently, VNC communication over TLS is only supported by few tools.
@@ -850,7 +844,7 @@ vnc_sasl = 1</screen>
      <command>virt-viewer</command> and the GNOME VNC viewer
      <command>vinagre</command>.
     </para>
-    <sect4 id="sec-libvirt-connect-remote-tls-vnc-server">
+    <section xml:id="sec-libvirt-connect-remote-tls-vnc-server">
      <title>VNC over TLS/SSL: &vmhost; Configuration</title>
      <para>
       In order to access the graphical console via VNC over TLS/SSL, you
@@ -897,8 +891,8 @@ vnc_sasl = 1</screen>
        </important>
       </step>
      </procedure>
-    </sect4>
-    <sect4 id="sec-libvirt-connect-remote-tls-vnc-client">
+    </section>
+    <section xml:id="sec-libvirt-connect-remote-tls-vnc-client">
      <title>VNC over TLS/SSL: Client Configuration</title>
      <para>
       The only action needed on the client side is to place the x509 client
@@ -1014,9 +1008,9 @@ vnc_sasl = 1</screen>
        <xref linkend="sec-libvirt-connect-remote-tls-security"/>.
       </para>
      </important>
-    </sect4>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-remote-tls-security">
+    </section>
+   </section>
+   <section xml:id="sec-libvirt-connect-remote-tls-security">
     <title>Restricting Access (Security Considerations)</title>
     <para>
      Each x509 certificate consists of two pieces: the public certificate
@@ -1060,12 +1054,10 @@ chmod 600 /etc/pki/libvirt/private/serverkey.pem</screen>
         <systemitem class="groupname">libvirt</systemitem> is created and
         the group ownership of the <filename>clientkey.pem</filename> and
         its parent directory is set to
-        <systemitem
-	 class="groupname">libvirt</systemitem>. Afterwards,
+        <systemitem class="groupname">libvirt</systemitem>. Afterwards,
         the access permissions are restricted to owner and group. Finally
         the user &exampleuser; is added to the group
-        <systemitem
-	 class="groupname">libvirt</systemitem>, so he will be
+        <systemitem class="groupname">libvirt</systemitem>, so he will be
         able to access the key file.
        </para>
        <screen>CERTPATH="/etc/pki/libvirt/"
@@ -1097,15 +1089,14 @@ usermod -A libvirt tux
       </listitem>
      </varlistentry>
     </variablelist>
-    <sect4 id="sec-libvirt-connect-remote-tls-server-restrict">
+    <section xml:id="sec-libvirt-connect-remote-tls-server-restrict">
      <title>Restricting Access from the Server Side</title>
      <para>
       By default, every client that is equipped with appropriate client
       certificates may connect to a &vmhost; accepting TLS connections.
       Therefore, it is possible to use additional server side authentication
       with SASL as described in
-      <xref
-       linkend="sec-libvirt-connect-auth-libvirt-sasl"/>.
+      <xref linkend="sec-libvirt-connect-auth-libvirt-sasl"/>.
      </para>
      <para>
       It is also possible to restrict access with a whitelist of DNs
@@ -1130,9 +1121,9 @@ usermod -A libvirt tux
       Restart &libvirtd; after having changed the configuration:
      </para>
      <screen>rclibvirtd restart</screen>
-    </sect4>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-remote-tls-sasl">
+    </section>
+   </section>
+   <section xml:id="sec-libvirt-connect-remote-tls-sasl">
     <title>Central User Authentication with SASL for TLS Sockets</title>
 <!-- fs 2010-11-11:
      SASL for VNC: https://bugzilla.novell.com/show_bug.cgi?id=652927
@@ -1141,20 +1132,18 @@ usermod -A libvirt tux
      A direct user authentication via TLS is not possible - this is handled
      indirectly on each client via the read permissions for the certificates
      as explained in
-     <xref
-      linkend="sec-libvirt-connect-remote-tls-security"/>.
+     <xref linkend="sec-libvirt-connect-remote-tls-security"/>.
      However, if a central, server based user authentication is needed
      &libvirt; also allows to use SASL (Simple Authentication and Security
      Layer) on top of TLS for direct user authentication. See
-     <xref
-      linkend="sec-libvirt-connect-auth-libvirt-sasl"/> for
+     <xref linkend="sec-libvirt-connect-auth-libvirt-sasl"/> for
      configuration details.
     </para>
-   </sect3>
-   <sect3 id="sec-libvirt-connect-remote-tls-troubleshoot">
+   </section>
+   <section xml:id="sec-libvirt-connect-remote-tls-troubleshoot">
     <title>Troubleshooting</title>
     <para/>
-    <sect4>
+    <section>
      <title>&vmm;/<command>virsh</command> Cannot Connect to Server</title>
      <para>
       Check the following in the given order:
@@ -1173,8 +1162,8 @@ usermod -A libvirt tux
       <member>Has &libvirtd; been
        restarted on the server?</member>
      </simplelist>
-    </sect4>
-    <sect4>
+    </section>
+    <section>
      <title>VNC Connection fails</title>
      <para>
       Ensure that you can basically connect to the remote server using
@@ -1189,11 +1178,11 @@ usermod -A libvirt tux
       restarted.
      </para>
      <screen> -vnc 0.0.0.0:0,tls,x509verify=/etc/pki/libvirt</screen>
-    </sect4>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-libvirt-connect-connecting">
+    </section>
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-libvirt-connect-connecting">
   <title>Connecting to a &vmhost;</title>
 
   <para>
@@ -1204,11 +1193,10 @@ usermod -A libvirt tux
    Although the latter can be called with a connection parameter (for
    example, <command>virt-manager -c qemu:///system</command>), it also
    offers a graphical interface to create connection URIs. See
-   <xref
-    linkend="sec-libvirt-connect-connecting-vmm"/> for details.
+   <xref linkend="sec-libvirt-connect-connecting-vmm"/> for details.
   </para>
 
-  <screen><replaceable>HYPERVISOR</replaceable><co id="co-libvirt-connect-hyperv"/><replaceable>+PROTOCOL</replaceable><co id="co-libvirt-connect-protocol"/>://<replaceable>USER@REMOTE</replaceable><co id="co-libvirt-connect-remote"/>/<replaceable>CONNECTION_TYPE</replaceable><co id="co-libvirt-connect-type"/></screen>
+  <screen><replaceable>HYPERVISOR</replaceable><co xml:id="co-libvirt-connect-hyperv"/><replaceable>+PROTOCOL</replaceable><co xml:id="co-libvirt-connect-protocol"/>://<replaceable>USER@REMOTE</replaceable><co xml:id="co-libvirt-connect-remote"/>/<replaceable>CONNECTION_TYPE</replaceable><co xml:id="co-libvirt-connect-type"/></screen>
 
   <calloutlist>
    <callout arearefs="co-libvirt-connect-hyperv">
@@ -1293,8 +1281,7 @@ usermod -A libvirt tux
 
   <para>
    For more details and examples, refer to the &libvirt; documentation at
-   <ulink
-    url="http://libvirt.org/uri.html"/>.
+   <link xlink:href="http://libvirt.org/uri.html"/>.
   </para>
 
   <note>
@@ -1313,7 +1300,7 @@ usermod -A libvirt tux
    </para>
   </note>
   
-  <sect2 id="sec-libvirt-connect-connecting-dac">
+  <section xml:id="sec-libvirt-connect-connecting-dac">
    <title><quote>system</quote> Access for Non-Privileged Users</title>
    <para>
     As mentioned above, a connection to the &qemu; hypervisor can be
@@ -1337,13 +1324,10 @@ usermod -A libvirt tux
     <title>Granting <quote>system</quote> Access to a Regular User</title>
     <step>
      <para>
-      Enable access via UNIX sockets as described in <xref
-      linkend="sec-libvirt-connect-auth-libvirt-traditional"/>. In that
+      Enable access via UNIX sockets as described in <xref linkend="sec-libvirt-connect-auth-libvirt-traditional"/>. In that
       example access to libvirt is granted to all members of the group
-      <systemitem class="groupname">libvirt</systemitem> and <systemitem
-      class="username">&exampleuser;</systemitem> is made a member of this
-      group. This ensures that <systemitem
-      class="username">&exampleuser;</systemitem> can connect using
+      <systemitem class="groupname">libvirt</systemitem> and <systemitem class="username">&exampleuser;</systemitem> is made a member of this
+      group. This ensures that <systemitem class="username">&exampleuser;</systemitem> can connect using
       <command>virsh</command> or &vmm;.
      </para>
     </step>
@@ -1356,8 +1340,7 @@ usermod -A libvirt tux
 group = "libvirt"
 dynamic_ownership = 1</screen>
      <para>
-      This ensures that the &vmguest;s are started by <systemitem
-      class="username">&exampleuser;</systemitem> and that resources bound to
+      This ensures that the &vmguest;s are started by <systemitem class="username">&exampleuser;</systemitem> and that resources bound to
       the guest (for example virtual disks) can be accessed and modified by
       <systemitem class="username">&exampleuser;</systemitem>.
      </para>
@@ -1380,10 +1363,10 @@ dynamic_ownership = 1</screen>
      <screen>rclibvirtd restart</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
   
 
-  <sect2 id="sec-libvirt-connect-connecting-vmm">
+  <section xml:id="sec-libvirt-connect-connecting-vmm">
    <title>Managing Connections with &vmm;</title>
    <para>
     The &vmm; uses a <literal>Connection</literal> for every &vmhost; it
@@ -1463,6 +1446,6 @@ dynamic_ownership = 1</screen>
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

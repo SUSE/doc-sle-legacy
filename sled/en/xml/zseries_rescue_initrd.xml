@@ -1,10 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
+
+
 <!--
    fs 02/28/2006: 
      Do not change the following words/phrases (except in URls, 
@@ -14,7 +19,7 @@
       - ESCON
       - HiperSockets
 -->
-<sect1 id="sec-zseries-rescue">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="sec-zseries-rescue">
  <title>IBM &zseries;: Using initrd as a Rescue System</title>
 
  <para>
@@ -29,15 +34,14 @@
 
  <primary>rescue system</primary></indexterm>
 
- <sect2 id="sec-zseries-rescue-ipling">
+ <section xml:id="sec-zseries-rescue-ipling">
   <title>IPLing the Rescue System</title>
   <important>
    <title>Making the Installation Data Available</title>
    <para>
     For this method to work, the &sls; for IBM &zseries; installation data
     must be available. For details, refer to
-    <xref
-     linkend="sec-prep-makeavail"/>. Additionally, you need the
+    <xref linkend="sec-prep-makeavail"/>. Additionally, you need the
     channel number of the device and the partition number within the device
     that contains the root file system of the &sls; installation.
    </para>
@@ -61,9 +65,9 @@ Rescue login:</screen>
   <para>
    You can now log in as &rootuser; without a password.
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-configure-disks">
+ <section xml:id="sec-zseries-rescue-configure-disks">
   <title>Configuring Disks</title>
   <para>
    In this state, no disks are configured. You need to configure them before
@@ -126,9 +130,9 @@ Rescue login:</screen>
     </para>
    </step>
   </procedure>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-mount">
+ <section xml:id="sec-zseries-rescue-mount">
   <title>Mounting the Root Device</title>
   <para>
    If all needed disks are online, you should now be able to mount the root
@@ -150,7 +154,7 @@ Rescue login:</screen>
    By just issuing the command <command>mount</command>, it is possible to
    check whether the file system could be mounted correctly.
   </para>
-  <example id="ex-zseries-rescue-mount-mount-output">
+  <example xml:id="ex-zseries-rescue-mount-mount-output">
    <title>Output of the Mount Command</title>
    <screen>SuSE Instsys suse:/ # mount
 shmfs on /newroot type shm (rw,nr_inodes=10240)
@@ -158,9 +162,9 @@ devpts on /dev/pts type devpts (rw)
 virtual-proc-filesystem on /proc type proc (rw)
 /dev/dasda2 on /mnt type reiserfs (rw)</screen>
   </example>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-chroot">
+ <section xml:id="sec-zseries-rescue-chroot">
   <title>Changing to the Mounted File System</title>
   <para>
    For the <literal>zipl</literal> command to read the configuration file
@@ -168,20 +172,20 @@ virtual-proc-filesystem on /proc type proc (rw)
    system, change the root device to the installed system with the
    <command>chroot</command> command:
   </para>
-  <example id="ex-zseries-rescue-chroot">
+  <example xml:id="ex-zseries-rescue-chroot">
    <title>chroot to the Mounted File System</title>
    <screen>SuSE Instsys suse:/ # cd /mnt 
 SuSE Instsys suse:/mnt # chroot /mnt</screen>
   </example>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-zipl">
+ <section xml:id="sec-zseries-rescue-zipl">
   <title>Executing zipl</title>
   <para>
    Now execute <command>zipl</command> to rewrite the IPL record with the
    correct values:
   </para>
-  <example id="ex-zseries-rescue-zipl">
+  <example xml:id="ex-zseries-rescue-zipl">
    <title>Installing the IPL Record with zipl</title>
    <screen>sh-2.05b# zipl 
 building bootmap : /boot/zipl/bootmap 
@@ -192,9 +196,9 @@ Bootloader for ECKD type devices with z/OS compatible layout installed.
 Syncing disks.... 
 ...done</screen>
   </example>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-exit">
+ <section xml:id="sec-zseries-rescue-exit">
   <title>Exiting the Rescue System</title>
   <para>
    To exit the rescue system, first leave the shell opened by the
@@ -204,7 +208,7 @@ Syncing disks....
    rescue system and unmount the root device of &sls; for IBM &zseries;
    installation.
   </para>
-  <example id="ex-zseries-rescue-exit-umount">
+  <example xml:id="ex-zseries-rescue-exit-umount">
    <title>Unmounting the File System</title>
    <screen>SuSE Instsys suse:/mnt # cd / 
 SuSE Instsys suse:/ # umount /mnt</screen>
@@ -214,5 +218,5 @@ SuSE Instsys suse:/ # umount /mnt</screen>
    The &sls; system can now be IPLed as described in
    <xref linkend="sec-s390-inst-reipl"/>.
   </para>
- </sect2>
-</sect1>
+ </section>
+</section>

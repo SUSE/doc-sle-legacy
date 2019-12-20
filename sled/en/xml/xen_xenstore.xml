@@ -1,18 +1,23 @@
-<?xml version="1.0"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
-  [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-xen-xenstore">
- <title>&xenstore;: Configuration Database Shared between Domains</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-xen-xenstore"><title>&xenstore;: Configuration Database Shared between Domains</title><info/>
+ 
  <para>
   This section introduces basic information about &xenstore;, its role in
   the &xen; environment, the directory structure of files used by
   &xenstore;, and the description of &xenstore;'s commands.
  </para>
- <sect1>
+ <section>
   <title>Introduction</title>
 
   <para>
@@ -32,20 +37,19 @@
    <filename>/var/lib/xenstored/tdb</filename> (<literal>tdb</literal>
    represents <emphasis>tree database</emphasis>).
   </para>
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>File System Interface</title>
 
   <para>
    &xenstore; database content is represented by a virtual file system
    similar to <filename>/proc</filename> (for more information on
-   <filename>/proc</filename>, see <xref
-    linkend="sec-util-proc"/>). The
+   <filename>/proc</filename>, see <xref linkend="sec-util-proc"/>). The
    tree has three main paths: <filename>/vm</filename>,
    <filename>/local/domain</filename>, and <filename>/tool</filename>.
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      <filename>/vm</filename> - stores information about the &vmguest;
@@ -77,7 +81,7 @@
    </para>
   </tip>
 
-  <sect2>
+  <section>
    <title>&xenstore; Commands</title>
    <para>
     The file system structure of the &xenstore; database can be operated
@@ -94,7 +98,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-read <option>path_to_xenstore_entry</option></command>
+     <term><command>xenstore-read</command> <option>path_to_xenstore_entry</option>
      </term>
      <listitem>
       <para>
@@ -103,7 +107,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-exists <option>xenstore_path</option></command>
+     <term><command>xenstore-exists</command> <option>xenstore_path</option>
      </term>
      <listitem>
       <para>
@@ -112,7 +116,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-list <option>xenstore_path</option></command>
+     <term><command>xenstore-list</command> <option>xenstore_path</option>
      </term>
      <listitem>
       <para>
@@ -121,7 +125,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-write <option>path_to_xenstore_entry</option></command>
+     <term><command>xenstore-write</command> <option>path_to_xenstore_entry</option>
      </term>
      <listitem>
       <para>
@@ -130,7 +134,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-rm <option>xenstore_path</option></command>
+     <term><command>xenstore-rm</command> <option>xenstore_path</option>
      </term>
      <listitem>
       <para>
@@ -139,7 +143,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>xenstore-chmod <option>xenstore_path</option><option>mode</option></command>
+     <term><command>xenstore-chmod</command> <option>xenstore_path</option><option>mode</option>
      </term>
      <listitem>
       <para>
@@ -158,15 +162,15 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="xenstore-vm">
+  <section xml:id="xenstore-vm">
    <title><filename>/vm</filename></title>
    <para>
     The <filename>/vm</filename> path is indexed by the UUID of each
     &vmguest;, and stores configuration information such as the number of
     virtual CPUs and the amount of allocated memory. There is a
-    <filename>/vm/&lt;uuid></filename> directory for each &vmguest;. To list
+    <filename>/vm/&lt;uuid&gt;</filename> directory for each &vmguest;. To list
     the directory content, use <command>xenstore-list</command>.
    </para>
 <screen># xenstore-list /vm
@@ -203,7 +207,7 @@ name</screen>
 <screen># xenstore-read /vm/9b30841b-43bc-2af9-2ed3-5a649f466d79-1/vcpus
 1</screen>
    <para>
-    A list of some of the <filename>/vm/&lt;uuid></filename> entries
+    A list of some of the <filename>/vm/&lt;uuid&gt;</filename> entries
     follows:
    </para>
    <variablelist>
@@ -279,7 +283,7 @@ name</screen>
    </variablelist>
    <para>
     Regular &vmguest;s (not &dom0;) make use of the
-    <filename>/vm/&lt;uuid>/image</filename> path:
+    <filename>/vm/&lt;uuid&gt;/image</filename> path:
    </para>
 <screen># xenstore-list /vm/9b30841b-43bc-2af9-2ed3-5a649f466d79-1/image
 ostype
@@ -336,15 +340,15 @@ display</screen>
       <para>
       Shows arguments passed to the &qemu; process. If you look at the &qemu;
       process with <command>ps</command>, you should see the same arguments as
-      in <filename>/vm/&lt;uuid>/image/dmargs</filename>.
+      in <filename>/vm/&lt;uuid&gt;/image/dmargs</filename>.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2>
-   <title><filename>/local/domain/&lt;domid></filename></title>
+  <section>
+   <title><filename>/local/domain/&lt;domid&gt;</filename></title>
    <para>
     This path is indexed by the running domain (&vmguest;) ID, and contains
     information about the running &vmguest;. Remember that the domain ID changes
@@ -401,26 +405,25 @@ display</screen>
    </variablelist>
    <para>
     Apart from the individual entries described above, there are also several
-    subdirectories under <filename>/local/domain/&lt;domid></filename>,
+    subdirectories under <filename>/local/domain/&lt;domid&gt;</filename>,
     containing specific entries. To see all entries available, refer to
-    <ulink
-     url="http://wiki.xen.org/wiki/XenStore_Reference">&xenstore;
-    Reference</ulink>.
+    <link xlink:href="http://wiki.xen.org/wiki/XenStore_Reference">&xenstore;
+    Reference</link>.
    </para>
    <variablelist>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/memory</literal>
+     <term><literal>/local/domain/&lt;domid&gt;/memory</literal>
      </term>
      <listitem>
       <para>
        Contains memory information.
-       <literal>/local/domain/&lt;domid>/memory/target</literal> contains
+       <literal>/local/domain/&lt;domid&gt;/memory/target</literal> contains
        target memory size for the &vmguest; (in kilobytes).
       </para>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/console</literal>
+     <term><literal>/local/domain/&lt;domid&gt;/console</literal>
      </term>
      <listitem>
       <para>
@@ -429,7 +432,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/backend</literal>
+     <term><literal>/local/domain/&lt;domid&gt;/backend</literal>
      </term>
      <listitem>
       <para>
@@ -439,7 +442,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/device</literal>
+     <term><literal>/local/domain/&lt;domid&gt;/device</literal>
      </term>
      <listitem>
       <para>
@@ -448,7 +451,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/device-misc</literal>
+     <term><literal>/local/domain/&lt;domid&gt;/device-misc</literal>
      </term>
      <listitem>
       <para>
@@ -457,7 +460,7 @@ display</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><literal>/local/domain/&lt;domid>/store</literal>
+     <term><literal>/local/domain/&lt;domid&gt;/store</literal>
      </term>
      <listitem>
       <para>
@@ -466,6 +469,6 @@ display</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

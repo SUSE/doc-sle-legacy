@@ -1,19 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-tuning-kexec">
- <title>&kexec; and &kdump;</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-kexec"><title>&kexec; and &kdump;</title><info/>
+ 
  <para>
   &kexec; is a tool to boot to another kernel from the currently running
   one. You can perform faster system reboots without any hardware
   initialization. You can also prepare the system to boot to another kernel
   if the system crashes.
  </para>
- <sect1 id="cha-tuning-kexec-intro">
+ <section xml:id="cha-tuning-kexec-intro">
   <title>Introduction</title>
 
   <para>
@@ -21,7 +26,7 @@
    a hard reboot. The tool is useful for several reasons:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Faster system rebooting
@@ -67,8 +72,8 @@
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="cha-tuning-kexec-pkgs">
+ </section>
+ <section xml:id="cha-tuning-kexec-pkgs">
   <title>Required Packages</title>
 
   <para>
@@ -77,8 +82,8 @@
    <systemitem>kexec-tools</systemitem> package. It contains a script called
    <command>kexec-bootloader</command>, which reads the boot loader
    configuration and runs &kexec; with the same kernel options as the normal
-   boot loader does. <command>kexec-bootloader <option>-h</option>
-   </command> gives you the list of possible options.
+   boot loader does. <command>kexec-bootloader</command> <option>-h</option>
+    gives you the list of possible options.
   </para>
 
   <para>
@@ -93,8 +98,8 @@
    by entering <command>zypper install yast2-kdump</command> in the command
    line as &rootuser;.
   </para>
- </sect1>
- <sect1 id="cha-tuning-kexec-internals">
+ </section>
+ <section xml:id="cha-tuning-kexec-internals">
   <title>&kexec; Internals</title>
 
   <para>
@@ -103,20 +108,19 @@
    &kexec; in two different ways:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <command>kexec <option>-l</option>
-     <replaceable>kernel_image</replaceable> </command> loads the kernel to
+     <command>kexec</command> <option>-l</option>
+     <replaceable>kernel_image</replaceable>  loads the kernel to
      the address space of a production kernel for a regular reboot. You can
-     later boot to this kernel with <command>kexec
-     <option>-e</option></command>.
+     later boot to this kernel with <command>kexec</command> <option>-e</option>.
     </para>
    </listitem>
    <listitem>
     <para>
-     <command>kexec <option>-p</option>
-     <replaceable>kernel_image</replaceable> </command> loads the kernel to
+     <command>kexec</command> <option>-p</option>
+     <replaceable>kernel_image</replaceable>  loads the kernel to
      a reserved area of memory. This kernel will be booted automatically
      when the system crashes.
     </para>
@@ -159,12 +163,11 @@
   <para>
    You can always unload the previously loaded kernel. To unload a kernel
    that was loaded with the <option>-l</option> option, use the
-   <command>kexec <option>-u</option> </command> command. To unload a crash
-   kernel loaded with the <option>-p</option> option, use <command>kexec
-   <option>-p</option> <option>-u</option> </command> command.
+   <command>kexec</command> <option>-u</option>  command. To unload a crash
+   kernel loaded with the <option>-p</option> option, use <command>kexec</command> <option>-p</option> <option>-u</option>  command.
   </para>
- </sect1>
- <sect1 id="cha-tuning-kexec-basic-usage">
+ </section>
+ <section xml:id="cha-tuning-kexec-basic-usage">
   <title>Basic &kexec; Usage</title>
 
   <para>
@@ -185,28 +188,28 @@
    </step>
    <step>
     <para>
-     Switch to runlevel 1 with <command>telinit <option>1</option>
-     </command>
+     Switch to runlevel 1 with <command>telinit</command> <option>1</option>
+     
     </para>
    </step>
-   <step id="step-kexec-usage-load-kernel">
+   <step xml:id="step-kexec-usage-load-kernel">
     <para>
      Load the new kernel to the address space of the production kernel with
      the following command:
     </para>
     <para>
-     <command>kexec <option>-l</option>
+     <command>kexec</command> <option>-l</option>
      <replaceable>/boot/vmlinuz</replaceable>
      <option>--append</option>=<replaceable>"$(cat
      /proc/cmdline)"</replaceable>
      <option>--initrd</option>=<replaceable>/boot/initrd</replaceable>
-     </command>
+     
     </para>
    </step>
    <step>
     <para>
      Unmount all mounted file systems except the root file system with
-     <command>umount <option>-a</option> </command>
+     <command>umount</command> <option>-a</option> 
     </para>
     <important>
      <title>Unmounting Root Filesystem</title>
@@ -222,8 +225,8 @@
      Remount the root file system in read-only mode:
     </para>
     <para>
-     <command>mount <option>-o</option> <replaceable>remount,ro
-     /</replaceable></command>
+     <command>mount</command> <option>-o</option> <replaceable>remount,ro
+     /</replaceable>
 <!--
     mdejmek: is it really remount,ro ??
     2010-04-29, toba: yes, the command line is correct
@@ -233,8 +236,7 @@
    <step>
     <para>
      Initiate the reboot of the kernel that you loaded in
-     <xref linkend="step-kexec-usage-load-kernel"/> with <command>kexec
-     <option>-e</option></command>
+     <xref linkend="step-kexec-usage-load-kernel"/> with <command>kexec</command> <option>-e</option>
     </para>
    </step>
   </procedure>
@@ -257,8 +259,8 @@
    checks. Make sure no warning messages appear. All the file systems are
    supposed to be clean if they had been unmounted.
   </para>
- </sect1>
- <sect1 id="cha-tuning-kexec-config">
+ </section>
+ <section xml:id="cha-tuning-kexec-config">
   <title>How to Configure &kexec; for Routine Reboots</title>
 
   <para>
@@ -284,8 +286,8 @@
    system reboots with &kexec;. Any changes you make to the boot loader
    configuration will be ignored until the computer performs a hard reboot.
   </para>
- </sect1>
- <sect1 id="cha-tuning-kdump-basic">
+ </section>
+ <section xml:id="cha-tuning-kdump-basic">
   <title>Basic &kdump; Configuration</title>
 
   <para>
@@ -296,8 +298,7 @@
   </para>
 
   <para>
-   &kdump; works similar to &kexec; (see <xref
-linkend="cha-tuning-kexec"/>).
+   &kdump; works similar to &kexec; (see <xref linkend="cha-tuning-kexec"/>).
    The capture kernel is executed after the running production kernel
    crashes. The difference is that &kexec; replaces the production kernel
    with the capture kernel. With &kdump;, you still have access to the
@@ -344,7 +345,7 @@ linkend="cha-tuning-kexec"/>).
   </important>
   
 
-  <sect2 id="cha-tuning-kdump-basic-manual">
+  <section xml:id="cha-tuning-kdump-basic-manual">
    <title>Manual &kdump; Configuration</title>
    <para>
     &kdump; reads its configuration from the
@@ -447,8 +448,8 @@ linkend="cha-tuning-kexec"/>).
       Enable &kdump; init script:
      </para>
      <para>
-      <command>chkconfig <replaceable>boot.kdump</replaceable>
-      <option>on</option></command>
+      <command>chkconfig</command> <replaceable>boot.kdump</replaceable>
+      <option>on</option>
      </para>
     </step>
     <step>
@@ -460,8 +461,7 @@ linkend="cha-tuning-kexec"/>).
     </step>
     <step>
      <para>
-      Execute the init script once with <command>rckdump
-      <replaceable>start</replaceable></command>, or reboot the system.
+      Execute the init script once with <command>rckdump</command> <replaceable>start</replaceable>, or reboot the system.
      </para>
     </step>
    </procedure>
@@ -473,20 +473,18 @@ linkend="cha-tuning-kexec"/>).
    <procedure>
     <step>
      <para>
-      Switch to runlevel 1 with <command>telinit
-      <replaceable>1</replaceable></command>
+      Switch to runlevel 1 with <command>telinit</command> <replaceable>1</replaceable>
      </para>
     </step>
     <step>
      <para>
       Unmount all the disk file systems except the root file system with
-      <command>umount <option>-a</option></command>
+      <command>umount</command> <option>-a</option>
      </para>
     </step>
     <step>
      <para>
-      Remount the root file system in read-only mode: <command>mount
-      <option>-o</option> <replaceable>remount,ro /</replaceable></command>
+      Remount the root file system in read-only mode: <command>mount</command> <option>-o</option> <replaceable>remount,ro /</replaceable>
      </para>
     </step>
     <step>
@@ -495,8 +493,8 @@ linkend="cha-tuning-kexec"/>).
       interface to Magic SysRq keys:
      </para>
      <para>
-      <command>echo <replaceable>c
-      >/proc/sysrq-trigger</replaceable></command>
+      <command>echo</command> <replaceable>c
+      &gt;/proc/sysrq-trigger</replaceable>
      </para>
     </step>
    </procedure>
@@ -533,9 +531,9 @@ linkend="cha-tuning-kexec"/>).
      complete its task.
     </para>
    </warning>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-kdump-basic-yast">
+  <section xml:id="cha-tuning-kdump-basic-yast">
    <title>&yast; Configuration</title>
    <para>
     In order to configure &kdump; with &yast;, you need to install the
@@ -544,14 +542,14 @@ linkend="cha-tuning-kexec"/>).
     category of &yastcc;, or enter <command>yast2 kdump</command> in the
     command line as &rootuser;.
    </para>
-   <figure id="fig-tuning-kdump-basic-yast-kdump1">
+   <figure xml:id="fig-tuning-kdump-basic-yast-kdump1">
     <title>YaST2 Kdump Module - Start-Up Page</title>
     <mediaobject>
      <imageobject role="fo">
-      <imagedata fileref="yast2_kdump_startup.png" width="60%" format="PNG" />
+      <imagedata fileref="yast2_kdump_startup.png" width="60%" format="PNG"/>
      </imageobject>
      <imageobject role="html">
-      <imagedata fileref="yast2_kdump_startup.png" width="70%" format="PNG" />
+      <imagedata fileref="yast2_kdump_startup.png" width="70%" format="PNG"/>
      </imageobject>
     </mediaobject>
    </figure>
@@ -565,7 +563,7 @@ linkend="cha-tuning-kexec"/>).
     pages to include in the dump. You do not need to include the following
     memory content to be able to debug kernel problems:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Pages filled with zero
@@ -599,9 +597,9 @@ linkend="cha-tuning-kexec"/>).
     changes with <guimenu>OK</guimenu> after fine tuning &kdump; in the
     <guimenu>Expert Settings</guimenu> window. &kdump; is now configured.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="cha-tuning-kdump-analyze">
+  </section>
+ </section>
+ <section xml:id="cha-tuning-kdump-analyze">
   <title>Analyzing the Crash Dump</title>
 
   <para>
@@ -615,7 +613,7 @@ linkend="cha-tuning-kexec"/>).
    limitations:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      GDB was not specifically designed to debug kernel dumps.
@@ -674,7 +672,7 @@ linkend="cha-tuning-kexec"/>).
    <filename>/var/crash</filename> by default.
   </para>
 
-  <sect2 id="cha-tuning-kdump-analyze-binformat">
+  <section xml:id="cha-tuning-kdump-analyze-binformat">
    <title>Kernel Binary Formats</title>
    <para>
     The Linux kernel comes in Executable and Linkable Format (ELF). This
@@ -684,7 +682,7 @@ linkend="cha-tuning-kexec"/>).
     following solutions exist on different architectures supported by
     &productnamereg;.
    </para>
-   <sect3 id="cha-tuning-kdump-analyze-binformat-x86">
+   <section xml:id="cha-tuning-kdump-analyze-binformat-x86">
     <title>x86 (i386 and x86_64)</title>
     <para>
      Mostly for historic reasons, the Linux kernel consists of two parts:
@@ -705,7 +703,7 @@ linkend="cha-tuning-kexec"/>).
     <para>
      To sum it up, an x86 SUSE kernel package has two kernel files:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        <filename>vmlinuz</filename> which is executed by the boot loader.
@@ -718,8 +716,8 @@ linkend="cha-tuning-kexec"/>).
       </para>
      </listitem>
     </itemizedlist>
-   </sect3>
-   <sect3 id="cha-tuning-kdump-analyze-binformat-IA64">
+   </section>
+   <section xml:id="cha-tuning-kdump-analyze-binformat-IA64">
     <title>IA64</title>
     <para>
      The <systemitem>elilo</systemitem> boot loader, which boots the Linux
@@ -729,8 +727,8 @@ linkend="cha-tuning-kexec"/>).
      image. <filename>vmlinuz</filename> on IA64 is the same as
      <filename>vmlinux.gz</filename> on x86.
     </para>
-   </sect3>
-   <sect3 id="cha-tuning-kdump-analyze-binformat-ppc">
+   </section>
+   <section xml:id="cha-tuning-kdump-analyze-binformat-ppc">
     <title>PPC and PPC64</title>
     <para>
      The <systemitem>yaboot</systemitem> boot loader on PPC also supports
@@ -747,7 +745,7 @@ linkend="cha-tuning-kexec"/>).
     <para>
      You can analyze the dump on another computer only if it runs a Linux
      system of the same architecture. To check the compatibility, use the
-     command <command>uname <option>-i</option></command> on both computers
+     command <command>uname</command> <option>-i</option> on both computers
      and compare the outputs.
     </para>
     <para>
@@ -777,8 +775,8 @@ linkend="cha-tuning-kexec"/>).
       <para>
        In the directory with the dump, the kernel image, its debug info
        file, and the <filename>modules</filename> subdirectory, launch the
-       crash utility: <command>crash <replaceable>vmlinux-version
-       vmcore</replaceable></command>.
+       crash utility: <command>crash</command> <replaceable>vmlinux-version
+       vmcore</replaceable>.
       </para>
      </step>
     </procedure>
@@ -839,7 +837,7 @@ LOAD AVERAGE: 0.01, 0.09, 0.09
         TASK: ffff88003a57c3c0  [THREAD_INFO: ffff880037168000]
          CPU: 1
        STATE: TASK_RUNNING (SYSRQ)
-crash></screen>
+crash&gt;</screen>
     <para>
      The command output prints first useful data: There were 42 tasks
      running at the moment of the kernel crash. The cause of the crash was a
@@ -854,7 +852,7 @@ crash></screen>
      of the crash is printed:
     </para>
 <screen>
-crash> bt
+crash&gt; bt
 PID: 9446   TASK: ffff88003a57c3c0  CPU: 1   COMMAND: "bash"
  #0 [ffff880037169db0] crash_kexec at ffffffff80268fd6
  #1 [ffff880037169e80] __handle_sysrq at ffffffff803d50ed
@@ -870,7 +868,7 @@ PID: 9446   TASK: ffff88003a57c3c0  CPU: 1   COMMAND: "bash"
     R10: 00007fa958c209c0  R11: 0000000000000246  R12: 00007fa958c1f780
     R13: 00007fa959284000  R14: 0000000000000002  R15: 00000000595569d0
     ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
-crash>
+crash&gt;
 </screen>
     <para>
      Now it is clear what happened: The internal <command>echo</command>
@@ -906,10 +904,10 @@ crash>
      Several useful reference information sources are given at the end of
      this document.
     </para>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="cha-tuning-kdump-advanced">
+   </section>
+  </section>
+ </section>
+ <section xml:id="cha-tuning-kdump-advanced">
   <title>Advanced &kdump; Configuration</title>
 
   <para>
@@ -965,8 +963,8 @@ crash>
     system.
    </para>
   </important>
- </sect1>
- <sect1 id="cha-tuning-kdump-moreinfo">
+ </section>
+ <section xml:id="cha-tuning-kdump-moreinfo">
   <title>For More Information</title>
 
   <para>
@@ -975,7 +973,7 @@ crash>
    need. Here are some of them:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      For the &kexec; utility usage, see the manual page of
@@ -985,24 +983,21 @@ crash>
    <listitem>
     <para>
      You can find general information about &kexec; at
-     <ulink
-      url="http://www.ibm.com/developerworks/linux/library/l-kexec.html"/>
+     <link xlink:href="http://www.ibm.com/developerworks/linux/library/l-kexec.html"/>
      . Might be slightly outdated.
     </para>
    </listitem>
    <listitem>
     <para>
      For more details on &kdump; specific to SUSE Linux, see
-     <ulink
-      url="http://ftp.suse.com/pub/people/tiwai/kdump-training/kdump-training.pdf"/>
+     <link xlink:href="http://ftp.suse.com/pub/people/tiwai/kdump-training/kdump-training.pdf"/>
      .
     </para>
    </listitem>
    <listitem>
     <para>
      An in-depth description of &kdump; internals can be found at
-     <ulink
-      url="http://lse.sourceforge.net/kdump/documentation/ols2oo5-kdump-paper.pdf"/>
+     <link xlink:href="http://lse.sourceforge.net/kdump/documentation/ols2oo5-kdump-paper.pdf"/>
      .
     </para>
    </listitem>
@@ -1013,26 +1008,24 @@ crash>
    debugging tools, use the following resources:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      In addition to the info page of GDB (<command>info gdb</command>), you
      might want to read the printable guides at
-     <ulink
-      url="http://sourceware.org/gdb/documentation/"/> .
+     <link xlink:href="http://sourceware.org/gdb/documentation/"/> .
     </para>
    </listitem>
    <listitem>
     <para>
      A white paper with a comprehensive description of the crash utility
-     usage can be found at <ulink
-      url="http://people.redhat.com/anderson/crash_whitepaper/"/>.
+     usage can be found at <link xlink:href="http://people.redhat.com/anderson/crash_whitepaper/"/>.
     </para>
    </listitem>
    <listitem>
     <para>
      The crash utility also features a comprehensive online help. Just write
-     <command>help <replaceable>command</replaceable></command> to display
+     <command>help</command> <replaceable>command</replaceable> to display
      the online help for <command>command</command>.
     </para>
    </listitem>
@@ -1040,15 +1033,14 @@ crash>
     <para>
      If you have the necessary Perl skills, you can use Alicia to make the
      debugging easier. This Perl-based front end to the crash utility can be
-     found at <ulink
-      url="http://alicia.sourceforge.net/"/> .
+     found at <link xlink:href="http://alicia.sourceforge.net/"/> .
     </para>
    </listitem>
    <listitem>
     <para>
      If you prefer Python instead, you may want to install Pykdump. This
      package helps you control GDB through Python scripts and can be
-     downloaded from <ulink url="http://sf.net/projects/pykdump"/> .
+     downloaded from <link xlink:href="http://sf.net/projects/pykdump"/> .
     </para>
    </listitem>
    <listitem>
@@ -1059,5 +1051,5 @@ crash>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>
