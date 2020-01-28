@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="net_config_files.xml" id="sec-basicnet-manconf">
- <title>Manuelle Netzwerkkonfiguration</title><indexterm id="idx-networks-configuring" class="startofrange"> <primary>Netzwerk</primary> <secondary>Konfigurieren</secondary> </indexterm> <indexterm id="idx-configuring-networks-manually" class="startofrange"> <primary>Konfigurieren</primary> <secondary>Netzwerke</secondary> <tertiary>manuell</tertiary> </indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_config_files.xml" xml:id="sec-basicnet-manconf">
+ <title>Manuelle Netzwerkkonfiguration</title><indexterm xml:id="idx-networks-configuring" class="startofrange"> <primary>Netzwerk</primary> <secondary>Konfigurieren</secondary> </indexterm> <indexterm xml:id="idx-configuring-networks-manually" class="startofrange"> <primary>Konfigurieren</primary> <secondary>Netzwerke</secondary> <tertiary>manuell</tertiary> </indexterm>
 
  <para>
   Die manuelle Konfiguration der Netzwerksoftware sollte immer die letzte Alternative sein. Wir empfehlen, YaST zu benutzen. Die folgenden Hintergrundinformationen zur Netzwerkkonfiguration können Ihnen jedoch auch bei der Arbeit mit YaST behilflich sein.
@@ -28,7 +36,7 @@ Please see LICENSE.txt for this document's license.
   <xref linkend="tab-net-script-conf"/> zeigt die wichtigsten an der Netzwerkkonfiguration beteiligten Skripten.
  </para>
 
- <table id="tab-net-script-conf">
+ <table xml:id="tab-net-script-conf">
   <title>Skripten für die manuelle Netzwerkkonfiguration</title>
   <tgroup cols="2">
    <thead>
@@ -78,12 +86,12 @@ Please see LICENSE.txt for this document's license.
   Weitere Informationen zu udex und dauerhaften Gerätenamen finden Sie unter <xref linkend="cha-udev"/>.
  </para>
 
- <sect2 id="sec-basicnet-manconf-files">
-  <title>Konfigurationsdateien</title><indexterm> <primary>Konfigurationsdateien</primary> </indexterm> <indexterm id="idx-networks-configuration-files" class="startofrange"> <primary>Netzwerke</primary> <secondary>Konfigurationsdateien</secondary> </indexterm>
+ <section xml:id="sec-basicnet-manconf-files">
+  <title>Konfigurationsdateien</title><indexterm> <primary>Konfigurationsdateien</primary> </indexterm> <indexterm xml:id="idx-networks-configuration-files" class="startofrange"> <primary>Netzwerke</primary> <secondary>Konfigurationsdateien</secondary> </indexterm>
   <para>
    Dieser Abschnitt bietet einen Überblick über die Netzwerkkonfigurationsdateien und erklärt ihren Zweck sowie das verwendete Format.
   </para>
-  <sect3 id="sec-basicnet-manconf-files-ifcfg">
+  <section xml:id="sec-basicnet-manconf-files-ifcfg">
    <title><filename>/etc/sysconfig/network/ifcfg-*</filename></title>
    <para>
     Diese Dateien enthalten die Konfigurationsdaten für Netzwerkschnittstellen. Sie enthalten Informationen wie den Startmodus und die IP-Adresse. Mögliche Parameter sind auf der man-Seite für den Befehl <systemitem>ifup</systemitem> beschrieben. Wenn eine allgemeine Einstellung nur für eine bestimmte Bedienoberfläche verwendet werden soll, können außerdem alle Variablen aus der Datei <filename>dhcp</filename> in den <filename>ifcfg-*</filename>-Dateien verwendet werden. Jedoch sind die meisten <filename>/etc/sysconfig/network/config</filename>-Variablen global und lassen sich in ifcfg-Dateien nicht überschreiben. Beispielsweise sind die Variablen <systemitem>NETWORKMANAGER</systemitem> oder <systemitem>NETCONFIG_*</systemitem> global.
@@ -92,15 +100,15 @@ Please see LICENSE.txt for this document's license.
     Informationen zu <filename>ifcfg.template</filename> finden Sie unter <xref linkend="sec-basicnet-manconf-files-config-etc"/>.
    </para><indexterm> <primary>Konfigurationsdateien</primary> <secondary>ifcfg-*</secondary> </indexterm>
    
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-files-config-etc">
+  </section>
+  <section xml:id="sec-basicnet-manconf-files-config-etc">
    <title><filename>/etc/sysconfig/network/config</filename> und <filename>/etc/sysconfig/network/dhcp</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>Netzwerk</secondary></indexterm><indexterm> <primary>Konfigurationsdateien</primary> <secondary>dhcp</secondary></indexterm>
    <para>
     Die Datei <filename>config</filename> enthält allgemeine Einstellungen für das Verhalten von <command>ifup</command>, <command>ifdown</command> und <command>ifstatus</command>. <filename>dhcp</filename> enthält Einstellungen für DHCP. Die Variablen in beiden Konfigurationsdateien sind kommentiert. Einige der Variablen von <filename>/etc/sysconfig/network/config</filename> können auch in <filename>ifcfg-*</filename>-Dateien verwendet werden, wo sie eine höherer Priorität erhalten. Die Datei <filename>/etc/sysconfig/network/ifcfg.template</filename> listet Variablen auf, die mit einer Reichweite pro Schnittstelle angegeben werden können. Jedoch sind die meisten <filename>/etc/sysconfig/network/config</filename>-Variablen global und lassen sich in ifcfg-Dateien nicht überschreiben. Beispielsweise sind die Variablen <systemitem>NETWORKMANAGER</systemitem> oder <systemitem>NETCONFIG_*</systemitem> global.
    </para>
-  </sect3>
-  <sect3>
-   <title><filename>/etc/sysconfig/network/routes</filename> und <filename>/etc/sysconfig/network/ifroute-*</filename></title><indexterm id="idx-routing" class="startofrange"> <primary>Routing</primary> </indexterm> <indexterm> <primary>Routing</primary> <secondary>Routen</secondary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>Routen</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>Routing</secondary> </indexterm>
+  </section>
+  <section>
+   <title><filename>/etc/sysconfig/network/routes</filename> und <filename>/etc/sysconfig/network/ifroute-*</filename></title><indexterm xml:id="idx-routing" class="startofrange"> <primary>Routing</primary> </indexterm> <indexterm> <primary>Routing</primary> <secondary>Routen</secondary> </indexterm> <indexterm> <primary>Konfigurationsdateien</primary> <secondary>Routen</secondary> </indexterm> <indexterm> <primary>Konfigurieren</primary> <secondary>Routing</secondary> </indexterm>
    <para>
     Hier wird das statische Routing von TCP/IP-Paketen festgelegt. Alle statischen Routen, die für verschiedenen Systemaufgaben benötigt werden, können in die Datei <filename>/etc/sysconfig/network/routes</filename> eingegeben werden: Routen zu einem Host, Routen zu einem Host über Gateways und Routen zu einem Netzwerk. Definieren Sie für jede Schnittstelle, die individuelles Routing benötigt, eine zusätzliche Konfigurationsdatei: <filename>/etc/sysconfig/network/ifroute-*</filename>. Ersetzen Sie <literal>*</literal> durch den Namen der Schnittstelle. Die folgenden Einträge werden in die Routing-Konfigurationsdatei aufgenommen: <indexterm> <primary>Routing</primary> <secondary>statisch</secondary> </indexterm>
    </para>
@@ -150,8 +158,8 @@ default           204.127.235.41    0.0.0.0            eth0
 208.77.188.0            208.77.188.166           255.255.255.0 eth0
 </screen>
 <indexterm class="endofrange" startref="idx-routing"/>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/resolv.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>resolv.conf</secondary> </indexterm>
    <para>
     In dieser Datei wird die Domäne angegeben, zu der der Host gehört (Schlüsselwort <systemitem>search</systemitem>). Ebenfalls aufgeführt ist der Status des Namenservers, auf den der Zugriff erfolgt (Schlüsselwort <systemitem>nameserver</systemitem>). In der Datei können mehrere Domänennamen angegeben werden. Bei der Auflösung eines Namens, der nicht voll qualifiziert ist, wird versucht, einen solchen zu generieren, indem die einzelnen <systemitem>search</systemitem>-Einträge angehängt werden. Mehrere Namenserver können in mehreren Zeilen angegeben werden, von denen jede mit <systemitem>nameserver</systemitem> beginnt. Kommentaren werden <literal>#</literal>-Zeichen vorangestellt. <xref linkend="dat-netz-etc-resolv-conf"/> zeigt, wie <filename>/etc/resolv.conf</filename> aussehen könnte. <indexterm> <primary>DNS</primary> <secondary>Domänen</secondary> </indexterm> <indexterm> <primary>DNS</primary> <secondary>Namenserver</secondary> </indexterm>
@@ -191,7 +199,7 @@ default           204.127.235.41    0.0.0.0            eth0
    <para>
     Zum Deaktivieren der DNS-Konfiguration mit netconfig setzen Sie <literal>NETCONFIG_DNS_POLICY=''</literal>. Weitere Informationen über <command>netconfig</command> finden Sie auf <command>man 8 netconfig</command>.
    </para>
-   <example id="dat-netz-etc-resolv-conf">
+   <example xml:id="dat-netz-etc-resolv-conf">
     <title><filename>/etc/resolv.conf</filename></title>
 <screen># Our domain
 search example.com
@@ -199,9 +207,9 @@ search example.com
 # We use dns.example.com (192.168.1.116) as name server
 nameserver 192.168.1.116</screen>
    </example>
-  </sect3>
+  </section>
 
-  <sect3 id="sec-basicnet-manconf-netconfig">
+  <section xml:id="sec-basicnet-manconf-netconfig">
    <title><filename>/sbin/netconfig</filename></title>
    <para>
     <command>netconfig</command> ist ein modulares Tool zum Verwalten zusätzlicher Netzwerkkonfigurationseinstellungen. Es führt statisch definierte Einstellungen mit Einstellungen zusammen, die von automatischen Konfigurationsmechanismen wie DHCP oder PPP gemäß einer vordefinierten Richtlinie bereitgestellt wurden. Die erforderlichen Änderungen werden dem System zugewiesen, indem die netconfig-Module aufgerufen werden, die für das Ändern einer Konfigurationsdatei und den Neustart eines Service oder eine ähnliche Aktion verantwortlich sind.
@@ -246,36 +254,36 @@ nameserver 192.168.1.116</screen>
    <para>
     Weitere Informationen über <command>netconfig</command> finden Sie auf <command>man 8 netconfig</command>.
    </para>
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-hosts">
+  </section>
+  <section xml:id="sec-basicnet-manconf-hosts">
    <title><filename>/etc/hosts</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>Hosts</secondary> </indexterm>
    <para>
     In dieser Datei werden, wie in <xref linkend="dat-netz-etc-hosts"/> gezeigt, IP-Adressen zu Hostnamen zugewiesen. Wenn kein Namenserver implementiert ist, müssen alle Hosts, für die IP-Verbindungen eingerichtet werden sollen, hier aufgeführt sein. Geben Sie für jeden Host in die Datei eine Zeile ein, die aus der IP-Adresse, dem voll qualifizierten Hostnamen und dem Hostnamen besteht. Die IP-Adresse muss am Anfang der Zeile stehen und die Einträge müssen durch Leerzeichen und Tabulatoren getrennt werden. Kommentaren wird immer das <literal>#</literal>-Zeichen vorangestellt.
    </para>
-   <example id="dat-netz-etc-hosts">
+   <example xml:id="dat-netz-etc-hosts">
     <title><filename>/etc/hosts</filename></title>
 <screen>127.0.0.1 localhost
 192.168.2.100 jupiter.example.com jupiter
 192.168.2.101 venus.example.com venus</screen>
    </example>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/networks</filename></title><indexterm> <primary>Konfigurationsdateien</primary><secondary>Netzwerke</secondary> </indexterm>
    <para>
     Hier werden Netzwerknamen in Netzwerkadressen umgesetzt. Das Format ähnelt dem der <filename>hosts</filename>-Datei, jedoch stehen hier die Netzwerknamen vor den Adressen. Weitere Informationen hierzu finden Sie unter <xref linkend="dat-netz-networks"/>.
    </para>
-   <example id="dat-netz-networks">
+   <example xml:id="dat-netz-networks">
     <title><filename>/etc/networks</filename></title>
 <screen>loopback     127.0.0.0
 localnet     192.168.0.0</screen>
    </example>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/host.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>host.conf</secondary> </indexterm>
    <para>
     Das Auflösen von Namen, d. h. das Übersetzen von Host- bzw. Netzwerknamen über die <emphasis>resolver</emphasis>-Bibliothek, wird durch diese Datei gesteuert. Diese Datei wird nur für Programme verwendet, die mit libc4 oder libc5 gelinkt sind. Weitere Informationen zu aktuellen glibc-Programmen finden Sie in den Einstellungen in <filename>/etc/nsswitch.conf</filename>. Jeder Parameter muss in einer eigenen Zeile stehen. Kommentare werden durch ein <literal>#</literal>-Zeichen eingeleitet. Die verfügbaren Parameter sind in <xref linkend="tab-netz-param-hostconf"/> aufgeführt. Ein Beispiel für <filename>/etc/host.conf</filename> wird in <xref linkend="dat-netz-etc-hostconf"/> gezeigt.
    </para>
-   <table id="tab-netz-param-hostconf">
+   <table xml:id="tab-netz-param-hostconf">
     <title>Parameter für /etc/host.conf</title>
     <tgroup cols="2" align="left">
      <tbody>
@@ -360,15 +368,15 @@ localnet     192.168.0.0</screen>
      </tbody>
     </tgroup>
    </table>
-   <example id="dat-netz-etc-hostconf">
+   <example xml:id="dat-netz-etc-hostconf">
     <title><filename>/etc/host.conf</filename></title>
 <screen># We have named running
 order hosts bind
 # Allow multiple address
 multi on</screen>
    </example>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/nsswitch.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>nsswitch.conf</secondary> </indexterm>
    <para>
     Mit der GNU C Library 2.0 wurde <emphasis>Name Service Switch</emphasis> (NSS) eingeführt. Weitere Informationen hierzu finden Sie auf der man-Seite für <systemitem>nsswitch.conf(5)</systemitem> und im Dokument <emphasis>The GNU C Library Reference Manual. </emphasis> <indexterm> <primary>NSS</primary> </indexterm>
@@ -376,7 +384,7 @@ multi on</screen>
    <para>
     In der Datei <filename>/etc/nsswitch.conf</filename> wird festgelegt, in welcher Reihenfolge bestimmte Informationen abgefragt werden. Ein Beispiel für <filename>nsswitch.conf</filename> ist in <xref linkend="dat-netz-nsswitchconf"/> dargestellt. Kommentaren werden <literal>#</literal>-Zeichen vorangestellt. Der Eintrag unter der <filename>hosts</filename>-Datenbank bedeutet, dass Anfragen über DNS an <filename>/etc/hosts</filename> (<option>files</option>) gehen.
    </para>
-   <example id="dat-netz-nsswitchconf">
+   <example xml:id="dat-netz-nsswitchconf">
     <title><filename>/etc/nsswitch.conf</filename></title>
 <screen>passwd:     compat
 group:      compat
@@ -401,7 +409,7 @@ shadow:     compat
    <para>
     Die über NSS verfügbaren <quote>Datenbanken</quote> sind in <xref linkend="tab-netz-nnswitch-db"/> aufgelistet. <indexterm><primary>NSS</primary><secondary>Datenbanken</secondary></indexterm> Die Konfigurationsoptionen für NSS-Datenbanken sind in <xref linkend="tab-netz-nnswitch-conf"/> aufgelistet.
    </para>
-   <table id="tab-netz-nnswitch-db">
+   <table xml:id="tab-netz-nnswitch-db">
     <title>Über /etc/nsswitch.conf verfügbare Datenbanken</title>
     <tgroup cols="2" align="left">
      <tbody>
@@ -565,7 +573,7 @@ shadow:     compat
      </tbody>
     </tgroup>
    </table>
-   <table id="tab-netz-nnswitch-conf">
+   <table xml:id="tab-netz-nnswitch-conf">
     <title>Konfigurationsoptionen für NSS-<quote>Datenbanken</quote></title>
     <tgroup cols="2" align="left">
      <tbody>
@@ -632,8 +640,8 @@ shadow:     compat
      </tbody>
     </tgroup>
    </table>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/nscd.conf</filename></title><indexterm> <primary>Konfigurationsdateien</primary><secondary>nscd.conf</secondary> </indexterm>
    <para>
     Mit dieser Datei wird nscd (Name Service Cache Daemon) konfiguriert. Weitere Informationen hierzu finden Sie auf den man-Seiten <systemitem>nscd(8)</systemitem> und <systemitem>nscd.conf(5)</systemitem>. Standardmäßig werden die Systemeinträge von <option>passwd</option> und <option>groups</option> von nscd gecacht. Dies ist wichtig für die Leistung der Verzeichnisdienste, z. B. NIS und LDAP, da anderenfalls die Netzwerkverbindung für jeden Zugriff auf Namen oder Gruppen verwendet werden muss. <option>hosts</option> wird standardmäßig nicht gecacht, da der Mechanismus in nscd dazu führen würde, dass das lokale System keine Trust-Forward- und Reverse-Lookup-Tests mehr ausführen kann. Statt nscd das Cachen der Namen zu übertragen, sollten Sie einen DNS-Server für das Cachen einrichten.
@@ -641,16 +649,16 @@ shadow:     compat
    <para>
     Wenn das Caching für <option>passwd</option> aktiviert wird, dauert es in der Regel 15 Sekunden, bis ein neu angelegter lokaler Benutzer dem System bekannt ist. Durch das Neustarten von nscd mit dem Befehl <command>rcnscd</command> <option>restart</option> kann diese Wartezeit verkürzt werden.
    </para>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/HOSTNAME </filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>HOSTNAME</secondary> </indexterm>
    <para>
     Diese Datei enthält den voll qualifizierten Hostnamen mit angehängtem Domänennamen. Diese Datei wird von verschiedenen Skripten beim Booten des Computers gelesen. Sie darf nur eine Zeile enthalten (in der der Hostname festgelegt ist).
    </para><indexterm class="endofrange" startref="idx-networks-configuration-files"/>
-  </sect3>
- </sect2>
+  </section>
+ </section>
 
- <sect2 id="sec-basicnet-manconf-testing">
+ <section xml:id="sec-basicnet-manconf-testing">
   <title>Testen der Konfiguration</title>
   <para>
    Bevor Sie Ihre Konfiguration in den Konfigurationsdateien speichern, können Sie sie testen. Zum Einrichten einer Testkonfiguration verwenden Sie den Befehl <command>ip</command>. Zum Testen der Verbindung verwenden Sie den Befehl <command>ping</command>. Ältere Konfigurationswerkzeuge, <command>ifconfig</command> und <command>route</command>, sind ebenfalls verfügbar.
@@ -658,7 +666,7 @@ shadow:     compat
   <para>
    Die Kommandos <command>ip</command>, <command>ifconfig</command> und <command>route</command> ändern die Netzwerkkonfiguration direkt, ohne sie in der Konfigurationsdatei zu speichern. Wenn Sie die Konfiguration nicht in die korrekten Konfigurationsdateien eingeben, geht die geänderte Netzwerkkonfiguration nach dem Neustart verloren.
   </para>
-  <sect3 id="sec-basicnet-manconf-ip">
+  <section xml:id="sec-basicnet-manconf-ip">
    <title>Konfigurieren einer Netzwerkschnittstelle mit <command>ip</command></title><indexterm> <primary>Befehle</primary> <secondary>ip</secondary> </indexterm>
    
    <para>
@@ -737,7 +745,7 @@ shadow:     compat
     Wird kein Kommando angegeben, wird das Standardkommando verwendet (normalerweise <command>list</command>).
    </para>
    <para>
-    Ändern Sie den Gerätestatus mit dem Befehl <command>ip link set</command> <option><replaceable>device_name</replaceable></option> <command><replaceable>command</replaceable></command>. Wenn Sie beispielsweise das Gerät eth0 deaktivieren möchten, geben Sie <command>ip link set</command><option>eth0 down ein</option>. Um es wieder zu aktivieren, verwenden Sie <command>ip link set</command><option>eth0 up</option>.
+    Ändern Sie den Gerätestatus mit dem Befehl <command>ip link set</command> <option><replaceable>device_name</replaceable></option> <command/> . Wenn Sie beispielsweise das Gerät eth0 deaktivieren möchten, geben Sie <command>ip link set</command><option>eth0 down ein</option>. Um es wieder zu aktivieren, verwenden Sie <command>ip link set</command><option>eth0 up</option>.
    </para>
    <para>
     Nach dem Aktivieren eines Geräts können Sie es konfigurieren. Verwenden Sie zum Festlegen der IP-Adresse <command>ip addr add</command><option><replaceable>ip_address</replaceable> + dev <replaceable>device_name</replaceable></option>. Wenn Sie beispielsweise die Adresse der Schnittstelle eth0 mit dem standardmäßigen Broadcast (Option <option>brd</option>) auf 192.168.12.154/30 einstellen möchten, geben Sie <command>ip addr</command> <option>add 192.168.12.154/30 brd + dev eth0</option> ein.
@@ -751,8 +759,8 @@ shadow:     compat
    <para>
     Weitere Informationen zur Verwendung von <command>ip</command> erhalten Sie, indem Sie <command>ip</command><option>help</option> eingeben oder die man-Seite <systemitem>ip(8)</systemitem> aufrufen. Die Option <option>help</option> ist zudem für alle <command>ip</command>-Unterkommandos verfügbar.  Wenn Sie beispielsweise Hilfe zu <command>ip</command><option>addr</option> benötigen, geben Sie <command>ip</command><option>addr help</option> ein. Suchen Sie die <command>ip</command>-Manualpage in der Datei <filename>/usr/share/doc/packages/iproute2/ip-cref.pdf</filename>.
    </para>
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-testingping">
+  </section>
+  <section xml:id="sec-basicnet-manconf-testingping">
    <title>Testen einer Verbindung mit ping</title><indexterm> <primary>Befehle</primary> <secondary>ping</secondary> </indexterm> <indexterm> <primary>ping</primary> </indexterm>
    <para>
     Der <command>ping</command>-Befehl ist das Standardwerkzeug zum Testen, ob eine TCP/IP-Verbindung funktioniert. Er verwendet das ICMP-Protokoll, um ein kleines Datenpaket, das ECHO_REQUEST-Datagram, an den Ziel-Host zu senden. Dabei wird eine sofortige Antwort angefordert. Funktioniert dies, wird von <command>ping</command> eine Meldung angezeigt, die Ihnen bestätigt, dass die Netzwerkverbindung grundsätzlich funktioniert.
@@ -766,7 +774,7 @@ shadow:     compat
    <para>
     Wenn Sie nur die Funktion der Verbindung überprüfen möchten, können Sie die Anzahl der Pakete durch die Option <option>-c</option> beschränken. Wenn Sie die Anzahl beispielsweise auf drei Pakete beschränken möchten, geben Sie <command>ping</command> <option>-c 3 example.com</option> ein.
    </para>
-   <example id="ex-basicnet-manconf-ping">
+   <example xml:id="ex-basicnet-manconf-ping">
     <title>Ausgabe des ping-Befehls</title>
 <screen>ping -c 3 example.com
 PING example.com (192.168.3.100) 56(84) bytes of data.
@@ -793,8 +801,8 @@ rtt min/avg/max/mdev = 183.417/185.447/188.259/2.052 ms</screen>
     </para>
 <screen>ping6 -I eth1 fe80::117:21ff:feda:a425</screen>
    </tip>
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-testingifconfig">
+  </section>
+  <section xml:id="sec-basicnet-manconf-testingifconfig">
    <title>Konfigurieren des Netzwerks mit dem ifconfig-Befehl</title><indexterm> <primary>Befehle</primary> <secondary>ifconfig</secondary> </indexterm>
    <para>
     <command>ifconfig</command> ist ein Werkzeug zur Netzwerkkonfiguration.
@@ -808,7 +816,7 @@ rtt min/avg/max/mdev = 183.417/185.447/188.259/2.052 ms</screen>
    <para>
     Ohne Argumente zeigt <command>ifconfig</command> den Status der gegenwärtig aktiven Schnittstellen an. Unter <xref linkend="ex-basicnet-manconf-ifconfig"/> sehen Sie, dass <command>ifconfig</command> über eine gut angeordnete, detaillierte Ausgabe verfügt. Die Ausgabe enthält außerdem in der ersten Zeile Informationen zur MAC-Adresse Ihres Geräts (dem Wert von <option>HWaddr</option>).
    </para>
-   <example id="ex-basicnet-manconf-ifconfig">
+   <example xml:id="ex-basicnet-manconf-ifconfig">
     <title>Ausgabe des <command>ifconfig</command>-Kommandos</title>
 <screen>eth0      Link encap:Ethernet  HWaddr 00:08:74:98:ED:51
           inet6 addr: fe80::208:74ff:fe98:ed51/64 Scope:Link
@@ -840,8 +848,8 @@ wlan1     Link encap:Ethernet  HWaddr 00:0E:2E:52:3B:1D
    <para>
     Weitere Optionen und Informationen zur Verwendung von <command>ifconfig</command> erhalten Sie, wenn Sie <command>ifconfig</command> <option>-h</option> eingeben oder die man-Seite <systemitem>ifconfig (8)</systemitem> aufrufen.
    </para>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title>Konfigurieren des Routing mit <command>route</command></title><indexterm> <primary>Befehle</primary> <secondary>route</secondary> </indexterm>
    <para>
     <command>route</command> ist ein Programm zum Ändern der IP-Routing-Tabelle. Sie können damit Ihre Routing-Konfiguration anzeigen und Routen hinzufügen oder entfernen.
@@ -855,8 +863,8 @@ wlan1     Link encap:Ethernet  HWaddr 00:0E:2E:52:3B:1D
    <para>
     <command>route</command> ist vor allem dann nützlich, wenn Sie schnelle und übersichtliche Informationen zu Ihrer Routing-Konfiguration benötigen, um Routing-Probleme zu ermitteln. Sie sehen Ihre aktuelle Routing-Konfiguration unter <command>route</command><option>-n</option> als <systemitem class="username">root</systemitem>.
    </para>
-   <example id="ex-basicnet-manconf-route">
-    <title>Ausgabe des <command>route <option>-n</option></command>-Kommandos</title>
+   <example xml:id="ex-basicnet-manconf-route">
+    <title>Ausgabe des <command>route</command> <option>-n</option>-Kommandos</title>
 <screen><?dbsuse-fo font-size="7pt"?>
 
 route -n
@@ -870,15 +878,15 @@ default         styx.exam.com   0.0.0.0         UG        0 0          0 eth0</s
    <para>
     Weitere Optionen und Informationen zur Verwendung von <command>route</command> erhalten Sie, indem Sie <option>-h</option> eingeben oder die man-Seite <systemitem>route (8)</systemitem> aufrufen.
    </para>
-  </sect3>
- </sect2>
+  </section>
+ </section>
 
- <sect2 id="sec-basicnet-manconf-scripts">
+ <section xml:id="sec-basicnet-manconf-scripts">
   <title>Startup-Skripten</title><indexterm> <primary>Skripten</primary> <secondary>init.d</secondary> </indexterm>
   <para>
    Neben den beschriebenen Konfigurationsdateien gibt es noch verschiedene Skripten, die beim Booten des Computers die Netzwerkprogramme starten. Diese werden gestartet, sobald das System in einen der <emphasis>Mehrbenutzer-Runlevel</emphasis> wechselt. Einige der Skripten sind in <xref linkend="tab-netz-start-skripte"/> beschrieben.
   </para>
-  <table id="tab-netz-start-skripte">
+  <table xml:id="tab-netz-start-skripte">
 <?dbsuse-latex tablehead="p{.4\linewidth}p{.55\linewidth}"?>
 
 
@@ -972,5 +980,5 @@ default         styx.exam.com   0.0.0.0         UG        0 0          0 eth0</s
     </tbody>
    </tgroup>
   </table><indexterm startref="idx-networks-configuring" class="endofrange"/><indexterm startref="idx-configuring-networks-manually" class="endofrange"/>
- </sect2>
-</sect1>
+ </section>
+</section>

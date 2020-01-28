@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="pcmcia_apm.xml" id="cha-pmanage">
- <title>Energieverwaltung</title><indexterm id="idx-power-management" class="startofrange"> <primary>Energieverwaltung</primary> </indexterm> <indexterm id="idx-laptops-power-management" class="startofrange"> <primary>Laptops</primary> <secondary>Energieverwaltung</secondary> </indexterm> <indexterm> <primary>Energieverwaltung</primary> <secondary>ACPI</secondary> </indexterm>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="pcmcia_apm.xml" xml:id="cha-pmanage"><title>Energieverwaltung</title><info/>
+ <indexterm xml:id="idx-power-management" class="startofrange"> <primary>Energieverwaltung</primary> </indexterm> <indexterm xml:id="idx-laptops-power-management" class="startofrange"> <primary>Laptops</primary> <secondary>Energieverwaltung</secondary> </indexterm> <indexterm> <primary>Energieverwaltung</primary> <secondary>ACPI</secondary> </indexterm>
  
  <para>
   Die Energieverwaltung ist insbesondere bei Notebook-Computern von großer Wichtigkeit, sie ist jedoch auch für andere Systeme sinnvoll. ACPI (Advanced Configuration &amp; Power Interface) ist auf allen modernen Computern (Laptops, Desktops, Server) verfügbar. Für Energieverwaltungstechnologien sind geeignete Hardware- und BIOS-Routinen erforderlich.  Die meisten Notebooks und modernen Desktops und Server erfüllen diese Anforderungen. Es ist außerdem möglich, die CPU-Frequenzskalierung zu steuern, um Energie zu sparen oder den Geräuschpegel zu senken.
  </para>
- <sect1 id="sec-pmanage-save">
+ <section xml:id="sec-pmanage-save">
   <title>Energiesparfunktionen</title>
 
   <para>
@@ -75,9 +83,9 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-pmanage-acpi">
-  <title>Advanced Configuration &amp; Power Interface (ACPI)</title><indexterm id="idx-power-management-ACPI" class="startofrange"> <primary>Energieverwaltung</primary> <secondary>ACPI</secondary> </indexterm>
+ </section>
+ <section xml:id="sec-pmanage-acpi">
+  <title>Advanced Configuration &amp; Power Interface (ACPI)</title><indexterm xml:id="idx-power-management-ACPI" class="startofrange"> <primary>Energieverwaltung</primary> <secondary>ACPI</secondary> </indexterm>
 
   <para>
    Die ACPI (erweiterte Konfigurations- und Energieschnittstelle) wurde entwickelt, um dem Betriebssystem die Einrichtung und Steuerung der einzelnen Hardware-Komponenten zu ermöglichen. ACPI löst sowohl Power-Management Plug and Play (PnP) als auch Advanced Power Management (APM) ab. Diese Schnittstelle bietet Informationen zu Akku, Netzteil, Temperatur, Ventilator und Systemereignissen wie <quote>Deckel schließen</quote> oder <quote>Akku-Ladezustand niedrig</quote>.
@@ -87,7 +95,7 @@ Please see LICENSE.txt for this document's license.
    Das BIOS bietet Tabellen mit Informationen zu den einzelnen Komponenten und Hardware-Zugriffsmethoden. Das Betriebssystem verwendet diese Informationen für Aufgaben wie das Zuweisen von Interrupts oder das Aktivieren bzw. Deaktivieren von Komponenten. Da das Betriebssystem die in BIOS gespeicherten Befehle ausführt, hängt die Funktionalität von der BIOS-Implementierung ab. Die Tabellen, die ACPI erkennen und laden kann, werden in <filename>/var/log/boot.msg</filename> gemeldet. Weitere Informationen zur Fehlersuche bei ACPI-Problemen finden Sie in <xref linkend="sec-pmanage-probs"/>.
   </para><indexterm> <primary>Protokolldateien</primary><secondary>boot.msg</secondary> </indexterm>
 
-  <sect2 id="sec-pmanage-powernow">
+  <section xml:id="sec-pmanage-powernow">
    <title>Steuern der CPU-Leistung</title>
    <para>
     Mit der CPU sind Energieeinsparungen auf drei verschiedene Weisen möglich:
@@ -121,9 +129,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Detaillierte Informationen hierzu finden Sie in <xref linkend="cha-tuning-power"/>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-pmanage-probs">
+  <section xml:id="sec-pmanage-probs">
    <title>Fehlersuche</title>
    <para>
     Es gibt zwei verschiedene Arten von Problemen. Einerseits kann der ACPI-Code des Kernel Fehler enthalten, die nicht rechtzeitig erkannt wurden. In diesem Fall wird eine Lösung zum Herunterladen bereitgestellt. Häufiger werden die Probleme vom BIOS verursacht. Manchmal werden Abweichungen von der ACPI-Spezifikation absichtlich in das BIOS integriert, um Fehler in der ACPI-Implementierung in anderen weit verbreiteten Betriebssystemen zu umgehen. Hardware-Komponenten, die ernsthafte Fehler in der ACPI-Implementierung aufweisen, sind in einer Blacklist festgehalten, die verhindert, dass der Linux-Kernel ACPI für die betreffenden Komponenten verwendet.
@@ -167,7 +175,7 @@ Please see LICENSE.txt for this document's license.
     Manchmal ist der Computer durch Hardware gestört, die über USB oder FireWire angeschlossen ist. Wenn ein Computer nicht hochfährt, stecken Sie nicht benötigte Hardware aus und versuchen Sie es erneut.
    </para>
    <para>
-    Überwachen Sie nach dem Booten die Bootmeldungen des Systems mit dem Befehl <command>dmesg <option>| grep -2i acpi</option></command> (oder überwachen Sie alle Meldungen, da das Problem möglicherweise nicht durch ACPI verursacht wurde). Wenn bei der Analyse einer ACPI-Tabelle ein Fehler auftritt, kann die wichtigste Tabelle – die DSDT (<emphasis>Differentiated System Description Table</emphasis>) – durch eine verbesserte Version ersetzt werden. In diesem Fall wird die fehlerhafte DSDT des BIOS ignoriert. Das Verfahren wird in <xref linkend="sec-powersave-faq"/> erläutert.
+    Überwachen Sie nach dem Booten die Bootmeldungen des Systems mit dem Befehl <command>dmesg</command> <option>| grep -2i acpi</option> (oder überwachen Sie alle Meldungen, da das Problem möglicherweise nicht durch ACPI verursacht wurde). Wenn bei der Analyse einer ACPI-Tabelle ein Fehler auftritt, kann die wichtigste Tabelle – die DSDT (<emphasis>Differentiated System Description Table</emphasis>) – durch eine verbesserte Version ersetzt werden. In diesem Fall wird die fehlerhafte DSDT des BIOS ignoriert. Das Verfahren wird in <xref linkend="sec-powersave-faq"/> erläutert.
    </para>
    <para>
     In der Kernel-Konfiguration gibt es einen Schalter zur Aktivierung der ACPI-Fehlersuchmeldungen. Wenn ein Kernel mit ACPI-Fehlersuche kompiliert und installiert ist, werden detaillierte Informationen angezeigt.
@@ -175,34 +183,34 @@ Please see LICENSE.txt for this document's license.
    <para>
     Wenn Sie Probleme mit dem BIOS oder der Hardware feststellen, sollten Sie stets Kontakt mit den betreffenden Herstellern aufweisen. Insbesondere Hersteller, die nicht immer Hilfe für Linux anbieten, sollten mit den Problemen konfrontiert werden. Die Hersteller nehmen das Problem nur dann ernst, wenn sie feststellen, dass eine nennenswerte Zahl ihrer Kunden Linux verwendet.
    </para>
-   <sect3 id="sec-pmanage-info">
+   <section xml:id="sec-pmanage-info">
     <title>Weiterführende Informationen</title>
     <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
-       <ulink url="http://tldp.org/HOWTO/ACPI-HOWTO/"/> (detailliertes ACPI HOWTO, enthält DSDT-Patches)
+       <link xlink:href="http://tldp.org/HOWTO/ACPI-HOWTO/"/> (detailliertes ACPI HOWTO, enthält DSDT-Patches)
       </para>
      </listitem>
      <listitem>
       <para>
-       <ulink url="http://www.acpi.info"/> (technische Daten zur Advanced Configuration &amp; Power Interface)
+       <link xlink:href="http://www.acpi.info"/> (technische Daten zur Advanced Configuration &amp; Power Interface)
       </para>
      </listitem>
      <listitem>
       <para>
-       <ulink url="http://www.lesswatts.org/projects/acpi/"/> (das ACPI4Linux-Projekt von Sourceforge)
+       <link xlink:href="http://www.lesswatts.org/projects/acpi/"/> (das ACPI4Linux-Projekt von Sourceforge)
       </para>
      </listitem>
      <listitem>
       <para>
-       <ulink url="http://acpi.sourceforge.net/dsdt/index.php"/> (DSDT-Patches von Bruno Ducrot)
+       <link xlink:href="http://acpi.sourceforge.net/dsdt/index.php"/> (DSDT-Patches von Bruno Ducrot)
       </para>
      </listitem>
     </itemizedlist><indexterm class="endofrange" startref="idx-power-management-ACPI"/>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-pmanage-silenthd">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-pmanage-silenthd">
   <title>Ruhezustand für Festplatte</title>
 
   <para>
@@ -210,7 +218,7 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <para>
-   Hiermit können verschiedene Festplatteneinstellungen bearbeitet werden. Die Option <option>-y</option> schaltet die Festplatte sofort in den Stand-by-Modus. <option>-Y</option> versetzt sie in den Ruhezustand. <command>hdparm <option>-S x</option></command> führt dazu, dass die Festplatte nach einen bestimmten Inaktivitätszeitraum abgeschaltet wird. Ersetzen Sie <replaceable>x</replaceable> wie folgt: <literal>0</literal> deaktiviert diesen Mechanismus, sodass die Festplatte kontinuierlich ausgeführt wird. Werte von <literal>1</literal> bis <literal>240</literal> werden mit 5 Sekunden multipliziert. Werte von <literal>241</literal> bis <literal>251</literal> entsprechen 1- bis 11-mal 30 Minuten.
+   Hiermit können verschiedene Festplatteneinstellungen bearbeitet werden. Die Option <option>-y</option> schaltet die Festplatte sofort in den Stand-by-Modus. <option>-Y</option> versetzt sie in den Ruhezustand. <command>hdparm</command> <option>-S x</option> führt dazu, dass die Festplatte nach einen bestimmten Inaktivitätszeitraum abgeschaltet wird. Ersetzen Sie <replaceable>x</replaceable> wie folgt: <literal>0</literal> deaktiviert diesen Mechanismus, sodass die Festplatte kontinuierlich ausgeführt wird. Werte von <literal>1</literal> bis <literal>240</literal> werden mit 5 Sekunden multipliziert. Werte von <literal>241</literal> bis <literal>251</literal> entsprechen 1- bis 11-mal 30 Minuten.
   </para>
 
   <para>
@@ -285,18 +293,18 @@ Please see LICENSE.txt for this document's license.
 
    In <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> werden diese Technologien von <systemitem>Werkzeugen im Laptop-Modus gesteuert</systemitem>.
   </para><indexterm class="endofrange" startref="idx-power-management"/><indexterm class="endofrange" startref="idx-laptops-power-management"/>
- </sect1>
- <sect1 id="sec-powersave-faq">
+ </section>
+ <section xml:id="sec-powersave-faq">
   <title>Fehlersuche</title>
 
   <para>
    Alle Fehler- und Alarmmeldungen werden in der Datei <filename>/var/log/messages</filename> protokolliert. In den folgenden Abschnitten werden die häufigsten Probleme behandelt.
   </para>
 
-  <sect2 id="sec-powersave-faq-acpi">
+  <section xml:id="sec-powersave-faq-acpi">
    <title>ACPI mit Hardware-Unterstützung aktiviert, bestimmte Funktionen sind jedoch nicht verfügbar</title>
    <para>
-    Falls Probleme mit ACPI auftreten, überprüfen Sie, ob die Ausgabe von <command>dmesg</command> ACPI-spezifische Meldungen enthält. Führen Sie hierzu das Kommando <command>dmesg|grep <option>-i acpi</option></command> aus.
+    Falls Probleme mit ACPI auftreten, überprüfen Sie, ob die Ausgabe von <command>dmesg</command> ACPI-spezifische Meldungen enthält. Führen Sie hierzu das Kommando <command>dmesg|grep</command> <option>-i acpi</option> aus.
    </para>
    <para>
     Zur Behebung des Problems kann eine BIOS-Aktualisierung erforderlich sein. Rufen Sie die Homepage Ihres Notebookherstellers auf, suchen Sie nach einer aktualisierten BIOS-Version und installieren Sie sie. Bitten Sie den Hersteller, die aktuellsten ACPI-Spezifikationen einzuhalten. Wenn der Fehler auch nach der BIOS-Aktualisierung noch besteht, gehen Sie wie folgt vor, um die fehlerhafte DSDT-Tabelle im BIOS mit einer aktualisierten DSDT zu ersetzen:
@@ -306,43 +314,43 @@ Please see LICENSE.txt for this document's license.
     <para>
      Für die nachstehende Prozedur müssen die folgenden Pakete installiert sein: <systemitem class="resource">kernel-source</systemitem>, <systemitem class="resource" os="sles;sled"> pmtools</systemitem> und <systemitem class="resource">mkinitrd</systemitem>.
     </para>
-    <step performance="required">
+    <step>
      <para>
-      Laden Sie die DSDT für Ihr System von der Seite <ulink url="http://acpi.sourceforge.net/dsdt/index.php"/> herunter. Prüfen Sie, ob die Datei dekomprimiert und kompiliert ist. Dies wird durch die Dateinamenserweiterung <literal>.aml</literal> (ACPI Machine Language) angezeigt. Wenn dies der Fall ist, fahren Sie mit Schritt 3 fort.
+      Laden Sie die DSDT für Ihr System von der Seite <link xlink:href="http://acpi.sourceforge.net/dsdt/index.php"/> herunter. Prüfen Sie, ob die Datei dekomprimiert und kompiliert ist. Dies wird durch die Dateinamenserweiterung <literal>.aml</literal> (ACPI Machine Language) angezeigt. Wenn dies der Fall ist, fahren Sie mit Schritt 3 fort.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Wenn die heruntergeladene Tabelle stattdessen die Dateinamenserweiterung <literal>.asl</literal> (ACPI-Quellsprache) aufweist, kompilieren Sie sie mit dem folgenden Kommando:
      </para>
 <screen>iasl <option>-sa file.asl</option></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Kopieren Sie die (resultierende) Datei <filename>DSDT.aml</filename> an einen beliebigen Speicherort (<filename>/etc/DSDT.aml</filename> wird empfohlen).
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Bearbeiten Sie <filename>/etc/sysconfig/kernel</filename> und passen Sie den Pfad zur DSDT-Datei entsprechend an. 
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Starten Sie <command>mkinitrd</command>. Immer wenn Sie den Kernel installieren und <command>mkinitrd </command> verwenden, um eine <filename>initrd</filename>-Datei zu erstellen, wird die bearbeitete DSDT beim Booten des Systems integriert und geladen.
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-powersave-faq-cpufreq">
+  <section xml:id="sec-powersave-faq-cpufreq">
    <title>CPU-Frequenzsteuerung funktioniert nicht</title>
    <para>
     Rufen Sie die Kernel-Quellen auf, um festzustellen, ob der verwendete Prozessor unterstützt wird. Möglicherweise ist ein spezielles Kernel-Modul bzw. eine Moduloption erforderlich, um die CPU-Frequenzsteuerung zu aktivieren. Wenn das <systemitem class="resource">kernel-source</systemitem>-Paket installiert ist, finden Sie diese Informationen unter <filename>/usr/src/linux/Documentation/cpu-freq/*</filename>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-powersave-faq-suspend">
+  <section xml:id="sec-powersave-faq-suspend">
    <title>Suspend und Stand-by funktionieren nicht</title>
    <para>
     ACPI-Systeme können Probleme mit dem Stromspar- und Standby-Modus haben, wenn die DSDT-Implementierung (BIOS) fehlerhaft ist. Aktualisieren Sie in diesem Fall das BIOS.
@@ -350,22 +358,22 @@ Please see LICENSE.txt for this document's license.
    <para>
     Beim Versuch fehlerhafte Module zu entladen, reagiert das System nicht mehr oder das Suspend-Ereignis wird nicht ausgelöst. Dies kann auch dann passieren, wenn Sie keine Module entladen oder Dienste stoppen, die ein erfolgreiches Suspend-Ereignis verhindern. In beiden Fällen müssen Sie versuchen, das fehlerhafte Modul zu ermitteln, das den Energiesparmodus verhindert hat. Die Protokolldatei <filename>/var/log/pm-suspend.log</filename> enthält ausführliche Informationen über die einzelnen Vorgänge und mögliche Fehlerursachen. Ändern Sie die Variable <systemitem>SUSPEND_MODULES</systemitem> in <filename>/usr/lib/pm-utils/defaults</filename>, um problematische Module vor einem Suspend- oder Standby-Vorgang zu entladen.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-powersave-info">
+  </section>
+ </section>
+ <section xml:id="sec-powersave-info">
   <title>Weiterführende Informationen</title>
 
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <ulink url="http://en.opensuse.org/SDB:Suspend_to_RAM"/>– Anleitung zur Einstellung von „Suspend to RAM“
+     <link xlink:href="http://en.opensuse.org/SDB:Suspend_to_RAM"/>– Anleitung zur Einstellung von „Suspend to RAM“
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://old-en.opensuse.org/Pm-utils"/>– Anleitung zur Änderung des allgemeinen Suspend-Frameworks
+     <link xlink:href="http://old-en.opensuse.org/Pm-utils"/>– Anleitung zur Änderung des allgemeinen Suspend-Frameworks
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>

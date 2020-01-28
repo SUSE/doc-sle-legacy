@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="x11_optimierung.xml" id="sec-x11-optimieren">
- <title>Manuelles Konfigurieren des X Window-Systems</title><indexterm id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>konfigurieren</secondary></indexterm><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="x11_optimierung.xml" xml:id="sec-x11-optimieren">
+ <title>Manuelles Konfigurieren des X Window-Systems</title><indexterm xml:id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>konfigurieren</secondary></indexterm><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
 
  <para>
   Standardmäßig ist das X Window System mit der unter <xref linkend="cha-y2-hw-graph"/> beschriebenen SaX2-Schnittstelle konfiguriert. Alternativ kann er manuell konfiguriert werden, indem Sie die entsprechenden Konfigurationsdateien bearbeiten.
@@ -46,7 +54,7 @@ EndSection </screen>
   Die verfügbaren Abschnittstypen finden Sie in <xref linkend="tab-x11-sections"/>.
  </para>
 
- <table id="tab-x11-sections">
+ <table xml:id="tab-x11-sections">
   <title>Abschnitte in /etc/X11/xorg.conf</title>
   <tgroup cols="2" align="left">
    <thead>
@@ -199,19 +207,19 @@ EndSection </screen>
   Die Datei <systemitem>xorg.conf</systemitem> kann mehrere unterschiedliche Abschnitte vom Typ <systemitem>Monitor</systemitem> und <filename>Device</filename> enthalten. Manchmal gibt es sogar mehrere Abschnitte vom Typ <systemitem>Screen. </systemitem> Der Abschnitt <systemitem>ServerLayout</systemitem> legt fest, welche dieser Abschnitte verwendet werden.
  </para>
 
- <sect2 id="sec-x11-screen">
+ <section xml:id="sec-x11-screen">
   <title>Abschnitt „Screen“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary> <tertiary>Screen</tertiary> </indexterm>
   <para>
    Der Abschnitt „Screen“ kombiniert einen Monitor mit einem Device-Abschnitt und legt fest, welche Auflösung und Farbtiefe verwendet werden sollen. Der Abschnitt „Screen“ kann beispielsweise wie in <xref linkend="dat-x11-scrsec"/> aussehen.
   </para>
-  <example id="dat-x11-scrsec">
+  <example xml:id="dat-x11-scrsec">
    <title>Abschnitt „Screen“ der Datei /etc/X11/xorg.conf</title>
-<screen>Section "Screen"<co id="co-x11-screen"/>
-  DefaultDepth  16<co id="co-x11-ddepth"/>
-  SubSection "Display"<co id="co-x11-display"/>
-    Depth       16<co id="co-x11-depth"/>
-    Modes       "1152x864" "1024x768" "800x600"<co id="co-x11-mode"/>
-    Virtual     1152x864<co id="co-x11-virt"/>
+<screen>Section "Screen"<co xml:id="co-x11-screen"/>
+  DefaultDepth  16<co xml:id="co-x11-ddepth"/>
+  SubSection "Display"<co xml:id="co-x11-display"/>
+    Depth       16<co xml:id="co-x11-depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co xml:id="co-x11-mode"/>
+    Virtual     1152x864<co xml:id="co-x11-virt"/>
   EndSubSection
   SubSection "Display"
     Depth       24
@@ -226,7 +234,7 @@ EndSection </screen>
     Modes       "1280x1024"
   EndSubSection
   Device        "Device[0]"
-  Identifier    "Screen[0]"<co id="co-x11-ident"/>
+  Identifier    "Screen[0]"<co xml:id="co-x11-ident"/>
   Monitor       "Monitor[0]"
 EndSection</screen>
   </example>
@@ -270,17 +278,17 @@ EndSection</screen>
     </para>
    </callout>
   </calloutlist>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-device-section">
+ <section xml:id="sec-x11-device-section">
   <title>Abschnitt „Device“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary> <tertiary>Device</tertiary> </indexterm>
   <para>
    Im Abschnitt „Device“ wird eine bestimmte Grafikkarte beschrieben. <filename>xorg.conf</filename> kann beliebig viele Grafikkarteneinträge enthalten. Jedoch muss der Name der Grafikkarten eindeutig sein. Hierfür wird das Schlüsselwort <systemitem>Identifier</systemitem> verwendet. Wenn mehrere Grafikkarten installiert sind, werden die Abschnitte einfach der Reihe nach nummeriert. Die erste wird als <systemitem>Device[0]</systemitem>, die zweite als <systemitem>Device[1]</systemitem> usw. eingetragen. Die folgende Datei zeigt einen Auszug aus dem Abschnitt <systemitem>Device</systemitem> eines Computers mit einer Matrox Millennium PCI-Grafikkarte (wie von SaX2 konfiguriert):
   </para>
 <screen>Section "Device"
   BoardName     "MGA2064W"
-  BusID         "0:19:0"<co id="co-x11-bus"/>
-  Driver        "mga"<co id="co-x11-driver"/>
+  BusID         "0:19:0"<co xml:id="co-x11-bus"/>
+  Driver        "mga"<co xml:id="co-x11-driver"/>
   Identifier    "Device[0]"
   VendorName    "Matrox"
   Option        "sw_cursor"
@@ -303,9 +311,9 @@ EndSection</screen>
   <para>
    Wenn die Grafikkarte über mehrere Videoanschlüsse verfügt, können die verschiedenen an der Karte angeschlossenen Geräte in SaX2 als eine Ansicht konfiguriert werden.
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-opt-monitor">
+ <section xml:id="sec-x11-opt-monitor">
   <title>Abschnitte „Monitor“ und „Modes“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>xorg.conf</secondary> <tertiary>Monitor</tertiary> </indexterm>
   <para>
    So wie die Abschnitte vom Typ <systemitem>Device</systemitem> jeweils für eine Grafikkarte verwendet werden, beschreiben die Abschnitte <systemitem>Monitor</systemitem> und <systemitem>Modes</systemitem> jeweils einen Monitor. Die Konfigurationsdatei <filename>/etc/X11/xorg.conf</filename> kann beliebig viele Abschnitte vom Typ <systemitem>Monitor</systemitem> enthalten. Jeder <systemitem>Monitor</systemitem>-Abschnitt verweist, sofern verfügbar, auf einen <systemitem>Modes</systemitem>-Abschnitt mit der Zeile <systemitem>UseModes</systemitem>. Wenn für den Abschnitt <systemitem>Monitor</systemitem> kein <systemitem>Modes</systemitem>-Abschnitt zur Verfügung steht, berechnet der X-Server aus den allgemeinen Synchronisierungswerten passende Werte. Der Abschnitt „ServerLayout“ gibt an, welcher <systemitem>Monitor</systemitem>-Abschnitt zu verwenden ist.
@@ -324,5 +332,5 @@ EndSection</screen>
   <para>
    Heutzutage ist es nur sehr selten erforderlich, Modelines manuell festzulegen. Wenn Sie mit einem modernen Multisync-Monitor arbeiten, können die zulässigen Frequenzen und die optimalen Auflösungen in aller Regel vom X-Server direkt per DDC vom Monitor abgerufen werden, wie im SaX2-Konfigurationsabschnitt beschrieben. Ist dies aus irgendeinem Grund nicht möglich, können Sie auf einen der VESA-Modi des X-Servers zurückgreifen. Dies funktioniert in Verbindung mit den meisten Kombinationen aus Grafikkarte und Monitor.
   </para><indexterm class="endofrange" startref="idx-X-optimizing"/>
- </sect2>
-</sect1>
+ </section>
+</section>

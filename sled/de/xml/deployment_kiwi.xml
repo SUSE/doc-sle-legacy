@@ -1,21 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="deployment_kiwi.xml" id="cha-autokiwi">
-
- <title>Automatisierte Implementierung von Preload-Images</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="deployment_kiwi.xml" xml:id="cha-autokiwi"><title>Automatisierte Implementierung von Preload-Images</title><info><abstract>
   <para>
    Mit KIWI können Sie Betriebssystem-Images erstellen. Dieses Kapitel beschreibt, wie ein System-Image auf einem leeren Client-Computer bereitgestellt wird. Dazu müssen Sie ein Preload-Image erstellen, das ein bootfähiges RAW-Image enthält. Diese Datei enthält zwei wichtige Teile: eine Partitionstabelle und das eigentliche Betriebssystem. Dieses RAW-Image wird auf die leere Festplatte geschrieben, und beim ersten Bootvorgang dehnt sich das Betriebssystem auf den verbleibenden Plattenspeicher aus.
   </para>
 
- </abstract>
+ </abstract></info>
+
+
+
  <para>
   Weitere Informationen zum Erstellen eines solchen Image finden Sie unter <xref linkend="sec-kiwi-img"/>. Beim Aufbauen des ISO-Image finden Sie die RAW-Datei im Zielordner. Es gibt viele Möglichkeiten, ein RAW-Image auf einer Festplatte abzulegen.
  </para>
@@ -44,7 +52,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   Für einen schnellen Start empfiehlt es sich, eine der in <xref linkend="sec-autokiwi-manual"/> beschriebenen Methoden zu verwenden.
  </para>
- <sect1 id="sec-autokiwi-manual">
+ <section xml:id="sec-autokiwi-manual">
   <title>Manuelles Implementieren des Systems vom Rettungs-Image</title>
 
   <variablelist>
@@ -115,8 +123,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>Automatisierte Implementierung mit PXE-Boot</title>
 
   <para>
@@ -162,28 +170,28 @@ Please see LICENSE.txt for this document's license.
    </varlistentry>
   </variablelist>
 
-  <sect2 id="sec-autokiwi-instserver">
+  <section xml:id="sec-autokiwi-instserver">
    <title>Einrichten eines Boot- und Installationsservers</title>
    <para>
     Es müssen vier Schritte ausgeführt werden, um diese Aufgabe nach der Installation von SUSE Linux Enterprise Server ausführen zu können:
    </para>
-   <procedure id="proc-autokiwi-instserver">
-    <step performance="required">
+   <procedure xml:id="proc-autokiwi-instserver">
+    <step>
      <para>
       Richten Sie die Installationsquelle ein wie in <xref linkend="sec-deployment-remoteinst-instserver"/> beschrieben. Wählen Sie einen HTTP- oder FTP-Netzwerkserver.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Richten Sie einen TFTP-Server so ein, dass er ein Boot-Image enthält (dieses Image wird in einem späteren Schritt erstellt). Die Konfiguration eines solchen Servers wird in <xref linkend="sec-deployment-remoteinst-boot-tftp"/> beschrieben.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Richten Sie einen DHCP-Server ein, um allen Computern IP-Adressen zuzuweisen und dem Zielsystem den Speicherort des TFTP-Servers bekannt zu geben. Die Konfiguration eines solchen Servers wird in <xref linkend="sec-deployment-remoteinst-boot-dhcp"/> beschrieben.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Bereiten Sie den PXE-Boot des Installationsservers vor. Dies wird ausführlich in <xref linkend="sec-deployment-remoteinst-boot-pxe"/> beschrieben.
      </para>
@@ -192,9 +200,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Beachten Sie, dass es für den eigentlichen Installationsvorgang sehr vorteilhaft ist, wenn Sie diesem Computer genügend Arbeitsspeicher zur Verfügung stellen, in dem das Preload-Image gespeichert werden kann. Durch Verwendung von Gigabit-Ethernet wird der Bereitstellungsvorgang im Vergleich zu langsameren Netzwerken erheblich beschleunigt.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-preloadimage">
+  <section xml:id="sec-autokiwi-preloadimage">
    <title>Erstellen eines Preload-Images</title>
    <para>
     Das Verfahren der Image-Erstellung mit KIWI wird in <xref linkend="sec-kiwi-img"/> beschrieben. Jedoch müssen bei der Image-Erstellung für Massenbereitstellungen mehrere Punkte berücksichtigt werden:
@@ -225,9 +233,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Das eigentliche Image, das bereitgestellt werden soll, muss auf dem FTP- oder HTTP-Server verfügbar sein, den Sie auf dem Installationsserver bereitgestellt haben.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-initrd">
+  <section xml:id="sec-autokiwi-initrd">
    <title>Erstellen eines ersten Systems zur Implementierung eines Preload-Image</title>
    <para>
     Für die Ausführung einer automatischen Bereitstellung muss ein erstes Linux-System auf dem Zielcomputer gestartet werden. Während einer typischen Installation werden der Kernel und das erste RAM-Dateisystem von einem Bootmedium gelesen und durch das BIOS gestartet. Die benötigte Funktionalität kann im RAM-Dateisystem bereitgestellt werden, das zusammen mit dem Kernel als erstes System dient.
@@ -239,17 +247,17 @@ Please see LICENSE.txt for this document's license.
     Die folgende Vorgehensweise ist nur ein Beispiel dafür, wie das erforderliche erste RAM-Dateisystem erstellt werden kann.
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       Führen Sie eine Standardinstallation von <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> auf dem Zielsystem durch.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Installieren Sie das Paket <systemitem>busybox</systemitem> auf dem System.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Erstellen Sie mit dem folgenden Kommando ein neues RAM-Dateisystem:
      </para>
@@ -258,7 +266,7 @@ Please see LICENSE.txt for this document's license.
       Beachten Sie, dass eth0 das Ethernet-Gerät darstellt, an das Ihr Netzwerkkabel angeschlossen ist. Der Parameter <systemitem>-f busybox</systemitem> fügt dem RAM-Dateisystem das ausführbare Programm <systemitem>busybox</systemitem> hinzu, das mehrfach aufgerufen werden kann. Danach stehen in diesem System viele UNIX-Standardkommandos zur Verfügung.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Kopieren Sie das neue RAM-Dateisystem und den Kernel mit dem folgenden Kommando auf Ihren Boot-Server:
      </para>
@@ -267,35 +275,35 @@ Please see LICENSE.txt for this document's license.
       Ersetzen Sie pxe.example.com durch den Namen Ihres lokalen Boot-Servers oder die IP-Adresse.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Melden Sie sich bei Ihrem Boot-Server als <systemitem class="username">root</systemitem>-Benutzer an und erstellen Sie ein Verzeichnis, in dem Sie das RAM-Dateisystem ändern können:
      </para>
 <screen>mkdir ~/bootimage</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Ändern Sie Ihr Arbeitsverzeichnis mithilfe des Kommandos <command>cd ~/bootimage</command> in dieses Verzeichnis.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Entpacken Sie mithilfe des folgenden Kommandos das zuvor kopierte erste RAM-Dateisystem:
      </para>
 <screen>zcat ../initrd | cpio -i</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Bearbeiten Sie die Datei <filename>run_all.sh</filename>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Suchen Sie die folgende Zeile, löschen Sie sie und den Rest der Datei:
      </para>
 <screen>[ "$debug" ] &amp;&amp; echo preping 21-nfs.sh </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Fügen Sie die folgenden Zeilen an das Ende der Dateien <filename>run_all.sh</filename>:
      </para>
@@ -305,7 +313,7 @@ source boot/92-install.sh
 [ "$modules" ] &amp;&amp; load_modules
      </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Erstellen Sie ein neues Skript mit dem Namen <filename>boot/92-install.sh</filename> und dem folgenden Inhalt:
      </para>
@@ -325,17 +333,17 @@ fi
 /bin/poweroff -f
 </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Wenn Sie vor dem Abschalten des Computers eine Debug-Shell wünschen, entfernen Sie das Kommentarzeichen vor <filename>/bin/bash</filename>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Machen Sie dieses Skript ausführbar mithilfe des Kommandos <command>chmod 755 boot/92-install.sh</command>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Erstellen Sie ein neues anfängliches RAM-Dateisystem mit den folgenden Kommandos:
      </para>
@@ -343,7 +351,7 @@ fi
 find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
 /srv/tftpboot/initrd.boot</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Kopieren Sie den Kernel in dieses Verzeichnis.
      </para>
@@ -353,9 +361,9 @@ find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
    <para>
     Das erste RAM-Dateisystem ist nun für zwei neue Kernel-Kommandozeilenparameter vorbereitet. Der Parameter <systemitem>rawimage=&lt;URL&gt;</systemitem> wird benutzt, um den Speicherort des Preload-Image zu identifizieren. Jede URL, die von wget verstanden wird, ist verwendbar. Der Parameter <systemitem>rawdevice=&lt;device&gt;</systemitem> wird verwendet, um das Block-Gerät für die Festplatte auf dem Zielcomputer zu identifizieren.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Konfiguration des Boot-Servers</title>
    <para>
     Die Konfiguration des Boot-Servers wird ausführlich in mehreren Kapiteln behandelt. Siehe dazu die Liste in <xref linkend="sec-autokiwi-instserver"/>. Dieser Abschnitt enthält eine Prüfliste mit den Schritten, die zur Konfiguration des Systems erforderlich sind.
@@ -390,10 +398,10 @@ label bootinstall
    <para>
     Testen Sie Ihr Setup, indem Sie das Zielsystem mit dem PXE-Netzwerk-Boot starten. Damit wird das vorbereitete Preload-Image automatisch auf die Festplatte kopiert und der Computer zum Schluss abgeschaltet.
    </para>
-  </sect2>
+  </section>
 
 
- </sect1>
+ </section>
 
 
 
