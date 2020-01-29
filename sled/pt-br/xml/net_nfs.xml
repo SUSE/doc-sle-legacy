@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_nfs.xml" id="cha-nfs">
- <title>Compartilhando sistemas de arquivos com o NFS</title><indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>Network File System</primary> <see>NFS</see> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_nfs.xml" xml:id="cha-nfs"><title>Compartilhando sistemas de arquivos com o NFS</title><info><abstract>
   <para>
    Distribuir e compartilhar sistemas de arquivos em uma rede é uma tarefa comum em ambientes corporativos. O reconhecido sistema de arquivos de rede (<emphasis>NFS</emphasis>) funciona com o <emphasis>NIS</emphasis>, o protocolo de yellow pages. Para um protocolo mais seguro que funcione com o <emphasis>LDAP</emphasis> e também possa usar Kerberos, marque <emphasis>NFSv4</emphasis>. Juntamente com o pNFS, é possível eliminar gargalos no desempenho.
   </para>
@@ -17,9 +23,11 @@ Please see LICENSE.txt for this document's license.
   <para>
    O NFS com o NIS torna uma rede transparente para o usuário. Com o NFS, é possível distribuir sistemas de arquivos arbitrários pela rede. Com a configuração adequada, os usuários sempre ficam no mesmo ambiente, independentemente do terminal que estejam usando.
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>Network File System</primary> <see>NFS</see> </indexterm>
  
- <sect1 id="sec-nfs-term">
+ 
+ <section xml:id="sec-nfs-term">
   <title>Terminologia</title>
 
   <para>
@@ -60,8 +68,8 @@ Please see LICENSE.txt for this document's license.
      </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-nfs-installation">
+ </section>
+ <section xml:id="sec-nfs-installation">
   <title>Instalando o servidor NFS</title>
 
   <para>
@@ -71,8 +79,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    Assim como o NIS, o NFS é um sistema cliente/servidor. Porém, uma máquina pode ser ambos, ou seja, fornecer sistemas de arquivos pela rede (exportar) e montar sistemas de arquivos de outros hosts (importar).
   </para>
- </sect1>
- <sect1 id="sec-nfs-configuring-nfs-server">
+ </section>
+ <section xml:id="sec-nfs-configuring-nfs-server">
   <title>Configurando o servidor NFS</title>
 
   <para>
@@ -83,18 +91,18 @@ Please see LICENSE.txt for this document's license.
 
   
 
-  <sect2 id="sec-nfs-kerberos">
+  <section xml:id="sec-nfs-kerberos">
    <title>NFS com Kerberos</title>
    <para>
     Para usar a autenticação Kerberos para o NFS, é preciso que a segurança GSS esteja habilitada. Selecione <guimenu>Habilitar Segurança GSS</guimenu> na caixa de diálogo inicial Servidor NFS do YaST. É preciso ter um servidor Kerberos ativo para usar esse recurso. O YaST não configura o servidor, apenas usa a funcionalidade disponível. Para usar a autenticação Kerberos além da configuração do YaST, conclua pelo menos as etapas seguintes antes de executar a configuração do NFS:
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       Verifique se o servidor e o cliente estão no mesmo domínio Kerberos. Eles precisam acessar o mesmo servidor KDC (Key Distribution Center — Centro de Distribuição de Chaves) e compartilhar o arquivo <filename>krb5.keytab</filename> (o local padrão em qualquer máquina é <filename>/etc/krb5.keytab</filename>). Para obter mais informações sobre o Kerberos, consulte o <xref linkend="cha-net-kerberos"/>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Inicie o serviço gssd no cliente com <command>rcgssd start</command>.
      </para>
@@ -104,34 +112,34 @@ Please see LICENSE.txt for this document's license.
    <para>
     Para obter mais informações sobre como configurar o NFS que usa Kerberos, consulte os links na <xref linkend="sec-nfs-info" xrefstyle="SectTitleOnPage"/>.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-nfs-configuring-nfs-clients">
+  </section>
+ </section>
+ <section xml:id="sec-nfs-configuring-nfs-clients">
   <title>Configurando clientes</title>
 
   <para>
    Para configurar seu host como cliente NFS, você não precisa instalar software adicional. Todos os pacotes necessários são instalados por padrão.
   </para>
 
-  <sect2 id="sec-nfs-import-yast2">
+  <section xml:id="sec-nfs-import-yast2">
    <title>Importando sistemas de arquivos com o YaST</title><indexterm> <primary>NFS</primary> <secondary>clientes</secondary> </indexterm>
     <para>Usuários autorizados podem montar diretórios NFS de um servidor NFS na árvore de arquivos local usando o módulo de cliente NFS do YaST. Proceda da seguinte maneira:</para>
     
-    <procedure id="pro-nfs-import-yast2">
+    <procedure xml:id="pro-nfs-import-yast2">
       <title>Importando diretórios NFS</title>
-      <step performance="required">
+      <step>
         <para>Inicie o módulo de cliente NFS do YaST.</para>
       </step>
-      <step performance="required">
+      <step>
         <para>Clique em <guimenu>Adicionar</guimenu> na guia <guimenu>Compartilhamentos NFS</guimenu>. Digite o nome de host do servidor NFS, o diretório a ser importado e o ponto de montagem desse diretório localmente. </para>
       </step>
-      <step performance="required">
+      <step>
         <para>Habilite <guimenu>Abrir Porta no Firewall</guimenu> na guia <guimenu>Configurações do NFS</guimenu>, se você usa um Firewall e deseja permitir o acesso de computadores remotos ao serviço. O status do firewall é mostrado próximo à caixa de seleção. </para>
       </step>
-      <step performance="required">
+      <step>
         <para>Ao usar NFSv4, verifique se a caixa de seleção <guimenu>Habilitar NFSv4</guimenu> está marcada e se o <guimenu>Nome de Domínio NFSv4</guimenu> inclui o mesmo valor usado pelo servidor NFSv4. O domínio padrão é <literal>localdomain</literal>.</para>
       </step>
-      <step performance="required">
+      <step>
         <para>Clique em <guimenu>OK</guimenu> para gravar as mudanças.
         </para>
       </step>
@@ -140,19 +148,19 @@ Please see LICENSE.txt for this document's license.
     A configuração é gravada em <filename>/etc/fstab</filename> e os sistemas de arquivos especificados são montados. Quando você iniciar o cliente de configuração do YaST posteriormente, ele também lerá a configuração existente desse arquivo.
    </para>
 
-  </sect2>
+  </section>
 
-  <sect2 id="sec-nfs-import">
+  <section xml:id="sec-nfs-import">
    <title>Importando sistemas de arquivos manualmente</title><indexterm> <primary>NFS</primary> <secondary>importando</secondary> </indexterm> <indexterm> <primary>NFS</primary> <secondary>montando</secondary> </indexterm>
    <para>
-    O pré-requisito para importar os sistemas de arquivos manualmente de um servidor NFS é um mapeador de portas RPC em execução. Comece digitando <command>rcrpcbind <option>start</option></command> enquanto usuário <systemitem class="username">root</systemitem>. Em seguida, os sistemas de arquivos remotos podem ser montados no sistema de arquivos como partições locais usando <command>mount</command>:
+    O pré-requisito para importar os sistemas de arquivos manualmente de um servidor NFS é um mapeador de portas RPC em execução. Comece digitando <command>rcrpcbind</command> <option>start</option> enquanto usuário <systemitem class="username">root</systemitem>. Em seguida, os sistemas de arquivos remotos podem ser montados no sistema de arquivos como partições locais usando <command>mount</command>:
    </para>
 <screen>mount <replaceable>host</replaceable>:<replaceable>remote-path</replaceable><replaceable>local-path</replaceable></screen>
    <para>
     Para importar os diretórios de usuário da máquina do <systemitem>nfs.example.com</systemitem>, por exemplo, use:
    </para>
 <screen>mount nfs.example.com:/home /home</screen>
-   <sect3 id="sec-nfs-automount">
+   <section xml:id="sec-nfs-automount">
     <title>Usando o serviço de montagem automática</title>
     <para>
      O daemon autofs pode ser usado para montar sistemas de arquivos remotos automaticamente. Adicione a seguinte entrada ao seu arquivo <filename>/etc/auto.master</filename>:
@@ -169,8 +177,8 @@ nfs4mount -fstype=nfs4 server2:/</screen>
     <para>
      Se o arquivo <filename>/etc/auto.master</filename> for editado enquanto o serviço autofs estiver em execução, o automontador deverá ser reiniciado com <command>rcautofs restart</command> para que as mudanças tenham efeito.
     </para>
-   </sect3>
-   <sect3 id="sec-nfs-fstab">
+   </section>
+   <section xml:id="sec-nfs-fstab">
     <title>Editando <filename>/etc/fstab</filename> manualmente</title>
     <para>
      Uma entrada de montagem típica do NFSv3 em <filename>/etc/fstab</filename> tem aparência semelhante a esta:
@@ -187,10 +195,10 @@ nfs4mount -fstype=nfs4 server2:/</screen>
     <para>
      Observe que, se você não digitar a opção <literal>noauto</literal>, os scripts de inicialização do sistema gerenciarão a montagem dos sistemas de arquivos na inicialização.
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
    
-   <sect2 id="sec-nfs-pnfs">
+   <section xml:id="sec-nfs-pnfs">
      <title>NFS paralelo (pNFS)</title>
      <para>NFS é um dos protocolos mais antigos, desenvolvido nos anos 80. Em geral, o NFS é suficiente para compartilhar arquivos pequenos. Entretanto, para transferir arquivos grandes ou quando um número elevado de clientes precisa acessar os dados, o servidor NFS torna-se um gargalo e afeta significativamente o desempenho do sistema. Isso ocorre porque os arquivos aumentam de tamanho rapidamente, mas a velocidade relativa do Ethernet não consegue acompanhar esse aumento. </para>
      <para>Quando você solicita um arquivo de um servidor NFS <quote>normal</quote>, o servidor procura os metadados do arquivo, coleta todos os dados e os transfere pela rede até o cliente. No entanto, o gargalo no desempenho torna-se aparente independentemente do tamanho dos arquivos:
@@ -220,12 +228,12 @@ nfs4mount -fstype=nfs4 server2:/</screen>
      
      <para>O SUSE Linux Enterprise suporta pNFS apenas no cliente.</para>
      
-     <sect3 id="sec-nfs-pnfs-yast">
+     <section xml:id="sec-nfs-pnfs-yast">
        <title>Configurando o cliente pNFS com o YaST</title>
        <para>Siga a descrição no <xref linkend="pro-nfs-import-yast2"/>, mas clique na caixa de seleção <guimenu>pNFS (v4.1)</guimenu> e, opcionalmente, em <guimenu>Compartilhamento NFSv4</guimenu>. O YaST executa todas as etapas necessárias e grava todas as opções exigidas no arquivo <filename>/etc/exports</filename>. </para>
-     </sect3>
+     </section>
      
-     <sect3 id="sec-nfs-pnfs-manual">
+     <section xml:id="sec-nfs-pnfs-manual">
        <title>Configurando o cliente pNFS manualmente</title>
        <para>Para começar, consulte a <xref linkend="sec-nfs-import"/>. A maior parte da configuração é feita pelo servidor NFSv4. Para o pNFS, a única diferença é adicionar a opção <option>minorversion</option> e o servidor de metadados <replaceable>MDS_SERVER</replaceable> ao comando <command>mount</command>:</para>
        <screen>mount -t nfs4 -o minorversion=1 <replaceable>MDS_SERVER</replaceable> <replaceable>MOUNTPOINT</replaceable></screen>
@@ -233,11 +241,11 @@ nfs4mount -fstype=nfs4 server2:/</screen>
        <para>Para ajudar na depuração, mude o valor no sistema de arquivos <filename>/proc</filename>:</para>
        <screen>echo 32767 &gt; /proc/sys/sunrpc/nfsd_debug
 echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
-     </sect3>
-   </sect2>
+     </section>
+   </section>
    
- </sect1>
- <sect1 id="sec-nfs-info">
+ </section>
+ <section xml:id="sec-nfs-info">
   <title>Para obter mais informações</title>
 
   <para>
@@ -247,19 +255,19 @@ echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     A documentação técnica online encontra-se no <ulink url="http://nfs.sourceforge.net/">SourceForge</ulink>.
+     A documentação técnica online encontra-se no <link xlink:href="http://nfs.sourceforge.net/">SourceForge</link>.
     </para>
    </listitem>
    <listitem>
     <para>
-     Para obter instruções sobre como configurar o NFS que usa Kerberos, consulte o documento <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS Version 4 Open Source Reference Implementation</ulink> (Implementação da referência de código-fonte aberto do NFSv4).
+     Para obter instruções sobre como configurar o NFS que usa Kerberos, consulte o documento <link xlink:href="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS Version 4 Open Source Reference Implementation</link> (Implementação da referência de código-fonte aberto do NFSv4).
     </para>
    </listitem>
    <listitem>
     <para>
-     Se você tiver dúvidas sobre o NFSv4, consulte as <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Perguntas frequentes do Linux NFSv4</ulink>.
+     Se você tiver dúvidas sobre o NFSv4, consulte as <link xlink:href="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Perguntas frequentes do Linux NFSv4</link>.
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>

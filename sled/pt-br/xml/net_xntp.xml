@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_xntp.xml" id="cha-netz-xntp">
- <title>Sincronização de horário com NTP</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_xntp.xml" xml:id="cha-netz-xntp"><title>Sincronização de horário com NTP</title><info><abstract>
   <para>
    O mecanismo NTP (network time protocol) é um protocolo para sincronizar o horário do sistema na rede. Primeiro, uma máquina pode obter o horário de um servidor, que é uma fonte de horário confiável. Segundo, a máquina pode agir como uma fonte de horário para outros computadores na rede. O objetivo é duplo: manter o tempo absoluto e a sincronização do horário do sistema de todas as máquinas na rede.
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <para>
   Manter um horário exato do sistema é importante em várias situações. Geralmente, o relógio do hardware incorporado não atende aos requisitos dos aplicativos, como bancos de dados ou clusters. A correção manual do horário do sistema levaria a problemas severos pois, por exemplo, um pulo inverso pode causar o mau funcionamento de aplicativos críticos. Em uma rede, geralmente é necessário sincronizar o horário do sistema de todas as máquinas, porém, o ajuste manual do horário não é um bom método. O NTP dispõe de um mecanismo para resolver esses problemas. O serviço NTP ajusta continuamente o horário do sistema com a ajuda de servidores de horário confiáveis na rede. Ele habilita também o gerenciamento de relógios de referência local como relógios controlados pelo rádio.
  </para>
@@ -22,14 +30,14 @@ Please see LICENSE.txt for this document's license.
    Para habilitar a sincronização de horário por meio do diretório ativo, siga as instruções no <xref linkend="proc-ad-join"/>.
   </para>
  </note>
- <sect1 id="sec-netz-xntp-yast">
+ <section xml:id="sec-netz-xntp-yast">
   <title>Configurando um cliente NTP com YaST</title>
 
   <para>
    O daemon do NTP (<systemitem class="daemon">ntpd</systemitem>) que acompanha o pacote <systemitem>ntp</systemitem> vem predefinido para usar o relógio do computador como a referência de horário. Entretanto, o uso do relógio do hardware só serve como fallback nos casos em que não há uma fonte de horário mais precisa disponível. O YaST facilita a configuração de um cliente NTP.
   </para>
 
-  <sect2 id="sec-net-ntp-yast-basic">
+  <section xml:id="sec-net-ntp-yast-basic">
    <title>Configuração Básica</title>
    <para>
     A configuração do cliente NTP do YaST (<menuchoice><guimenu>Serviços de Rede</guimenu> <guimenu>Configuração NTP</guimenu></menuchoice>) é composta por guias. Defina o modo de iniciar do <systemitem class="daemon">ntpd</systemitem> e o servidor para consulta na guia <guimenu>Configurações Gerais</guimenu>.
@@ -55,11 +63,11 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-net-ntp-yast-new-sync">
+  <section xml:id="sec-net-ntp-yast-new-sync">
    <title>Mudando a configuração básica</title>
    <para>
     Os servidores e outras fontes de horário para a consulta do cliente estão listados na guia <guimenu>Configurações Gerais</guimenu>. Modifique esta lista conforme necessário com <guimenu>Adicionar</guimenu>, <guimenu>Editar</guimenu> e <guimenu>Apagar</guimenu>. <guimenu>Exibir Registro</guimenu> fornece a possibilidade de exibir os arquivos de registro do seu cliente.
@@ -67,7 +75,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     Clique em <guimenu>Adicionar</guimenu> para adicionar uma nova fonte de informação de horário. Na caixa de diálogo seguinte, selecione o tipo de fonte com a qual a sincronização de horário deve ser realizada. As seguintes opções estão disponíveis:
    </para>
-   <figure id="fig-yast-ntp-selserv">
+   <figure xml:id="fig-yast-ntp-selserv">
     <title>YaST: servidor NTP</title>
     <mediaobject>
      <imageobject role="fo">
@@ -130,7 +138,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-   <figure id="fig-yast-ntp-adv-sec">
+   <figure xml:id="fig-yast-ntp-adv-sec">
     <title>Configuração NTP Avançada: Configurações de Segurança</title>
     <mediaobject>
      <imageobject role="fo">
@@ -150,12 +158,12 @@ Please see LICENSE.txt for this document's license.
    <para>
     Habilite <guimenu>Abrir Porta no Firewall</guimenu> se o SuSEfirewall2 estiver ativo (ele fica ativo por padrão). Se você manter a porta fechada, não será possível estabelecer uma conexão com o servidor de horário.
    </para>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-netconf">
+ <section xml:id="sec-netz-xntp-netconf">
   <title>Configurando manualmente o NTP na rede</title>
 
   <para>
@@ -166,7 +174,7 @@ Please see LICENSE.txt for this document's license.
 <screen>server ntp.example.com</screen>
 
   <para>
-   Para adicionar mais servidores de horário, insira linhas adicionais com a palavra-chave <literal>server</literal>. Após inicializar o <systemitem class="daemon">ntpd</systemitem> com o comando <command>rcntp <option>start</option></command>, leva cerca de uma hora para estabilizar o horário e criar o arquivo drift que corrige o relógio do computador local. Com o arquivo de descompasso, o erro sistemático do relógio do hardware pode ser computado assim que o computador for ligado. A correção é usada imediatamente, resultando em uma estabilidade maior do horário do sistema.
+   Para adicionar mais servidores de horário, insira linhas adicionais com a palavra-chave <literal>server</literal>. Após inicializar o <systemitem class="daemon">ntpd</systemitem> com o comando <command>rcntp</command> <option>start</option>, leva cerca de uma hora para estabilizar o horário e criar o arquivo drift que corrige o relógio do computador local. Com o arquivo de descompasso, o erro sistemático do relógio do hardware pode ser computado assim que o computador for ligado. A correção é usada imediatamente, resultando em uma estabilidade maior do horário do sistema.
   </para>
 
   <para>
@@ -178,11 +186,11 @@ Please see LICENSE.txt for this document's license.
   </para>
 
 
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-dynamic">
+ <section xml:id="sec-netz-xntp-dynamic">
   <title>Sincronização de horário dinâmica em tempo de execução</title>
 
 
@@ -206,37 +214,37 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      No YaST, clique em <menuchoice> <guimenu>Serviços de Rede</guimenu> <guimenu>Configuração NTP</guimenu> </menuchoice>.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Selecione o servidor que deseja configurar. Em seguida, clique em <guimenu>Editar</guimenu>.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Ative o campo <guimenu>Opções</guimenu> e adicione <literal>dynamic</literal>. Separe-o por um espaço, se já houver outras opções digitadas.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Clique em <guimenu>OK</guimenu> para fechar a caixa de diálogo de edição. Repita a etapa anterior para mudar todos os servidores conforme desejado.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Por fim, clique em <guimenu>OK</guimenu> para gravar as configurações.
     </para>
    </step>
   </procedure>
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-normal">
+ <section xml:id="sec-netz-xntp-normal">
   <title>Configurando um relógio de referência local</title>
 
   <para>
@@ -253,6 +261,6 @@ Please see LICENSE.txt for this document's license.
   <para>
    Outros relógios seguem o mesmo padrão. Após a instalação do pacote <systemitem class="resource">ntp-doc</systemitem>, a documentação do NTP fica disponível no diretório <filename>/usr/share/doc/packages/ntp-doc</filename>. O arquivo <filename>/usr/share/doc/packages/ntp-doc/refclock.html</filename> fornece links para as páginas que descrevem os parâmetros do driver.
   </para>
- </sect1>
+ </section>
  
 </chapter>

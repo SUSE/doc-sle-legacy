@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect2
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect2 xml:base="zypper_upgrade.xml" id="sec-update-zypper">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="zypper_upgrade.xml" xml:id="sec-update-zypper">
  <title>Upgrade de distribuição com o zypper</title><indexterm> <primary>zypper</primary> <secondary>fazendo upgrade</secondary></indexterm><indexterm> <primary>fazendo upgrade</primary> <secondary>zypper</secondary></indexterm>
  <para>
   Com o utilitário de linha de comando <command>zypper</command>, é possível fazer upgrade para a próxima versão da distribuição. O mais importante, é possível iniciar o processo de upgrade do sistema no próprio sistema que está em execução.
@@ -15,7 +23,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   Esse recurso é ótimo para usuários avançados que querem executar upgrades remotos ou upgrades em diversos sistemas configurados de forma parecida. 
  </para>
- <sect3>
+ <section>
   <title>Antes de iniciar o upgrade com o zypper</title>
   <para>
    Para evitar erros inesperados durante o processo de upgrade usando o <command>zypper</command>, minimize as configurações de risco.
@@ -45,8 +53,8 @@ Please see LICENSE.txt for this document's license.
     <para>O processo de upgrade deve ser feito por completo, do início até a reinicialização. Existe apenas uma chance limitada de reverter as mudanças. Além disso, o servidor deve estar conectado online durante todo o processo.
 </para>
   </warning>
- </sect3>
- <sect3>
+ </section>
+ <section>
   <title>Procedimento de upgrade</title>
   <warning>
    <title>Verificar backup do sistema</title>
@@ -61,37 +69,37 @@ Please see LICENSE.txt for this document's license.
  
   <procedure>
     
-    <step performance="required">
+    <step>
       <para>Atualize todos os serviços e repositórios:</para>
       <screen>zypper ref -s</screen>
     </step>
-    <step id="st-update-zypper-proc-softwarestack" performance="required">
+    <step xml:id="st-update-zypper-proc-softwarestack">
       <para>Instale as atualizações de gerenciamento de pacote:</para>
       <screen>zypper up -t patch</screen>
       <para>Para obter mais informações, consulte o <xref linkend="cha-onlineupdate-you"/>.</para>
     </step>
-    <step performance="required">
+    <step>
     <para>Repita o <xref linkend="st-update-zypper-proc-softwarestack"/> para instalar todas as atualizações disponíveis para o seu sistema.
     </para>
     <para>Nota: Para usar o comando acima em um script para upgrade autônomo, use o comando: </para>
     <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
    </step>
-    <step performance="required">
+    <step>
       <para>Leia as informações de migração do produto em <filename>/etc/products.d/*.prod</filename>. Os produtos instalados incluem informações sobre upgrades de distribuição e quais produtos de migração devem ser instalados para executar a migração. Instale-os com os seguintes comandos:
       </para>
       <substeps performance="required">
-        <step performance="required">
+        <step>
           <para>Extraia as informações sobre o produto:</para>
           <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
           <para>Veja a seguir um exemplo de saída:</para>
           <screen>SUSE_SLES-SP3-migration
 sle-sdk-SP3-migration</screen>
         </step>
-        <step performance="required">
+        <step>
           <para>Instale estes produtos de migração (exemplo):</para>
           <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
         </step>
-        <step performance="required">
+        <step>
           <para>Registre os produtos para obter os repositórios de atualização correspondentes:</para>
           <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
           <warning>
@@ -102,29 +110,29 @@ sle-sdk-SP3-migration</screen>
       </substeps>      
     </step>
     
-    <step performance="required">
+    <step>
       <para>Atualize serviços e repositórios:</para>
       <screen>zypper ref -s</screen>
     </step>
-    <step performance="required">
+    <step>
         <para>Verifique os repositórios usando o comando <command>zypper lr</command>. Se necessário, desabilite os repositórios <systemitem>Pool/Core/Updates</systemitem> do SP1/SP2 manualmente e habilite os novos repositórios (<systemitem>SP3-Pool</systemitem>, <systemitem>SP3-Updates</systemitem>) do SP3:</para>
       <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
 zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
     </step>
-    <step performance="required">
+    <step>
       <para>Faça um upgrade de distribuição usando o seguinte comando (exemplo para SLES, ajustar nomes de catálogo em caso de atualização do SLED):</para>
       <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
       <para>Se necessário, você poderá adicionar mais catálogos. Por exemplo, quando produtos complementares são instalados. O Zypper avisa que vai apagar o produto de migração e atualizar os produtos principais. Confirme a mensagem para continuar atualizando os pacotes rpm.</para>
     </step>
-    <step performance="required">
+    <step>
       <para>Após o término do upgrade, registre os novos produtos novamente:</para>
       <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
     </step>
-    <step performance="required">
+    <step>
       <para>Reinicialize o sistema:</para>
       <screen>shutdown -r</screen>
     </step>
   </procedure>
    
- </sect3>
-</sect2>
+ </section>
+</section>
