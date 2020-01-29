@@ -1,31 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_xntp.xml" id="cha-netz-xntp">
- <title>Zeitsynchronisierung mit NTP</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_xntp.xml" xml:id="cha-netz-xntp"><title>Zeitsynchronisierung mit NTP</title><info><abstract>
   <para>
    Der NTP-(Network Time Protocol-)Mechanismus ist ein Protokoll für die Synchronisierung der Systemzeit über das Netzwerk. Erstens kann ein Computer die Zeit von einem Server abrufen, der als zuverlässige Zeitquelle gilt. Zweitens kann ein Computer selbst für andere Computer im Netzwerk als Zeitquelle fungieren. Es gibt zwei Ziele – das Aufrechterhalten der absoluten Zeit und das Synchronisieren der Systemzeit aller Computer im Netzwerk.
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <para>
   Das Aufrechterhalten der genauen Systemzeit ist in vielen Situationen wichtig. Die integrierte Hardware-Uhr erfüllt häufig nicht die Anforderungen bestimmter Anwendungen, beispielsweise Datenbanken oder Cluster. Die manuelle Korrektur der Systemzeit würde schwerwiegende Probleme nach sich ziehen; das Zurückstellen kann beispielsweise zu Fehlfunktionen wichtiger Anwendungen führen. Die Systemzeiten der in einem Netzwerk zusammengeschlossenen Computer müssen in der Regel synchronisiert werden. Es empfiehlt sich aber nicht, die Zeiten manuell anzugleichen. Vielmehr sollten Sie dazu NTP verwenden. Der NTP-Dienst passt die Systemzeit ständig anhand zuverlässiger Zeitserver im Netzwerk an. Zudem ermöglicht er die Verwaltung lokaler Referenzuhren, beispielsweise funkgesteuerter Uhren.
  </para>
  
- <sect1 id="sec-netz-xntp-yast">
+ <section xml:id="sec-netz-xntp-yast">
   <title>Konfigurieren eines NTP-Client mit YaST</title>
 
   <para>
    Der NTP-Daemon (<systemitem class="daemon">ntpd</systemitem>) im <systemitem>ntp</systemitem>-Paket ist so voreingestellt, dass die Uhr des lokalen Computers als Zeitreferenz verwendet wird. Das Verwenden der Hardware-Uhr ist jedoch nur eine Ausweichlösung, wenn keine genauere Zeitquelle verfügbar ist. YaST erleichtert die Konfiguration von NTP-Clients.
   </para>
 
-  <sect2 id="sec-net-ntp-yast-basic">
+  <section xml:id="sec-net-ntp-yast-basic">
    <title>Grundlegende Konfiguration</title>
    <para>
     Die NTP-Client-Konfiguration mit YaST (<menuchoice><guimenu>Netzwerkdienste</guimenu> <guimenu>NTP-Konfiguration</guimenu></menuchoice>) benötigt zwei Dialogfelder. Legen Sie den Startmodus <systemitem class="daemon">ntpd</systemitem> und den abzufragenden Server auf dem Karteireiter <guimenu>Allgemein Einstellungen</guimenu> fest.
@@ -51,11 +59,11 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-net-ntp-yast-new-sync">
+  <section xml:id="sec-net-ntp-yast-new-sync">
    <title>Ändern der Basiskonfiguration</title>
    <para>
     Die Server und anderen Zeitquellen für die Abfrage durch den Client sind im unteren Bereich im Karteireiter <guimenu>Allgemeine Einstellungen</guimenu> aufgelistet. Bearbeiten Sie diese Liste nach Bedarf mithilfe der Optionen <guimenu>Hinzufügen</guimenu>, <guimenu>Bearbeiten</guimenu> und <guimenu>Löschen</guimenu>. <guimenu>Mit </guimenu>Protokoll anzeigen können die Protokolldateien Ihres Clients angezeigt werden.
@@ -63,7 +71,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     Klicken Sie auf <guimenu>Hinzufügen</guimenu>, um eine neue Quelle für Zeitinformationen hinzuzufügen. Wählen Sie im nachfolgenden Dialogfeld den Quellentyp aus, mit dem die Zeitsynchronisierung vorgenommen werden soll. Mit den zur Verfügung stehenden Optionen können Sie
    </para>
-   <figure id="fig-yast-ntp-selserv">
+   <figure xml:id="fig-yast-ntp-selserv">
     <title>YaST: NTP-Server</title>
     <mediaobject>
      <imageobject role="fo">
@@ -126,7 +134,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-   <figure id="fig-yast-ntp-adv-sec">
+   <figure xml:id="fig-yast-ntp-adv-sec">
     <title>Erweiterte NTP-Konfiguration: Sicherheitseinstellungen</title>
     <mediaobject>
      <imageobject role="fo">
@@ -146,12 +154,12 @@ Please see LICENSE.txt for this document's license.
    <para>
     Aktivieren Sie <guimenu>Firewall-Port öffnen</guimenu>, wenn SuSEfirewall2 aktiviert ist (Standardeinstellung). Wenn Sie den Port geschlossen lassen, können Sie keine Verbindung zum Zeitserver herstellen.
    </para>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-netconf">
+ <section xml:id="sec-netz-xntp-netconf">
   <title>Manuelle Konfiguration von NTP im Netzwerk</title>
 
   <para>
@@ -162,7 +170,7 @@ Please see LICENSE.txt for this document's license.
 <screen>server ntp.example.com</screen>
 
   <para>
-   Wenn Sie weitere Zeitserver hinzufügen möchten, fügen Sie zusätzliche Zeilen mit dem Schlüsselwort <literal>server</literal> ein. Nach der Initialisierung von <systemitem class="daemon">ntpd</systemitem> mit dem Kommando <command>rcntp <option>start</option></command> dauert es etwa eine Stunde, bis die Zeit stabil ist und die Drift-Datei für das Korrigieren der lokalen Computeruhr erstellt wird. Mithilfe der Drift-Datei kann der systematische Fehler der Hardware-Uhr berechnet werden, sobald der Computer eingeschaltet wird. Die Korrektur kommt umgehend zum Einsatz und führt zu einer größeren Stabilität der Systemzeit.
+   Wenn Sie weitere Zeitserver hinzufügen möchten, fügen Sie zusätzliche Zeilen mit dem Schlüsselwort <literal>server</literal> ein. Nach der Initialisierung von <systemitem class="daemon">ntpd</systemitem> mit dem Kommando <command>rcntp</command> <option>start</option> dauert es etwa eine Stunde, bis die Zeit stabil ist und die Drift-Datei für das Korrigieren der lokalen Computeruhr erstellt wird. Mithilfe der Drift-Datei kann der systematische Fehler der Hardware-Uhr berechnet werden, sobald der Computer eingeschaltet wird. Die Korrektur kommt umgehend zum Einsatz und führt zu einer größeren Stabilität der Systemzeit.
   </para>
 
   <para>
@@ -174,11 +182,11 @@ Please see LICENSE.txt for this document's license.
   </para>
 
 
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-dynamic">
+ <section xml:id="sec-netz-xntp-dynamic">
   <title>Dynamische Zeitsynchronisierung während der Laufzeit</title>
 
 
@@ -202,37 +210,37 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      Klicken Sie in YaST auf <menuchoice> <guimenu>Netzwerkdienste</guimenu> <guimenu>NTP-Konfiguration</guimenu> </menuchoice>.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Wählen Sie den Server aus, der konfiguriert werden soll. Klicken Sie anschließend auf <guimenu>Bearbeiten</guimenu>.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Aktivieren Sie das Feld <guimenu>Optionen</guimenu> und fügen Sie <literal>Dynamisch</literal> hinzu. Verwenden Sie ein Leerzeichen zum Trennen, falls bereits andere Optionen eingetragen sind.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Klicken Sie auf <guimenu>OK</guimenu>, um das Dialogfeld für die Bearbeitung zu schließen. Wiederholen Sie den vorherigen Schritt, um alle Server wunschgemäß zu ändern.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Klicken Sie abschließend auf <guimenu>OK</guimenu>, um die Einstellungen zu speichern.
     </para>
    </step>
   </procedure>
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-normal">
+ <section xml:id="sec-netz-xntp-normal">
   <title>Einrichten einer lokalen Referenzuhr</title>
 
   <para>
@@ -249,8 +257,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    Für andere Uhren gilt dasselbe Schema. Nach der Installation des Pakets <systemitem class="resource">ntp-doc</systemitem> steht die Dokumentation für ntp im Verzeichnis <filename>/usr/share/doc/packages/ntp-doc</filename> zur Verfügung. Die Datei <filename>/usr/share/doc/packages/ntp-doc/refclock.html</filename> enthält Links zu den Treiberseiten, auf denen die Treiberparameter beschrieben werden.
   </para>
- </sect1>
- <sect1 id="sec-netz-xntp-etr" arch="zseries">
+ </section>
+ <section xml:id="sec-netz-xntp-etr" arch="zseries">
   <title>Uhrensynchronisierung mit einer externen Zeitreferenz (ETR)</title>
 
 
@@ -270,5 +278,5 @@ Please see LICENSE.txt for this document's license.
 <screen>echo 1 &gt; /sys/devices/system/etr/etr0/online
 echo 1 &gt; /sys/devices/system/etr/etr1/online
 </screen>
- </sect1>
+ </section>
 </chapter>

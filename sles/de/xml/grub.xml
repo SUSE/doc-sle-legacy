@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="grub.xml" id="cha-grub">
- <title>Der Bootloader GRUB</title><indexterm> <primary>Booten</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="grub.xml" xml:id="cha-grub"><title>Der Bootloader GRUB</title><info><abstract>
   <para>
    In diesem Kapitel wird die Konfiguration von GRUB (Grand Unified Bootloader), dem unter <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> verwendeten Bootloader, beschrieben. Zum Konfigurieren der Einstellungen steht ein spezielles YaST-Modul zur Verfügung. Wenn Sie mit dem Bootvorgang unter Linux nicht vertraut sind, lesen Sie die folgenden Abschnitte, um einige Hintergrundinformationen zu erhalten. In diesem Kapitel werden zudem einige der Probleme, die beim Booten mit GRUB auftreten können, sowie deren Lösungen beschrieben.
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm> <primary>Booten</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
+ 
  <note os="sles;sled">
   <title>Kein GRUB auf Computern, die UEFI verwenden</title>
   <para>
@@ -45,7 +53,7 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </varlistentry>
  </variablelist>
- <sect1 id="sec-grub-basic">
+ <section xml:id="sec-grub-basic">
   <title>Booten mit GRUB</title><indexterm> <primary>GRUB</primary> <secondary>Booten</secondary></indexterm><indexterm> <primary>Installieren</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>Booten</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>Konfigurieren</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>Befehle</primary> <secondary>grub</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>Befehle</secondary></indexterm>
 
   <para>
@@ -111,7 +119,7 @@ Please see LICENSE.txt for this document's license.
    GRUB ist in zwei Versionen vorhanden: als Bootloader und als normales Linux-Programm in <filename>/usr/sbin/grub</filename>. Letzteres wird als <emphasis>GRUB-Shell</emphasis> bezeichnet. Es stellt auf dem installierten System eine Emulation von GRUB bereit, die zum Installieren von GRUB oder zum Testen neuer Einstellungen verwendet werden kann. Die Funktionalität, GRUB als Bootloader auf einer Festplatte oder Diskette zu installieren, ist in Form des Kommandos <command>setup</command> in GRUB integriert. Diese Befehle sind in der GRUB-Shell verfügbar, wenn Linux geladen ist.
   </para>
 
-  <sect2 id="sec-grub-menu">
+  <section xml:id="sec-grub-menu">
    <title>Die Datei <filename>/boot/grub/menu.lst</filename></title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>menu.lst</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>Bootmenü</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>menu.lst</secondary></indexterm>
    <para>
     Hinter dem grafischen Eröffnungsbildschirm mit dem Bootmenü steht die GRUB-Konfigurationsdatei <filename>/boot/grub/menu.lst</filename>, die alle Informationen zu allen Partitionen oder Betriebssystemen enthält, die über das Menü gebootet werden können.
@@ -147,7 +155,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     Wenn Sie alle Menüeinträge geschrieben haben, müssen Sie einen Eintrag als <literal>default</literal> festlegen. Anderenfalls wird der erste Eintrag (Eintrag <literal>0</literal>) verwendet. Sie haben auch die Möglichkeit, ein Zeitlimit in Sekunden anzugeben, nach dem der default-Eintrag gebootet wird. <literal>timeout</literal> und <literal>default</literal> werden den Menüeinträgen in der Regel vorangestellt. Eine Beispieldatei finden Sie in <xref linkend="sec-grub-menu-example"/>.
    </para>
-   <sect3 id="sec-grub-devices">
+   <section xml:id="sec-grub-devices">
     <title>Namenskonventionen für Festplatten und Partitionen</title><indexterm> <primary>GRUB</primary> <secondary>Gerätenamen</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>Partitionsnamen</secondary></indexterm>
     <para>
      Die von GRUB für Festplatten und Partitionen verwendete Namenskonvention unterscheidet sich von der, die für normale Linux-Geräte verwendet wird. Sie sind der einfachen Plattennummerierung, die das BIOS durchführt, sehr ähnlich und die Syntax gleicht derjenigen, die in manchen BSD-Derivaten verwendet wird. In GRUB beginnt die Nummerierung der Partitionen mit null. Daher ist (<filename>hd0,0</filename>) die erste Partition auf der ersten Festplatte. Auf einem gewöhnlichen Desktop-Computer, bei dem eine Festplatte als Primary Master angeschlossen ist, lautet der entsprechende Linux-Gerätename <filename>/dev/sda1</filename>.
@@ -171,32 +179,32 @@ Please see LICENSE.txt for this document's license.
      Ein vollständiger GRUB-Pfad besteht aus einem Gerätenamen, der in Klammern geschrieben wird, und dem Pfad der Datei im Dateisystem auf der angegebenen Partition. Der Pfad beginnt mit einem Schrägstrich. Auf einem System mit einer einzelnen PATA- (IDE)-Festplatte und Linux auf der ersten Partition könnte der bootbare Kernel beispielsweise wie folgt spezifiziert werden:
     </para>
 <screen>(hd0,0)/boot/vmlinuz</screen>
-   </sect3>
-   <sect3 id="sec-grub-menu-example">
+   </section>
+   <section xml:id="sec-grub-menu-example">
     <title>Beispiel einer Menüdatei</title>
     <para>
      Das folgende Beispiel zeigt die Struktur einer GRUB-Menüdatei. Diese Beispiel-Installation beinhaltet eine Linux-Bootpartition unter <filename>/dev/sda5</filename>, eine Root-Partition unter <filename>/dev/sda7</filename> und eine Windows-Installation unter <filename>/dev/sda1</filename>.
     </para>
     
-<screen>gfxmenu (hd0,4)/boot/message<co id="grub-menu-example-gfxmenu"/>
-color white/blue black/light-gray<co id="grub-menu-example-color"/>
-default 0<co id="grub-menu-example-default"/>
-timeout 8<co id="grub-menu-example-timeout"/>
+<screen>gfxmenu (hd0,4)/boot/message<co xml:id="grub-menu-example-gfxmenu"/>
+color white/blue black/light-gray<co xml:id="grub-menu-example-color"/>
+default 0<co xml:id="grub-menu-example-default"/>
+timeout 8<co xml:id="grub-menu-example-timeout"/>
 
-title linux<co id="grub-menu-example-linux"/>
+title linux<co xml:id="grub-menu-example-linux"/>
    root (hd0,4)
    kernel /boot/vmlinuz root=/dev/sda7 vga=791 resume=/dev/sda9
    initrd /boot/initrd
 
-title windows<co id="grub-menu-example-windows"/>
+title windows<co xml:id="grub-menu-example-windows"/>
    rootnoverify (hd0,0)
    chainloader +1
 
-title floppy<co id="grub-menu-example-floppy"/>
+title floppy<co xml:id="grub-menu-example-floppy"/>
    rootnoverify (hd0,0)
    chainloader (fd0)+1
 
-title failsafe<co id="grub-menu-example-failsafe"/>
+title failsafe<co xml:id="grub-menu-example-failsafe"/>
    root (hd0,4)
    kernel /boot/vmlinuz.shipped root=/dev/sda7 ide=nodma \
    apm=off acpi=off vga=normal nosmp maxcpus=0 3 noresume
@@ -254,8 +262,8 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     <para>
      Die Menüdatei kann jederzeit geändert werden. GRUB verwendet die geänderten Einstellungen anschließend für den nächsten Bootvorgang. Sie können diese Datei mit dem Editor Ihrer Wahl oder mit YaST permanent editieren und dauerhaft speichern. Alternativ können Sie temporäre Änderungen interaktiv über die Bearbeitungsfunktion von GRUB vornehmen. Weitere Informationen hierzu finden Sie unter <xref linkend="sec-grub-menu-change"/>.
     </para>
-   </sect3>
-   <sect3 id="sec-grub-menu-change">
+   </section>
+   <section xml:id="sec-grub-menu-change">
     <title>Ändern von Menü-Einträgen während des Bootvorgangs</title><indexterm> <primary>GRUB </primary> <secondary>Menüeditor</secondary></indexterm>
     <para>
      Wählen Sie im grafischen Bootmenü das zu bootende Betriebssystem mit den Pfeiltasten aus. Wenn Sie ein Linux-System wählen, können Sie in der Booteingabeaufforderung zusätzliche Bootparameter eingeben. Um einzelne Menüeinträge direkt zu bearbeiten, drücken Sie die <keycap>Esc</keycap>-Taste, um den Eröffnungsbildschirm zu schließen und das textbasierte GRUB-Menü anzuzeigen, und drücken Sie anschließend die Taste <keycap>E</keycap>. Auf diese Weise vorgenommene Änderungen gelten nur für den aktuellen Bootvorgang und können nicht dauerhaft übernommen werden.
@@ -282,10 +290,10 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     <para>
      GRUB übernimmt den neuen Parameter beim nächsten Booten automatisch. Alternativ können Sie diese Änderung auch mit dem YaST-Bootloader-Modul vornehmen. Hängen Sie die neuen Parameter getrennt durch Leerzeichen an die vorhandene Zeile an.
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-grub-map">
+  <section xml:id="sec-grub-map">
    <title>Die Datei „device.map“</title><indexterm> <primary>GRUB </primary> <secondary>device.map</secondary></indexterm>
    <para>
     Die Datei <filename>device.map</filename> enthält Zuordnungen zwischen den GRUB- und BIOS-Gerätenamen und den Linux-Gerätenamen. In einem Mischsystem aus PATA- (IDE)- und SCSI-Festplatten muss GRUB anhand eines bestimmten Verfahrens versuchen, die Bootreihenfolge zu ermitteln, da die BIOS-Informationen zur Bootreihenfolge für GRUB unter Umständen nicht zugänglich sind. GRUB speichert das Ergebnis dieser Analyse in der Datei <filename>/boot/grub/device.map</filename>. Ein Beispiel für <filename>device.map</filename>-Dateien für ein System, bei dem in der Bootreihenfolge im BIOS zuerst PATA und dann SCSI eingestellt ist:
@@ -312,9 +320,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     Installieren Sie nach dem manuellen Bearbeiten von <filename>device.map</filename> GRUB mithilfe des folgenden Befehls neu. Dieser Befehl führt dazu, dass die Datei <filename>device.map</filename> neu geladen wird und die in <filename>grub.conf</filename> aufgelisteten Befehle ausgeführt werden:
    </para>
 <screen>grub --batch &lt; /etc/grub.conf</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-conf">
+  <section xml:id="sec-grub-conf">
    <title>Die Datei „/etc/grub.conf“</title><indexterm> <primary>Konfigurationsdateien</primary> <secondary>grub.conf</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>grub.conf</secondary></indexterm><indexterm> <primary>Konfigurieren</primary> <secondary>GRUB</secondary></indexterm>
    <para>
     Nach <filename>menu.lst</filename> und <filename>device.map</filename> ist <filename>/etc/grub.conf</filename> die dritte wichtige Konfigurationsdatei von GRUB. Diese Datei enthält die Befehle, Parameter und Optionen, die die GRUB-Shell für das ordnungsgemäße Installieren des Bootloaders benötigt.
@@ -324,9 +332,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
    <para>
     Dieses Kommando weist GRUB an, den Bootloader automatisch auf die zweite Partition der ersten Festplatte (hd0,1) zu installieren und dabei die Boot-Images zu verwenden, die sich auf derselben Partition befinden. Der Parameter <option>--stage2=/boot/grub/stage2</option> ist erforderlich, um das Image <filename>stage2</filename> von einem eingehängten Dateisystem zu installieren. Einige BIOS haben eine fehlerhafte Implementierung für LBA-Unterstützung. Mit <option>--force-lba</option> können Sie diese ignorieren.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-sysconfig">
+  <section xml:id="sec-grub-sysconfig">
    <title>Die Datei <filename>/etc/sysconfig/bootloader</filename></title><indexterm> <primary>GRUB </primary> <secondary>sysconfig/bootloader</secondary></indexterm>
    <para>
     Diese Konfigurationsdatei wird nur bei der Konfiguration des Bootloaders mit YaST und bei jeder Installation eines neuen Kernels verwendet. Sie wird von der Perl Bootloader-Bibliothek evaluiert, die die Bootloader-Konfigurationsdatei (z. B. <filename>/boot/grub/menu.lst</filename> für GRUB) entsprechend bearbeitet. <filename>/etc/sysconfig/bootloader</filename> ist keine GRUB-spezifische Konfigurationsdatei; die Werte dieser Datei gelten für alle Bootloader, die unter <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> installiert sind.
@@ -542,9 +550,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-password">
+  <section xml:id="sec-grub-password">
    <title>Festlegen eines Bootpassworts</title><indexterm> <primary>GRUB </primary> <secondary>Bootpasswort</secondary></indexterm>
    <para>
     GRUB unterstützt schon vor dem Booten des Betriebssystems den Zugriff auf Dateisysteme. Dies bedeutet, dass Benutzer ohne root-Berechtigungen auf Dateien des Linux-Systems zugreifen können, auf die sie nach dem Booten keinen Zugriff haben. Um diese Zugriffe oder das Booten bestimmter Betriebssysteme zu verhindern, können Sie ein Bootpasswort festlegen.
@@ -559,7 +567,7 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     Legen Sie als Benutzer <literal>root</literal> das Bootpasswort wie folgt fest:
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       Verschlüsseln Sie an der root-Eingabeaufforderung das Passwort mithilfe von grub-md5-crypt:
      </para>
@@ -568,7 +576,7 @@ Password: ****
 Retype password: ****
 Encrypted: $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Fügen Sie die verschlüsselte Zeichenkette in den globalen Abschnitt der Datei <filename>menu.lst</filename> ein:
      </para>
@@ -581,7 +589,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
       Jetzt können GRUB-Befehle in der Boot-Eingabeaufforderung nur nach Drücken der Taste <keycap>P</keycap> und der Eingabe des Passworts ausgeführt werden. Benutzer können jedoch über das Bootmenü weiterhin alle Betriebssysteme booten.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Um zu verhindern, dass ein oder mehrere Betriebssysteme über das Bootmenü gebootet werden, fügen Sie den Eintrag <literal>lock</literal> zu allen Abschnitten in <filename>menu.lst</filename> hinzu, die ohne Eingabe eines Passworts nicht gebootet werden sollen. Beispiel:
      </para>
@@ -598,11 +606,11 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_yast_i.xml" parse="xml"/>
- <sect1 id="sec-grub-entfernen">
+ <xi:include href="grub_yast_i.xml" parse="xml"/>
+ <section xml:id="sec-grub-entfernen">
   <title>Deinstallieren des Linux-Bootloaders</title><indexterm> <primary>Deinstallieren</primary> <secondary>GRUB</secondary></indexterm><indexterm> <primary>Deinstallieren</primary> <secondary>Linux</secondary></indexterm><indexterm> <primary>GRUB</primary> <secondary>Deinstallieren</secondary></indexterm><indexterm> <primary>Linux</primary> <secondary>Deinstallieren</secondary></indexterm>
 
   <para>
@@ -612,9 +620,9 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
   <para>
    Zum Deinstallieren von GRUB starten Sie YaST und klicken Sie auf <menuchoice> <guimenu>System</guimenu> <guimenu>Bootloader</guimenu> </menuchoice>, um das Bootloader-Modul zu starten. Wählen Sie <menuchoice> <guimenu>Andere</guimenu> <guimenu>MBR von Festplatte wiederherstellen</guimenu> </menuchoice> aus und bestätigen Sie mit <guimenu>Ja, neu schreiben</guimenu>.
   </para>
- </sect1>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_bootcd_i.xml" parse="xml"/>
- <sect1 id="sec-boot-screen">
+ </section>
+ <xi:include href="grub_bootcd_i.xml" parse="xml"/>
+ <section xml:id="sec-boot-screen">
   <title>Der grafische SUSE-Bildschirm</title><indexterm> <primary>Booten</primary> <secondary>Grafisch</secondary> </indexterm> <indexterm> <primary>Konsolen</primary> <secondary>Grafische </secondary> </indexterm>
 
   <para>
@@ -653,12 +661,12 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-grub-probs">
+ </section>
+ <section xml:id="sec-grub-probs">
   <title>Fehlersuche</title><indexterm> <primary>GRUB</primary> <secondary>Fehlerbehebung</secondary></indexterm>
 
   <para>
-   In diesem Abschnitt werden einige der Probleme, die beim Booten mit GRUB auftreten können, sowie deren Lösungen behandelt. Einige der Probleme werden in den Artikeln in der <phrase os="sled;sles">Support-Datenbank unter <ulink url="http://www.suse.com/support"/></phrase> beschrieben. Verwenden Sie das Dialogfeld „Suche“, um nach Schlüsselwörtern wie <emphasis>GRUB</emphasis>, <emphasis>boot</emphasis> und <emphasis>Bootloader</emphasis> zu suchen.
+   In diesem Abschnitt werden einige der Probleme, die beim Booten mit GRUB auftreten können, sowie deren Lösungen behandelt. Einige der Probleme werden in den Artikeln in der <phrase os="sled;sles">Support-Datenbank unter <link xlink:href="http://www.suse.com/support"/></phrase> beschrieben. Verwenden Sie das Dialogfeld „Suche“, um nach Schlüsselwörtern wie <emphasis>GRUB</emphasis>, <emphasis>boot</emphasis> und <emphasis>Bootloader</emphasis> zu suchen.
   </para>
 
   <variablelist>
@@ -711,12 +719,12 @@ title windows
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-grub-info">
+ </section>
+ <section xml:id="sec-grub-info">
   <title>Weiterführende Informationen</title>
 
   <para>
-   Umfassende Informationen zu GRUB finden Sie unter <ulink url="http://www.gnu.org/software/grub/"/>. Ausführliche Informationen finden Sie auch auf der Infoseite für den Befehl <command>grub</command>. <phrase os="sles;sled">Weitere Informationen zu bestimmten Themen erhalten Sie auch, wenn Sie <quote>GRUB </quote> in der Suchfunktion für technische Informationen unter <ulink url="http://www.novell.com/support"/> als Suchwort eingeben.</phrase>
+   Umfassende Informationen zu GRUB finden Sie unter <link xlink:href="http://www.gnu.org/software/grub/"/>. Ausführliche Informationen finden Sie auch auf der Infoseite für den Befehl <command>grub</command>. <phrase os="sles;sled">Weitere Informationen zu bestimmten Themen erhalten Sie auch, wenn Sie <quote>GRUB </quote> in der Suchfunktion für technische Informationen unter <link xlink:href="http://www.novell.com/support"/> als Suchwort eingeben.</phrase>
   </para>
- </sect1>
+ </section>
 </chapter>
