@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="snapper.xml" id="cha-snapper">
- <title>Instantâneos/Rollback com o Snapper</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="snapper.xml" xml:id="cha-snapper"><title>Instantâneos/Rollback com o Snapper</title><info><abstract>
   <para>
    Criar instantâneos do sistema de arquivos com a funcionalidade de fazer rollbacks no Linux era um recurso bastante solicitado no passado. O Snapper, em conjunto com o sistema de arquivos <literal>Btrfs</literal> ou os volumes LVM com aprovisionamento dinâmico, agora cumpre esse papel.
   </para>
@@ -21,15 +27,17 @@ Please see LICENSE.txt for this document's license.
   <para>
    Por padrão, o Snapper e o <literal>Btrfs</literal> no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> são configurados para atuar como uma <quote>ferramenta de desfazer</quote> mudanças no sistema feitas com o YaST e o zypper. Antes e após a execução de um módulo do YaST ou do zypper, um instantâneo é criado. O Snapper permite comparar os dois instantâneos e dispõe de meios para reverter as diferenças entre ambos. As ferramentas também oferecem backups do sistema criando instantâneos a cada hora dos subvolumes do sistema.
   </para>
- </abstract>
- <sect1 id="sec-snapper-requirements">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-snapper-requirements">
   <title>Requisitos</title>
 
   <para>
    Como o <literal>Btrfs</literal> é o único sistema de arquivos no <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> que suporta instantâneos, ele é necessário em todas as partições ou subvolumes dos quais você deseja criar <quote>instantâneos</quote>.
   </para>
 
-  <sect2 id="sec-snapper-requires-diskspace">
+  <section xml:id="sec-snapper-requires-diskspace">
    <title>Instantâneos e espaço em disco</title>
    <para>
     Quando um instantâneo é criado, tanto o instantâneo quanto o original apontam para os mesmos blocos no sistema de arquivos. Por isso, o instantâneo inicialmente não ocupa espaço adicional no disco. Se os dados do sistema de arquivos original forem modificados, os blocos dos dados modificados serão copiados, enquanto os blocos dos dados antigos serão mantidos no instantâneo. Portanto, o instantâneo ocupa a mesma quantidade de espaço que os dados modificados. Ao longo do tempo, a quantidade de espaço alocada por um instantâneo cresce constantemente. Como consequência, a exclusão de arquivos do sistema de arquivos <literal>Btrfs</literal> que contém instantâneos pode <emphasis>não</emphasis> liberar espaço em disco!
@@ -49,7 +57,7 @@ Please see LICENSE.txt for this document's license.
      Para liberar espaço em uma partição do <literal>Btrfs</literal> com instantâneos, é preciso apagar instantâneos desnecessários, e não arquivos. Os instantâneos antigos ocupam mais espaço do que os novos.
     </para>
     <para>
-     Como o <command>df</command> não mostra a utilização do disco correta nos sistemas de arquivos <literal>Btrfs</literal>, você precisa usar o comando <command>btrfs filesystem df <replaceable>PONTO_DE_MONTAGEM</replaceable></command>. A exibição da quantidade de espaço em disco alocada por um instantâneo não é suportada pelas ferramentas do <literal>Btrfs</literal>.
+     Como o <command>df</command> não mostra a utilização do disco correta nos sistemas de arquivos <literal>Btrfs</literal>, você precisa usar o comando <command>btrfs filesystem df</command> <replaceable>PONTO_DE_MONTAGEM</replaceable>. A exibição da quantidade de espaço em disco alocada por um instantâneo não é suportada pelas ferramentas do <literal>Btrfs</literal>.
     </para>
     <para>
      O upgrade de um service pack para outro resulta em instantâneos que ocupam muito espaço em disco nos subvolumes do sistema, porque muitos dados são modificados (atualizações de pacotes). É recomendada a exclusão manual desses instantâneos quando eles não são mais necessários.
@@ -58,9 +66,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     O Snapper também pode ser usado para criar e gerenciar instantâneos em volumes LVM com aprovisionamento dinâmico formatados com ext3 ou XFS (consulte a <xref linkend="sec-snapper-lvm"/>).
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-auto">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-auto">
   <title>Usando o Snapper para desfazer mudanças no sistema</title>
 
   <para>
@@ -71,7 +79,7 @@ Please see LICENSE.txt for this document's license.
    Por padrão, os instantâneos automáticos, conforme descrito anteriormente, são configurados para a partição raiz e seus subvolumes. Para disponibilizar os instantâneos para outras partições, como <filename>/home</filename>, é possível criar configurações personalizadas.
   </para>
 
-  <sect2 id="sec-snapper-yast">
+  <section xml:id="sec-snapper-yast">
    <title>Desfazendo mudanças do YaST e Zypper</title>
    <para>
     Se você configurar a partição raiz com o <literal>Btrfs</literal> durante a instalação, o Snapper, pré-configurado para fazer rollbacks das mudanças do YaST ou do Zypper, será instalado automaticamente. Sempre que você iniciar um módulo do YaST ou uma transação do Zypper, serão criados dois instantâneos: um <quote>pré-instantâneo</quote>, que captura o estado do sistema de arquivos antes do início do módulo, e um <quote>pós-instantâneo</quote> após o término do módulo.
@@ -94,19 +102,19 @@ Please see LICENSE.txt for this document's license.
      Por padrão, os últimos 100 instantâneos do YaST e do Zypper são mantidos. Se esse número for excedido, o(s) instantâneo(s) mais antigo(s) será(ão) apagado(s).
     </para>
    </note>
-   <procedure id="proc-snapper-yast-yast">
+   <procedure xml:id="proc-snapper-yast-yast">
     <title>Desfazendo mudanças usando o módulo <guimenu>Snapper</guimenu> do YaST</title>
-    <step performance="required">
+    <step>
      <para>
       Inicie o módulo <guimenu>Snapper</guimenu> pela seção <guimenu>Diversos</guimenu> no YaST ou digitando <command>yast2 snapper</command>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Confirme se a <guimenu>Configuração Atual</guimenu> está definida como <guimenu>root</guimenu>. Esse é sempre o caso, a não ser que você tenha adicionado manualmente configurações personalizadas do Snapper.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Escolha o par de pré e pós-instantâneos na lista. Ambos os pares de instantâneos do YaST e do Zypper são do tipo <guimenu>Pré e Pós</guimenu>. Os instantâneos do YaST são denominados <literal>yast <replaceable>nome_do_módulo</replaceable></literal> na <guimenu>coluna Descrição</guimenu>; os instantâneos do Zypper são denominados <literal>zypp(zypper)</literal>.
      </para>
@@ -121,7 +129,7 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Clique em <guimenu>Mostrar Mudanças</guimenu> para abrir a lista de arquivos que são diferentes entre os dois instantâneos. A imagem a seguir mostra uma lista dos arquivos que foram modificados após adicionarem o <systemitem class="username">testador</systemitem> do usuário.
      </para>
@@ -136,7 +144,7 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Revise a lista de arquivos. Para exibir a diferença (<quote>diff</quote>) entre a versão pré e pós de um arquivo, selecione-o na lista. As imagens a seguir mostram as mudanças em <filename>/etc/passwd</filename> após a adição do <systemitem class="username">testador</systemitem> do usuário.
      </para>
@@ -151,7 +159,7 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Para restaurar um conjunto de arquivos, selecione os arquivos ou diretórios relevantes marcando a respectiva caixa de seleção. Clique em <guimenu>Restaurar Selecionados</guimenu> e clique em <guimenu>Sim</guimenu> para confirmar a ação.
      </para>
@@ -170,11 +178,11 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-   <procedure id="proc-snapper-yast-cmdline">
+   <procedure xml:id="proc-snapper-yast-cmdline">
     <title>Desfazendo mudanças usando o comando <command>snapper</command></title>
-    <step performance="required">
+    <step>
      <para>
-      Obtenha uma lista dos instantâneos do YaST e do Zypper executando o comando <command>snapper list <option>-t pre-post</option></command>. Os instantâneos do YaST são denominados <literal>yast <replaceable>nome_do_módulo</replaceable></literal> na <guimenu>coluna Descrição</guimenu>; os instantâneos do Zypper são denominados <literal>zypp(zypper)</literal>.
+      Obtenha uma lista dos instantâneos do YaST e do Zypper executando o comando <command>snapper list</command> <option>-t pre-post</option>. Os instantâneos do YaST são denominados <literal>yast <replaceable>nome_do_módulo</replaceable></literal> na <guimenu>coluna Descrição</guimenu>; os instantâneos do Zypper são denominados <literal>zypp(zypper)</literal>.
      </para>
 <screen><?dbsuse-fo font-size="0.60em"?>
 
@@ -194,9 +202,9 @@ Please see LICENSE.txt for this document's license.
      108   | 109    | Fri Jan 13 13:01:06 2012 | Fri Jan 13 13:01:10 2012 | zypp(zypper)
      </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      Obtenha uma lista dos arquivos modificados de um par de instantâneos com <command>snapper status <replaceable>PRÉ</replaceable>..<replaceable>PÓS</replaceable></command>. Os arquivos com mudanças de conteúdo são marcados com <guimenu>c</guimenu>, os arquivos que foram adicionados são marcados com <guimenu>+</guimenu> e os arquivos apagados são marcados com <guimenu>-</guimenu>. O exemplo a seguir mostra o par de instantâneos da instalação do pacote <systemitem class="resource">ncftp</systemitem>.
+      Obtenha uma lista dos arquivos modificados de um par de instantâneos com <command>snapper status</command> <replaceable>PRÉ</replaceable>..<replaceable>PÓS</replaceable>. Os arquivos com mudanças de conteúdo são marcados com <guimenu>c</guimenu>, os arquivos que foram adicionados são marcados com <guimenu>+</guimenu> e os arquivos apagados são marcados com <guimenu>-</guimenu>. O exemplo a seguir mostra o par de instantâneos da instalação do pacote <systemitem class="resource">ncftp</systemitem>.
      </para>
 <screen>~ # snapper status 108..109
      +... /usr/bin/ncftp
@@ -222,9 +230,9 @@ Please see LICENSE.txt for this document's license.
      c... /var/lib/rpm/Sigmd5
      c... /var/lib/zypp/SoftLocks</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      Para exibir a diff de determinado arquivo, execute <command>snapper diff <replaceable>PRÉ</replaceable>..<replaceable>PÓS</replaceable> <replaceable>NOMEDOARQUIVO</replaceable></command>. Se você não especificar <replaceable>NOMEDOARQUIVO</replaceable>, será exibida a diff de todos os arquivos.
+      Para exibir a diff de determinado arquivo, execute <command>snapper diff</command> <replaceable>PRÉ</replaceable>..<replaceable>PÓS</replaceable> <replaceable>NOMEDOARQUIVO</replaceable>. Se você não especificar <replaceable>NOMEDOARQUIVO</replaceable>, será exibida a diff de todos os arquivos.
      </para>
 <screen>~ # snapper diff 108..109 /var/lib/zypp/SoftLocks
      --- /.snapshots/108/snapshot/var/lib/zypp/SoftLocks	2012-01-12 23:15:22.408009164 +0100
@@ -237,9 +245,9 @@ Please see LICENSE.txt for this document's license.
      +# zypp::SoftLocksFile generated Fri Jan 13 13:01:08 2012
      +##</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      Para restaurar um ou mais arquivos, execute <command>snapper -v undochange <replaceable>PRÉ</replaceable>..<replaceable>PÓS</replaceable> <replaceable>NOMESDOSARQUIVOS</replaceable></command>. Se você não especificar os <replaceable>NOMESDOSARQUIVOS</replaceable>, todos os arquivos serão restaurados.
+      Para restaurar um ou mais arquivos, execute <command>snapper -v undochange</command> <replaceable>PRÉ</replaceable>..<replaceable>PÓS</replaceable> <replaceable>NOMESDOSARQUIVOS</replaceable>. Se você não especificar os <replaceable>NOMESDOSARQUIVOS</replaceable>, todos os arquivos serão restaurados.
      </para>
 <screen>~ # snapper -v undochange 108..109
      create:0 modify:16 delete:21
@@ -270,9 +278,9 @@ Please see LICENSE.txt for this document's license.
      undoing change done</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-backup">
+  <section xml:id="sec-snapper-backup">
    <title>Usando o Snapper para restaurar arquivos dos backups por hora</title>
    <para>
     Além dos instantâneos do YaST e do Zypper, o Snapper cria instantâneos a cada hora da partição do sistema (<filename>/</filename>). É possível usar os instantâneos do backup para restaurar arquivos apagados ou modificados por engano sem meios de recuperação. Usando o recurso diff do Snapper, é possível também descobrir quais modificações foram feitas em determinado momento.
@@ -286,9 +294,9 @@ Please see LICENSE.txt for this document's license.
      Por padrão, o primeiro instantâneo dos últimos dez dias, meses e anos são mantidos. Para saber os detalhes, consulte <xref linkend="ex-snapper-config-timeline"/>.
     </para>
    </note>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-config">
+  <section xml:id="sec-snapper-config">
    <title>Criando e modificando as configurações do Snapper</title>
    <para>
     O comportamento do Snapper é definido em um arquivo de configuração específico de cada partição ou subvolume <literal>Btrfs</literal>. Esses arquivos de configuração residem em <filename>/etc/snapper/configs/</filename>. A configuração padrão instalada com o Snapper do diretório <filename>/</filename> é chamada <filename>root</filename>. Ela cria e gerencia os instantâneos do YaST e do Zypper, além do instantâneo de backup por hora do <filename>/</filename>.
@@ -297,13 +305,13 @@ Please see LICENSE.txt for this document's license.
     É possível criar suas próprias configurações para outras partições formatadas com <literal>Btrfs</literal> ou subvolumes existentes em uma partição <literal>Btrfs</literal>. No exemplo a seguir, nós definimos uma configuração do Snapper para backup dos dados do servidor Web que residem em uma partição separada formatada por <literal>Btrfs</literal> montada em <filename>/srv/www</filename>.
    </para>
    <para>
-    É possível usar o próprio <command>snapper</command> ou o módulo <guimenu>Snapper</guimenu> do YaST para restaurar arquivos desses instantâneos. No YaST, você precisa selecionar a sua <guimenu>Configuração Atual</guimenu> ao especificar sua configuração para o <command>snapper</command> com o switch global <option>-c</option> (ex. <command>snapper <option>-c myconfig</option> list</command>).
+    É possível usar o próprio <command>snapper</command> ou o módulo <guimenu>Snapper</guimenu> do YaST para restaurar arquivos desses instantâneos. No YaST, você precisa selecionar a sua <guimenu>Configuração Atual</guimenu> ao especificar sua configuração para o <command>snapper</command> com o switch global <option>-c</option> (ex. <command>snapper</command> <option>-c myconfig</option> list).
    </para>
    <para>
     Para criar uma nova configuração do Snapper, execute <command>snapper create-config</command>:
    </para>
-<screen>snapper -c www-data<co id="snapper-create-name"/> create-config
-   /srv/www<co id="snapper-create-volume"/></screen>
+<screen>snapper -c www-data<co xml:id="snapper-create-name"/> create-config
+   /srv/www<co xml:id="snapper-create-volume"/></screen>
    <calloutlist>
     <callout arearefs="snapper-create-name">
      <para>
@@ -327,7 +335,7 @@ Please see LICENSE.txt for this document's license.
     </para>
 <screen>snapper -c www-data create-config -t my_defaults /srv/www</screen>
    </tip>
-   <sect3 id="sec-snapper-config-modify">
+   <section xml:id="sec-snapper-config-modify">
     <title>Ajustando o arquivo de configuração</title>
     <para>
      Para ajustar o arquivo de configuração, modifique-o com um editor. Ele inclui os pares de chave/valor no formato de <literal><replaceable>chave</replaceable>=<replaceable>valor</replaceable></literal>. Só é possível mudar o <replaceable>valor</replaceable>.
@@ -418,7 +426,7 @@ Please see LICENSE.txt for this document's license.
        <para>
         Número de instantâneos para manter por hora, dia, mês, ano.
        </para>
-       <example id="ex-snapper-config-timeline">
+       <example xml:id="ex-snapper-config-timeline">
         <title>Exemplo de configuração de linha do tempo</title>
 <screen>TIMELINE_CREATE="yes"
         TIMELINE_CLEANUP="yes"
@@ -458,8 +466,8 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="sec-snapper-config-user">
+   </section>
+   <section xml:id="sec-snapper-config-user">
     <title>Usando o Snapper como usuário comum</title>
     <para>
      Por padrão, o Snapper só pode ser usado pelo <systemitem class="username">root</systemitem>. No entanto, há casos em que determinados grupos ou usuários precisam criar instantâneos ou desfazer mudanças revertendo um instantâneo:
@@ -489,24 +497,24 @@ Please see LICENSE.txt for this document's license.
      <para>
       Observe que todas as etapas deste procedimento devem ser executadas pelo <systemitem class="username">root</systemitem>.
      </para>
-     <step performance="required">
+     <step>
       <para>
        Se não houver um, crie uma configuração do Snapper para a partição ou o subvolume em que o usuário consiga utilizar o Snapper. Consulte a <xref linkend="sec-snapper-config"/> para obter instruções. Exemplo:
       </para>
 <screen>snapper --config web_data create /srv/www</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        O arquivo de configuração é criado em <filename>/etc/snapper/configs/<replaceable>NOME</replaceable></filename>, em que NOME é o valor que você especificou com <option>-c/--config</option> na etapa anterior (por exemplo, <filename>/etc/snapper/configs/web_data</filename>). Ajuste-o de acordo com as suas necessidades. Consulte a <xref linkend="sec-snapper-config-modify"/> para obter os detalhes.
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        Defina os valores de <envar>ALLOW_USERS</envar> e <envar>ALLOW_GROUPS</envar> para conceder permissões a usuários e grupos, respectivamente. Separe várias entradas com <keycap function="space"/>. Para conceder permissões ao usuário <systemitem class="username">www_admin</systemitem>; por exemplo, digite:
       </para>
 <screen>ALLOW_USERS="www_admin"</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        Conceda permissões de leitura e acesso ao diretório de instantâneos <replaceable>CAMINHO</replaceable>/.snapshots. <replaceable>CAMINHO</replaceable> deve ser substituído pelo subvolume especificado na primeira etapa deste procedimento. Exemplo:
       </para>
@@ -517,10 +525,10 @@ Please see LICENSE.txt for this document's license.
 <screen>www_admin:~ &gt; snapper -c web_data list</screen>
      </step>
     </procedure>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-snapper-disable">
+  <section xml:id="sec-snapper-disable">
    <title>Desabilitando instantâneos automáticos</title>
    <para>
     Se você configurou a partição raiz com <literal>Btrfs</literal> durante a instalação, o Snapper criará automaticamente instantâneos do sistema a cada hora, além de pré e pós-instantâneos das transações do YaST e do zypper. Cada uma dessas tarefas pode ser desabilitada da seguinte forma:
@@ -553,9 +561,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-manage">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-manage">
   <title>Criando e gerenciando instantâneos manualmente</title>
 
   <para>
@@ -563,10 +571,10 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <para>
-   Todas as operações do Snapper são executadas de acordo com uma configuração existente (consulte a <xref linkend="sec-snapper-config"/> para obter os detalhes). Você só pode criar instantâneo de partições ou volumes em que exista uma configuração. Por padrão, a configuração do sistema (<literal>root</literal>) é usada. Para criar ou gerenciar instantâneos com sua própria configuração, selecione-a de maneira clara. Use o menu suspenso <guimenu>Configuração Atual</guimenu> no YaST ou especifique <option>-c</option> na linha de comando (<command>snapper <option>-c</option> <replaceable>MINHACONFIG</replaceable> <replaceable>COMANDO</replaceable></command>).
+   Todas as operações do Snapper são executadas de acordo com uma configuração existente (consulte a <xref linkend="sec-snapper-config"/> para obter os detalhes). Você só pode criar instantâneo de partições ou volumes em que exista uma configuração. Por padrão, a configuração do sistema (<literal>root</literal>) é usada. Para criar ou gerenciar instantâneos com sua própria configuração, selecione-a de maneira clara. Use o menu suspenso <guimenu>Configuração Atual</guimenu> no YaST ou especifique <option>-c</option> na linha de comando (<command>snapper</command> <option>-c</option> <replaceable>MINHACONFIG</replaceable> <replaceable>COMANDO</replaceable>).
   </para>
 
-  <sect2 id="sec-snapper-manage-metadata">
+  <section xml:id="sec-snapper-manage-metadata">
    <title>Metadados de instantâneos</title>
    <para>
     Cada instantâneo consiste no próprio instantâneo e em alguns metadados. Ao criar um instantâneo, você também precisa especificar os metadados. A modificação de um instantâneo também altera seus metadados; não é possível modificar seu conteúdo. Os seguintes metadados estão disponíveis para cada instantâneo:
@@ -603,7 +611,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec-snapper-manage-metadata-type">
+   <section xml:id="sec-snapper-manage-metadata-type">
     <title>Tipos de instantâneos</title>
     <para>
      O Snapper reconhece três tipos diferentes de instantâneos: pre (pré), post (pós) e single (único). Eles são iguais fisicamente, mas o Snapper trabalha com eles de forma diferente.
@@ -636,8 +644,8 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="sec-snapper-manage-metadata-cleanup">
+   </section>
+   <section xml:id="sec-snapper-manage-metadata-cleanup">
     <title>Algoritmos de limpeza</title>
     <para>
      O Snapper oferece três algoritmos para limpeza de instantâneos antigos. Os algoritmos são executados em uma tarefa cron diária. A frequência de limpeza é definida na configuração do Snapper para a partição ou o subvolume (consulte a <xref linkend="sec-snapper-config-modify"/> para obter os detalhes).
@@ -668,10 +676,10 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-snapper-manage-create">
+  <section xml:id="sec-snapper-manage-create">
    <title>Criando instantâneos</title>
    <para>
     A criação do instantâneo é feita executando o comando <command>snapper create</command> ou clicando em <guimenu>Criar</guimenu> no módulo <guimenu>Snapper</guimenu> do YaST. Os exemplos a seguir explicam como criar instantâneos da linha de comando. Eles são fáceis de adotar ao usar a interface do YaST.
@@ -685,7 +693,7 @@ Please see LICENSE.txt for this document's license.
    <para/>
    <variablelist>
     <varlistentry>
-     <term><command>snapper create <option>--description "Snapshot for week 2 2013"</option></command>
+     <term><command>snapper create</command> <option>--description "Snapshot for week 2 2013"</option>
      </term>
      <listitem>
       <para>
@@ -694,7 +702,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> create <option>--description "Cleanup in ~tux"</option></command>
+     <term><command>snapper</command> <option>--config home</option> create <option>--description "Cleanup in ~tux"</option>
      </term>
      <listitem>
       <para>
@@ -703,7 +711,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> create <option>--description "Daily data backup" --cleanup-algorithm timeline</option></command>
+     <term><command>snapper</command> <option>--config home</option> create <option>--description "Daily data backup" --cleanup-algorithm timeline</option>
      </term>
      <listitem>
       <para>
@@ -712,7 +720,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--type pre</option><option>--print-number</option><option>--description "Before the Apache config cleanup"</option></command>
+     <term><command>snapper create</command> <option>--type pre</option><option>--print-number</option><option>--description "Before the Apache config cleanup"</option>
      </term>
      <listitem>
       <para>
@@ -721,7 +729,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--type post</option><option>--pre-number 30</option><option>--description "After the Apache config cleanup"</option></command>
+     <term><command>snapper create</command> <option>--type post</option><option>--pre-number 30</option><option>--description "After the Apache config cleanup"</option>
      </term>
      <listitem>
       <para>
@@ -730,7 +738,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--command <replaceable>COMANDO</replaceable></option><option>--description "Before and after COMANDO"</option></command>
+     <term><command>snapper create</command> <option>--command <replaceable>COMANDO</replaceable></option><option>--description "Before and after COMANDO"</option>
      </term>
      <listitem>
       <para>
@@ -739,22 +747,22 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-manage-modify">
+  <section xml:id="sec-snapper-manage-modify">
    <title>Modificando os metadados do instantâneo</title>
    <para>
     O Snapper permite modificar a descrição, o algoritmo de limpeza e os dados de usuário de um instantâneo. Todos os outros metadados não podem ser mudados. Os exemplos a seguir explicam como modificar instantâneos da linha de comando. Eles são fáceis de adotar ao usar a interface do YaST.
    </para>
    <para>
-    Para modificar um instantâneo na linha de comando, você precisa saber o número dele. Use <command>snapper <option>list</option></command> para exibir todos os instantâneos e seus números.
+    Para modificar um instantâneo na linha de comando, você precisa saber o número dele. Use <command>snapper</command> <option>list</option> para exibir todos os instantâneos e seus números.
    </para>
    <para>
     O módulo <guimenu>Snapper</guimenu> do YaST já lista todos os instantâneos. Escolha um na lista e clique em <guimenu>Modificar</guimenu>.
    </para>
    <variablelist>
     <varlistentry>
-     <term><command>snapper modify <option>--cleanup-algorithm "timeline"</option> 10</command>
+     <term><command>snapper modify</command> <option>--cleanup-algorithm "timeline"</option> 10
      </term>
      <listitem>
       <para>
@@ -763,7 +771,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> modify <option>--description "daily backup" -cleanup-algorithm "timeline"</option>120</command>
+     <term><command>snapper</command> <option>--config home</option> modify <option>--description "daily backup" -cleanup-algorithm "timeline"</option>120
      </term>
      <listitem>
       <para>
@@ -772,15 +780,15 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-manage-delete">
+  <section xml:id="sec-snapper-manage-delete">
    <title>Apagando instantâneos</title>
    <para>
     Para apagar um instantâneo com o módulo <guimenu>Snapper</guimenu> do YaST, escolha-o na lista e clique em <guimenu>Apagar</guimenu>.
    </para>
    <para>
-    Para apagar um instantâneo com a ferramenta de linha de comando, você precisa saber o número dele. Para saber, execute <command>snapper list</command>. Para apagar um instantâneo, execute <command>snapper delete <replaceable>NÚMERO</replaceable></command>.
+    Para apagar um instantâneo com a ferramenta de linha de comando, você precisa saber o número dele. Para saber, execute <command>snapper list</command>. Para apagar um instantâneo, execute <command>snapper delete</command> <replaceable>NÚMERO</replaceable>.
    </para>
    <tip>
     <title>Apagando pares de instantâneos</title>
@@ -799,7 +807,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>-c home</option> delete 89 90</command>
+     <term><command>snapper</command> <option>-c home</option> delete 89 90
      </term>
      <listitem>
       <para>
@@ -817,30 +825,30 @@ Please see LICENSE.txt for this document's license.
    <para>
     Os instantâneos também são automaticamente apagados por uma tarefa cron diária. Consulte a <xref linkend="sec-snapper-manage-metadata-cleanup"/> para obter os detalhes.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-limits">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-limits">
   <title>Limitações</title>
 
   <para>
    Apesar de estarem prontos para produção, o <literal>Btrfs</literal> e o Snapper estão em constante desenvolvimento. As seguintes limitações existem no momento. Há planos de se resolver estes problemas em versões futuras.
   </para>
 
-  <sect2 id="sec-snapper-limits-consistency">
+  <section xml:id="sec-snapper-limits-consistency">
    <title>Consistência de dados</title>
    <para>
     Não existe um mecanismo que garanta a consistência dos dados na hora de criar um instantâneo. Sempre que um arquivo é gravado (ex. um banco de dados) ao mesmo tempo que um instantâneo é criado, o resultado é um arquivo danificado ou gravado parcialmente. A restauração desse arquivo causa problemas. Portanto, é altamente recomendável <emphasis>sempre</emphasis> revisar com cuidado a lista de arquivos modificados e suas diffs. Apenas restaure arquivos que realmente tenham que fazer parte da ação que deseja voltar.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-limits-user">
+  <section xml:id="sec-snapper-limits-user">
    <title>Revertendo adições de usuário</title>
    <para>
     Normalmente, <filename>/home</filename> reside em uma partição separada. Essa partição separada não faz parte da configuração padrão de rollbacks do YaST. Portanto, a partição pessoal do usuário não será apagada durante a reversão de uma adição de usuário com o Snapper. É altamente recomendável usar a ferramenta do YaST <guimenu>Gerenciamento de Usuários e Grupos</guimenu> para remover usuários.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-limits-kernel">
+  <section xml:id="sec-snapper-limits-kernel">
    <title>Nenhuma mudança no rollback em <filename>/boot</filename> e no carregador de boot</title>
    <para>
     O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> não pode ser inicializado de partições <literal>Btrfs</literal>. Portanto, uma partição separada para <filename>/boot</filename> é criada durante a instalação ao usar o <literal>Btrfs</literal> para a partição do sistema. Como <filename>/boot</filename> não suporta instantâneos, as seguintes restrições se aplicam aos rollbacks do YaST/zypper:
@@ -863,9 +871,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-faqs">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-faqs">
   <title>Perguntas mais frequentes</title>
 
   <variablelist>
@@ -930,8 +938,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-snapper-lvm">
+ </section>
+ <section xml:id="sec-snapper-lvm">
   <title>Usando o Snapper em volumes LVM com aprovisionamento dinâmico</title>
 
   <para>
@@ -947,5 +955,5 @@ Please see LICENSE.txt for this document's license.
   <para>
    É possível ajustar essa configuração de acordo com as suas necessidades conforme descrito na <xref linkend="sec-snapper-config-modify"/>. Agora, é possível usar o Snapper para criar e gerenciar instantâneos, restaurar arquivos e desfazer mudanças, conforme descrito anteriormente.
   </para>
- </sect1>
+ </section>
 </chapter>

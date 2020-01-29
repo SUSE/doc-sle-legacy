@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="rpm.xml" id="sec-rpm">
- <title>RPM — o gerenciador de pacotes</title><indexterm id="idx-RPM" class="startofrange"> <primary>RPM</primary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>RPMs</secondary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>gerenciador de pacotes</secondary> </indexterm> <indexterm> <primary>comandos</primary> <secondary>rpm</secondary> </indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="rpm.xml" xml:id="sec-rpm">
+ <title>RPM — o gerenciador de pacotes</title><indexterm xml:id="idx-RPM" class="startofrange"> <primary>RPM</primary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>RPMs</secondary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>gerenciador de pacotes</secondary> </indexterm> <indexterm> <primary>comandos</primary> <secondary>rpm</secondary> </indexterm>
 
  <para>
   O RPM (gerenciador de pacotes RPM) é usado para gerenciar pacotes de software. Seus principais comandos são <command>rpm</command> e <command>rpmbuild</command>. O banco de dados RPM avançado pode ser consultado pelos usuários, administradores de sistema e construtores de pacotes para obtenção de informações detalhadas sobre o software instalado.
@@ -29,20 +37,20 @@ Please see LICENSE.txt for this document's license.
   </para>
  </tip>
 
- <sect2 id="sec-rpm-package-auth">
+ <section xml:id="sec-rpm-package-auth">
   <title>Verificando a autenticidade do pacote</title><indexterm> <primary>RPM</primary> <secondary>verificando</secondary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>verificando</secondary> </indexterm>
   <para>
-   Os pacotes RPM têm uma assinatura GPG. Para verificar a assinatura de um pacote RPM, use o comando <command>rpm --checksig <replaceable>pacote</replaceable>-1.2.3.rpm</command> para determinar se o pacote vem da Novell/SUSE ou de outra empresa confiável. Isso é especialmente recomendado para pacotes de atualização da Internet. 
+   Os pacotes RPM têm uma assinatura GPG. Para verificar a assinatura de um pacote RPM, use o comando <command>rpm --checksig </command> <replaceable>pacote</replaceable>-1.2.3.rpm para determinar se o pacote vem da Novell/SUSE ou de outra empresa confiável. Isso é especialmente recomendado para pacotes de atualização da Internet. 
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-packages-manage">
+ <section xml:id="sec-rpm-packages-manage">
   <title>Gerenciando pacotes: instalar, atualizar e desinstalar</title><indexterm> <primary>instalando</primary> <secondary>pacotes</secondary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>instalando</secondary> </indexterm> <indexterm> <primary>pacotes</primary> <secondary>desinstalando</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmorig</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmsave</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmnew</secondary> </indexterm>
   <para>
-   Normalmente, a instalação de um arquivo RPM é bem simples: <command>rpm -i <replaceable>pacote</replaceable>.rpm</command>. Com esse comando, o pacote é instalado, mas apenas quando suas dependências são atendidas e quando não há conflitos com outros pacotes. Com uma mensagem de erro, o <command>rpm</command> solicita os pacotes que devem ser instalados para atender a requisitos de dependência. No segundo plano, o banco de dados RPM garante que não haja conflitos, pois um arquivo específico pode pertencer somente a um pacote. Ao escolher opções diferentes, você pode forçar o <command>rpm</command> a ignorar esses padrões, mas isso é somente para especialistas. Caso contrário, você se arrisca a comprometer a integridade do sistema e, possivelmente, ameaça a capacidade de atualização do sistema.
+   Normalmente, a instalação de um arquivo RPM é bem simples: <command>rpm -i</command> <replaceable>pacote</replaceable>.rpm. Com esse comando, o pacote é instalado, mas apenas quando suas dependências são atendidas e quando não há conflitos com outros pacotes. Com uma mensagem de erro, o <command>rpm</command> solicita os pacotes que devem ser instalados para atender a requisitos de dependência. No segundo plano, o banco de dados RPM garante que não haja conflitos, pois um arquivo específico pode pertencer somente a um pacote. Ao escolher opções diferentes, você pode forçar o <command>rpm</command> a ignorar esses padrões, mas isso é somente para especialistas. Caso contrário, você se arrisca a comprometer a integridade do sistema e, possivelmente, ameaça a capacidade de atualização do sistema.
   </para><indexterm> <primary>RPM</primary> <secondary>dependências</secondary> </indexterm>
   <para>
-   As opções <option>-U</option> ou <option>--upgrade</option> e <option>-F</option> ou <option>--freshen</option> podem ser usadas para atualizar um pacote (por exemplo, <command>rpm -F <replaceable>pacote</replaceable>.rpm</command>). Esse comando remove os arquivos da versão antiga e instala os novos arquivos imediatamente. A diferença entre as duas versões é que o <option>-U</option> instala pacotes que não existiam no sistema anteriormente, mas <option>-F</option> atualiza somente pacotes previamente instalados. Durante a atualização, o <command>rpm</command> atualiza arquivos de configuração cuidadosamente com a seguinte estratégia:
+   As opções <option>-U</option> ou <option>--upgrade</option> e <option>-F</option> ou <option>--freshen</option> podem ser usadas para atualizar um pacote (por exemplo, <command>rpm -F</command> <replaceable>pacote</replaceable>.rpm). Esse comando remove os arquivos da versão antiga e instala os novos arquivos imediatamente. A diferença entre as duas versões é que o <option>-U</option> instala pacotes que não existiam no sistema anteriormente, mas <option>-F</option> atualiza somente pacotes previamente instalados. Durante a atualização, o <command>rpm</command> atualiza arquivos de configuração cuidadosamente com a seguinte estratégia:
   </para><indexterm> <primary>RPM</primary> <secondary>atualizando</secondary> </indexterm>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
@@ -71,11 +79,11 @@ Please see LICENSE.txt for this document's license.
    O switch <option>-U</option> <emphasis>não</emphasis> é somente um equivalente para a desinstalação com a opção <option>-e</option> e a instalação com a opção <option>-i</option>. Use <option>-U</option> sempre que possível.
   </para>
   <para>
-   Para remover um pacote, digite <command>rpm -e <replaceable>pacote</replaceable></command>. <command>O rpm</command>, que só apaga o pacote quando não há dependências não resolvidas. É teoricamente impossível apagar Tcl/Tk, por exemplo, enquanto outro aplicativo exigir sua existência. Mesmo nesse caso, o RPM pede ajuda do banco de dados. Se, por qualquer motivo, a exclusão for impossível (mesmo que não exista <emphasis>nenhuma</emphasis> dependência adicional), talvez seja útil reconstruir o banco de dados RPM usando a opção <option>--rebuilddb</option>.
+   Para remover um pacote, digite <command>rpm -e</command> <replaceable>pacote</replaceable>. <command>O rpm</command>, que só apaga o pacote quando não há dependências não resolvidas. É teoricamente impossível apagar Tcl/Tk, por exemplo, enquanto outro aplicativo exigir sua existência. Mesmo nesse caso, o RPM pede ajuda do banco de dados. Se, por qualquer motivo, a exclusão for impossível (mesmo que não exista <emphasis>nenhuma</emphasis> dependência adicional), talvez seja útil reconstruir o banco de dados RPM usando a opção <option>--rebuilddb</option>.
   </para><indexterm> <primary>RPM</primary> <secondary>desinstalando</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>banco de dados</secondary> <tertiary>reconstruindo</tertiary> </indexterm>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-patches">
+ <section xml:id="sec-rpm-patches">
   <title>RPM e patches</title><indexterm> <primary>RPM</primary> <secondary>patches</secondary> </indexterm>
   <para>
    Para garantir a segurança operacional de um sistema, pacotes de atualização devem ser instalados no sistema periodicamente. Anteriormente, um erro em um pacote só poderia ser eliminado com a substituição de todo o pacote. Pacotes grandes com bugs em pequenos arquivos podem resultar facilmente nesse cenário. Porém, o RPM do SUSE oferece um recurso que permite a instalação de patches em pacotes.
@@ -137,7 +145,7 @@ pine = 4.44-207</screen>
     </term>
     <listitem>
      <para>
-      É possível exibir uma lista de todos os patches instalados no sistema com o comando <command>rpm <option>-qPa</option></command>. Se somente um patch for instalado em um novo sistema (como no exemplo), a lista será exibida como a seguir:
+      É possível exibir uma lista de todos os patches instalados no sistema com o comando <command>rpm</command> <option>-qPa</option>. Se somente um patch for instalado em um novo sistema (como no exemplo), a lista será exibida como a seguir:
      </para>
 <screen>rpm -qPa
 pine-4.44-224</screen>
@@ -158,9 +166,9 @@ pine = 4.44-188</screen>
     Para que o tamanho do download das atualizações seja o menor possível, as atualizações oficiais para o <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> não são fornecidas como RPMs de Patch, mas sim como pacotes RPM Delta. Para obter os detalhes, consulte a <xref linkend="sec-rpm-delta"/>.
    </para>
   </note>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-delta">
+ <section xml:id="sec-rpm-delta">
   <title>Pacotes RPM Delta</title><indexterm> <primary>RPM</primary> <secondary>deltarpm</secondary> </indexterm> <indexterm> <primary>deltarpm</primary> </indexterm>
   <para>
    Os pacotes RPM Delta possuem uma diferença entre uma versão nova e antiga de um pacote RPM. Aplicar um RPM delta a um RPM antigo resulta em um RPM completamente novo. Não é necessário ter uma cópia do RPM antigo, pois um RPM delta também pode funcionar com um RPM instalado. Os pacotes RPM delta têm tamanho ainda menor que os RPMs com patch, o que é uma vantagem durante a transferência de pacotes de atualização na Internet. A desvantagem é que operações de atualização que envolvem RPMs delta consomem consideravelmente mais ciclos de CPU do que as operações com RPMs com patch ou simples.
@@ -186,14 +194,14 @@ writedeltarpm new.rpm delta info new.delta.rpm</screen>
   <para>
    Consulte <filename>/usr/share/doc/packages/deltarpm/README</filename> para obter os detalhes técnicos.
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-query">
+ <section xml:id="sec-rpm-query">
   <title>Consultas de RPM</title><indexterm> <primary>RPM</primary> <secondary>consultas</secondary> </indexterm>
   <para>
    Com a opção <option>-q</option>, o <command>rpm</command> inicia consultas, permitindo a inspeção de um arquivo RPM (adicionando-se a opção <option>-p</option>) e também a consulta ao banco de dados RPM de pacotes instalados. Vários switches estão disponíveis para especificar o tipo de informação necessária. Consulte a <xref linkend="tab-rpm-query"/>.
   </para>
-  <table id="tab-rpm-query">
+  <table xml:id="tab-rpm-query">
    <title>Opções mais importantes de consulta de RPM</title>
    <tgroup cols="2">
     <tbody>
@@ -323,7 +331,7 @@ writedeltarpm new.rpm delta info new.delta.rpm</screen>
   <para>
    Por exemplo, o comando <command>rpm -q -i wget</command> exibe as informações mostradas no <xref linkend="aus-update-rpm-i"/>.
   </para>
-  <example id="aus-update-rpm-i">
+  <example xml:id="aus-update-rpm-i">
    <title>rpm -q -i wget</title>
 <screen>Name        : wget                         Relocations: (not relocatable)
 Version     : 1.11.4                            Vendor: openSUSE
@@ -352,7 +360,7 @@ wget-1.11.4-11.18.x86_64</screen>
   <para>
    Se somente parte do nome de arquivo for conhecida, use um script de shell conforme mostrado no <xref linkend="dat-rpm-search"/>. Passe o nome de arquivo parcial para o script mostrado como um parâmetro ao executá-lo.
   </para>
-  <example id="dat-rpm-search">
+  <example xml:id="dat-rpm-search">
    <title>Script para pesquisar pacotes</title>
 <screen>#! /bin/sh
 for i in $(rpm -q -a -l | grep $1); do
@@ -368,7 +376,7 @@ done</screen>
   <para>
    Com a ajuda do banco de dados RPM instalado, é possível realizar verificações. Inicie as verificações com <option>-V</option>, <option>-y</option> ou <option>--verify</option>. Com essa opção, o <command>rpm</command> mostra todos os arquivos em um pacote que foram modificados desde a instalação. O <command>rpm</command> usa oito símbolos de caracteres para fornecer algumas dicas sobre as seguintes mudanças:
   </para><indexterm> <primary>RPM</primary> <secondary>verificar</secondary> </indexterm>
-  <table id="tab-rpm-verify">
+  <table xml:id="tab-rpm-verify">
    <title>Opções de verificação do RPM</title>
    <tgroup cols="2">
     <tbody>
@@ -479,9 +487,9 @@ S.5....T c /etc/wgetrc</screen>
   <para>
    Os arquivos do banco de dados RPM são colocados em <filename>/var/lib/rpm</filename>. Se a partição <filename>/usr</filename> tiver o tamanho de 1 GB, esse banco de dados poderá ocupar praticamente 30 MB, especialmente após uma atualização completa. Se o banco de dados for maior do que o esperado, será útil reconstruir o banco de dados com a opção <option>--rebuilddb</option>. Antes disso, faça um backup do banco de dados antigo. O script <command>cron</command> <command>cron.daily</command> faz cópias diárias do banco de dados (compactado com gzip) e as armazena em <filename>/var/adm/backup/rpmdb</filename>. O número de cópias é controlado pela variável <systemitem>MAX_RPMDB_BACKUPS</systemitem> (padrão: <option>5</option>) em <filename>/etc/sysconfig/backup</filename>. O tamanho de um único backup é de aproximadamente 1 MB para 1 GB em <filename>/usr</filename>.
   </para><indexterm> <primary>RPM</primary> <secondary>banco de dados</secondary> <tertiary>reconstruindo</tertiary> </indexterm>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-sources">
+ <section xml:id="sec-rpm-sources">
   <title>Instalando e compilando pacotes de fonte</title><indexterm> <primary>pacotes</primary> <secondary>compilando</secondary> </indexterm> <indexterm> <primary>fonte</primary> <secondary>compilando</secondary> </indexterm> <indexterm> <primary>software</primary> <secondary>compilando</secondary> </indexterm> <indexterm> <primary>spm</primary> </indexterm>
   <para>
    Todos os pacotes de fonte têm a extensão <filename>.src.rpm</filename> (RPM de fonte).
@@ -556,7 +564,7 @@ S.5....T c /etc/wgetrc</screen>
 /usr/src/packages/SOURCES/wgetrc.patch
 /usr/src/packages/SPECS/wget.spec</screen>
   <para>
-   <command>rpmbuild -b <replaceable>X</replaceable> /usr/src/packages/SPECS/wget.spec</command> inicia a compilação. <replaceable>X</replaceable> é um curinga para vários estágios do processo de construção (consulte a saída de <option>--help</option> ou a documentação do RPM para obter os detalhes). Veja a seguir uma breve explicação:
+   <command>rpmbuild -b</command> <replaceable>X</replaceable> /usr/src/packages/SPECS/wget.spec inicia a compilação. <replaceable>X</replaceable> é um curinga para vários estágios do processo de construção (consulte a saída de <option>--help</option> ou a documentação do RPM para obter os detalhes). Veja a seguir uma breve explicação:
   </para>
   <variablelist>
    <varlistentry>
@@ -615,14 +623,14 @@ S.5....T c /etc/wgetrc</screen>
    </varlistentry>
   </variablelist>
   <para>
-   O RPM binário criado agora pode ser instalado com <command>rpm <option>-i</option></command> ou, de preferência, com <command>rpm <option>-U</option></command>. A instalação com <command>rpm</command> faz com que ele apareça no banco de dados RPM.
+   O RPM binário criado agora pode ser instalado com <command>rpm</command> <option>-i</option> ou, de preferência, com <command>rpm</command> <option>-U</option>. A instalação com <command>rpm</command> faz com que ele apareça no banco de dados RPM.
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-build">
+ <section xml:id="sec-rpm-build">
   <title>Compilando pacotes RPM com build</title><indexterm> <primary>pacotes</primary> <secondary>compilando com build</secondary> </indexterm>
   <para>
-   O perigo de vários pacotes é que arquivos indesejados são adicionados ao sistema em execução durante o processo de construção. Para evitar isso, use <systemitem>build</systemitem>, que cria um ambiente definido para construção do pacote. Para estabelecer esse ambiente chroot, o script <command>build</command> deve ser fornecido com uma árvore de pacote completa. Essa árvore pode ser disponibilizada no disco rígido, por meio do NFS ou DVD. Defina a posição com <command>build --rpms <replaceable>diretório</replaceable></command>. Diferentemente do <command>rpm</command>, o comando <command>build</command> procura o arquivo <filename>.spec</filename> no diretório de fontes. Para construir o <filename>wget</filename> (como no exemplo acima) com o DVD montado no sistema em <filename>/media/dvd</filename>, use o seguinte comando como <systemitem class="username">root</systemitem>:
+   O perigo de vários pacotes é que arquivos indesejados são adicionados ao sistema em execução durante o processo de construção. Para evitar isso, use <systemitem>build</systemitem>, que cria um ambiente definido para construção do pacote. Para estabelecer esse ambiente chroot, o script <command>build</command> deve ser fornecido com uma árvore de pacote completa. Essa árvore pode ser disponibilizada no disco rígido, por meio do NFS ou DVD. Defina a posição com <command>build --rpms</command> <replaceable>diretório</replaceable>. Diferentemente do <command>rpm</command>, o comando <command>build</command> procura o arquivo <filename>.spec</filename> no diretório de fontes. Para construir o <filename>wget</filename> (como no exemplo acima) com o DVD montado no sistema em <filename>/media/dvd</filename>, use o seguinte comando como <systemitem class="username">root</systemitem>:
   </para>
 <screen>cd /usr/src/packages/SOURCES/
 mv ../SPECS/wget.spec .
@@ -631,11 +639,11 @@ build --rpms /media/dvd/suse/ wget.spec</screen>
    Depois disso, um ambiente mínimo é estabelecido em <filename>/var/tmp/build-root</filename>. O pacote é criado nesse ambiente. Após a conclusão, os pacotes resultantes estarão localizados em <filename>/var/tmp/build-root/usr/src/packages/RPMS</filename>.
   </para>
   <para>
-   O script <command>build</command> oferece várias opções adicionais. Por exemplo, fazer com que o script prefira seus próprios RPMs, omitir a inicialização do ambiente de construção ou limitar o comando <command>rpm</command> a um dos estágios mencionados acima. Acesse informações adicionais com <command>build <option>--help</option></command> e a leitura da página de manual <command>build</command>.
+   O script <command>build</command> oferece várias opções adicionais. Por exemplo, fazer com que o script prefira seus próprios RPMs, omitir a inicialização do ambiente de construção ou limitar o comando <command>rpm</command> a um dos estágios mencionados acima. Acesse informações adicionais com <command>build</command> <option>--help</option> e a leitura da página de manual <command>build</command>.
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-tools">
+ <section xml:id="sec-rpm-tools">
   <title>Ferramentas para arquivos RPM e banco de dados RPM</title><indexterm> <primary>RPM</primary> <secondary>ferramentas</secondary> </indexterm>
   <para>
    O Midnight Commander (<command>mc</command>) pode exibir o conteúdo de arquivos RPM e copiar partes deles. Ele representa arquivos como sistemas de arquivos virtuais, oferecendo todas as opções de menu usuais do Midnight Commander. Exiba o <filename>HEADER</filename> com <keycap>F3</keycap>. Exiba a estrutura de arquivos com as teclas de cursor e <keycap>Enter</keycap>. Copie componentes de arquivos com <keycap>F5</keycap>.
@@ -646,5 +654,5 @@ build --rpms /media/dvd/suse/ wget.spec</screen>
    Um gerenciador de pacote completo está disponível como um módulo do YaST. Para obter os detalhes, consulte o <xref linkend="cha-y2-sw"/>.
   </para><indexterm class="endofrange" startref="idx-RPM"/>
 
- </sect2>
-</sect1>
+ </section>
+</section>

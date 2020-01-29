@@ -1,21 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="64bit_issues.xml" id="cha-64bit">
- <title>Aplicativos de 32 bits e 64 bits em um ambiente de sistema de 64 bits</title><indexterm> <primary>Linux de 64 bits</primary> </indexterm>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="64bit_issues.xml" xml:id="cha-64bit"><title>Aplicativos de 32 bits e 64 bits em um ambiente de sistema de 64 bits</title><info/>
+ <indexterm> <primary>Linux de 64 bits</primary> </indexterm>
  <para>
   O <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> está disponível para plataformas de 64 bits. Isso não significa necessariamente que todos os aplicativos incluídos tenham sido transpostos para plataformas de 64 bits. O <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> suporta o uso de aplicativos de 32 bits em um ambiente de sistema de 64 bits. Este capítulo apresenta uma breve visão geral de como este suporte é implementado em plataformas de 64 bits do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>. Ele explica como aplicativos de 32 bits são executados (suporte do tempo de execução) e como aplicativos de 32 bits devem ser compilados para que possam ser executados em ambientes de sistema de 32 bits e 64 bits. Além disso, você encontrará informações sobre a API do kernel e uma explicação sobre como os aplicativos de 32 bits podem ser executados em um kernel de 64 bits.
  </para>
  <para>
   O <phrase os="osuse;sled"><phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> para as plataformas de 64 bits amd64 e Intel 64</phrase> foi desenvolvido para que os aplicativos de 32 bits existentes sejam executados no ambiente de 64 bits <quote>out-of-the-box.</quote> Este suporte significa que você pode continuar a usar os aplicativos de 32 bits de sua preferência sem esperar que uma porta de 64 bits correspondente se torne disponível.
  </para>
- <sect1 id="sec-64bit-runt">
+ <section xml:id="sec-64bit-runt">
   <title>Suporte ao tempo de execução</title><indexterm> <primary>Linux de 64 bits</primary> <secondary>suporte em tempo de execução</secondary> </indexterm>
 
   <important>
@@ -45,8 +53,8 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   
- </sect1>
- <sect1 id="sec-64bit-devel">
+ </section>
+ <section xml:id="sec-64bit-devel">
   <title>Desenvolvimento de software</title><indexterm> <primary>Linux de 64 bits</primary> <secondary>desenvolvimento de software</secondary> </indexterm>
 
   
@@ -60,8 +68,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    Todos os arquivos de cabeçalho devem ser escritos em um formato independente de arquitetura. As bibliotecas de 32 bits e 64 bits instaladas devem ter uma API (application programming interface — interface de programação de aplicativo) que corresponda aos arquivos de cabeçalho instalados. O ambiente normal do <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> foi desenvolvido de acordo com este princípio. No caso de bibliotecas atualizadas manualmente, solucione esses problemas por conta própria.
   </para>
- </sect1>
- <sect1 id="sec-64bit-biarch">
+ </section>
+ <section xml:id="sec-64bit-biarch">
   <title>Compilação de software em plataformas biarch</title>
 
   <para>
@@ -81,37 +89,37 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      Use o compilador de 32 bits:
     </para>
 <screen>CC="gcc -m32"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Instrua o linker a processar objetos de 32 bits (use sempre <command>gcc</command> como o front end do linker):
     </para>
 <screen>LD="gcc -m32"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Defina o assembler para gerar objetos de 32 bits:
     </para>
 <screen>AS="gcc -c -m32"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
       Especifique flags do linker, como o local das bibliotecas de 32 bits, por exemplo:
     </para>
 <screen>LDFLAGS="-L/usr/lib"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Especifique o local das bibliotecas de código objeto de 32 bits:
     </para>
 <screen>--libdir=/usr/lib</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Especifique o local das bibliotecas X de 32 bits:
     </para>
@@ -130,8 +138,8 @@ LDFLAGS="-L/usr/lib;"
 ./configure --prefix=/usr --libdir=/usr/lib --x-libraries=/usr/lib
 make
 make install</screen>
- </sect1>
- <sect1 id="sec-64bit-kernel">
+ </section>
+ <section xml:id="sec-64bit-kernel">
   <title>Especificações do kernel</title><indexterm> <primary>Linux de 64 bits</primary> <secondary>especificações do kernel</secondary> </indexterm>
 
   <para>
@@ -152,5 +160,5 @@ make install</screen>
     Alguns aplicativos requerem módulos separados carregáveis pelo kernel. Se você pretende usar um aplicativo de 32 bits desse tipo em um ambiente de sistema de 64 bits, entre em contato com o provedor do aplicativo e do SUSE para verificar se a versão de 64 bits do módulo carregável pelo kernel e a versão compilada de 32 bits da API do kernel estão disponíveis para esse módulo.
    </para>
   </tip>
- </sect1>
+ </section>
 </chapter>

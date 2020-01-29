@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="x11_optimierung.xml" id="sec-x11-optimieren">
- <title>Configurando manualmente o sistema X Window</title><indexterm id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>configurando</secondary></indexterm><indexterm> <primary>arquivos de configuração</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="x11_optimierung.xml" xml:id="sec-x11-optimieren">
+ <title>Configurando manualmente o sistema X Window</title><indexterm xml:id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>configurando</secondary></indexterm><indexterm> <primary>arquivos de configuração</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
 
  <para>
   Por padrão, o X Window System é configurado com a interface do SaX2, descrita no <xref linkend="cha-y2-hw-graph"/>. Alternativamente, pode ser configurado manualmente, editando seus arquivos de configuração.
@@ -46,7 +54,7 @@ EndSection </screen>
   Os tipos de seção disponíveis estão listados na <xref linkend="tab-x11-sections"/>.
  </para>
 
- <table id="tab-x11-sections">
+ <table xml:id="tab-x11-sections">
   <title>Seções em /etc/X11/xorg.conf</title>
   <tgroup cols="2" align="left">
    <thead>
@@ -199,19 +207,19 @@ EndSection </screen>
   Há várias seções <systemitem>Monitor</systemitem> e <systemitem>Device</systemitem> diferentes em <filename>xorg.conf</filename>. Mesmo várias seções <systemitem>Screen</systemitem> são possíveis. A seção <systemitem>ServerLayout</systemitem> determina qual dessas seções é usada.
  </para>
 
- <sect2 id="sec-x11-screen">
+ <section xml:id="sec-x11-screen">
   <title>Seção de tela</title><indexterm> <primary>arquivos de configuração</primary><secondary>xorg.conf</secondary> <tertiary>Screen</tertiary> </indexterm>
   <para>
    A seção de tela combina um monitor com uma seção de dispositivo e determina a resolução e a intensidade de cor usadas. Uma seção de tela pode ter a aparência do <xref linkend="dat-x11-scrsec"/>.
   </para>
-  <example id="dat-x11-scrsec">
+  <example xml:id="dat-x11-scrsec">
    <title>Seção de tela do arquivo /etc/X11/xorg.conf</title>
-<screen>Section "Screen"<co id="co-x11-screen"/>
-  DefaultDepth  16<co id="co-x11-ddepth"/>
-  SubSection "Display"<co id="co-x11-display"/>
-    Depth       16<co id="co-x11-depth"/>
-    Modes       "1152x864" "1024x768" "800x600"<co id="co-x11-mode"/>
-    Virtual     1152x864<co id="co-x11-virt"/>
+<screen>Section "Screen"<co xml:id="co-x11-screen"/>
+  DefaultDepth  16<co xml:id="co-x11-ddepth"/>
+  SubSection "Display"<co xml:id="co-x11-display"/>
+    Depth       16<co xml:id="co-x11-depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co xml:id="co-x11-mode"/>
+    Virtual     1152x864<co xml:id="co-x11-virt"/>
   EndSubSection
   SubSection "Display"
     Depth       24
@@ -226,7 +234,7 @@ EndSection </screen>
     Modes       "1280x1024"
   EndSubSection
   Device        "Device[0]"
-  Identifier    "Screen[0]"<co id="co-x11-ident"/>
+  Identifier    "Screen[0]"<co xml:id="co-x11-ident"/>
   Monitor       "Monitor[0]"
 EndSection</screen>
   </example>
@@ -270,17 +278,17 @@ EndSection</screen>
     </para>
    </callout>
   </calloutlist>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-device-section">
+ <section xml:id="sec-x11-device-section">
   <title>Seção do dispositivo</title><indexterm> <primary>arquivos de configuração</primary><secondary>xorg.conf</secondary> <tertiary>Device</tertiary> </indexterm>
   <para>
    Uma seção de dispositivo descreve uma placa de vídeo específica. Você pode ter quantas entradas de dispositivo desejar em <filename>xorg.conf</filename>, desde que os nomes sejam diferenciados pela palavra-chave <systemitem>Identifier</systemitem>. Se você tiver mais de uma placa de vídeo instalada, as seções serão simplesmente numeradas em ordem. A primeira é chamada <systemitem>Device[0]</systemitem>, a segunda <systemitem>Device[1]</systemitem> e assim por diante. O arquivo a seguir mostra um trecho da seção <systemitem>Device</systemitem> de um computador com uma placa de vídeo Matrox Millennium PCI (conforme configurada pelo SaX2):
   </para>
 <screen>Section "Device"
   BoardName     "MGA2064W"
-  BusID         "0:19:0"<co id="co-x11-bus"/>
-  Driver        "mga"<co id="co-x11-driver"/>
+  BusID         "0:19:0"<co xml:id="co-x11-bus"/>
+  Driver        "mga"<co xml:id="co-x11-driver"/>
   Identifier    "Device[0]"
   VendorName    "Matrox"
   Option        "sw_cursor"
@@ -303,9 +311,9 @@ EndSection</screen>
   <para>
    Se a placa de vídeo tem vários conectores de vídeo, é possível configurar os diferentes dispositivos dessa placa como uma única tela. Use o SaX2 para configurar a interface de vídeo dessa maneira.
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-opt-monitor">
+ <section xml:id="sec-x11-opt-monitor">
   <title>Seção Monitor e Modes</title><indexterm> <primary>arquivos de configuração</primary> <secondary>xorg.conf</secondary> <tertiary>Monitor</tertiary> </indexterm>
   <para>
    Como as seções <systemitem>Device</systemitem>, as seções <systemitem>Monitor</systemitem> e <systemitem>Modes</systemitem> descrevem um monitor cada. O arquivo de configuração <filename>/etc/X11/xorg.conf</filename> pode conter quantas seções <systemitem>Monitor</systemitem> você desejar. Cada seção <systemitem>Monitor</systemitem> faz referência a uma seção <systemitem>Modes</systemitem> com a linha <systemitem>UseModes</systemitem>, se houver. Se não houver nenhuma seção <systemitem>Modes</systemitem> disponível para a seção <systemitem>Monitor</systemitem>, o servidor X calculará valores apropriados a partir dos valores de sincronização gerais. A seção de layout do servidor especifica qual seção <systemitem>Monitor</systemitem> é relevante.
@@ -324,5 +332,5 @@ EndSection</screen>
   <para>
    A especificação manual de linhas modelo raramente é exigida atualmente. Se você está usando um monitor multisync moderno, as frequências permitidas e as resoluções ótimas podem, como regra, serem lidas do monitor pelo servidor X através de DDC, como descrito na seção de configuração do SaX2. Se isso não for possível por algum motivo, use um dos modos VESA incluídos no servidor X. Isso funcionará com a maioria das combinações de monitor e placa de vídeo.
   </para><indexterm class="endofrange" startref="idx-X-optimizing"/>
- </sect2>
-</sect1>
+ </section>
+</section>
