@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect2
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect2 xml:base="zypper_upgrade.xml" id="sec-update-zypper">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="zypper_upgrade.xml" xml:id="sec-update-zypper">
  <title>Distributions-Upgrade mit Zypper</title><indexterm> <primary>zypper</primary> <secondary>Upgrade</secondary> </indexterm> <indexterm> <primary>Upgrade</primary> <secondary>zypper</secondary> </indexterm>
  <para>
   Mit dem Kommandozeilenprogramm <command>zypper</command> können Sie ein Upgrade zur nächsten Version der Distribution durchführen. Dabei ist am wichtigsten, dass Sie das System-Upgrade aus dem laufenden System heraus initiieren können.
@@ -15,7 +23,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   Diese Funktion ist nützlich für fortgeschrittene Benutzer, die Remote-Upgrades oder Upgrades auf vielen ähnlich konfigurierten Systemen ausführen möchten.
  </para>
- <sect3>
+ <section>
   <title>Vor dem Start des Upgrades mit Zypper</title>
   <para>
    Zur Vermeidung von unerwarteten Fehlern beim Upgrade-Vorgang mit <command>zypper</command> minimieren Sie riskante Konstellationen.
@@ -45,8 +53,8 @@ Please see LICENSE.txt for this document's license.
     <para>Die Aufrüstung muss komplett von Beginn an bis zum Neustart ausgeführt werden. Es gibt nur eine sehr geringe Chance, Änderungen wieder rückgängig zu machen. Außerdem muss der Server während des gesamten Vorgangs online bleiben.
 </para>
   </warning>
- </sect3>
- <sect3>
+ </section>
+ <section>
   <title>Der Upgrade-Vorgang</title>
   <warning>
    <title>Prüfen der Systemsicherung</title>
@@ -61,37 +69,37 @@ Please see LICENSE.txt for this document's license.
  
   <procedure>
     
-    <step performance="required">
+    <step>
       <para>Aktualisieren Sie alle Dienste und Repositorys:</para>
       <screen>zypper ref -s</screen>
     </step>
-    <step id="st-update-zypper-proc-softwarestack" performance="required">
+    <step xml:id="st-update-zypper-proc-softwarestack">
       <para>Installieren Sie ggf. die Aktualisierungen für die Paketverwaltung:</para>
       <screen>zypper up -t patch</screen>
       <para>Weitere Informationen finden Sie unter <xref linkend="cha-onlineupdate-you"/>.</para>
     </step>
-    <step performance="required">
+    <step>
     <para>Wiederholen Sie <xref linkend="st-update-zypper-proc-softwarestack"/> und installieren Sie alle verfügbaren Aktualisierungen für das System.
     </para>
     <para>Hinweis: Soll das obige Kommando in einem Skript für die unbeaufsichtigte Aufrüstung eingesetzt werden, verwenden Sie das folgende Kommando: </para>
     <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
    </step>
-    <step performance="required">
+    <step>
       <para>Lesen Sie die Informationen zu den Migrationsprodukten in <filename>/etc/products.d/*.prod</filename>. Die installierten Produkte enthalten Informationen zu den Distributionsaufrüstungen sowie zu den Migrationsprodukten, die für die Migration installiert werden sollten. Installieren Sie diese Produkte mit den folgenden Kommandos:
       </para>
       <substeps performance="required">
-        <step performance="required">
+        <step>
           <para>Extrahieren Sie die Produktinformationen:</para>
           <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
           <para>Ein Beispiel für die Ausgabe:</para>
           <screen>SUSE_SLES-SP3-migration
 sle-sdk-SP3-migration</screen>
         </step>
-        <step performance="required">
+        <step>
           <para>Installieren Sie diese Migrationsprodukte (Beispiel):</para>
           <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
         </step>
-        <step performance="required">
+        <step>
           <para>Registrieren Sie die Produkte, damit die entsprechenden Aktualisierungs-Repositorys verfügbar werden:</para>
           <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
           <warning>
@@ -102,29 +110,29 @@ sle-sdk-SP3-migration</screen>
       </substeps>      
     </step>
     
-    <step performance="required">
+    <step>
       <para>Aktualisieren Sie die Dienste und Repositorys:</para>
       <screen>zypper ref -s</screen>
     </step>
-    <step performance="required">
+    <step>
         <para>Prüfen Sie die Repositorys mit <command>zypper lr</command>. Deaktivieren Sie bei Bedarf die SP1/SP2-Repositorys in <systemitem>Pool/Core/Updates</systemitem> manuell und aktivieren Sie die neuen SP3-Repositorys (<systemitem>SP3-Pool</systemitem>, <systemitem>SP3-Updates</systemitem>):</para>
       <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
 zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
     </step>
-    <step performance="required">
+    <step>
       <para>Führen Sie eine Distributionsaufrüstung mit dem folgenden Kommando aus (Beispiel für SLES; bei SLED sind die Katalognamen entsprechend zu ändern):</para>
       <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
       <para>Hier können Sie weitere Kataloge hinzufügen, beispielsweise wenn Add-on-Produkte installiert sind. zypper meldet, dass das Migrationsprodukt gelöscht wird und die Hauptprodukte aktualisiert werden. Bestätigen Sie die Meldung. Damit wird die Aktualisierung der rpm-Pakete fortgesetzt.</para>
     </step>
-    <step performance="required">
+    <step>
       <para>Registrieren Sie die neuen Produkte nach Abschluss der Aufrüstung erneut:</para>
       <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
     </step>
-    <step performance="required">
+    <step>
       <para>Booten Sie das System neu:</para>
       <screen>shutdown -r</screen>
     </step>
   </procedure>
    
- </sect3>
-</sect2>
+ </section>
+</section>

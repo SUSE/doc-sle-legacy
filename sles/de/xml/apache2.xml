@@ -1,27 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="apache2.xml" id="cha-apache2">
- <title>Der HTTP-Server Apache</title><indexterm class="startofrange" id="idx-apache2"> <primary>Apache</primary> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="apache2.xml" xml:id="cha-apache2"><title>Der HTTP-Server Apache</title><info><abstract>
   <para>
-   Mit einem Marktanteil von mehr als 50 % ist der Apache HTTP-Server (Apache) laut einer <ulink url="http://www.netcraft.com/"/>-Umfrage im der weltweit am häufigsten eingesetzte Webserver. Der von Apache Software Foundation (<ulink url="http://www.apache.org/"/>) entwickelte Apache-Server läuft auf fast allen Betriebssystemen. <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> umfasst Apache, Version 2.2. In diesem Kapitel erfahren Sie, wie Apache installiert, konfiguriert und eingerichtet wird. Sie lernen SSL, CGI und weitere Module kennen und erfahren, wie Sie bei Problemen mit dem Webserver vorgehen.
+   Mit einem Marktanteil von mehr als 50 % ist der Apache HTTP-Server (Apache) laut einer <link xlink:href="http://www.netcraft.com/"/>-Umfrage im der weltweit am häufigsten eingesetzte Webserver. Der von Apache Software Foundation (<link xlink:href="http://www.apache.org/"/>) entwickelte Apache-Server läuft auf fast allen Betriebssystemen. <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> umfasst Apache, Version 2.2. In diesem Kapitel erfahren Sie, wie Apache installiert, konfiguriert und eingerichtet wird. Sie lernen SSL, CGI und weitere Module kennen und erfahren, wie Sie bei Problemen mit dem Webserver vorgehen.
   </para>
- </abstract>
- <sect1 id="sec-apache2-quickstart">
+ </abstract></info>
+ <indexterm class="startofrange" xml:id="idx-apache2"> <primary>Apache</primary> </indexterm>
+ 
+ <section xml:id="sec-apache2-quickstart">
   <title>Kurzanleitung</title><indexterm> <primary>Apache</primary> <secondary>Schnelleinführung</secondary> </indexterm>
 
   <para>
    In diesem Abschnitt erfahren Sie, wie Sie Apache in kürzester Zeit installieren und einrichten. Zur Installation und Konfiguration von Apache müssen Sie als <systemitem class="username">root</systemitem>-Benutzer angemeldet sein.
   </para>
 
-  <sect2 id="sec-apache-quickstart-requirements">
+  <section xml:id="sec-apache-quickstart-requirements">
    <title>Anforderungen</title>
    <para>
     Vergewissern Sie sich, dass folgende Voraussetzungen erfüllt sind, bevor Sie den Apache-Webserver einrichten:
@@ -48,26 +56,26 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </orderedlist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-quickstart-installation">
+  <section xml:id="sec-apache2-quickstart-installation">
    <title>Installation</title><indexterm> <primary>Apache</primary> <secondary>installieren</secondary> </indexterm>
    <para>
     Apache ist in der Standardinstallation von <phrase role="productname"> <phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> nicht enthalten. Zum Installieren von Apache mit einer vordefinierten Standardkonfiguration <quote/> gehen Sie wie folgt vor:
    </para>
    <procedure>
     <title>Installation von Apache mit der Standardkonfiguration</title>
-    <step performance="required">
+    <step>
      <para>
       Starten Sie YaST, und wählen Sie <menuchoice> <guimenu>Software</guimenu> <guimenu>Software installieren oder löschen</guimenu> </menuchoice>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Wählen Sie <menuchoice><guimenu>Filter</guimenu> <guimenu>Schemata</guimenu></menuchoice> und dann <guimenu>Web and LAM Server</guimenu> in <guimenu>Serverfunktionen</guimenu> aus.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Bestätigen Sie die Installation der abhängigen Pakete, um den Installationsvorgang abzuschließen.
      </para>
@@ -76,27 +84,27 @@ Please see LICENSE.txt for this document's license.
    <para>
     Hierzu zählt sowohl das Multiprocessing-Modul (MPM) <systemitem>apache2-prefork</systemitem> als auch das Modul PHP5. Weitere Informationen zu Modulen erhalten Sie unter <xref linkend="sec-apache2-modules"/>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sect-apache-quickstart-start">
+  <section xml:id="sect-apache-quickstart-start">
    <title>Start</title>
    <para>
     Sie können Apache automatisch beim Booten oder manuell starten.
    </para>
    <procedure>
     <title>Automatisches Starten von Apache</title>
-    <step performance="required">
+    <step>
      <para>
       Um sicherzustellen, dass Apache beim Booten des Computers in den Runlevels <literal>3</literal> und <literal>5</literal> automatisch gestartet wird, führen Sie das folgende Kommando aus:
      </para>
 <screen>chkconfig -a apache2</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Sie können auch YaST starten und <menuchoice> <guimenu>System</guimenu> <guimenu>Systemdienste (Runlevel)</guimenu> </menuchoice> auswählen.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Suchen Sie dann nach <emphasis>apache2</emphasis> und aktivieren Sie den Service. <guimenu/>
      </para>
@@ -104,7 +112,7 @@ Please see LICENSE.txt for this document's license.
       Der Webserver wird sofort gestartet. 
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Speichern Sie die Änderungen mit <guimenu>Beenden</guimenu>.
      </para>
@@ -124,15 +132,15 @@ Please see LICENSE.txt for this document's license.
     <para>
      Werden beim Starten von Apache keine Fehlermeldungen angezeigt, bedeutet dies im Normalfall, dass der Webserver ausgeführt wird. So überprüfen Sie, ob Apache ausgeführt wird:
     </para>
-    <step performance="required">
+    <step>
      <para>
-      Starten Sie einen Webbrowser und öffnen Sie <ulink url="http://localhost/"/>. 
+      Starten Sie einen Webbrowser und öffnen Sie <link xlink:href="http://localhost/"/>. 
      </para>
      <para>
       Wenn Apache ausgeführt wird, wird eine Testseite mit der Meldung <quote>It works!</quote> angezeigt.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Wenn diese Seite nicht angezeigt wird, lesen Sie den Abschnitt <xref linkend="sec-apache2-troubleeshooting"/>.
      </para>
@@ -141,9 +149,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Nachdem der Webserver nun läuft, können Sie eigene Dokumente hinzufügen, die Konfiguration an Ihre Anforderungen anpassen und weitere Module mit den benötigten Funktionen installieren.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-apache2-configuration">
+  </section>
+ </section>
+ <section xml:id="sec-apache2-configuration">
   <title>Konfigurieren von Apache</title><indexterm> <primary>Apache</primary> <secondary>konfigurieren</secondary> </indexterm>
 
   <para>
@@ -170,14 +178,14 @@ Please see LICENSE.txt for this document's license.
   <important>
    <title>Neuladen oder -starten von Apache nach Konfigurationsänderungen</title>
    <para>
-    Damit Konfigurationsänderungen wirksam werden, ist in den meisten Fällen ein erneutes Laden (in einigen Fällen auch ein Neustart) von Apache erforderlich. Laden Sie Apache mit <command>rcapache2 <option>reload</option></command> neu oder verwenden Sie eine der in <xref linkend="sec-apache2-start-stop"/> beschriebenen Neustartoptionen.
+    Damit Konfigurationsänderungen wirksam werden, ist in den meisten Fällen ein erneutes Laden (in einigen Fällen auch ein Neustart) von Apache erforderlich. Laden Sie Apache mit <command>rcapache2 </command> <option>reload</option> neu oder verwenden Sie eine der in <xref linkend="sec-apache2-start-stop"/> beschriebenen Neustartoptionen.
    </para>
    <para>
     Wenn Sie Apache mit YaST konfigurieren, kann dieser Schritt automatisch ausgeführt werden. Stellen Sie dazu <guimenu>HTTP-Service</guimenu> auf <guimenu>Aktiviert</guimenu> ein, wie in <xref linkend="sec-apache2-configuration-yast-server-configuration"/> beschrieben.
    </para>
   </important>
 
-  <sect2 id="sec-apache2-configuration-manually-configfiles">
+  <section xml:id="sec-apache2-configuration-manually-configfiles">
    <title>Apache-Konfigurationsdateien</title><indexterm> <primary>Apache </primary> <secondary>konfigurieren </secondary> <tertiary>Dateien</tertiary> </indexterm>
    <para>
     Dieser Abschnitt enthält eine Übersicht über die Apache-Konfigurationsdateien. Wenn Sie die Konfiguration mit YaST vornehmen, müssen Sie diese Dateien nicht bearbeiten. Die Informationen können jedoch nützlich sein, wenn Sie später auf die manuelle Konfiguration umstellen möchten.
@@ -197,13 +205,13 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec-apache2-configuration-manually-configfiles-etc-sysconfig-apache2">
+   <section xml:id="sec-apache2-configuration-manually-configfiles-etc-sysconfig-apache2">
     <title><filename>/etc/sysconfig/apache2</filename></title>
     <para>
      <filename>/etc/sysconfig/apache2</filename> steuert einige globale Einstellungen von Apache, beispielsweise die zu ladenden Module, die einzuschließenden Konfigurationsdateien, die beim Serverstart zu verwendenden Flags sowie Flags, die der Kommandozeile hinzugefügt werden sollen. Die Konfigurationsoptionen dieser Datei sind hinreichend dokumentiert und werden daher an dieser Stelle nicht näher erläutert. Für die Konfigurationsanforderungen eines typischen Webservers dürften die Einstellungen der Datei <filename>/etc/sysconfig/apache2</filename> ausreichen.
     </para>
-   </sect3>
-   <sect3 id="sec-apache2-configuration-manually-configfiles-etc-apache2">
+   </section>
+   <section xml:id="sec-apache2-configuration-manually-configfiles-etc-apache2">
     <title><filename>/etc/apache2/</filename></title>
     <para>
      <filename>/etc/apache2/</filename> enthält alle Konfigurationsdateien für Apache. In diesem Abschnitt wird der Zweck jeder einzelnen Datei erklärt. Jede Datei enthält mehrere Konfigurationsoptionen (auch als <emphasis>Direktiven</emphasis> bezeichnet).  Die Konfigurationsoptionen dieser Dateien sind hinreichend dokumentiert und werden daher an dieser Stelle nicht näher erläutert.
@@ -366,15 +374,15 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-apache2-configuration-manually">
-   <title>Manuelle Konfiguration von Apache</title><indexterm class="startofrange" id="idx-apache2-configuration-manually"> <primary>Apache </primary> <secondary>konfigurieren </secondary> <tertiary>manuell</tertiary> </indexterm>
+  <section xml:id="sec-apache2-configuration-manually">
+   <title>Manuelle Konfiguration von Apache</title><indexterm class="startofrange" xml:id="idx-apache2-configuration-manually"> <primary>Apache </primary> <secondary>konfigurieren </secondary> <tertiary>manuell</tertiary> </indexterm>
    <para>
     Wenn Sie den Apache-Webserver manuell konfigurieren möchten, müssen Sie die Klartext-Konfigurationsdateien als <systemitem class="username">root</systemitem>-Benutzer bearbeiten.
    </para>
-   <sect3 id="sec-apache2-configuration-manually-vhost">
+   <section xml:id="sec-apache2-configuration-manually-vhost">
     <title>Virtuelle Hostkonfiguration</title><indexterm> <primary>Apache</primary> <secondary>konfigurieren</secondary> <tertiary>virtueller Host</tertiary> </indexterm>
     <para>
      <emphasis>Virtueller Host</emphasis> bezieht sich auf die Fähigkeit von Apache, mehrere URI (Universal Resource Identifiers) vom gleichen physischen Computer aus bedienen zu können. In anderen Worten: Mehrere Domänen wie www.beispiel.com und www.beispiel.net können von einem einzigen Webserver auf einem physischen Computer ausgeführt werden.
@@ -383,7 +391,7 @@ Please see LICENSE.txt for this document's license.
      Virtuelle Hosts werden häufig eingesetzt, um Verwaltungsaufwand (nur ein Webserver muss verwaltet werden) und Hardware-Kosten (für die einzelnen Domänen ist kein dedizierter Server erforderlich) zu sparen. Virtuelle Hosts können auf Namen, IP-Adressen oder Ports basieren.
     </para>
     <para>
-     Verwenden Sie zum Auflisten aller vorhandenen virtuellen Hosts das Kommando <command>httpd2 <option>-S</option></command>. Dadurch wird eine Liste mit dem Standardserver und allen virtuellen Hosts zusammen mit deren IP-Adressen und überwachenden Ports ausgegeben. Zusätzlich enthält die Liste einen Eintrag für jeden virtuellen Host mit dessen Speicherort in den Konfigurationsdateien.
+     Verwenden Sie zum Auflisten aller vorhandenen virtuellen Hosts das Kommando <command>httpd2</command> <option>-S</option>. Dadurch wird eine Liste mit dem Standardserver und allen virtuellen Hosts zusammen mit deren IP-Adressen und überwachenden Ports ausgegeben. Zusätzlich enthält die Liste einen Eintrag für jeden virtuellen Host mit dessen Speicherort in den Konfigurationsdateien.
     </para>
     <para>
      Virtuelle Hosts können mit YaST (siehe <xref linkend="sec-apache2-configuration-yast-wizard-virtual-hosts"/>) oder manuell durch Bearbeitung einer Konfigurationsdatei konfiguriert werden. In <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> ist Apache unter <filename>/etc/apache2/vhosts.d/</filename>  standardmäßig für eine Konfigurationsdatei pro virtuellen Host vorbereitet. Alle Dateien in diesem Verzeichnis mit der Erweiterung <filename>.conf</filename> sind automatisch Bestandteil der Konfiguration. Außerdem enthält dieses Verzeichnis eine grundlegende Vorlage für virtuelle Hosts (<filename>vhost.template</filename> bzw. <filename>vhost-ssl.template</filename> für einen virtuellen Host mit SSL-Unterstützung).
@@ -398,9 +406,9 @@ Please see LICENSE.txt for this document's license.
      </para>
     </tip>
     <para>
-     Der <systemitem>&lt;VirtualHost&gt;</systemitem><systemitem>&lt;/VirtualHost&gt;</systemitem>-Block enthält die Informationen zu einer bestimmten Domäne. Wenn Apache eine Client-Anforderung für einen definierten virtuellen Host empfängt, verwendet es die in diesem Block angegebenen Direktiven. Nahezu alle Direktiven können auch im Kontext eines virtuellen Hosts verwendet werden. Weitere Informationen zu den Konfigurationsdirektiven von Apache finden Sie unter <ulink url="http://httpd.apache.org/docs/2.2/mod/quickreference.html"/>.
+     Der <systemitem>&lt;VirtualHost&gt;</systemitem><systemitem>&lt;/VirtualHost&gt;</systemitem>-Block enthält die Informationen zu einer bestimmten Domäne. Wenn Apache eine Client-Anforderung für einen definierten virtuellen Host empfängt, verwendet es die in diesem Block angegebenen Direktiven. Nahezu alle Direktiven können auch im Kontext eines virtuellen Hosts verwendet werden. Weitere Informationen zu den Konfigurationsdirektiven von Apache finden Sie unter <link xlink:href="http://httpd.apache.org/docs/2.2/mod/quickreference.html"/>.
     </para>
-    <sect4 id="sec-apache2-configuration-manually-vhost-named-vhosts">
+    <section xml:id="sec-apache2-configuration-manually-vhost-named-vhosts">
      <title>Namensbasierte virtuelle Hosts</title>
      <para>
       Namensbasierte virtuelle Hosts können an jeder IP-Adresse mehrere Websites bedienen. Apache verwendet das Hostfeld in dem vom Client übersandten HTTP-Header, um die Anforderung mit einem übereinstimmenden  <systemitem>ServerName</systemitem>-Eintrag der virtuellen Hostdeklarationen zu verbinden. Wird kein übereinstimmender <systemitem>ServerName</systemitem> gefunden, dann wird der erste angegebene virtuelle Host als Standard verwendet.
@@ -414,7 +422,7 @@ Please see LICENSE.txt for this document's license.
      <para>
       Sowohl für die IP-Adresse als auch für die Portnummer kann ein Platzhalterzeichen (<literal>*</literal>) eingegeben werden. In diesem Fall werden die Anforderungen an allen Schnittstellen empfangen. IPv6-Adressen müssen in eckigen Klammern eingeschlossen sein.
      </para>
-     <example id="ex-apache2-virtual-hosts-name-based">
+     <example xml:id="ex-apache2-virtual-hosts-name-based">
       <title>Beispiele für namensbasierte <systemitem>VirtualHost</systemitem>-Einträge</title>
 <screen># NameVirtualHost <replaceable>IP-address</replaceable><replaceable>[:Port]</replaceable>
 NameVirtualHost 192.168.3.100:80
@@ -429,7 +437,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <para>
       Anstelle der IP-Adresse wird auch ein Platzhalterzeichen (<emphasis>*</emphasis>) akzeptiert. Diese Syntax ist allerdings nur in Verbindung mit einem Platzhalter in <systemitem>NameVirtualHost *</systemitem> zulässig. IPv6-Adressen müssen in eckige Klammern eingeschlossen werden.
      </para>
-     <example id="ex-apache-directives-virtualhost-name-based">
+     <example xml:id="ex-apache-directives-virtualhost-name-based">
       <title>Namensbasierte <systemitem>VirtualHost</systemitem>-Direktiven</title>
 <screen>&lt;VirtualHost 192.168.3.100:80&gt;
   ...
@@ -451,8 +459,8 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
   ...
 &lt;/VirtualHost&gt;</screen>
      </example>
-    </sect4>
-    <sect4 id="sec-apache2-configuration-manually-vhost-ip-vhosts">
+    </section>
+    <section xml:id="sec-apache2-configuration-manually-vhost-ip-vhosts">
      <title>IP-basierte virtuelle Hosts</title>
      <para>
       Bei dieser alternativen virtuellen Hostkonfiguration werden auf einem Computer mehrere IPs eingerichtet. Auf einer Apache-Instanz befinden sich mehrere Domänen, denen jeweils eine eigene IP zugewiesen ist.
@@ -463,7 +471,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <para>
       Das folgende Beispiel zeigt Apache auf einem Computer mit der IP  <systemitem class="ipaddress">192.168.3.100 </systemitem>, auf dem sich zwei Domänen mit den zusätzlichen IPs  <systemitem class="ipaddress">192.168.3.101 </systemitem> und  <systemitem class="ipaddress">192.168.3.102 </systemitem> befinden. Für jeden virtuellen Server wird ein eigener <systemitem>VirtualHost</systemitem>-Block benötigt.
      </para>
-     <example id="ex-apache-directives-virtualhost-ip-based">
+     <example xml:id="ex-apache-directives-virtualhost-ip-based">
       <title>IP-basierte <systemitem>VirtualHost</systemitem>-Direktiven</title>
 <screen>&lt;VirtualHost 192.168.3.101&gt;
   ...
@@ -476,8 +484,8 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <para>
       In diesem Beispiel sind nur für die beiden zusätzlichen IP-Adressen (also nicht für  <systemitem>192.168.3.100 </systemitem>)  <systemitem>VirtualHost </systemitem>-Direktiven angegeben. Sollte für <systemitem>192.168.3.100</systemitem> auch eine <systemitem>Listen</systemitem>-Direktive konfiguriert sein, müsste ein eigener IP-basierter Host für die HTTP-Anforderungen an diese Schnittstelle eingerichtet werden. Anderenfalls fänden die Direktiven aus der Standardserverkonfiguration (<filename>/etc/apache2/default-server.conf</filename>) Anwendung.
      </para>
-    </sect4>
-    <sect4 id="sec-apache2-configuration-manually-vhost-basic-configuration">
+    </section>
+    <section xml:id="sec-apache2-configuration-manually-vhost-basic-configuration">
      <title>Basiskonfiguration eines virtuellen Hosts</title>
      <para>
       Die Konfiguration eines virtuellen Hosts sollte mindestens die folgenden Direktiven enthalten. Weitere Optionen finden Sie in <filename>/etc/apache2/vhosts.d/vhost.template</filename>.
@@ -539,7 +547,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <para>
       Die vollständige Basiskonfiguration eines virtuellen Hosts sieht wie folgt aus:
      </para>
-     <example id="ex-apache-directives-virtualhost-basic-configuration">
+     <example xml:id="ex-apache-directives-virtualhost-basic-configuration">
       <title>Basiskonfiguration <systemitem>eines virtuellen Hosts</systemitem></title>
 <screen>&lt;VirtualHost 192.168.3.100&gt;
   ServerName www.example.com
@@ -553,17 +561,17 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
   &lt;/Directory&gt;
 &lt;/VirtualHost&gt;</screen>
      </example><indexterm class="endofrange" startref="idx-apache2-configuration-manually"/>
-    </sect4>
-   </sect3>
-  </sect2>
+    </section>
+   </section>
+  </section>
 
 
 
-  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="apache2_yast_i.xml" parse="xml"/>
+  <xi:include href="apache2_yast_i.xml" parse="xml"/>
 
 
- </sect1>
- <sect1 id="sec-apache2-start-stop">
+ </section>
+ <section xml:id="sec-apache2-start-stop">
   <title>Starten und Beenden von Apache</title><indexterm> <primary>Apache</primary> <secondary>Starten</secondary> </indexterm> <indexterm> <primary>Apache</primary> <secondary>Stoppen</secondary> </indexterm>
 
   <para>
@@ -639,7 +647,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <tip>
       <title>Neustart von Apache in Produktionsumgebungen</title>
       <para>
-       Mit dem Kommando <command>rcapache2 <option>reload</option></command> aktivieren Sie Änderungen in der Apache-Konfiguration ohne Verbindungsunterbrechungen.
+       Mit dem Kommando <command>rcapache2 </command> <option>reload</option> aktivieren Sie Änderungen in der Apache-Konfiguration ohne Verbindungsunterbrechungen.
       </para>
      </tip>
     </listitem>
@@ -652,7 +660,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
       Startet einen zweiten Webserver, der sofort alle eingehenden Anforderungen verarbeitet. Die vorherige Instanz des Webservers wickelt weiterhin alle bestehenden Anforderungen für eine Zeitdauer ab, die mit <systemitem>GracefulShutdownTimeout</systemitem> definiert wurde.
      </para>
      <para>
-      <command>rcapache2 <option>restart-graceful</option></command> ist beim Upgrade auf eine neue Version oder nach dem Ändern von Konfigurationsoptionen nützlich, die einen Neustart erfordern. Die Verwendung dieser Option sorgt für eine minimale Serverabschaltdauer.
+      <command>rcapache2</command> <option>restart-graceful</option> ist beim Upgrade auf eine neue Version oder nach dem Ändern von Konfigurationsoptionen nützlich, die einen Neustart erfordern. Die Verwendung dieser Option sorgt für eine minimale Serverabschaltdauer.
      </para>
      <para>
       <systemitem>GracefulShutdownTimeout</systemitem> muss festgelegt werden, andernfalls veranlasst <option>restart-graceful</option> einen regulären Neustart. Bei der Einstellung auf null wartet der Server auf unbestimmte Zeit, bis alle verbleibenden Anforderungen vollständig verarbeitet sind.
@@ -709,9 +717,9 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
     Weitere Flags, die Sie mit dem Befehl <command>rcapache2</command> angeben, werden direkt an den Webserver weitergeleitet.
    </para>
   </tip>
- </sect1>
- <sect1 id="sec-apache2-modules">
-  <title>Installieren, Aktivieren und Konfigurieren von Modulen</title><indexterm class="startofrange" id="idx-apache2-modules"> <primary>Apache</primary> <secondary>Module</secondary> </indexterm>
+ </section>
+ <section xml:id="sec-apache2-modules">
+  <title>Installieren, Aktivieren und Konfigurieren von Modulen</title><indexterm class="startofrange" xml:id="idx-apache2-modules"> <primary>Apache</primary> <secondary>Module</secondary> </indexterm>
 
   <para>
    Die Apache-Software ist modular aufgebaut. Alle Funktionen außer einigen Kernaufgaben werden von Modulen durchgeführt Dies geht sogar so weit, dass selbst HTTP durch ein Modul verarbeitet wird (http_core).
@@ -760,7 +768,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    </varlistentry>
   </variablelist>
 
-  <sect2 id="sec-apache2-modules-installing">
+  <section xml:id="sec-apache2-modules-installing">
    <title>Installieren von Modulen</title><indexterm> <primary>Apache </primary> <secondary>Module </secondary> <tertiary>installieren</tertiary> </indexterm>
    <para>
     Wenn Sie die in <xref linkend="sec-apache2-quickstart-installation"/> beschriebene Standardinstallation vorgenommen haben, sind folgende Module bereits installiert: alle Basis- und Erweiterungsmodule, das Multiprocessing-Modul Prefork MPM sowie die externen Module <systemitem>mod_php5</systemitem> und <systemitem>mod_python</systemitem>.
@@ -768,15 +776,15 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    <para>
     In YaST können Sie weitere externe Module installieren. Starten Sie dazu YaST und wählen Sie <menuchoice><guimenu>Software</guimenu><guimenu>Software-Management</guimenu></menuchoice>. Wählen Sie danach <menuchoice><guimenu>Filter</guimenu> <guimenu>Suche</guimenu></menuchoice> und suchen Sie nach <emphasis>apache</emphasis>.  Die Ergebnisliste zeigt nun neben anderen Paketen alle verfügbaren externen Apache-Module an.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-modules-activating">
+  <section xml:id="sec-apache2-modules-activating">
    <title>Aktivieren und Deaktivieren von Modulen</title>
    <para>
     Sie können bestimmte Module entweder manuell oder mit YaST aktivieren oder deaktivieren. In YaST müssen die Skriptsprachmodule (PHP5, Perl und Python) mit der im Abschnitt <xref linkend="sec-apache2-configuration-yast-wizard"/> beschriebenen Modulkonfiguration aktiviert oder deaktiviert werden. Alle anderen Module werden, wie im Abschnitt <xref linkend="sec-apache2-configuration-yast-server-configuration-modules"/> beschrieben, aktiviert oder deaktiviert.
    </para>
    <para>
-    Manuell können Sie die Module mit den Befehlen <command>a2enmod <replaceable>mod_foo</replaceable></command> oder <command>a2dismod</command> <replaceable>mod_foo</replaceable> aktivieren bzw. deaktivieren. <command>a2enmod -l</command> gibt eine Liste aller zurzeit aktiven Module aus.
+    Manuell können Sie die Module mit den Befehlen <command>a2enmod</command> <replaceable>mod_foo</replaceable> oder <command>a2dismod</command> <replaceable>mod_foo</replaceable> aktivieren bzw. deaktivieren. <command>a2enmod -l</command> gibt eine Liste aller zurzeit aktiven Module aus.
    </para>
    <important>
     <title>Einschließen der Konfigurationsdateien externer Module</title>
@@ -784,12 +792,12 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      Wenn Sie externe Module manuell aktivieren, müssen Sie sicherstellen, dass auch ihre Konfigurationsdateien in allen virtuellen Hostkonfigurationen geladen werden. Die Konfigurationsdateien externer Module befinden sich im Verzeichnis <filename>/etc/apache2/conf.d/</filename> und werden standardmäßig nicht geladen. Wenn Sie auf allen virtuellen Hosts die gleichen Module benötigen, können Sie die Konfigurationsdateien aus diesem Verzeichnis mit <filename>*.conf</filename> einschließen. Anderenfalls müssen Sie die Dateien einzeln einschließen. Beispiele hierzu finden Sie in der Datei <filename>/etc/apache2/vhosts.d/vhost.template</filename>.
     </para>
    </important>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-modules-base-extension">
+  <section xml:id="sec-apache2-modules-base-extension">
    <title>Basis- und Erweiterungsmodule</title><indexterm> <primary>Apache </primary> <secondary>Module </secondary> <tertiary>verfügbar</tertiary> </indexterm>
    <para>
-    Alle Basis- und Erweiterungsmodule werden ausführlich in der Apache-Dokumentation beschrieben. An dieser Stelle gehen wir daher nur kurz auf die wichtigsten Module ein. Informationen zu den einzelnen Modulen erhalten Sie auch unter <ulink url="http://httpd.apache.org/docs/2.2/mod/">http://httpd.apache.org/docs/2.2/mod/</ulink>.
+    Alle Basis- und Erweiterungsmodule werden ausführlich in der Apache-Dokumentation beschrieben. An dieser Stelle gehen wir daher nur kurz auf die wichtigsten Module ein. Informationen zu den einzelnen Modulen erhalten Sie auch unter <link xlink:href="http://httpd.apache.org/docs/2.2/mod/">http://httpd.apache.org/docs/2.2/mod/</link>.
    </para>
    
    <variablelist>
@@ -822,7 +830,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        <systemitem>mod_auth_basic</systemitem> und <systemitem>mod_auth_digest</systemitem> funktionieren nur gemeinsam mit dem Authentifizierungsanbietermodul <systemitem>mod_authn_*</systemitem> (z. B. <systemitem>mod_authn_file</systemitem> für die Authentifizierung auf Basis einer Textdatei) und mit dem Autorisierungsmodul <systemitem>mod_authz_*</systemitem> (z. B. <systemitem>mod_authz_user</systemitem> für die Benutzerautorisierung).
       </para>
       <para>
-       Weitere Informationen zu diesem Thema erhalten Sie im Artikel <citetitle>Gewusst wie: Authentifizierung</citetitle> unter <ulink url="http://httpd.apache.org/docs/2.2/howto/auth.html"/>.
+       Weitere Informationen zu diesem Thema erhalten Sie im Artikel <citetitle>Gewusst wie: Authentifizierung</citetitle> unter <link xlink:href="http://httpd.apache.org/docs/2.2/howto/auth.html"/>.
       </para>
      </listitem>
     </varlistentry>
@@ -921,7 +929,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </term>
      <listitem>
       <para>
-       Dieses Modul ist für die Inhaltsverhandlung erforderlich. Weitere Informationen erhalten Sie unter <ulink url="http://httpd.apache.org/docs/2.2/content-negotiation.html">http://httpd.apache.org/docs/2.2/content-negotiation.html</ulink>. Dieses Modul ist standardmäßig aktiviert.
+       Dieses Modul ist für die Inhaltsverhandlung erforderlich. Weitere Informationen erhalten Sie unter <link xlink:href="http://httpd.apache.org/docs/2.2/content-negotiation.html">http://httpd.apache.org/docs/2.2/content-negotiation.html</link>. Dieses Modul ist standardmäßig aktiviert.
       </para>
      </listitem>
     </varlistentry>
@@ -998,9 +1006,9 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-modules-mpm">
+  <section xml:id="sec-apache2-modules-mpm">
    <title>Multiprocessing-Module</title><indexterm> <primary>Apache </primary> <secondary>Module </secondary> <tertiary>Multiprocessing</tertiary> </indexterm>
    <para>
     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> bietet zwei Multiprocessing-Module (MPMs) für Apache:
@@ -1017,7 +1025,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec-apache2-modules-mpm-prefork">
+   <section xml:id="sec-apache2-modules-mpm-prefork">
     <title>Prefork-MPM</title>
     <para>
      Das Prefork-MPM implementiert einen Prefork-Webserver, der keine Threads verwendet. Mit diesem Modul verhält sich der Webserver, was die Handhabung von Anforderungen betrifft, ähnlich wie Apache Version 1.x: Er isoliert jede einzelne Anforderung und verarbeitet sie in einem separaten untergeordneten Prozess (Forking). Eine Beeinträchtigung aller Anforderungen durch wenige problematische Anforderungen und somit eine Sperre des Webservers lassen sich dadurch vermeiden.
@@ -1031,8 +1039,8 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
       In diesem Dokument wird davon ausgegangen, dass Apache mit dem Prefork-MPM verwendet wird.
      </para>
     </important>
-   </sect3>
-   <sect3 id="sec-apache2-modules-mpm-worker">
+   </section>
+   <section xml:id="sec-apache2-modules-mpm-worker">
     <title>Worker-MPM</title>
     <para>
      Das Worker-MPM implementiert einen Multithread-Webserver. Ein Thread ist die <quote>Lightweight-Version</quote> eines Prozesses. Der Vorteil von Threads gegenüber Prozessen ist deren geringerer Ressourcenkonsum. Anstatt lediglich untergeordnete Prozesse zu erstellen (Forking), verarbeitet das Worker-MPM Anforderungen durch Threads mit Serverprozessen. Die untergeordneten Prefork-Prozesse sind auf mehrere Threads verteilt (Multithreading). Diese Ansatzweise macht den Apache-Server durch den geringeren Ressourcenkonsum leistungsfähiger als mit dem Prefork-MPM.
@@ -1046,10 +1054,10 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
       Nicht alle verfügbaren PHP-Module sind Thread-sicher. Von einer Verwendung des Worker-MPM in Verbindung mit <systemitem>mod_php</systemitem> wird daher abgeraten.
      </para>
     </warning>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-apache2-modules-external">
+  <section xml:id="sec-apache2-modules-external">
    <title>Externe Module</title><indexterm> <primary>Apache </primary> <secondary>Module </secondary> <tertiary>externe</tertiary> </indexterm>
    <para>
     Nachfolgend finden Sie eine Liste aller externen Module, die mit <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> ausgeliefert werden. 
@@ -1074,7 +1082,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        <systemitem>mod_auth_kerb</systemitem> bietet die Kerberos-Authentifizierung beim Apache-Webserver.
       </para>
       <simplelist>
-       <member> Paketname: <systemitem>apache2-mod_auth_kerb</systemitem> </member> <member>Weitere Informationen: <ulink url="http://modauthkerb.sourceforge.net/configure.html"/> </member>
+       <member> Paketname: <systemitem>apache2-mod_auth_kerb</systemitem> </member> <member>Weitere Informationen: <link xlink:href="http://modauthkerb.sourceforge.net/configure.html"/> </member>
       </simplelist>
      </listitem>
     </varlistentry>
@@ -1134,15 +1142,15 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        <systemitem>mod_security</systemitem> bietet eine Firewall zum Schutz von Webanwendungen vor verschiedenen Angriffen. Auch die Überwachung des HTTP-Datenverkehrs und die Echtzeitanalyse werden damit ermöglicht.
       </para>
       <simplelist>
-       <member> Paketname: <systemitem>apache2-mod_security2</systemitem> </member> <member> Konfigurationsdatei: <filename>/etc/apache2/conf.d/mod_security2.conf</filename> </member> <member> Weitere Informationen: <filename>/usr/share/doc/packages/apache2-mod_security2</filename> </member> <member> Dokumentation: <ulink url="http://modsecurity.org/documentation/"/> </member>
+       <member> Paketname: <systemitem>apache2-mod_security2</systemitem> </member> <member> Konfigurationsdatei: <filename>/etc/apache2/conf.d/mod_security2.conf</filename> </member> <member> Weitere Informationen: <filename>/usr/share/doc/packages/apache2-mod_security2</filename> </member> <member> Dokumentation: <link xlink:href="http://modsecurity.org/documentation/"/> </member>
       </simplelist>
      </listitem>
     </varlistentry>
     
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-modules-building-modules">
+  <section xml:id="sec-apache2-modules-building-modules">
    <title>Kompilieren von Modulen</title><indexterm> <primary>Apache</primary> <secondary>Module </secondary> <tertiary>erstellen</tertiary> </indexterm>
    <para>
     Apache kann von erfahrenen Benutzern durch selbst entwickelte Module erweitert werden. Für die Entwicklung eigener Apache-Module und für die Kompilierung von Drittanbieter-Modulen sind neben dem Paket <systemitem>apache2-devel</systemitem> auch die entsprechenden Entwicklungstools erforderlich. <systemitem>apache2-devel</systemitem> enthält unter anderem die <command>apxs2</command>-Tools, die zur Kompilierung von Apache-Erweiterungsmodulen erforderlich sind.
@@ -1178,9 +1186,9 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    <para>
     wobei das Modul mit <option>-c</option> kompiliert, mit <option>-i</option> installiert und mit <option>-a</option> aktiviert wird. Alle weiteren Optionen von <command>apxs2</command> werden auf der man-Seite <systemitem>apxs2(1)</systemitem> beschrieben.
    </para><indexterm class="endofrange" startref="idx-apache2-modules"/>
-  </sect2>
- </sect1>
- <sect1 id="sec-apache2-cgi">
+  </section>
+ </section>
+ <section xml:id="sec-apache2-cgi">
   <title>Aktivieren von CGI-Skripten</title><indexterm> <primary>Apache</primary> <secondary>CGI-Skripten</secondary></indexterm>
 
   <para>
@@ -1198,19 +1206,19 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    </para>
   </warning>
 
-  <sect2 id="sec-apache2-cgi-configuration">
+  <section xml:id="sec-apache2-cgi-configuration">
    <title>Konfiguration in Apache</title>
    <para>
     In <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> ist die Ausführung von CGI-Skripts nur im Verzeichnis <filename>/srv/www/cgi-bin/</filename> erlaubt. Dieses Verzeichnis ist bereits für die Ausführung von CGI-Skripten konfiguriert. Wenn Sie eine virtuelle Hostkonfiguration erstellt haben (siehe <xref linkend="sec-apache2-configuration-manually-vhost"/>) und Ihre CGI-Skripten in einem Host-spezifischen Verzeichnis ablegen möchten, müssen Sie das betreffende Verzeichnis entsperren und für CGI-Skripten konfigurieren.
    </para>
-   <example id="ex-apache2-cgi-configuration">
+   <example xml:id="ex-apache2-cgi-configuration">
     <title>CGI-Konfiguration für virtuelle Hosts</title>
-<screen>ScriptAlias /cgi-bin/ "/srv/www/www.example.com/cgi-bin/"<co id="co-apache2-cgi-script-alias"/>
+<screen>ScriptAlias /cgi-bin/ "/srv/www/www.example.com/cgi-bin/"<co xml:id="co-apache2-cgi-script-alias"/>
 
 &lt;Directory "/srv/www/www.example.com/cgi-bin/"&gt;
- Options +ExecCGI<co id="co-apache2-cgi-options"/>
- AddHandler cgi-script .cgi .pl<co id="co-apache2-cgi-handler"/>
- Order allow,deny<co id="co-apache2-cgi-order"/>
+ Options +ExecCGI<co xml:id="co-apache2-cgi-options"/>
+ AddHandler cgi-script .cgi .pl<co xml:id="co-apache2-cgi-handler"/>
+ Order allow,deny<co xml:id="co-apache2-cgi-order"/>
  Allow from all
 &lt;/Directory&gt;</screen>
     <calloutlist>
@@ -1236,9 +1244,9 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </callout>
     </calloutlist>
    </example>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-cgi-example-script">
+  <section xml:id="sec-apache2-cgi-example-script">
    <title>Ausführen eines Beispielskripten</title>
    <para>
     Die CGI-Programmierung unterscheidet sich von der herkömmlichen Programmierung insoweit, als CGI-Programmen und -Skripten ein MIME-Typ-Header wie <literal>Content-type:  text/html</literal> vorangestellt werden muss.  Dieser Header wird an den Client gesendet, damit er weiß, welchen Inhaltstyp er empfängt. Darüber hinaus muss die Skriptausgabe vom Client, in der Regel einem Webbrowser, verstanden werden – dies ist in den meisten Fällen HTML, aber auch Klartext, Bilder oder Ähnliches.
@@ -1252,9 +1260,9 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    <para>
     Rufen Sie danach <literal>http://localhost/cgi-bin/test.cgi</literal> oder <literal>http://example.com/cgi-bin/test.cgi</literal> auf. Nun sollte der <quote>CGI/1.0-Testskriptbericht</quote> angezeigt werden.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-cgi-troubleshooting">
+  <section xml:id="sec-apache2-cgi-troubleshooting">
    <title>CGI-Fehlerbehebung</title>
    <para>
     Wenn Sie nach der Ausführung des CGI-Testskripten statt des Testskriptberichts eine Fehlermeldung erhalten, überprüfen Sie Folgendes:
@@ -1283,10 +1291,10 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </para>
     </listitem>
    </itemizedlist>
-  </sect2>
- </sect1>
- <sect1 id="sec-apache2-ssl">
-  <title>Einrichten eines sicheren Webservers mit SSL</title><indexterm class="startofrange" id="idx-apache2-ssl"> <primary>Apache</primary> <secondary>SSL</secondary> </indexterm>
+  </section>
+ </section>
+ <section xml:id="sec-apache2-ssl">
+  <title>Einrichten eines sicheren Webservers mit SSL</title><indexterm class="startofrange" xml:id="idx-apache2-ssl"> <primary>Apache</primary> <secondary>SSL</secondary> </indexterm>
 
   <para>
    Wenn sensible Daten wie Kreditkarteninformationen zwischen Webserver und Client übertragen werden, ist eine sichere, verschlüsselte Verbindung mit Authentifizierung wünschenswert. <systemitem>mod_ssl</systemitem> bietet mittels der Protokolle Secure Sockets Layer (SSL) und Transport Layer Security (TLS) eine sichere Verschlüsselung für die HTTP-Kommunikation zwischen einem Client und dem Webserver. Wenn Sie SSL/TSL verwenden, wird zwischen dem Webserver und dem Client eine private Verbindung eingerichtet. Die Datenintegrität bleibt dadurch gewährleistet und Client und Server können sich gegenseitig authentifizieren.
@@ -1316,7 +1324,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    </para>
   </tip>
 
-  <sect2 id="sec-apache2-ssl-certificate">
+  <section xml:id="sec-apache2-ssl-certificate">
    <title>Erstellen eines SSL-Zertifikats</title><indexterm> <primary>Apache</primary> <secondary>SSL</secondary> <tertiary>SSL-Zertifikat erstellen</tertiary> </indexterm>
    <para>
     Wenn Sie SSL/TSL mit dem Webserver einsetzen möchten, müssen Sie ein SSL-Zertifikat erstellen. Dieses Zertifikat ist für die Autorisierung zwischen Webserver und Client erforderlich, damit beide Endpunkte jeweils die Identität des anderen Endpunkts überprüfen können. Zum Nachweis der Zertifikatintegrität muss das Zertifikat von einer Organisation signiert sein, der jeder der beteiligten Benutzer vertraut.
@@ -1330,13 +1338,13 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    <tip>
     <title>Weiterführende Informationen</title>
     <para>
-     Weitere Informationen über das Konzept von SSL/TSL und diesbezügliche Festlegungen finden Sie unter <ulink url="http://httpd.apache.org/docs/2.2/ssl/ssl_intro.html">http://httpd.apache.org/docs/2.2/ssl/ssl_intro.html</ulink>.
+     Weitere Informationen über das Konzept von SSL/TSL und diesbezügliche Festlegungen finden Sie unter <link xlink:href="http://httpd.apache.org/docs/2.2/ssl/ssl_intro.html">http://httpd.apache.org/docs/2.2/ssl/ssl_intro.html</link>.
     </para>
    </tip>
-   <sect3 id="sec-apache2-ssl-certificate-dummy">
+   <section xml:id="sec-apache2-ssl-certificate-dummy">
     <title>Erstellen eines <quote>Dummy</quote>-Zertifikats</title>
     <para>
-     Die Erstellung eines Dummy-Zertifikats ist einfach. Rufen Sie lediglich das Skript <command>/usr/bin/gensslcert</command> auf.  Es erstellt oder überschreibt die unten aufgelisteten Dateien. Verwenden Sie die optischen Switches von <command>gensslcert</command>, um die Feineinstellungen für das Zertifikat vorzunehmen. Rufen Sie <command>/usr/bin/gensslcert <option>-h</option></command> auf, um weitere Informationen zu erhalten.
+     Die Erstellung eines Dummy-Zertifikats ist einfach. Rufen Sie lediglich das Skript <command>/usr/bin/gensslcert</command> auf.  Es erstellt oder überschreibt die unten aufgelisteten Dateien. Verwenden Sie die optischen Switches von <command>gensslcert</command>, um die Feineinstellungen für das Zertifikat vorzunehmen. Rufen Sie <command>/usr/bin/gensslcert</command> <option>-h</option> auf, um weitere Informationen zu erhalten.
     </para>
     <itemizedlist mark="bullet" spacing="normal">
      <listitem>
@@ -1374,18 +1382,18 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
       Verwenden Sie Dummy-Zertifikate niemals in Produktionsumgebungen, sondern nur zum Testen.
      </para>
     </important>
-   </sect3>
-   <sect3 id="sec-apache2-ssl-certificate-custom">
+   </section>
+   <section xml:id="sec-apache2-ssl-certificate-custom">
     <title>Erstellen eines selbst signierten Zertifikats</title>
     <para>
      Wenn Sie einen sicheren Webserver für Ihr Intranet oder einen bestimmten Benutzerkreis einrichten, reicht unter Umständen ein von Ihrer eigenen Zertifizierungsstelle signiertes Zertifikat aus.
     </para>
     <para>
-     Die Erstellung eines selbst signierten Zertifikats ist ein interaktiver Vorgang, der aus neun Schritten besteht. Wechseln Sie dazu zunächst in das Verzeichnis <filename>/usr/share/doc/packages/apache2</filename> und führen Sie den folgenden Befehl aus: <command>./mkcert.sh make <option>--no-print-directory /usr/bin/openssl /usr/sbin/ custom</option></command>. Diesen Befehl sollten Sie keinesfalls außerhalb dieses Verzeichnisses ausführen. Das Programm gibt eine Reihe von Eingabeaufforderungen aus, von denen einige Benutzereingaben erfordern.
+     Die Erstellung eines selbst signierten Zertifikats ist ein interaktiver Vorgang, der aus neun Schritten besteht. Wechseln Sie dazu zunächst in das Verzeichnis <filename>/usr/share/doc/packages/apache2</filename> und führen Sie den folgenden Befehl aus: <command>./mkcert.sh make</command> <option>--no-print-directory /usr/bin/openssl /usr/sbin/ custom</option>. Diesen Befehl sollten Sie keinesfalls außerhalb dieses Verzeichnisses ausführen. Das Programm gibt eine Reihe von Eingabeaufforderungen aus, von denen einige Benutzereingaben erfordern.
     </para>
-    <procedure id="pro-apache2-ssl-certificate-custom">
+    <procedure xml:id="pro-apache2-ssl-certificate-custom">
      <title>Erstellen eines selbst signierten Zertifikats mit <command>mkcert.sh</command></title>
-     <step performance="required">
+     <step>
       <para>
        <literal>Festlegen des für Zertifikate zu verwendenden Signaturalgorithmus </literal>
       </para>
@@ -1393,7 +1401,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        Wählen Sie RSA aus (<keycap>R</keycap>, die Standardeinstellung), da einige ältere Browser Probleme mit DSA haben.
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Generating RSA private key for CA (1024 bit) (Privaten RSA-Schlüssel für CA (1024 Bit) erstellen)</literal>
       </para>
@@ -1401,7 +1409,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        Keine Eingabe erforderlich.
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Generating X.509 certificate signing request for CA (X.509-Zertifikatsignierungsanforderung für CA erstellen)</literal>
       </para>
@@ -1415,7 +1423,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        </para>
       </important>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Generating X.509 certificate for CA signed by itself (Von CA selbst signiertes X.509-Zertifikat für CA erstellen)</literal>
       </para>
@@ -1423,7 +1431,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        Wählen Sie Zertifikatversion <keycap>3</keycap> aus (die Standardeinstellung).
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Generating RSA private key for SERVER (1024 bit) (Privaten RSA-Schlüssel für SERVER (1024 Bit) erstellen)</literal>
       </para>
@@ -1431,7 +1439,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        Keine Eingabe erforderlich.
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Generating X.509 certificate signing request for SERVER (X.509-Zertifikatsignierungsanforderung für SERVER erstellen)</literal>
       </para>
@@ -1445,7 +1453,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        </para>
       </important>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Generating X.509 certificate signed by own CA (Von eigener CA signiertes X.509-Zertifikat erstellen)</literal>
       </para>
@@ -1453,7 +1461,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        Wählen Sie Zertifikatversion <keycap>3</keycap> aus (die Standardeinstellung).
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Encrypting RSA private key of CA with a pass phrase for security (Privaten RSA-Schlüssel der CA aus Sicherheitsgründen mit einem Passwort verschlüsseln)</literal>
       </para>
@@ -1461,7 +1469,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
        Aus Sicherheitsgründen empfiehlt es sich, den privaten Schlüssel der Zertifizierungsstelle mit einem Passwort zu verschlüsseln. Wählen Sie daher <keycap>J</keycap> aus und geben Sie ein Passwort ein.
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>Encrypting RSA private key of SERVER with a pass phrase for security (Privaten RSA-Schlüssel von SERVER aus Sicherheitsgründen mit einem Passwort verschlüsseln)</literal>
       </para>
@@ -1488,14 +1496,14 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
       Verwenden Sie selbst signierte Zertifikate nur auf einem Webserver, auf den Benutzer zugreifen, denen Sie bekannt sind und die Ihnen als Zertifizierungsstelle vertrauen. Für einen öffentlichen Online-Versand wäre ein solches Zertifikat z. B. nicht geeignet.
      </para>
     </important>
-   </sect3>
-   <sect3 id="sec-apache2-ssl-certificate-official">
+   </section>
+   <section xml:id="sec-apache2-ssl-certificate-official">
     <title>Anfordern eines offiziell signierten Zertifikats</title>
     <para>
      Es gibt verschiedene offizielle Zertifizierungsstellen, die Ihre Zertifikate signieren. Zertifizierungsstellen sind vertrauenswürdige unabhängige Parteien. Einem Zertifikat, das durch eine solche Zertifizierungsstelle signiert wurde, kann daher voll und ganz vertraut werden. Sichere Webserver, deren Inhalte für die Öffentlichkeit bereitstehen, verfügen in der Regel über ein offiziell signiertes Zertifikat.
     </para>
     <para>
-     Die bekanntesten offiziellen Zertifizierungsstellen sind Thawte (<ulink url="http://www.thawte.com/"/>) und Verisign (<ulink url="http://www.verisign.com"/>). Diese und andere Zertifizierungsstellen sind bereits in Browsern kompiliert. Zertifikate, die von diesen Zertifizierungsstellen signiert wurden, werden daher von Browsern automatisch akzeptiert.
+     Die bekanntesten offiziellen Zertifizierungsstellen sind Thawte (<link xlink:href="http://www.thawte.com/"/>) und Verisign (<link xlink:href="http://www.verisign.com"/>). Diese und andere Zertifizierungsstellen sind bereits in Browsern kompiliert. Zertifikate, die von diesen Zertifizierungsstellen signiert wurden, werden daher von Browsern automatisch akzeptiert.
     </para>
     <para>
      Wenn Sie ein offiziell signiertes Zertifikat anfordern, senden Sie kein Zertifikat an die Zertifizierungsstelle, sondern eine CSR (Certificate Signing Request, Zertifikatsignierungsanforderung). Zur Erstellung einer CSR rufen Sie das Skript <command>/usr/share/ssl/misc/CA.sh -newreq</command> auf.
@@ -1506,10 +1514,10 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
     <para>
      Die CSR wird in dem Verzeichnis erstellt, aus dem Sie das Skript aufgerufen haben. Der Name der CSR-Datei lautet <filename>newreq.pem</filename>.
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-apache2-ssl-configuration">
+  <section xml:id="sec-apache2-ssl-configuration">
    <title>Konfigurieren von Apache mit SSL</title><indexterm> <primary>Apache</primary> <secondary>SSL</secondary> <tertiary>Apache mit SSL konfigurieren</tertiary> </indexterm>
    <para>
     Port 443 ist auf dem Webserver der Standardport für SSL- und TLS-Anforderungen. Zwischen einem <quote>normalen</quote> Apache-Webserver, der Port 80 überwacht, und einem SSL/TLS-aktivierten Apache-Server, der Port 443 überwacht, kommt es zu keinen Konflikten. In der Tat kann die gleiche Apache-Instanz sowohl HTTP als auch HTTPS ausführen. In der Regel verteilen separate virtuelle Hosts die Anforderungen für Port 80 und Port 443 an separate virtuelle Server.
@@ -1556,7 +1564,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec-apache2-ssl-configuration-name-based">
+   <section xml:id="sec-apache2-ssl-configuration-name-based">
     <title>Namensbasierte virtuelle Hosts und SSL</title>
     <para>
      Auf einem Server mit nur einer IP-Adresse können standardmäßig nicht mehrere SSL-aktivierte virtuelle Hosts laufen. Für ein namensbasiertes virtuelles Hosting muss Apache wissen, welcher Servername angefordert wurde. Das Problem ist dabei, dass SSL-Verbindungen erst gelesen werden können, nachdem die Verbindung (unter Verwendung des standardmäßigen virtuellen Hosts) bereits hergestellt wurde. Demzufolge erhalten Benutzer eine Warnmeldung, die besagt, dass das Zertifikat nicht mit dem Servernamen übereinstimmt.
@@ -1570,7 +1578,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
     <important>
      <title>SNI - Browserunterstützung</title>
      <para>
-      SNI muss auf der Client-Seite unterstützt werden. Auch wenn die meisten Browser SNI unterstützen, fehlt die SNI-Unterstützung bei einigen Browsern für Mobilgeräte sowie im Internet Explorer und in Safari unter Windows* XP. Weitere Informationen finden Sie in <ulink url="http://en.wikipedia.org/wiki/Server_Name_Indication"/>.
+      SNI muss auf der Client-Seite unterstützt werden. Auch wenn die meisten Browser SNI unterstützen, fehlt die SNI-Unterstützung bei einigen Browsern für Mobilgeräte sowie im Internet Explorer und in Safari unter Windows* XP. Weitere Informationen finden Sie in <link xlink:href="http://en.wikipedia.org/wiki/Server_Name_Indication"/>.
      </para>
      <para>
       Konfigurieren Sie die Behandlung von Browsern ohne SNI-Fähigkeit mit der Direktive <systemitem>SSLStrictSNIVHostCheck</systemitem>. Wenn SNI in der Serverkonfiguration auf <literal>on</literal> gesetzt ist, werden Browser ohne SNI-Fähigkeit für alle virtuellen Hosts abgelehnt. Wenn für SNI <literal>on</literal> in einer <systemitem>VirtualHost</systemitem>-Direktive festgelegt ist, wird der Zugriff auf den konkreten virtuellen Host abgelehnt.
@@ -1579,12 +1587,12 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
       Wenn in der Serverkonfiguration <literal>off</literal> festgelegt ist, verhält sich der Server wie ohne SNI-Unterstützung. SSL-Anforderungen werden durch den <emphasis>ersten</emphasis> (für Port 443) definierten virtuellen Host bearbeitet.
      </para>
     </important><indexterm class="endofrange" startref="idx-apache2-ssl"/>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-apache2-nss">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-apache2-nss">
   <title>Einrichten eines sicheren Webservers mit NSS</title>
-  <indexterm class="startofrange" id="idx-apache2-nss"> <primary>Apache</primary> <secondary>NSS</secondary> </indexterm>
+  <indexterm class="startofrange" xml:id="idx-apache2-nss"> <primary>Apache</primary> <secondary>NSS</secondary> </indexterm>
   <para>
    Das Modul <systemitem>mod_nss</systemitem> sorgt für die starke Verschlüsselung mit den TLS-Protokollen 1.1 und 1.2 (Transport Layer Security), die bei Verwendung von Apache mit <systemitem>mod_ssl</systemitem> nicht zur Verfügung stehen.
   </para>
@@ -1617,14 +1625,14 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    Die Datei <filename>/etc/apache2/conf.d/mod_nss.conf</filename> ist die standardmäßige Konfigurationsdatei für das Paket <systemitem>mod_nss</systemitem>. Weitere Informationen finden Sie in den Kommentaren in dieser Datei.
   </para>
   <indexterm class="endofrange" startref="idx-apache2-ssl"/>
- </sect1>
- <sect1 id="sec-apache2-security">
+ </section>
+ <section xml:id="sec-apache2-security">
   <title>Vermeiden von Sicherheitsproblemen</title><indexterm> <primary>Apache</primary> <secondary>Sicherheit</secondary> </indexterm>
   <para>
    Ein dem öffentlichen Internet ausgesetzter Webserver erfordert ständige Wartungs- und Verwaltungsarbeiten. Sicherheitsprobleme, verursacht durch die Software wie auch durch versehentliche Fehlkonfigurationen, sind kaum zu vermeiden. Im Folgenden einige Tipps zur Verbesserung der Sicherheit.
   </para>
 
-  <sect2 id="sec-apache2-security-up-to-date">
+  <section xml:id="sec-apache2-security-up-to-date">
    <title>Stets aktuelle Software</title>
    <para>
     Bei Bekanntwerden von Sicherheitsrisiken in der Apache-Software veröffentlicht SUSE sofort einen entsprechenden Sicherheitshinweis. Dieser enthält Anleitungen zur Behebung der Schwachstellen, die wiederum möglichst frühzeitig angewendet werden sollten. Die Sicherheitsankündigungen von SUSE stehen unter folgenden Adressen zur Verfügung:
@@ -1634,7 +1642,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <formalpara>
       <title>Webseite</title>
       <para>
-       <ulink url="http://www.novell.com/linux/security/securitysupport.html"/>
+       <link xlink:href="http://www.novell.com/linux/security/securitysupport.html"/>
       </para>
      </formalpara>
     </listitem>
@@ -1642,7 +1650,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <formalpara>
       <title>Mailinglisten-Archiv</title>
       <para>
-       <ulink url="http://lists.opensuse.org/opensuse-security-announce/"/>
+       <link xlink:href="http://lists.opensuse.org/opensuse-security-announce/"/>
       </para>
      </formalpara>
     </listitem>
@@ -1650,28 +1658,28 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <formalpara>
       <title>RSS-Newsticker</title>
       <para>
-       <ulink url="http://www.novell.com/linux/security/suse_security.xml"/>
+       <link xlink:href="http://www.novell.com/linux/security/suse_security.xml"/>
       </para>
      </formalpara>
     </listitem>
    </itemizedlist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-security-permissions">
+  <section xml:id="sec-apache2-security-permissions">
    <title>DocumentRoot-Berechtigungen</title>
    <para>
     In <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> sind das <systemitem>DocumentRoot </systemitem>-Verzeichnis <filename>/srv/www/htdocs </filename> und das CGI-Verzeichnis <filename>/srv/www/cgi-bin</filename> standardmäßig dem Benutzer bzw. der Gruppe <systemitem>root</systemitem> zugeordnet. Diese Berechtigungen sollten nicht geändert werden. Wenn diese Verzeichnisse für alle Benutzer modifizierbar sind, kann jeder Benutzer Dateien darin ablegen. Diese Dateien würden dann von Apache mit <systemitem>wwwrun</systemitem>-Berechtigungen ausgeführt werden, was wiederum dem Benutzer unbeabsichtigt Zugriff auf die Ressourcen des Dateisystems gewähren würde. Das <systemitem>DocumentRoot</systemitem>-Verzeichnis und die CGI-Verzeichnisse Ihrer virtuellen Hosts sollten Sie als Unterverzeichnisse im Verzeichnis <filename>/srv/www</filename> anlegen. Stellen Sie auch bei diesen Verzeichnissen sicher, dass die Verzeichnisse und die darin enthaltenen Dateien dem Benutzer bzw. der Gruppe <systemitem class="username">root</systemitem> zugeordnet sind.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-security-filesystem">
+  <section xml:id="sec-apache2-security-filesystem">
    <title>Zugriff auf das Dateisystem</title>
    <para>
     Standardmäßig wird in <filename>/etc/apache2/httpd.conf</filename> der Zugriff auf das gesamte Dateisystem verweigert. Diese Direktiven sollten Sie nicht überschreiben. Aktivieren Sie stattdessen explizit den Zugriff auf die Verzeichnisse, die Apache lesen muss. Weitere Informationen finden Sie in <xref linkend="sec-apache2-configuration-manually-vhost-basic-configuration"/>. Achten Sie dabei darauf, dass keine unbefugten Personen auf kritische Dateien wie Passwort- oder Systemkonfigurationsdateien zugreifen können.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-security-cgi">
+  <section xml:id="sec-apache2-security-cgi">
    <title>CGI-Skripten</title>
    <para>
     Interaktive Skripten in Perl, PHP, SSI oder anderen Programmiersprachen können im Prinzip jeden beliebigen Befehl ausführen und stellen damit generell ein Sicherheitsrisiko dar. Skripts, die vom Server ausgeführt werden, sollten nur aus Quellen stammen, denen der Serveradministrator vertraut. Keine gute Idee ist es, den Benutzern die Ausführung ihrer eigenen Skripts zu erlauben. Zusätzlich empfiehlt es sich, die Sicherheit aller Skripten zu überprüfen.
@@ -1682,16 +1690,16 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
    <para>
     Alle CGI-Skripten werden unter dem gleichen Benutzer ausgeführt. Es kann daher zu Konflikten zwischen verschiedenen Skripten kommen. Abhilfe schafft hier das Modul suEXEC, das die Ausführung von CGI-Skripten unter einem anderen Benutzer oder einer anderen Gruppe ermöglicht.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-security-users">
+  <section xml:id="sec-apache2-security-users">
    <title>Benutzerverzeichnisse</title>
    <para>
     Bei der Aktivierung von Benutzerverzeichnissen (mit <systemitem>mod_userdir</systemitem> oder <systemitem>mod_rewrite</systemitem>) sollten Sie unbedingt darauf achten, keine <filename>.htaccess</filename>-Dateien zuzulassen. Durch diese Dateien wäre es den Benutzern möglich, die Sicherheitseinstellungen zu überschreiben. Zumindest sollten Sie die Möglichkeiten des Benutzers durch die Direktive <systemitem>AllowOverRide</systemitem> einschränken. In <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> sind <filename>.htaccess</filename>-Dateien standardmäßig aktiviert. Den Benutzern ist es allerdings nicht erlaubt, <systemitem>Option</systemitem>-Direktiven mit <systemitem>mod_userdir</systemitem> zu überschreiben (siehe hierzu die Konfigurationsdatei <filename>/etc/apache2/mod_userdir.conf</filename>).
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-apache2-troubleeshooting">
+  </section>
+ </section>
+ <section xml:id="sec-apache2-troubleeshooting">
   <title>Fehlersuche</title><indexterm> <primary>Apache</primary> <secondary>Fehlersuche</secondary></indexterm>
 
   <para>
@@ -1717,7 +1725,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <tip>
       <title>Ein einfacher Test</title>
       <para>
-       Sie können die Apache-Protokollmeldungen mit dem Befehl <command>tail -F /var/log/apache2/<replaceable>my_error_log</replaceable></command> überwachen.  Führen Sie anschließend den Befehl <command>rcapache2 restart</command> aus.  Versuchen Sie anschließend eine Verbindung mit einem Browser herzustellen und überprüfen Sie dort die Ausgabe.
+       Sie können die Apache-Protokollmeldungen mit dem Befehl <command>tail -F /var/log/apache2/</command> <replaceable>my_error_log</replaceable> überwachen.  Führen Sie anschließend den Befehl <command>rcapache2 restart</command> aus.  Versuchen Sie anschließend eine Verbindung mit einem Browser herzustellen und überprüfen Sie dort die Ausgabe.
       </para>
      </tip>
     </listitem>
@@ -1733,24 +1741,24 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
   </variablelist>
 
   <para>
-   Falls sich Ihr Problem nicht mithilfe der vorgenannten Ressourcen beheben lässt, finden Sie weitere Informationen in der Apache-Fehlerdatenbank, die online unter <ulink url="http://httpd.apache.org/bug_report.html"/> zur Verfügung steht. Sie können sich auch an die Apache-Benutzer-Community wenden, die Sie über eine Mailingliste unter <ulink url="http://httpd.apache.org/userslist.html"/> erreichen. Des Weiteren empfehlen wir die Newsgroup <ulink url="comp.infosystems.www.servers.unix"/>.
+   Falls sich Ihr Problem nicht mithilfe der vorgenannten Ressourcen beheben lässt, finden Sie weitere Informationen in der Apache-Fehlerdatenbank, die online unter <link xlink:href="http://httpd.apache.org/bug_report.html"/> zur Verfügung steht. Sie können sich auch an die Apache-Benutzer-Community wenden, die Sie über eine Mailingliste unter <link xlink:href="http://httpd.apache.org/userslist.html"/> erreichen. Des Weiteren empfehlen wir die Newsgroup <link xlink:href="comp.infosystems.www.servers.unix"/>.
   </para>
- </sect1>
- <sect1 id="sec-apache2-more-information">
+ </section>
+ <section xml:id="sec-apache2-more-information">
   <title>Weiterführende Informationen</title>
 
   <para>
-   Das Paket <systemitem>apache2-doc</systemitem>, das an verschiedenen Orten bereitgestellt wird, enthält das vollständige Apache-Handbuch für die lokale Installation und Referenz. Das Handbuch ist nicht in der Standardinstallation enthalten. Am schnellsten installieren Sie es mit dem Befehl <command>zypper in apache2-doc</command>. Nach der Installation steht das Apache-Handbuch unter <ulink url="http://localhost/manual/"/> zur Verfügung. Unter <ulink url="http://httpd.apache.org/docs-2.2/"/> können Sie auch im Web darauf zugreifen. SUSE-spezifische Konfigurationstipps finden Sie im Verzeichnis <filename>/usr/share/doc/packages/apache2/README.*</filename>.
+   Das Paket <systemitem>apache2-doc</systemitem>, das an verschiedenen Orten bereitgestellt wird, enthält das vollständige Apache-Handbuch für die lokale Installation und Referenz. Das Handbuch ist nicht in der Standardinstallation enthalten. Am schnellsten installieren Sie es mit dem Befehl <command>zypper in apache2-doc</command>. Nach der Installation steht das Apache-Handbuch unter <link xlink:href="http://localhost/manual/"/> zur Verfügung. Unter <link xlink:href="http://httpd.apache.org/docs-2.2/"/> können Sie auch im Web darauf zugreifen. SUSE-spezifische Konfigurationstipps finden Sie im Verzeichnis <filename>/usr/share/doc/packages/apache2/README.*</filename>.
   </para>
 
-  <sect2 id="sec-apache2-more-information-apache22">
+  <section xml:id="sec-apache2-more-information-apache22">
    <title>Apache 2.2</title>
    <para>
-    Eine Liste der neuen Funktionen in Apache 2.2 finden Sie unter <ulink url="http://httpd.apache.org/docs/2.2/new_features_2_2.html"/>. Upgrade-Informationen von Version 2.0 auf Version 2.2 erhalten Sie unter <ulink url="http://httpd.apache.org/docs-2.2/upgrading.html"/>.
+    Eine Liste der neuen Funktionen in Apache 2.2 finden Sie unter <link xlink:href="http://httpd.apache.org/docs/2.2/new_features_2_2.html"/>. Upgrade-Informationen von Version 2.0 auf Version 2.2 erhalten Sie unter <link xlink:href="http://httpd.apache.org/docs-2.2/upgrading.html"/>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-more-information-modules">
+  <section xml:id="sec-apache2-more-information-modules">
    <title> Apache Module </title>
    <para>
     Weitere Informationen zu externen Apache-Modulen, die kurz im Abschnitt <xref linkend="sec-apache2-modules-external"/> beschrieben werden, finden Sie an folgenden Orten:
@@ -1760,7 +1768,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <term>mod-apparmor</term>
      <listitem>
       <para>
-       <ulink url="http://en.opensuse.org/SDB:AppArmor"/>
+       <link xlink:href="http://en.opensuse.org/SDB:AppArmor"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1768,7 +1776,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <term>mod-auth_kerb</term>
      <listitem>
       <para>
-       <ulink url="http://modauthkerb.sourceforge.net/"/>
+       <link xlink:href="http://modauthkerb.sourceforge.net/"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1777,7 +1785,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </term>
      <listitem>
       <para>
-       <ulink url="http://www.mono-project.com/Mod_mono"/>
+       <link xlink:href="http://www.mono-project.com/Mod_mono"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1786,7 +1794,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </term>
      <listitem>
       <para>
-       <ulink url="http://perl.apache.org/"/>
+       <link xlink:href="http://perl.apache.org/"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1795,7 +1803,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </term>
      <listitem>
       <para>
-       <ulink url="http://www.php.net/manual/en/install.unix.apache2.php"/>
+       <link xlink:href="http://www.php.net/manual/en/install.unix.apache2.php"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1804,7 +1812,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </term>
      <listitem>
       <para>
-       <ulink url="http://www.modpython.org/"/>
+       <link xlink:href="http://www.modpython.org/"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1813,15 +1821,15 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      </term>
      <listitem>
       <para>
-       <ulink url="http://modsecurity.org/"/>
+       <link xlink:href="http://modsecurity.org/"/>
       </para>
      </listitem>
     </varlistentry>
     
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-apache2-more-information-cgi">
+  <section xml:id="sec-apache2-more-information-cgi">
    <title>Entwicklung</title>
    <para>
     Weitere Informationen zur Entwicklung von Apache-Modulen sowie zur Teilnahme am Apache-Webserver-Projekt finden Sie unter folgenden Adressen:
@@ -1831,7 +1839,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <term>Informationen für Apache-Entwickler</term>
      <listitem>
       <para>
-       <ulink url="http://httpd.apache.org/dev/"/>
+       <link xlink:href="http://httpd.apache.org/dev/"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1839,7 +1847,7 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <term>Dokumentation für Apache-Entwickler</term>
      <listitem>
       <para>
-       <ulink url="http://httpd.apache.org/docs/2.2/developer/"/>
+       <link xlink:href="http://httpd.apache.org/docs/2.2/developer/"/>
       </para>
      </listitem>
     </varlistentry>
@@ -1847,22 +1855,22 @@ NameVirtualHost [2002:c0a8:364::]:80</screen>
      <term>Entwickeln von Apache-Modulen mit Perl und C </term>
      <listitem>
       <para>
-       <ulink url="http://www.modperl.com/"/>
+       <link xlink:href="http://www.modperl.com/"/>
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 <?dbfo-need height="10em"?>
 
 
 
-  <sect2 id="sec-apache2-more-information-miscellaneous-sources">
+  <section xml:id="sec-apache2-more-information-miscellaneous-sources">
    <title>Verschiedene Informationsquellen</title>
    <para>
-    <phrase os="sles;sled">Wenn Sie in <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> Probleme mit Apache haben, werfen Sie einen Blick in die technische Informationssuche unter <ulink url="http://www.novell.com/support"/>.</phrase> Die Entstehungsgeschichte von Apache finden Sie unter <ulink url="http://httpd.apache.org/ABOUT_APACHE.html"/>. Auf dieser Seite erfahren Sie auch, weshalb dieser Server Apache genannt wird.
+    <phrase os="sles;sled">Wenn Sie in <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> Probleme mit Apache haben, werfen Sie einen Blick in die technische Informationssuche unter <link xlink:href="http://www.novell.com/support"/>.</phrase> Die Entstehungsgeschichte von Apache finden Sie unter <link xlink:href="http://httpd.apache.org/ABOUT_APACHE.html"/>. Auf dieser Seite erfahren Sie auch, weshalb dieser Server Apache genannt wird.
    </para><indexterm class="endofrange" startref="idx-apache2"/>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>
