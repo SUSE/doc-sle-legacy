@@ -1,22 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-security-ldap">
- <title>LDAP&mdash;A Directory Service</title>
- <remark condition="generic">
-  2007-05-29 - jjaeger: shorten intro??? </remark><indexterm id="idx-LDAP" class="startofrange">
- <primary>LDAP</primary></indexterm><indexterm>
- <primary>Lightweight Directory Access Protocol</primary>
- <see>LDAP</see></indexterm><indexterm>
- <primary>protocols</primary>
- <secondary>LDAP</secondary></indexterm><indexterm>
- <primary>OpenLDAP</primary>
- <see>LDAP</see></indexterm>
- <abstract>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-security-ldap"><?dbfo-need height="20em"?><title>LDAP&mdash;A Directory Service</title><info><abstract>
   <para>
    The Lightweight Directory Access Protocol (LDAP) is a set of protocols
    designed to access and maintain information directories. LDAP can be used
@@ -24,7 +18,18 @@
    management, and more. This chapter provides a basic understanding of how
    OpenLDAP works and how to manage LDAP data with &yast;.
   </para>
- </abstract>
+ </abstract></info>
+ 
+ <remark condition="generic">
+  2007-05-29 - jjaeger: shorten intro??? </remark><indexterm xml:id="idx-LDAP" class="startofrange">
+ <primary>LDAP</primary></indexterm><indexterm>
+ <primary>Lightweight Directory Access Protocol</primary>
+ <see>LDAP</see></indexterm><indexterm>
+ <primary>protocols</primary>
+ <secondary>LDAP</secondary></indexterm><indexterm>
+ <primary>OpenLDAP</primary>
+ <see>LDAP</see></indexterm>
+ 
  <para>
   In a network environment it is crucial to keep important information
   structured and to serve it quickly. A directory service&mdash;like the
@@ -43,7 +48,7 @@
   A directory in this context is a type of database optimized for quick and
   effective reading and searching:
  </para>
- <itemizedlist>
+ <itemizedlist mark="bullet" spacing="normal">
   <listitem>
    <remark condition="clarity">
     2011-02-18 - fs: the number is limited? and why limit reads?
@@ -78,7 +83,7 @@
   complex update or query mechanisms. All applications are guaranteed to
   access this service quickly and easily.
  </para>
- <sect1 id="sec-ldap-vsnis">
+ <section xml:id="sec-ldap-vsnis">
   <title>LDAP versus NIS</title>
 
   <remark condition="generic"> 2007-05-29 - jjaeger: this still necessary? Why not discard the NIS
@@ -113,7 +118,7 @@
    centrally administered. A few application examples are:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Replacement for the NIS service
@@ -147,8 +152,8 @@
    administration of large amounts of data, as it can be searched more
    easily.
   </para>
- </sect1>
- <sect1 id="sec-ldap-tree">
+ </section>
+ <section xml:id="sec-ldap-tree">
   <title>Structure of an LDAP Directory Tree</title><indexterm>
 
   <primary>LDAP</primary>
@@ -231,7 +236,7 @@ den Absatz ganz weglassen.
    following example, shown in <xref linkend="fig-ldap-tree"/>.
   </para>
 
-  <figure id="fig-ldap-tree">
+  <figure xml:id="fig-ldap-tree">
    <title>Structure of an LDAP Directory</title>
    <mediaobject>
     <imageobject role="fo">
@@ -247,8 +252,7 @@ den Absatz ganz weglassen.
    The complete diagram is a fictional directory information tree. The
    entries on three levels are depicted. Each entry corresponds to one box
    in the image. The complete, valid <emphasis>distinguished name</emphasis>
-   for the fictional employee <systemitem class="username"
-    >Geeko
+   for the fictional employee <systemitem class="username">Geeko
    Linux</systemitem>, in this case, is <literal>cn=Geeko
    Linux,ou=doc,dc=example,dc=com</literal>. It is composed by adding the
    RDN <literal>cn=Geeko Linux</literal> to the DN of the preceding entry
@@ -279,8 +283,7 @@ den Absatz ganz weglassen.
    required attributes and valid attribute values.
   </para>
 
-  <table
-   id="tab-ldap-schema">
+  <table xml:id="tab-ldap-schema">
    <title>Commonly Used Object Classes and Attributes</title>
    <tgroup cols="4">
     <colspec colname="c1" colwidth="24*"/>
@@ -388,17 +391,17 @@ den Absatz ganz weglassen.
    directive with explanations.
   </para>
 
-  <example id="aus-ldap-schema-help">
+  <example xml:id="aus-ldap-schema-help">
    <title>Excerpt from schema.core</title>
-<screen>attributetype (2.5.4.11 NAME ( 'ou' 'organizationalUnitName') <co id="co-ldap-schema-core-att-type"/>
-       DESC 'RFC2256: organizational unit this object belongs to' <co id="co-ldap-schema-core-desc"/>
-       SUP name ) <co id="co-ldap-schema-core-sup"/>
+<screen>attributetype (2.5.4.11 NAME ( 'ou' 'organizationalUnitName') <co xml:id="co-ldap-schema-core-att-type"/>
+       DESC 'RFC2256: organizational unit this object belongs to' <co xml:id="co-ldap-schema-core-desc"/>
+       SUP name ) <co xml:id="co-ldap-schema-core-sup"/>
 
-objectclass ( 2.5.6.5 NAME 'organizationalUnit' <co id="co-ldap-schema-core-oc"/>
-       DESC 'RFC2256: an organizational unit' <co id="co-ldap-schema-core-desc-oc"/>
-       SUP top STRUCTURAL <co id="co-ldap-schema-core-sup-oc"/>
-       MUST ou <co id="co-ldap-schema-core-must-oc"/>
-MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-schema-core-may-oc"/>
+objectclass ( 2.5.6.5 NAME 'organizationalUnit' <co xml:id="co-ldap-schema-core-oc"/>
+       DESC 'RFC2256: an organizational unit' <co xml:id="co-ldap-schema-core-desc-oc"/>
+       SUP top STRUCTURAL <co xml:id="co-ldap-schema-core-sup-oc"/>
+       MUST ou <co xml:id="co-ldap-schema-core-must-oc"/>
+MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co xml:id="co-ldap-schema-core-may-oc"/>
   $ x121Address $ registeredAddress $ destinationIndicator 
   $ preferredDeliveryMethod $ telexNumber 
   $ teletexTerminalIdentifier $ telephoneNumber 
@@ -475,8 +478,8 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    OpenLDAP documentation. When installed, find it in
    <filename>/usr/share/doc/packages/openldap2/guide/admin/guide.html</filename>.
   </para>
- </sect1>
- <sect1 id="sec-ldap-yast" os="osuse;sles">
+ </section>
+ <section xml:id="sec-ldap-yast" os="osuse;sles">
   <title>Configuring an LDAP Server with &yast;</title><indexterm>
 
   <primary>LDAP</primary>
@@ -503,7 +506,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    mail, DNS, and DHCP servers.
   </para>
 
-  <figure id="fig-ldap-y2-wizard-general-settings">
+  <figure xml:id="fig-ldap-y2-wizard-general-settings">
    <title>&yast; LDAP Server Configuration</title>
    <mediaobject>
     <imageobject role="fo">
@@ -515,7 +518,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    </mediaobject>
   </figure>
 
-  <figure id="fig-ldap-y2-wizard-db-settings">
+  <figure xml:id="fig-ldap-y2-wizard-db-settings">
    <title>&yast; LDAP Server&mdash;New Database</title>
    <mediaobject>
     <imageobject role="fo">
@@ -548,7 +551,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      (you can change these settings later)&mdash;see
      <xref linkend="fig-ldap-y2-wizard-general-settings"/>:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Set LDAP to be started.
@@ -602,8 +605,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      Confirm <guimenu>Basic Database Settings</guimenu> with entering an
      <guimenu>LDAP Administrator Password</guimenu> and then clicking
      <guimenu>Next</guimenu>&mdash;see
-     <xref
-      linkend="fig-ldap-y2-wizard-general-settings"/>.
+     <xref linkend="fig-ldap-y2-wizard-general-settings"/>.
     </para>
    </step>
    <step>
@@ -614,7 +616,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    </step>
   </procedure>
 
-  <figure id="fig-ldap-y2-server-cfg">
+  <figure xml:id="fig-ldap-y2-server-cfg">
    <title>&yast; LDAP Server Configuration</title>
    <mediaobject>
     <imageobject role="fo">
@@ -732,12 +734,12 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      </varlistentry>
     </variablelist>
    </step>
-   <step id="step-ldap-server-config-tls">
+   <step xml:id="step-ldap-server-config-tls">
     <para>
      To configure secure communication between client and server, proceed
      with <guimenu>TLS Settings</guimenu>:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Activate <guimenu>Enable TLS</guimenu> to enable TLS and SSL
@@ -790,8 +792,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    definitions in OpenLDAP's LDIF Schema format.
   </para>
 
-  <figure
-   id="fig-ldap-y2-server-db-cfg">
+  <figure xml:id="fig-ldap-y2-server-db-cfg">
    <title>&yast; LDAP Server Database Configuration</title>
    <mediaobject>
     <imageobject role="fo">
@@ -892,7 +893,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      In the next dialog, enable enforcement of password policies to provide
      extra security to your LDAP server:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Check <guimenu>Enable Password Policies</guimenu> to be able to
@@ -965,7 +966,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     <para>
      Configure the password change policies:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Determine the number of passwords stored in the password history.
@@ -997,7 +998,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     <para>
      Configure the password time-limit policies:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Determine the minimum password time-limit (the time that needs to
@@ -1023,7 +1024,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     <para>
      Configure the lockout policies:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Enable password locking.
@@ -1086,9 +1087,8 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    For more information on the dynamic
    configuration of OpenLDAP, see the OpenLDAP Administration Guide.
   </para>
- </sect1>
- <sect1
-  id="sec-ldap-yast-client">
+ </section>
+ <section xml:id="sec-ldap-yast-client">
   <title>Configuring an LDAP Client with &yast;</title><indexterm>
 
   <primary>LDAP</primary>
@@ -1123,8 +1123,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    NSS-related changes as required by LDAP and installs the necessary files.
    Simply connect your client to the server and let &yast; manage users over
    LDAP. This basic setup is described in
-   <xref linkend="sec-ldap-yast-client-conf-basic"
-   />.
+   <xref linkend="sec-ldap-yast-client-conf-basic"/>.
   </para>
 
   <para>
@@ -1134,11 +1133,10 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    assigned to a user or group. LDAP user management allows you to assign
    far more and different attributes to users and groups than traditional
    user or group management solutions. This is described in
-   <xref linkend="sec-ldap-yast-client-conf-mod"
-   />.
+   <xref linkend="sec-ldap-yast-client-conf-mod"/>.
   </para>
 
-  <sect2 id="sec-ldap-yast-client-conf-basic">
+  <section xml:id="sec-ldap-yast-client-conf-basic">
    <title>Configuring Basic Settings</title>
    <para>
     The basic LDAP client configuration dialog
@@ -1147,7 +1145,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     <guimenu>Network Services</guimenu> <guimenu>LDAP Client</guimenu>
     </menuchoice> in the &yast; Control Center in the installed system.
    </para>
-   <figure id="fig-ldap-y2-clconf">
+   <figure xml:id="fig-ldap-y2-clconf">
     <title>&yast;: LDAP Client Configuration</title>
     <mediaobject>
      <imageobject role="fo">
@@ -1215,10 +1213,9 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    <para>
     To modify data on the server as administrator, click <guimenu>Advanced
     Configuration</guimenu>. The following dialog is split into two tabs.
-    See <xref
-     linkend="fig-ldap-y2-adconf"/>.
+    See <xref linkend="fig-ldap-y2-adconf"/>.
    </para>
-   <figure id="fig-ldap-y2-adconf">
+   <figure xml:id="fig-ldap-y2-adconf">
     <title>&yast;: Advanced Configuration</title>
     <mediaobject>
      <imageobject role="fo">
@@ -1235,7 +1232,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
       In the <guimenu>Client Settings</guimenu> tab, adjust the following
       settings according to your needs:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         If the search base for users, passwords, and groups differs from the
@@ -1281,7 +1278,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
       In <guimenu>Administration Settings</guimenu>, adjust the following
       settings:
      </para>
-     <substeps>
+     <substeps performance="required">
       <step>
        <para>
         Set the base for storing your user management data via
@@ -1337,12 +1334,11 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     entries on the LDAP server. Access to the configuration modules on the
     server is then granted according to the ACLs and ACIs stored on the
     server. Follow the procedures outlined in
-    <xref
-     linkend="sec-ldap-yast-client-conf-mod"/>.
+    <xref linkend="sec-ldap-yast-client-conf-mod"/>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ldap-yast-client-conf-mod">
+  <section xml:id="sec-ldap-yast-client-conf-mod">
    <title>Configuring the &yast; Group and User Administration Modules</title>
    <para>
     Use the &yast; LDAP client to adapt the &yast; modules for user and
@@ -1353,7 +1349,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     regular &yast; modules for user and group management. The registered
     data is stored as LDAP objects on the server.
    </para>
-   <figure id="fig-ldap-y2-modconf1">
+   <figure xml:id="fig-ldap-y2-modconf1">
     <title>&yast;: Module Configuration</title>
     <mediaobject>
      <imageobject role="fo">
@@ -1442,7 +1438,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      </para>
     </step>
    </procedure>
-   <figure id="fig-ldap-y2-objtemp">
+   <figure xml:id="fig-ldap-y2-objtemp">
     <title>&yast;: Configuration of an Object Template</title>
     <mediaobject>
      <imageobject role="fo">
@@ -1473,9 +1469,9 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     run, new groups and users can be registered in the usual way with
     &yast;.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-ldap-yast-usergr">
+  </section>
+ </section>
+ <section xml:id="sec-ldap-yast-usergr">
   <title>Configuring LDAP Users and Groups in &yast;</title><indexterm>
 
   <primary>LDAP</primary>
@@ -1528,7 +1524,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      Click <guimenu>Add</guimenu> to enter the user configuration. A dialog
      with four tabs opens:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Specify username, login, and password in the <guimenu>User
@@ -1568,7 +1564,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    </step>
   </procedure>
 
-  <figure id="fig-ldap-y2-adset">
+  <figure xml:id="fig-ldap-y2-adset">
    <title>&yast;: Additional LDAP Settings</title>
    <mediaobject>
     <imageobject role="fo">
@@ -1587,9 +1583,9 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
    LDAP users and groups by selecting <guimenu>LDAP User and Group
    Configuration</guimenu>.
   </para>
- </sect1>
-<?dbfo-need height="20em"?>
- <sect1 id="sec-ldap-browse">
+ </section>
+
+ <section xml:id="sec-ldap-browse">
   <title>Browsing the LDAP Directory Tree</title>
 
   <para>
@@ -1624,7 +1620,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
      directory to which your machine connected. Click to expand each item's
      submenu.
     </para>
-    <figure id="fig-ldap-browsetree">
+    <figure xml:id="fig-ldap-browsetree">
      <title>Browsing the LDAP Directory Tree</title>
      <mediaobject>
       <imageobject role="fo">
@@ -1644,7 +1640,7 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     <para>
      All attributes and values associated with this entry are displayed.
     </para>
-    <figure id="fig-ldap-browsedata">
+    <figure xml:id="fig-ldap-browsedata">
      <title>Browsing the Entry Data</title>
      <mediaobject>
       <imageobject role="fo">
@@ -1670,8 +1666,8 @@ MAY (userPassword $ searchGuide $ seeAlso $ businessCategory <co id="co-ldap-sch
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ldap-slapd" os="sles;osuse">
+ </section>
+ <section xml:id="sec-ldap-slapd" os="sles;osuse">
   <title>Manually Configuring an LDAP Server</title><indexterm>
 
   <primary>LDAP</primary>
@@ -2163,31 +2159,29 @@ ppolicy_use_lockout</screen>
   </sect2>
 -->
 
-  <sect2 id="sec-ldap-slapd-start">
+  <section xml:id="sec-ldap-slapd-start">
    <title>Starting and Stopping the Servers</title>
    <para>
     Once the LDAP server is fully configured and all desired entries have
     been made according to the pattern described in
     <xref linkend="sec-ldap-data"/>, start the LDAP server as
     <systemitem class="username">root</systemitem> by entering
-    <command>rcldap <option>start</option></command>. To stop the server
-    manually, enter the command <command>rcldap
-    <option>stop</option></command>. Query the status of the running LDAP
-    server with <command>rcldap <option>status</option></command>.
+    <command>rcldap</command> <option>start</option>. To stop the server
+    manually, enter the command <command>rcldap</command> <option>stop</option>. Query the status of the running LDAP
+    server with <command>rcldap</command> <option>status</option>.
    </para>
    <para>
     Use the &yast; runlevel editor, described in
-    <xref
-    linkend="sec-boot-runlevel-edit"/>, to have the server started
+    <xref linkend="sec-boot-runlevel-edit"/>, to have the server started
     and stopped automatically on system bootup and shutdown. It is also
     possible to create the corresponding links to the start and stop scripts
     with the <command>insserv</command> command from a command prompt as
     described in <xref linkend="sec-boot-init-skripte"/>.
    </para>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 <!-- ==================================================================== -->
- <sect1 id="sec-ldap-data" os="sles;osuse">
+ <section xml:id="sec-ldap-data" os="sles;osuse">
   <title>Manually Administering LDAP Data</title>
 
   <para>
@@ -2197,7 +2191,7 @@ ppolicy_use_lockout</screen>
    this section.
   </para>
 
-  <sect2 id="sec-ldap-data-add">
+  <section xml:id="sec-ldap-data-add">
    <title>Inserting Data into an LDAP Directory</title><indexterm>
    <primary>LDAP</primary>
    <secondary>adding data</secondary></indexterm><indexterm>
@@ -2232,7 +2226,7 @@ ppolicy_use_lockout</screen>
      <command>iconv</command> to convert the input to UTF-8.
     </para>
    </important>
-   <example id="dat-ldap-ldif">
+   <example xml:id="dat-ldap-ldif">
     <title>An LDIF File</title>
 <screen># The Organization
 dn: dc=example,dc=com
@@ -2277,8 +2271,7 @@ ou: it</screen>
     running <command>ldapadd</command> in
     <xref linkend="aus-ldap-addentry"/>.
    </para>
-   <example
-    id="aus-ldap-addentry">
+   <example xml:id="aus-ldap-addentry">
     <title>ldapadd with example.ldif</title>
 <screen>ldapadd -x -D cn=Administrator,dc=example,dc=com -W -f example.ldif 
 
@@ -2290,11 +2283,10 @@ adding new entry "ou=it,dc=example,dc=com"</screen>
    </example>
    <para>
     The user data of individuals can be prepared in separate LDIF files.
-    <xref
-     linkend="aus-ldap-addtux"/> adds
+    <xref linkend="aus-ldap-addtux"/> adds
     <systemitem class="username">Tux</systemitem> to the new LDAP directory.
    </para>
-   <example id="aus-ldap-addtux">
+   <example xml:id="aus-ldap-addtux">
     <title>LDIF Data for Tux</title>
 <screen># coworker Tux
 dn: cn=Tux Linux,ou=devel,dc=example,dc=com
@@ -2313,9 +2305,9 @@ telephoneNumber: +49 1234 567-8</screen>
     modify some data relatively often, a fine subdivision of single objects
     is recommended.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ldap-data-change">
+  <section xml:id="sec-ldap-data-change">
    <title>Modifying Data in the LDAP Directory</title><indexterm>
    <primary>LDAP</primary>
    <secondary>modifying data</secondary></indexterm><indexterm>
@@ -2327,10 +2319,9 @@ telephoneNumber: +49 1234 567-8</screen>
     LDIF file and pass the modified file to the LDAP server. To change the
     telephone number of colleague Tux from <literal>+49 1234 567-8</literal>
     to <literal>+49 1234 567-10</literal>, edit the LDIF file like in
-    <xref
-     linkend="aus-ldap-ldif-tux"/>.
+    <xref linkend="aus-ldap-ldif-tux"/>.
    </para>
-   <example id="aus-ldap-ldif-tux">
+   <example xml:id="aus-ldap-ldif-tux">
     <title>Modified LDIF File tux.ldif</title>
 <screen># coworker Tux
 dn: cn=Tux Linux,ou=devel,dc=example,dc=com 
@@ -2372,9 +2363,9 @@ telephoneNumber: +49 1234 567-10</screen>
     For more information about <command>ldapmodify</command> and its syntax,
     see the <command>ldapmodify</command> man page.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ldap-data-search">
+  <section xml:id="sec-ldap-data-search">
    <title>Searching or Reading Data from an LDAP Directory</title><indexterm>
    <primary>LDAP</primary>
    <secondary>searching data</secondary></indexterm><indexterm>
@@ -2403,9 +2394,9 @@ telephoneNumber: +49 1234 567-10</screen>
     information about the use of <command>ldapsearch</command>, see the
     <systemitem>ldapsearch(1)</systemitem> man page.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ldap-data-del">
+  <section xml:id="sec-ldap-data-del">
    <title>Deleting Data from an LDAP Directory</title><indexterm>
    <primary>LDAP</primary>
    <secondary>deleting data</secondary></indexterm><indexterm>
@@ -2421,9 +2412,9 @@ telephoneNumber: +49 1234 567-10</screen>
 Linux,ou=devel,dc=example,dc=com</screen><indexterm>
    <primary>commands</primary>
    <secondary>ldapdelete</secondary></indexterm>
-  </sect2>
- </sect1>
- <sect1 id="sec-ldap-info">
+  </section>
+ </section>
+ <section xml:id="sec-ldap-info">
   <title>For More Information</title>
 
   <para>
@@ -2447,7 +2438,7 @@ Linux,ou=devel,dc=example,dc=com</screen><indexterm>
      <para>
       A detailed question and answer collection applying to the
       installation, configuration, and use of OpenLDAP. Find it at
-      <ulink url="http://www.openldap.org/faq/data/cache/1.html"/>.
+      <link xlink:href="http://www.openldap.org/faq/data/cache/1.html"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -2457,20 +2448,19 @@ Linux,ou=devel,dc=example,dc=com</screen><indexterm>
      <para>
       Brief step-by-step instructions for installing your first LDAP server.
       Find it at
-      <ulink
-       url="http://www.openldap.org/doc/admin24/quickstart.html"/>
+      <link xlink:href="http://www.openldap.org/doc/admin24/quickstart.html"/>
       or on an installed system in Section 2 of
       <filename>/usr/share/doc/packages/openldap2/guide/admin/guide.html</filename>.
      </para>
     </listitem>
    </varlistentry>
-   <varlistentry id="list-ldap-info-adminguide">
+   <varlistentry xml:id="list-ldap-info-adminguide">
     <term>OpenLDAP 2.4 Administrator's Guide</term>
     <listitem>
      <para>
       A detailed introduction to all important aspects of LDAP
       configuration, including access controls and encryption. See
-      <ulink url="http://www.openldap.org/doc/admin24/"/> or, on an
+      <link xlink:href="http://www.openldap.org/doc/admin24/"/> or, on an
       installed system,
       <filename>/usr/share/doc/packages/openldap2/guide/admin/guide.html</filename>.
      </para>
@@ -2481,8 +2471,7 @@ Linux,ou=devel,dc=example,dc=com</screen><indexterm>
     <listitem>
      <para>
       A detailed general introduction to the basic principles of LDAP:
-      <ulink
-       url="http://www.redbooks.ibm.com/redbooks/pdfs/sg244986.pdf"/>.
+      <link xlink:href="http://www.redbooks.ibm.com/redbooks/pdfs/sg244986.pdf"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -2492,7 +2481,7 @@ Linux,ou=devel,dc=example,dc=com</screen><indexterm>
    Printed literature about LDAP:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      <citetitle>LDAP System Administration</citetitle> by Gerald Carter
@@ -2511,5 +2500,5 @@ Linux,ou=devel,dc=example,dc=com</screen><indexterm>
    The ultimate reference material for the subject of LDAP are the
    corresponding RFCs (request for comments), 2251 to 2256.
   </para><indexterm class="endofrange" startref="idx-LDAP"/>
- </sect1>
+ </section>
 </chapter>

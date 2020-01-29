@@ -1,12 +1,17 @@
-<?xml version="1.0"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-xen-network">
- <title>Virtual Networking</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-xen-network"><title>Virtual Networking</title><info/>
+ 
 <!--
  - fully integrated into system, configured with yast
  - xen scripts are only delivered for reference
@@ -62,7 +67,7 @@ I will try if it helps in my setup.
   the &yast; system configuration similar to the configuration of network
   interfaces in &productname;.
  </para>
- <sect1 id="sec-xen-vbridge">
+ <section xml:id="sec-xen-vbridge">
   <title>Virtual Bridges</title>
 
   <para>
@@ -130,8 +135,8 @@ I will try if it helps in my setup.
    for the bridge, the network setup of the respective &vmguest; is
    simplified.
   </para>
- </sect1>
- <sect1 id="sec-xen-vdevices">
+ </section>
+ <section xml:id="sec-xen-vdevices">
   <title>Network Devices for Guest Systems</title>
 
 <!--Jim: I did not find the qemu-ifup script used to create HVM vif bridges.
@@ -158,7 +163,7 @@ I will try if it helps in my setup.
    following emulations are at your disposal:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Realtek 8139 (PCI). This is the default emulated network card.
@@ -214,7 +219,7 @@ I will try if it helps in my setup.
    which virtual interface in &dom0; is connected to which Ethernet device
    in a running guest. This information may be read from the device naming
    in &dom0;. All virtual devices follow the rule <literal>vif&lt;domain
-   number>.&lt;interface_number></literal>.
+   number&gt;.&lt;interface_number&gt;</literal>.
   </para>
 
   <para>
@@ -250,8 +255,8 @@ br2             8000.000000000000       no
    the &vmhost;. At this time, the third bridge with name br2 is not
    connected to any &vmguest; nor real Ethernet device.
   </para>
- </sect1>
- <sect1 id="sec-xen-net-host-route">
+ </section>
+ <section xml:id="sec-xen-net-host-route">
   <title>Host Based Routing in Xen</title>
 
   <para>
@@ -275,7 +280,7 @@ br2             8000.000000000000       no
    the &vmguest; has the name &xenguest; with the IP &xenguestip;.
   </para>
 
-  <procedure id="proc-xen-network-route-ipv4">
+  <procedure xml:id="proc-xen-network-route-ipv4">
    <title>Configuring a routed IPv4 &vmguest;</title>
    <step>
     <para>
@@ -288,7 +293,7 @@ br2             8000.000000000000       no
     <para>
      Prepare the network configuration on the &vmhost; &xenhost;:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Create a hotplug interface that will be used to route the traffic. To
@@ -306,7 +311,7 @@ STARTMODE="hotplug"
        Edit the file <filename>/etc/sysconfig/SuSEfirewall2</filename> and
        add the following configurations:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          Add &xenguest;.0 to the devices in FW_DEV_EXT:
@@ -364,7 +369,7 @@ rcnetwork restart</screen>
     <para>
      Proceed with configuring the &xen; configuration of the &vmguest;.
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Change the vif interface configuration for &xenguest; as described in
@@ -402,7 +407,7 @@ rcnetwork restart</screen>
      The remaining configuration tasks must be accomplished from inside the
      &vmguest;.
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Open a console to the &vmguest; either with
@@ -434,8 +439,8 @@ default &xenhostip; - -
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-xen-net-masquerade">
+ </section>
+ <section xml:id="sec-xen-net-masquerade">
   <title>Creating a Masqueraded Network Setup</title>
 
   <para>
@@ -460,7 +465,7 @@ default &xenhostip; - -
     <para>
      Prepare the network configuration on the &vmhost;:
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Create a hotplug interface that will be used to route the traffic. To
@@ -478,7 +483,7 @@ STARTMODE="hotplug"
        Edit the file <filename>/etc/sysconfig/SuSEfirewall2</filename> and
        add the following configurations:
       </para>
-      <itemizedlist>
+      <itemizedlist mark="bullet" spacing="normal">
        <listitem>
         <para>
          Add &xennatguest;.0 to the devices in FW_DEV_DMZ:
@@ -537,7 +542,7 @@ STARTMODE="hotplug"
     <para>
      Proceed with configuring the &xen; configuration of the &vmguest;.
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Change the vif interface configuration for &xennatguest; as described
@@ -575,7 +580,7 @@ STARTMODE="hotplug"
      The remaining configuration tasks has to be accomplished from inside
      the &vmguest;.
     </para>
-    <substeps>
+    <substeps performance="required">
      <step>
       <para>
        Open a console to the &vmguest; either with
@@ -607,9 +612,9 @@ default &xenhostip; - -
     </para>
    </step>
   </procedure>
- </sect1>
+ </section>
 <!-- TODO: remove next when done with previous two sections -->
- <sect1 id="sec-xen-net-special">
+ <section xml:id="sec-xen-net-special">
   <title>Special Configurations</title>
 
   <para>
@@ -617,15 +622,14 @@ default &xenhostip; - -
    The following configurations are not activated by default:
   </para>
 
-  <sect2 id="sec-xen-net-throttle">
+  <section xml:id="sec-xen-net-throttle">
    <title>Bandwidth Throttling in Virtual Networks</title>
    <para>
     With &xen;, you may limit the network transfer rate a virtual guest may
     use to access a bridge. This configuration option is not available from
     a graphical user interface at this time. To configure this, you will
     have to modify the &vmguest; configuration as described in
-    <xref
-    linkend="sec-xen-manage-vmachine"/>.
+    <xref linkend="sec-xen-manage-vmachine"/>.
    </para>
    <para>
     In the configuration file, first search for the device that is connected
@@ -682,9 +686,9 @@ default &xenhostip; - -
     )
 )
 ...   </screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-xen-net-monitor">
+  <section xml:id="sec-xen-net-monitor">
    <title>Monitoring the Network Traffic</title>
    <para>
     To monitor the traffic on a specific interface, the little application
@@ -711,10 +715,10 @@ default &xenhostip; - -
     options and possibilities are available in the manual page <command>man
     8 iftop</command>.
    </para>
-  </sect2>
+  </section>
 
 
-  <sect2 id="sec-xen-net-vlan">
+  <section xml:id="sec-xen-net-vlan">
    <title>Using VLAN Interfaces</title>
    <para>
     Sometimes, it is necessary to create a private connection either between
@@ -798,6 +802,6 @@ default &xenhostip; - -
     <literal>255.255.255.255</literal>. The system scripts handle this
     address as no IP address set.
    </para>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

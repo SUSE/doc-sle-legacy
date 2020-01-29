@@ -1,19 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-pam">
- <title>Authentication with PAM</title><indexterm class="startofrange"
-  id="idx-Authentifizierung-PAM">
- <primary>authentication</primary>
- <secondary>PAM</secondary></indexterm><indexterm>
- <primary>Pluggable Authentication Modules</primary>
- <see>PAM</see></indexterm><indexterm class="startofrange" id="idx-PAM">
- <primary>PAM</primary></indexterm>
- <abstract>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-pam"><title>Authentication with PAM</title><info><abstract>
   <para>
    Linux uses PAM (pluggable authentication modules) in the authentication
    process as a layer that mediates between user and application. PAM
@@ -21,8 +18,15 @@
    any application. This chapter describes how the modular authentication
    mechanism works and how it is configured.
   </para>
- </abstract>
- <sect1 id="sec-security-pam-whatis">
+ </abstract></info>
+ <indexterm class="startofrange" xml:id="idx-Authentifizierung-PAM">
+ <primary>authentication</primary>
+ <secondary>PAM</secondary></indexterm><indexterm>
+ <primary>Pluggable Authentication Modules</primary>
+ <see>PAM</see></indexterm><indexterm class="startofrange" xml:id="idx-PAM">
+ <primary>PAM</primary></indexterm>
+ 
+ <section xml:id="sec-security-pam-whatis">
   <title>What is PAM?</title>
 
   <para>
@@ -42,7 +46,7 @@
    The PAM concept consists of:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      <emphasis>PAM modules</emphasis>, which are a set of shared libraries
@@ -79,8 +83,8 @@
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="sec-pam-struc-files">
+ </section>
+ <section xml:id="sec-pam-struc-files">
   <title>Structure of a PAM Configuration File</title>
 
   <para>
@@ -331,23 +335,23 @@
     that you install both versions of the PAM modules.
    </para>
   </note>
- </sect1>
- <sect1 id="sec-pam-struc-format">
+ </section>
+ <section xml:id="sec-pam-struc-format">
   <title>The PAM Configuration of sshd</title>
 
   <para>
    Consider the PAM configuration of sshd as an example:
   </para>
 
-  <example id="dat-pam-sshd">
+  <example xml:id="dat-pam-sshd">
    <title>PAM Configuration for sshd (<filename>/etc/pam.d/sshd</filename>)</title>
-   <screen>#%PAM-1.0 <co id="co-security-pam-sshd-pam-line"/>
-auth     requisite      pam_nologin.so <co id="co-security-pam-sshd-pam-nologin"/>
-auth     include        common-auth <co id="co-security-pam-sshd-common-auth"/>
+   <screen>#%PAM-1.0 <co xml:id="co-security-pam-sshd-pam-line"/>
+auth     requisite      pam_nologin.so <co xml:id="co-security-pam-sshd-pam-nologin"/>
+auth     include        common-auth <co xml:id="co-security-pam-sshd-common-auth"/>
 account  requisite      pam_nologin.so <xref xrefstyle="select:nopage" linkend="co-security-pam-sshd-pam-nologin"/>
 account  include        common-account <xref xrefstyle="select:nopage" linkend="co-security-pam-sshd-common-auth"/>
 password include        common-password <xref linkend="co-security-pam-sshd-common-auth" xrefstyle="select:nopage"/>
-session  required       pam_loginuid.so <co id="co-security-pam-sshd-pam-loginuid"/>
+session  required       pam_loginuid.so <co xml:id="co-security-pam-sshd-pam-loginuid"/>
 session  include        common-session <xref linkend="co-security-pam-sshd-common-auth" xrefstyle="select:nopage"/></screen>
    <calloutlist>
     <callout arearefs="co-security-pam-sshd-pam-line">
@@ -400,19 +404,16 @@ session  include        common-session <xref linkend="co-security-pam-sshd-commo
    </indexterm> The first include file (<filename>common-auth</filename>)
    calls three modules of the <literal>auth</literal> type:
    <systemitem class="library">pam_env.so</systemitem>,
-   <systemitem
-    class="library">pam_gnome_keyring.so</systemitem> and
-   <systemitem class="library"
-    >pam_unix2.so</systemitem>. See
+   <systemitem class="library">pam_gnome_keyring.so</systemitem> and
+   <systemitem class="library">pam_unix2.so</systemitem>. See
    <xref linkend="dat-pam-common-auth"/>.
   </para>
 
-  <example id="dat-pam-common-auth">
+  <example xml:id="dat-pam-common-auth">
    <title>Default Configuration for the <literal>auth</literal> Section (<filename>common-auth</filename>)</title>
 <!-- pam_gnome_keyring.so is not listed on SLE11 SP1 -->
-   <screen
->auth    required        pam_env.so           <co id="co-security-pam-sshd-pam-env"/>
-auth    required        pam_unix2.so         <co id="co-security-pam-sshd-pam-unix2"/></screen>
+   <screen>auth    required        pam_env.so           <co xml:id="co-security-pam-sshd-pam-env"/>
+auth    required        pam_unix2.so         <co xml:id="co-security-pam-sshd-pam-unix2"/></screen>
   </example>
 
   <calloutlist>
@@ -448,8 +449,7 @@ auth    required        pam_unix2.so         <co id="co-security-pam-sshd-pam-un
   <para>
    As soon as all modules of the <literal>auth</literal> type have been
    successfully processed, another include statement is processed, in this
-   case, that in <xref
-    linkend="dat-pam-common-account"/>.
+   case, that in <xref linkend="dat-pam-common-account"/>.
    <filename>common-account</filename> contains just one module,
    <literal>pam_unix2</literal>. If <literal>pam_unix2</literal> returns the
    result that the user exists, sshd receives a message announcing this
@@ -457,16 +457,15 @@ auth    required        pam_unix2.so         <co id="co-security-pam-sshd-pam-un
    processed, shown in <xref linkend="dat-pam-common-password"/>.
   </para>
 
-  <example id="dat-pam-common-account">
+  <example xml:id="dat-pam-common-account">
    <title>Default Configuration for the <literal>account</literal> Section (<filename>common-account</filename>)</title>
    <screen>account required        pam_unix2.so</screen>
   </example>
 
-  <example id="dat-pam-common-password">
+  <example xml:id="dat-pam-common-password">
    <title>Default Configuration for the <literal>password</literal> Section (<filename>common-password</filename>)</title>
 <!-- On SLE11 SP1, there is no "optional", only these two: -->
-   <screen
->password requisite      pam_pwcheck.so  nullok cracklib
+   <screen>password requisite      pam_pwcheck.so  nullok cracklib
 password required       pam_unix2.so    nullok use_authtok</screen>
   </example>
 
@@ -498,7 +497,7 @@ password required       pam_unix2.so    nullok use_authtok</screen>
    <literal>password</literal> modules should also be used.
   </para>
 
-  <example id="dat-pam-common-session">
+  <example xml:id="dat-pam-common-session">
    <title>Default Configuration for the <literal>session</literal> Section (<filename>common-session</filename>)</title>
 <!-- On SLE11 SP1, there are these three only: -->
    <screen>session required        pam_limits.so
@@ -520,8 +519,8 @@ session optional        pam_umask.so</screen>
    of the entire session module stack. The <literal>session</literal>
    modules are called a second time when the user logs out.
   </para>
- </sect1>
- <sect1 id="sec-pam-struc-conf">
+ </section>
+ <section xml:id="sec-pam-struc-conf">
   <title>Configuration of PAM Modules</title>
 
   <para>
@@ -532,7 +531,7 @@ session optional        pam_umask.so</screen>
    <filename>limits.conf</filename>.
   </para>
 
-  <sect2 id="sec-pam-struc-conf-pamenv">
+  <section xml:id="sec-pam-struc-conf-pamenv">
    <title>pam_env.conf</title>
    <para>
     <filename>pam_env.conf</filename> can be used to define a standardized
@@ -578,7 +577,7 @@ session optional        pam_umask.so</screen>
     whenever a remote login takes place. This is shown in
     <xref linkend="dat-pam-pamenv"/>.
    </para>
-   <example id="dat-pam-pamenv">
+   <example xml:id="dat-pam-pamenv">
     <title>pam_env.conf</title>
     <screen>
 REMOTEHOST     DEFAULT=localhost OVERRIDE=@{PAM_RHOST}
@@ -593,11 +592,11 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
     <envar>REMOTEHOST</envar>. Find more information in the comments in
     <filename>/etc/security/pam_env.conf</filename>.
    </para>
-  </sect2>
+  </section>
 
 <!-- pam_mount is a stand-alone package -->
 
-  <sect2>
+  <section>
    <title>pam_mount.conf</title>
    <para>
     The purpose of <systemitem>pam_mount</systemitem> is to mount user home
@@ -621,9 +620,9 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
     Membership</guimenu> <guimenu>Expert Settings</guimenu></menuchoice> to
     add the file server; see <xref linkend="sec-samba-client-inst"/>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-pam-struc-pamlimits">
+  <section xml:id="sec-pam-struc-pamlimits">
    <title>limits.conf</title>
    <para>
     System limits can be set on a user or group basis in
@@ -634,9 +633,9 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
     the options, see the comments in
     <filename>/etc/security/limits.conf</filename>.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-pam-pam-config">
+  </section>
+ </section>
+ <section xml:id="sec-pam-pam-config">
   <title>Configuring PAM Using pam-config</title>
 
   <para>
@@ -697,8 +696,7 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
      <title>Query your setup.</title>
      <para>
       Before you finally apply your new PAM setup, check if it contains all
-      the options you wanted to add. The <command>pam-config --query
-      --<replaceable>module</replaceable></command> lists both the type and
+      the options you wanted to add. The <command>pam-config --query --</command> <replaceable>module</replaceable> lists both the type and
       the options for the queried PAM module.
      </para>
     </formalpara>
@@ -722,8 +720,8 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
    options available, refer to the manual page of
    <command>pam-config(8)</command>.
   </para>
- </sect1>
- <sect1 id="sec-pam-manual-config">
+ </section>
+ <section xml:id="sec-pam-manual-config">
   <title>Manually Configuring PAM</title>
 
   <remark condition="generic">
@@ -748,8 +746,8 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
    <filename>common-<replaceable>*</replaceable>-pc</filename> files and
    these files are not put into effect without the symbolic links.
   </para>
- </sect1>
- <sect1 id="sec-pam-info">
+ </section>
+ <section xml:id="sec-pam-info">
   <title>For More Information</title>
 
   <para>
@@ -807,8 +805,6 @@ DISPLAY        DEFAULT=${REMOTEHOST}:0.0 OVERRIDE=${DISPLAY}
      </para>
     </listitem>
    </varlistentry>
-  </variablelist><indexterm
-   class="endofrange" startref="idx-PAM"/><indexterm class="endofrange"
-   startref="idx-Authentifizierung-PAM"/>
- </sect1>
+  </variablelist><indexterm class="endofrange" startref="idx-PAM"/><indexterm class="endofrange" startref="idx-Authentifizierung-PAM"/>
+ </section>
 </chapter>

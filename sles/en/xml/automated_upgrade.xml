@@ -1,30 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
+
+
 <!-- 
   2013-02-25: According to jsrain, no changes except changing SP numbers 
 -->
-<chapter id="cha-update-auto" os="sles">
- <title>Automated Upgrade from &sle; 11 SP2 to 11 SP3</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-update-auto" os="sles"><title>Automated Upgrade from &sle; 11 SP2 to 11 SP3</title><info/>
+ 
  <para>
   The following procedure is a way to do a mass upgrade unattended from
   &sle;&nbsp;11 SP2 to &sle;&nbsp;11 SP3. Several preparation steps are
   needed to create a suitable &ay; profile. &ay; finally will execute the
   upgrade process.
  </para>
- <sect1 id="sec-update-auto-prep-autoyast">
+ <section xml:id="sec-update-auto-prep-autoyast">
   <title>Preparing the &ay; Profile</title>
 
   <para>
    The &ay; profile for the automated upgrade uses the same file format as
    the &ay; installation. <phrase os="sled;sles">For more information about
    &ay;, see <xref linkend="cha-deployment-autoinst"/> and
-   <xref
-   linkend="book-autoyast"/>.</phrase>
+   <xref linkend="book-autoyast"/>.</phrase>
   </para>
 
   <para>
@@ -34,18 +38,18 @@
    of the &ay; profile.
   </para>
 
-  <sect2>
+  <section>
    <title>Upgrade</title>
    <para>
     The upgrade options define the behavior of the dependency solver during
     upgrade:
    </para>
-<screen><![CDATA[<upgrade>
-  <only_installed_packages
-    config:type="boolean">false</only_installed_packages>
-  <stop_on_solver_conflict
-    config:type="boolean">true</stop_on_solver_conflict>
-</upgrade>]]></screen>
+<screen>&lt;upgrade&gt;
+  &lt;only_installed_packages
+    config:type="boolean"&gt;false&lt;/only_installed_packages&gt;
+  &lt;stop_on_solver_conflict
+    config:type="boolean"&gt;true&lt;/stop_on_solver_conflict&gt;
+&lt;/upgrade&gt;</screen>
    <variablelist>
     <varlistentry>
      <term><literal>only_installed_packages</literal>
@@ -74,25 +78,25 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Software Selection</title>
    <para>
     The software selection options define, which components to select or
     deselect in addition to the results of the resolver:
    </para>
-<screen><![CDATA[<software>
-  <packages config:type="list">
-    <package>autoyast2-installation</package>
-    <package>apparmor-profile-editor</package>
-  </packages>
-  <patterns config:type="list">
-    <pattern>base</pattern>
-  </patterns>
-  <remove-packages config:type="list"/>
-  <remove-patterns config:type="list"/>
-</software>]]></screen>
+<screen>&lt;software&gt;
+  &lt;packages config:type="list"&gt;
+    &lt;package&gt;autoyast2-installation&lt;/package&gt;
+    &lt;package&gt;apparmor-profile-editor&lt;/package&gt;
+  &lt;/packages&gt;
+  &lt;patterns config:type="list"&gt;
+    &lt;pattern&gt;base&lt;/pattern&gt;
+  &lt;/patterns&gt;
+  &lt;remove-packages config:type="list"/&gt;
+  &lt;remove-patterns config:type="list"/&gt;
+&lt;/software&gt;</screen>
    <para>
     It is especially important to set packages or patterns for being
     selected or deselected in order to resolve package conflicts and thus to
@@ -101,19 +105,19 @@
     these packages and patterns plus those that were selected or deselected
     for any other reason.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Backup Before Upgrade</title>
    <para>
     The backup before upgrade options match these features in the upgrade
     proposal.
    </para>
-<screen><![CDATA[<backup>
-  <sysconfig config:type="boolean">true</sysconfig>
-  <modified config:type="boolean">true</modified>
-  <remove_old config:type="boolean">false</remove_old>
-</backup>]]></screen>
+<screen>&lt;backup&gt;
+  &lt;sysconfig config:type="boolean"&gt;true&lt;/sysconfig&gt;
+  &lt;modified config:type="boolean"&gt;true&lt;/modified&gt;
+  &lt;remove_old config:type="boolean"&gt;false&lt;/remove_old&gt;
+&lt;/backup&gt;</screen>
    <variablelist>
     <varlistentry>
      <term><literal>sysconfig</literal>
@@ -144,9 +148,9 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-update-auto-run">
+  </section>
+ </section>
+ <section xml:id="sec-update-auto-run">
   <title>Running the Automated Upgrade</title>
 
   <para>
@@ -154,7 +158,7 @@
    &ay; profile to it. There are two ways to pass the profile to the system:
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Pass the profile to the kernel command line the same way as for the
@@ -203,8 +207,8 @@
    be asked, which one to upgrade&mdash;there is no way to select it in
    advance.
   </para>
- </sect1>
- <sect1 id="sec-update-auto-grub">
+ </section>
+ <section xml:id="sec-update-auto-grub">
   <title>GRUB Menu Section for Booting into the Upgrade</title>
 
   <para>
@@ -215,8 +219,7 @@
    which is referred in GRUB as <literal>(hd0,0)</literal>:
   </para>
 
-<screen
->title Upgrade
+<screen>title Upgrade
     root (hd0,0)
     kernel /upgrade/linux
     install=<replaceable>inst_source_url</replaceable> autoupgrade=1
@@ -236,8 +239,8 @@
    On &zseries;, you must add the parameters to the PARM file&mdash;proceed
    the same way as you do when performing an &ay;-driven installation.
   </para>
- </sect1>
- <sect1 id="sec-update-auto-2nd-stage">
+ </section>
+ <section xml:id="sec-update-auto-2nd-stage">
   <title>Second Stage of the Upgrade</title>
 
   <para>
@@ -269,13 +272,13 @@
    missing, the system will not get the update repository and updates will
    not be possible&mdash;unless configured later again.
   </para>
- </sect1>
- <sect1 id="sec-update-auto-limitations">
+ </section>
+ <section xml:id="sec-update-auto-limitations">
   <title>Limitations and Hints</title>
 
-  <para></para>
+  <para/>
 
-  <sect2>
+  <section>
    <title>&nm; and Registration</title>
    <para>
     In case of using &nm; for managing network devices and network
@@ -283,9 +286,9 @@
     of the upgrade. This prevents the system from performing the
     registration.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Cleaning Up Upgrade Setting</title>
    <para>
     If you do any changes in your system in order to trigger the upgrade
@@ -300,18 +303,18 @@
     matches your particular set-up and that it does not remove more than you
     actually want!
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>For More Information</title>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Linuxrc Documentation:
-      <ulink url="http://en.opensuse.org/SDB:Linuxrc"/>
+      <link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>
      </para>
     </listitem>
    </itemizedlist>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

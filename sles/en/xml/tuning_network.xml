@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-tuning-network">
- <title>Tuning the Network</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-network"><title>Tuning the Network</title><info/>
+ 
  <para>
   The network subsystem is rather complex and its tuning highly depends on
   the system use scenario and also on external factors such as software
@@ -15,13 +20,13 @@
   low overhead and high throughput. Other settings can mean less security,
   but better performance.
  </para>
- <sect1 id="sec-tuning-network-buffers">
+ <section xml:id="sec-tuning-network-buffers">
   <title>Configurable Kernel Socket Buffers</title>
 
   <para>
    Networking is largely based on the TCP/IP protocol and a socket interface
    for communication; for more information about TCP/IP, see
-   <xref linkend="cha-basicnet" />. The Linux kernel handles data it
+   <xref linkend="cha-basicnet"/>. The Linux kernel handles data it
    receives or sends via the socket interface in socket buffers. These
    kernel socket buffers are tunable.
   </para>
@@ -47,7 +52,7 @@
    The special files in the <filename>/proc</filename> file system can
    modify the size and behavior of kernel socket buffers; for general
    information about the <filename>/proc</filename> file system, see
-   <xref linkend="sec-util-proc" />. Find networking related files in:
+   <xref linkend="sec-util-proc"/>. Find networking related files in:
   </para>
 
 <screen>/proc/sys/net/core
@@ -194,8 +199,8 @@
       -->
    </para>
   </note>
- </sect1>
- <sect1 id="sec-tuning-network-analyzing">
+ </section>
+ <section xml:id="sec-tuning-network-analyzing">
   <title>Detecting Network Bottlenecks and Analyzing Network Traffic</title>
 
   <para>
@@ -211,7 +216,7 @@
    <command>netstat</command>, <command>tcpdump</command>, and
    <command>wireshark</command>. Wireshark is a network traffic analyzer.
   </para>
- </sect1>
+ </section>
 <!-- ibm 33:
       offload depends on the adapater's features.
       ibm 34:
@@ -220,7 +225,7 @@
      Check, whether this is already describe somewhere else!
      Obviously in ha and xen guides...
  -->
- <sect1>
+ <section>
   <title>Netfilter</title>
 
   <para>
@@ -244,15 +249,15 @@
    existing connections to fail. The 'fail-open' feature, available since
    &sls; 11 SP3, allows a user to temporarily disable the packet inspection
    and maintain the connectivity under heavy network traffic. For reference,
-   see <ulink url="https://home.regit.org/netfilter-en/using-nfqueue-and-libnetfilter_queue/"/>.
+   see <link xlink:href="https://home.regit.org/netfilter-en/using-nfqueue-and-libnetfilter_queue/"/>.
   </para> 
   <para>
    For more information, see the home page of the Netfilter and iptables
-   project, <ulink url="http://www.netfilter.org"/>
+   project, <link xlink:href="http://www.netfilter.org"/>
   </para>
- </sect1>
+ </section>
 
- <sect1 id="sec-tuning-network-rps">
+ <section xml:id="sec-tuning-network-rps">
   <title>
    Improving the Network Performance with Receive Packet Steering (RPS)
   </title>
@@ -309,7 +314,7 @@
    be converted to hex&mdash;which results in <literal>F</literal> in this
    case. Set this hex value with the following command:
   </para>
-  <screen>echo "f" > /sys/class/net/eth0/queues/rx-0/rps_cpus</screen>
+  <screen>echo "f" &gt; /sys/class/net/eth0/queues/rx-0/rps_cpus</screen>
   <para>
    If you wanted to enable CPUs 8-15:
   </para>
@@ -319,7 +324,7 @@ F       F    0    0 (hex)</screen>
   <para>
    The command to set the hex value of  <literal>ff00</literal> would be:
   </para>
-  <screen>echo "ff00" > /sys/class/net/eth0/queues/rx-0/rps_cpus</screen>
+  <screen>echo "ff00" &gt; /sys/class/net/eth0/queues/rx-0/rps_cpus</screen>
 
   <para>
    On NUMA machines, best performance can be achieved by configuring RPS to
@@ -348,33 +353,31 @@ F       F    0    0 (hex)</screen>
    distribute hardware interrupts across CPUs. See <command>man 1
    irqbalance</command> for more details.
   </para>
- </sect1>
+ </section>
  
 
 <!-- tuning NFS performance:
       http://blogs.techrepublic.com.com/opensource/?p=64&tag=rbxccnbtr1
  -->
 <!-- apache is similar -->
- <sect1 id="sec-tuning-network-info">
+ <section xml:id="sec-tuning-network-info">
   <title>For More Information</title>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      Eduardo Ciliendo, Takechika Kunimasa: <quote>Linux Performance and
      Tuning Guidelines</quote> (2007), esp. sections 1.5, 3.5, and 4.7:
-     <ulink
-    url="http://www.redbooks.ibm.com/redpapers/abstracts/redp4285.html"
-    />
+     <link xlink:href="http://www.redbooks.ibm.com/redpapers/abstracts/redp4285.html"/>
     </para>
    </listitem>
    <listitem>
     <para>
      John Heffner, Matt Mathis: <quote>Tuning TCP for Linux 2.4 and
      2.6</quote> (2006):
-     <ulink url="http://www.psc.edu/networking/projects/tcptune/#Linux" />
+     <link xlink:href="http://www.psc.edu/networking/projects/tcptune/#Linux"/>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>
