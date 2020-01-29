@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_xntp.xml" id="cha-netz-xntp">
- <title>使用 NTP 同步时间</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_xntp.xml" xml:id="cha-netz-xntp"><title>使用 NTP 同步时间</title><info><abstract>
   <para>
    NTP（网络时间协议）机制是用于同步网络上的系统时间的协议。首先，计算机从作为可靠时间源的服务器获得时间。然后将此计算机用作网络中其他计算机的时间源。这样做有双重目的，既可维护绝对时间，又可保持网络中所有计算机系统时间的同步。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <para>
   维护确切的系统时间在许多情况下都非常重要。内置硬件时钟往往不能满足数据库或群集这样的应用程序的要求。手动更正系统时间可能会导致许多严重问题，例如向后调整时间将使关键应用程序出现故障。在网络中，通常需要同步所有计算机上的系统时间，但是手动调整时间是一种不好的方法。NTP 提供了解决这些问题的机制。NTP 服务借助网络中的可靠时间服务器持续调整系统时间。它还支持对本地参考时钟（如无线电控制的时钟）进行管理。
  </para>
@@ -22,14 +30,14 @@ Please see LICENSE.txt for this document's license.
    要通过 Active Directory 启用时间同步，请遵循<xref linkend="proc-ad-join"/>中的描述。
   </para>
  </note>
- <sect1 id="sec-netz-xntp-yast">
+ <section xml:id="sec-netz-xntp-yast">
   <title>使用 YaST 配置 NTP 客户端</title>
 
   <para>
    附于 <systemitem>ntp</systemitem> 包中的 NTP 守护程序 (<systemitem class="daemon">ntpd</systemitem>) 预设置为使用本地计算机时钟作为时间参考。但是，请只在没有更精确的时间源的情况下才使用硬件时钟。YaST 为 NTP 客户端的配置提供了方便。
   </para>
 
-  <sect2 id="sec-net-ntp-yast-basic">
+  <section xml:id="sec-net-ntp-yast-basic">
    <title>基本配置</title>
    <para>
     YaST NTP 客户端配置（<menuchoice><guimenu>网络服务</guimenu> <guimenu>NTP 配置</guimenu></menuchoice>）由数个选项卡组成。在<guimenu>常规设置</guimenu>选项卡上设置 <systemitem class="daemon">ntpd</systemitem> 启动模式和要查询的服务器。
@@ -55,11 +63,11 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-net-ntp-yast-new-sync">
+  <section xml:id="sec-net-ntp-yast-new-sync">
    <title>更改基本配置</title>
    <para>
     供客户端查询的服务器和其他时间资源列在<guimenu>常规设置</guimenu>选项卡的下半部分。使用<guimenu>添加</guimenu>、<guimenu>编辑</guimenu>和<guimenu>删除</guimenu>可按需修改此列表。<guimenu>显示日志</guimenu>使您能够查看客户端的日志文件。
@@ -67,7 +75,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     单击<guimenu>添加</guimenu>可添加新的时间信息源。在随后的对话框中，选择要与其进行时间同步的源类型。下列选项可用：
    </para>
-   <figure id="fig-yast-ntp-selserv">
+   <figure xml:id="fig-yast-ntp-selserv">
     <title>YaST：NTP 服务器</title>
     <mediaobject>
      <imageobject role="fo">
@@ -130,7 +138,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-   <figure id="fig-yast-ntp-adv-sec">
+   <figure xml:id="fig-yast-ntp-adv-sec">
     <title>高级 NTP 配置：安全设置</title>
     <mediaobject>
      <imageobject role="fo">
@@ -150,12 +158,12 @@ Please see LICENSE.txt for this document's license.
    <para>
     如果 SuSEfirewall2 处于活动状态（默认），请启用<guimenu>打开防火墙中的端口</guimenu>。如果保持端口的关闭状态，则不可能建立与事件服务器的连接。
    </para>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-netconf">
+ <section xml:id="sec-netz-xntp-netconf">
   <title>手动配置网络中的 NTP</title>
 
   <para>
@@ -166,7 +174,7 @@ Please see LICENSE.txt for this document's license.
 <screen>server ntp.example.com</screen>
 
   <para>
-   要添加更多时间服务器，请使用关键字 <literal>server</literal> 插入更多行。使用命令 <command>rcntp <option>start</option></command> 初始化 <systemitem class="daemon">ntpd</systemitem> 后，等待时间稳定并且创建用于更正本地计算机时钟的偏移文件大约需要一个小时的时间。利用偏移文件，只要计算机一启动，就可以计算出硬件时钟的系统误差。可以立即使用更正功能，使系统时间保持较高的稳定性。
+   要添加更多时间服务器，请使用关键字 <literal>server</literal> 插入更多行。使用命令 <command>rcntp</command> <option>start</option> 初始化 <systemitem class="daemon">ntpd</systemitem> 后，等待时间稳定并且创建用于更正本地计算机时钟的偏移文件大约需要一个小时的时间。利用偏移文件，只要计算机一启动，就可以计算出硬件时钟的系统误差。可以立即使用更正功能，使系统时间保持较高的稳定性。
   </para>
 
   <para>
@@ -178,11 +186,11 @@ Please see LICENSE.txt for this document's license.
   </para>
 
 
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-dynamic">
+ <section xml:id="sec-netz-xntp-dynamic">
   <title>运行时动态时间同步</title>
 
 
@@ -206,37 +214,37 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      在 YaST 中单击<menuchoice><guimenu>网络服务</guimenu> <guimenu>NTP 配置</guimenu></menuchoice>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      选择要配置的服务器。然后单击<guimenu>编辑</guimenu>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      激活<guimenu>选项</guimenu>字段并添加 <literal>dynamic</literal>。如果已输入其他选项，请用空格分隔。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      单击<guimenu>确定</guimenu>关闭编辑对话框。重复之前的步骤以根据需要更改所有服务器。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      最后单击<guimenu>确定</guimenu>保存设置。
     </para>
    </step>
   </procedure>
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-normal">
+ <section xml:id="sec-netz-xntp-normal">
   <title>设置本地参考时钟</title>
 
   <para>
@@ -253,6 +261,6 @@ Please see LICENSE.txt for this document's license.
   <para>
    其他时钟也采用相同的模式。安装 <systemitem class="resource">ntp-doc</systemitem> 包之后，可以在目录 <filename>/usr/share/doc/packages/ntp-doc</filename> 中找到 NTP 的文档。文件 <filename>/usr/share/doc/packages/ntp-doc/refclock.html</filename> 提供指向描述驱动程序参数的驱动程序页的链接。
   </para>
- </sect1>
+ </section>
  
 </chapter>

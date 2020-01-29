@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="grub.xml" id="cha-grub">
- <title>引导加载程序 GRUB</title><indexterm> <primary>引导</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="grub.xml" xml:id="cha-grub"><title>引导加载程序 GRUB</title><info><abstract>
   <para>
    本章介绍如何配置 <phrase role="productname"><phrase os="sled">SUSE® Linux Enterprise Desktop</phrase></phrase> 中使用的引导加载程序 GRUB (Grand Unified Bootloader)。系统中提供了一个特殊的 YaST 模块用于配置所有设置。如果您不熟悉在 Linux 中进行引导的相关内容，请阅读下面几节获得一些背景信息。本章还介绍了使用 GRUB 进行引导时经常遇到的一些问题和它们的解决方案。
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm> <primary>引导</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
+ 
  <note os="sles;sled">
   <title>使用 UEFI 的计算机上无 GRUB</title>
   <para>
@@ -45,7 +53,7 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </varlistentry>
  </variablelist>
- <sect1 id="sec-grub-basic">
+ <section xml:id="sec-grub-basic">
   <title>使用 GRUB 引导</title><indexterm> <primary>GRUB</primary><secondary>引导</secondary></indexterm><indexterm><primary>安装</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>引导</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>配置</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>命令</primary><secondary>grub</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>命令</secondary></indexterm>
 
   <para>
@@ -111,7 +119,7 @@ Please see LICENSE.txt for this document's license.
    GRUB 实际上以两个版本存在：作为引导加载程序，以及作为 <filename>/usr/sbin/grub</filename> 中的普通 Linux 程序。后者称为 <emphasis>GRUB 外壳</emphasis>。它在已安装系统中提供 GRUB 的仿真，并且可用来安装 GRUB 或在应用新设置之前对其进行测试。将 GRUB 作为引导加载程序安装在硬盘或软盘上的功能以 <command>setup</command> 命令的形式集成在 GRUB 中。当装载了 Linux 后在 GRUB shell 中可用。
   </para>
 
-  <sect2 id="sec-grub-menu">
+  <section xml:id="sec-grub-menu">
    <title>文件 <filename>/boot/grub/menu.lst</filename></title><indexterm> <primary>配置文件</primary><secondary>menu.lst</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>引导菜单</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>menu.lst</secondary></indexterm>
    <para>
     带有引导菜单的图形启动屏幕基于 GRUB 配置文件 <filename>/boot/grub/menu.lst</filename>，该文件包含有关可以通过菜单引导的所有分区或操作系统的所有信息。
@@ -147,7 +155,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     在写入所有菜单项之后，将其中一项定义为 <literal>default</literal> 项。否则，将使用第一项（项 <literal>0</literal>）。您还可以指定在一段时间后引导默认项的超时值（以秒为单位）。<literal>timeout</literal> 和 <literal>default</literal> 通常在各菜单项前面。示例文件在 <xref linkend="sec-grub-menu-example"/> 中有所介绍。
    </para>
-   <sect3 id="sec-grub-devices">
+   <section xml:id="sec-grub-devices">
     <title>硬盘和分区的命名约定</title><indexterm> <primary>GRUB</primary><secondary>设备名</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>分区名</secondary></indexterm>
     <para>
      GRUB 用于硬盘和分区的命名约定不同于普通 Linux 设备使用的命名约定。它更类似于 BIOS 执行的简单磁盘枚举，而语法类似于一些 BSD 衍生程序中使用的语法。在 GRUB 中，分区的编号从 0 开始。它表示 (<filename>hd0,0</filename>) 是第一块硬盘的第一个分区。在普通台式机上，作为 Primary Master（第一个 IDE 控制器上的主设备）连接的硬盘所对应的 Linux 设备名为 <filename>/dev/sda1</filename>。
@@ -171,32 +179,32 @@ Please see LICENSE.txt for this document's license.
      完整的 GRUB 路径包含写在括号中的设备名和指向指定分区的文件系统中文件的路径。路径以斜线开头。例如，在具有一个 PATA (IDE) 硬盘（其第一个分区中包含 Linux）的系统上，可以按如下方式指定可引导内核：
     </para>
 <screen>(hd0,0)/boot/vmlinuz</screen>
-   </sect3>
-   <sect3 id="sec-grub-menu-example">
+   </section>
+   <section xml:id="sec-grub-menu-example">
     <title>示例菜单文件</title>
     <para>
      以下示例说明了 GRUB 菜单文件的结构。此示例安装包括 <filename>/dev/sda5</filename> 下的 Linux 引导分区、<filename>/dev/sda7</filename> 下的根分区和 <filename>/dev/sda1</filename> 下的 Windows 安装。
     </para>
     
-<screen>gfxmenu (hd0,4)/boot/message<co id="grub-menu-example-gfxmenu"/>
-color white/blue black/light-gray<co id="grub-menu-example-color"/>
-default 0<co id="grub-menu-example-default"/>
-timeout 8<co id="grub-menu-example-timeout"/>
+<screen>gfxmenu (hd0,4)/boot/message<co xml:id="grub-menu-example-gfxmenu"/>
+color white/blue black/light-gray<co xml:id="grub-menu-example-color"/>
+default 0<co xml:id="grub-menu-example-default"/>
+timeout 8<co xml:id="grub-menu-example-timeout"/>
 
-title linux<co id="grub-menu-example-linux"/>
+title linux<co xml:id="grub-menu-example-linux"/>
    root (hd0,4)
    kernel /boot/vmlinuz root=/dev/sda7 vga=791 resume=/dev/sda9
    initrd /boot/initrd
 
-title windows<co id="grub-menu-example-windows"/>
+title windows<co xml:id="grub-menu-example-windows"/>
    rootnoverify (hd0,0)
    chainloader +1
 
-title floppy<co id="grub-menu-example-floppy"/>
+title floppy<co xml:id="grub-menu-example-floppy"/>
    rootnoverify (hd0,0)
    chainloader (fd0)+1
 
-title failsafe<co id="grub-menu-example-failsafe"/>
+title failsafe<co xml:id="grub-menu-example-failsafe"/>
    root (hd0,4)
    kernel /boot/vmlinuz.shipped root=/dev/sda7 ide=nodma \
    apm=off acpi=off vga=normal nosmp maxcpus=0 3 noresume
@@ -254,8 +262,8 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     <para>
      您随时都可根据需要更改菜单文件。GRUB 会在下次引导时使用修改后的设置。使用 YaST 或所选的编辑器对文件进行永久编辑。或者，使用 GRUB 的编辑功能以交互方式临时进行更改（请参见<xref linkend="sec-grub-menu-change"/>）。
     </para>
-   </sect3>
-   <sect3 id="sec-grub-menu-change">
+   </section>
+   <section xml:id="sec-grub-menu-change">
     <title>在引导过程中编辑菜单项</title><indexterm> <primary>GRUB</primary><secondary>菜单编辑器</secondary></indexterm>
     <para>
      在图形引导菜单中，使用箭头键选择要引导的操作系统。如果选择 Linux 系统，则可以在引导提示符处输入其他引导参数。若要直接编辑个别菜单项，请按 <keycap>Esc</keycap> 键退出启动屏幕并进入 GRUB 基于文本的菜单，然后按 <keycap>E</keycap> 键。通过这种方式进行的更改仅适用于当前引导，不会被永久采用。
@@ -282,10 +290,10 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     <para>
      GRUB 会在下次引导系统时自动采用新参数。或者，还可以通过 YaST 引导加载程序模块进行此更改。将新参数追加到现有的行上，用空格分隔。
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-grub-map">
+  <section xml:id="sec-grub-map">
    <title>文件 device.map</title><indexterm> <primary>GRUB </primary> <secondary>device.map</secondary></indexterm>
    <para>
     文件 <filename>device.map</filename> 将 GRUB 和 BIOS 设备名映射为 Linux 设备名。在包含 PATA (IDE) 和 SCSI 硬盘的混合系统中，GRUB 必须通过特殊过程尝试确定引导顺序，因为 GRUB 不能访问 BIOS 上有关引导顺序的信息。GRUB 会将此分析的结果保存在文件 <filename>/boot/grub/device.map</filename> 中。BIOS 中的引导顺序设为 PATA 先于 SCSI 的系统的示例 <filename>device.map</filename> 文件可能如下所示：
@@ -307,9 +315,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     在手工更改 <filename>device.map</filename> 之后，请执行以下命令重安装 GRUB。此命令导致重装载文件 <filename>device.map</filename> 并且执行 <filename>grub.conf</filename> 中列出的命令：
    </para>
 <screen>grub --batch &lt; /etc/grub.conf</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-conf">
+  <section xml:id="sec-grub-conf">
    <title>文件 /etc/grub.conf</title><indexterm> <primary>配置文件</primary><secondary>grub.conf</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>grub.conf</secondary></indexterm><indexterm><primary>配置</primary><secondary>GRUB</secondary></indexterm>
    <para>
     除了 <filename>menu.lst</filename> 和 <filename>device.map</filename> 之外，第三个重要的 GRUB 配置文件就是 <filename>/etc/grub.conf</filename>。此文件包含 GRUB 外壳正确安装引导加载程序所需的命令、参数和选项：
@@ -319,9 +327,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
    <para>
     该命令告知 GRUB 使用位于第一个硬盘的第二个分区 (hd0,1) 上的引导映像将引导加载程序自动安装到同一分区上。需要 <option>--stage2=/boot/grub/stage2</option> 参数在已装入的文件系统中安装 <filename>stage2</filename> 映像。一些 BIOS 具有不正确的 LBA 支持实施，<option>--force-lba</option> 提供了解决方案以忽略这些故障。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-sysconfig">
+  <section xml:id="sec-grub-sysconfig">
    <title>文件 <filename>/etc/sysconfig/bootloader</filename></title><indexterm> <primary>GRUB</primary> <secondary>sysconfig/bootloader</secondary></indexterm>
    <para>
     仅在使用 YaST 配置引导加载程序时以及每次安装新内核时会用到此配置文件。它由 perl-bootloader 库评估，此库会相应地修改引导加载程序配置文件（例如，对于 GRUB 为 <filename>/boot/grub/menu.lst</filename>）。<filename>/etc/sysconfig/bootloader</filename> 不是特定于 GRUB 的配置文件，其值会应用于 <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 上安装的任何引导加载程序。
@@ -537,9 +545,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-password">
+  <section xml:id="sec-grub-password">
    <title>设置引导口令</title><indexterm> <primary>GRUB </primary> <secondary>引导口令</secondary></indexterm>
    <para>
     即使是在引导操作系统之前，GRUB 也支持对文件系统的访问。没有 root 权限的用户可以访问 Linux 系统中的文件，而一旦引导系统后，他们将无权访问这些文件。要阻止此类访问或防止用户引导某些操作系统，请设置引导口令。
@@ -554,7 +562,7 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     以 <literal>root</literal> 用户身份按如下步骤设置引导口令：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       在 root 提示符处，使用 grub-md5-crypt 加密口令：
      </para>
@@ -563,7 +571,7 @@ Password: ****
 Retype password: ****
 Encrypted: $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将经过加密的字符串粘贴到 <filename>menu.lst</filename> 文件的全局部分：
      </para>
@@ -576,7 +584,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
       现在，只有在按 <keycap>P</keycap> 键并输入口令后，才可以在引导提示符处执行 GRUB 命令。但是，用户仍可以从引导菜单引导所有操作系统。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要防止从引导菜单引导一个或多个操作系统，请将项 <literal>lock</literal> 添加到 <filename>menu.lst</filename> 中不输入口令就不能引导的每个部分。例如：
      </para>
@@ -593,11 +601,11 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_yast_i.xml" parse="xml"/>
- <sect1 id="sec-grub-entfernen">
+ <xi:include href="grub_yast_i.xml" parse="xml"/>
+ <section xml:id="sec-grub-entfernen">
   <title>卸载 Linux 引导加载程序</title><indexterm> <primary>卸装</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>卸装</primary><secondary>Linux</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>卸装</secondary></indexterm><indexterm><primary>Linux</primary><secondary>卸装</secondary></indexterm>
 
   <para>
@@ -607,9 +615,9 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
   <para>
    要卸装 GRUB，请启动 YaST，然后单击<menuchoice> <guimenu>系统</guimenu> <guimenu>引导加载程序</guimenu> </menuchoice>启动引导加载程序模块。选择<menuchoice><guimenu>其他</guimenu><guimenu>恢复硬盘的主引导记录</guimenu></menuchoice>然后选择<guimenu>是，重写</guimenu>加以确认。
   </para>
- </sect1>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_bootcd_i.xml" parse="xml"/>
- <sect1 id="sec-boot-screen">
+ </section>
+ <xi:include href="grub_bootcd_i.xml" parse="xml"/>
+ <section xml:id="sec-boot-screen">
   <title>图形 SUSE 屏幕</title><indexterm> <primary>引导</primary> <secondary>图形</secondary> </indexterm> <indexterm> <primary>控制台</primary> <secondary>图形</secondary> </indexterm>
 
   <para>
@@ -648,12 +656,12 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-grub-probs">
+ </section>
+ <section xml:id="sec-grub-probs">
   <title>查错</title><indexterm> <primary>GRUB</primary><secondary>查错</secondary></indexterm>
 
   <para>
-   本节列出使用 GRUB 进行引导的一些常见问题并提供可能解决方案的简短说明。在位于<phrase os="sled;sles">支持数据库 <ulink url="http://www.suse.com/support"/></phrase> 的文章中介绍了其中一些问题。用搜索对话框搜索 <emphasis>GRUB</emphasis>、<emphasis>boot</emphasis> 和 <emphasis>boot loader</emphasis> 之类的关键字。
+   本节列出使用 GRUB 进行引导的一些常见问题并提供可能解决方案的简短说明。在位于<phrase os="sled;sles">支持数据库 <link xlink:href="http://www.suse.com/support"/></phrase> 的文章中介绍了其中一些问题。用搜索对话框搜索 <emphasis>GRUB</emphasis>、<emphasis>boot</emphasis> 和 <emphasis>boot loader</emphasis> 之类的关键字。
   </para>
 
   <variablelist>
@@ -706,12 +714,12 @@ title windows
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-grub-info">
+ </section>
+ <section xml:id="sec-grub-info">
   <title>更多信息</title>
 
   <para>
-   <ulink url="http://www.gnu.org/software/grub/"/> 上提供了有关 GRUB 的大量信息。还请参见 <command>grub</command> 信息页面。<phrase os="sles;sled">您也可以在“Technical Information Search”（技术信息搜索，网站为 <ulink url="http://www.novell.com/support"/>）中搜索关键字<quote>GRUB</quote>来获取有关特殊问题的信息。</phrase>
+   <link xlink:href="http://www.gnu.org/software/grub/"/> 上提供了有关 GRUB 的大量信息。还请参见 <command>grub</command> 信息页面。<phrase os="sles;sled">您也可以在“Technical Information Search”（技术信息搜索，网站为 <link xlink:href="http://www.novell.com/support"/>）中搜索关键字<quote>GRUB</quote>来获取有关特殊问题的信息。</phrase>
   </para>
- </sect1>
+ </section>
 </chapter>

@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="snapper.xml" id="cha-snapper">
- <title>使用快照程序生成快照/实现回滚</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="snapper.xml" xml:id="cha-snapper"><title>使用快照程序生成快照/实现回滚</title><info><abstract>
   <para>
    能够生成文件系统快照以便在 Linux 上实现回滚，这是过去常常要求提供的功能。如今，快照程序与 <literal>Btrfs</literal> 文件系统或精简的 LVM 卷相结合，填补了这一空白。
   </para>
@@ -21,15 +27,17 @@ Please see LICENSE.txt for this document's license.
   <para>
    <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 上默认设置了快照程序和 <literal>Btrfs</literal>，以供在使用 YaST 和 zypper 更改系统时作为<quote>撤销工具</quote>使用。系统会在运行 YaST 模块或 zypper 前后创建快照。快照程序可让您对这两张快照进行比较，并在两张快照之间存在差异时提供还原方法。您还可以使用这些工具按小时创建系统子卷的快照，以实现系统备份。
   </para>
- </abstract>
- <sect1 id="sec-snapper-requirements">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-snapper-requirements">
   <title>要求</title>
 
   <para>
    由于 <literal>Btrfs</literal> 是 <phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 上唯一支持快照的文件系统，因此您要生成<quote>快照</quote>的所有分区或子卷上都需要设置它。
   </para>
 
-  <sect2 id="sec-snapper-requires-diskspace">
+  <section xml:id="sec-snapper-requires-diskspace">
    <title>快照和磁盘空间</title>
    <para>
     创建快照时，快照与原始点都会指向文件系统中的同一个块。因此一开始时快照并不占用额外的磁盘空间。但如果修改了原始文件系统中的数据，则会复制已更改的数据块，同时将旧的数据块作为快照保留。因此，快照就将占用与已修改数据相同的空间。所以久而久之，分配给快照的空间便会不断增长。其结果是，即便从包含快照的 <literal>Btrfs</literal> 文件系统删除文件可能也<emphasis>不会</emphasis>释放磁盘空间！
@@ -49,7 +57,7 @@ Please see LICENSE.txt for this document's license.
      为了释放包含快照的 <literal>Btrfs</literal> 分区的磁盘空间，您需要删除不再需要的快照，而不是文件。旧快照比新快照占用的磁盘空间更多。
     </para>
     <para>
-     因为 <command>df</command> 不会显示 <literal>Btrfs</literal> 文件系统上的正确磁盘用量，所以您需要使用命令 <command>btrfs filesystem df <replaceable>安装点</replaceable></command>。目前，<literal>Btrfs</literal> 工具还不支持显示分配给快照的磁盘空间大小。
+     因为 <command>df</command> 不会显示 <literal>Btrfs</literal> 文件系统上的正确磁盘用量，所以您需要使用命令 <command>btrfs filesystem df</command> <replaceable>安装点</replaceable>。目前，<literal>Btrfs</literal> 工具还不支持显示分配给快照的磁盘空间大小。
     </para>
     <para>
      升级服务包时，由于会更改大量数据（包更新），将导致快照占用大量系统子卷的磁盘空间。因此对于不再需要的快照，建议执行手动删除。
@@ -58,9 +66,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     快照程序也可以用来在以 ext3 或 XFS 格式化的精简 LVM 卷上创建和管理快照（参见<xref linkend="sec-snapper-lvm"/>）。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-auto">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-auto">
   <title>使用快照程序撤销系统更改</title>
 
   <para>
@@ -71,7 +79,7 @@ Please see LICENSE.txt for this document's license.
    默认情况下，上述的自动快照针对根分区及其子卷所配置。若想让 <filename>/home</filename> 等其他分区也可以生成快照，您可以创建自定义配置。
   </para>
 
-  <sect2 id="sec-snapper-yast">
+  <section xml:id="sec-snapper-yast">
    <title>撤销 YaST 和 Zypper 更改</title>
    <para>
     如果在安装时使用 <literal>Btrfs</literal> 设置根分区，则将自动安装快照程序（经过预配置，可以回滚 YaST 或 Zypper 所做的更改）。每次启动 YaST 模块或 Zypper 事务时，会创建两个快照：即截获模块启动之前文件系统状态的<quote>前快照</quote>以及截获模块完成之后状态的<quote>后快照</quote>。
@@ -94,19 +102,19 @@ Please see LICENSE.txt for this document's license.
      系统默认会保留最后的 100 个 YaST 和 Zypper 快照。如果超过这一数值，将删除最旧的快照。
     </para>
    </note>
-   <procedure id="proc-snapper-yast-yast">
+   <procedure xml:id="proc-snapper-yast-yast">
     <title>使用 YaST <guimenu>快照程序</guimenu>模块撤销更改</title>
-    <step performance="required">
+    <step>
      <para>
       从 YaST 中的<guimenu>其他</guimenu>部分或通过输入 <guimenu>yast2 snapper</guimenu> 来启动<command>快照程序</command>模块。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       务必将<guimenu>当前配置</guimenu>设置为<guimenu>根</guimenu>。除非手动添加自己的快照程序配置，否则请始终做此设置。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       从列表中选择前后快照对。YaST 和 Zypper 快照对都属于<guimenu>前后</guimenu>类型。在<guimenu>说明栏</guimenu>中，YaST 快照以 <literal>yast <replaceable>模块名称</replaceable></literal>标记；Zypper 快照以 <literal>zypp(zypper)</literal> 标记。
      </para>
@@ -121,7 +129,7 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击<guimenu>显示更改</guimenu>，会打开一个文件列表显示两张快照之间的差异。下图显示添加用户 <systemitem class="username">tester</systemitem> 后发生更改的文件列表。
      </para>
@@ -136,7 +144,7 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       查看文件列表。要显示文件的前后版本之间的<quote>差异</quote>，请从列表中选中该文件。下图显示添加用户 <systemitem class="username">tester</systemitem> 之后 <filename>/etc/passwd</filename> 发生的更改。
      </para>
@@ -151,7 +159,7 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要恢复一组文件，请通过勾选相应的复选框选择相关的文件或目录。单击<guimenu>恢复选定</guimenu>，然后单击<guimenu>是</guimenu>以确认该操作。
      </para>
@@ -170,11 +178,11 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-   <procedure id="proc-snapper-yast-cmdline">
+   <procedure xml:id="proc-snapper-yast-cmdline">
     <title>使用 <command>snapper</command> 命令撤销更改</title>
-    <step performance="required">
+    <step>
      <para>
-      运行 <command>snapper list <option>-t pre-post</option></command> 以获取 YaST 与 Zypper 快照的列表。在<guimenu>说明栏</guimenu>中，YaST 快照以 <literal>yast <replaceable>模块名称</replaceable></literal>标记；Zypper 快照以 <literal>zypp(zypper)</literal> 标记。
+      运行 <command>snapper list</command> <option>-t pre-post</option> 以获取 YaST 与 Zypper 快照的列表。在<guimenu>说明栏</guimenu>中，YaST 快照以 <literal>yast <replaceable>模块名称</replaceable></literal>标记；Zypper 快照以 <literal>zypp(zypper)</literal> 标记。
      </para>
 <screen><?dbsuse-fo font-size="0.60em"?>
 
@@ -194,9 +202,9 @@ Please see LICENSE.txt for this document's license.
      108   | 109    | Fri Jan 13 13:01:06 2012 | Fri Jan 13 13:01:10 2012 | zypp(zypper)
      </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      使用 <command>snapper status <replaceable>前</replaceable>..<replaceable>后</replaceable></command> 命令以获取快照对的已更改文件列表。文件内容发生了更改会以 <guimenu>c</guimenu> 标记、添加了文件会以 <guimenu>+</guimenu> 标记、删除了文件会以 <guimenu>-</guimenu> 标记。以下示例显示安装 <systemitem class="resource">ncftp</systemitem> 包的快照对。
+      使用 <command>snapper status</command> <replaceable>前</replaceable>..<replaceable>后</replaceable> 命令以获取快照对的已更改文件列表。文件内容发生了更改会以 <guimenu>c</guimenu> 标记、添加了文件会以 <guimenu>+</guimenu> 标记、删除了文件会以 <guimenu>-</guimenu> 标记。以下示例显示安装 <systemitem class="resource">ncftp</systemitem> 包的快照对。
      </para>
 <screen>~ # snapper status 108..109
      +... /usr/bin/ncftp
@@ -222,9 +230,9 @@ Please see LICENSE.txt for this document's license.
      c... /var/lib/rpm/Sigmd5
      c... /var/lib/zypp/SoftLocks</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      要显示某份文件的差异，请运行 <command>snapper diff <replaceable>前</replaceable>..<replaceable>后</replaceable> <replaceable>文件名</replaceable></command>。如果没有指定<replaceable>文件名</replaceable>，则会显示所有文件的差异。
+      要显示某份文件的差异，请运行 <command>snapper diff</command> <replaceable>前</replaceable>..<replaceable>后</replaceable> <replaceable>文件名</replaceable>。如果没有指定<replaceable>文件名</replaceable>，则会显示所有文件的差异。
      </para>
 <screen>~ # snapper diff 108..109 /var/lib/zypp/SoftLocks
      --- /.snapshots/108/snapshot/var/lib/zypp/SoftLocks	2012-01-12 23:15:22.408009164 +0100
@@ -237,9 +245,9 @@ Please see LICENSE.txt for this document's license.
      +# zypp::SoftLocksFile generated Fri Jan 13 13:01:08 2012
      +##</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      要恢复一或多份文件，请运行 <command>snapper -v undochange <replaceable>前</replaceable>..<replaceable>后</replaceable> <replaceable>文件名</replaceable></command>。如果没有指定<replaceable>文件名</replaceable>，则会恢复所有已更改的文件。
+      要恢复一或多份文件，请运行 <command>snapper -v undochange</command> <replaceable>前</replaceable>..<replaceable>后</replaceable> <replaceable>文件名</replaceable>。如果没有指定<replaceable>文件名</replaceable>，则会恢复所有已更改的文件。
      </para>
 <screen>~ # snapper -v undochange 108..109
      create:0 modify:16 delete:21
@@ -270,9 +278,9 @@ Please see LICENSE.txt for this document's license.
      undoing change done</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-backup">
+  <section xml:id="sec-snapper-backup">
    <title>使用快照程序从每小时备份恢复文件</title>
    <para>
     除了 YaST 和 Zypper 快照外，快照程序还会按小时创建系统分区 (<filename>/</filename>) 的快照。您可以使用这些备份快照来恢复被意外删除或修改而无法恢复的文件。您也可以使用快照程序的差异功能来找到在某个时间点所做的修改。
@@ -286,9 +294,9 @@ Please see LICENSE.txt for this document's license.
      默认情况下，会保留最近十天、最近十个月以及最近十年的首张快照。有关详细信息，请参见<xref linkend="ex-snapper-config-timeline"/>。
     </para>
    </note>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-config">
+  <section xml:id="sec-snapper-config">
    <title>创建并修改快照程序配置</title>
    <para>
     每一个分区或 <literal>Btrfs</literal> 子卷都有一个专用的配置文件用于定义快照程序的行为方式。这些配置文件位于 <filename>/etc/snapper/configs/</filename> 下。使用快照程序为 <filename>/</filename> 目录安装的默认配置以 <filename>root</filename> 命名。它负责创建并管理 YaST 和 Zypper 快照，还包括 <filename>/</filename> 的每小时备份快照。
@@ -297,13 +305,13 @@ Please see LICENSE.txt for this document's license.
     您可以为使用 <literal>Btrfs</literal> 格式化的其他分区或 <literal>Btrfs</literal> 分区上的现有子卷创建自己的配置。在以下示例中，我们将设置快照程序配置，以便对驻留在单独的、以 <literal>Btrfs</literal> 格式化且安装点为 <filename>/srv/www</filename> 的分区的 Web 服务器数据进行备份。
    </para>
    <para>
-    您可以使用 <command>snapper</command> 本身或 YaST 的<guimenu>快照程序</guimenu>模块来从这些快照恢复文件。在 YaST 中，您需要选择您的<guimenu>当前配置</guimenu>，同时还需要使用全局开关 <option>-c</option>（例如 <command>snapper <option>-c</option> myconfig list</command>）指定 <command>snapper</command> 的配置。
+    您可以使用 <command>snapper</command> 本身或 YaST 的<guimenu>快照程序</guimenu>模块来从这些快照恢复文件。在 YaST 中，您需要选择您的<guimenu>当前配置</guimenu>，同时还需要使用全局开关 <option>-c</option>（例如 <command>snapper</command> <option>-c</option> myconfig list）指定 <command>snapper</command> 的配置。
    </para>
    <para>
     要创建新的快照程序配置，请运行 <command>snapper create-config</command>：
    </para>
-<screen>snapper -c www-data<co id="snapper-create-name"/> create-config
-   /srv/www<co id="snapper-create-volume"/></screen>
+<screen>snapper -c www-data<co xml:id="snapper-create-name"/> create-config
+   /srv/www<co xml:id="snapper-create-volume"/></screen>
    <calloutlist>
     <callout arearefs="snapper-create-name">
      <para>
@@ -327,7 +335,7 @@ Please see LICENSE.txt for this document's license.
     </para>
 <screen>snapper -c www-data create-config -t my_defaults /srv/www</screen>
    </tip>
-   <sect3 id="sec-snapper-config-modify">
+   <section xml:id="sec-snapper-config-modify">
     <title>调整配置文件</title>
     <para>
      要调整配置文件，您需要使用编辑器对其进行修改。该文件中包含采用<literal><replaceable>键</replaceable>=<replaceable>值</replaceable></literal>格式的键/值对。只有<replaceable>值</replaceable>可更改。
@@ -418,7 +426,7 @@ Please see LICENSE.txt for this document's license.
        <para>
         按小时、天、月、年保留的快照数量。
        </para>
-       <example id="ex-snapper-config-timeline">
+       <example xml:id="ex-snapper-config-timeline">
         <title>时间线配置示例</title>
 <screen>TIMELINE_CREATE="yes"
         TIMELINE_CLEANUP="yes"
@@ -458,8 +466,8 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="sec-snapper-config-user">
+   </section>
+   <section xml:id="sec-snapper-config-user">
     <title>以普通用户身份使用快照程序</title>
     <para>
      默认情况下，快照程序只能由 <systemitem class="username">root</systemitem> 用户使用。但在特定情况下，某些组或用户也需要创建快照或通过还原至快照来撤销更改：
@@ -489,24 +497,24 @@ Please see LICENSE.txt for this document's license.
      <para>
       请注意，此过程中的所有步骤都需要由 <systemitem class="username">root</systemitem> 用户运行。
      </para>
-     <step performance="required">
+     <step>
       <para>
        如果不存在，则请为用户可以使用快照程序的分区或子卷创建快照程序配置。有关指导，请参见<xref linkend="sec-snapper-config"/>。示例：
       </para>
 <screen>snapper --config web_data create /srv/www</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        在 <filename>/etc/snapper/configs/<replaceable>名称</replaceable></filename>下创建配置文件，其中“名称”为您在上一步中使用 <option>-c/--config</option> 指定的值（例如 <filename>/etc/snapper/configs/web_data</filename>）。按照需要进行调整；有关详细信息，请参见<xref linkend="sec-snapper-config-modify"/>。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        为 <envar>ALLOW_USERS</envar> 和（或）<envar>ALLOW_GROUPS</envar> 设置值，以分别为用户和（或）组授予权限。多个条目需要使用 <keycap function="space"/> 分隔。例如，要为用户 <systemitem class="username">www_admin</systemitem> 授予权限，可输入：
       </para>
 <screen>ALLOW_USERS="www_admin"</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        授予对快照目录<replaceable>路径</replaceable>/.snapshots 的读取和访问权限。<replaceable>路径</replaceable>将被您在此过程的第一步中指定的子卷替代。示例：
       </para>
@@ -517,10 +525,10 @@ Please see LICENSE.txt for this document's license.
 <screen>www_admin:~ &gt; snapper -c web_data list</screen>
      </step>
     </procedure>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-snapper-disable">
+  <section xml:id="sec-snapper-disable">
    <title>禁用自动快照</title>
    <para>
     如果您在安装期间使用 <literal>Btrfs</literal> 设置了根分区，则快照程序会每小时自动创建系统快照，同时生成 YaST 和 zypper 事务的前快照和后快照。您可以禁用这些任务中的任意一个任务，方式如下：
@@ -553,9 +561,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-manage">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-manage">
   <title>手动创建和管理快照</title>
 
   <para>
@@ -563,10 +571,10 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <para>
-   所有快照程序操作皆针对现有配置执行（有关详细信息，请参见<xref linkend="sec-snapper-config"/>）。您可以只为存在配置的分区或卷生成快照。默认情况下使用系统配置 (<literal>root</literal>)。如果想要为自己的配置创建或管理快照，则需要进行明确选择。使用 YaST 中的<guimenu>当前配置</guimenu>下拉菜单，或在命令行上指定 <option>-c</option>（即 <command>snapper <option>-c</option> <replaceable>我的配置</replaceable> <replaceable>命令</replaceable></command>）。
+   所有快照程序操作皆针对现有配置执行（有关详细信息，请参见<xref linkend="sec-snapper-config"/>）。您可以只为存在配置的分区或卷生成快照。默认情况下使用系统配置 (<literal>root</literal>)。如果想要为自己的配置创建或管理快照，则需要进行明确选择。使用 YaST 中的<guimenu>当前配置</guimenu>下拉菜单，或在命令行上指定 <option>-c</option>（即 <command>snapper</command> <option>-c</option> <replaceable>我的配置</replaceable> <replaceable>命令</replaceable>）。
   </para>
 
-  <sect2 id="sec-snapper-manage-metadata">
+  <section xml:id="sec-snapper-manage-metadata">
    <title>快照元数据</title>
    <para>
     每一张快照均由快照本身以及一些元数据组成。创建快照时，您还需要指定元数据。修改快照就意味着更改其元数据——您无法修改其内容。每一张快照可以使用以下元数据：
@@ -603,7 +611,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec-snapper-manage-metadata-type">
+   <section xml:id="sec-snapper-manage-metadata-type">
     <title>快照类型</title>
     <para>
      快照程序能够分清三种不同类型的快照：前快照、后快照以及单一快照。从物理上讲，这三种快照没有什么不同，但快照程序会针对不同类型采用不同的处理方式。
@@ -636,8 +644,8 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="sec-snapper-manage-metadata-cleanup">
+   </section>
+   <section xml:id="sec-snapper-manage-metadata-cleanup">
     <title>清理算法</title>
     <para>
      快照程序提供有三种清理旧快照的算法。这些算法以每天计划作业方式执行。快照的清理频率在分区或子卷的快照程序配置中定义（有关详细信息，请参见<xref linkend="sec-snapper-config-modify"/>）。
@@ -668,10 +676,10 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-snapper-manage-create">
+  <section xml:id="sec-snapper-manage-create">
    <title>创建快照</title>
    <para>
     通过运行 <command>snapper create</command> 或单击 YaST 的<guimenu>快照程序</guimenu>模块中的<guimenu>创建</guimenu>来创建快照。以下示例解释了如何从命令行创建快照。使用 YaST 界面会比较简单。
@@ -685,7 +693,7 @@ Please see LICENSE.txt for this document's license.
    <para/>
    <variablelist>
     <varlistentry>
-     <term><command>snapper create <option>--description "2013 年第二周快照"</option></command>
+     <term><command>snapper create</command> <option>--description "2013 年第二周快照"</option>
      </term>
      <listitem>
       <para>
@@ -694,7 +702,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> create <option>--description "~tux 中清理"</option></command>
+     <term><command>snapper</command> <option>--config home</option> create <option>--description "~tux 中清理"</option>
      </term>
      <listitem>
       <para>
@@ -703,7 +711,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> create <option>--description "每日数据备份" --cleanup-algorithm timeline</option></command>
+     <term><command>snapper</command> <option>--config home</option> create <option>--description "每日数据备份" --cleanup-algorithm timeline</option>
      </term>
      <listitem>
       <para>
@@ -712,7 +720,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--type pre</option><option>--print-number</option><option>--description "Apache 配置清理之前"</option></command>
+     <term><command>snapper create</command> <option>--type pre</option><option>--print-number</option><option>--description "Apache 配置清理之前"</option>
      </term>
      <listitem>
       <para>
@@ -721,7 +729,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--type post</option><option>--pre-number 30</option><option>--description "Apache 配置清理之后"</option></command>
+     <term><command>snapper create</command> <option>--type post</option><option>--pre-number 30</option><option>--description "Apache 配置清理之后"</option>
      </term>
      <listitem>
       <para>
@@ -730,7 +738,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--command <replaceable>COMMAND</replaceable></option><option>--description "命令前后"</option></command>
+     <term><command>snapper create</command> <option>--command <replaceable>COMMAND</replaceable></option><option>--description "命令前后"</option>
      </term>
      <listitem>
       <para>
@@ -739,22 +747,22 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-manage-modify">
+  <section xml:id="sec-snapper-manage-modify">
    <title>修改快照元数据</title>
    <para>
     您可以使用快照程序修改说明、清理算法以及快照的用户数据。其他元数据均无法更改。以下示例解释了如何从命令行修改快照。使用 YaST 界面会比较简单。
    </para>
    <para>
-    要在命令行上修改快照，您需要知道其编号。使用 <command>snapper <option>list</option></command> 可显示所有快照及其编号。
+    要在命令行上修改快照，您需要知道其编号。使用 <command>snapper</command> <option>list</option> 可显示所有快照及其编号。
    </para>
    <para>
     YaST 的<guimenu>快照程序</guimenu>模块已列出所有快照。从列表中选择一个快照，然后单击<guimenu>修改</guimenu>。
    </para>
    <variablelist>
     <varlistentry>
-     <term><command>snapper modify <option>--cleanup-algorithm "timeline"</option> 10</command>
+     <term><command>snapper modify</command> <option>--cleanup-algorithm "timeline"</option> 10
      </term>
      <listitem>
       <para>
@@ -763,7 +771,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> modify <option>--description "每日备份" -cleanup-algorithm "timeline"</option>120</command>
+     <term><command>snapper</command> <option>--config home</option> modify <option>--description "每日备份" -cleanup-algorithm "timeline"</option>120
      </term>
      <listitem>
       <para>
@@ -772,15 +780,15 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-manage-delete">
+  <section xml:id="sec-snapper-manage-delete">
    <title>删除快照</title>
    <para>
     要使用 YaST 的<guimenu>快照程序</guimenu>模块删除快照，请从列表中选择快照，然后单击<guimenu>删除</guimenu>。
    </para>
    <para>
-    要使用命令行工具删除快照，需要知道其编号。运行 <command>snapper list</command> 命令获取快照编号。要删除快照，请运行 <command>snapper delete <replaceable>编号</replaceable></command>。
+    要使用命令行工具删除快照，需要知道其编号。运行 <command>snapper list</command> 命令获取快照编号。要删除快照，请运行 <command>snapper delete</command> <replaceable>编号</replaceable>。
    </para>
    <tip>
     <title>删除快照对</title>
@@ -799,7 +807,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>-c home</option> delete 89 90</command>
+     <term><command>snapper</command> <option>-c home</option> delete 89 90
      </term>
      <listitem>
       <para>
@@ -817,30 +825,30 @@ Please see LICENSE.txt for this document's license.
    <para>
     也可以通过每日计划作业自动删除快照。有关详细信息，请参见<xref linkend="sec-snapper-manage-metadata-cleanup"/>。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-limits">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-limits">
   <title>限制</title>
 
   <para>
    虽然 <literal>Btrfs</literal> 以及快照程序已准备好可以正式发布，但对于它们的后续开发仍在继续。该产品目前还存在以下限制。这些问题计划将在后续版本中得到解决。
   </para>
 
-  <sect2 id="sec-snapper-limits-consistency">
+  <section xml:id="sec-snapper-limits-consistency">
    <title>数据一致性</title>
    <para>
     目前还没有机制能在创建快照时确保数据的一致性。如果在创建快照的同时写入文件（例如数据库）都将导致文件损坏或写入不完整。恢复此类文件会产生问题。因此强烈建议您要<emphasis>始终</emphasis>仔细查看已更改文件及其差异的列表。请只恢复确实需要执行回滚操作的文件。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-limits-user">
+  <section xml:id="sec-snapper-limits-user">
    <title>还原用户添加</title>
    <para>
     通常，<filename>/home</filename> 位于单独分区。此类单独分区不属于执行 YaST 回滚操作的默认配置。因此，在使用快照程序还原用户添加时不会删除用户的主分区。强烈建议您使用 YaST 的<guimenu>用户和组管理</guimenu>工具来去除用户。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-limits-kernel">
+  <section xml:id="sec-snapper-limits-kernel">
    <title>在 <filename>/boot</filename> 上以及引导加载程序的更改无法回滚</title>
    <para>
     目前，<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase> 不能从 <literal>Btrfs</literal> 分区引导。因此在为系统分区使用 <literal>Btrfs</literal> 时，一旦安装便会创建 <filename>/boot</filename> 的单独分区。由于 <filename>/boot</filename> 不支持快照，因此以下限制仅适用于 YaST/zypper 回滚：
@@ -863,9 +871,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-faqs">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-faqs">
   <title>常见问题</title>
 
   <variablelist>
@@ -930,8 +938,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-snapper-lvm">
+ </section>
+ <section xml:id="sec-snapper-lvm">
   <title>在精简的 LVM 卷上使用快照程序</title>
 
   <para>
@@ -947,5 +955,5 @@ Please see LICENSE.txt for this document's license.
   <para>
    您可以按照<xref linkend="sec-snapper-config-modify"/>中的说明根据需要调整此配置。然后，您便可以使用快照程序来创建和管理快照、恢复文件以及撤销更改（如上所述）。
   </para>
- </sect1>
+ </section>
 </chapter>
