@@ -1,12 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-tuning-memory">
- <title>Tuning the Memory Management Subsystem</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-memory"><title>Tuning the Memory Management Subsystem</title><info/>
+ 
  <para>
   In order to understand and tune the memory management behavior of the
   kernel, it is important to first have an overview of how it works and
@@ -53,7 +58,7 @@
   advantage of multiple cores. Experimentation will be required for the best
   results.
  </para>
- <sect1 id="cha-tuning-memory-usage">
+ <section xml:id="cha-tuning-memory-usage">
   <title>Memory Usage</title>
 
   <para>
@@ -62,20 +67,20 @@
    <quote>reclaimable</quote> or <quote>swappable</quote>.
   </para>
 
-  <sect2  id="cha-tuning-memory-usage-anonymous">
+  <section xml:id="cha-tuning-memory-usage-anonymous">
    <title>Anonymous Memory</title>
    <para>
     Anonymous memory tends to be program heap and stack memory (for example,
-    <literal>>malloc()</literal>). It is reclaimable, except in special
+    <literal>&gt;malloc()</literal>). It is reclaimable, except in special
     cases such as <literal>mlock</literal> or if there is no available swap
     space. Anonymous memory must be written to swap before it can be
     reclaimed. Swap I/O (both swapping in and swapping out pages) tends to
     be less efficient than pagecache I/O, due to allocation and access
     patterns.
    </para>
-  </sect2>
+  </section>
 
-  <sect2  id="cha-tuning-memory-usage-pagecache">
+  <section xml:id="cha-tuning-memory-usage-pagecache">
    <title>Pagecache</title>
    <para>
     A cache of file data. When a file is read from disk or network, the
@@ -92,9 +97,9 @@
     a memory shortage by simply freeing them. Dirty pages must first be made
     clean before being reclaimed.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-usage-buffercache">
+  <section xml:id="cha-tuning-memory-usage-buffercache">
    <title>Buffercache</title>
    <para>
     This is a type of pagecache for block devices (for example, /dev/sda). A
@@ -103,18 +108,18 @@
     bitmaps, and so forth. Buffercache can be reclaimed similarly to
     pagecache.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-usage-bufferheads">
+  <section xml:id="cha-tuning-memory-usage-bufferheads">
    <title>Buffer Heads</title>
    <para>
     Buffer heads are small auxiliary structures that tend to be allocated
     upon pagecache access. They can generally be reclaimed easily when the
     pagecache or buffercache pages are clean.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-usage-writeback">
+  <section xml:id="cha-tuning-memory-usage-writeback">
    <title>Writeback</title>
    <para>
     As applications write to files, the pagecache (and buffercache) becomes
@@ -126,9 +131,9 @@
     critical percentage of RAM, then applications begin to be throttled to
     prevent dirty data exceeding this threshold.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-usage-readahead">
+  <section xml:id="cha-tuning-memory-usage-readahead">
    <title>Readahead</title>
    <para>
     The VM monitors file access patterns and may attempt to perform
@@ -138,20 +143,20 @@
     pipelined (I/O performed at the same time as the application is
     running).
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-usage-vfs">
+  <section xml:id="cha-tuning-memory-usage-vfs">
    <title>VFS caches</title>
-   <para></para>
-   <sect3 id="cha-tuning-memory-usage-vfs-inode">
+   <para/>
+   <section xml:id="cha-tuning-memory-usage-vfs-inode">
     <title>Inode Cache</title>
     <para>
      This is an in-memory cache of the inode structures for each file
      system. These contain attributes such as the file size, permissions and
      ownership, and pointers to the file data.
     </para>
-   </sect3>
-   <sect3 id="cha-tuning-memory-usage-vfs-dir-entry">
+   </section>
+   <section xml:id="cha-tuning-memory-usage-vfs-dir-entry">
     <title>Directory Entry Cache</title>
     <para>
      This is an in-memory cache of the directory entries in the system.
@@ -159,24 +164,22 @@
      to, and children entries. This cache is used when traversing the
      directory structure and accessing a file by name.
     </para>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="cha-tuning-memory-optimize">
+   </section>
+  </section>
+ </section>
+ <section xml:id="cha-tuning-memory-optimize">
   <title>Reducing Memory Usage</title>
 
-  <para></para>
+  <para/>
 
-  <sect2 id="cha-tuning-memory-optimize-malloc">
+  <section xml:id="cha-tuning-memory-optimize-malloc">
    <title>Reducing malloc (Anonymous) Usage</title>
    <para>
     Applications running on &productname; &productnumber; can allocate more
     memory compared to &productname; 10. This is due to
-    <systemitem
-     class="resource">glibc</systemitem> changing its
+    <systemitem class="resource">glibc</systemitem> changing its
     default behavior while allocating userspace memory. Please see
-    <ulink
-     url="http://www.gnu.org/s/libc/manual/html_node/Malloc-Tunable-Parameters.html"/>
+    <link xlink:href="http://www.gnu.org/s/libc/manual/html_node/Malloc-Tunable-Parameters.html"/>
     for explanation of these parameters.
    </para>
    <para>
@@ -185,9 +188,9 @@
     application, or via setting MALLOC_MMAP_THRESHOLD environment variable
     before running the application.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-optimize-overhead">
+  <section xml:id="cha-tuning-memory-optimize-overhead">
    <title>Reducing Kernel Memory Overheads</title>
    <para>
     Kernel memory that is reclaimable (caches, described above) will be
@@ -200,18 +203,18 @@
     kernel memory usage (fewer processes, fewer open files and sockets,
     etc.)
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-optimize-cgoups">
+  <section xml:id="cha-tuning-memory-optimize-cgoups">
    <title>Memory Controller (Memory Cgroups)</title>
    <para>
     If the memory cgroups feature is not needed, it can be switched off by
     passing cgroup_disable=memory on the kernel command line, reducing
     memory consumption of the kernel a bit.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="cha-tuning-memory-vm">
+  </section>
+ </section>
+ <section xml:id="cha-tuning-memory-vm">
   <title>Virtual Memory Manager (VM) Tunable Parameters</title>
 
   <para>
@@ -222,7 +225,7 @@
    decrease it under other conditions.
   </para>
 
-  <sect2 id="cha-tuning-memory-vm-reclaim">
+  <section xml:id="cha-tuning-memory-vm-reclaim">
    <title>Reclaim Ratios</title>
    <variablelist>
     <varlistentry>
@@ -293,9 +296,9 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-vm-writeback">
+  <section xml:id="cha-tuning-memory-vm-writeback">
    <title>Writeback Parameters</title>
    <para>
     One important change in writeback behavior since &productname; 10 is
@@ -327,11 +330,11 @@
      <term><filename>/proc/sys/vm/dirty_ratio</filename>
      </term>
      <listitem>
-      <para></para>
+      <para/>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><filename></filename>
+     <term><filename/>
      </term>
      <listitem>
       <para>
@@ -352,9 +355,9 @@
     harm latency when memory needs to be reclaimed or at data integrity
     (sync) points when it needs to be written back to disk.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-vm-readahead">
+  <section xml:id="cha-tuning-memory-vm-readahead">
    <title>Readahead parameters</title>
    <variablelist>
     <varlistentry>
@@ -377,20 +380,19 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-tuning-memory-vm-more">
+  <section xml:id="cha-tuning-memory-vm-more">
    <title>Further VM Parameters</title>
    <para>
     For the complete list of the VM tunable parameters, see
     <filename>/usr/src/linux/Documentation/sysctl/vm.txt</filename>
     (available after having installed the
-    <systemitem
-     class="resource">kernel-source</systemitem> package).
+    <systemitem class="resource">kernel-source</systemitem> package).
    </para>
-  </sect2>
- </sect1>
- <sect1 id="cha-tuning-memory-numa">
+  </section>
+ </section>
+ <section xml:id="cha-tuning-memory-numa">
   <title>Non-Uniform Memory Access (NUMA)</title>
 
   <para>
@@ -421,15 +423,15 @@
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="cha-tuning-memory-monitoring">
+ </section>
+ <section xml:id="cha-tuning-memory-monitoring">
   <title>Monitoring VM Behavior</title>
 
   <para>
    Some simple tools that can help monitor VM behavior:
   </para>
 
-  <orderedlist>
+  <orderedlist spacing="normal">
    <listitem>
     <para>
      vmstat: This tool gives a good overview of what the VM is doing. See
@@ -440,8 +442,7 @@
     <para>
      <filename>/proc/meminfo</filename>: This file gives a detailed
      breakdown of where memory is being used. See
-     <xref
-      linkend="sec-util-memory-meminfo"/> for details.
+     <xref linkend="sec-util-memory-meminfo"/> for details.
     </para>
    </listitem>
    <listitem>
@@ -453,5 +454,5 @@
     </para>
    </listitem>
   </orderedlist>
- </sect1>
+ </section>
 </chapter>

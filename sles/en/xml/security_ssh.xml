@@ -1,12 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-ssh">
- <title>SSH: Secure Network Operations</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-ssh"><title>SSH: Secure Network Operations</title><info><abstract>
+  <para>
+   In networked environments, it is often necessary to access hosts from a
+   remote location. If a user sends login and password strings for
+   authentication purposes as plain text, they could be intercepted and
+   misused to gain access to that user account without the authorized user
+   knowing about it. This would open all the user's files to an attacker and
+   the illegal account could be used to obtain administrator or
+   <systemitem class="username">root</systemitem> access, or to
+   penetrate other systems. In the past, remote connections were established
+   with <command>telnet</command>, <command>rsh</command> or
+   <command>rlogin</command>, which offered no guards against eavesdropping
+   in the form of encryption or other security mechanisms. There are other
+   unprotected communication channels, like the traditional FTP protocol and
+   some remote copying programs like <command>rcp</command>.
+  </para>
+ </abstract></info>
+ 
 <!-- "endofrange" are also commented ATM
  <indexterm id="idx-SSH" class="startofrange">
   <primary>SSH</primary>
@@ -20,24 +41,7 @@
  <secondary>SSH</secondary></indexterm><indexterm>
  <primary>security</primary>
  <secondary>telnet</secondary></indexterm>
- <abstract>
-  <para>
-   In networked environments, it is often necessary to access hosts from a
-   remote location. If a user sends login and password strings for
-   authentication purposes as plain text, they could be intercepted and
-   misused to gain access to that user account without the authorized user
-   knowing about it. This would open all the user's files to an attacker and
-   the illegal account could be used to obtain administrator or
-   <systemitem
-    class="username">root</systemitem> access, or to
-   penetrate other systems. In the past, remote connections were established
-   with <command>telnet</command>, <command>rsh</command> or
-   <command>rlogin</command>, which offered no guards against eavesdropping
-   in the form of encryption or other security mechanisms. There are other
-   unprotected communication channels, like the traditional FTP protocol and
-   some remote copying programs like <command>rcp</command>.
-  </para>
- </abstract>
+ 
  <para>
   The SSH suite provides the necessary protection by encrypting the
   authentication strings (usually a login name and a password) and all the
@@ -55,7 +59,7 @@
   if the <systemitem class="daemon">sshd</systemitem> is running and the
   firewall permits access.
  </para>
- <sect1 id="sec-ssh-programm">
+ <section xml:id="sec-ssh-programm">
   <title><command>ssh</command>&mdash;Secure Shell</title><indexterm>
 
   <primary>SSH</primary>
@@ -86,9 +90,8 @@ ssh -l &exampleuser; &exampleserver;</screen>
 
   <para>
    Furthermore, ssh offers the possibility to just run non-interactive
-   commands on remote systems by running <command>ssh
-   <replaceable>HOST</replaceable>
-   <replaceable>COMMAND</replaceable></command>.
+   commands on remote systems by running <command>ssh</command> <replaceable>HOST</replaceable>
+   <replaceable>COMMAND</replaceable>.
    <replaceable>COMMAND</replaceable> needs to be properly quoted. Multiple
    commands can be concatenated as on a regular shell.
   </para>
@@ -96,7 +99,7 @@ ssh -l &exampleuser; &exampleserver;</screen>
 <screen>ssh root@&exampleserver; "dmesg | tail -n 25"
 ssh root@&exampleserver; "cat /etc/issue &amp;&amp; uptime"</screen>
 
-  <sect2 id="sec-ssh-programm-x">
+  <section xml:id="sec-ssh-programm-x">
    <title>Starting X Applications on a Remote Host</title>
    <para>
     SSH also simplifies the use of remote X applications. If you run
@@ -106,9 +109,9 @@ ssh root@&exampleserver; "cat /etc/issue &amp;&amp; uptime"</screen>
     existing SSH connection. At the same time, X applications started
     remotely cannot be intercepted by unauthorized individuals.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ssh-programm-forwarding">
+  <section xml:id="sec-ssh-programm-forwarding">
    <title>Agent Forwarding</title>
    <para>
     By adding the <option>-A</option> option, the ssh-agent authentication
@@ -126,10 +129,9 @@ ssh root@&exampleserver; "cat /etc/issue &amp;&amp; uptime"</screen>
     <filename>/etc/ssh/sshd_config</filename> by setting
     <literal>AllowAgentForwarding yes</literal>.
    </para>
-  </sect2>
- </sect1>
- <sect1
-  id="sec-ssh-copy">
+  </section>
+ </section>
+ <section xml:id="sec-ssh-copy">
   <title><command>scp</command>&mdash;Secure Copy</title><indexterm>
 
   <primary>SSH</primary>
@@ -151,9 +153,9 @@ ssh root@&exampleserver; "cat /etc/issue &amp;&amp; uptime"</screen>
    vice versa.
   </para>
 
-<screen># local -> remote
+<screen># local -&gt; remote
 scp ~/MyLetter.tex &exampleuser;@&exampleserver;:/tmp
-# remote -> local
+# remote -&gt; local
 scp &exampleuser;@&exampleserver;:/tmp/MyLetter.tex ~
   </screen>
 
@@ -194,9 +196,8 @@ scp &exampleuser;@&exampleserver;:/tmp/MyLetter.tex ~
    minimizes the data volume to transfer, but creates a heavier burden on
    the processors of both machines.
   </para>
- </sect1>
- <sect1
-  id="sec-ssh-sftp">
+ </section>
+ <section xml:id="sec-ssh-sftp">
   <title><command>sftp</command>&mdash;Secure File Transfer</title><indexterm>
 
   <primary>SSH</primary>
@@ -219,14 +220,14 @@ scp &exampleuser;@&exampleserver;:/tmp/MyLetter.tex ~
 <screen>sftp &exampleserver;
 Enter passphrase for key '/home/&exampleuser;/.ssh/id_rsa': 
 Connected to &exampleserver;.
-sftp> help
+sftp&gt; help
 Available commands:
 bye                                Quit sftp
 cd path                            Change remote directory to 'path'
 [...]
   </screen>
- </sect1>
- <sect1 id="sec-ssh-sshdserver">
+ </section>
+ <section xml:id="sec-ssh-sshdserver">
   <title>The SSH Daemon (<systemitem class="daemon">sshd</systemitem>)</title><indexterm>
 
   <primary>SSH</primary>
@@ -318,11 +319,10 @@ cd path                            Change remote directory to 'path'
   <para>
    In case the public keys of a host have really changed (something that
    needs to be verified before attempting to connect to such a server), the
-   offending keys can be removed with the command <command>ssh-keygen
-   <option>-r</option> <replaceable>HOSTNAME</replaceable></command>
+   offending keys can be removed with the command <command>ssh-keygen</command> <option>-r</option> <replaceable>HOSTNAME</replaceable>
   </para>
- </sect1>
- <sect1 id="sec-ssh-authentic">
+ </section>
+ <section xml:id="sec-ssh-authentic">
   <title>SSH Authentication Mechanisms</title><indexterm>
 
   <primary>SSH</primary>
@@ -392,7 +392,7 @@ cd path                            Change remote directory to 'path'
    </para>
   </note>
 
-  <sect2 id="sec-ssh-authentic-gen-key">
+  <section xml:id="sec-ssh-authentic-gen-key">
    <title>Generating an SSH Key</title>
    <procedure>
     <step>
@@ -405,8 +405,7 @@ cd path                            Change remote directory to 'path'
      <para>
       Accept the default location to store the key
       (<filename>~/.ssh/id_rsa</filename>) be pressing
-      <keycap
-       function="enter"/> (strongly recommended) or enter an
+      <keycap function="enter"/> (strongly recommended) or enter an
       alternative location.
      </para>
     </step>
@@ -426,11 +425,11 @@ cd path                            Change remote directory to 'path'
    </para>
    <para>
     In order to change the password of an existing key pair, use the command
-    <command>ssh-keygen <option>-p</option></command>.
+    <command>ssh-keygen</command> <option>-p</option>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ssh-authentic-key-copy">
+  <section xml:id="sec-ssh-authentic-key-copy">
    <title>Copying an SSH Key</title>
    <para>
     To copy a public SSH key to <filename>~/.ssh/authorized_keys</filename>
@@ -453,9 +452,9 @@ ssh-copy-id -i ~notme/.ssh/id_rsa.pub  &exampleuser;@&exampleserver;</screen>
     user's password. To remove an existing key, manually edit
     <filename>~/.ssh/authorized_keys</filename>.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ssh-authentic-agent">
+  <section xml:id="sec-ssh-authentic-agent">
    <title>Using the <command>ssh-agent</command></title>
    <para>
     When doing lots of secure shell operations it is cumbersome to type the
@@ -475,7 +474,7 @@ ssh-copy-id -i ~notme/.ssh/id_rsa.pub  &exampleuser;@&exampleserver;</screen>
     passphrase. Once entered, you can use the secure shell commands within
     the running session without having to provide your password.
    </para>
-   <sect3 id="sec-ssh-authentic-agent-x">
+   <section xml:id="sec-ssh-authentic-agent-x">
     <title>Using <command>ssh-agent</command> in an X Session</title>
     <para>
      On &productname; the <command>ssh-agent</command> is automatically
@@ -515,8 +514,8 @@ else cp /etc/skel/.xinitrc.template ~/.xinitrc; fi</screen>
       </para>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="sec-ssh-authentic-agent-terminal">
+   </section>
+   <section xml:id="sec-ssh-authentic-agent-terminal">
     <title>Using <command>ssh-agent</command> in a Terminal Session</title>
     <para>
      In a terminal session you need to manually start the
@@ -533,8 +532,8 @@ eval $(ssh-agent)
      After the agent has been started, run <command>ssh-add</command> to
      provide the agent with your keys.
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
 <!-- fs 2012-10-02: 
 
@@ -546,8 +545,8 @@ eval $(ssh-agent)
   </sect2>
 
 -->
- </sect1>
- <sect1 id="sec-ssh-port-forwarding">
+ </section>
+ <section xml:id="sec-ssh-port-forwarding">
   <title>Port Forwarding</title>
 
   <para>
@@ -583,8 +582,8 @@ eval $(ssh-agent)
    and also in the OpenSSH package documentation under
    <filename>/usr/share/doc/packages/openssh</filename>.
   </para>
- </sect1>
- <sect1 id="sec-ssh-yast">
+ </section>
+ <section xml:id="sec-ssh-yast">
   <title>Configuring An SSH Daemon with &yast;</title>
 
   <para os="osuse; sled">
@@ -603,8 +602,7 @@ eval $(ssh-agent)
    <step>
     <para>
      On the <guimenu>General</guimenu> tab, select the ports
-     <systemitem
-      class="daemon">sshd</systemitem> should listen on in
+     <systemitem class="daemon">sshd</systemitem> should listen on in
      the <guimenu>SSHD TCP Ports</guimenu> table. The default port number is
      22. Multiple ports are allowed. To add a new port, click
      <guimenu>Add</guimenu>, enter the port number and click
@@ -675,15 +673,15 @@ eval $(ssh-agent)
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-security-ssh-moreinfo">
+ </section>
+ <section xml:id="sec-security-ssh-moreinfo">
   <title>For More Information</title>
 
   <para/>
 
   <variablelist>
    <varlistentry>
-    <term><ulink url="http://www.openssh.com"/>
+    <term><link xlink:href="http://www.openssh.com"/>
     </term>
     <listitem>
      <para>
@@ -692,7 +690,7 @@ eval $(ssh-agent)
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><ulink url="http://en.wikibooks.org/wiki/OpenSSH"/>
+    <term><link xlink:href="http://en.wikibooks.org/wiki/OpenSSH"/>
     </term>
     <listitem>
      <para>
@@ -748,5 +746,5 @@ eval $(ssh-agent)
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
+ </section>
 </chapter>

@@ -1,12 +1,17 @@
-<?xml version="1.0"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-qemu-running">
- <title>Running Virtual Machines with qemu-kvm</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-qemu-running"><title>Running Virtual Machines with qemu-kvm</title><info/>
+ 
  <para>
   Once you have a virtual disk image ready (for more information on disk
   images, see <xref linkend="cha-qemu-guest-inst-qemu-img"/>), it is time to
@@ -17,14 +22,14 @@
   more specific tasks. For a complete list of <command>qemu-kvm</command>'s
   options, see its manual page (<command>man 1 qemu-kvm</command>).
  </para>
- <sect1 id="cha-qemu-running-basic">
+ <section xml:id="cha-qemu-running-basic">
   <title>Basic <command>qemu-kvm</command> Invocation</title>
 
   <para>
    The <command>qemu-kvm</command> command uses the following syntax:
   </para>
 
-<screen>qemu-kvm options<co id="co-qemu-running-basic-opts"/> disk_img<co id="co-qemu-running-basic-img"/></screen>
+<screen>qemu-kvm options<co xml:id="co-qemu-running-basic-opts"/> disk_img<co xml:id="co-qemu-running-basic-img"/></screen>
 
   <calloutlist>
    <callout arearefs="co-qemu-running-basic-opts">
@@ -46,8 +51,8 @@
     </para>
    </callout>
   </calloutlist>
- </sect1>
- <sect1 id="cha-qemu-running-gen-opts">
+ </section>
+ <section xml:id="cha-qemu-running-gen-opts">
   <title>General <command>qemu-kvm</command> Options</title>
 
   <para>
@@ -121,7 +126,7 @@
    </varlistentry>
   </variablelist>
 
-  <sect2 id="cha-qemu-running-gen-opts-basic">
+  <section xml:id="cha-qemu-running-gen-opts-basic">
    <title>Basic Virtual Hardware</title>
    <variablelist>
     <varlistentry>
@@ -132,7 +137,7 @@
        Specifies the type of the emulated machine. Run <command>qemu-kvm -M
        help</command> to view a list of supported machine types.
       </para>
-<screen>&exampleuser;@&wsII;:~> qemu-kvm -M help
+<screen>&exampleuser;@&wsII;:~&gt; qemu-kvm -M help
 Supported machines are:
 q35                  Standard PC (Q35 + ICH9, 2009) (alias of pc-q35-1.4)
 pc-q35-1.4           Standard PC (Q35 + ICH9, 2009)
@@ -182,7 +187,7 @@ none                 empty machine</screen>
        <command>qemu-kvm -cpu ?</command> to view a list of supported CPU
        models.
       </para>
-<screen>&exampleuser;@&wsII;:~> qemu-kvm -cpu help
+<screen>&exampleuser;@&wsII;:~&gt; qemu-kvm -cpu help
  x86           qemu64  QEMU Virtual CPU version 1.4.0                  
  x86           phenom  AMD Phenom(tm) 9550 Quad-Core Processor         
  x86         core2duo  Intel(R) Core(TM)2 Duo CPU     T7700  @ 2.40GHz 
@@ -258,15 +263,14 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
       <para>
        &qemu; starts with CPU stopped. To start CPU, enter
        <literal>c</literal> in &qemu; monitor. For more information, see
-       <xref
-        linkend="cha-qemu-monitor"/>.
+       <xref linkend="cha-qemu-monitor"/>.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-qemu-running-gen-opts-storing-cong">
+  <section xml:id="cha-qemu-running-gen-opts-storing-cong">
    <title>Storing and Reading Configuration of Virtual Devices</title>
    <variablelist>
     <varlistentry>
@@ -290,10 +294,10 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
        file. It can be consequently re-used with the
        <literal>-readconfig</literal> option.
       </para>
-<screen>&exampleuser;@&wsII;:~> qemu-kvm -name "SLES 11 SP1" -M pc-0.12 -m 512 -cpu kvm64 \
+<screen>&exampleuser;@&wsII;:~&gt; qemu-kvm -name "SLES 11 SP1" -M pc-0.12 -m 512 -cpu kvm64 \
 -smp 2 /images/sles11sp1.raw -writeconfig /images/sles11sp1.cfg
 (exited)
-&exampleuser;@&wsII;:~> more /images/sles11sp1.cfg
+&exampleuser;@&wsII;:~&gt; more /images/sles11sp1.cfg
 # qemu config file
 
 [drive]
@@ -307,9 +311,9 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-qemu-running-gen-opts-rtc">
+  <section xml:id="cha-qemu-running-gen-opts-rtc">
    <title>Guest Real-time Clock</title>
    <variablelist>
     <varlistentry>
@@ -337,13 +341,13 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
        Instead of a timestamp, you can specify <literal>utc</literal> or
        <literal>localtime</literal>. The former instructs &vmguest; to start
        at the current UTC value (Coordinated Universal Time, see
-       <ulink url="http://en.wikipedia.org/wiki/UTC"/>), while the latter
+       <link xlink:href="http://en.wikipedia.org/wiki/UTC"/>), while the latter
        applies the local time setting.
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 <!--
   #!/bin/sh
@@ -371,8 +375,8 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
   /usr/bin/sudo /sbin/ip link set $tap down
   /usr/bin/sudo /bin/tunctl -d $tap
   -->
- </sect1>
- <sect1 id="cha-qemu-running-devices">
+ </section>
+ <section xml:id="cha-qemu-running-devices">
   <title>Using Devices in &qemu;</title>
 
   <para>
@@ -380,8 +384,7 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
    &qemu; supports, for example, several types of network cards, block
    devices (hard and removable drives), <phrase condition="kvm4x86">USB
    devices, </phrase>character devices (serial and parallel
-   ports)<phrase
-   condition="kvm4x86">, or multimedia devices (graphic and
+   ports)<phrase condition="kvm4x86">, or multimedia devices (graphic and
    sound cards)</phrase>. For satisfactory operation and performance of the
    virtual machine, some or all of these devices must be configured
    correctly. This section introduces options to configure various types of
@@ -403,7 +406,7 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
    </para>
   </tip>
 
-  <sect2 id="cha-qemu-running-devices-block">
+  <section xml:id="cha-qemu-running-devices-block">
    <title>Block Devices</title>
    <para>
     Block devices are vital for virtual machines. In general, these are
@@ -526,8 +529,7 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
     <title>Using Host Drives Instead of Images</title>
     <para>
      Normally you will use disk images (see
-     <xref
-      linkend="cha-qemu-guest-inst-qemu-img"/>) as disk drives of
+     <xref linkend="cha-qemu-guest-inst-qemu-img"/>) as disk drives of
      the virtual machine. However, you can also use existing &vmhost; disks,
      connect them as drives, and access them from &vmguest;. Use the host
      disk device directly instead of disk image filenames.
@@ -546,7 +548,7 @@ x86       Opteron_G5  AMD Opteron 63xx class CPU</screen>
      the host device permissions.
     </para>
    </tip>
-   <sect3>
+   <section>
     <title>virtio-blk-data-plane</title>
     <para>
      The <emphasis>virtio-blk-data-plane</emphasis> is a new performance
@@ -570,7 +572,7 @@ config-wce=off,x-data-plane=on [...]</screen>
     <para>
      As of now, the virtio-blk-data-plane has the following limitations:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        Only raw image format is supported.
@@ -604,16 +606,16 @@ config-wce=off,x-data-plane=on [...]</screen>
       &productname;. It is released as a technical preview only.
      </para>
     </important>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="cha-qemu-running-devices-graphic">
+  <section xml:id="cha-qemu-running-devices-graphic">
    <title>Graphic Devices and Display Options</title>
    <para>
     This section describes &qemu; options affecting the type of the emulated
     video card and the way &vmguest; graphical output is displayed.
    </para>
-   <sect3 id="cha-qemu-running-devices-graphic-vga">
+   <section xml:id="cha-qemu-running-devices-graphic-vga">
     <title>Defining Video Cards</title>
     <para>
      &qemu; uses <literal>-vga</literal> to define a video card used to
@@ -660,8 +662,8 @@ config-wce=off,x-data-plane=on [...]</screen>
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="cha-qemu-running-devices-graphic-display">
+   </section>
+   <section xml:id="cha-qemu-running-devices-graphic-display">
     <title>Display Options</title>
     <para>
      The following options affect the way &vmguest; graphical output is
@@ -684,7 +686,7 @@ config-wce=off,x-data-plane=on [...]</screen>
         useful shortcuts, for example, to toggle between the console and the
         &qemu; monitor.
        </para>
-<screen>&exampleuser;@&wsII;:~> qemu-kvm -hda /images/sles11sp1_base.raw -nographic
+<screen>&exampleuser;@&wsII;:~&gt; qemu-kvm -hda /images/sles11sp1_base.raw -nographic
 
 C-a h    print this help
 C-a x    exit emulator
@@ -743,10 +745,10 @@ QEMU 0.12.5 monitor - type 'help' for more information
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="cha-qemu-running-devices-usb" condition="kvm4x86">
+  <section xml:id="cha-qemu-running-devices-usb" condition="kvm4x86">
    <title>USB Devices</title>
    <para>
     There are basically two ways to create USB devices usable by the
@@ -756,7 +758,7 @@ QEMU 0.12.5 monitor - type 'help' for more information
     with the <option>-usb</option> option. Then you can specify individual
     devices with the <option>-usbdevice</option> option.
    </para>
-   <sect3 id="kvm-usb-emulate">
+   <section xml:id="kvm-usb-emulate">
     <title>Emulating USB Devices in &vmguest;</title>
     <para>
      &suse; currently supports the following types of USB devices:
@@ -828,7 +830,7 @@ QEMU 0.12.5 monitor - type 'help' for more information
         a mouse on &vmguest; started with <literal>qemu-kvm [...] -usbdevice
         mouse</literal>:
        </para>
-<screen>&exampleuser;@&wsII;:~> hwinfo --mouse
+<screen>&exampleuser;@&wsII;:~&gt; hwinfo --mouse
 20: USB 00.0: 10503 USB Mouse
 [Created at usb.122]
 UDI: /org/freedesktop/Hal/devices/usb_device_627_1_1_if0
@@ -855,14 +857,14 @@ Device: usb 0x0001 "QEMU USB Mouse"
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="kvm-usb-passthru">
+   </section>
+   <section xml:id="kvm-usb-passthru">
     <title>&usbback;</title>
     <para>
      To assign an existing host USB device to a &vmguest;, you need to find
      out its host bus and device ID.
     </para>
-<screen>&exampleuser;@vmhost:~> lsusb
+<screen>&exampleuser;@vmhost:~&gt; lsusb
 [...]
 Bus 002 Device 005: ID 12d1:1406 Huawei Technologies Co., Ltd. E1750
 [...]</screen>
@@ -876,7 +878,7 @@ Bus 002 Device 005: ID 12d1:1406 Huawei Technologies Co., Ltd. E1750
      After the guest is booted, check that the assigned USB device is
      present on it.
     </para>
-<screen>&exampleuser;@vmguest:~> lsusb
+<screen>&exampleuser;@vmguest:~&gt; lsusb
 [...]
 Bus 001 Device 002: ID 12d1:1406 Huawei Technologies Co., Ltd. E1750
 [...]</screen>
@@ -886,10 +888,10 @@ Bus 001 Device 002: ID 12d1:1406 Huawei Technologies Co., Ltd. E1750
       device so that it is accessible for the user.
      </para>
     </note>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="kvm-pciback" condition="kvm4x86">
+  <section xml:id="kvm-pciback" condition="kvm4x86">
    <title>&pciback;</title>
    <para>
     &pciback; is a technique to give your &vmguest; exclusive access to a
@@ -936,7 +938,7 @@ Bus 001 Device 002: ID 12d1:1406 Huawei Technologies Co., Ltd. E1750
      <para>
       Identify the host PCI device to assign to the guest.
      </para>
-<screen>&exampleuser;@vmhost:~> lspci -nn
+<screen>&exampleuser;@vmhost:~&gt; lspci -nn
 [...] 00:1b.0 Audio device [0403]: Intel Corporation 82801H (ICH8 Family) \
 HD Audio Controller [8086:284b] (rev 02) [...]</screen>
      <para>
@@ -949,10 +951,10 @@ HD Audio Controller [8086:284b] (rev 02) [...]</screen>
       Unbind the device from host Kernel driver and bind it to the PCI stub
       driver.
      </para>
-<screen>&exampleuser;@vmhost:~> modprobe pci_stub
-&exampleuser;@vmhost:~> echo "8086 284b" > /sys/bus/pci/drivers/pci-stub/new_id
-&exampleuser;@vmhost:~> echo "0000:00:1b.0" > /sys/bus/pci/devices/0000:00:1b.0/driver/unbind
-&exampleuser;@vmhost:~> echo "0000:00:1b.0" > /sys/bus/pci/drivers/pci-stub/bind</screen>
+<screen>&exampleuser;@vmhost:~&gt; modprobe pci_stub
+&exampleuser;@vmhost:~&gt; echo "8086 284b" &gt; /sys/bus/pci/drivers/pci-stub/new_id
+&exampleuser;@vmhost:~&gt; echo "0000:00:1b.0" &gt; /sys/bus/pci/devices/0000:00:1b.0/driver/unbind
+&exampleuser;@vmhost:~&gt; echo "0000:00:1b.0" &gt; /sys/bus/pci/drivers/pci-stub/bind</screen>
     </step>
     <step>
      <para>
@@ -970,11 +972,10 @@ HD Audio Controller [8086:284b] (rev 02) [...]</screen>
    <para>
     &kvm; also supports PCI device hot-plugging to a &vmguest;. To achieve
     this, you need to switch to a &qemu; monitor (see
-    <xref
-     linkend="cha-qemu-monitor"/> for more information) and issue
+    <xref linkend="cha-qemu-monitor"/> for more information) and issue
     the following commands:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       hot add:
@@ -988,9 +989,9 @@ HD Audio Controller [8086:284b] (rev 02) [...]</screen>
 <screen>device_del new_pci_device</screen>
     </listitem>
    </itemizedlist>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-qemu-running-devices-char">
+  <section xml:id="cha-qemu-running-devices-char">
    <title>Character Devices</title>
    <para>
     Use <literal>-chardev</literal> to create a new character device. The
@@ -1170,9 +1171,9 @@ socket,id=tcp_socket1,host=localhost,port=7777,server,nowait</screen>
     For a complete list of available character devices back-ends, see the man
     page (<command>man 1 qemu-kvm</command>).
    </para>
-  </sect2>
- </sect1>
- <sect1 id="cha-qemu-running-networking">
+  </section>
+ </section>
+ <section xml:id="cha-qemu-running-networking">
   <title>Networking in &qemu;</title>
 
   <para>
@@ -1204,8 +1205,7 @@ socket,id=tcp_socket1,host=localhost,port=7777,server,nowait</screen>
      <para>
       Uses a specified network helper to configure the TAP interface and
       attach it to a specified bridge. For more information, see
-      <xref
-       linkend="cha-qemu-running-networking-bridge"/>.
+      <xref linkend="cha-qemu-running-networking-bridge"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -1226,8 +1226,7 @@ socket,id=tcp_socket1,host=localhost,port=7777,server,nowait</screen>
     <listitem>
      <para>
       Specifies a user-mode networking. For more information, see
-      <xref
-       linkend="cha-qemu-running-networking-usermode"/>.
+      <xref linkend="cha-qemu-running-networking-usermode"/>.
      </para>
     </listitem>
    </varlistentry>
@@ -1237,20 +1236,19 @@ socket,id=tcp_socket1,host=localhost,port=7777,server,nowait</screen>
     <listitem>
      <para>
       Specifies a bridged or routed networking. For more information, see
-      <xref
-       linkend="cha-qemu-running-networking-bridge"/>.
+      <xref linkend="cha-qemu-running-networking-bridge"/>.
      </para>
     </listitem>
    </varlistentry>
   </variablelist>
 
-  <sect2 id="cha-qemu-running-networking-nic">
+  <section xml:id="cha-qemu-running-networking-nic">
    <title>Defining a Network Interface Card</title>
    <para>
     Use <literal>-net nic</literal> to add a new emulated network card:
    </para>
-<screen>qemu-kvm [...] -net nic,vlan=1<co id="co-qemu-running-networking-nic-vlan"/>,macaddr=&wsIVmac;<co id="co-qemu-running-networking-nic-mac"/>,\
-model=virtio<co id="co-qemu-running-networking-nic-model"/>,name=ncard1<co id="co-qemu-running-networking-nic-name"/></screen>
+<screen>qemu-kvm [...] -net nic,vlan=1<co xml:id="co-qemu-running-networking-nic-vlan"/>,macaddr=&wsIVmac;<co xml:id="co-qemu-running-networking-nic-mac"/>,\
+model=virtio<co xml:id="co-qemu-running-networking-nic-model"/>,name=ncard1<co xml:id="co-qemu-running-networking-nic-name"/></screen>
    <calloutlist>
     <callout arearefs="co-qemu-running-networking-nic-vlan">
      <para>
@@ -1279,9 +1277,9 @@ model=virtio<co id="co-qemu-running-networking-nic-model"/>,name=ncard1<co id="c
      </para>
     </callout>
    </calloutlist>
-  </sect2>
+  </section>
 
-  <sect2 id="cha-qemu-running-networking-usermode">
+  <section xml:id="cha-qemu-running-networking-usermode">
    <title>User-mode Networking</title>
    <para>
     The <literal>-net user</literal> option instructs &qemu; to use a
@@ -1305,15 +1303,15 @@ model=virtio<co id="co-qemu-running-networking-nic-model"/>,name=ncard1<co id="c
     <command>ssh</command> to connect to &vmhost; at 10.0.2.2, and
     <command>scp</command> to copy files back and forth.
    </para>
-   <sect3 id="cha-qemu-running-networking-usermode-examples">
+   <section xml:id="cha-qemu-running-networking-usermode-examples">
     <title>Command Line Examples</title>
     <para>
      This section shows several examples on how to set up user-mode
      networking with &qemu;.
     </para>
-    <example id="ex-qemu-net-usermode-resctrict">
+    <example xml:id="ex-qemu-net-usermode-resctrict">
      <title>Restricted User-mode Networking</title>
-<screen>qemu-kvm [...] -net user<co id="co-usermode-user"/>,vlan=1<co id="co-usermode-vlan"/>,name=user_net1<co id="co-usermode-name"/>,restrict=yes<co id="co-usermode-restrict"/></screen>
+<screen>qemu-kvm [...] -net user<co xml:id="co-usermode-user"/>,vlan=1<co xml:id="co-usermode-vlan"/>,name=user_net1<co xml:id="co-usermode-name"/>,restrict=yes<co xml:id="co-usermode-restrict"/></screen>
      <calloutlist>
       <callout arearefs="co-usermode-user">
        <para>
@@ -1339,10 +1337,10 @@ model=virtio<co id="co-qemu-running-networking-nic-model"/>,name=ncard1<co id="c
       </callout>
      </calloutlist>
     </example>
-    <example id="ex-qemu-net-usermode-iprange">
+    <example xml:id="ex-qemu-net-usermode-iprange">
      <title>User-mode Networking with Custom IP Range</title>
-<screen>qemu-kvm [...] -net user,net=10.2.0.0/8<co id="co-usermode-net"/>,host=10.2.0.6<co id="co-usermode-host"/>,dhcpstart=10.2.0.20<co id="co-usermode-dhcpstart"/>,\
-hostname=tux_kvm_guest<co id="co-usermode-hostname"/></screen>
+<screen>qemu-kvm [...] -net user,net=10.2.0.0/8<co xml:id="co-usermode-net"/>,host=10.2.0.6<co xml:id="co-usermode-host"/>,dhcpstart=10.2.0.20<co xml:id="co-usermode-dhcpstart"/>,\
+hostname=tux_kvm_guest<co xml:id="co-usermode-hostname"/></screen>
      <calloutlist>
       <callout arearefs="co-usermode-net">
        <para>
@@ -1370,9 +1368,9 @@ hostname=tux_kvm_guest<co id="co-usermode-hostname"/></screen>
       </callout>
      </calloutlist>
     </example>
-    <example id="ex-qemu-net-usermode-netboot-tftp">
+    <example xml:id="ex-qemu-net-usermode-netboot-tftp">
      <title>User-mode Networking with Network-boot and TFTP</title>
-<screen>qemu-kvm [...] -net user,tftp=/images/tftp_dir<co id="co-usermode-tftp"/>,bootfile=/images/boot/pxelinux.0<co id="co-usermode-bootfile"/></screen>
+<screen>qemu-kvm [...] -net user,tftp=/images/tftp_dir<co xml:id="co-usermode-tftp"/>,bootfile=/images/boot/pxelinux.0<co xml:id="co-usermode-bootfile"/></screen>
      <calloutlist>
       <callout arearefs="co-usermode-tftp">
        <para>
@@ -1393,7 +1391,7 @@ hostname=tux_kvm_guest<co id="co-usermode-hostname"/></screen>
       </callout>
      </calloutlist>
     </example>
-    <example id="ex-qemu-net-usermode-hostfwd">
+    <example xml:id="ex-qemu-net-usermode-hostfwd">
      <title>User-mode Networking with Host Port Forwarding</title>
 <screen>qemu-kvm [...] -net user,hostfwd=tcp::2222-:22</screen>
      <para>
@@ -1409,10 +1407,10 @@ hostname=tux_kvm_guest<co id="co-usermode-hostname"/></screen>
       prompt from &vmguest;.
      </para>
     </example>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="cha-qemu-running-networking-bridge">
+  <section xml:id="cha-qemu-running-networking-bridge">
    <title>Bridged Networking</title>
    <para>
     With the <literal>-net tap</literal> option, &qemu; creates a network
@@ -1472,12 +1470,12 @@ hostname=tux_kvm_guest<co id="co-usermode-hostname"/></screen>
       Click <guimenu>OK</guimenu> to apply the changes. Check if the bridge
       is created:
      </para>
-<screen>&exampleuser;@&wsII;:~> brctl show
+<screen>&exampleuser;@&wsII;:~&gt; brctl show
 bridge name bridge id          STP enabled  interfaces
 br0         8000.001676d670e4  no           eth0</screen>
     </step>
    </procedure>
-   <sect3>
+   <section>
     <title>Connecting to a Bridge Manually</title>
     <para>
      Use the following example script to connect &vmguest; to the newly
@@ -1495,17 +1493,17 @@ br0         8000.001676d670e4  no           eth0</screen>
     </note>
 <screen>
 #!/bin/bash
-bridge=br0<co id="co-qemu-net-bridge-br"/>
-tap=$(sudo tunctl -u $(whoami) -b)<co id="co-qemu-net-bridge-tap"/>
-sudo ip link set $tap up<co id="co-qemu-net-bridge-up"/>
-sleep 1s<co id="co-qemu-net-bridge-sleep"/>
-sudo brctl addif $bridge $tap<co id="co-qemu-net-bridge-br3"/>
+bridge=br0<co xml:id="co-qemu-net-bridge-br"/>
+tap=$(sudo tunctl -u $(whoami) -b)<co xml:id="co-qemu-net-bridge-tap"/>
+sudo ip link set $tap up<co xml:id="co-qemu-net-bridge-up"/>
+sleep 1s<co xml:id="co-qemu-net-bridge-sleep"/>
+sudo brctl addif $bridge $tap<co xml:id="co-qemu-net-bridge-br3"/>
 qemu-kvm -m 512 -hda /images/sles11sp1_base.raw \
 -net nic,vlan=0,model=virtio,macaddr=&wsIVmac; \
--net tap,vlan=0,ifname=$tap<co id="co-qemu-net-bridge-ifname"/>,script=no<co id="co-qemu-net-bridge-script"/>,downscript=no
-sudo brctl delif $bridge $tap<co id="co-qemu-net-bridge-delif"/>
-sudo ip link set $tap down<co id="co-qemu-net-bridge-linkdown"/>
-sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
+-net tap,vlan=0,ifname=$tap<co xml:id="co-qemu-net-bridge-ifname"/>,script=no<co xml:id="co-qemu-net-bridge-script"/>,downscript=no
+sudo brctl delif $bridge $tap<co xml:id="co-qemu-net-bridge-delif"/>
+sudo ip link set $tap down<co xml:id="co-qemu-net-bridge-linkdown"/>
+sudo tunctl -d $tap<co xml:id="co-qemu-net-bridge-deltap"/></screen>
     <calloutlist>
      <callout arearefs="co-qemu-net-bridge-br">
       <para>
@@ -1576,8 +1574,8 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
       </para>
      </callout>
     </calloutlist>
-   </sect3>
-   <sect3 id="qemu-bridge-helper">
+   </section>
+   <section xml:id="qemu-bridge-helper">
     <title>Connecting to a Bridge with qemu-bridge-helper</title>
     <para>
      Another way to connect &vmguest; to a network through a network bridge
@@ -1612,10 +1610,10 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
       &vmguest; to the network bridge <literal>br0</literal>.
      </para>
     </tip>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="kvm-qemu-vnet">
+  <section xml:id="kvm-qemu-vnet">
    <title>Accelerated Networking with <systemitem>vhost-net</systemitem></title>
    <para>
     The <systemitem>vhost-net</systemitem> module is used to accelerate
@@ -1642,9 +1640,9 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
     Note that <literal>guest0</literal> is an identification string of the
     vhost-driven device.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="cha-qemu-running-vnc">
+  </section>
+ </section>
+ <section xml:id="cha-qemu-running-vnc">
   <title>Viewing a &vmguest; with&nbsp;VNC</title>
 
   <para>
@@ -1711,9 +1709,9 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
    </varlistentry>
   </variablelist>
 
-<screen>&exampleuser;@&wsII;:~> qemu-kvm [...] -vnc :5
+<screen>&exampleuser;@&wsII;:~&gt; qemu-kvm [...] -vnc :5
 (on the client:)
-&exampleuserII;@&wsI;:~> vinagre &wsII;:5905 &amp;</screen>
+&exampleuserII;@&wsI;:~&gt; vinagre &wsII;:5905 &amp;</screen>
 
   <figure>
    <title>&qemu; VNC Session</title>
@@ -1727,7 +1725,7 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
    </mediaobject>
   </figure>
 
-  <sect2 id="cha-qemu-running-vnc-secure">
+  <section xml:id="cha-qemu-running-vnc-secure">
    <title>Secure VNC Connections</title>
    <para>
     The default VNC server setup does not use any form of authentication. In
@@ -1744,10 +1742,8 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
     See <xref linkend="app-kvm-certificates"/> for more information about
     the x509 certificates generation. For more information about configuring
     x509 certificates on a &vmhost; and the client, see
-    <xref
-    linkend="sec-libvirt-connect-remote-tls"/> and
-    <xref
-    linkend="sec-libvirt-connect-remote-tls-client"/>.
+    <xref linkend="sec-libvirt-connect-remote-tls"/> and
+    <xref linkend="sec-libvirt-connect-remote-tls-client"/>.
    </para>
    <para>
     The Vinagre VNC viewer supports advanced authentication mechanisms.
@@ -1768,7 +1764,7 @@ sudo tunctl -d $tap<co id="co-qemu-net-bridge-deltap"/></screen>
     <member><filename>/etc/pki/libvirt-vnc/private/clientkey.pem</filename>
     </member>
    </simplelist>
-   <example id="ex-running-vnc-secure-pwd">
+   <example xml:id="ex-running-vnc-secure-pwd">
     <title>Password Authentication</title>
 <screen>qemu-kvm [...] -vnc :5,password -monitor stdio</screen>
     <para>
@@ -1799,7 +1795,7 @@ Password: ****
      </imageobject>
     </mediaobject>
    </figure>
-   <example id="ex-running-vnc-secure-x509">
+   <example xml:id="ex-running-vnc-secure-x509">
     <title>x509 Certificate Authentication</title>
     <para>
      The &qemu; VNC server can use TLS encryption for the session and x509
@@ -1810,7 +1806,7 @@ Password: ****
     </para>
 <screen>qemu-kvm [...] -vnc :5,tls,x509verify=/etc/pki/qemu</screen>
    </example>
-   <example id="ex-running-vnc-secure-pwd-x509">
+   <example xml:id="ex-running-vnc-secure-pwd-x509">
     <title>x509 Certificate and Password Authentication</title>
     <para>
      You can combine the password authentication with TLS encryption and
@@ -1820,7 +1816,7 @@ Password: ****
     </para>
 <screen>qemu-kvm [...] -vnc :5,password,tls,x509verify=/etc/pki/qemu -monitor stdio</screen>
    </example>
-   <example id="ex-running-vnc-secure-sasl">
+   <example xml:id="ex-running-vnc-secure-sasl">
     <title>SASL Authentication</title>
     <para>
      Simple Authentication and Security Layer (SASL) is a framework for
@@ -1835,9 +1831,9 @@ Password: ****
     </para>
 <screen>qemu-kvm [...] -vnc :5,tls,x509,sasl -monitor stdio</screen>
    </example>
-  </sect2>
- </sect1>
- <sect1 id="kvm-qemu-virtfs">
+  </section>
+ </section>
+ <section xml:id="kvm-qemu-virtfs">
   <title>VirtFS: Sharing Folders between Host and Guests</title>
 
   <para>
@@ -1865,7 +1861,7 @@ Password: ****
    You can typically use VirtFS to
   </para>
 
-  <itemizedlist>
+  <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
      access a shared folder from several guests, or to provide
@@ -1886,13 +1882,13 @@ Password: ****
    </listitem>
   </itemizedlist>
 
-  <sect2 id="kvm-qemu-virtfs-implement">
+  <section xml:id="kvm-qemu-virtfs-implement">
    <title>Implementation</title>
    <para>
     In &qemu;, the implementation of VirtFS is facilitated by defining two
     types of devices:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       <literal>virtio-9p-pci</literal> device which transports protocol
@@ -1906,11 +1902,10 @@ Password: ****
      </para>
     </listitem>
    </itemizedlist>
-   <example id="ex-qemu-virtfs-host">
+   <example xml:id="ex-qemu-virtfs-host">
     <title>Exporting Host's Filesystem with VirtFS</title>
-<screen>qemu-kvm [...] -fsdev local,id=exp1<co id="co-virtfs-host-id"/>,path=/tmp/<co id="co-virtfs-host-path"/>,security_model=mapped<co id="co-virtfs-host-sec-model"/>
--device virtio-9p-pci,fsdev=exp1<co
-  id="co-virtfs-host-fsdev"/>,mount_tag=v_tmp<co id="co-virtfs-host-mnt-tag"/></screen>
+<screen>qemu-kvm [...] -fsdev local,id=exp1<co xml:id="co-virtfs-host-id"/>,path=/tmp/<co xml:id="co-virtfs-host-path"/>,security_model=mapped<co xml:id="co-virtfs-host-sec-model"/>
+-device virtio-9p-pci,fsdev=exp1<co xml:id="co-virtfs-host-fsdev"/>,mount_tag=v_tmp<co xml:id="co-virtfs-host-mnt-tag"/></screen>
     <calloutlist>
      <callout arearefs="co-virtfs-host-id">
       <para>
@@ -1953,9 +1948,9 @@ Password: ****
      the mount point where you want to mount the exported file system.
     </para>
    </example>
-  </sect2>
- </sect1>
- <sect1 id="kvm-qemu-ksm">
+  </section>
+ </section>
+ <section xml:id="kvm-qemu-ksm">
   <title>KSM: Sharing Memory Pages between Guests</title>
 
   <para>
@@ -2003,7 +1998,7 @@ drwxr-xr-x 6 root root    0 Nov  9 07:10 ../
     <para>
      If the command returns <literal>0</literal>, turn KSM on with
     </para>
-<screen>echo 1 > /sys/kernel/mm/ksm/run</screen>
+<screen>echo 1 &gt; /sys/kernel/mm/ksm/run</screen>
    </step>
    <step>
     <para>
@@ -2028,5 +2023,5 @@ drwxr-xr-x 6 root root    0 Nov  9 07:10 ../
    <filename>/usr/src/linux/Documentation/vm/ksm.txt</filename> (package
    <systemitem>kernel-source</systemitem>).
   </para>
- </sect1>
+ </section>
 </chapter>

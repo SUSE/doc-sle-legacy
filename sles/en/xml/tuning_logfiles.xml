@@ -1,10 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
+
+
 <!-- fs 2010-05-10:
   TODO:
   * more on logrotate?
@@ -18,8 +23,8 @@ http://www.linux-tutorial.info/modules.php?name=MContent&pageid=59
 Logger:
 http://tldp.org/LDP/LGNET/148/darin.html
 -->
-<chapter id="cha-tuning-logfiles">
- <title>Analyzing and Managing System Log Files</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-tuning-logfiles"><title>Analyzing and Managing System Log Files</title><info/>
+ 
  <para>
   System log file analysis is one of the most important tasks when analyzing
   the system. In fact, looking at the system log files should be the first
@@ -29,7 +34,7 @@ http://tldp.org/LDP/LGNET/148/darin.html
   easily read using an editor or pager. They are also parsable by scripts,
   allowing you to easily filter their content.
  </para>
- <sect1 id="sec-tuning-logfiles-logs">
+ <section xml:id="sec-tuning-logfiles-logs">
   <title>System Log Files in <filename>/var/log/</filename></title>
 
   <para>
@@ -53,8 +58,7 @@ http://tldp.org/LDP/LGNET/148/darin.html
       Log of the advanced configuration and power interface event daemon
       (<systemitem class="daemon">acpid</systemitem>), a daemon to notify
       user-space programs of ACPI events.
-      <systemitem
-       class="daemon">acpid</systemitem> will log all of
+      <systemitem class="daemon">acpid</systemitem> will log all of
       its activities, as well as the <systemitem>STDOUT</systemitem> and
       <systemitem>STDERR</systemitem> of any actions to syslog.
      </para>
@@ -229,8 +233,7 @@ http://tldp.org/LDP/LGNET/148/darin.html
     <listitem>
      <para>
       Logs from the Network Time Protocol daemon
-      (<systemitem
-       class="daemon">ntpd</systemitem>).
+      (<systemitem class="daemon">ntpd</systemitem>).
      </para>
     </listitem>
    </varlistentry>
@@ -277,8 +280,7 @@ http://tldp.org/LDP/LGNET/148/darin.html
     <listitem>
      <para>
       Logs from the system configuration profile management
-      (<systemitem
-       class="resource">scpm</systemitem>).
+      (<systemitem class="resource">scpm</systemitem>).
      </para>
     </listitem>
    </varlistentry>
@@ -310,8 +312,7 @@ http://tldp.org/LDP/LGNET/148/darin.html
     <listitem>
      <para>
       Log files from the extended Internet services daemon
-      (<systemitem
-       class="daemon">xinetd</systemitem>).
+      (<systemitem class="daemon">xinetd</systemitem>).
      </para>
     </listitem>
    </varlistentry>
@@ -355,8 +356,8 @@ http://tldp.org/LDP/LGNET/148/darin.html
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-tuning-logfiles-view">
+ </section>
+ <section xml:id="sec-tuning-logfiles-view">
   <title>Viewing and Parsing Log Files</title>
 
   <para>
@@ -372,7 +373,7 @@ http://tldp.org/LDP/LGNET/148/darin.html
    <command>less</command> or <command>more</command>. Use
    <command>head</command> and <command>tail</command> to view the beginning
    or end of a log file. To view entries appended to a log file in real-time
-   use <command>tail <option>-f</option></command>. For information about
+   use <command>tail</command> <option>-f</option>. For information about
    how to use these tools, see their man pages.
   </para>
 
@@ -381,8 +382,8 @@ http://tldp.org/LDP/LGNET/148/darin.html
    <command>grep</command>. <command>awk</command> is useful for parsing and
    rewriting log files.
   </para>
- </sect1>
- <sect1 id="sec-tuning-logfiles-logrotate">
+ </section>
+ <section xml:id="sec-tuning-logfiles-logrotate">
   <title>Managing Log Files with <command>logrotate</command></title>
 
   <para>
@@ -406,14 +407,13 @@ http://tldp.org/LDP/LGNET/148/darin.html
    The main configuration file of <command>logrotate</command> is
    <filename>/etc/logrotate.conf</filename>. System packages as well as
    programs that produce log files (for example,
-   <systemitem
-    class="resource">apache2</systemitem>) put their own
+   <systemitem class="resource">apache2</systemitem>) put their own
    configuration files in the <filename>/etc/logrotate.d/</filename>
    directory. The content of <filename>/etc/logrotate.d/</filename> is
    included via <filename>/etc/logrotate.conf</filename>.
   </para>
 
-  <example id="ex-tuning-logfiles-logrotate-config">
+  <example xml:id="ex-tuning-logfiles-logrotate-config">
    <title>Example for /etc/logrotate.conf</title>
 <screen># see "man logrotate" for details
 # rotate log files weekly
@@ -842,8 +842,8 @@ FILES
        /var/lib/logrotate.status  Default state file.
        /etc/logrotate.conf        Configuration options.
 -->
- </sect1>
- <sect1 id="sec-tuning-logfiles-logwatch">
+ </section>
+ <section xml:id="sec-tuning-logfiles-logwatch">
   <title>Monitoring Log Files with <command>logwatch</command></title>
 
   <para>
@@ -881,7 +881,7 @@ logwatch --service smartd --range 'between 5/5/2005 and 5/7/2005' \
 
   <para>
    The <option>--range</option> option has got a complex syntax&mdash;see
-   <command>logwatch <option>--range help</option></command> for details. A
+   <command>logwatch</command> <option>--range help</option> for details. A
    list of all services that can be queried is available with the following
    command:
   </para>
@@ -943,8 +943,8 @@ logwatch --service smartd --range 'between 5/5/2005 and 5/7/2005' \
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-tuning-logfiles-logger">
+ </section>
+ <section xml:id="sec-tuning-logfiles-logger">
   <title>Using <command>logger</command> to Make System Log Entries</title>
 
   <para>
@@ -962,5 +962,5 @@ logwatch --service smartd --range 'between 5/5/2005 and 5/7/2005' \
   </para>
 
 <screen>Sep 28 13:09:31 &wsII; Test: This messages comes from tux</screen>
- </sect1>
+ </section>
 </chapter>

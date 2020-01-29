@@ -1,11 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd" [
- <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
- <!ENTITY % entities SYSTEM "entity-decl.ent">
- %entities;
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-slert-model">
- <title>The Basic Shielding Model</title>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-slert-model"><title>The Basic Shielding Model</title><info/>
+ 
  <para>
   Although any set up of cpusets can really be described as
   <emphasis>shielding</emphasis>, there is one prevalent shielding model in
@@ -47,7 +53,7 @@
   <command>set</command> and <command>proc</command> subcommands described
   in a later section.
  </para>
- <sect1>
+ <section>
   <title>A Simple Shielding Example</title>
 
   <para>
@@ -74,14 +80,14 @@
    </para>
   </note>
 
-  <sect2 id="cha-slert-setup-and-teardown-of-the-shield">
+  <section xml:id="cha-slert-setup-and-teardown-of-the-shield">
    <title>Setup and Teardown of the Shield</title>
    <para>
     To set up a shield of 3 CPUs with 1 CPU left for low priority system
     processing, issue the following command.
    </para>
 <screen>&prompt.user;<command>cset</command> shield -c 1-3
-cset: --> activating shielding:
+cset: --&gt; activating shielding:
 cset: moving 176 tasks from root into system cpuset...
 [==================================================]%
 cset: "system" cpuset of CPUSPEC(0) with 176 tasks running
@@ -110,7 +116,7 @@ cset: "user" cpuset of CPUSPEC(1-3) with 0 tasks running</screen>
     the current status of the shield again, issue this command:
    </para>
 <screen>&prompt.user;<command>cset</command> shield
-cset: --> shielding system active with
+cset: --&gt; shielding system active with
 cset: "system" cpuset of CPUSPEC(0) with 176 tasks running
 cset: "user" cpuset of CPUSPEC(1-3) with 0 tasks running</screen>
    <para>
@@ -141,7 +147,7 @@ cset: "user" cpuset of CPUSPEC(1-3) with 0 tasks running</screen>
     system set with the following command.
    </para>
 <screen>&prompt.user;<command>cset</command> shield -k on
-cset: --> activating kthread shielding
+cset: --&gt; activating kthread shielding
 cset: kthread shield activated, moving 70 tasks into system cpuset...
 [==================================================]%
 cset: done</screen>
@@ -154,7 +160,7 @@ cset: done</screen>
     shows us the current state of the shield.
    </para>
 <screen>&prompt.user;<command>cset</command> shield
-cset: --> shielding system active with
+cset: --&gt; shielding system active with
 cset: "system" cpuset of CPUSPEC(0) with 246 tasks running
 cset: "user" cpuset of CPUSPEC(1-3) with 0 tasks running</screen>
    <para>
@@ -195,15 +201,15 @@ root     32653 25222 Roth python ./cset shield --unshield -v</screen>
     all resources on the system. For example:
    </para>
 <screen>&prompt.user;<command>cset</command> shield --reset
-cset: --> deactivating/reseting shielding
+cset: --&gt; deactivating/reseting shielding
 cset: moving 0 tasks from "/user" user set to root set...
 cset: moving 250 tasks from "/system" system set to root set...
 [==================================================]%
 cset: deleting "/user" and "/system" sets
 cset: done</screen>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Moving Interesting Tasks Into and Out of the Shield</title>
    <para>
     Now that we have a shield running, the objective is to run our important
@@ -211,7 +217,7 @@ cset: done</screen>
     they are directly related to the purpose of the machine. There are two
     ways to run tasks in the shield:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       Exec a process into the shield
@@ -223,7 +229,7 @@ cset: done</screen>
      </para>
     </listitem>
    </itemizedlist>
-   <sect3>
+   <section>
     <title>Execing a Process Into the Shield</title>
     <para>
      Running a new process in the shield can be done with the
@@ -238,7 +244,7 @@ cset: done
 
 
 &prompt.user;<command>cset</command> shield -e bash
-cset: --> last message, executed args into cpuset "/user", new pid is: 13300
+cset: --&gt; last message, executed args into cpuset "/user", new pid is: 13300
 
 
 &prompt.user;<command>cset</command> shield -s -v
@@ -307,7 +313,7 @@ cset: done</screen>
      options for exec as follows.
     </para>
 <screen>&prompt.user;<command>cset</command> shield --user=alext --group=users -e bash
-cset: --> last message, executed args into cpuset "/user", new pid is: 14212
+cset: --&gt; last message, executed args into cpuset "/user", new pid is: 14212
 
 
 &prompt.user;<command>cset</command> shield -s -v
@@ -316,8 +322,8 @@ USER     PID   PPID  SPPr TASK NAME
 -------- ----- ----- ---- ---------
 alext    14212 8583  Soth bash
 alext    14241 14212 Roth python ./cset shield -s -v</screen>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>Moving a Running Task Into and Out of the Shield</title>
     <para>
      While execing a process into the shield is undoubtably useful, most of
@@ -392,7 +398,7 @@ alext    14241 14212 Roth python ./cset shield -s -v</screen>
 
 
 &prompt.user;<command>cset</command> shield -s -p 22010-22020
-cset: --> shielding following pidspec: 22010-22020
+cset: --&gt; shielding following pidspec: 22010-22020
 cset: done
 
 
@@ -406,14 +412,14 @@ cset: done
 
 
 &prompt.user;<command>cset</command> shield -u -p $$
-cset: --> unshielding following pidspec: 22018
+cset: --&gt; unshielding following pidspec: 22018
 cset: done
 
 
 &prompt.user;<command>cset</command> shield -s
 cset: "user" cpuset of CPUSPEC(1-3) with 0 tasks running
 cset: done</screen>
-   </sect3>
-  </sect2>
- </sect1>
+   </section>
+  </section>
+ </section>
 </chapter>

@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd"
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
 [
-  <!ENTITY % NOVDOC.DEACTIVATE.IDREF "INCLUDE">
-  <!ENTITY % entities SYSTEM "entity-decl.ent">
-  %entities;
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
 ]>
-<chapter id="cha-snapper">
- <title>Snapshots/Rollback with Snapper</title>
- <abstract>
+
+
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-snapper"><title>Snapshots/Rollback with Snapper</title><info><abstract>
   <para>
    Being able to do file system snapshots providing the ability to do
    rollbacks on Linux is a feature that was often requested in the past.
@@ -33,8 +36,10 @@
    tools also provide system backups by creating hourly snapshots of the
    system subvolumes.
   </para>
- </abstract>
- <sect1 id="sec-snapper-requirements">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-snapper-requirements">
   <title>Requirements</title>
 
   <para>
@@ -43,7 +48,7 @@
    want to <quote>snapshot</quote>.
   </para>
 
-  <sect2 id="sec-snapper-requires-diskspace">
+  <section xml:id="sec-snapper-requires-diskspace">
    <title>Snapshots and Disk Space</title>
    <para>
     When a snapshot is created, both the snapshot and the original point to
@@ -81,8 +86,7 @@
     <para>
      Since the <command>df</command> does not show the correct disk usage on
      <literal>Btrfs</literal> file systems, you need to use the command
-     <command>btrfs filesystem df
-     <replaceable>MOUNT_POINT</replaceable></command>. Displaying the amount
+     <command>btrfs filesystem df</command> <replaceable>MOUNT_POINT</replaceable>. Displaying the amount
      of disk space a snapshot allocates is currently not supported by the
      <literal>Btrfs</literal> tools.
     </para>
@@ -96,12 +100,11 @@
    <para>
     Snapper can also be used to create and manage snapshots on
     thin-provisioned LVM volumes formatted with ext3 or XFS (see
-    <xref
-    linkend="sec-snapper-lvm"/>).
+    <xref linkend="sec-snapper-lvm"/>).
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-auto">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-auto">
   <title>Using Snapper to Undo System Changes</title>
 
   <para>
@@ -121,7 +124,7 @@
    configurations.
   </para>
 
-  <sect2 id="sec-snapper-yast">
+  <section xml:id="sec-snapper-yast">
    <title>Undoing &yast; and Zypper Changes</title>
    <para>
     If you set up the root partition with <literal>Btrfs</literal> during
@@ -165,7 +168,7 @@
      this number is exceeded, the oldest snapshot(s) will be deleted.
     </para>
    </note>
-   <procedure id="proc-snapper-yast-yast">
+   <procedure xml:id="proc-snapper-yast-yast">
     <title>Undoing changes using the &yast; <guimenu>Snapper</guimenu> module</title>
     <step>
      <para>
@@ -206,18 +209,15 @@
       Click <guimenu>Show Changes</guimenu> to open the list of files that
       differ between the two snapshots. The following image shows a list of
       files that have changed after having added the user
-      <systemitem
-      class="username">tester</systemitem>.
+      <systemitem class="username">tester</systemitem>.
      </para>
      <informalfigure>
       <mediaobject>
        <imageobject role="fo">
-        <imagedata fileref="snapper_yast2_changes.png" width="75%"
-                   format="PNG"/>
+        <imagedata fileref="snapper_yast2_changes.png" width="75%" format="PNG"/>
        </imageobject>
        <imageobject role="html">
-        <imagedata fileref="snapper_yast2_changes.png" width="75%"
-                   format="PNG"/>
+        <imagedata fileref="snapper_yast2_changes.png" width="75%" format="PNG"/>
        </imageobject>
       </mediaobject>
      </informalfigure>
@@ -251,12 +251,10 @@
      <informalfigure>
       <mediaobject>
        <imageobject role="fo">
-        <imagedata fileref="snapper_yast2_restore.png" width="75%"
-                   format="PNG"/>
+        <imagedata fileref="snapper_yast2_restore.png" width="75%" format="PNG"/>
        </imageobject>
        <imageobject role="html">
-        <imagedata fileref="snapper_yast2_restore.png" width="75%"
-                   format="PNG"/>
+        <imagedata fileref="snapper_yast2_restore.png" width="75%" format="PNG"/>
        </imageobject>
       </mediaobject>
      </informalfigure>
@@ -267,12 +265,11 @@
      </para>
     </step>
    </procedure>
-   <procedure id="proc-snapper-yast-cmdline">
+   <procedure xml:id="proc-snapper-yast-cmdline">
     <title>Undoing changes using the <command>snapper</command> command</title>
     <step>
      <para>
-      Get a list of &yast; and Zypper snapshots by running <command>snapper
-      list <option>-t pre-post</option></command>. &yast; snapshots are
+      Get a list of &yast; and Zypper snapshots by running <command>snapper list</command> <option>-t pre-post</option>. &yast; snapshots are
       labeled as <literal>yast
       <replaceable>module_name</replaceable></literal> in the
       <guimenu>Description column</guimenu>; Zypper snapshots are labeled
@@ -296,15 +293,12 @@
     </step>
     <step>
      <para>
-      Get a list of changed files for a snapshot pair with <command>snapper
-      status
-      <replaceable>PRE</replaceable>..<replaceable>POST</replaceable></command>.
+      Get a list of changed files for a snapshot pair with <command>snapper status</command> <replaceable>PRE</replaceable>..<replaceable>POST</replaceable>.
       Files with content changes are marked with <guimenu>c</guimenu>, files
       that have been added are marked with <guimenu>+</guimenu> and deleted
       files are marked with <guimenu>-</guimenu>. The following example
       shows a snapshot pair for the installation of the package
-      <systemitem
-      class="resource">ncftp</systemitem>.
+      <systemitem class="resource">ncftp</systemitem>.
      </para>
 <screen>~ # snapper status 108..109
      +... /usr/bin/ncftp
@@ -332,9 +326,8 @@
     </step>
     <step>
      <para>
-      To display the diff for a certain file, run <command>snapper diff
-      <replaceable>PRE</replaceable>..<replaceable>POST</replaceable>
-      <replaceable>FILENAME</replaceable></command>. If you do not specify
+      To display the diff for a certain file, run <command>snapper diff</command> <replaceable>PRE</replaceable>..<replaceable>POST</replaceable>
+      <replaceable>FILENAME</replaceable>. If you do not specify
       <replaceable>FILENAME</replaceable>, a diff for all files will be
       displayed.
      </para>
@@ -351,9 +344,8 @@
     </step>
     <step>
      <para>
-      To restore one or more files run <command>snapper -v undochange
-      <replaceable>PRE</replaceable>..<replaceable>POST</replaceable>
-      <replaceable>FILENAMES</replaceable></command>. If you do not specify
+      To restore one or more files run <command>snapper -v undochange</command> <replaceable>PRE</replaceable>..<replaceable>POST</replaceable>
+      <replaceable>FILENAMES</replaceable>. If you do not specify
       a <replaceable>FILENAMES</replaceable>, all changed files will be
       restored.
      </para>
@@ -386,9 +378,9 @@
      undoing change done</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-backup">
+  <section xml:id="sec-snapper-backup">
    <title>Using Snapper to Restore Files from Hourly Backups</title>
    <para>
     Apart from the &yast; and Zypper snapshots, Snapper creates hourly
@@ -402,10 +394,8 @@
     Hourly backup snapshots are of the type <literal>Single</literal> and
     are marked with the description <literal>timeline</literal>. To restore
     files from these snapshots proceed as described in
-    <xref
-    linkend="proc-snapper-yast-yast"/> or
-    <xref
-    linkend="proc-snapper-yast-cmdline"/>.
+    <xref linkend="proc-snapper-yast-yast"/> or
+    <xref linkend="proc-snapper-yast-cmdline"/>.
    </para>
    <note>
     <title>Storage Time of Snapshots</title>
@@ -414,9 +404,9 @@
      are kept. For details see <xref linkend="ex-snapper-config-timeline"/>.
     </para>
    </note>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-config">
+  <section xml:id="sec-snapper-config">
    <title>Creating and Modifying Snapper Configurations</title>
    <para>
     The way Snapper behaves is defined in a config file that is specific for
@@ -441,14 +431,14 @@
     In &yast; you need to select your <guimenu>Current
     Configuration</guimenu>, while you need to specify your config for
     <command>snapper</command> with the global switch <option>-c</option>
-    (e.g. <command>snapper <option>-c myconfig</option> list</command>).
+    (e.g. <command>snapper</command> <option>-c myconfig</option> list).
    </para>
    <para>
     To create a new Snapper configuration, run <command>snapper
     create-config</command>:
    </para>
-<screen>snapper -c www-data<co id="snapper-create-name"/> create-config
-   /srv/www<co id="snapper-create-volume"/></screen>
+<screen>snapper -c www-data<co xml:id="snapper-create-name"/> create-config
+   /srv/www<co xml:id="snapper-create-volume"/></screen>
    <calloutlist>
     <callout arearefs="snapper-create-name">
      <para>
@@ -497,7 +487,7 @@
     </para>
 <screen>snapper -c www-data create-config -t my_defaults /srv/www</screen>
    </tip>
-   <sect3 id="sec-snapper-config-modify">
+   <section xml:id="sec-snapper-config-modify">
     <title>Adjusting the Config File</title>
     <para>
      To adjust the config file, you need to modify it with an editor. It
@@ -618,7 +608,7 @@
        <para>
         Number of snapshots to keep for hour, day, month, year.
        </para>
-       <example id="ex-snapper-config-timeline">
+       <example xml:id="ex-snapper-config-timeline">
         <title>Example time line configuration</title>
 <screen>TIMELINE_CREATE="yes"
         TIMELINE_CLEANUP="yes"
@@ -639,7 +629,7 @@
         <literal>TIMELINE_LIMIT_DAILY</literal> is set to not zero, this
         means that the first snapshot of the day is kept, too.
        </para>
-       <itemizedlist>
+       <itemizedlist mark="bullet" spacing="normal">
         <title>Snapshots to be Kept</title>
         <listitem>
          <para>
@@ -668,15 +658,15 @@
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="sec-snapper-config-user">
+   </section>
+   <section xml:id="sec-snapper-config-user">
     <title>Using Snapper as Regular User</title>
     <para>
      By default Snapper can only be used by &rootuser;. However, there are
      cases in which certain groups or users need to be able to create
      snapshots or undo changes by reverting to a snapshot:
     </para>
-    <itemizedlist>
+    <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
        a website administrator wants to snapshot
@@ -721,8 +711,7 @@
        <option>-c/--config</option> in the previous step (for example
        <filename>/etc/snapper/configs/web_data</filename>). Adjust it
        according to your needs; see
-       <xref
-       linkend="sec-snapper-config-modify"/> for details.
+       <xref linkend="sec-snapper-config-modify"/> for details.
       </para>
      </step>
      <step>
@@ -730,8 +719,7 @@
        Set values for <envar>ALLOW_USERS</envar> and/or
        <envar>ALLOW_GROUPS</envar> to grant permissions to users and/or
        groups, respectively. Multiple entries need to be separated by
-       <keycap
-       function="space"/>. To grant permissions to the user
+       <keycap function="space"/>. To grant permissions to the user
        <systemitem class="username">www_admin</systemitem> for example,
        enter:
       </para>
@@ -750,13 +738,13 @@
        user(s) and/or group(s). You can test it with the
        <literal>list</literal> command, for example:
       </para>
-<screen>www_admin:~ > snapper -c web_data list</screen>
+<screen>www_admin:~ &gt; snapper -c web_data list</screen>
      </step>
     </procedure>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-snapper-disable">
+  <section xml:id="sec-snapper-disable">
    <title>Disabling Automatic Snapshots</title>
    <para>
     If you have set up the root partition with <literal>Btrfs</literal>
@@ -780,8 +768,7 @@
      <listitem>
       <para>
        Uninstall the package
-       <systemitem
-       class="resource">snapper-zypp-plugin</systemitem>
+       <systemitem class="resource">snapper-zypp-plugin</systemitem>
       </para>
      </listitem>
     </varlistentry>
@@ -796,9 +783,9 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-manage">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-manage">
   <title>Manually Creating and Managing Snapshots</title>
 
   <para>
@@ -816,12 +803,12 @@
    create or manage snapshots for your own configuration you need to
    explicitly choose it. Use the <guimenu>Current Configuration</guimenu>
    drop-down menu in &yast; or specify the <option>-c</option> on the
-   command line (<command>snapper <option>-c</option>
+   command line (<command>snapper</command> <option>-c</option>
    <replaceable>MYCONFIG</replaceable>
-   <replaceable>COMMAND</replaceable></command>).
+   <replaceable>COMMAND</replaceable>).
   </para>
 
-  <sect2 id="sec-snapper-manage-metadata">
+  <section xml:id="sec-snapper-manage-metadata">
    <title>Snapshot Metadata</title>
    <para>
     Each snapshot consists of the snapshot itself and some metadata. When
@@ -829,12 +816,11 @@
     snapshot means changing its metadata&mdash;you cannot modify its
     content. The following metadata is available for each snapshot:
    </para>
-   <itemizedlist>
+   <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
       <emphasis role="bold">Type</emphasis>: Snapshot type, see
-      <xref
-       linkend="sec-snapper-manage-metadata-type"/> for details.
+      <xref linkend="sec-snapper-manage-metadata-type"/> for details.
       This data cannot be changed.
      </para>
     </listitem>
@@ -869,13 +855,12 @@
      <para>
       <emphasis role="bold">Cleanup-Algorithm</emphasis>: Cleanup-algorithm
       for the snapshot, see
-      <xref
-      linkend="sec-snapper-manage-metadata-cleanup"/> for
+      <xref linkend="sec-snapper-manage-metadata-cleanup"/> for
       details.
      </para>
     </listitem>
    </itemizedlist>
-   <sect3 id="sec-snapper-manage-metadata-type">
+   <section xml:id="sec-snapper-manage-metadata-type">
     <title>Snapshot Types</title>
     <para>
      Snapper knows three different types of snapshots: pre, post, and single.
@@ -916,8 +901,8 @@
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-   <sect3 id="sec-snapper-manage-metadata-cleanup">
+   </section>
+   <section xml:id="sec-snapper-manage-metadata-cleanup">
     <title>Cleanup-algorithms</title>
     <para>
      Snapper provides three algorithms to clean up old snapshots. The
@@ -953,10 +938,10 @@
       </listitem>
      </varlistentry>
     </variablelist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-snapper-manage-create">
+  <section xml:id="sec-snapper-manage-create">
    <title>Creating Snapshots</title>
    <para>
     Creating a snapshot is done by running <command>snapper create</command>
@@ -973,11 +958,11 @@
      via the user data option.
     </para>
    </tip>
-   <para></para>
+   <para/>
    <variablelist>
     <varlistentry>
-     <term><command>snapper create <option>--description "Snapshot for week 2
-      2013"</option></command>
+     <term><command>snapper create</command> <option>--description "Snapshot for week 2
+      2013"</option>
      </term>
      <listitem>
       <para>
@@ -989,8 +974,8 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> create
-      <option>--description "Cleanup in ~&exampleuser;"</option></command>
+     <term><command>snapper</command> <option>--config home</option> create
+      <option>--description "Cleanup in ~&exampleuser;"</option>
      </term>
      <listitem>
       <para>
@@ -1002,9 +987,9 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> create
+     <term><command>snapper</command> <option>--config home</option> create
       <option>--description "Daily data backup" --cleanup-algorithm
-      timeline</option></command>
+      timeline</option>
      </term>
      <listitem>
       <para>
@@ -1016,8 +1001,8 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--type pre</option><option>--print-number</option><option>--description "Before the Apache
-      config cleanup"</option></command>
+     <term><command>snapper create</command> <option>--type pre</option><option>--print-number</option><option>--description "Before the Apache
+      config cleanup"</option>
      </term>
      <listitem>
       <para>
@@ -1028,8 +1013,8 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--type post</option><option>--pre-number 30</option><option>--description "After the Apache
-      config cleanup"</option></command>
+     <term><command>snapper create</command> <option>--type post</option><option>--pre-number 30</option><option>--description "After the Apache
+      config cleanup"</option>
      </term>
      <listitem>
       <para>
@@ -1041,9 +1026,9 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper create <option>--command
+     <term><command>snapper create</command> <option>--command
       <replaceable>COMMAND</replaceable></option><option>--description
-      "Before and after COMMAND"</option></command>
+      "Before and after COMMAND"</option>
      </term>
      <listitem>
       <para>
@@ -1054,9 +1039,9 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-manage-modify">
+  <section xml:id="sec-snapper-manage-modify">
    <title>Modifying Snapshot Metadata</title>
    <para>
     Snapper allows you to modify the description, the cleanup algorithm, and the
@@ -1066,7 +1051,7 @@
    </para>
    <para>
     To modify a snapshot on the command line, you need to know its number.
-    Use <command>snapper <option>list</option></command> to display all
+    Use <command>snapper</command> <option>list</option> to display all
     snapshots and their numbers.
    </para>
    <para>
@@ -1075,8 +1060,8 @@
    </para>
    <variablelist>
     <varlistentry>
-     <term><command>snapper modify <option>--cleanup-algorithm "timeline"</option>
-      10</command>
+     <term><command>snapper modify</command> <option>--cleanup-algorithm "timeline"</option>
+      10
      </term>
      <listitem>
       <para>
@@ -1087,9 +1072,9 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>--config home</option> modify
+     <term><command>snapper</command> <option>--config home</option> modify
       <option>--description "daily backup" -cleanup-algorithm
-      "timeline"</option>120</command>
+      "timeline"</option>120
      </term>
      <listitem>
       <para>
@@ -1100,9 +1085,9 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-manage-delete">
+  <section xml:id="sec-snapper-manage-delete">
    <title>Deleting Snapshots</title>
    <para>
     To delete a snapshot with the &yast; <guimenu>Snapper</guimenu> module,
@@ -1111,8 +1096,7 @@
    <para>
     To delete a snapshot with the command line tool, you need to know its
     number. Get it by running <command>snapper list</command>. To delete a
-    snapshot, run <command>snapper delete
-    <replaceable>NUMBER</replaceable></command>.
+    snapshot, run <command>snapper delete</command> <replaceable>NUMBER</replaceable>.
    </para>
    <tip>
     <title>Deleting Snapshot Pairs</title>
@@ -1134,7 +1118,7 @@
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><command>snapper <option>-c home</option> delete 89 90</command>
+     <term><command>snapper</command> <option>-c home</option> delete 89 90
      </term>
      <listitem>
       <para>
@@ -1157,9 +1141,9 @@
     Snapshots are also automatically deleted by a daily cron-job. Refer to
     <xref linkend="sec-snapper-manage-metadata-cleanup"/> for details.
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-limits">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-limits">
   <title>Limitations</title>
 
   <para>
@@ -1168,7 +1152,7 @@
    at the moment. It is planned to solve these issues in future releases.
   </para>
 
-  <sect2 id="sec-snapper-limits-consistency">
+  <section xml:id="sec-snapper-limits-consistency">
    <title>Data Consistency</title>
    <para>
     There is no mechanism to ensure data consistency when creating snapshot.
@@ -1179,9 +1163,9 @@
     changed files and their diffs. Only restore files that really need to
     belonging to the action you want to roll back.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-limits-user">
+  <section xml:id="sec-snapper-limits-user">
    <title>Reverting User Additions</title>
    <para>
     Usually <filename>/home</filename> resides on a separate partition. Such
@@ -1191,9 +1175,9 @@
     recommended to use the &yast; <guimenu>User and Group
     Management</guimenu> tool to remove users.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-snapper-limits-kernel">
+  <section xml:id="sec-snapper-limits-kernel">
    <title>No Rollback on <filename>/boot</filename> and Boot Loader Changes</title>
    <para>
     Currently &productname; cannot boot from <literal>Btrfs</literal>
@@ -1232,9 +1216,9 @@
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-snapper-faqs">
+  </section>
+ </section>
+ <section xml:id="sec-snapper-faqs">
   <title>Frequently Asked Questions</title>
 
   <variablelist>
@@ -1252,7 +1236,7 @@
       path. The following mount points are excluded from
       <quote>snapshotting</quote> on &productname;:
      </para>
-     <itemizedlist>
+     <itemizedlist mark="bullet" spacing="normal">
       <listitem>
        <para>
         <filename>/opt</filename>
@@ -1307,8 +1291,8 @@
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-snapper-lvm">
+ </section>
+ <section xml:id="sec-snapper-lvm">
   <title>Using Snapper on Thin-Provisioned LVM Volumes</title>
 
   <para>
@@ -1316,8 +1300,7 @@
    also supports <quote>snapshotting</quote> on thin-provisioned LVM volumes
    (snapshots on regular LVM volumes are <emphasis>not</emphasis> supported)
    formatted with ext3 or XFS. For more information and setup instructions,
-   refer to <xref
-   linkend="sec-yast2-system-lvm"/>.
+   refer to <xref linkend="sec-yast2-system-lvm"/>.
   </para>
 
   <para>
@@ -1338,5 +1321,5 @@
    create and manage snapshots, to restore files, and undo changes as
    described above.
   </para>
- </sect1>
+ </section>
 </chapter>
