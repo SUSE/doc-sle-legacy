@@ -1,29 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_allgemein.xml" id="cha-basicnet">
- <title>ネットワークの基礎</title><indexterm> <primary>ネットワーク</primary></indexterm><indexterm><primary>Linux</primary><secondary>ネットワーク </secondary></indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_allgemein.xml" xml:id="cha-basicnet"><?dbfo-need height="10em"?><?dbfo-need height="20em"?><title>ネットワークの基礎</title><info><abstract>
   <para>
    Linuxには、あらゆるタイプのネットワークストラクチャに統合するために必要なネットワークツールと機能が用意されています。ネットワークカード、モデム、その他のデバイスを使用したネットワークアクセスは、YaSTで設定できます。手動による環境設定も可能です。この章では、基本的メカニズムと関連のネットワーク設定ファイルのみを解説します。
   </para>
- </abstract><indexterm> <primary>TCP/IP</primary></indexterm><indexterm><primary>ネットワーク</primary><secondary>TCP/IP </secondary></indexterm>
+ </abstract></info>
+ <indexterm> <primary>ネットワーク</primary></indexterm><indexterm><primary>Linux</primary><secondary>ネットワーク </secondary></indexterm>
+ <indexterm> <primary>TCP/IP</primary></indexterm><indexterm><primary>ネットワーク</primary><secondary>TCP/IP </secondary></indexterm>
  <para>
   Linuxおよび他のUnix系オペレーティングシステムは、TCP/IPプロトコルを使用します。これは1つのネットワークプロトコルではなく、さまざまなサービスを提供する複数のネットワークプロトコルのファミリです。TCP/IPを使用して2台のコンピュータ間でデータをやり取りするために、<xref linkend="tab-net-allg-tcpproto"/>に示した各プロトコルが提供されています。TCP/IPによって結合された世界規模のネットワークを<quote>インターネット</quote>と呼びます。
  </para>
  <para>
-  <indexterm><primary>RFC</primary></indexterm> RFCは、<emphasis>Request for Comments</emphasis>の略です。RFCは、さまざまなインターネットプロトコルとそれをオペレーティングシステムとそのアプリケーションに実装する手順を定めています。RFC文書ではインターネットプロトコルのセットアップについて説明しています。プロトコルについての知識を習得するには、適切なRFC文書を参照してください。これらは、<ulink url="http://www.ietf.org/rfc.html"/>から入手できます。
+  <indexterm><primary>RFC</primary></indexterm> RFCは、<emphasis>Request for Comments</emphasis>の略です。RFCは、さまざまなインターネットプロトコルとそれをオペレーティングシステムとそのアプリケーションに実装する手順を定めています。RFC文書ではインターネットプロトコルのセットアップについて説明しています。プロトコルについての知識を習得するには、適切なRFC文書を参照してください。これらは、<link xlink:href="http://www.ietf.org/rfc.html"/>から入手できます。
  </para>
-<?dbfo-need height="10em"?>
 
 
- <table id="tab-net-allg-tcpproto">
+
+ <table xml:id="tab-net-allg-tcpproto">
   <title>TCP/IPプロトコルファミリを構成する主要なプロトコル</title>
   <tgroup cols="2">
    <thead>
@@ -95,7 +103,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   に示したように、データのやり取りはさまざまなレイヤで実行されます。<xref linkend="fig-net-allg-OSI"/>実際のネットワークレイヤは、IP (インターネットプロトコル)によって実現される確実性のないデータ転送です。IPの上で動作するTCP (転送制御プロトコル)によって、ある程度の確実性のあるデータ転送が保証されます。IPレイヤの下層には、イーサネットなどのハードウェア依存プロトコルがあります。
  </para>
- <figure id="fig-net-allg-OSI">
+ <figure xml:id="fig-net-allg-OSI">
   <title>TCP/IPの簡易階層モデル</title>
   <mediaobject>
    <imageobject role="fo">
@@ -115,7 +123,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   すべてのレイヤがそれぞれの機能を果たすためには、各レイヤに対応する情報を各データパケットに追加する必要があります。この情報はパケットの<emphasis>ヘッダ</emphasis>として追加されます。各レイヤでは、プロトコルヘッダと呼ばれる小さなデータブロックが、作成されたパケットに付加されます。<xref linkend="fig-net-allg-TCPPaket"/>に、イーサネットケーブル上に送出されるTCP/IPデータパケットの例を示します。誤り検出のためのチェックサムは、パケットの先頭ではなく最後に付加されます。これによりネットワークハードウェアの処理が簡素化されます。<indexterm> <primary>TCP/IP</primary><secondary>パケット</secondary> </indexterm>
  </para>
- <figure id="fig-net-allg-TCPPaket">
+ <figure xml:id="fig-net-allg-TCPPaket">
   <title>TCP/IPイーサネットパケット</title>
   <mediaobject>
    <imageobject role="fo">
@@ -129,19 +137,19 @@ Please see LICENSE.txt for this document's license.
  <para>
   アプリケーションがデータをネットワーク経由で送信すると、データは各レイヤを通過します。これらのレイヤは、物理レイヤを除き、すべてLinuxカーネルに実装されています。各レイヤは、隣接する下位レイヤに渡せるようにデータを処理します。最下位レイヤは、最終的にデータを送信する責任を負います。データを受信したときには、この手順全体が逆の順序で実行されます。重なり合ったたまねぎの皮のように、各レイヤで伝送データからプロトコルヘッダが除去されていきます。最後に、トランスポートレイヤが、着信側のアプリケーションがデータを利用できるように処理します。この方法では、1つのレイヤが直接やり取りを行うのは隣接する上下のレイヤのみです。データが伝送される物理的なネットワークは、 100MBit/sのFDDIかもしれませんし、 56Kbit/sのモデム回線かもしれませんが、アプリケーションがその違いを意識することはありません。同様に、物理ネットワークは、パケットの形式さえ正しければよく、伝送されるデータの種類を意識することはありません。
  </para>
- <sect1 id="sec-basicnet-addresses">
+ <section xml:id="sec-basicnet-addresses">
   <title>IPアドレスとルーティング</title><indexterm> <primary>IPアドレス</primary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>ルーティング</secondary> </indexterm> <indexterm> <primary>ルーティング</primary> </indexterm>
 
   <para>
    ここでは、IPv4ネットワークについてのみ説明しています。IPv4の後継バージョンであるIPv6については、<xref linkend="sec-basicnet-ipv6"/>を参照してください。
   </para>
 
-  <sect2 id="sec-basicnet-addresses-ip">
+  <section xml:id="sec-basicnet-addresses-ip">
    <title>IPアドレス</title>
    <para>
     インターネット上のすべてのコンピュータは、固有の32ビットアドレスを持っています。この32ビット(4バイト)は、通常、<xref linkend="aus-net-allg-ipaddress"/>の2行目に示すような形式で表記されます。
    </para>
-   <example id="aus-net-allg-ipaddress">
+   <example xml:id="aus-net-allg-ipaddress">
     <title>IPアドレスの表記</title>
 <screen>IP Address (binary):  11000000 10101000 00000000 00010100
 IP Address (decimal):      192.     168.       0.      20</screen>
@@ -152,9 +160,9 @@ IP Address (decimal):      192.     168.       0.      20</screen>
    <para>
     IPアドレスにあるピリオドは、階層構造を表しています。1990年代まで、IPアドレスは、各クラスに固定的に分類されていました。しかし、このシステムがあまりに柔軟性に乏しいことがわかったので、今日、そのような分類は行われていません。現在採用されているのは、<emphasis>クラスレスルーティング</emphasis>(CIDR: classless inter domain routing)です。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-addresses-route">
+  <section xml:id="sec-basicnet-addresses-route">
    <title>ネットマスクとルーティング</title><indexterm> <primary>ルーティング</primary> <secondary>ネットマスク</secondary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>ルーティング</secondary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>ネットマスク</secondary> </indexterm>
    <para>
     ネットマスクは、サブネットワークのアドレス範囲を定義するために用いられます。2台のホストが同じサブネットワークに存在する場合、相互に直接アクセスできます。同じサブネットワークにない場合は、サブネットワークのすべてのトラフィックを処理するゲートウェイのアドレスが必要です。2つのIPアドレスが同じサブネットワークに属しているかどうかを確認するには、両方のアドレスとネットマスクの<quote>AND</quote>を求めます。結果が同一であれば、両方のIPアドレスは同じローカルネットワークに属しています。相違があれば、それらのIPアドレス、そしてそれらに対応するインタフェースが連絡するには、ゲートウェイを通過する必要があります。
@@ -162,7 +170,7 @@ IP Address (decimal):      192.     168.       0.      20</screen>
    <para>
     ネットマスクの役割を理解するには、<xref linkend="tab-net-allg-netmask"/>を参照してください。ネットマスクは、そのネットワークにいくつのIPアドレスが属しているかを示す、32ビットの値から成っています。<literal>1</literal>になっているビットは、IPアドレスのうち、特定のネットワークに属することを示すビットに対応します。<literal>0</literal>になっているビットは、サブネットワーク内での識別に使われるビットに対応します。これは、<literal>1</literal>になっているビット数が多いほど、サブネットワークが小さいことを意味します。ネットマスクは常に連続する<literal>1</literal>のビットから構成されているので、その数だけでネットマスクを指定することができます。<xref linkend="tab-net-allg-netmask"/>の、24ビットからなる第1のネットワークは、<literal>192.168.0.0/24</literal>と書くこともできます。
    </para>
-   <example id="tab-net-allg-netmask">
+   <example xml:id="tab-net-allg-netmask">
     <title>IPアドレスとネットマスクの論理積(AND)</title>
 <screen>
 IP address (192.168.0.20):  11000000 10101000 00000000 00010100
@@ -186,7 +194,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    <para>
     ゲートウェイを設定すると、外部からのすべてのIPパケットは適切なゲートウェイに送信されます。このゲートウェイは、パケットを複数のホストを経由して転送し、それは最終的に宛先ホストに到着します。ただし、途中でTTL (存続期間)に達した場合は破棄されます。
    </para>
-   <table id="net-allg-spezial-net">
+   <table xml:id="net-allg-spezial-net">
     <title>特殊なアドレス</title>
     <tgroup cols="2">
      <thead>
@@ -246,7 +254,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    <para>
     IPアドレスは、世界中で固有でなければならないので、自分勝手にアドレスを選択して使うことはできません。IPベースのプライベートネットワークをセットアップする場合のために、3つのアドレスドメインが用意されています。これらは、外部のインターネットに直接接続することはできません。インターネット上で転送されることがないからです。このようなアドレスドメインは、RFC  1597で、<xref linkend="tab-net-allg-privat-net"/>に示すとおりに定められています。<indexterm><primary>IPアドレス</primary><secondary>プライベート</secondary></indexterm>
    </para>
-   <table id="tab-net-allg-privat-net">
+   <table xml:id="tab-net-allg-privat-net">
     <title>プライベートIPアドレスドメイン</title>
     <tgroup cols="2">
      <thead>
@@ -303,15 +311,15 @@ In the decimal system:           213.      95.      15.       0</screen>
      </tbody>
     </tgroup>
    </table>
-  </sect2>
- </sect1>
- <sect1 id="sec-basicnet-ipv6">
+  </section>
+ </section>
+ <section xml:id="sec-basicnet-ipv6">
   <title>IPv6—次世代インターネット</title><indexterm> <primary>IPアドレス</primary> <secondary>IPv6</secondary> </indexterm> <indexterm> <primary>プロトコル</primary> <secondary>IPv6</secondary> </indexterm>
 
   
 
   <para>
-   WWW (ワールドワイドウェブ)の出現により、ここ10年間でTCP/IP経由で通信を行うコンピュータの数が増大し、インターネットは爆発的に拡大しました。CERN (<ulink url="http://public.web.cern.ch"/>)のTim Berners-Leeが1990年にWWWを発明して以来、インターネットホストは、数千から約1億まで増加しました。
+   WWW (ワールドワイドウェブ)の出現により、ここ10年間でTCP/IP経由で通信を行うコンピュータの数が増大し、インターネットは爆発的に拡大しました。CERN (<link xlink:href="http://public.web.cern.ch"/>)のTim Berners-Leeが1990年にWWWを発明して以来、インターネットホストは、数千から約1億まで増加しました。
   </para>
 
   <para>
@@ -326,7 +334,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    IPv6では、アドレス不足と複雑な環境設定方法はもはや過去のものです。ここでは、IPv6がもたらした進歩と恩恵について説明し、古いプロトコルから新しいプロトコルへの移行について述べます。
   </para>
 
-  <sect2 id="sec-basicnet-ipv6-adv">
+  <section xml:id="sec-basicnet-ipv6-adv">
    <title>長所</title>
    <para>
     この新しいプロトコルがもたらした最大かつ最もわかりやすい進歩は、利用可能なアドレス空間の飛躍的な増加です。IPv6アドレスは、従来の32ビットではなく、128ビットで構成されています。これにより、2の128乗、つまり、約3.4×1038個のIPアドレスが得られます。
@@ -382,13 +390,13 @@ In the decimal system:           213.      95.      15.       0</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 <?dbfo-need height="10em"?>
 
 
 
-  <sect2 id="sec-basicnet-ipv6-address">
+  <section xml:id="sec-basicnet-ipv6-address">
    <title>アドレスのタイプと構造</title>
    <para>
     これまでに述べたように、現在のIPプロトコルには、IPアドレス数が急激に不足し始めているということと、ネットワーク設定とルーティングテーブルの管理がより複雑で煩雑な作業になっているという、2つの重要な問題があります。IPv6では、1つ目の問題を、アドレス空間を拡張することによって解決しています。2番目の問題には、階層的なアドレス構造を導入し、ネットワークアドレスを割り当てる高度なテクニックと<emphasis>マルチホーミング</emphasis> (1つのデバイスに複数のアドレスを割り当てることによって、複数のネットワークへのアクセスを可能にします)を組み合わせて対応しています。
@@ -425,7 +433,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    <para>
     IPv6アドレスは、4桁の英数字が入った8つのフィールドで構成され、それぞれのフィールドが16進数表記の16ビットを表します。各フィールドは、コロン(<literal>:</literal>)で区切られます。各フィールドで先頭の0は省略できますが、数字の間にある0や末尾の0は省略できません。もう1つの規則として、0のバイトが5つ以上連続する場合は、まとめて2つのコロン(::)で表すことができます。ただし、アドレスごとに<literal>::</literal>は1回しか使用できません。この省略表記の例については、<xref linkend="aus-netz-ipv6-add"/>を参照してください。この3行はすべて同じアドレスを表します。
    </para>
-   <example id="aus-netz-ipv6-add">
+   <example xml:id="aus-netz-ipv6-add">
     <title>IPv6アドレスの例</title>
 <screen>fe80 : 0000 : 0000 : 0000 : 0000 : 10 : 1000 : 1a4
 fe80 :    0 :    0 :    0 :    0 : 10 : 1000 : 1a4
@@ -434,14 +442,14 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
    <para>
     IPv6アドレスの各部の機能は個別に定められています。最初の4バイトはプレフィクスを形成し、アドレスのタイプを指定します。中間部分はアドレスのネットワーク部分ですが、使用しなくてもかまいません。アドレスの最後の4桁はホスト部分です。IPv6でのネットマスクは、アドレスの末尾のスラッシュの後にプレフィクスの長さを指定して定義します。に示すアドレスには、最初の 64ビットがアドレスのネットワーク部分を構成する情報、最後の 64ビットにホスト部分を構成する情報が入っています。<xref linkend="aus-netz-ipv6-addpre"/>言い換えると、<literal>64</literal>は、ネットマスクに 64個の 1ビット値が左から埋められていることを意味します。IPv4と同様、IPアドレスとネットマスクのANDをとることにより、ホストが同じサブネットワークにあるかそうでないかを判定します。
    </para>
-   <example id="aus-netz-ipv6-addpre">
+   <example xml:id="aus-netz-ipv6-addpre">
     <title>プレフィクスの長さを指定したIPv6アドレス</title>
 <screen>fe80::10:1000:1a4/64</screen>
    </example>
    <para>
     IPv6は、事前に定義された複数タイプのプレフィクスを認識します。に、一部のプレフィクスタイプを示します。<xref linkend="tab-net-allg-ipv6-prefix"/>
    </para>
-   <table id="tab-net-allg-ipv6-prefix">
+   <table xml:id="tab-net-allg-ipv6-prefix">
     <title>IPv6のプレフィクス</title>
     <tgroup cols="2">
      <thead>
@@ -620,9 +628,9 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
    <para>
     複数のネットワークに接続するホストの場合、少なくとも2つのアドレスが必要です。1つは<emphasis>ホームアドレス</emphasis>です。ホームアドレスには、インタフェースIDだけでなく、それが通常属するホームネットワークの識別子(および対応するプレフィクス)も含まれています。ホームアドレスは静的アドレスなので、通常は変更されません。しかし、モバイルホスト宛てのパケットは、それがホームネットワーク内にあるかどうかにかかわらず、すべてそのホストに配信できます。これは、IPv6で導入された<emphasis>ステートレス自動環境設定</emphasis>や<emphasis>ネイバーディスカバリ</emphasis>のようなまったく新しい機能によって実現されました。モバイルホストは、ホームアドレスに加え、ローミング先の外部ネットワークに属するアドレスも取得します。これらは<emphasis>ケアオブ</emphasis>アドレスと呼ばれます。ホームネットワークには、ホストが対象エリア外をローミングしている間、そのホスト宛てのすべてのパケットを転送する機能があります。IPv6環境において、このタスクは、<emphasis>ホームエージェント</emphasis>によって実行されます。ホームエージェントは、ホームアドレスに届くすべてのパケットを取得してトンネルに リレーします。一方、ケアオブアドレスに届いたパケットは、特別迂回することなく、直接モバイルホストに転送されます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-ipv6-coexist">
+  <section xml:id="sec-basicnet-ipv6-coexist">
    <title>IPv4とIPv6の共存</title>
    <para>
     インターネットに接続されている全ホストをIPv4からIPv6に移行する作業は、段階的に行われます。両方のプロトコルは今後しばらく共存することになります。両方のプロトコルを<emphasis>デュアルスタック</emphasis>で実装すれば、同じシステム上に共存することが保証されます。しかし、それでもなお、IPv6対応のホストがどのようにしてIPv4ホストと通信するか、また多くがIPv4ベースの現行ネットワークでIPv6パケットをどのように伝送するかなど、解決すべき問題が残ります。最善のソリューションは、トンネリングと互換アドレスです(<xref linkend="sec-basicnet-ipv6-address"/>を参照)。
@@ -659,9 +667,9 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-ipv6-config">
+  <section xml:id="sec-basicnet-ipv6-config">
    <title>IPv6の設定</title><indexterm> <primary>設定</primary> <secondary>IPv6</secondary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>設定</secondary> <tertiary>IPv6</tertiary> </indexterm> <indexterm> <primary>IPアドレス</primary> <secondary>IPv6</secondary> <tertiary>設定</tertiary> </indexterm>
 
    <para>
@@ -673,16 +681,16 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
    <para>
     <filename>/etc/sysconfig/network</filename>ファイルを使用して各種のトンネルを設定する方法については、ifcfg-tunnel (5)のマニュアルページを参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-ipv6-moreinfo">
+  <section xml:id="sec-basicnet-ipv6-moreinfo">
    <title>詳細情報</title>
    <para>
     ここでの概要は、IPv6に関する情報を網羅しているわけではありません。IPv6の詳細については、次のオンラインドキュメントや書籍を参照してください。
    </para>
    <variablelist>
     <varlistentry>
-     <term><ulink url="http://www.ipv6.org/"/>
+     <term><link xlink:href="http://www.ipv6.org/"/>
      </term>
      <listitem>
       <para>
@@ -691,7 +699,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><ulink url="http://www.ipv6day.org"/>
+     <term><link xlink:href="http://www.ipv6day.org"/>
      </term>
      <listitem>
       <para>
@@ -700,7 +708,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><ulink url="http://www.ipv6-to-standard.org/"/>
+     <term><link xlink:href="http://www.ipv6-to-standard.org/"/>
      </term>
      <listitem>
       <para>
@@ -709,7 +717,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><ulink url="http://www.bieringer.de/linux/IPv6/"/>
+     <term><link xlink:href="http://www.bieringer.de/linux/IPv6/"/>
      </term>
      <listitem>
       <para>
@@ -734,9 +742,9 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-basicnet-nameres">
+  </section>
+ </section>
+ <section xml:id="sec-basicnet-nameres">
   <title>ネームレゾリューション</title><indexterm> <primary>DNS</primary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>DNS</secondary> </indexterm>
 
   <para>
@@ -756,7 +764,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
   </para><indexterm> <primary>環境設定ファイル </primary><secondary>hosts</secondary> </indexterm>
 
   <para>
-   この階層の最上位には、複数の<emphasis>ルートネームサーバ</emphasis>があります。ルートネームサーバは、Network Information Center (NIC)によって運用されており、最上位レベルドメインを管理します。各ルートネームサーバは、特定の最上位ドメインを管理するネームサーバについての情報を持っています。最上位ドメインNICの詳細については、<ulink url="http://www.internic.net"/>を参照してください。
+   この階層の最上位には、複数の<emphasis>ルートネームサーバ</emphasis>があります。ルートネームサーバは、Network Information Center (NIC)によって運用されており、最上位レベルドメインを管理します。各ルートネームサーバは、特定の最上位ドメインを管理するネームサーバについての情報を持っています。最上位ドメインNICの詳細については、<link xlink:href="http://www.internic.net"/>を参照してください。
   </para><indexterm> <primary>DNS</primary> <secondary>NIC</secondary> </indexterm>
 
   <para>
@@ -783,16 +791,16 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
     インストール中にMDNSをオフにするには、<literal>nomdns=1</literal>をブートパラメータとして使用してください。
    </para>
    <para>
-    マルチキャストDNSの詳細は、<ulink url="http://www.multicastdns.org"/>を参照してください。
+    マルチキャストDNSの詳細は、<link xlink:href="http://www.multicastdns.org"/>を参照してください。
    </para>
   </note>
- </sect1>
-<?dbfo-need height="20em"?>
+ </section>
 
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_lan.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="networkmanager.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_config_files.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_bonding.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_smpppd.xml" parse="xml"/>
+
+ <xi:include href="net_lan.xml" parse="xml"/>
+ <xi:include href="networkmanager.xml" parse="xml"/>
+ <xi:include href="net_config_files.xml" parse="xml"/>
+ <xi:include href="net_bonding.xml" parse="xml"/>
+ <xi:include href="net_smpppd.xml" parse="xml"/>
 </chapter>

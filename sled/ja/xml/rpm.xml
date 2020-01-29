@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="rpm.xml" id="sec-rpm">
- <title>RPM—パッケージマネージャ</title><indexterm id="idx-RPM" class="startofrange"> <primary>RPM</primary> </indexterm> <indexterm> <primary>パッケージ</primary> <secondary>RPMs</secondary> </indexterm> <indexterm> <primary>パッケージ</primary> <secondary>パッケージマネージャ</secondary> </indexterm> <indexterm> <primary>コマンド</primary> <secondary>rpm</secondary> </indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="rpm.xml" xml:id="sec-rpm">
+ <title>RPM—パッケージマネージャ</title><indexterm xml:id="idx-RPM" class="startofrange"> <primary>RPM</primary> </indexterm> <indexterm> <primary>パッケージ</primary> <secondary>RPMs</secondary> </indexterm> <indexterm> <primary>パッケージ</primary> <secondary>パッケージマネージャ</secondary> </indexterm> <indexterm> <primary>コマンド</primary> <secondary>rpm</secondary> </indexterm>
 
  <para>
   RPM (RPM Package Manager)がソフトウェアパッケージを管理するのに使用されます。RPMの主要コマンドは、<command>rpm</command>と<command>rpmbuild</command>です。ユーザ、システム管理者、およびパッケージの作成者は、強力なRPMデータベースでクエリーを行って、インストールされているソフトウェアに関する情報を取得できます。
@@ -29,20 +37,20 @@ Please see LICENSE.txt for this document's license.
   </para>
  </tip>
 
- <sect2 id="sec-rpm-package-auth">
+ <section xml:id="sec-rpm-package-auth">
   <title>パッケージの信頼性の検証</title><indexterm> <primary>RPM</primary><secondary>検証</secondary></indexterm><indexterm><primary>パッケージ</primary><secondary>検証 </secondary></indexterm>
   <para>
-   RPMパッケージにはGPG署名があります。RPMパッケージの署名を検証するには、<command>rpm --checksig <replaceable>パッケージ</replaceable>-1.2.3.rpm</command>コマンドを使用して、Novell/SUSEまたはその他の信頼できるツールから送信されたパッケージかどうか判別します。これは、インターネットからアップデートパッケージを入手する場合には、特に推奨されます。
+   RPMパッケージにはGPG署名があります。RPMパッケージの署名を検証するには、<command>rpm --checksig </command> <replaceable>パッケージ</replaceable>-1.2.3.rpmコマンドを使用して、Novell/SUSEまたはその他の信頼できるツールから送信されたパッケージかどうか判別します。これは、インターネットからアップデートパッケージを入手する場合には、特に推奨されます。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-packages-manage">
+ <section xml:id="sec-rpm-packages-manage">
   <title>パッケージの管理:インストール、アップデート、およびアンインストール</title><indexterm> <primary>インストール</primary> <secondary>パッケージ</secondary> </indexterm> <indexterm> <primary>パッケージ</primary> <secondary>インストール</secondary> </indexterm> <indexterm> <primary>パッケージ</primary> <secondary>アンインストール</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmorig</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmsave</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmnew</secondary> </indexterm>
   <para>
-   通常RPMアーカイブのインストールはとても簡単です。<command>rpm -i <replaceable>package</replaceable>.rpm</command>の用に入力します。このコマンドで、パッケージをインストールできます。ただし、依存関係が満たされており、他のパッケージとの競合がない場合に限られます。<command>rpm</command>では、依存関係の要件を満たすためにインストールしなければならないパッケージがエラーメッセージで要求されます。バックグランドで、RPMデータベースは競合が起きないようにします。ある特定のファイルは、1つのパッケージだけにしか属せません。別のオプションを選択すると、<command>rpm</command>にこれらのデフォルト値を無視させることができますが、この処置を行うのは専門知識のある人に限られます。それ以外の人が行うと、システムの整合性を危うくするリスクが発生し、システムアップデート機能が損なわれる可能性があります。
+   通常RPMアーカイブのインストールはとても簡単です。<command>rpm -i</command> <replaceable>package</replaceable>.rpmの用に入力します。このコマンドで、パッケージをインストールできます。ただし、依存関係が満たされており、他のパッケージとの競合がない場合に限られます。<command>rpm</command>では、依存関係の要件を満たすためにインストールしなければならないパッケージがエラーメッセージで要求されます。バックグランドで、RPMデータベースは競合が起きないようにします。ある特定のファイルは、1つのパッケージだけにしか属せません。別のオプションを選択すると、<command>rpm</command>にこれらのデフォルト値を無視させることができますが、この処置を行うのは専門知識のある人に限られます。それ以外の人が行うと、システムの整合性を危うくするリスクが発生し、システムアップデート機能が損なわれる可能性があります。
   </para><indexterm> <primary>RPM</primary> <secondary>依存関係</secondary></indexterm>
   <para>
-   <option>-U</option>または<option>--upgrade</option>と<option>-F</option>または<option>--freshen</option>の各オプションは、パッケージをアップデートするのに使用できます(たとえば、<command>rpm -F <replaceable>package</replaceable>.rpm</command>)。このコマンドは、古いバージョンのファイルを削除し、新しいファイルをただちにインストールします。2つのバージョン間の違いは、<option>-U</option>がシステムに存在していなかったパッケージをインストールするのに対して、<option>-F</option>がインストールされていたパッケージを単にアップデートする点にあります。アップデートする際、<command>rpm</command>は、以下のストラテジーに基づいて設定ファイルを注意深くアップデートします。
+   <option>-U</option>または<option>--upgrade</option>と<option>-F</option>または<option>--freshen</option>の各オプションは、パッケージをアップデートするのに使用できます(たとえば、<command>rpm -F</command> <replaceable>package</replaceable>.rpm)。このコマンドは、古いバージョンのファイルを削除し、新しいファイルをただちにインストールします。2つのバージョン間の違いは、<option>-U</option>がシステムに存在していなかったパッケージをインストールするのに対して、<option>-F</option>がインストールされていたパッケージを単にアップデートする点にあります。アップデートする際、<command>rpm</command>は、以下のストラテジーに基づいて設定ファイルを注意深くアップデートします。
   </para><indexterm> <primary>RPM</primary> <secondary>アップデート</secondary></indexterm>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
@@ -71,11 +79,11 @@ Please see LICENSE.txt for this document's license.
    -U<option>スイッチは、単に</option>-e<emphasis>オプションでアンインストールして、</emphasis>-i<option>オプションでインストールする操作と同じでは</option>ありません<option>。</option>可能なときは必ず<option>-U</option>を使用します。
   </para>
   <para>
-   パッケージを削除するには、「<command>rpm -e <replaceable>package</replaceable></command>.<command>rpm</command>」と入力します。解決されていない依存関係がない場合にパッケージのみを削除します。他のアプリケーションがTcl/Tkを必要とする限り、Tcl/Tkを削除することは理論的に不可能です。その場合でも、RPMはデータベースに援助を要求します。他の依存関係が<emphasis>ない</emphasis>場合でも、また、どのような理由があってもそのような削除が不可能であれば、<option>--rebuilddb</option>オプションを使用してRPMデータベースを再構築するのがよいでしょう。
+   パッケージを削除するには、「<command>rpm -e</command> <replaceable>package</replaceable>.<command>rpm</command>」と入力します。解決されていない依存関係がない場合にパッケージのみを削除します。他のアプリケーションがTcl/Tkを必要とする限り、Tcl/Tkを削除することは理論的に不可能です。その場合でも、RPMはデータベースに援助を要求します。他の依存関係が<emphasis>ない</emphasis>場合でも、また、どのような理由があってもそのような削除が不可能であれば、<option>--rebuilddb</option>オプションを使用してRPMデータベースを再構築するのがよいでしょう。
   </para><indexterm> <primary>RPM</primary> <secondary>アンインストール</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>データベース</secondary> <tertiary>再構築</tertiary> </indexterm>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-patches">
+ <section xml:id="sec-rpm-patches">
   <title>RPMとパッチ</title><indexterm> <primary>RPM</primary> <secondary>パッチ</secondary></indexterm>
   <para>
    システムの運用上のセキュリティを保証するには、ときどきアップデートパッケージをシステムにインストールする必要があります。以前は、パッケージ内のバグは、パッケージ全体を交換しなければ取り除けませんでした。バグのある小さなファイルが含まれる大きなパッケージでは、このようなシナリオに陥りがちでした。しかし、SUSE RPMを使用すると、パッケージ内にパッチをインストールできます。
@@ -137,7 +145,7 @@ pine = 4.44-207</screen>
     </term>
     <listitem>
      <para>
-      システムにインストールされているすべてのパッチのリストは、コマンド<command>rpm <option>-qPa</option></command>で表示できます。(この例のように)新しいシステムに1つのパッチだけがインストールされている場合、リストは次のようになります。
+      システムにインストールされているすべてのパッチのリストは、コマンド<command>rpm</command> <option>-qPa</option>で表示できます。(この例のように)新しいシステムに1つのパッチだけがインストールされている場合、リストは次のようになります。
      </para>
 <screen>rpm -qPa
 pine-4.44-224</screen>
@@ -158,9 +166,9 @@ pine = 4.44-188</screen>
     アップデートのダウンロードサイズをできる限り小さくするため、<phrase role="productname"><phrase os="sled">SUSE Linux Enterprise Desktop</phrase></phrase>の公式アップデートはパッチRPMとしてではなく、デルタRPMパッケージとして提供されます。詳細については、<xref linkend="sec-rpm-delta"/>を参照してください。
    </para>
   </note>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-delta">
+ <section xml:id="sec-rpm-delta">
   <title>デルタRPMパッケージ</title><indexterm> <primary>RPM</primary> <secondary>deltarpm</secondary> </indexterm> <indexterm> <primary>deltarpm</primary> </indexterm>
   <para>
    デルタRPMパッケージには、RPMパッケージの新旧バージョン間の違いが含まれています。デルタRPMを古いRPMに適用すると、まったく新しいRPMになります。デルタRPMは、インストールされているRPMとも互換性があるので、古いRPMのコピーを保管する必要はありません。デルタRPMパッケージは、パッチRPMよりもさらに小さく、パッケージをインターネット上で転送するのに便利です。欠点は、デルタRPMが組み込まれたアップデート操作の場合、そのままのRPMまたはパッチRPMに比べて、CPUサイクルの消費が目立って多くなることです。
@@ -186,14 +194,14 @@ writedeltarpm new.rpm delta info new.delta.rpm</screen>
   <para>
    技術的な詳細については、<filename>/usr/share/doc/packages/deltarpm/README</filename>を参照してください。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-query">
+ <section xml:id="sec-rpm-query">
   <title>RPMクエリー</title><indexterm> <primary>RPM</primary> <secondary>クエリー</secondary> </indexterm>
   <para>
    <option>-q</option>オプションを使用すると、<command>rpm</command>はクエリを開始し、(<option>-p</option>オプションを追加することにより)RPMアーカイブを検査できるようにして、インストールされたパッケージのRPMデータベースでクエリを行えるようにします。必要な情報の種類を指定する複数のスイッチを使用できます。詳細については、<xref linkend="tab-rpm-query"/>を参照してください。
   </para>
-  <table id="tab-rpm-query">
+  <table xml:id="tab-rpm-query">
    <title>最も重要なRPMクエリーのオプション</title>
    <tgroup cols="2">
     <tbody>
@@ -323,7 +331,7 @@ writedeltarpm new.rpm delta info new.delta.rpm</screen>
   <para>
    たとえば、コマンド<command>rpm -q -i wget</command>は、<xref linkend="aus-update-rpm-i"/>に示された情報を表示します。
   </para>
-  <example id="aus-update-rpm-i">
+  <example xml:id="aus-update-rpm-i">
    <title>rpm -q -i wget</title>
 <screen>Name        : wget                         Relocations: (not relocatable)
 Version     : 1.11.4                            Vendor: openSUSE
@@ -352,7 +360,7 @@ wget-1.11.4-11.18.x86_64</screen>
   <para>
    ファイル名の一部分しかわからない場合は、<xref linkend="dat-rpm-search"/>に示すようなシェルスクリプトを使用します。実行するときに、ファイル名の一部を、パラメータとして示されるスクリプトに渡します。
   </para>
-  <example id="dat-rpm-search">
+  <example xml:id="dat-rpm-search">
    <title>パッケージを検索するスクリプト</title>
 <screen>#! /bin/sh
 for i in $(rpm -q -a -l | grep $1); do
@@ -368,7 +376,7 @@ done</screen>
   <para>
    インストールされたRPMデータベースを使うと、確認検査を行うことができます。それらの検査は、<option>-V</option>、<option>-y</option>、または<option>--verify</option>オプションを使用して開始します。このオプションを使うと、<command>rpm</command>は、パッケージ内にあり、インストール以降変更されたことがあるすべてのファイルを表示します。<command>rpm</command>は、次の変更に関するヒントを表示するのに、8文字の記号を使用します。
   </para><indexterm> <primary>RPM</primary> <secondary>検証</secondary></indexterm>
-  <table id="tab-rpm-verify">
+  <table xml:id="tab-rpm-verify">
    <title>RPM確認オプション</title>
    <tgroup cols="2">
     <tbody>
@@ -479,9 +487,9 @@ S.5....T c /etc/wgetrc</screen>
   <para>
    RPMデータベースのファイルは、<filename>/var/lib/rpm</filename>に格納されています。パーティション<filename>/usr</filename>のサイズが 1 GBであれば、このデータベースは、完全なアップデート後、およそ 30 MB占有します。データベースが予期していたよりもはるかに大きい場合は、オプション<option>--rebuilddb</option>でデータベースを再構築するようにします。再構築する前に、古いデータベースのバックアップを作成しておきます。cron<command>スクリプトの</command>cron.daily<command>は、データベースのコピー(gzip でパックされる)を毎日作成し、</command>/var/adm/backup/rpmdb<filename>に格納します。</filename>コピー数は<filename>/etc/sysconfig/backup</filename>にある変数<systemitem>MAX_RPMDB_BACKUPS</systemitem>で制御します(デフォルト:<option>5</option>)。1つのバックアップのサイズは、1GBの<filename>/usr</filename>に対しておよそ1MBです。
   </para><indexterm> <primary>RPM</primary> <secondary>データベース</secondary> <tertiary>再構築</tertiary> </indexterm>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-sources">
+ <section xml:id="sec-rpm-sources">
   <title>ソースパッケージのインストールとコンパイル</title><indexterm> <primary>パッケージ</primary> <secondary>コンパイル</secondary> </indexterm> <indexterm> <primary>ソース</primary> <secondary>コンパイル</secondary> </indexterm> <indexterm> <primary>ソフトウェア</primary> <secondary>コンパイル</secondary> </indexterm> <indexterm> <primary>spm</primary> </indexterm>
   <para>
    すべてのソースパッケージには、拡張子<filename>.src.rpm</filename> (ソース RPM)が付けられています。
@@ -556,7 +564,7 @@ S.5....T c /etc/wgetrc</screen>
 /usr/src/packages/SOURCES/wgetrc.patch
 /usr/src/packages/SPECS/wget.spec</screen>
   <para>
-   <command>rpmbuild -b <replaceable>X</replaceable> /usr/src/packages/SPECS/wget.spec</command>コマンドは、コンパイルを開始します。<replaceable>X</replaceable>は、ビルド処理のさまざまな段階に対して使用されるワイルドカードです(詳細については、<option>--help</option>の出力またはRPMのドキュメントを参照してください)。以下に簡単な説明を示します。
+   <command>rpmbuild -b</command> <replaceable>X</replaceable> /usr/src/packages/SPECS/wget.specコマンドは、コンパイルを開始します。<replaceable>X</replaceable>は、ビルド処理のさまざまな段階に対して使用されるワイルドカードです(詳細については、<option>--help</option>の出力またはRPMのドキュメントを参照してください)。以下に簡単な説明を示します。
   </para>
   <variablelist>
    <varlistentry>
@@ -615,14 +623,14 @@ S.5....T c /etc/wgetrc</screen>
    </varlistentry>
   </variablelist>
   <para>
-   作成されたバイナリRPMは、<command>rpm<option> -i</option></command>コマンドまたは<command>rpm<option> -U</option></command>コマンドでインストールできます。rpm<command>を使用したインストールは、RPMデータベースに登場します。</command>
+   作成されたバイナリRPMは、<command>rpm</command> <option> -i</option>コマンドまたは<command>rpm</command> <option> -U</option>コマンドでインストールできます。rpm<command>を使用したインストールは、RPMデータベースに登場します。</command>
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-build">
+ <section xml:id="sec-rpm-build">
   <title>buildによるRPMパッケージのコンパイル</title><indexterm> <primary>パッケージ</primary><secondary>buildによるコンパイル</secondary> </indexterm>
   <para>
-   多くのパッケージにつきものの不都合は、ビルド処理中に不要なファイルが稼働中のシステムに追加されてしまうことです。これを回避するには、パッケージのビルド先の定義済みの環境を作成する<systemitem>build</systemitem>を使用します。このchroot環境を確立するには、<command>build</command> スクリプトが完全なパッケージツリーと共に提供されなければなりません。パッケージツリーは、NFS経由で、またはDVDから ハードディスク上で利用できるようにすることができます。<command>build --rpms <replaceable>directory</replaceable></command>で、位置を指定します。<command>rpm</command>と異なり、<command>build</command>コマンドは、ソースディレクトリで<filename>.spec</filename>ファイルを検索します。<filename>/media/dvd</filename>の下でシステムにマウントされているDVDを使用して(上記の例と同様に)<filename>wget</filename>をビルドするには、次のコマンドを<systemitem class="username">root</systemitem>として使用します。
+   多くのパッケージにつきものの不都合は、ビルド処理中に不要なファイルが稼働中のシステムに追加されてしまうことです。これを回避するには、パッケージのビルド先の定義済みの環境を作成する<systemitem>build</systemitem>を使用します。このchroot環境を確立するには、<command>build</command> スクリプトが完全なパッケージツリーと共に提供されなければなりません。パッケージツリーは、NFS経由で、またはDVDから ハードディスク上で利用できるようにすることができます。<command>build --rpms</command> <replaceable>directory</replaceable>で、位置を指定します。<command>rpm</command>と異なり、<command>build</command>コマンドは、ソースディレクトリで<filename>.spec</filename>ファイルを検索します。<filename>/media/dvd</filename>の下でシステムにマウントされているDVDを使用して(上記の例と同様に)<filename>wget</filename>をビルドするには、次のコマンドを<systemitem class="username">root</systemitem>として使用します。
   </para>
 <screen>cd /usr/src/packages/SOURCES/
 mv ../SPECS/wget.spec .
@@ -631,11 +639,11 @@ build --rpms /media/dvd/suse/ wget.spec</screen>
    これで、最小限の環境が<filename>/var/tmp/build-root</filename>に確立されます。パッケージは、この環境でビルドされます。処理が完了すると、ビルドされたパッケージは<filename>/var/tmp/build-root/usr/src/packages/RPMS</filename>に格納されます。
   </para>
   <para>
-   build<command>スクリプトでは、他のオプションも多数使用できます。</command>たとえば、スクリプトがユーザ独自のRPMを処理するようにするには、ビルド環境の初期化を省略するか、<command>rpm</command>コマンドの実行を上記のビルド段階のいずれかに制限します。<command>build <option>--help</option></command>コマンドと<command>man build</command>コマンドで、詳細な情報が得られます。
+   build<command>スクリプトでは、他のオプションも多数使用できます。</command>たとえば、スクリプトがユーザ独自のRPMを処理するようにするには、ビルド環境の初期化を省略するか、<command>rpm</command>コマンドの実行を上記のビルド段階のいずれかに制限します。<command>build</command> <option>--help</option>コマンドと<command>man build</command>コマンドで、詳細な情報が得られます。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-tools">
+ <section xml:id="sec-rpm-tools">
   <title>RPMアーカイブとRPMデータベース用のツール</title><indexterm> <primary>RPM</primary> <secondary>ツール</secondary></indexterm>
   <para>
    Midnight Commander (<command>mc</command>)は、RPMアーカイブの内容を表示し、それらの一部をコピーできます。アーカイブを仮想ファイルシステムとして表し、Midnight Commanderの通常のメニューオプションを使用できます。&lt;<filename>F3</filename>&gt;キーを使用して<keycap>HEADER</keycap>を表示します。カーソルキーと<keycap>Enter</keycap>キーを使ってアーカイブ構造を表示します。<keycap>F5</keycap>キーを使用してアーカイブコンポーネントをコピーします。
@@ -646,5 +654,5 @@ build --rpms /media/dvd/suse/ wget.spec</screen>
    フル機能のパッケージマネージャをYaSTモジュールとして使用できます詳細については、<xref linkend="cha-y2-sw"/>を参照してください。
   </para><indexterm class="endofrange" startref="idx-RPM"/>
 
- </sect2>
-</sect1>
+ </section>
+</section>

@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="uefi.xml" id="cha-uefi">
- <title>UEFI (Unified Extensible Firmware Interface)</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="uefi.xml" xml:id="cha-uefi"><title>UEFI (Unified Extensible Firmware Interface)</title><info/>
+ 
 
  <para>
   UEFI (Unified Extensible Firmware Interface) は、システムハードウェアに付属のファームウェア、システムのすべてのハードウェアコンポーネント、およびオペレーティングシステムの間のインタフェースです。
@@ -46,10 +54,10 @@ Please see LICENSE.txt for this document's license.
  </itemizedlist>
 
  <para>
-詳細については、<ulink url="http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface"/>を参照してください。以降のセクションは、UEFIの一般的な概要を示すものではなく、特定の機能がSUSE Linux Enterpriseにどのように実装されているかを示すヒントです。
+詳細については、<link xlink:href="http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface"/>を参照してください。以降のセクションは、UEFIの一般的な概要を示すものではなく、特定の機能がSUSE Linux Enterpriseにどのように実装されているかを示すヒントです。
  </para>
 
- <sect1 id="sec-uefi-secboot">
+ <section xml:id="sec-uefi-secboot">
   <title>セキュアブート</title>
 
   
@@ -73,7 +81,7 @@ Please see LICENSE.txt for this document's license.
 
   </para>
 
-  <sect2>
+  <section>
    <title>SUSE Linux Enterpriseへの実装</title>
    
    <para>
@@ -100,7 +108,7 @@ UEFIセキュアブートに対応するには、基本的に、ブートロー�
    </para>
    
 
-  <figure id="fig-uefi-secure-boot-mok2">
+  <figure xml:id="fig-uefi-secure-boot-mok2">
    <title>UEFIのセキュアブートプロセス</title>
    <mediaobject>
     <imageobject role="fo">
@@ -170,9 +178,9 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
    <para>
 次に、ブートローダはカーネルを検証および起動し、カーネルがモジュールで同じことを実行します。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Machine Owner Key(マシン所有者キー、MOK)</title>
 
 
@@ -190,20 +198,20 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
 <para>
 このようにして、独自のカーネルまたはブートローダをインストールできます。物理的にそこにいることによって新しいキーセットをインストールしそれを認証する必要があるのは、最初の再起動時のみです。MOKは単一のMOKではなくリストなので、<systemitem>shim</systemitem>に複数のベンダーのキーを信頼させることができ、ブートローダからのデュアルブートやマルチブートが可能です。
 </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>カスタムカーネルのブート</title>
 
    <para>
-    以下は<ulink url="http://en.opensuse.org/openSUSE:UEFI#Booting_a_custom_kernel"/>にもとづいています。
+    以下は<link xlink:href="http://en.opensuse.org/openSUSE:UEFI#Booting_a_custom_kernel"/>にもとづいています。
    </para>
    <para>
     セキュアブートでは、セルフコンパイルカーネルを使用できます。ただし、独自の証明書を使って署名し、その証明書をファームウェアまたはMOKに知らせる必要があります。
    </para>
 
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       カスタムのX.509キー、および署名に使用される証明書を作成します。
      </para>
@@ -213,11 +221,11 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
 
     <para>
      
-     証明書の作成の詳細については、<ulink url="http://en.opensuse.org/openSUSE:UEFI_Image_File_Sign_Tools#Create_Your_Own_Certificate"/>を参照してください。
+     証明書の作成の詳細については、<link xlink:href="http://en.opensuse.org/openSUSE:UEFI_Image_File_Sign_Tools#Create_Your_Own_Certificate"/>を参照してください。
     </para>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       PKCS#12形式でキーと証明書をパッケージ化します。
      </para>
@@ -225,7 +233,7 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
   -name kernel_cert -out cert.p12</screen>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       <command>pesign</command>とともに使用するNSSデータベースを生成します。
      </para>
@@ -233,7 +241,7 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
      <screen>certutil -d . -N</screen>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       PKCS#12に含まれるキーおよび証明書をNSSデータベースにインポートします。
      </para>
@@ -241,14 +249,14 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
      <screen>pk12util -d . -i cert.p12</screen>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       <command>pesign</command>を使用して、新しい署名でカーネルを<quote>bless</quote>します。
      </para>
      <screen>pesign -n . -c kernel_cert -i arch/x86/boot/bzImage \
   -o vmlinuz.signed -s</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
 カーネルイメージの署名をリスト表示します。
      </para>
@@ -258,20 +266,20 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
 その時点で、通常通り<filename>/boot</filename>にカーネルをインストールできます。カーネルにはカスタム署名があるため、署名に使用された証明書をUEFIファームウェアまたはMOKにインポートする必要があります。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       ファームウェアまたはMOKにインポートするため、証明書をDERフォーマットに変換します。
      </para>
 
      <screen>openssl x509 -in cert.pem -outform der -out cert.der</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       よりアクセスしやすくするため、証明書をESPにコピーします。
      </para>
      <screen>sudo cp cert.der /boot/efi/</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <command>mokutil</command>を使用して自動的にMOKリストを起動します。
      </para>
@@ -284,34 +292,34 @@ SUSEは、最初にFedoraによった開発された<systemitem>shim</systemitem
      </para>
 
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         再起動
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         GRUB メニューで&lt;<literal>c</literal>&gt;キーを押します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         以下のコマンドをタイプします。
        </para>
        <screen>chainloader $efibootdir/MokManager.efi
 boot</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>Enroll key from disk</guimenu>を選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <filename>cert.der</filename>ファイルに移動して<keycap>Enter</keycap>キーを押します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         指示に従ってキーを登録します。通常、「<literal>0</literal>」を押してから「<literal>y</literal>」を押して確認します。
        </para>
@@ -326,9 +334,9 @@ boot</screen>
    </procedure>
 
 
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Inbox以外のドライバの使用</title>
    <para>
     セキュアブートを有効にしたブートインストールの後は、Inbox以外のドライバ(SLEに付属していないドライバ)の追加がサポートされません。SolidDriver/PLDPで使用される署名キーは、デフォルトでは信頼されていません。
@@ -344,7 +352,7 @@ boot</screen>
     </listitem>
     <listitem>
      <para>
-      <ulink url="https://drivers.suse.com/"/>またはハードウェアベンダーから入手したブート可能なドライバISOを使用して、初回ブート時に必要なキーをMOKリストに登録します。
+      <link xlink:href="https://drivers.suse.com/"/>またはハードウェアベンダーから入手したブート可能なドライバISOを使用して、初回ブート時に必要なキーをMOKリストに登録します。
      </para>
     </listitem>
    </itemizedlist>
@@ -352,12 +360,12 @@ boot</screen>
     ブート可能なドライバISOを使用してドライバキーをMOKリストに登録するには、次の手順に従います。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       空のCD/DVDメディアにISOイメージを書き込みます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       この新しいCD/DVDメディアからブートしてインストールを開始します。その際には、標準のSUSE Linux Enterpriseメディア、またはネットワークインストールサーバへのURLを用意しておきます。
      </para>
@@ -368,18 +376,18 @@ boot</screen>
       光学メディアからインストールする場合、インストーラが最初にドライバキットからブートされた後、SUSE Linux Enterprise製品の最初のディスクを挿入するように要求されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       アップデートされたドライバを含むinitrdが、インストールに使用されます。
      </para>
     </step>
    </procedure>
    <para>
-    詳細については、<ulink url="https://drivers.suse.com/doc/Usage/Secure_Boot_Certificate.html"/>を参照してください。
+    詳細については、<link xlink:href="https://drivers.suse.com/doc/Usage/Secure_Boot_Certificate.html"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>制限</title>
    <para>セキュアブートモードでブートする場合、以下の制限が適用されます。</para>
 
@@ -425,14 +433,14 @@ boot</screen>
 </itemizedlist>
   
 
-  </sect2>
- </sect1>
- <sect1 id="sec-uefi-moreinfo">
+  </section>
+ </section>
+ <section xml:id="sec-uefi-moreinfo">
   <title>その他の情報</title>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-<ulink url="http://www.uefi.org"/> —UEFIのホームページです。現在のUEFI仕様が掲載されています。
+<link xlink:href="http://www.uefi.org"/> —UEFIのホームページです。現在のUEFI仕様が掲載されています。
     </para>
    </listitem>
    <listitem>
@@ -441,22 +449,22 @@ boot</screen>
     </para>
     <itemizedlist mark="bullet" spacing="normal">
      <listitem>
-      <para><ulink url="http://www.suse.com/blogs/uefi-secure-boot-plan/"/></para>
+      <para><link xlink:href="http://www.suse.com/blogs/uefi-secure-boot-plan/"/></para>
      </listitem>
      <listitem>
-      <para><ulink url="http://www.suse.com/blogs/uefi-secure-boot-overview/"/></para>
+      <para><link xlink:href="http://www.suse.com/blogs/uefi-secure-boot-overview/"/></para>
      </listitem>
      <listitem>
-      <para><ulink url="http://www.suse.com/blogs/uefi-secure-boot-details/"/></para>
+      <para><link xlink:href="http://www.suse.com/blogs/uefi-secure-boot-details/"/></para>
      </listitem>
     </itemizedlist>
    </listitem>
    <listitem>
     <para>
-<ulink url="http://en.opensuse.org/openSUSE:UEFI"/> —UEFIとopenSUSEに関するページです。
+<link xlink:href="http://en.opensuse.org/openSUSE:UEFI"/> —UEFIとopenSUSEに関するページです。
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 
 </chapter>
