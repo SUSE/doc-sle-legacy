@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="net_config_files.xml" id="sec-basicnet-manconf">
- <title>手動設定網路連接</title><indexterm id="idx-networks-configuring" class="startofrange"> <primary>網路</primary> <secondary>設定</secondary> </indexterm> <indexterm id="idx-configuring-networks-manually" class="startofrange"> <primary>設定</primary> <secondary>網路</secondary> <tertiary>手動</tertiary> </indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_config_files.xml" xml:id="sec-basicnet-manconf">
+ <title>手動設定網路連接</title><indexterm xml:id="idx-networks-configuring" class="startofrange"> <primary>網路</primary> <secondary>設定</secondary> </indexterm> <indexterm xml:id="idx-configuring-networks-manually" class="startofrange"> <primary>設定</primary> <secondary>網路</secondary> <tertiary>手動</tertiary> </indexterm>
 
  <para>
   網路軟體的手動組態應該永遠是最後的替代方案。建議使用 YaST。不過，這個有關網路組態的背景資訊也可協助您使用 YaST。
@@ -28,7 +36,7 @@ Please see LICENSE.txt for this document's license.
   <xref linkend="tab-net-script-conf"/> 總結了與網路組態相關的最重要的程序檔。
  </para>
 
- <table id="tab-net-script-conf">
+ <table xml:id="tab-net-script-conf">
   <title>手動網路組態程序檔</title>
   <tgroup cols="2">
    <thead>
@@ -78,12 +86,12 @@ Please see LICENSE.txt for this document's license.
   如需 udev 和永久裝置名稱的詳細資訊，請參閱<xref linkend="cha-udev"/>。
  </para>
 
- <sect2 id="sec-basicnet-manconf-files">
-  <title>組態檔案</title><indexterm> <primary>組態檔</primary> </indexterm> <indexterm id="idx-networks-configuration-files" class="startofrange"> <primary>網路</primary> <secondary>組態檔</secondary> </indexterm>
+ <section xml:id="sec-basicnet-manconf-files">
+  <title>組態檔案</title><indexterm> <primary>組態檔</primary> </indexterm> <indexterm xml:id="idx-networks-configuration-files" class="startofrange"> <primary>網路</primary> <secondary>組態檔</secondary> </indexterm>
   <para>
    本節提供網路組態檔的綜覽，並說明其用途和使用的格式。
   </para>
-  <sect3 id="sec-basicnet-manconf-files-ifcfg">
+  <section xml:id="sec-basicnet-manconf-files-ifcfg">
    <title><filename>/etc/sysconfig/network/ifcfg-*</filename></title>
    <para>
     這些檔案包含網路介面的組態。其中包含啟動模式和 IP 位址等資訊。可以使用的參數請參閱 <systemitem>ifup</systemitem> 的手冊頁。此外，如果一個一般設定只能用於一個介面，則檔案 <filename>dhcp</filename> 中的大多數變數在 <filename>ifcfg-*</filename> 檔案中都可以使用。但是，大多數 <filename>/etc/sysconfig/network/config</filename> 變數都是全域變數，在 ifcfg 檔案中不能將它們覆寫。例如，<systemitem>NETWORKMANAGER</systemitem> 或 <systemitem>NETCONFIG_*</systemitem> 變數就是全域變數。
@@ -92,15 +100,15 @@ Please see LICENSE.txt for this document's license.
     如需 <filename>ifcfg.template</filename> 的相關資訊，請參閱<xref linkend="sec-basicnet-manconf-files-config-etc"/>。
    </para><indexterm> <primary>組態檔</primary> <secondary>ifcfg-*</secondary> </indexterm>
    
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-files-config-etc">
+  </section>
+  <section xml:id="sec-basicnet-manconf-files-config-etc">
    <title><filename>/etc/sysconfig/network/config</filename> 和 <filename>/etc/sysconfig/network/dhcp</filename></title><indexterm> <primary>組態檔案</primary> <secondary>網路</secondary></indexterm><indexterm> <primary>組態檔案</primary> <secondary>dhcp</secondary></indexterm>
    <para>
     <filename>config</filename> 檔案包含 <command>ifup</command>、<command>ifdown</command> 和 <command>ifstatus</command> 行為的一般設定。<filename>dhcp</filename> 包含 DHCP 的設定。這兩個組態檔案中的變數都已被註解。<filename>/etc/sysconfig/network/config</filename> 中的某些變數也可以在 <filename>ifcfg-*</filename> 檔案中使用，而且在這些檔案中它們的優先程度更高。<filename>/etc/sysconfig/network/ifcfg.template</filename> 檔案列出了可在永久介面中指定的變數。但是，大多數 <filename>/etc/sysconfig/network/config</filename> 變數都是全域變數，在 ifcfg 檔案中不能將它們覆寫。例如，<systemitem>NETWORKMANAGER</systemitem> 或 <systemitem>NETCONFIG_*</systemitem> 變數就是全域變數。
    </para>
-  </sect3>
-  <sect3>
-   <title><filename>/etc/sysconfig/network/routes</filename> 和 <filename>/etc/sysconfig/network/ifroute-*</filename></title><indexterm id="idx-routing" class="startofrange"> <primary>路由</primary> </indexterm> <indexterm> <primary>路由</primary> <secondary>路由</secondary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>路由</secondary> </indexterm> <indexterm> <primary>設定</primary> <secondary>路由</secondary> </indexterm>
+  </section>
+  <section>
+   <title><filename>/etc/sysconfig/network/routes</filename> 和 <filename>/etc/sysconfig/network/ifroute-*</filename></title><indexterm xml:id="idx-routing" class="startofrange"> <primary>路由</primary> </indexterm> <indexterm> <primary>路由</primary> <secondary>路由</secondary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>路由</secondary> </indexterm> <indexterm> <primary>設定</primary> <secondary>路由</secondary> </indexterm>
    <para>
     TCP/IP 封包的靜態路由在此決定。您可以將各種系統任務所需的所有靜態路由都輸入 <filename>/etc/sysconfig/network/routes</filename> 檔案，包括主機的路由、透過閘道前往主機的路由，以及網路的路由。對於需要個別路由的介面，請定義額外的組態檔案：<filename>/etc/sysconfig/network/ifroute-*</filename>。以介面的名稱取代 <literal>*</literal>。在路由組態檔中的項目看起來就像這樣：<indexterm> <primary>路由</primary> <secondary>靜態</secondary> </indexterm>
    </para>
@@ -150,8 +158,8 @@ default           204.127.235.41    0.0.0.0            eth0
 208.77.188.0            208.77.188.166           255.255.255.0 eth0
 </screen>
 <indexterm class="endofrange" startref="idx-routing"/>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/resolv.conf</filename></title><indexterm> <primary>組態檔案</primary> <secondary>resolv.conf</secondary> </indexterm>
    <para>
     主機所屬的網域指定於此檔案 (關鍵字 <systemitem>search</systemitem>)；另外也會列出要存取的名稱伺服器位址的狀態 (關鍵字 <systemitem>nameserver</systemitem>)。可以在檔案中指定多個網域名稱。解析不完整的名稱時，會嘗試附加個別 <systemitem>search</systemitem> 項目產生一個名稱。可以在多行中指定多個伺服器名稱，每個名稱均以 <systemitem>nameserver</systemitem> 開頭。備註前面標有 <literal>#</literal> 符號。<xref linkend="dat-netz-etc-resolv-conf"/> 顯示了 <filename>/etc/resolv.conf</filename> 的格式。<indexterm> <primary>DNS</primary> <secondary>網域</secondary> </indexterm> <indexterm> <primary>DNS</primary> <secondary>名稱伺服器</secondary> </indexterm>
@@ -191,7 +199,7 @@ default           204.127.235.41    0.0.0.0            eth0
    <para>
     若要使用 netconfig 停用 DNS 組態，請設定 <literal>NETCONFIG_DNS_POLICY=''</literal>。如需 <command>netconfig</command> 的詳細資訊，請參閱 <command>man 8 netconfig</command>。
    </para>
-   <example id="dat-netz-etc-resolv-conf">
+   <example xml:id="dat-netz-etc-resolv-conf">
     <title><filename>/etc/resolv.conf</filename></title>
 <screen># Our domain
 search example.com
@@ -199,9 +207,9 @@ search example.com
 # We use dns.example.com (192.168.1.116) as name server
 nameserver 192.168.1.116</screen>
    </example>
-  </sect3>
+  </section>
 
-  <sect3 id="sec-basicnet-manconf-netconfig">
+  <section xml:id="sec-basicnet-manconf-netconfig">
    <title><filename>/sbin/netconfig</filename></title>
    <para>
     <command>netconfig</command> 是一個模組化工具，用於管理其他網路組態設定。它根據預先定義的規則，將靜態定義的設定與自動組態機制 (如 DHCP 或 PPP) 提供的設定進行合併。透過呼叫負責修改組態檔案和重新啟動服務或類似動作的 netconfig 模組，將必要的變更套用至系統。
@@ -246,36 +254,36 @@ nameserver 192.168.1.116</screen>
    <para>
     如需 <command>netconfig</command> 的詳細資訊，請參閱 <command>man 8 netconfig</command>。
    </para>
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-hosts">
+  </section>
+  <section xml:id="sec-basicnet-manconf-hosts">
    <title><filename>/etc/hosts</filename></title><indexterm> <primary>組態檔案</primary> <secondary>主機</secondary> </indexterm>
    <para>
     在此檔中 (請參閱 <xref linkend="dat-netz-etc-hosts"/>)，IP 位址是指定給主機名稱。如果沒有執行任何名稱伺服器，將使用此 IP 連接設定的所有主機將列示於此。對於每個主機，分別在檔案中輸入一行包含 IP 位址、完全合法的主機名稱及主機名稱的項目。IP 位址必須在行的開頭，然後以空格和定位點分隔這些項目。註解的前面永遠是 <literal>#</literal> 符號。
    </para>
-   <example id="dat-netz-etc-hosts">
+   <example xml:id="dat-netz-etc-hosts">
     <title><filename>/etc/hosts</filename></title>
 <screen>127.0.0.1 localhost
 192.168.2.100 jupiter.example.com jupiter
 192.168.2.101 venus.example.com venus</screen>
    </example>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/networks</filename></title><indexterm> <primary>組態檔案</primary> <secondary>網路</secondary> </indexterm>
    <para>
     在此檔中，網路名稱會轉換為網路位址。格式與 <filename>hosts</filename> 檔案格式相似，但是網路名稱在位址前。請參閱<xref linkend="dat-netz-networks"/>。
    </para>
-   <example id="dat-netz-networks">
+   <example xml:id="dat-netz-networks">
     <title><filename>/etc/networks</filename></title>
 <screen>loopback     127.0.0.0
 localnet     192.168.0.0</screen>
    </example>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/host.conf</filename></title><indexterm> <primary>組態檔案</primary> <secondary>host.conf</secondary> </indexterm>
    <para>
     名稱解析--透過<emphasis>解析器</emphasis>庫分析主機和網路的名稱--由此檔案收集。該檔案僅用於與 libc4 或 libc5 連結的程式。對於目前的 glibc 程式，請參閱 <filename>/etc/nsswitch.conf</filename> 中的設定。每個參數必須永遠是獨立一行。註解的前面是 <literal>#</literal> 符號。<xref linkend="tab-netz-param-hostconf"/> 顯示出可用的參數。<filename>/etc/host.conf</filename> 範例是顯示在 <xref linkend="dat-netz-etc-hostconf"/>。
    </para>
-   <table id="tab-netz-param-hostconf">
+   <table xml:id="tab-netz-param-hostconf">
     <title>/etc/host.conf 的參數</title>
     <tgroup cols="2" align="left">
      <tbody>
@@ -360,15 +368,15 @@ localnet     192.168.0.0</screen>
      </tbody>
     </tgroup>
    </table>
-   <example id="dat-netz-etc-hostconf">
+   <example xml:id="dat-netz-etc-hostconf">
     <title><filename>/etc/host.conf</filename></title>
 <screen># We have named running
 order hosts bind
 # Allow multiple address
 multi on</screen>
    </example>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/nsswitch.conf</filename></title><indexterm> <primary>組態檔案</primary> <secondary>nsswitch.conf</secondary> </indexterm>
    <para>
     GNU C Library 2.0 的介紹隨附於<emphasis>名稱服務切換</emphasis> (NSS，Name Service Switch) 的介紹。詳細資訊請參閱 <systemitem>nsswitch.conf(5)</systemitem> man 頁面和 <emphasis>GNU C Library 參考手冊</emphasis>。<indexterm> <primary>NSS</primary> </indexterm>
@@ -376,7 +384,7 @@ multi on</screen>
    <para>
     查詢的順序定義於檔案 <filename>/etc/nsswitch.conf</filename>。<filename>nsswitch.conf</filename> 範例是顯示在 <xref linkend="dat-netz-nsswitchconf"/>。備註前面標有 <literal>#</literal> 符號。在此範例中，<filename>hosts</filename> 資料庫下的項目表示要求是透過 DNS 傳送到 <filename>/etc/hosts</filename> (<option>files</option>)。
    </para>
-   <example id="dat-netz-nsswitchconf">
+   <example xml:id="dat-netz-nsswitchconf">
     <title><filename>/etc/nsswitch.conf</filename></title>
 <screen>passwd:     compat
 group:      compat
@@ -401,7 +409,7 @@ shadow:     compat
    <para>
     NSS 上可用的<quote>資料庫</quote>列示於 <xref linkend="tab-netz-nnswitch-db"/>。<indexterm><primary>NSS</primary> <secondary>資料庫</secondary></indexterm> NSS 資料庫的組態選項將列於<xref linkend="tab-netz-nnswitch-conf"/>。
    </para>
-   <table id="tab-netz-nnswitch-db">
+   <table xml:id="tab-netz-nnswitch-db">
     <title>透過 /etc/nsswitch.conf 的可用資料庫</title>
     <tgroup cols="2" align="left">
      <tbody>
@@ -565,7 +573,7 @@ shadow:     compat
      </tbody>
     </tgroup>
    </table>
-   <table id="tab-netz-nnswitch-conf">
+   <table xml:id="tab-netz-nnswitch-conf">
     <title>NSS<quote>資料庫</quote>的組態選項</title>
     <tgroup cols="2" align="left">
      <tbody>
@@ -632,8 +640,8 @@ shadow:     compat
      </tbody>
     </tgroup>
    </table>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/nscd.conf</filename></title><indexterm> <primary>組態檔案</primary> <secondary>nscd.conf</secondary> </indexterm>
    <para>
     此檔案用來設定 nscd (名稱服務快取精靈)。請參閱 <systemitem>nscd(8)</systemitem> 與 <systemitem>nscd.conf(5)</systemitem> man 頁面。依預設，<option>passwd</option> 與 <option>groups</option> 的系統項目是由 nscd 快取。這對於目錄服務 (如 NIS 和 LDAP) 的效能而言是很重要的，否則每次存取名稱或群組時都需要使用網路連接。預設是不會快取 <option>hosts</option>，因為 nscd 快取主機的機制會造成本地系統無法信任轉寄以及反向查詢檢查。不要要求 nscd 快取名稱，而是設定快取 DNS 伺服器。
@@ -641,16 +649,16 @@ shadow:     compat
    <para>
     如果啟用 <option>passwd</option> 的快取，通常需要 15 秒，才能辨識新增的本地使用者。使用指令 <command>rcnscd</command> <option>restart</option> 重新啟動 nscd，縮短這段等待時間。
    </para>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title><filename>/etc/HOSTNAME </filename></title><indexterm> <primary>組態檔案</primary> <secondary>HOSTNAME</secondary> </indexterm>
    <para>
     此檔案包含附加了網域名稱的完全合格的主機名稱。機器開機時數個程序檔會讀取該檔案。它只能包含一行，其中設定了主機名稱。
    </para><indexterm class="endofrange" startref="idx-networks-configuration-files"/>
-  </sect3>
- </sect2>
+  </section>
+ </section>
 
- <sect2 id="sec-basicnet-manconf-testing">
+ <section xml:id="sec-basicnet-manconf-testing">
   <title>測試與組態</title>
   <para>
    將組態寫入您的組態檔案之前，可先進行測試。若要設定測試組態，請使用 <command>ip</command> 指令。若要測試連接，請使用 <command>ping</command> 指令。同時也可使用較舊的組態工具，如 <command>ifconfig</command> 和 <command>route</command>。
@@ -658,7 +666,7 @@ shadow:     compat
   <para>
    <command>ip</command>、<command>ifconfig</command> 和 <command>route</command> 指令會直接變更網路組態，不會將其儲存到組態檔案中。除非您將組態輸入正確的組態檔案，否則重新開機之後網路組態的變更就會遺失。
   </para>
-  <sect3 id="sec-basicnet-manconf-ip">
+  <section xml:id="sec-basicnet-manconf-ip">
    <title>使用 <command>ip</command> 設定網路介面</title><indexterm> <primary>指令</primary> <secondary>ip</secondary> </indexterm>
    
    <para>
@@ -737,7 +745,7 @@ shadow:     compat
     若未提供指令，會使用預設指令 (通常是 <command>list</command>)。
    </para>
    <para>
-    您可使用 <command>ip link set</command> <option><replaceable>device_name</replaceable></option> <command><replaceable>command</replaceable></command> 指令變更裝置狀態。例如，若要停用裝置 eth0，請輸入 <command>ip link set</command> <option>eth0 down</option>。若要重新啟用，請使用 <command>ip link set</command> <option>eth0 up</option>。
+    您可使用 <command>ip link set</command> <option><replaceable>device_name</replaceable></option> <command/>  指令變更裝置狀態。例如，若要停用裝置 eth0，請輸入 <command>ip link set</command> <option>eth0 down</option>。若要重新啟用，請使用 <command>ip link set</command> <option>eth0 up</option>。
    </para>
    <para>
     啟用裝置之後，就可加以設定。若要設定 IP 位址，請使用 <command>ip addr add</command> <option><replaceable>ip_address</replaceable> + dev <replaceable>device_name</replaceable></option>。例如，若要將介面 eth0 的 IP 位址以標準廣播 (選項 <option>brd</option>) 設定為 192.168.12.154/30，請輸入 <command>ip addr</command> <option>add 192.168.12.154/30 brd + dev eth0</option>。
@@ -751,8 +759,8 @@ shadow:     compat
    <para>
     如需有關使用 <command>ip</command> 的詳細資訊，請輸入 <command>ip</command> <option>help</option> 或參閱 <systemitem>ip(8)</systemitem> man 頁面。<option>help</option> 選項也適用於所有 <command>ip</command> 子指令。例如，如果您需要 <command>ip</command> <option>addr</option> 的說明，請輸入 <command>ip</command> <option>addr help</option>。<filename>/usr/share/doc/packages/iproute2/ip-cref.pdf</filename> 中提供了有關 <command>ip</command> 的說明。
    </para>
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-testingping">
+  </section>
+  <section xml:id="sec-basicnet-manconf-testingping">
    <title>以 ping 測試連接</title><indexterm> <primary>指令</primary> <secondary>ping</secondary> </indexterm> <indexterm> <primary>ping</primary> </indexterm>
    <para>
     <command>ping</command> 指令是測試 TCP/IP 連接運作的標準工具。其使用 ICMP 通訊協定，將小型資料封包 ECHO_REQUEST 傳送至目的地主機，要求立即回應。如果有作用，<command>ping</command> 會顯示訊息，指示網路連結基本上是正常的。
@@ -766,7 +774,7 @@ shadow:     compat
    <para>
     若您只需要檢查連接功能性，您可以 <option>-c</option> 選項限定封包數量。例如，若要將 ping 限制於三個封包，請輸入 <command>ping</command> <option>-c 3 example.com</option>。
    </para>
-   <example id="ex-basicnet-manconf-ping">
+   <example xml:id="ex-basicnet-manconf-ping">
     <title>指令 ping 的輸出</title>
 <screen>ping -c 3 example.com
 PING example.com (192.168.3.100) 56(84) bytes of data.
@@ -793,8 +801,8 @@ rtt min/avg/max/mdev = 183.417/185.447/188.259/2.052 ms</screen>
     </para>
 <screen>ping6 -I eth1 fe80::117:21ff:feda:a425</screen>
    </tip>
-  </sect3>
-  <sect3 id="sec-basicnet-manconf-testingifconfig">
+  </section>
+  <section xml:id="sec-basicnet-manconf-testingifconfig">
    <title>以 ifconfig 設定網路</title><indexterm> <primary>指令</primary> <secondary>ifconfig</secondary> </indexterm>
    <para>
     <command>ifconfig</command> 是一項網路組態工具。
@@ -808,7 +816,7 @@ rtt min/avg/max/mdev = 183.417/185.447/188.259/2.052 ms</screen>
    <para>
     無疑，<command>ifconfig</command> 顯示的是目前作用中介面的狀態。如您在<xref linkend="ex-basicnet-manconf-ifconfig"/> 中所見，<command>ifconfig</command> 的輸出排列整齊並且內容詳盡。輸出的第一行亦包含您裝置的 MAC 位址 (<option>HWaddr</option> 的值) 等相關資訊。
    </para>
-   <example id="ex-basicnet-manconf-ifconfig">
+   <example xml:id="ex-basicnet-manconf-ifconfig">
     <title><command>ifconfig</command> 指令的輸出</title>
 <screen>eth0      Link encap:Ethernet  HWaddr 00:08:74:98:ED:51
           inet6 addr: fe80::208:74ff:fe98:ed51/64 Scope:Link
@@ -840,8 +848,8 @@ wlan1     Link encap:Ethernet  HWaddr 00:0E:2E:52:3B:1D
    <para>
     如需有關使用 <command>ifconfig</command> 的選項與詳細資訊，請輸入 <command>ifconfig</command> <option>-h</option> 或參閱 <systemitem>ifconfig (8)</systemitem> man 頁面。
    </para>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title>使用 <command>route</command> 設定路由</title><indexterm> <primary>指令</primary> <secondary>route</secondary> </indexterm>
    <para>
     <command>route</command> 是操作 IP 路由表格的程式。您可使用此指令檢視您的路由組態，以及新增或移除路由。
@@ -855,8 +863,8 @@ wlan1     Link encap:Ethernet  HWaddr 00:0E:2E:52:3B:1D
    <para>
     <command>若您需要快速又易於理解的路由組態資訊以判別路由問題，route 是特別實用的工具。</command>若要檢視您目前的路由組態，請以 <systemitem class="username">root</systemitem> 使用者身分輸入 <command>route</command> <option>-n</option>。
    </para>
-   <example id="ex-basicnet-manconf-route">
-    <title><command>route <option>-n</option></command> 指令的輸出</title>
+   <example xml:id="ex-basicnet-manconf-route">
+    <title><command>route</command> <option>-n</option> 指令的輸出</title>
 <screen><?dbsuse-fo font-size="7pt"?>
 
 route -n
@@ -870,15 +878,15 @@ default         styx.exam.com   0.0.0.0         UG        0 0          0 eth0</s
    <para>
     如需使用 route 的選項與詳細資訊，請輸入 <command>route</command> <option>-h</option> 或參閱 <systemitem>route (8)</systemitem> man 頁面。
    </para>
-  </sect3>
- </sect2>
+  </section>
+ </section>
 
- <sect2 id="sec-basicnet-manconf-scripts">
+ <section xml:id="sec-basicnet-manconf-scripts">
   <title>啟動程序檔</title><indexterm> <primary>程序檔</primary> <secondary>init.d</secondary> </indexterm>
   <para>
    除了上述的組態檔之外，還有在機器開機時載入網路程式的各種程序檔。只要系統切換到其中一個 <emphasis>multiuser runlevels</emphasis>，就會啟動這些程序檔。在 <xref linkend="tab-netz-start-skripte"/> 中提供了一些程序檔的說明。
   </para>
-  <table id="tab-netz-start-skripte">
+  <table xml:id="tab-netz-start-skripte">
 <?dbsuse-latex tablehead="p{.4\linewidth}p{.55\linewidth}"?>
 
 
@@ -972,5 +980,5 @@ default         styx.exam.com   0.0.0.0         UG        0 0          0 eth0</s
     </tbody>
    </tgroup>
   </table><indexterm startref="idx-networks-configuring" class="endofrange"/><indexterm startref="idx-configuring-networks-manually" class="endofrange"/>
- </sect2>
-</sect1>
+ </section>
+</section>

@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_nfs.xml" id="cha-nfs">
- <title>使用 NFS 共享檔案系統</title><indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>網路檔案系統</primary> <see>NFS</see> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_nfs.xml" xml:id="cha-nfs"><title>使用 NFS 共享檔案系統</title><info><abstract>
   <para>
    透過網路配送和共享檔案系統在公司環境中極為常見。這種成熟的網路檔案系統 (<emphasis>NFS</emphasis>) 可與 <emphasis>NIS</emphasis> (黃頁通訊協定) 搭配使用。如需可與 <emphasis>LDAP</emphasis> 搭配使用並且還要使用 Kerberos 的更安全通訊協定，請選擇 <emphasis>NFSv4</emphasis>。若與 pNFS 結合使用，可以消除效能瓶頸。
   </para>
@@ -17,9 +23,11 @@ Please see LICENSE.txt for this document's license.
   <para>
    NFS 與 NIS 攜手能讓使用者對網路有清楚的瞭解。可以使用 NFS 透過網路配送任意檔案系統。如果安裝妥當，使用者將會發現，不論他們目前使用的是哪個終端機，他們始終處於同一個環境中。
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>網路檔案系統</primary> <see>NFS</see> </indexterm>
  
- <sect1 id="sec-nfs-term">
+ 
+ <section xml:id="sec-nfs-term">
   <title>術語</title>
 
   <para>
@@ -60,8 +68,8 @@ Please see LICENSE.txt for this document's license.
      </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-nfs-installation">
+ </section>
+ <section xml:id="sec-nfs-installation">
   <title>安裝 NFS 伺服器</title>
 
   <para>
@@ -71,8 +79,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    NFS 與 NIS 一樣，都是主從式系統。但一台機器可同時扮演這兩種角色 — 它可透過網路提供檔案系統 (輸出)，也可以從其他主機掛接檔案系統 (輸入)。
   </para>
- </sect1>
- <sect1 id="sec-nfs-configuring-nfs-server">
+ </section>
+ <section xml:id="sec-nfs-configuring-nfs-server">
   <title>設定 NFS 伺服器</title>
 
   <para>
@@ -83,18 +91,18 @@ Please see LICENSE.txt for this document's license.
 
   
 
-  <sect2 id="sec-nfs-kerberos">
+  <section xml:id="sec-nfs-kerberos">
    <title>NFS 搭配使用 Kerberos</title>
    <para>
     若要為 NFS 使用 Kerberos 驗證，則 GSS 安全性必須啟用。在初始 YaST NFS 伺服器對話方塊中選取<guimenu>啟用 GSS 安全性</guimenu>。您必須有一個工作中的 Kerberos 伺服器才能使用此功能。YaST 不會設定該伺服器，只會使用所提供的功能。如果您要使用 Kerberos 驗證，則除了 YaST 組態之外，還必須要完成以下步驟才能執行 NFS 組態︰
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       請確定伺服器和用戶端位於相同的 Kerberos 領域中。它們必須存取相同的 KDC (金鑰配送中心) 伺服器，並共享它們的 <filename>krb5.keytab</filename> 檔案 (所有機器上的預設位置都是 <filename>/etc/krb5.keytab</filename>)。如需有關 Kerberos 的詳細資訊，請參閱<xref linkend="cha-net-kerberos"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       請以 <command>rcgssd start</command> 來啟動用戶端上的 gssd 服務。
      </para>
@@ -104,34 +112,34 @@ Please see LICENSE.txt for this document's license.
    <para>
     如需有關設定啟用 Kerberos 之 NFS 的詳細資訊，請參閱<xref linkend="sec-nfs-info" xrefstyle="SectTitleOnPage"/> 中的連結所提供的內容。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-nfs-configuring-nfs-clients">
+  </section>
+ </section>
+ <section xml:id="sec-nfs-configuring-nfs-clients">
   <title>設定用戶端</title>
 
   <para>
    您不需安裝其他軟體就能將您的主機設定為 NFS 用戶端。所有需要的套件預設都會安裝。
   </para>
 
-  <sect2 id="sec-nfs-import-yast2">
+  <section xml:id="sec-nfs-import-yast2">
    <title>以 YaST 輸入檔案系統</title><indexterm> <primary>NFS</primary> <secondary>用戶端</secondary> </indexterm>
     <para>授權使用者可以使用 YaST NFS 用戶端模組將NFS 目錄從 NFS 伺服器掛接到本地檔案樹。請執行下列步驟：</para>
     
-    <procedure id="pro-nfs-import-yast2">
+    <procedure xml:id="pro-nfs-import-yast2">
       <title>輸入 NFS 目錄</title>
-      <step performance="required">
+      <step>
         <para>啟動 YaST NFS 用戶端模組。</para>
       </step>
-      <step performance="required">
+      <step>
         <para>在<guimenu>NFS 共用</guimenu>索引標籤中按一下<guimenu>新增</guimenu>。輸入 NFS 伺服器的主機名稱、要輸入的目錄和在本地掛接此目錄的掛接點。 </para>
       </step>
-      <step performance="required">
+      <step>
         <para>如果您要使用防火牆並希望允許遠端電腦存取服務，請啟用<guimenu>NFS 設定</guimenu>索引標籤中的<guimenu>在防火牆中開啟埠</guimenu>。防火牆的狀態顯示於核取方塊旁。</para>
       </step>
-      <step performance="required">
+      <step>
         <para>使用 NFSv4 時，請確定選取了<guimenu>啟用 NFSv4</guimenu>核取方塊，並且<guimenu>NFSv4 網域名稱</guimenu>中的值與 NFSv4 伺服器使用的值相同。預設網域為 <literal>localdomain</literal>。</para>
       </step>
-      <step performance="required">
+      <step>
         <para>按一下<guimenu>確定</guimenu>，儲存變更。
         </para>
       </step>
@@ -140,19 +148,19 @@ Please see LICENSE.txt for this document's license.
     組態將會寫入 <filename>/etc/fstab</filename> 中，並會掛接指定的檔案系統。當您稍後啟動 YaST 組態用戶端時，它也會從這個檔案讀取現有組態。
    </para>
 
-  </sect2>
+  </section>
 
-  <sect2 id="sec-nfs-import">
+  <section xml:id="sec-nfs-import">
    <title>手動輸入檔案系統</title><indexterm> <primary>NFS</primary> <secondary>輸入</secondary> </indexterm> <indexterm> <primary>NFS</primary> <secondary>裝載</secondary> </indexterm>
    <para>
-    從 NFS 伺服器手動輸入檔案系統的先決條件是有 RPC 埠對應程式正在執行。若要啟動該程式，請以 <systemitem class="username">root</systemitem> 身分輸入 <command>rcrpcbind <option>start</option></command>。接著，可以像處理本地分割區一樣，使用 <command>mount</command> 指令在檔案系統中掛接遠端檔案系統︰
+    從 NFS 伺服器手動輸入檔案系統的先決條件是有 RPC 埠對應程式正在執行。若要啟動該程式，請以 <systemitem class="username">root</systemitem> 身分輸入 <command>rcrpcbind</command> <option>start</option>。接著，可以像處理本地分割區一樣，使用 <command>mount</command> 指令在檔案系統中掛接遠端檔案系統︰
    </para>
 <screen>mount <replaceable>host</replaceable>:<replaceable>remote-path</replaceable><replaceable>local-path</replaceable></screen>
    <para>
     例如，若要從 <systemitem>nfs.example.com</systemitem> 機器輸入使用者目錄，可以使用︰
    </para>
 <screen>mount nfs.example.com:/home /home</screen>
-   <sect3 id="sec-nfs-automount">
+   <section xml:id="sec-nfs-automount">
     <title>使用自動裝載服務</title>
     <para>
      autofs 精靈可用於自動掛接遠端檔案系統。請將下列項目加入您的 <filename>/etc/auto.master</filename> 檔案：
@@ -169,8 +177,8 @@ nfs4mount -fstype=nfs4 server2:/</screen>
     <para>
      如果 <filename>/etc/auto.master</filename> 檔案在 autofs 服務的執行過程中被編輯，則必須使用 <command>rcautofs restart</command> 重新啟動自動掛載器，才能使變更生效。
     </para>
-   </sect3>
-   <sect3 id="sec-nfs-fstab">
+   </section>
+   <section xml:id="sec-nfs-fstab">
     <title>手動編輯 <filename>/etc/fstab</filename></title>
     <para>
      <filename>/etc/fstab</filename> 中典型的 NFSv3 掛接項目如下：
@@ -187,10 +195,10 @@ nfs4mount -fstype=nfs4 server2:/</screen>
     <para>
      請注意，如果未輸入 <literal>noauto</literal> 選項，系統的啟始化程序檔會在啟動時處理這些檔案系統的掛接。
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
    
-   <sect2 id="sec-nfs-pnfs">
+   <section xml:id="sec-nfs-pnfs">
      <title>平行 NFS (pNFS)</title>
      <para>NFS 是最舊的通訊協定之一，開發於八十年代。雖然如此，NFS 對於共用小型檔案還是綽綽有餘的。但是，如果您要傳輸大型檔案或大量用戶端想要存取資料，NFS 伺服器將會成為瓶頸，並對系統效能造成明顯影響。出現這種情況的原因是檔案大小快速變大，而乙太網路的相對速度未能緊隨其後。 </para>
      <para>當您申請<quote>一般</quote>NFS 伺服器中的檔案時，該伺服器會尋找檔案中繼資料、收集所有資料並透過網路將其傳輸至您的用戶端。但是，不論檔案的大小，效能瓶頸都會變得很明顯：
@@ -220,12 +228,12 @@ nfs4mount -fstype=nfs4 server2:/</screen>
      
      <para>SUSE Linux Enterprise 僅支援在用戶端上的 pNFS。</para>
      
-     <sect3 id="sec-nfs-pnfs-yast">
+     <section xml:id="sec-nfs-pnfs-yast">
        <title>使用 YaST 設定 pNFS 用戶端</title>
        <para>依<xref linkend="pro-nfs-import-yast2"/> 中所示繼續操作，但要按一下<guimenu>pNFS (v4.1)</guimenu>核取方塊並選擇性地按一下<guimenu>NFSv4 共享</guimenu>。YaST 會執行所有必要的步驟，並將所有需要的選項寫入檔案 <filename>/etc/exports</filename>。 </para>
-     </sect3>
+     </section>
      
-     <sect3 id="sec-nfs-pnfs-manual">
+     <section xml:id="sec-nfs-pnfs-manual">
        <title>手動設定 pNFS 用戶端</title>
        <para>請參閱<xref linkend="sec-nfs-import"/> 開始設定。大部分組態均由 NFSv4 伺服器執行。對於 pNFS，唯一的差異是將 <option>minorversion</option> 選項和中繼資料伺服器 <replaceable>MDS 伺服器</replaceable>新增至 <command>mount</command> 指令：</para>
        <screen>mount -t nfs4 -o minorversion=1 <replaceable>MDS_SERVER</replaceable> <replaceable>MOUNTPOINT</replaceable></screen>
@@ -233,11 +241,11 @@ nfs4mount -fstype=nfs4 server2:/</screen>
        <para>為了協助進行除錯，請在 <filename>/proc</filename> 檔案系統中變更該值：</para>
        <screen>echo 32767 &gt; /proc/sys/sunrpc/nfsd_debug
 echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
-     </sect3>
-   </sect2>
+     </section>
+   </section>
    
- </sect1>
- <sect1 id="sec-nfs-info">
+ </section>
+ <section xml:id="sec-nfs-info">
   <title>更多資訊</title>
 
   <para>
@@ -247,19 +255,19 @@ echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     如需詳細的線上技術文件，請造訪 <ulink url="http://nfs.sourceforge.net/">SourceForge</ulink>。
+     如需詳細的線上技術文件，請造訪 <link xlink:href="http://nfs.sourceforge.net/">SourceForge</link>。
     </para>
    </listitem>
    <listitem>
     <para>
-     如需設定已監督之 NFS 的指示，請參閱 <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS 第 4 版開放原始碼實作參考</ulink>。
+     如需設定已監督之 NFS 的指示，請參閱 <link xlink:href="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS 第 4 版開放原始碼實作參考</link>。
     </para>
    </listitem>
    <listitem>
     <para>
-     如果您有任何關於 NFSv4 的問題，請參閱 <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4 常見問答集</ulink>。
+     如果您有任何關於 NFSv4 的問題，請參閱 <link xlink:href="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4 常見問答集</link>。
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>

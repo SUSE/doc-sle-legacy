@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_xntp.xml" id="cha-netz-xntp">
- <title>使用 NTP 進行時間同步化</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_xntp.xml" xml:id="cha-netz-xntp"><title>使用 NTP 進行時間同步化</title><info><abstract>
   <para>
    NTP (網路時間協定) 機制是一種協定，用於同步化網路上的系統時間。首先，機器可以從提供可靠時間來源的伺服器取得時間。其次，機器本身在網路中可以做為其他電腦的時間來源。這個目標是雙重的 — 即維護絕對正確的時間，並同步化網路內所有機器的系統時間。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <para>
   維謢精準的系統時間對於許多情況都非重要。內建的硬體時鐘通常無法符合資料庫或叢集等應用程式的要求。手動校正系統時間有可能會造成嚴重的問題，因為，例如時間倒退將可能造成重要應用程式無法正常運作。在網路中，通常需要同步所有機器中的系統時間，而手動調整時間的做法並不可取。NTP 提供了一種用於解決這些問題的機制。NTP 服務會透過網路中可靠的時間伺服器來持續調整系統時間。它可以進一步管理本地參考的時鐘，例如收音機控制的時鐘。
  </para>
@@ -22,14 +30,14 @@ Please see LICENSE.txt for this document's license.
    若要透過 Active Directory 啟用時間同步，請遵照 <xref linkend="proc-ad-join"/> 中的說明。
   </para>
  </note>
- <sect1 id="sec-netz-xntp-yast">
+ <section xml:id="sec-netz-xntp-yast">
   <title>使用 YaST 設定 NTP 用戶端</title>
 
   <para>
    <systemitem>ntp</systemitem> 套件隨附的 NTP 精靈 (<systemitem class="daemon">ntpd</systemitem>) 預先設定為使用本地電腦時鐘做為時間參考。不過，硬體時鐘僅供在沒有更精確的時間來源時備用。YaST 使用了 NTP 用戶端的組態。
   </para>
 
-  <sect2 id="sec-net-ntp-yast-basic">
+  <section xml:id="sec-net-ntp-yast-basic">
    <title>基本組態</title>
    <para>
     YaST NTP 用戶端組態 (<menuchoice><guimenu>網路服務</guimenu> <guimenu>NTP 組態</guimenu></menuchoice>) 包含數個索引標籤。在<guimenu>一般設定</guimenu>索引標籤上設定 <systemitem class="daemon">ntpd</systemitem> 的啟動模式和要查詢的伺服器。
@@ -55,11 +63,11 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-net-ntp-yast-new-sync">
+  <section xml:id="sec-net-ntp-yast-new-sync">
    <title>變更基本組態</title>
    <para>
     用戶端要查詢的伺服器以及其他時間來源會列在<guimenu>一般設定</guimenu>索引標籤的下半部。修改清單時，可依需要使用<guimenu>新增</guimenu>、<guimenu>編輯</guimenu>以及<guimenu>刪除</guimenu>。<guimenu>顯示記錄</guimenu>可用來檢視用戶端的記錄檔。
@@ -67,7 +75,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     按一下<guimenu>新增</guimenu>以新增時間資訊的新來源。在下列對話方塊中，選取進行時間同步化的來源類型。可用的選項如下：
    </para>
-   <figure id="fig-yast-ntp-selserv">
+   <figure xml:id="fig-yast-ntp-selserv">
     <title>YaST：NTP 伺服器</title>
     <mediaobject>
      <imageobject role="fo">
@@ -130,7 +138,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-   <figure id="fig-yast-ntp-adv-sec">
+   <figure xml:id="fig-yast-ntp-adv-sec">
     <title>進階 NTP 組態︰安全性設定</title>
     <mediaobject>
      <imageobject role="fo">
@@ -150,12 +158,12 @@ Please see LICENSE.txt for this document's license.
    <para>
     如果 SuSEfirewall2 在作用中 (預設情況下)，請啟用<guimenu>在防火牆中開啟埠</guimenu>。如果您讓連接埠保持為關閉，就不可能對時間伺服器建立連接。
    </para>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-netconf">
+ <section xml:id="sec-netz-xntp-netconf">
   <title>手動設定網路中的 NTP</title>
 
   <para>
@@ -166,7 +174,7 @@ Please see LICENSE.txt for this document's license.
 <screen>server ntp.example.com</screen>
 
   <para>
-   若要新增更多時間伺服器，請以關鍵字<literal>伺服器</literal>插入其他行。在以 <command>rcntp <option>start</option></command> 指令啟始化 <systemitem class="daemon">ntpd</systemitem> 後，系統大約會花費一個小時來穩定時間，並建立累積記錄檔案以校正本地電腦時鐘。使用累積記錄檔案，就可以在電腦一開機後立即計算硬體時鐘的系統錯誤。它會立即使用校正，使系統時間具有更高的穩定性。
+   若要新增更多時間伺服器，請以關鍵字<literal>伺服器</literal>插入其他行。在以 <command>rcntp</command> <option>start</option> 指令啟始化 <systemitem class="daemon">ntpd</systemitem> 後，系統大約會花費一個小時來穩定時間，並建立累積記錄檔案以校正本地電腦時鐘。使用累積記錄檔案，就可以在電腦一開機後立即計算硬體時鐘的系統錯誤。它會立即使用校正，使系統時間具有更高的穩定性。
   </para>
 
   <para>
@@ -178,11 +186,11 @@ Please see LICENSE.txt for this document's license.
   </para>
 
 
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-dynamic">
+ <section xml:id="sec-netz-xntp-dynamic">
   <title>執行時期的動態時間同步</title>
 
 
@@ -206,37 +214,37 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      在 YaST 中，按一下<menuchoice><guimenu>網路服務</guimenu> <guimenu>NTP 組態</guimenu></menuchoice>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      選取要設定的伺服器。然後按一下<guimenu>編輯</guimenu>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      啟動<guimenu>選項</guimenu>欄位，並新增 <literal>dynamic</literal>。如果已經輸入了其他選項，請使用空格分隔。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      按一下<guimenu>確定</guimenu>關閉編輯對話方塊。重複上述步驟以變更所有要變更的伺服器。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      最後按一下<guimenu>確定</guimenu>儲存設定。
     </para>
    </step>
   </procedure>
- </sect1>
+ </section>
 
 
 
- <sect1 id="sec-netz-xntp-normal">
+ <section xml:id="sec-netz-xntp-normal">
   <title>設定本地參考時鐘</title>
 
   <para>
@@ -253,6 +261,6 @@ Please see LICENSE.txt for this document's license.
   <para>
    其他的時鐘也使用相同的模式。安裝 <systemitem class="resource">ntp-doc</systemitem> 套件後，便可在 <filename>/usr/share/doc/packages/ntp-doc</filename> 目錄中找到 NTP 的文件。檔案 <filename>/usr/share/doc/packages/ntp-doc/refclock.html</filename> 提供了指向描述驅動程式參數之驅動程式頁面的連結。
   </para>
- </sect1>
+ </section>
  
 </chapter>

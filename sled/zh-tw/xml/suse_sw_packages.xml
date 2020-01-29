@@ -1,20 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="suse_sw_packages.xml" id="sec-suse-packages">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="suse_sw_packages.xml" xml:id="sec-suse-packages">
  <title>特殊軟體套件的資訊</title>
 
  <para>
   程式 <systemitem class="resource">bash</systemitem>、<systemitem class="resource">cron</systemitem>、<systemitem class="resource">logrotate</systemitem>、<systemitem class="resource">locate</systemitem>、<systemitem class="resource">ulimit</systemitem> 和 <systemitem class="resource">free</systemitem>，對系統管理員和許多使用者而言十分重要。man 頁面和 info 頁面是兩個很有用的指令資訊來源，但並非隨時都能使用。GNU Emacs 是非常普遍而且很好設定的文字編輯器。
  </para>
 
- <sect2 id="sec-suse-packages-bash">
+ <section xml:id="sec-suse-packages-bash">
   <title>bash 套件與 /etc/profile</title><indexterm> <primary>Bash</primary><secondary>設定檔</secondary></indexterm><indexterm><primary>組態檔 </primary><secondary>設定檔</secondary></indexterm>
   <para>
    Bash 是預設的系統外圍程序。如果以它做為登入外圍程序，可以讀取多種啟始化檔案。Bash 會以它們顯示在清單中的順序來處理。
@@ -55,9 +63,9 @@ cp /etc/skel/.profile ~/.profile</screen>
    然後個人的調整設定需要從 <literal>*.old</literal> 檔案再複製回去。
 
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-packages-cron">
+ <section xml:id="sec-suse-packages-cron">
 
   <title>cron 套件</title><indexterm> <primary>cron</primary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>crontab</secondary> </indexterm>
   <para>
@@ -66,7 +74,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    cron 表格現在位於 <filename>/var/cron/tabs</filename>。<filename>/etc/crontab</filename> 做為整個系統的 cron 表格。在時間表格之後、指令之前，輸入要直接執行指令的使用者名稱。在 <xref linkend="ex-suse-packages-cron"/> 中，則是輸入 <systemitem class="username">root</systemitem>。位於 <filename>/etc/cron.d</filename> 的套件專用表格有相同的格式。請參閱 <command>cron</command> man 頁面 (<command>man cron</command>)。
   </para>
-  <example id="ex-suse-packages-cron">
+  <example xml:id="ex-suse-packages-cron">
    <title>/etc/crontab 中的項目</title>
 <screen>1-59/5 * * * *   root   test -x /usr/sbin/atrun &amp;&amp; /usr/sbin/atrun</screen>
   </example>
@@ -79,7 +87,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    若要在自定的時間執行 <filename>hourly</filename>、<filename>daily</filename> 或其他定期維護程序檔，請定期使用 <filename>/etc/crontab</filename> 項目移除時戳檔案 (請參閱<xref linkend="ex-suse-packages-cron-time"/>，它可以在每個整點前移除 <filename>hourly</filename>，在每天凌晨的 2:14 移除 <filename>daily</filename> 等)。
   </para>
-  <example id="ex-suse-packages-cron-time">
+  <example xml:id="ex-suse-packages-cron-time">
    <title>/etc/crontab：移除時戳檔案</title>
 <screen>59 *  * * *     root  rm -f /var/spool/cron/lastrun/cron.hourly
 14 2  * * *     root  rm -f /var/spool/cron/lastrun/cron.daily
@@ -93,18 +101,18 @@ cp /etc/skel/.profile ~/.profile</screen>
    為明確起見，日常系統維護工作會配送至不同的程序檔。它們包含在 <systemitem class="resource">aaa_base</systemitem> 套件中。例如，<filename>/etc/cron.daily</filename> 中有 <filename>suse.de-backup-rpmdb</filename>、<filename>suse.de-clean-tmp</filename> 或 <filename>suse.de-cron-local</filename> 元件。
    
   </para>
- </sect2>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="suse_logfiles.xml" parse="xml"/>
+ <xi:include href="suse_logfiles.xml" parse="xml"/>
 
- <sect2 id="sec-suse-locate">
+ <section xml:id="sec-suse-locate">
   <title>locate 指令</title><indexterm> <primary>檔案</primary> <secondary>尋找</secondary> </indexterm> <indexterm> <primary>位於</primary> </indexterm>
   <para>
    可以快速尋找檔案的 <command>locate</command> 指令，未包含在軟體標準安裝的範圍內。若有需要，請安裝 <systemitem>findutils-locate</systemitem> 套件。updatedb 程序會在每晚自行啟動，或啟動系統後的 15 分鐘左右啟動。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-ulimit">
+ <section xml:id="sec-suse-ulimit">
   <title>ulimit 指令</title><indexterm> <primary>ulimit</primary> </indexterm> <indexterm> <primary>核心檔</primary> </indexterm> <indexterm> <primary>系統</primary> <secondary>限制資源使用</secondary> </indexterm>
   <para>
    利用 <command>ulimit</command> (<emphasis>user limits</emphasis>) 指令，您可以限制系統資源的使用，並顯示這些限制。<command>ulimit</command> 對於限制應用程式可使用的記憶體特別有用。利用它，可以避免應用程式佔用過多的系統資源，降低作業系統效能，甚至讓系統當機。
@@ -112,7 +120,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    <command>ulimit</command> 可以搭配多種選項來使用。若要限制記憶體的使用，請利用<xref linkend="tab-suse-packages-ulimit"/> 中所列的選項。
   </para><indexterm> <primary>ulimit</primary> <secondary>選項</secondary> </indexterm>
-  <table id="tab-suse-packages-ulimit">
+  <table xml:id="tab-suse-packages-ulimit">
    <title><command>ulimit</command>：設定使用者的資源</title>
 
    <tgroup cols="2">
@@ -183,7 +191,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    您可以在 <filename>/etc/profile</filename> 中設定全系統的項目。在此可建立核心檔案 (供程式設計人員<emphasis>除錯</emphasis>之用)。一般使用者無法增加系統管理員在 <filename>/etc/profile</filename> 中所指定的值，但可以在 <filename>~/.bashrc</filename> 中建立特殊的設定項目。
   </para><indexterm> <primary>組態檔</primary><secondary>.bashrc</secondary> </indexterm>
-  <example id="ex-u-ulimit-bashrc">
+  <example xml:id="ex-u-ulimit-bashrc">
    <title>ulimit：~/.bashrc 中的設定</title>
 <screen># Limits maximum resident set size (physical memory):
 ulimit -m 98304
@@ -199,9 +207,9 @@ ulimit -v 98304</screen>
     並非所有的外圍程序都支援 <command>ulimit</command> 指示詞。在您根據這些限制的內含設定時，PAM (例如 <literal>pam_limits</literal>) 會提供全面的調整設定。
    </para>
   </important>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-free">
+ <section xml:id="sec-suse-free">
   <title>free 指令</title><indexterm> <primary>記憶體</primary> <secondary>RAM</secondary> </indexterm> <indexterm> <primary>指令</primary> <secondary>free</secondary> </indexterm>
   <para>
    <command>free</command> 指令顯示系統中總的可用與已用實體記憶體及交換空間，以及核心耗用的緩衝區和快取。<emphasis>可用的 RAM</emphasis> 的概念要回溯到聯合記憶體管理的年代之前。<emphasis>記憶體要物盡其用的</emphasis>口號非常適用於 Linux。所以，Linux 一直致力於平衡快取，而不允許有剩餘或未使用的記憶體。
@@ -215,26 +223,26 @@ ulimit -v 98304</screen>
   <para>
    不過，如果您的目標是要得知目前使用了多少 RAM，請在 <filename>/proc/meminfo</filename> 中尋找此資訊。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-manpages">
+ <section xml:id="sec-suse-manpages">
   <title>man 頁面和資訊頁面</title><indexterm> <primary>man 頁面</primary> </indexterm> <indexterm> <primary>info 頁面</primary> </indexterm> <indexterm> <primary>說明</primary> <secondary>man 頁面</secondary> </indexterm> <indexterm> <primary>說明</primary> <secondary>info 頁面</secondary> </indexterm>
   <para>
-   某些 GNU 應用程式 (例如 tar) 不再支援 man 頁面。針對這些指令，請使用 <option>--help</option> 選項來取得 info 頁面的快速綜覽，這些頁面將提供更深入詳盡的說明。info 是 GNU 的超連結文字系統。您可以輸入 <command>info</command><option>info</option> 來讀取此系統的介紹。您可以輸入 <command>emacs<option> -f info</option></command> 或直接在主控台中使用 <command>info</command>，以便使用 Emacs 檢視 info 頁面。您也可以使用 tkinfo、xinfo 或說明系統來檢視資訊頁面。
+   某些 GNU 應用程式 (例如 tar) 不再支援 man 頁面。針對這些指令，請使用 <option>--help</option> 選項來取得 info 頁面的快速綜覽，這些頁面將提供更深入詳盡的說明。info 是 GNU 的超連結文字系統。您可以輸入 <command>info</command><option>info</option> 來讀取此系統的介紹。您可以輸入 <command>emacs</command> <option> -f info</option> 或直接在主控台中使用 <command>info</command>，以便使用 Emacs 檢視 info 頁面。您也可以使用 tkinfo、xinfo 或說明系統來檢視資訊頁面。
   </para>
- </sect2>
+ </section>
 
 
 
- <sect2 id="sec-suse-packages-man">
+ <section xml:id="sec-suse-packages-man">
   <title>使用 <command>man</command> 指令選取 man 頁面</title>
   <para>
-   若要閱讀 man 頁面，請輸入 <command>man <replaceable>man_page</replaceable></command>。如果不同區段中存在同名的 man 頁面，所有的這些 man 頁面都會列出，並會顯示對應的區段號碼。請選取要顯示的那個頁面。如果您未在幾秒內輸入區段號碼，將會顯示第一個 man 頁面。
+   若要閱讀 man 頁面，請輸入 <command>man</command> <replaceable>man_page</replaceable>。如果不同區段中存在同名的 man 頁面，所有的這些 man 頁面都會列出，並會顯示對應的區段號碼。請選取要顯示的那個頁面。如果您未在幾秒內輸入區段號碼，將會顯示第一個 man 頁面。
   </para>
   <para>
    如果您要將此行為設定為預設系統行為，請在外圍程序啟始化檔案 (例如 <filename>~/.bashrc</filename>) 中設定 <literal>MAN_POSIXLY_CORRECT=1</literal>。
   </para>
- </sect2>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="suse_emacs.xml" parse="xml"/>
-</sect1>
+ <xi:include href="suse_emacs.xml" parse="xml"/>
+</section>
