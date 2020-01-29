@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_nfs.xml" id="cha-nfs">
- <title>NFS共有ファイルシステム</title><indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>ネットワークファイルシステム</primary> <see>NFS</see> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_nfs.xml" xml:id="cha-nfs"><title>NFS共有ファイルシステム</title><info><abstract>
   <para>
    ネットワーク上でファイルシステムを分散して共有することは、企業環境では一般的なタスクです。十分に実績のあるネットワークファイルシステム (<emphasis>NFS</emphasis>)は、<emphasis>NIS </emphasis>(Yellow Pagesプロトコル)と連携して機能します。<emphasis>LDAP</emphasis>と連携して機能し、Kerberosも使用できるより安全なプロトコルについては、<emphasis>NFSv4</emphasis>をチェックしてください。pNFSとの組み合わせで、パフォーマンスのボトルネックをなくすことができます。
   </para>
@@ -17,9 +23,11 @@ Please see LICENSE.txt for this document's license.
   <para>
    NFSをNISと連携して使用すると、ネットワークをユーザに対して透過的にすることができます。NFSでは、ネットワーク経由で任意のファイルシステムを分散できます。適切なセットアップを行えば、現在どの端末を使用しているかに係わりなく、常に同じ環境で作業できます。
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm> <primary>NFS</primary> </indexterm> <indexterm> <primary>ネットワークファイルシステム</primary> <see>NFS</see> </indexterm>
  
- <sect1 id="sec-nfs-term">
+ 
+ <section xml:id="sec-nfs-term">
   <title>用語集</title>
 
   <para>
@@ -60,8 +68,8 @@ Please see LICENSE.txt for this document's license.
      </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-nfs-installation">
+ </section>
+ <section xml:id="sec-nfs-installation">
   <title>NFSサーバのインストール</title>
 
   <para>
@@ -71,8 +79,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    NIS同様、NFSはクライアント/サーバシステムです。ただし、ファイルシステムをネットワーク経由で提供し(エクスポート)、同時に他のホストからファイルシステムをマウントすることができます(インポート)。
   </para>
- </sect1>
- <sect1 id="sec-nfs-configuring-nfs-server">
+ </section>
+ <section xml:id="sec-nfs-configuring-nfs-server">
   <title>NFSサーバの設定</title>
 
   <para>
@@ -83,18 +91,18 @@ Please see LICENSE.txt for this document's license.
 
   
 
-  <sect2 id="sec-nfs-kerberos">
+  <section xml:id="sec-nfs-kerberos">
    <title>NFSでのKerberosの使用</title>
    <para>
     NFSでKerberos認証を使用するには、GSSセキュリティを有効にする必要があります。最初のYaST NFSサーバのダイアログで、<guimenu>GSSセキュリティを有効にする</guimenu>を選択します。ただし、この機能を使用するには、機能するKerberosサーバが必要です。YaSTは、このサーバの設定は行いません。その提供機能を使用するだけです。YaST環境設定に加えて、Kerberos認証も使用する場合は、NFS設定を実行する前に、少なくとも次の手順を完了してください。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       サーバとクライアントの両方が、同じKerberosドメインにあることを確認します。つまり、クライアントとサーバが同じKDC(Key Distribution Center)サーバにアクセスし、<filename>krb5.keytab</filename>ファイル(the default location on any machine is <filename>/etc/krb5.keytab</filename>)を共有していなければなりません。Kerberosの詳細については、<xref linkend="cha-net-kerberos"/>を参照してください。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       クライアントで<command>rcgssd start</command>コマンドを実行して、gssdサービスを開始します。
      </para>
@@ -104,34 +112,34 @@ Please see LICENSE.txt for this document's license.
    <para>
     Kerberos化されたNFSの設定の詳細については、<xref linkend="sec-nfs-info" xrefstyle="SectTitleOnPage"/>のリンクを参照してください。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-nfs-configuring-nfs-clients">
+  </section>
+ </section>
+ <section xml:id="sec-nfs-configuring-nfs-clients">
   <title>クライアントの設定</title>
 
   <para>
    ホストをNFSクライアントとして設定する場合、他のソフトウェアをインストールする必要はありません。必要なすべてのパッケージは、デフォルトでインストールされます。
   </para>
 
-  <sect2 id="sec-nfs-import-yast2">
+  <section xml:id="sec-nfs-import-yast2">
    <title>YaSTによるファイルシステムのインポート</title><indexterm> <primary>NFS</primary> <secondary>クライアント</secondary> </indexterm>
     <para>認証されたユーザは、YaST NFSクライアントモジュールを使用して、NFSディレクトリをNFSサーバからローカルファイルツリーにマウントできます。次の手順に従います。</para>
     
-    <procedure id="pro-nfs-import-yast2">
+    <procedure xml:id="pro-nfs-import-yast2">
       <title>NFSディレクトリのインポート</title>
-      <step performance="required">
+      <step>
         <para>YaST NFSクライアントモジュールを起動します。</para>
       </step>
-      <step performance="required">
+      <step>
         <para><guimenu>NFS共有</guimenu>タブで<guimenu>追加</guimenu>をクリックします。NFSサーバのホスト名、インポートするディレクトリ、およびこのディレクトリをマウントするマウントポイントを入力します。 </para>
       </step>
-      <step performance="required">
+      <step>
         <para>ファイアウォールを使用しており、リモートコンピュータのサービスにアクセスを許可する場合は、<guimenu>NFS設定</guimenu>タブで<guimenu>ファイアウォールでポートを開く</guimenu>をオンにします。チェックボックスの下には、ファイアウォールのステータスが表示されます。</para>
       </step>
-      <step performance="required">
+      <step>
         <para>NFSv4を使用する場合は、<guimenu>NFSv4を有効にする</guimenu>チェックボックスが選択され、<guimenu>NFSv4ドメイン名</guimenu>にNFSv4サーバによって使用される値と同じ値が入力されていることを確認してください。デフォルトドメインは、<literal>localdomain</literal>です。</para>
       </step>
-      <step performance="required">
+      <step>
         <para><guimenu>OK</guimenu>をクリックして変更内容を保存します。
         </para>
       </step>
@@ -140,19 +148,19 @@ Please see LICENSE.txt for this document's license.
     設定は<filename>/etc/fstab</filename>に書かれ、指定されたファイルシステムがマウントされます。後でYaST設定クライアントを起動した時に、このファイルから既存の設定が取得されます。
    </para>
 
-  </sect2>
+  </section>
 
-  <sect2 id="sec-nfs-import">
+  <section xml:id="sec-nfs-import">
    <title>ファイルシステムの手動インポート</title><indexterm> <primary>NFS</primary> <secondary>インポート</secondary> </indexterm> <indexterm> <primary>NFS</primary> <secondary>マウント</secondary> </indexterm>
    <para>
-    NFSサーバからファイルシステムを手動でインポートするには、RPCポートマッパーが実行していることが前提条件です。「<command>rcrpcbind <option>start</option></command>」を<systemitem class="username">root</systemitem>として入力してインポートを実行します。次に、<command>mount</command>を使用して、ローカルパーティションと同様に、リモートファイルシステムをファイルシステムにマウントできます。
+    NFSサーバからファイルシステムを手動でインポートするには、RPCポートマッパーが実行していることが前提条件です。「<command>rcrpcbind</command> <option>start</option>」を<systemitem class="username">root</systemitem>として入力してインポートを実行します。次に、<command>mount</command>を使用して、ローカルパーティションと同様に、リモートファイルシステムをファイルシステムにマウントできます。
    </para>
 <screen>mount <replaceable>host</replaceable>:<replaceable>remote-path</replaceable><replaceable>local-path</replaceable></screen>
    <para>
     たとえば、<systemitem>nfs.example.com</systemitem>マシンからユーザディレクトリをインポートするには、次の構文を使用します。
    </para>
 <screen>mount nfs.example.com:/home /home</screen>
-   <sect3 id="sec-nfs-automount">
+   <section xml:id="sec-nfs-automount">
     <title>自動マウントサービスの使用</title>
     <para>
      autofsデーモンを使用して、リモートファイルシステムを自動的にマウントすることができます。<filename>/etc/auto.master</filename>ファイルに次のエントリを追加します。
@@ -169,8 +177,8 @@ nfs4mount -fstype=nfs4 server2:/</screen>
     <para>
      autofsサービスの動作中に<filename>/etc/auto.master</filename>ファイルを編集した場合、変更内容を反映するには、<command>rcautofs restart</command>で自動マウント機能を再起動する必要があります。
     </para>
-   </sect3>
-   <sect3 id="sec-nfs-fstab">
+   </section>
+   <section xml:id="sec-nfs-fstab">
     <title><filename>/etc/fstab</filename>の手動編集</title>
     <para>
      <filename>/etc/fstab</filename>内の典型的なNFSv3マウントエントリは、次のようになります:
@@ -187,10 +195,10 @@ nfs4mount -fstype=nfs4 server2:/</screen>
     <para>
      ただし、<literal>noauto</literal>オプションを入力しないと、起動時に、システムのインストールスクリプトによって、それらのファイルシステムがマウントされます。
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
    
-   <sect2 id="sec-nfs-pnfs">
+   <section xml:id="sec-nfs-pnfs">
      <title>パラレルNFS(pNFS)</title>
      <para>NFSは、1980年代に開発された、もっとも古いプロトコルの1つです。そのため、小さなファイルを共有したい場合は、通常、NFSで十分です。しかし、大きなファイルを送信したい場合や多数のクライアントがデータにアクセスしたい場合は、NFSサーバがボトルネックとなり、システムのパフォーマンスに重大な影響を及ぼします。これは、ファイルのサイズが急速に大きくなっているのに対し、Ethernetの相対速度が追い付いていないためです。 </para>
      <para><quote>通常の</quote>NFSサーバにファイルを要求すると、サーバはファイルのメタデータを検索し、すべてのデータを収集して、ネットワークを介してクライアントに送信します。しかし、ファイルが小さくても大きくてもパフォーマンスのボトルネックが問題になります。
@@ -220,12 +228,12 @@ nfs4mount -fstype=nfs4 server2:/</screen>
      
      <para>SUSE Linux Enterpriseはクライアント側でのみpNFSをサポートします。</para>
      
-     <sect3 id="sec-nfs-pnfs-yast">
+     <section xml:id="sec-nfs-pnfs-yast">
        <title>YaSTを使用したpNFSクライアントの設定</title>
        <para><xref linkend="pro-nfs-import-yast2"/>に従って進めます。ただし、<guimenu>pNFS (v4.1)</guimenu>チェックボックスをクリックし、オプションで<guimenu>NFSv4共有</guimenu>をクリックします。YaSTが必要な手順をすべて実行し、必要なすべてのオプションを<filename>/etc/exports</filename>ファイルに書き込みます。 </para>
-     </sect3>
+     </section>
      
-     <sect3 id="sec-nfs-pnfs-manual">
+     <section xml:id="sec-nfs-pnfs-manual">
        <title>pNFSクライアントの手動設定</title>
        <para><xref linkend="sec-nfs-import"/>を参照して開始します。ほとんどの設定はNFSv4サーバによって行われます。pNFSを使用する場合に異なるのは、<option>minorversion</option>オプションおよびメタデータサーバ<replaceable>MDS_SERVER</replaceable>を<command>mount</command>コマンドに追加することだけです。</para>
        <screen>mount -t nfs4 -o minorversion=1 <replaceable>MDS_SERVER</replaceable> <replaceable>MOUNTPOINT</replaceable></screen>
@@ -233,11 +241,11 @@ nfs4mount -fstype=nfs4 server2:/</screen>
        <para>デバッグを支援するために、<filename>/proc</filename>ファイルシステムの値を変更します。</para>
        <screen>echo 32767 &gt; /proc/sys/sunrpc/nfsd_debug
 echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
-     </sect3>
-   </sect2>
+     </section>
+   </section>
    
- </sect1>
- <sect1 id="sec-nfs-info">
+ </section>
+ <section xml:id="sec-nfs-info">
   <title>詳細情報</title>
 
   <para>
@@ -247,19 +255,19 @@ echo 32767 &gt; /proc/sys/sunrpc/nfs_debug</screen>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     詳細な技術ヘルプについては、<ulink url="http://nfs.sourceforge.net/">SourceForge</ulink>を参照してください。
+     詳細な技術ヘルプについては、<link xlink:href="http://nfs.sourceforge.net/">SourceForge</link>を参照してください。
     </para>
    </listitem>
    <listitem>
     <para>
-     NFSでのKerberosの設定方法は、<ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS Version 4 Open Source Reference Implementation</ulink>を参照してください。
+     NFSでのKerberosの設定方法は、<link xlink:href="http://www.citi.umich.edu/projects/nfsv4/linux/krb5-setup.html">NFS Version 4 Open Source Reference Implementation</link>を参照してください。
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4</ulink>には、NFSv4に関するFAQが用意されています。
+     <link xlink:href="http://www.citi.umich.edu/projects/nfsv4/linux/faq/">Linux NFSv4</link>には、NFSv4に関するFAQが用意されています。
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>
