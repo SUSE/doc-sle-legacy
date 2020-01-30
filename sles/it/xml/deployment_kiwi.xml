@@ -1,21 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="deployment_kiwi.xml" id="cha-autokiwi">
-
- <title>Distribuzione automatizzata delle immagini precaricate</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="deployment_kiwi.xml" xml:id="cha-autokiwi"><title>Distribuzione automatizzata delle immagini precaricate</title><info><abstract>
   <para>
    Con KIWI sarà possibile creare immagini del sistema operativo. Questo capitolo spiega come distribuire un'immagine di sistema su un computer client vuoto. A questo scopo, sarà necessario creare un'immagine precaricata contenente un'immagine RAW. Questo file contiene due componenti importanti: una tabella delle partizioni e il sistema operativo vero e proprio. Questa immagine RAW viene scritta nel disco rigido vuoto e il sistema operativo si estende al restante spazio su disco al primo avvio.
   </para>
 
- </abstract>
+ </abstract></info>
+
+ 
+ 
  <para>
   Per informazioni su come creare questa immagine, vedere <xref linkend="sec-kiwi-img"/>. Quando si crea l'immagine ISO, è possibile trovare il file RAW nella cartella di destinazione. Ci sono molti modi per trasferire un'immagine raw su un disco.
  </para>
@@ -44,7 +52,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   Per un avvio rapido è consigliabile utilizzare uno dei metodi descritti nella <xref linkend="sec-autokiwi-manual"/>.
  </para>
- <sect1 id="sec-autokiwi-manual">
+ <section xml:id="sec-autokiwi-manual">
   <title>Distribuzione manuale del sistema da un'immagine di ripristino</title>
 
   <variablelist>
@@ -115,8 +123,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>Distribuzione automatizzata con PXE Boot</title>
 
   <para>
@@ -162,28 +170,28 @@ Please see LICENSE.txt for this document's license.
    </varlistentry>
   </variablelist>
 
-  <sect2 id="sec-autokiwi-instserver">
+  <section xml:id="sec-autokiwi-instserver">
    <title>Impostazione di un server di avvio e installazione</title>
    <para>
     Per eseguire questo task dopo l'installazione di SUSE Linux Enterprise Server, è necessario effettuare quattro passaggi:
    </para>
-   <procedure id="proc-autokiwi-instserver">
-    <step performance="required">
+   <procedure xml:id="proc-autokiwi-instserver">
+    <step>
      <para>
       Configurare l'origine dell'installazione come descritto nella <xref linkend="sec-deployment-remoteinst-instserver"/>. Scegliere un server di rete HTTP o FTP.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Configurare un server TFTP per la memorizzazione dell'immagine di avvio (questa immagine verrà creata in un passaggio successivo). Questo passaggio viene descritto nella <xref linkend="sec-deployment-remoteinst-boot-tftp"/>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Configurare un server DHCP per l'assegnazione degli indirizzi IP a tutti i computer e la trasmissione dell'ubicazione del server TFTP al sistema di destinazione. Questo passaggio viene descritto nella <xref linkend="sec-deployment-remoteinst-boot-dhcp"/>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Preparare l'avvio PXE per il server di installazione. Questo passaggio è descritto dettagliatamente nella <xref linkend="sec-deployment-remoteinst-boot-pxe"/>.
      </para>
@@ -192,9 +200,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Si noti che il processo effettivo di installazione risulta molto più veloce se il computer dispone di memoria sufficiente per contenere l'immagine di precaricamento. Anche l'uso di Gigabit Ethernet rende il processo di distribuzione significativamente più veloce rispetto alle reti più lente.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-preloadimage">
+  <section xml:id="sec-autokiwi-preloadimage">
    <title>Creazione di un'immagine di precaricamento</title>
    <para>
     Il processo di creazione di immagini con KIWI viene descritto in <xref linkend="sec-kiwi-img"/>. Tuttavia, per creare un'immagine utile per la distribuzione di massa, è necessario tener conto di varie considerazioni:
@@ -225,9 +233,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     L'immagine effettiva da distribuire deve essere disponibile sul server ftp o http fornito sul server di installazione.
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-initrd">
+  <section xml:id="sec-autokiwi-initrd">
    <title>Creazione di un sistema iniziale per distribuire un'immagine di precaricamento</title>
    <para>
     Per eseguire una distribuzione automatica, è necessario avviare un sistema Linux iniziale sul computer di destinazione. Durante un'installazione tipica, il kernel e il file system ram iniziale vengono letti da alcuni supporti di avvio e avviati dal Bios. La funzionalità necessaria può essere implementata nel file system ram che funge da sistema iniziale insieme al kernel.
@@ -239,17 +247,17 @@ Please see LICENSE.txt for this document's license.
     La seguente procedura è solo un esempio di come creare il file system ram iniziale necessario:
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       Eseguire un'installazione standard di <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> sul sistema di destinazione.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Installare il pacchetto <systemitem>busybox</systemitem> nel sistema.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Creare un nuovo file system ram con il seguente comando:
      </para>
@@ -258,7 +266,7 @@ Please see LICENSE.txt for this document's license.
       Si noti che eth0 rappresenta il dispositivo Ethernet a cui è collegato il cavo di rete. Il parametro <systemitem>-f busybox</systemitem> aggiunge il <systemitem>busybox</systemitem> binario multichiamata al file system ram. In seguito a questa operazione molti comandi UNIX standard saranno disponibili nel sistema.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Copiare il nuovo file system ram e il kernel nel server di avvio con il comando:
      </para>
@@ -267,35 +275,35 @@ Please see LICENSE.txt for this document's license.
       Sostituire pxe.example.com con il nome del server di avvio locale o dell'indirizzo IP.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Accedere al bootserver come utente <systemitem class="username">root</systemitem> e creare una directory dove sia possibile modificare il file system ram:
      </para>
 <screen>mkdir ~/bootimage</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Modificare la directory di lavoro impostandola sulla directory indicata tramite il comando <command>cd ~/bootimage</command>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Decomprimere il file system ram iniziale copiato in precedenza con il comando:
      </para>
 <screen>zcat ../initrd | cpio -i</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Modificare il file <filename>run_all.sh</filename>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Cercare la riga seguente, eliminarla ed eliminare il resto del file:
      </para>
 <screen>[ "$debug" ] &amp;&amp; echo preping 21-nfs.sh </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Aggiungere le seguenti righe al termine del file <filename>run_all.sh</filename>:
      </para>
@@ -305,7 +313,7 @@ source boot/92-install.sh
 [ "$modules" ] &amp;&amp; load_modules
      </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Creare un nuovo script <filename>boot/92-install.sh</filename> con il seguente contenuto:
      </para>
@@ -325,17 +333,17 @@ fi
 /bin/poweroff -f
 </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Se si desidera visualizzare una shell di debug prima dello spegnimento del computer, rimuovere il segno di commento davanti a <filename>/bin/bash</filename>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Rendere lo script eseguibile con il comando <command>chmod 755 boot/92-install.sh</command>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Creare un nuovo file system ram iniziale con i comandi:
      </para>
@@ -343,7 +351,7 @@ fi
 find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
 /srv/tftpboot/initrd.boot</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Copiare il kernel in questa directory:
      </para>
@@ -353,9 +361,9 @@ find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
    <para>
     Il file system ram iniziale è ora pronto per ricevere due nuovi parametri della riga di comando del kernel. Il parametro <systemitem>rawimage=&lt;URL&gt;</systemitem> viene utilizzato per identificare l'ubicazione dell'immagine di precaricamento. È possibile utilizzare qualsiasi URL comprensibile da parte di wget. Il parametro <systemitem>rawdevice=&lt;device&gt;</systemitem> viene utilizzato per identificare il dispositivo di blocco per il disco rigido sul computer di destinazione.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Configurazione del server di avvio</title>
    <para>
     La configurazione del server di avvio viene descritta nei particolari in vari capitoli differenti, elencati nella <xref linkend="sec-autokiwi-instserver"/>. Questa sezione fornisce un elenco di controllo con i passaggi necessari per configurare il sistema.
@@ -390,10 +398,10 @@ label bootinstall
    <para>
     Verificare l'impostazione avviando il sistema di destinazione utilizzando l'avvio di rete PXE. In tal modo l'immagine di precaricamento preparata verrà copiata automaticamente sul disco rigido e al termine il computer si spegnerà.
    </para>
-  </sect2>
+  </section>
 
 
- </sect1>
+ </section>
 
 
 
