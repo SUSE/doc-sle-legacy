@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="x11_optimierung.xml" id="sec-x11-optimieren">
- <title>手动配置 X Window 系统</title><indexterm id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>配置</secondary></indexterm><indexterm> <primary>配置文件</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="x11_optimierung.xml" xml:id="sec-x11-optimieren">
+ <title>手动配置 X Window 系统</title><indexterm xml:id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>配置</secondary></indexterm><indexterm> <primary>配置文件</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
 
  <para>
   默认情况下，X Window 系统用 SaX2 界面配置，如<xref linkend="cha-y2-hw-graph"/>中所述。或者可以通过编辑其配置文件手动配置它。
@@ -46,7 +54,7 @@ EndSection </screen>
   <xref linkend="tab-x11-sections"/> 中列出了可用的部分类型。
  </para>
 
- <table id="tab-x11-sections">
+ <table xml:id="tab-x11-sections">
   <title>/etc/X11/xorg.conf 中的部分</title>
   <tgroup cols="2" align="left">
    <thead>
@@ -199,19 +207,19 @@ EndSection </screen>
   <systemitem>xorg.conf</systemitem> 中可以存在多个不同的<systemitem> Monitor </systemitem>和<filename> Device </filename>部分。甚至可以存在多个 <systemitem>Screen</systemitem> 部分。<systemitem>ServerLayout</systemitem> 部分确定使用其中哪个部分。
  </para>
 
- <sect2 id="sec-x11-screen">
+ <section xml:id="sec-x11-screen">
   <title>Screen 部分</title><indexterm> <primary>配置文件</primary> <secondary>xorg.conf</secondary> <tertiary>Screen</tertiary> </indexterm>
   <para>
    Screen 部分将 Monitor 部分与 Device 部分结合起来并确定要使用的分辨率和颜色深度。Screen 部分与<xref linkend="dat-x11-scrsec"/> 类似。
   </para>
-  <example id="dat-x11-scrsec">
+  <example xml:id="dat-x11-scrsec">
    <title>文件 /etc/X11/xorg.conf 的 Screen 部分</title>
-<screen>Section "Screen"<co id="co-x11-screen"/>
-  DefaultDepth  16<co id="co-x11-ddepth"/>
-  SubSection "Display"<co id="co-x11-display"/>
-    Depth       16<co id="co-x11-depth"/>
-    Modes       "1152x864" "1024x768" "800x600"<co id="co-x11-mode"/>
-    Virtual     1152x864<co id="co-x11-virt"/>
+<screen>Section "Screen"<co xml:id="co-x11-screen"/>
+  DefaultDepth  16<co xml:id="co-x11-ddepth"/>
+  SubSection "Display"<co xml:id="co-x11-display"/>
+    Depth       16<co xml:id="co-x11-depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co xml:id="co-x11-mode"/>
+    Virtual     1152x864<co xml:id="co-x11-virt"/>
   EndSubSection
   SubSection "Display"
     Depth       24
@@ -226,7 +234,7 @@ EndSection </screen>
     Modes       "1280x1024"
   EndSubSection
   Device        "Device[0]"
-  Identifier    "Screen[0]"<co id="co-x11-ident"/>
+  Identifier    "Screen[0]"<co xml:id="co-x11-ident"/>
   Monitor       "Monitor[0]"
 EndSection</screen>
   </example>
@@ -270,17 +278,17 @@ EndSection</screen>
     </para>
    </callout>
   </calloutlist>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-device-section">
+ <section xml:id="sec-x11-device-section">
   <title>Device 部分</title><indexterm> <primary>配置文件</primary> <secondary>xorg.conf</secondary> <tertiary>设备</tertiary> </indexterm>
   <para>
    Device 部分描述特定的图形卡。您可以在 <filename>xorg.conf</filename> 中包含任意多个设备项，前提是要使用关键字 <systemitem>Identifier</systemitem> 对这些项的名称进行区分。如果您安装了多个图形卡，通常按顺序对这些部分进行编号。第一个设备称为 <systemitem>Device[0]</systemitem>，第二个设备称为 <systemitem>Device[1]</systemitem>，依此类推。以下文件显示了从配备了 Matrox Millennium PCI 图形卡（由 SaX2 配置）的计算机的 <systemitem>Device</systemitem> 部分节选出的一段：
   </para>
 <screen>Section "Device"
   BoardName     "MGA2064W"
-  BusID         "0:19:0"<co id="co-x11-bus"/>
-  Driver        "mga"<co id="co-x11-driver"/>
+  BusID         "0:19:0"<co xml:id="co-x11-bus"/>
+  Driver        "mga"<co xml:id="co-x11-driver"/>
   Identifier    "Device[0]"
   VendorName    "Matrox"
   Option        "sw_cursor"
@@ -303,9 +311,9 @@ EndSection</screen>
   <para>
    如果图形卡有多个视频连接器，可以将这一个卡的不同设备配置为单一视图。请使用 SaX2 来以这种方式设置图形接口。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-opt-monitor">
+ <section xml:id="sec-x11-opt-monitor">
   <title>Monitor 部分和 Modes 部分</title><indexterm> <primary>配置文件</primary> <secondary>xorg.conf</secondary> <tertiary>Monitor</tertiary> </indexterm>
   <para>
    与 <systemitem>Device</systemitem> 部分类似，<systemitem>Monitor</systemitem> 和 <systemitem>Modes</systemitem> 部分分别描述一个监视器。配置文件 <filename>/etc/X11/xorg.conf</filename> 可以包含任意多个 <systemitem>Monitor</systemitem> 部分。每个 <systemitem>Monitor</systemitem> 部分使用行 <systemitem>UseModes</systemitem>（如果可用）引用一个 <systemitem>Modes</systemitem> 部分。如果没有 <systemitem>Modes</systemitem> 部分可用于 <systemitem>Monitor</systemitem> 部分，X 服务器将根据常规同步值计算相应值。服务器布局部分指定相关的 <systemitem>Monitor</systemitem> 部分。
@@ -324,5 +332,5 @@ EndSection</screen>
   <para>
    现在，很少需要手动指定方式行。如果您使用的是最新的多频同步监视器，则通常由 X 服务器通过 DDC 直接从监视器中读取允许的频率和最佳分辨率，如 SaX2 配置一节所述。如果由于某种原因无法执行此操作，请使用 X 服务器中包含的 VESA 方式之一。这种方式可用于大多数图形卡和监视器的组合。
   </para><indexterm class="endofrange" startref="idx-X-optimizing"/>
- </sect2>
-</sect1>
+ </section>
+</section>

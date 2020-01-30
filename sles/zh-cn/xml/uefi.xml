@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="uefi.xml" id="cha-uefi">
- <title>UEFI（统一可扩展固件接口）</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="uefi.xml" xml:id="cha-uefi"><title>UEFI（统一可扩展固件接口）</title><info/>
+ 
 
  <para>
   UEFI（统一可扩展固件接口）是用于系统硬件自带的固件、系统所有的硬件组件以及操作系统之间的接口。
@@ -46,10 +54,10 @@ Please see LICENSE.txt for this document's license.
  </itemizedlist>
 
  <para>
-有关详细信息，请参见 <ulink url="http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface"/>。以下几节只提供了 SUSE Linux Enterprise 中如何实施某些功能的提示，并不是 UEFI 的整体概述。
+有关详细信息，请参见 <link xlink:href="http://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface"/>。以下几节只提供了 SUSE Linux Enterprise 中如何实施某些功能的提示，并不是 UEFI 的整体概述。
  </para>
 
- <sect1 id="sec-uefi-secboot">
+ <section xml:id="sec-uefi-secboot">
   <title>安全引导</title>
 
   
@@ -73,7 +81,7 @@ Please see LICENSE.txt for this document's license.
 
   </para>
 
-  <sect2>
+  <section>
    <title>在 SUSE Linux Enterprise 上实施</title>
    
    <para>
@@ -100,7 +108,7 @@ Please see LICENSE.txt for this document's license.
    </para>
    
 
-  <figure id="fig-uefi-secure-boot-mok2">
+  <figure xml:id="fig-uefi-secure-boot-mok2">
    <title>UEFI：安全引导流程</title>
    <mediaobject>
     <imageobject role="fo">
@@ -170,9 +178,9 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
    <para>
 接下来，引导加载程序会验证内核，然后加以引导。该内核将在模块上执行同样的操作。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>MOK（机器拥有者密钥）</title>
 
 
@@ -190,20 +198,20 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
 <para>
 这样，您就可以安装自己的内核或引导加载程序。您只需要安装一组新的密钥，并在首次重引导期间以物理方式呈现，从而予以授权。由于 MOK 集是一个密钥列表而非单独一个 MOK，因此您可以让 <systemitem>shim</systemitem> 信任来自若干不同供应商的密钥，从而允许引导加载程序进行双重或多重引导。
 </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>引导自定义内核</title>
 
    <para>
-    以下内容基于 <ulink url="http://en.opensuse.org/openSUSE:UEFI#Booting_a_custom_kernel"/>。
+    以下内容基于 <link xlink:href="http://en.opensuse.org/openSUSE:UEFI#Booting_a_custom_kernel"/>。
    </para>
    <para>
     安全引导不会阻止您使用自行编译的内核。您只需要使用自己的证书在该内核上签名，并让固件或 MOK 得以识别该证书。
    </para>
 
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       创建一个自定义的 X.509 密钥以及用于签名的证书：
      </para>
@@ -213,11 +221,11 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
 
     <para>
      
-     有关创建证书的详细信息，请参见 <ulink url="http://en.opensuse.org/openSUSE:UEFI_Image_File_Sign_Tools#Create_Your_Own_Certificate"/>。
+     有关创建证书的详细信息，请参见 <link xlink:href="http://en.opensuse.org/openSUSE:UEFI_Image_File_Sign_Tools#Create_Your_Own_Certificate"/>。
     </para>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       将密钥和证书打包成 PKCS#12 结构：
      </para>
@@ -225,7 +233,7 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
   -name kernel_cert -out cert.p12</screen>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       生成用于 <command>pesign</command> 的 NSS 数据库：
      </para>
@@ -233,7 +241,7 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
      <screen>certutil -d . -N</screen>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       将 PKCS#12 中包含的密钥和证书导入 NSS 数据库：
      </para>
@@ -241,14 +249,14 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
      <screen>pk12util -d . -i cert.p12</screen>
     </step>
 
-    <step performance="required">
+    <step>
      <para>
       使用 <command>pesign</command> 将新签名<quote>赋予</quote>内核：
      </para>
      <screen>pesign -n . -c kernel_cert -i arch/x86/boot/bzImage \
   -o vmlinuz.signed -s</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
 列出内核映像上的签名：
      </para>
@@ -258,20 +266,20 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
 此时，您可以照常在 <filename>/boot</filename> 中安装内核。由于内核现有一个自定义的签名，因此需要将用于签名的证书导入 UEFI 固件或 MOK 中。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将证书转为 DER 格式，以供导入固件或 MOK:
      </para>
 
      <screen>openssl x509 -in cert.pem -outform der -out cert.der</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将证书复制到 ESP 以简化访问：
      </para>
      <screen>sudo cp cert.der /boot/efi/</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>mokutil</command> 自动启动 MOK 列表。
      </para>
@@ -284,34 +292,34 @@ SUSE 首先启动 <systemitem>shim</systemitem>。这是一个小而简单的 EF
      </para>
 
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         重引导
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在 GRUB 菜单中，按“<literal>c</literal>”键。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         类型：
        </para>
        <screen>chainloader $efibootdir/MokManager.efi
 boot</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         选择<guimenu>从磁盘登记密钥</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         导航至 <filename>cert.der</filename> 文件并按 <keycap>Enter</keycap>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         按照指导登记密钥。正常情况下应按“<literal>0</literal>”，然后按“<literal>y</literal>”予以确认。
        </para>
@@ -326,9 +334,9 @@ boot</screen>
    </procedure>
 
 
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>使用非内置驱动程序</title>
    <para>
     该产品不支持在启用安全引导的情况下，在引导到安装后添加非内置驱动程序（即，不是 SLE 自带的驱动程序）。用于 SolidDriver/PLDP 的签名密钥默认不受信任。
@@ -344,7 +352,7 @@ boot</screen>
     </listitem>
     <listitem>
      <para>
-      使用 <ulink url="https://drivers.suse.com/"/> 上或硬件供应商提供的可引导驱动程序 ISO，在首次引导时将所需密钥登记到 MOK 列表中。
+      使用 <link xlink:href="https://drivers.suse.com/"/> 上或硬件供应商提供的可引导驱动程序 ISO，在首次引导时将所需密钥登记到 MOK 列表中。
      </para>
     </listitem>
    </itemizedlist>
@@ -352,12 +360,12 @@ boot</screen>
     要使用可引导驱动程序 ISO 将驱动程序密钥登记到 MOK 列表中，请执行以下步骤：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       将 ISO 映像刻录到空 CD/DVD 媒体中。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       通过从新 CD/DVD 媒体引导开始安装，并准备好 SUSE Linux Enterprise 媒体或网络安装服务器的 URL。
      </para>
@@ -368,18 +376,18 @@ boot</screen>
       如果您是从光学媒体安装，安装程序会先从驱动程序包引导，然后要求插入 SUSE Linux Enterprise 产品的第一张光盘。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       安装时将会使用包含经过更新的驱动程序的 initrd。
      </para>
     </step>
    </procedure>
    <para>
-    有关详细信息，请参见<ulink url="https://drivers.suse.com/doc/Usage/Secure_Boot_Certificate.html"/>。
+    有关详细信息，请参见<link xlink:href="https://drivers.suse.com/doc/Usage/Secure_Boot_Certificate.html"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>限制</title>
    <para>以安全引导模式引导时，会有以下限制：</para>
 
@@ -425,14 +433,14 @@ boot</screen>
 </itemizedlist>
   
 
-  </sect2>
- </sect1>
- <sect1 id="sec-uefi-moreinfo">
+  </section>
+ </section>
+ <section xml:id="sec-uefi-moreinfo">
   <title>更多信息</title>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-<ulink url="http://www.uefi.org"/> — UEFI 主页，其中列出了最新的 UEFI 规范。
+<link xlink:href="http://www.uefi.org"/> — UEFI 主页，其中列出了最新的 UEFI 规范。
     </para>
    </listitem>
    <listitem>
@@ -441,22 +449,22 @@ boot</screen>
     </para>
     <itemizedlist mark="bullet" spacing="normal">
      <listitem>
-      <para><ulink url="http://www.suse.com/blogs/uefi-secure-boot-plan/"/></para>
+      <para><link xlink:href="http://www.suse.com/blogs/uefi-secure-boot-plan/"/></para>
      </listitem>
      <listitem>
-      <para><ulink url="http://www.suse.com/blogs/uefi-secure-boot-overview/"/></para>
+      <para><link xlink:href="http://www.suse.com/blogs/uefi-secure-boot-overview/"/></para>
      </listitem>
      <listitem>
-      <para><ulink url="http://www.suse.com/blogs/uefi-secure-boot-details/"/></para>
+      <para><link xlink:href="http://www.suse.com/blogs/uefi-secure-boot-details/"/></para>
      </listitem>
     </itemizedlist>
    </listitem>
    <listitem>
     <para>
-<ulink url="http://en.opensuse.org/openSUSE:UEFI"/> — UEFI 与 openSUSE。
+<link xlink:href="http://en.opensuse.org/openSUSE:UEFI"/> — UEFI 与 openSUSE。
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 
 </chapter>

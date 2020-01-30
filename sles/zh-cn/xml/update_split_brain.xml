@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="update_split_brain.xml" id="sec-update-split-brain">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="update_split_brain.xml" xml:id="sec-update-split-brain">
  <title>原子更新</title>
 
  <para>
@@ -16,7 +24,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
- <sect2 id="cha-update-split-brain-setup">
+ <section xml:id="cha-update-split-brain-setup">
   <title>设置</title>
   <warning>
    <title>严格的分区要求</title>
@@ -28,37 +36,37 @@ Please see LICENSE.txt for this document's license.
    </para>
   </warning>
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      用 <filename>/dev/sda1</filename> 作为单个 root 分区安装系统，其空间小于整个磁盘大小的一半。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      根据需要自定义已安装系统。确保 <systemitem>multi-update-tools</systemitem> 包已安装。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      运行 <command>multi-update-setup --partition</command>，创建大小类似的第二个 root 分区 (<filename>/dev/sda2</filename>)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      根据需要对剩余磁盘空间分区，并继续自定义 (*)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      运行 <command>multi-update-setup --clone</command> 将系统复制到其他分区。用此命令还可以更改目标系统 <filename>/etc/fstab</filename> 中的 <filename>/</filename>(root) 条目。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果需要，请执行进一步自定义 (*)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      运行 <command>multi-update-setup --bootloader</command> 初始化引导加载程序设置。这样引导加载程序菜单就会包含一个条目，用于引导另一个系统。
     </para>
@@ -69,26 +77,26 @@ Please see LICENSE.txt for this document's license.
      </para>
     </warning>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果没有对标有 (*) 的项进行自定义，请运行 <command>multi-update-setup --complete</command> 执行所有三个步骤。
     </para>
    </step>
   </procedure>
- </sect2>
+ </section>
 
 
 
- <sect2 id="cha-update-split-brain-updating">
+ <section xml:id="cha-update-split-brain-updating">
   <title>更新另一个系统</title>
   <para>
    运行 <command>multi-update</command>。此命令会在 <command>chroot</command> 环境中运行 <systemitem>zypper</systemitem>，并更新另一个系统，哪个系统处于活动状态无关紧要。其引导菜单在引导时作为默认值提供。
   </para>
- </sect2>
+ </section>
 
 
 
- <sect2 id="cha-update-split-brain-touble">
+ <section xml:id="cha-update-split-brain-touble">
   <title>查错</title>
   <para>
    如果更新的系统在更新之后引导加载程序受损，则必须更改<quote>活动</quote>标志，将它分配给另一个系统的根分区，以便可以引导该系统。
@@ -99,21 +107,21 @@ Please see LICENSE.txt for this document's license.
   <para>
    有关 GRUB 的更多信息，请参见<xref linkend="cha-grub"/>。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="cha-update-split-brain-limitation">
+ <section xml:id="cha-update-split-brain-limitation">
   <title>限制</title>
   <para>
    根分区必须按分区名、ID 或其他方式进行装载。不支持按分区 UUID 或标签进行装载。
   </para>
- </sect2>
+ </section>
 
 
 
- <sect2 id="cha-update-split-brain-info">
+ <section xml:id="cha-update-split-brain-info">
   <title>更多信息</title>
   <para>
    有关更多信息，请参见随 <systemitem>multi-update-tools</systemitem> 包一起提供的 <filename>/usr/sha e/doc/packages/multi-update-tools/README</filename>。
   </para>
- </sect2>
-</sect1>
+ </section>
+</section>

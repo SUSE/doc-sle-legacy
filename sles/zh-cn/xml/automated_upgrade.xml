@@ -1,18 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="automated_upgrade.xml" id="cha-update-auto" os="sles">
- <title>从 SUSE Linux Enterprise 11 SP2 自动升级到 11 SP3</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="automated_upgrade.xml" xml:id="cha-update-auto" os="sles"><title>从 SUSE Linux Enterprise 11 SP2 自动升级到 11 SP3</title><info/>
+ 
  <para>
   以下过程提供了一种以无人照管的方式从 SUSE Linux Enterprise 11 SP2 到 SUSE Linux Enterprise 11 SP3 的批量升级方法。为了创建合适的 AutoYaST 配置文件，需要执行若干个准备步骤。AutoYaST 最后会执行升级过程。
  </para>
- <sect1 id="sec-update-auto-prep-autoyast">
+ <section xml:id="sec-update-auto-prep-autoyast">
   <title>准备 AutoYaST 配置文件</title>
 
   <para>
@@ -23,7 +31,7 @@ Please see LICENSE.txt for this document's license.
    但是，显然有一些系统部分（例如，分区）不需要在升级过程中进行配置。另一方面，通过 AutoYaST 配置文件设置升级特定的选项则很有用。
   </para>
 
-  <sect2>
+  <section>
    <title>升级</title>
    <para>
     升级选项定义依赖性解析程序在升级过程中的行为：
@@ -54,9 +62,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>软件选择</title>
    <para>
     软件选择选项定义除解析程序结果外要选择或取消选择哪些组件：
@@ -75,9 +83,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     这对于设置要选择或取消选择的包或模式以解决包冲突，并因而避免交互式干扰尤其重要。升级完成后，新建的 <filename>autoupg_updated.xml</filename> 文件包含这些包和模式，以及因任何其他原因而选择或取消选择的那些包和模式。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>升级前备份</title>
    <para>
     升级前备份选项与升级建议中的这些功能相匹配。
@@ -116,9 +124,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-update-auto-run">
+  </section>
+ </section>
+ <section xml:id="sec-update-auto-run">
   <title>运行自动升级</title>
 
   <para>
@@ -153,8 +161,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    如果计算机上安装了多个 SUSE Linux Enterprise 系统，总是会询问您升级哪个系统 － 这个问题无法预先做出选择。
   </para>
- </sect1>
- <sect1 id="sec-update-auto-grub">
+ </section>
+ <section xml:id="sec-update-auto-grub">
   <title>引导到升级过程的 GRUB 菜单部分</title>
 
   <para>
@@ -176,8 +184,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    在系统 z 上，您必须向 PARM 文件中添加该参数 — 使用与执行 AutoYaST 驱动型安装时所采用的相同方法继续。
   </para>
- </sect1>
- <sect1 id="sec-update-auto-2nd-stage">
+ </section>
+ <section xml:id="sec-update-auto-2nd-stage">
   <title>升级的第二个阶段</title>
 
   <para>
@@ -198,20 +206,20 @@ Please see LICENSE.txt for this document's license.
   <para>
    通常，AutoYaST 配置文件中应有的唯一配置调整是向订阅管理工具 (SMT) 或 Novell Customer Center (NCC) 注册系统。如果缺少此过程，系统将无法获取更新储存库，只能在稍后再次配置后才能进行更新。
   </para>
- </sect1>
- <sect1 id="sec-update-auto-limitations">
+ </section>
+ <section xml:id="sec-update-auto-limitations">
   <title>限制和提示</title>
 
   <para/>
 
-  <sect2>
+  <section>
    <title>NetworkManager 和注册</title>
    <para>
     如果使用 NetworkManager 管理网络设备和网络连接，在升级的第二个阶段将无法进行网络连接。从而使系统不能进行注册。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>清理升级设置</title>
    <para>
     如果为触发升级过程对系统进行了更改（例如，将新部分添加到引导加载程序菜单），则在完成升级后可能要删除此类更改。
@@ -219,17 +227,17 @@ Please see LICENSE.txt for this document's license.
    <para>
     您可以使用安装后脚本自动删除它。可在<xref linkend="createprofile-scripts"/>中找到示例。<filename>autoupg.xml</filename> 样本文件中包含清理 GRUB 的 <filename>menu.lst</filename> 的样本脚本。确保脚本与您的特定设置匹配，且不删除实际要保留的内容！
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>更多信息</title>
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
-      Linuxrc 文档：<ulink url="http://en.opensuse.org/SDB:Linuxrc"/>
+      Linuxrc 文档：<link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>
      </para>
     </listitem>
    </itemizedlist>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

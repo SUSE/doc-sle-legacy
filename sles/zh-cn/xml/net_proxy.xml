@@ -1,33 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_proxy.xml" id="cha-squid">
- <title>Squid 代理服务器</title><indexterm> <primary>Squid</primary> </indexterm> <indexterm> <primary>代理</primary> <see>Squid</see> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_proxy.xml" xml:id="cha-squid"><title>Squid 代理服务器</title><info><abstract>
   <para>
    Squid 是广泛用于 Linux 和 UNIX 平台的代理缓存。这表示它会将请求的因特网对象（例如 Web 或 FTP 服务器上的数据）储存在离请求工作站更近（与服务器相比）的计算机上。可以在多个层次结构中设置它以确保最佳的响应时间和使用较低的带宽（即使在对最终用户来说是透明的方式）。可以使用其他软件如 squidGuard 来过滤 Web 内容。
   </para>
- </abstract><indexterm> <primary>Squid</primary><secondary>缓存</secondary></indexterm><indexterm><primary>代理</primary><secondary>缓存</secondary></indexterm>
+ </abstract></info>
+ <indexterm> <primary>Squid</primary> </indexterm> <indexterm> <primary>代理</primary> <see>Squid</see> </indexterm>
+ <indexterm> <primary>Squid</primary><secondary>缓存</secondary></indexterm><indexterm><primary>代理</primary><secondary>缓存</secondary></indexterm>
  <para>
   Squid 可以充当代理缓存。它将来自客户端（这里指来自 Web 浏览器）的对象请求重定向至服务器。当服务器回复所请求的对象后，它会将这些对象传递给客户端并在硬盘缓存中保存对象副本。缓存的一个优点就是：当多个客户端请求同一对象时，可以从硬盘缓存中提供该对象。这样客户端接收数据的速度要比从因特网接收快得多。此过程还可以减少网络流量。<indexterm><primary>代理</primary><secondary>优点</secondary> </indexterm>
  </para>
  <para>
   <indexterm><primary>Squid</primary><secondary>功能</secondary></indexterm> 除实际的缓存外，Squid 还提供众多功能，如在代理服务器的相互通讯的层次之间分配负载、为所有访问代理的客户端定义严格的访问控制列表、借助其他应用程序允许或拒绝对特定 网页的访问以及生成有关频繁访问的 网页的统计数字供评估用户的浏览习惯。Squid 不是通用代理。通常只充当 HTTP 连接的代理。它支持 FTP、Gopher、SSL 和 WAIS 等协议，但不支持其他因特网协议，如 Real Audio、新闻或视频会议。由于 Squid 只支持使用 UDP 协议在不同的缓存间通讯，所以很多其他多媒体程序都不受支持。
  </para>
- <sect1 id="sec-squid-cacheinfos">
+ <section xml:id="sec-squid-cacheinfos">
   <title>有关代理缓存的一些事实</title>
 
   <para>
    作为代理缓存，Squid 的使用方法分为几种。与防火墙结合使用时，能够提高安全性。可以一起使用多个代理。还能确定应该缓存的对象的类型以及缓存的时间。
   </para>
 
-  <sect2 id="sec-squid-security">
+  <section xml:id="sec-squid-security">
    <title>Squid 和安全性</title><indexterm> <primary>Squid</primary><secondary>安全性</secondary></indexterm><indexterm><primary>安全性</primary><secondary>Squid</secondary></indexterm>
    <para>
     Squid 可以与防火墙结合起来，通过使用代理缓存防止内部网络遭受外部攻击。防火墙会拒绝 Squid 之外的所有客户端对外部服务的访问。所有 Web 连接都必须通过代理方式建立。经过此配置后，Squid 便可全面控制 Web 访问。
@@ -35,9 +43,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     <indexterm><primary>Squid</primary><secondary>安全性</secondary></indexterm> 如果防火墙配置中包含 DMZ，代理应该在此区域内操作。<xref linkend="sec-squid-proxyconfigtrans"/>描述了如何实施<emphasis>透明</emphasis>代理。它能简化客户端的配置，因为在这种情况下，它们不需要代理的任何信息。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-morecaches">
+  <section xml:id="sec-squid-morecaches">
    <title>多个缓存</title><indexterm> <primary>Squid</primary><secondary>缓存</secondary> </indexterm>
    <para>
     可以配置 Squid 的几个实例从而在它们之间交换对象。这样会减少系统负载，同时提高找到本地网络中已有对象的几率。还可以配置超速缓存的层次，以便能够将对象请求转发给同级超速缓存或父超速缓存 使其从本地网络中的其它超速缓存或直接从数据源获取对象。
@@ -56,9 +64,9 @@ Please see LICENSE.txt for this document's license.
      为了避免网络中不同缓存中的对象重复，还会使用其他 ICP 协议，如 CARP（缓存阵列路由协议）或 HTCP（超文本缓存协议）。网络中维护的对象越多，找到所需对象的可能性就越大。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-latching">
+  <section xml:id="sec-squid-latching">
    <title>缓存因特网对象</title><indexterm> <primary>Squid</primary><secondary>对象状态</secondary> </indexterm>
    <para>
     网络中的对象并不全都是静态的。网络中有许多动态生成的 CGI 页面、访问计数器和加密的 SSL 内容文档。由于每次访问这类对象时它们都会更改，所以它们不会被缓存。
@@ -69,23 +77,23 @@ Please see LICENSE.txt for this document's license.
    <para>
     缓存中的对象通常会因为缺少可用硬盘空间而使用 LRU（最近最少使用）之类的算法进行替换。一般来说，这意味着代理会销毁未被请求时间最长的对象。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-sysneeds">
+  </section>
+ </section>
+ <section xml:id="sec-squid-sysneeds">
   <title>系统要求</title><indexterm> <primary>Squid</primary><secondary>系统要求</secondary> </indexterm>
 
   <para>
    最重要的事情是确定系统必须承受的最大网络负载。由于负载峰值可能是日均值的四倍，因此要特别注意负载峰值。如果不能确定，最好高估系统要求，因为让 Squid 在接近其处理能力限值的状态下工作可能会严重影响其服务质量。以下几节按重要程度依次阐述了各个系统要素。
   </para>
 
-  <sect2 id="sec-squid-sysneeds-disk">
+  <section xml:id="sec-squid-sysneeds-disk">
    <title>硬盘</title>
    <para>
     速度在缓存过程中起到重要作用，所以此要素值得特别关注。对于硬盘，此参数通过以毫秒衡量的<emphasis>随机搜索时间</emphasis>来描述。Squid 从硬盘读取或写入硬盘的数据块一般都较小，因此硬盘的搜索时间比其数据吞吐量更重要。如果要考虑代理的话，高转速硬盘可能会是更好的选择，因为高转速硬盘允许读写磁头更快定位到所需位置。使系统加速的一种可能办法是同时使用多个磁盘或采用分带 RAID 阵列。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>磁盘缓存的大小</title><indexterm> <primary>Squid</primary><secondary>缓存</secondary><tertiary>大小</tertiary> </indexterm>
    <para>
     在小型缓存中，HIT（在其中找到所请求的对象）的概率会很小，因为该缓存很容易被占满，所以较少请求的对象很快被较新的请求对象替代。例如，如果缓存的可用空间为 1GB，而用户每天只浏览 10MB，那么占满缓存至少要 100 天。
@@ -93,9 +101,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     确定所需缓存大小的最简便方法就是考虑连接的最大传送速度。1 Mbit/s（兆比特/秒）连接的最大传送速度为 125 KB/s。如果所有流量都进入缓存，1 小时累计可达 450 MB；假设所有流量都是在八小时工作时间之内产生的，那么每天将达到 3.6 GB。由于连接速度一般不会达到流量上限，所以可以认为缓存处理的数据总量约为 2 GB。这就是为什么要在 Squid 示例中使用 2 GB 的磁盘空间来保证一天的浏览数据都能缓存。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-ram">
+  <section xml:id="sec-squid-ram">
    <title>RAM</title><indexterm> <primary>Squid</primary><secondary>RAM</secondary> </indexterm>
    <para>
     Squid 所需内存 (RAM) 大小直接与缓存中的对象数有关。Squid 还会在主储存器中储存缓存对象引用和经常请求的对象，以加速对这些数据的检索。随机储存器比硬盘快得多。
@@ -107,16 +115,16 @@ Please see LICENSE.txt for this document's license.
     拥有足够的内存对于 Squid 进程非常重要，因为如果必须交换到磁盘的话，系统性能会显著降低。可以使用 cachemgr.cgi 工具来管理缓存内存。该工具在<xref linkend="sec-squid-cachemgr"/>中有介绍。
 
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-cpu">
+  <section xml:id="sec-squid-cpu">
    <title>CPU</title><indexterm> <primary>Squid</primary><secondary>CPU</secondary> </indexterm>
    <para>
     Squid 并不是需要大量使用 CPU 的程序。处理器的负载只会在装载或检查缓存内容时才会增加。使用多处理器计算机并不会提高系统性能。要提高效率，最好是购买速度更快的硬盘或增加内存。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-start">
+  </section>
+ </section>
+ <section xml:id="sec-squid-start">
   <title>启动 Squid</title><indexterm> <primary>Squid</primary><secondary>启动</secondary> </indexterm>
 
   <para>
@@ -127,16 +135,16 @@ Please see LICENSE.txt for this document's license.
    Squid 在 SUSE® Linux Enterprise Server 中已预先配置，因此安装后就可启动。为保证顺利启动，应该对网络进行配置，使其至少能连接一个名称服务器和因特网。如果拨号连接使用动态 DNS 配置，则可能出现问题。在这种情况下，至少应该输入名称服务器，因为如果在 <filename>/etc/resolv.conf</filename> 中找不到 DNS 服务器，Squid 便不会启动。
   </para><indexterm> <primary>配置文件</primary><secondary>resolv.conf</secondary> </indexterm>
 
-  <sect2>
+  <section>
    <title>用于启动和停止 Squid 的命令</title><indexterm> <primary>Squid</primary><secondary>目录</secondary></indexterm><indexterm><primary>脚本</primary><secondary>init.d</secondary><tertiary>squid</tertiary></indexterm><indexterm><primary>Squid</primary><secondary>权限</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>squid.conf</secondary></indexterm>
    <para>
-    要启动 Squid，在命令行中以 <systemitem class="username">root</systemitem> 身份输入 <command>rcsquid <option>start</option></command>。首次启动时，必须首先在 <filename>/var/cache/squid</filename> 中定义缓存的目录结构。启动脚本 <filename>/etc/init.d/squid</filename> 会自动进行定义，该过程可能需要几秒钟甚至几分钟的时间。如果右侧显示绿色的<literal>完成</literal>，表明已成功装载 Squid。要在本地系统上测试 Squid 的功能，请在浏览器中输入 <option>localhost</option> 作为代理，输入 <option>3128</option> 作为端口。
+    要启动 Squid，在命令行中以 <systemitem class="username">root</systemitem> 身份输入 <command>rcsquid </command> <option>start</option>。首次启动时，必须首先在 <filename>/var/cache/squid</filename> 中定义缓存的目录结构。启动脚本 <filename>/etc/init.d/squid</filename> 会自动进行定义，该过程可能需要几秒钟甚至几分钟的时间。如果右侧显示绿色的<literal>完成</literal>，表明已成功装载 Squid。要在本地系统上测试 Squid 的功能，请在浏览器中输入 <option>localhost</option> 作为代理，输入 <option>3128</option> 作为端口。
    </para>
    <para>
     要允许用户从本地系统和其他系统访问 Squid 和因特网，需要将配置文件 <filename>/etc/squid/squid.conf</filename> 中的项 <option>http_access deny all</option> 改为 <option>http_access allow all</option>。但在这样做时，要考虑到此操作会让所有人都不受任何限制地访问 Squid。因此，应定义控制访问代理的 ACL。有关此内容的详细信息，请参见 <xref linkend="sec-squid-acl"/>。
    </para><indexterm> <primary>Squid</primary><secondary>停止</secondary> </indexterm>
    <para>
-    修改配置文件 <filename>/etc/squid/squid.conf</filename> 后，Squid 必须重装载该配置文件。可通过 <command>rcsquid <option>reload</option></command> 执行此操作。或者，通过 <command>rcsquid <option>restart</option></command> 彻底重启动 Squid。
+    修改配置文件 <filename>/etc/squid/squid.conf</filename> 后，Squid 必须重装载该配置文件。可通过 <command>rcsquid </command> <option>reload</option> 执行此操作。或者，通过 <command>rcsquid </command> <option>restart</option> 彻底重启动 Squid。
    </para>
    <para>
     可以使用命令 <command>rcsquid</command> <option>status</option> 来检查代理是否正在运行。使用命令 <command>rcsquid</command> <option>stop</option> 将关闭 Squid。这需要一些时间，因为 Squid 在断开同客户端的连接并将其数据写入磁盘前会等候最多半分钟（<filename>/etc/squid/squid.conf</filename> 中的 <option>shutdown_lifetime</option> 选项）。
@@ -153,9 +161,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     卸载 Squid 并不会删除缓存层次或日志文件。要删除这些内容，请手动删除 <filename>/var/cache/squid</filename> 目录。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>本地 DNS 服务器</title><indexterm> <primary>DNS</primary><secondary>Squid 和</secondary></indexterm><indexterm><primary>Squid</primary><secondary>DNS</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>named.conf</secondary></indexterm>
    <para>
     建立本地 DNS 服务器很有意义，即便并不用它来管理自己的域。它仅起到缓存专用名称服务器的作用，并且可以在无需任何特殊配置的情况下通过 root 名称服务器解析 DNS 请求（请参见 <xref linkend="sec-dns-bind"/>）。如何完成上述操作，取决于您在配置因特网连接的过程中是否选择了动态 DNS。
@@ -165,11 +173,11 @@ Please see LICENSE.txt for this document's license.
      <term>动态 DNS</term>
      <listitem>
       <para>
-       使用动态 DNS 时，因特网服务提供商通常在建立因特网连接过程中设置 DNS 服务器，并自动调整本地文件 <filename>/etc/resolv.conf</filename>。可以使用 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> sysconfig 变量在文件 <filename>/etc/sysconfig/network/config</filename> 中控制此行为。使用 YaST sysconfig 编辑器将 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> 设置为 <systemitem class="constant">""</systemitem>（请参见<xref linkend="sec-boot-sysconfig-edit"/>）。然后在文件 <filename>/etc/resolv.conf</filename> 中输入本地 DNS 服务器，<systemitem class="domainname">localhost</systemitem> 的 IP 地址是 <systemitem class="ipaddress">127.0.0.1</systemitem>。这样 Squid 一启动就能找到本地名称服务器。
+       使用动态 DNS 时，因特网服务提供商通常在建立因特网连接过程中设置 DNS 服务器，并自动调整本地文件 <filename>/etc/resolv.conf</filename>。可以使用 <constant>NETCONFIG_DNS_POLICY</constant> sysconfig 变量在文件 <filename>/etc/sysconfig/network/config</filename> 中控制此行为。使用 YaST sysconfig 编辑器将 <constant>NETCONFIG_DNS_POLICY</constant> 设置为 <constant>""</constant>（请参见<xref linkend="sec-boot-sysconfig-edit"/>）。然后在文件 <filename>/etc/resolv.conf</filename> 中输入本地 DNS 服务器，<systemitem class="domainname">localhost</systemitem> 的 IP 地址是 <systemitem class="ipaddress">127.0.0.1</systemitem>。这样 Squid 一启动就能找到本地名称服务器。
       </para>
       
       <para>
-       为了使服务提供商的名称服务器可访问，必须在配置文件 <filename>/etc/named.conf</filename> 中的 <systemitem>forwarders</systemitem> 下输入其名称及 IP 地址。使用动态 DNS，通过将 sysconfig 变量 <systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> 设置为 <systemitem class="constant">auto</systemitem>，可以在建立连接时自动执行上述操作。
+       为了使服务提供商的名称服务器可访问，必须在配置文件 <filename>/etc/named.conf</filename> 中的 <systemitem>forwarders</systemitem> 下输入其名称及 IP 地址。使用动态 DNS，通过将 sysconfig 变量 <constant>NETCONFIG_DNS_POLICY</constant> 设置为 <constant>auto</constant>，可以在建立连接时自动执行上述操作。
       </para>
      </listitem>
     </varlistentry>
@@ -188,9 +196,9 @@ Please see LICENSE.txt for this document's license.
      如果运行了防火墙，应确保 DNS 请求能够通过。
     </para>
    </tip>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-configfile">
+  </section>
+ </section>
+ <section xml:id="sec-squid-configfile">
   <title>配置文件 /etc/squid/squid.conf</title><indexterm> <primary>Squid</primary><secondary>配置</secondary></indexterm><indexterm><primary>配置</primary><secondary>Squid</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>squid.conf</secondary></indexterm>
 
   <para>
@@ -204,7 +212,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </tip>
 
-  <sect2>
+  <section>
    <title>常规配置选项（选择）</title>
    <variablelist>
     <varlistentry>
@@ -327,9 +335,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-acl">
+  <section xml:id="sec-squid-acl">
    <title>访问控制选项</title><indexterm> <primary>Squid</primary><secondary>ACL</secondary></indexterm><indexterm><primary>Squid</primary><secondary>权限</secondary></indexterm>
    <para>
     Squid 为控制针对代理的访问提供了一套周密的系统。通过实施 ACL 可以轻松并全面地进行配置。这涉及一些依次处理的规则的列表。使用 ACL 之前必须先定义 ACL。一些默认的 ACL 已经存在，如 <emphasis>all</emphasis> 和 <emphasis>localhost</emphasis>。但是，仅仅定义 ACL 并不意味着实际应用 ACL。只有在与 <emphasis>http_access</emphasis> 规则一同使用时才不是这样。
@@ -424,9 +432,9 @@ http_access deny all
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-proxyconfigtrans">
+  </section>
+ </section>
+ <section xml:id="sec-squid-proxyconfigtrans">
   <title>配置透明代理</title><indexterm> <primary>代理</primary><secondary>透明</secondary></indexterm><indexterm><primary>Squid</primary><secondary>透明代理</secondary></indexterm>
 
   <para>
@@ -455,15 +463,15 @@ http_access deny all
    在所有这些情况下，都可以使用透明代理。原理很简单：代理截获并应答 Web 浏览器的请求，所以 Web 浏览器接收到所请求的页面，但并不知道它们来自何处。正如名称中指出的那样，整个处理过程完全是透明的。
   </para>
 
-  <sect2>
+  <section>
    <title>/etc/squid/squid.conf 中的配置选项</title><indexterm> <primary>配置文件</primary><secondary>squid.conf</secondary> </indexterm>
    <para>
     要通知 squid 作为透明代理使用，请使用<systemitem>透明</systemitem>选项，该选项位于主配置文件 <filename>/etc/squid/squid.conf</filename> 中的标记 <systemitem>http_port</systemitem> 处。重启动 squid 后，要执行的唯一操作就是重配置防火墙，将 http 端口重定向到 <systemitem>http_port</systemitem> 中给定的端口。在以下 squid 配置行中，它是端口 3128。
    </para>
 <screen>http_port 3128 transparent</screen>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>使用 SuSEfirewall2 配置防火墙</title><indexterm> <primary>Squid</primary><secondary>防火墙和</secondary></indexterm><indexterm><primary>防火墙</primary><secondary>Squid 和</secondary></indexterm>
    <para>
     现在借助端口转发规则，通过防火墙将所有入站请求重定向到 Squid 端口。可使用附带的 SuSEFirewall2 工具完成此操作，如<xref linkend="sec-fire-SuSE-yast"/>中所述。可以在 <filename>/etc/sysconfig/SuSEfirewall2</filename> 中找到其配置文件。配置文件的项已进行适当注释。要设置透明代理，必须配置几个防火墙选项：
@@ -502,7 +510,7 @@ FW_SERVICE_DNS="yes"
    <para>
     最重要的选项是选项数字 <option>15</option>：
    </para>
-   <example id="dat-fw-opt15">
+   <example xml:id="dat-fw-opt15">
     <title>防火墙配置：选项 15</title>
 <screen># 15.)
 # Which accesses to services should be redirected to a local port on
@@ -536,16 +544,16 @@ FW_REDIRECT="192.168.0.0/16,0/0,tcp,80,3128"
    <para>
     <indexterm><primary>日志文件</primary><secondary>Squid</secondary></indexterm><indexterm><primary>Squid</primary><secondary>日志文件</secondary></indexterm> 按<xref linkend="sec-squid-start"/>所述启动 Squid。要了解是否一切正常，请检查 <filename>/var/log/squid/access.log</filename> 中的 Squid 日志。<indexterm><primary>端口</primary><secondary>扫描</secondary></indexterm>Squid<indexterm><primary>透明代理 </primary><secondary>要证明所有端口都已正确配置，请从网络外的任意计算机执行本机上的端口扫描。</secondary></indexterm>只有 Web 服务（端口 80）应该是打开的。要使用 nmap 扫描端口，命令语法为 <command>nmap</command> <option>-O IP_address</option>。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-cachemgr">
+  </section>
+ </section>
+ <section xml:id="sec-squid-cachemgr">
   <title>cachemgr.cgi</title><indexterm> <primary>Squid</primary><secondary>统计数字</secondary></indexterm><indexterm><primary>Squid</primary><secondary>cachemgr.cgi</secondary></indexterm>
 
   <para>
    缓存管理器 (cachemgr.cgi) 是一个 CGI 实用程序，用于显示正运行的 Squid 进程占用内存的相关统计数字。这也是在不登录服务器的情况下，管理缓存和查看统计数字的一种更便捷的方式。
   </para>
 
-  <sect2>
+  <section>
    <title>设置</title><indexterm> <primary>Squid</primary> <secondary>Apache</secondary> </indexterm> <indexterm> <primary>Apache</primary> <secondary>Squid</secondary> </indexterm>
    <para>
     首先，必须在系统上运行 Web 服务器。按<xref linkend="cha-apache2"/>中所示配置 Apache。要检查 Apache 是否已在运行，以 <systemitem class="username">root</systemitem> 身份输入命令 <command>rcapache</command> <option>status</option>。如果显示如下消息：
@@ -562,9 +570,9 @@ Server uptime: 1 day 18 hours 29 minutes 39 seconds
     在 64 位环境中，<filename>cachemgr.cgi</filename> 文件位于 <filename>/usr/lib64/squid/</filename> 下，将它复制到 Apache 目录的命令如下：
    </para>
 <screen>cp /usr/lib64/squid/cachemgr.cgi /srv/www/cgi-bin/</screen>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>/etc/squid/squid.conf 中的缓存管理器 ACL</title><indexterm> <primary>Squid</primary><secondary>访问控制</secondary></indexterm><indexterm><primary>配置文件</primary><secondary>squid.conf</secondary></indexterm>
    <para>
     缓存管理器所需的原文件中有一些默认设置。首先定义两个 ACL，然后 http_access 选项将使用这些 ACL 将访问权限从 CGI 脚本授权到 Squid。第一个 ACL 最为重要，因为缓存管理器要通过 cache_object 协议尝试与 Squid 通讯。
@@ -583,7 +591,7 @@ http_access deny manager
    <para>
     这些规则假定 Web 服务器和 Squid 运行在同一台计算机上。如果缓存管理器与 Squid 间的通讯是另一台计算机上的 Web 服务器发出的，应如<xref linkend="dat-acl"/>所示包含额外的 ACL。
    </para>
-   <example id="dat-acl">
+   <example xml:id="dat-acl">
     <title>访问规则</title>
 <screen>
 acl manager proto cache_object
@@ -594,7 +602,7 @@ acl webserver src 192.168.1.7/255.255.255.255 # webserver IP
    <para>
     然后在<xref linkend="dat-access"/>中添加规则以允许从 Web 服务器访问。
    </para>
-   <example id="dat-access">
+   <example xml:id="dat-access">
     <title>访问规则</title>
 <screen>
 http_access allow manager localhost
@@ -608,20 +616,20 @@ http_access deny manager
    <para>
     每次一更改配置文件，就应重启动 Squid。使用 <command>rcsquid</command> <option>reload</option> 可以轻松地重启动。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>查看统计数字</title>
    <para>
-    访问相应的网站 <ulink url="http://webserver.example.org/cgi-bin/cachemgr.cgi"/>。按<guimenu>继续</guimenu>来浏览不同的统计数字。<indexterm> <primary>Squid</primary><secondary>统计数字</secondary></indexterm><indexterm><primary>Squid</primary><secondary>cachemgr.cgi</secondary></indexterm>
+    访问相应的网站 <link xlink:href="http://webserver.example.org/cgi-bin/cachemgr.cgi"/>。按<guimenu>继续</guimenu>来浏览不同的统计数字。<indexterm> <primary>Squid</primary><secondary>统计数字</secondary></indexterm><indexterm><primary>Squid</primary><secondary>cachemgr.cgi</secondary></indexterm>
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-squidguard">
+  </section>
+ </section>
+ <section xml:id="sec-squid-squidguard">
   <title>squidGuard</title><indexterm> <primary>Squid</primary><secondary>squidGuard</secondary> </indexterm>
 
   <para>
-   本节的目的并不是要解释 squidGuard 的详细配置，而只是介绍该程序并为使用该程序提些建议。要深入了解配置问题，请参见 squidGuard 的 网站 <ulink url="http://www.squidguard.org"/>。
+   本节的目的并不是要解释 squidGuard 的详细配置，而只是介绍该程序并为使用该程序提些建议。要深入了解配置问题，请参见 squidGuard 的 网站 <link xlink:href="http://www.squidguard.org"/>。
   </para>
 
   <para>
@@ -689,7 +697,7 @@ http_access deny manager
   </itemizedlist><indexterm> <primary>配置文件</primary> <secondary>squidguard.conf</secondary> </indexterm> <indexterm> <primary>配置文件</primary> <secondary>squid.conf</secondary> </indexterm>
 
   <para>
-   在使用 <systemitem class="resource">squidGuard</systemitem> 之前，请先进行安装。提供最小的配置文件，如 <filename>/etc/squidguard.conf</filename>。可在 <ulink url="http://www.squidguard.org/Doc/examples.html"/> 中找到配置示例。以后可尝试更为复杂的配置设置。
+   在使用 <systemitem class="resource">squidGuard</systemitem> 之前，请先进行安装。提供最小的配置文件，如 <filename>/etc/squidguard.conf</filename>。可在 <link xlink:href="http://www.squidguard.org/Doc/examples.html"/> 中找到配置示例。以后可尝试更为复杂的配置设置。
   </para>
 
   <para>
@@ -715,16 +723,16 @@ redirect_children 4
   <para>
    最后，通过运行 <command>rcsquid</command> <option>reload</option> 让 Squid 装载新配置。现在，可以通过浏览器测试这些设置。
   </para>
- </sect1>
- <sect1 id="sec-squid-calamaris">
+ </section>
+ <section xml:id="sec-squid-calamaris">
   <title>使用 Calamaris 生成缓存报告</title><indexterm> <primary>Squid</primary><secondary>Calamaris</secondary></indexterm><indexterm><primary>Squid</primary><secondary>报告</secondary></indexterm>
 
   <para>
-   Calamaris 是一个 Perl 脚本，用来以 ASCII 或 HTML 格式生成缓存活动的报告。它可以处理本机 Squid 访问日志文件。Calamaris 的主页为 <ulink url="http://Calamaris.Cord.de/"/>。此工具不属于 SUSE Linux Enterprise Server 默认安装范围 — 要使用它，请安装 <systemitem>calamaris</systemitem> 包。
+   Calamaris 是一个 Perl 脚本，用来以 ASCII 或 HTML 格式生成缓存活动的报告。它可以处理本机 Squid 访问日志文件。Calamaris 的主页为 <link xlink:href="http://Calamaris.Cord.de/"/>。此工具不属于 SUSE Linux Enterprise Server 默认安装范围 — 要使用它，请安装 <systemitem>calamaris</systemitem> 包。
   </para>
 
   <para>
-   以 <systemitem class="username">root</systemitem> 身份登录，然后输入 <command>cat access.log | calamaris <replaceable>选项</replaceable> &gt; reportfile</command>。在通过管道输出一个以上日志文件时，日志文件要按时间先后排列，较早的文件先输出，这一点很重要。该程序有一些选项：
+   以 <systemitem class="username">root</systemitem> 身份登录，然后输入 <command>cat access.log | calamaris</command> <replaceable>选项</replaceable> &gt; reportfile。在通过管道输出一个以上日志文件时，日志文件要按时间先后排列，较早的文件先输出，这一点很重要。该程序有一些选项：
   </para>
 
   <tip>
@@ -779,16 +787,16 @@ cat access.log.{10..1} access.log | calamaris -a -w \
   </para>
 
   
- </sect1>
- <sect1 id="sec-squid-moreinfo">
+ </section>
+ <section xml:id="sec-squid-moreinfo">
   <title>更多信息</title>
 
   <para>
-   访问 Squid 的主页 <ulink url="http://www.squid-cache.org/"/>。在此可找到 <quote>Squid 用户指南</quote>及有关 Squid 的大量 FAQ（常见问题解答）信息。
+   访问 Squid 的主页 <link xlink:href="http://www.squid-cache.org/"/>。在此可找到 <quote>Squid 用户指南</quote>及有关 Squid 的大量 FAQ（常见问题解答）信息。
   </para>
 
   <para>
-   安装该程序后，在 <systemitem class="resource">howtoenh</systemitem> 中有一个关于透明代理的小的使用描述文件 <filename>/usr/share/doc/howto/en/txt/TransparentProxy.gz</filename>。此外还通过 <ulink url="squid-users@squid-cache.org"/> 提供 Squid 的邮件列表。其存档文件位于 <ulink url="http://www.squid-cache.org/mail-archive/squid-users/"/> 中。
+   安装该程序后，在 <systemitem class="resource">howtoenh</systemitem> 中有一个关于透明代理的小的使用描述文件 <filename>/usr/share/doc/howto/en/txt/TransparentProxy.gz</filename>。此外还通过 <link xlink:href="squid-users@squid-cache.org"/> 提供 Squid 的邮件列表。其存档文件位于 <link xlink:href="http://www.squid-cache.org/mail-archive/squid-users/"/> 中。
   </para>
- </sect1>
+ </section>
 </chapter>
