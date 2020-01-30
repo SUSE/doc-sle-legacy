@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect2
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect2 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect2 xml:base="zypper_upgrade.xml" id="sec-update-zypper">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="zypper_upgrade.xml" xml:id="sec-update-zypper">
  <title>使用 zypper 進行套裝作業系統升級</title><indexterm> <primary>zypper</primary> <secondary>升級</secondary></indexterm><indexterm> <primary>升級</primary> <secondary>zypper</secondary></indexterm>
  <para>
   使用 <command>zypper</command> 指令行公用程式可以升級至新版套裝作業系統。最重要的是，您可以從執行中的系統啟動系統升級程序。
@@ -15,7 +23,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   對於要執行遠端升級或在許多具有類似設定的系統上升級的進階使用者來說，此項功能很有吸引力。
  </para>
- <sect3>
+ <section>
   <title>在使用 zypper 開始升級之前</title>
   <para>
    為了避免在使用 <command>zypper</command> 進行升級的過程中出現未預期的錯誤，請將導致風險的因素減至最低。
@@ -45,8 +53,8 @@ Please see LICENSE.txt for this document's license.
     <para>升級程序必須在從開始到重新開機這段時間內全部執行完畢。回復變更的機會非常有限。另外，在整個過程中，伺服器必須保持線上連接。
 </para>
   </warning>
- </sect3>
- <sect3>
+ </section>
+ <section>
   <title>升級程序</title>
   <warning>
    <title>檢查系統備份</title>
@@ -61,37 +69,37 @@ Please see LICENSE.txt for this document's license.
  
   <procedure>
     
-    <step performance="required">
+    <step>
       <para>重新整理所有服務及儲存庫：</para>
       <screen>zypper ref -s</screen>
     </step>
-    <step id="st-update-zypper-proc-softwarestack" performance="required">
+    <step xml:id="st-update-zypper-proc-softwarestack">
       <para>安裝任何套件管理更新︰</para>
       <screen>zypper up -t patch</screen>
       <para>如需詳細資訊，請參閱<xref linkend="cha-onlineupdate-you"/>。</para>
     </step>
-    <step performance="required">
+    <step>
     <para>重複<xref linkend="st-update-zypper-proc-softwarestack"/> 安裝系統的所有可用更新。
     </para>
     <para>旁註︰如果您要在用於無人管理升級的程序檔中使用上面的指令，請使用以下指令︰ </para>
     <screen>zypper --non-interactive patch --auto-agree-with-licenses --with-interactive</screen>
    </step>
-    <step performance="required">
+    <step>
       <para>從 <filename>/etc/products.d/*.prod</filename> 中讀取移轉產品資訊。安裝的產品包含套裝作業系統升級以及應該安裝哪些移轉產品來執行移轉的相關資訊。請使用下列指令安裝它們︰
       </para>
       <substeps performance="required">
-        <step performance="required">
+        <step>
           <para>擷取產品資訊︰</para>
           <screen>zypper se -t product | grep -h -- "-migration" | cut -d\| -f2</screen>
           <para>範例輸出可能如下所示︰</para>
           <screen>SUSE_SLES-SP3-migration
 sle-sdk-SP3-migration</screen>
         </step>
-        <step performance="required">
+        <step>
           <para>安裝這些移轉產品 (範例)︰</para>
           <screen>zypper in -t product sle-sdk-SP3-migration SUSE_SLES-SP3-migration</screen>
         </step>
-        <step performance="required">
+        <step>
           <para>註冊產品以便取得對應的更新儲存庫︰</para>
           <screen>suse_register -d 2 -L /root/.suse_register.log</screen>
           <warning>
@@ -102,29 +110,29 @@ sle-sdk-SP3-migration</screen>
       </substeps>      
     </step>
     
-    <step performance="required">
+    <step>
       <para>重新整理服務和儲存庫︰</para>
       <screen>zypper ref -s</screen>
     </step>
-    <step performance="required">
+    <step>
         <para>使用 <command>zypper lr</command> 檢查儲存庫。如果需要，請手動停用 SP1/SP2 <systemitem>Pool/Core/Updates</systemitem> 儲存庫，並啟用新的 SP3 (<systemitem>SP3-Pool</systemitem>、<systemitem>SP3-Updates</systemitem>) 儲存庫︰</para>
       <screen>zypper mr --disable <replaceable>REPOALIAS</replaceable>
 zypper mr --enable <replaceable>REPOALIAS</replaceable></screen>
     </step>
-    <step performance="required">
+    <step>
       <para>使用以下指令執行套裝作業系統升級 (範例適用於 SLES，如果是更新 SLED，請調整目錄名稱)︰</para>
       <screen>zypper dup --from SLES11-SP3-Pool --from SLES11-SP3-Updates </screen>
       <para>如果需要，您可以在此處新增更多目錄，例如，如果安裝了附加產品，便可以在此處新增。Zypper 會報告它將刪除移轉產品並更新主要產品。確認訊息以繼續更新 rpm 套件。</para>
     </step>
-    <step performance="required">
+    <step>
       <para>完成升級之後，重新註冊新產品：</para>
       <screen>suse_register -d 2 -L /root/.suse_register.log</screen>      
     </step>
-    <step performance="required">
+    <step>
       <para>將系統重新開機。</para>
       <screen>shutdown -r</screen>
     </step>
   </procedure>
    
- </sect3>
-</sect2>
+ </section>
+</section>

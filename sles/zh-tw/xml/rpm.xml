@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="rpm.xml" id="sec-rpm">
- <title>RPM──套件管理員</title><indexterm id="idx-RPM" class="startofrange"> <primary>RPM</primary> </indexterm> <indexterm> <primary>套件</primary> <secondary>RPM</secondary> </indexterm> <indexterm> <primary>套件</primary> <secondary>套件管理員</secondary> </indexterm> <indexterm> <primary>指令</primary> <secondary>rpm</secondary> </indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="rpm.xml" xml:id="sec-rpm">
+ <title>RPM──套件管理員</title><indexterm xml:id="idx-RPM" class="startofrange"> <primary>RPM</primary> </indexterm> <indexterm> <primary>套件</primary> <secondary>RPM</secondary> </indexterm> <indexterm> <primary>套件</primary> <secondary>套件管理員</secondary> </indexterm> <indexterm> <primary>指令</primary> <secondary>rpm</secondary> </indexterm>
 
  <para>
   RPM (RPM 套件管理員) 用於管理軟體套件。主要指令為 <command>rpm</command> 及 <command>rpmbuild</command>。使用者、系統管理員和套件建立者可以在功能強大的 RPM 資料庫中查詢已安裝軟體的詳細資訊。
@@ -29,20 +37,20 @@ Please see LICENSE.txt for this document's license.
   </para>
  </tip>
 
- <sect2 id="sec-rpm-package-auth">
+ <section xml:id="sec-rpm-package-auth">
   <title>確認套件驗證性</title><indexterm> <primary>RPM</primary> <secondary>驗證</secondary> </indexterm> <indexterm> <primary>套件</primary><secondary>驗證</secondary> </indexterm>
   <para>
-   RPM 套件具有 GPG 簽名。若要驗證 RPM 套件的簽名，請使用指令 <command>rpm --checksig <replaceable>套件</replaceable>-1.2.3.rpm</command> 來判斷套件是來自 Novell/SUSE，還是來自另一個可信任機構。特別建議在從網際網路更新套件時使用此指令。
+   RPM 套件具有 GPG 簽名。若要驗證 RPM 套件的簽名，請使用指令 <command>rpm --checksig</command> <replaceable>套件</replaceable>-1.2.3.rpm 來判斷套件是來自 Novell/SUSE，還是來自另一個可信任機構。特別建議在從網際網路更新套件時使用此指令。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-packages-manage">
+ <section xml:id="sec-rpm-packages-manage">
   <title>管理套件︰安裝、更新和解除安裝</title><indexterm> <primary>安裝</primary> <secondary>套件</secondary> </indexterm> <indexterm> <primary>套件</primary> <secondary>安裝</secondary> </indexterm> <indexterm> <primary>套件</primary> <secondary>解除安裝</secondary> </indexterm> <indexterm><primary>RPM</primary> <secondary>rpmorig</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmsave</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>rpmnew</secondary> </indexterm>
   <para>
-   一般而言，安裝 RPM 歸檔很簡單︰<command>rpm -i <replaceable>package</replaceable>.rpm</command>。使用此指令可安裝套件，但是必須滿足其相依性條件，而且不能與其他套件衝突。如果 <command>rpm</command> 要求要安裝的套件必須符合相依性要求，會顯示錯誤訊息。RPM 資料庫會在背景確定未產生衝突，亦即特定檔案僅可屬於一個套件。藉由選擇不同選項，您可以強迫 <command>rpm</command> 忽略這些預設，但只有進階使用者才可以這樣做。否則，會危及系統完整性，還可能危害更新系統的能力。
+   一般而言，安裝 RPM 歸檔很簡單︰<command>rpm -i</command> <replaceable>package</replaceable>.rpm。使用此指令可安裝套件，但是必須滿足其相依性條件，而且不能與其他套件衝突。如果 <command>rpm</command> 要求要安裝的套件必須符合相依性要求，會顯示錯誤訊息。RPM 資料庫會在背景確定未產生衝突，亦即特定檔案僅可屬於一個套件。藉由選擇不同選項，您可以強迫 <command>rpm</command> 忽略這些預設，但只有進階使用者才可以這樣做。否則，會危及系統完整性，還可能危害更新系統的能力。
   </para><indexterm> <primary>RPM</primary> <secondary>相依性</secondary> </indexterm>
   <para>
-   <option>-U</option> 或 <option>--upgrade</option> 以及 <option>-F</option> 或 <option>--freshen</option> 選項可用來更新套件 (例如，<command>rpm -F <replaceable>套件</replaceable>.rpm</command>)。此指令會移除舊版的檔案，並立刻安裝新檔案。兩個版本之間的不同在於 <option>-U</option> 會安裝先前系統中沒有的套件，而 <option>-F</option> 僅更新先前安裝的套件。在更新時，<command>rpm</command> 會使用下列策略小心地更新組態檔：
+   <option>-U</option> 或 <option>--upgrade</option> 以及 <option>-F</option> 或 <option>--freshen</option> 選項可用來更新套件 (例如，<command>rpm -F</command> <replaceable>套件</replaceable>.rpm)。此指令會移除舊版的檔案，並立刻安裝新檔案。兩個版本之間的不同在於 <option>-U</option> 會安裝先前系統中沒有的套件，而 <option>-F</option> 僅更新先前安裝的套件。在更新時，<command>rpm</command> 會使用下列策略小心地更新組態檔：
   </para><indexterm> <primary>RPM</primary> <secondary>更新</secondary> </indexterm>
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
@@ -71,11 +79,11 @@ Please see LICENSE.txt for this document's license.
    <option>-U</option> 切換參數的功能<emphasis>不</emphasis>不完全等同於使用 <option>-e</option> 選項進行解除安裝以及使用 <option>-i</option> 選項進行安裝。如果可能，請使用 <option>-U</option>。
   </para>
   <para>
-   若要移除套件，請輸入 <command>rpm -e <replaceable>套件</replaceable></command>. <command>rpm</command>，在不出現相依性問題的情況下刪除套件。只要其他應用程式還需要它，理論上無法刪除 Tcl/Tk。即使是這種情況下，RPM 還是可從資料庫呼叫以得到協助。如果由於某種原因無法進行這樣的刪除操作 (即使<emphasis>不</emphasis>存在其他相依性問題)，或許可以使用選項 <option>--rebuilddb</option> 來重建 RPM 資料庫。
+   若要移除套件，請輸入 <command>rpm -e</command> <replaceable>套件</replaceable>. <command>rpm</command>，在不出現相依性問題的情況下刪除套件。只要其他應用程式還需要它，理論上無法刪除 Tcl/Tk。即使是這種情況下，RPM 還是可從資料庫呼叫以得到協助。如果由於某種原因無法進行這樣的刪除操作 (即使<emphasis>不</emphasis>存在其他相依性問題)，或許可以使用選項 <option>--rebuilddb</option> 來重建 RPM 資料庫。
   </para><indexterm> <primary>RPM</primary> <secondary>解除安裝</secondary> </indexterm> <indexterm> <primary>RPM</primary> <secondary>資料庫</secondary> <tertiary>重建</tertiary> </indexterm>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-patches">
+ <section xml:id="sec-rpm-patches">
   <title>RPM 與修補程式</title><indexterm> <primary>RPM</primary> <secondary>修補程式</secondary> </indexterm>
   <para>
    為了確保系統的操作安全性，必須經常在系統上安裝更新套件。以前，要除去套件中的錯誤，只能夠更換整個套件。在大型套件中，如果某些小檔案包含錯誤，就很容易出現這種情況。但是，SUSE RPM 提供在套件中安裝修補程式的功能。
@@ -137,7 +145,7 @@ pine = 4.44-207</screen>
     </term>
     <listitem>
      <para>
-      使用指令 <command>rpm <option>-qPa</option></command> 可顯示系統中已經安裝的所有修補程式清單。如果新系統中僅安裝一個修補程式 (如本範例)，則清單顯示如下：
+      使用指令 <command>rpm</command> <option>-qPa</option> 可顯示系統中已經安裝的所有修補程式清單。如果新系統中僅安裝一個修補程式 (如本範例)，則清單顯示如下：
      </para>
 <screen>rpm -qPa
 pine-4.44-224</screen>
@@ -158,9 +166,9 @@ pine = 4.44-188</screen>
     為了儘可能減小更新的下載大小，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的正式更新以 Delta RPM 套件的形式提供，而不是以修補程式 RPM 的形式提供。如需詳細資料，請參閱<xref linkend="sec-rpm-delta"/>。
    </para>
   </note>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-delta">
+ <section xml:id="sec-rpm-delta">
   <title>Delta RPM 套件</title><indexterm> <primary>RPM</primary> <secondary>deltarpm</secondary> </indexterm> <indexterm> <primary>deltarpm</primary> </indexterm>
   <para>
    Delta RPM 套件包含舊版與新版 RPM 套件之間的差異。將 delta RPM 套用到舊版 RPM 上會產生一個全新的 RPM。但是您不需要取得舊版的 RPM，因為 delta RPM 也可以和安裝的 RPM 搭配使用。delta RPM 套件的大小比修補程式 RPM 還小，這一特點有利於透過網際網路傳送更新套件。缺點是使用 delta RPM 的更新作業會比一般或修補程式 RPM 消耗更多的 CPU 週期。
@@ -186,14 +194,14 @@ writedeltarpm new.rpm delta info new.delta.rpm</screen>
   <para>
    如需技術詳細資訊，請參閱 <filename>/usr/share/doc/packages/deltarpm/README</filename>。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-query">
+ <section xml:id="sec-rpm-query">
   <title>RPM 查詢</title><indexterm> <primary>RPM</primary> <secondary>查詢</secondary> </indexterm>
   <para>
    <command>rpm</command> 指令在使用 <option>-q</option> 選項時會啟動查詢，以便檢查 RPM 歸檔 (藉由新增選項 <option>-p</option> 的方式)，並查詢所安裝套件的 RPM 資料庫。有多個切換參數可用於指定所需的資訊類型。請參閱<xref linkend="tab-rpm-query"/>。
   </para>
-  <table id="tab-rpm-query">
+  <table xml:id="tab-rpm-query">
    <title>最重要的 RPM 查詢選項</title>
    <tgroup cols="2">
     <tbody>
@@ -323,7 +331,7 @@ writedeltarpm new.rpm delta info new.delta.rpm</screen>
   <para>
    例如，<command>rpm -q -i wget</command> 指令可顯示如 <xref linkend="aus-update-rpm-i"/> 中所示的資訊。
   </para>
-  <example id="aus-update-rpm-i">
+  <example xml:id="aus-update-rpm-i">
    <title>rpm -q -i wget</title>
 <screen>Name        : wget                         Relocations: (not relocatable)
 Version     : 1.11.4                            Vendor: openSUSE
@@ -352,7 +360,7 @@ wget-1.11.4-11.18.x86_64</screen>
   <para>
    如果只知道檔案名稱的一部分，可使用<xref linkend="dat-rpm-search"/> 中所示的外圍程序程序檔。執行時，可將部份檔案名稱當作參數傳給程序檔。
   </para>
-  <example id="dat-rpm-search">
+  <example xml:id="dat-rpm-search">
    <title>搜尋套件的程序檔</title>
 <screen>#! /bin/sh
 for i in $(rpm -q -a -l | grep $1); do
@@ -368,7 +376,7 @@ done</screen>
   <para>
    藉由安裝的 RPM 資料庫協助，可執行驗證檢查。這些檢查可以使用 <option>-V</option>、<option>-y</option> 或 <option>--verify</option> 來啟動。使用此選項，<command>rpm</command> 可顯示從安裝開始，套件中所有變更過的檔案。<command>rpm</command> 使用八個字元的符號來提供下列變更的提示：
   </para><indexterm> <primary>RPM</primary><secondary>驗證</secondary> </indexterm>
-  <table id="tab-rpm-verify">
+  <table xml:id="tab-rpm-verify">
    <title>RPM 驗證選項</title>
    <tgroup cols="2">
     <tbody>
@@ -479,9 +487,9 @@ S.5....T c /etc/wgetrc</screen>
   <para>
    RPM 資料庫的檔案放在 <filename>/var/lib/rpm</filename>。如果分割區 <filename>/usr</filename> 的大小為 1 GB，此資料庫將佔用 30 MB 左右的空間，尤其是在完整更新之後。如果資料庫遠大於預期，使用選項 <option>--rebuilddb</option> 來重建資料庫很有用。在執行之前，請備份舊的資料庫。<command>cron</command> 程序檔 <command>cron.daily</command> 會對資料庫做每日備份 (以 gzip 封裝)，並將備份儲存在 <filename>/var/adm/backup/rpmdb</filename> 中。副本數量由 <filename>/etc/sysconfig/backup</filename> 中的變數 <systemitem>MAX_RPMDB_BACKUPS</systemitem> (預設值︰<option>5</option>) 控制。單一備份的大小大約是 1 GB 的 <filename>/usr</filename> 備份成 1 MB。
   </para><indexterm> <primary>RPM</primary> <secondary>資料庫</secondary> <tertiary>重建</tertiary> </indexterm>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-sources">
+ <section xml:id="sec-rpm-sources">
   <title>安裝與編譯來源套件</title><indexterm> <primary>套件</primary> <secondary>編譯</secondary> </indexterm> <indexterm> <primary>來源</primary> <secondary>編譯</secondary> </indexterm> <indexterm> <primary>軟體</primary> <secondary>編譯</secondary> </indexterm> <indexterm> <primary>spm </primary> </indexterm>
   <para>
    所有來源套件均帶有副檔名 <filename>.src.rpm</filename> (來源 RPM)。
@@ -556,7 +564,7 @@ S.5....T c /etc/wgetrc</screen>
 /usr/src/packages/SOURCES/wgetrc.patch
 /usr/src/packages/SPECS/wget.spec</screen>
   <para>
-   <command>rpmbuild -b <replaceable>X</replaceable> /usr/src/packages/SPECS/wget.spec</command> 可開始編譯。<replaceable>X</replaceable> 代表建立程序各種階段的萬用字元 (請參閱 <option>--help</option> 的輸出或 RPM 文件以取得詳細資訊)。以下僅為簡略的說明：
+   <command>rpmbuild -b</command> <replaceable>X</replaceable> /usr/src/packages/SPECS/wget.spec 可開始編譯。<replaceable>X</replaceable> 代表建立程序各種階段的萬用字元 (請參閱 <option>--help</option> 的輸出或 RPM 文件以取得詳細資訊)。以下僅為簡略的說明：
   </para>
   <variablelist>
    <varlistentry>
@@ -615,14 +623,14 @@ S.5....T c /etc/wgetrc</screen>
    </varlistentry>
   </variablelist>
   <para>
-   現在可使用 <command>rpm <option>-i</option></command> (最好使用 <command>rpm <option/>-U</command>) 來安裝所建立的二進位 RPM。使用 <command>rpm</command> 來安裝會讓它出現在 RPM 資料庫中。
+   現在可使用 <command>rpm</command> <option>-i</option> (最好使用 <command>rpm</command> <option/>-U) 來安裝所建立的二進位 RPM。使用 <command>rpm</command> 來安裝會讓它出現在 RPM 資料庫中。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-build">
+ <section xml:id="sec-rpm-build">
   <title>以 build 編譯 RPM 套件</title><indexterm> <primary>套件</primary> <secondary>以 build 編譯</secondary> </indexterm>
   <para>
-   許多套件中都包含不想要的檔案，它們會在 build 程序中增到執行系統中，因為導致危險產生。若要避免此狀況，可以使用 <systemitem>build</systemitem>，它會建立要在其中建置套件的定義環境。若要建立此 chroot 環境，必須提供 <command>build</command> 程序檔與完整的套件樹狀結構。此樹狀結構可在硬碟上、透過 NFS 或從 DVD 取得。用 <command>build --rpms <replaceable>directory</replaceable></command> 設定位置。與 <command>rpm</command> 不同，<command>build</command> 指令在來源目錄中尋找 <filename>.spec</filename> 檔。若要以掛接在系統的 <filename>/media/dvd</filename> 之下的 DVD 建立 <filename>wget</filename> (如上面的範例)，請以 <systemitem class="username">root</systemitem> 身分執行下列指令：
+   許多套件中都包含不想要的檔案，它們會在 build 程序中增到執行系統中，因為導致危險產生。若要避免此狀況，可以使用 <systemitem>build</systemitem>，它會建立要在其中建置套件的定義環境。若要建立此 chroot 環境，必須提供 <command>build</command> 程序檔與完整的套件樹狀結構。此樹狀結構可在硬碟上、透過 NFS 或從 DVD 取得。用 <command>build --rpms</command> <replaceable>directory</replaceable> 設定位置。與 <command>rpm</command> 不同，<command>build</command> 指令在來源目錄中尋找 <filename>.spec</filename> 檔。若要以掛接在系統的 <filename>/media/dvd</filename> 之下的 DVD 建立 <filename>wget</filename> (如上面的範例)，請以 <systemitem class="username">root</systemitem> 身分執行下列指令：
   </para>
 <screen>cd /usr/src/packages/SOURCES/
 mv ../SPECS/wget.spec .
@@ -631,11 +639,11 @@ build --rpms /media/dvd/suse/ wget.spec</screen>
    之後，系統便會在 <filename>/var/tmp/build-root</filename> 中建立一個最小的環境。套件將於此環境中建立。完成時，結果套件位於 <filename>/var/tmp/build-root/usr/src/packages/RPMS</filename> 中。
   </para>
   <para>
-   <command>build</command> 程序檔可提供數個額外選項。例如，讓程序檔偏好使用您自己的 RPM、省略建置環境的啟始化，或將 <command>rpm</command> 指令限制在上述某個階段。可使用 <command>build <option>--help</option></command> 以及參閱 <command>build</command> man 頁面來存取其他資訊。
+   <command>build</command> 程序檔可提供數個額外選項。例如，讓程序檔偏好使用您自己的 RPM、省略建置環境的啟始化，或將 <command>rpm</command> 指令限制在上述某個階段。可使用 <command>build</command> <option>--help</option> 以及參閱 <command>build</command> man 頁面來存取其他資訊。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-rpm-tools">
+ <section xml:id="sec-rpm-tools">
   <title>RPM 歸檔和 RPM 資料庫工具</title><indexterm> <primary>RPM</primary> <secondary>工具</secondary> </indexterm>
   <para>
    Midnight Commander (<command>mc</command>) 可顯示 RPM 歸檔的內容，並複製部分內容。它將歸檔以虛擬檔案系統呈現，提供 Midnight Commander 的所有常見功能表選項。使用 <keycap>F3</keycap> 可顯示 <filename>HEADER</filename>。使用游標和 <keycap>Enter</keycap> 可檢視歸檔結構。使用 <keycap>F5</keycap> 可複製歸檔元件。
@@ -646,5 +654,5 @@ build --rpms /media/dvd/suse/ wget.spec</screen>
    具有完整功能的套件管理員是以 YaST 模組的方式提供。如需詳細資料，請參閱<xref linkend="cha-y2-sw"/>。
   </para><indexterm class="endofrange" startref="idx-RPM"/>
 
- </sect2>
-</sect1>
+ </section>
+</section>

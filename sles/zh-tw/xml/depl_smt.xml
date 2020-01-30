@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="depl_smt.xml" id="cha-smt">
- <title>訂閱管理</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="depl_smt.xml" xml:id="cha-smt"><title>訂閱管理</title><info/>
+ 
 
  <para>
   任何執行 SUSE Linux Enterprise Server 11 或 SUSE Linux Enterprise Desktop 11 的機器都可以做以下設定︰向本地 Subscription Management Tool 伺服器註冊以下載軟體更新，而不是直接與 Novell Customer Center 及 NU 伺服器進行通訊。若要將 SMT 伺服器用於用戶端註冊並做為本地更新來源，必須先在網路中對 SMT 伺服器進行設定。SMT 伺服器軟體以 SUSE Linux Enterprise Server 附加產品的形式配送，《<emphasis>Subscription Management Tool Guide</emphasis>》(Subscription Management Tool 指南) 中對它的組態做了說明。不需要在要設定為註冊到 SMT 伺服器的用戶端上安裝任何附加產品。
@@ -25,7 +33,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   您可以使用多種方法提供此資訊，以及將用戶端機器設定為使用 SMT。第一種方法是在開機時透過核心參數提供所需的資訊。第二種方法是使用 AutoYaST 設定檔設定用戶端。此外還有一個隨 Subscription Management Tool 配送的程序檔 <command>clientSetup4SMT.sh</command>，您可在用戶端上執行該程序檔，將用戶端註冊於指定的 SMT 伺服器上。以下幾節將對這些方法進行說明︰
  </para>
- <sect1 id="smt-client-parameters">
+ <section xml:id="smt-client-parameters">
   <title>使用核心參數存取 SMT 伺服器</title>
 
   <para>
@@ -115,8 +123,8 @@ Please see LICENSE.txt for this document's license.
     如果 SMT 伺服器從不受信任的新 CA 處獲取了新證書，則用戶端需要擷取這個新 CA 證書檔案。註冊程序會自動完成此操作，但只有在安裝時使用了 URL 擷取證書，或者在省略了 <literal>regcert</literal> 參數因而使用預設 URL 的情況下才會如此。如果載入證書時使用的是其他的方法，例如使用磁片或本地路徑，則 CA 證書將不會更新。
    </para>
   </warning>
- </sect1>
- <sect1 id="smt-client-autoyast">
+ </section>
+ <section xml:id="smt-client-autoyast">
   <title>使用 AutoYaST 設定檔設定用戶端</title>
 
   <para>
@@ -128,7 +136,7 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 身分啟動 YaST，然後選取<menuchoice><guimenu>其他</guimenu> <guimenu>自動安裝</guimenu></menuchoice>，啟動 AutoYaST 的圖形前端。
     </para>
@@ -137,45 +145,45 @@ Please see LICENSE.txt for this document's license.
 
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<menuchoice><guimenu>檔案</guimenu> <guimenu>開啟</guimenu></menuchoice>開啟現有的設定檔，使用<menuchoice><guimenu>工具</guimenu> <guimenu>建立參考設定檔</guimenu></menuchoice>以目前系統的組態為基礎建立設定檔，或建立一個空的設定檔。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      選取<menuchoice><guimenu>支援</guimenu> <guimenu>Novell Customer Center 組態</guimenu></menuchoice>。目前組態的綜覽即會顯示。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      按一下<guimenu>編輯</guimenu>。
     </para>
    </step>
-   <step performance="required">
+   <step>
 
     <para>
      若要在自動安裝時註冊，請選取<guimenu>執行產品註冊</guimenu>。可以使用<guimenu>硬體設定檔</guimenu>與<guimenu>選擇性資訊</guimenu>包含系統資訊。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      設定<guimenu>SMT 伺服器</guimenu>的 URL，並選擇性地設定<guimenu>SMT 證書</guimenu>的位置。可能的值與核心參數 <literal>regurl</literal> 和 <literal>regcert</literal> 的值相同 (請參閱<xref linkend="smt-client-parameters"/>)。唯一的例外是，<literal>regcert</literal> 的 <literal>ask</literal> 值在 AutoYaST 中不起作用，因為設定為該值將需要使用者的互動。如果使用該值，將會跳過該註冊程序。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      執行要部署之系統所需的所有其他組態。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      選取<menuchoice><guimenu>檔案</guimenu> <guimenu>另存新檔</guimenu></menuchoice>，然後輸入設定檔的檔案名稱，例如 <filename>autoinst.xml</filename>。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="smt-client-clientsetupscript">
+ </section>
+ <section xml:id="smt-client-clientsetupscript">
   <title>使用 clientSetup4SMT.sh 程序檔設定用戶端</title>
 
   <para>
@@ -187,14 +195,14 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      將 <filename>/usr/share/doc/packages/smt/clientSetup4SMT.sh</filename> 程序檔從您的 SMT 伺服器複製到用戶端機器。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     以 <systemitem class="username">root</systemitem> 身分在用戶端機器上執行該程序檔。可採用以下兩種方法執行程序檔︰在第一種方法中，程序檔名稱後接註冊 URL︰<command>./clientSetup4SMT.sh <replaceable>註冊 URL</replaceable></command>，例如，<command>./clientSetup4SMT.sh https://smt.example.com/center/regsvc</command>。在第二種方法中，程序檔名稱後接 <option>--host</option> 選項，後面再跟著 SMT 伺服器的主機名稱︰<command>./clientSetup4SMT.sh --host <replaceable>伺服器主機名稱</replaceable></command>，例如，<command>./clientSetup4SMT.sh --host smt.example.com</command>。
+     以 <systemitem class="username">root</systemitem> 身分在用戶端機器上執行該程序檔。可採用以下兩種方法執行程序檔︰在第一種方法中，程序檔名稱後接註冊 URL︰<command>./clientSetup4SMT.sh</command> <replaceable>註冊 URL</replaceable>，例如，<command>./clientSetup4SMT.sh https://smt.example.com/center/regsvc</command>。在第二種方法中，程序檔名稱後接 <option>--host</option> 選項，後面再跟著 SMT 伺服器的主機名稱︰<command>./clientSetup4SMT.sh --host</command> <replaceable>伺服器主機名稱</replaceable>，例如，<command>./clientSetup4SMT.sh --host smt.example.com</command>。
     </para>
     
     <important>
@@ -205,17 +213,17 @@ Please see LICENSE.txt for this document's license.
     </important>
     
    </step>
-   <step performance="required">
+   <step>
     <para>
      程序檔會下載伺服器的 CA 憑證。按 <keycap>y</keycap> 接受憑證。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      程序檔會在用戶端上執行所有必要的修改。但是，註冊這個程序本身並不是由程序檔執行。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      透過執行用戶端上的 <command>suse_register</command> 或 <command>yast2 inst_suse_register</command> 模組執行註冊。
     </para>
@@ -225,8 +233,8 @@ Please see LICENSE.txt for this document's license.
 
 
 
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>在 SMT 測試環境下註冊用戶端</title>
 
   <para>
@@ -240,5 +248,5 @@ Please see LICENSE.txt for this document's license.
   <para>
    如需關於在測試環境下使用 SMT 的詳細資訊，請參閱《<emphasis>Management Tool Guide</emphasis>》(Subscription Management Tool 指南)。
   </para>
- </sect1>
+ </section>
 </chapter>

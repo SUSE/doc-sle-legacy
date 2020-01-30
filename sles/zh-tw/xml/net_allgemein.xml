@@ -1,29 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_allgemein.xml" id="cha-basicnet">
- <title>基本網路</title><indexterm> <primary>網路</primary></indexterm><indexterm><primary>Linux</primary><secondary>網路和 </secondary></indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_allgemein.xml" xml:id="cha-basicnet"><?dbfo-need height="10em"?><?dbfo-need height="20em"?><title>基本網路</title><info><abstract>
   <para>
    Linux 提供所有必要的網路工具及功能，以整合到所有類型的網路結構。使用網路卡、數據機或其他裝置進行的網路存取可以使用 YaST 來設定。也可使用手動方式來設定組態。本章僅討論基本機制及相關的網路組態檔案。
   </para>
- </abstract><indexterm> <primary>TCP/IP</primary></indexterm><indexterm><primary>網路</primary><secondary>TCP/IP </secondary></indexterm>
+ </abstract></info>
+ <indexterm> <primary>網路</primary></indexterm><indexterm><primary>Linux</primary><secondary>網路和 </secondary></indexterm>
+ <indexterm> <primary>TCP/IP</primary></indexterm><indexterm><primary>網路</primary><secondary>TCP/IP </secondary></indexterm>
  <para>
   Linux 及其他 Unix 作業系統使用 TCP/IP 通訊協定。它不是單一網路通訊協定，而是能夠提供各種服務的網路通訊協定家族的一員。<xref linkend="tab-net-allg-tcpproto"/> 中所列的通訊協定，其用途是透過 TCP/IP 在兩個機器之間交換資料。由 TCP/IP 組合而成的各個網路形成了一個全球範圍的大網路，也稱為<quote>網際網路</quote>。
  </para>
  <para>
-  <indexterm><primary>RFC</primary></indexterm> RFC 代表<emphasis>要求建議 (Request for Comments)</emphasis>。RFC 是描述作業系統及其應用程式的各種網際網路通訊協定和執行程序的文件。RFC 文件描述網際網路通訊協定的設定。若要擴展您對於某種通訊協定的瞭解，請參閱相應的 RFC 文件。<ulink url="http://www.ietf.org/rfc.html"/> 上提供了這些文件。
+  <indexterm><primary>RFC</primary></indexterm> RFC 代表<emphasis>要求建議 (Request for Comments)</emphasis>。RFC 是描述作業系統及其應用程式的各種網際網路通訊協定和執行程序的文件。RFC 文件描述網際網路通訊協定的設定。若要擴展您對於某種通訊協定的瞭解，請參閱相應的 RFC 文件。<link xlink:href="http://www.ietf.org/rfc.html"/> 上提供了這些文件。
  </para>
-<?dbfo-need height="10em"?>
 
 
- <table id="tab-net-allg-tcpproto">
+
+ <table xml:id="tab-net-allg-tcpproto">
   <title>TCP/IP 通訊協定家族中的數種通訊協定</title>
   <tgroup cols="2">
    <thead>
@@ -95,7 +103,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   如 <xref linkend="fig-net-allg-OSI"/> 中所顯示，資料交換發生在不同層。實際的網路層是透過 IP (網際網路通訊協定，Internet Protocol) 進行不安全的資料傳輸。在 IP 的上方，TCP (傳輸控制通訊協定，Transmission Control Protocol) 可以保證資料傳輸某種程度的安全性。IP 層是由基本的硬體相依通訊協定所支援，例如乙太網路。
  </para>
- <figure id="fig-net-allg-OSI">
+ <figure xml:id="fig-net-allg-OSI">
   <title>TCP/IP 的簡化層模型</title>
   <mediaobject>
    <imageobject role="fo">
@@ -115,7 +123,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   因為每層有自己指定的功能，關於每層的其他資訊必須儲存於資料封包中。這些資訊放在封包的「<emphasis>標頭</emphasis>」中。每層皆在產生的封包前端附加小的資料區塊，稱為通訊協定標頭。在乙太網路纜線上傳送的 TCP/IP 資料封包範例，可參閱在 <xref linkend="fig-net-allg-TCPPaket"/> 中的說明。proof sum 位於封包結尾，不在開頭處。這樣可幫助網路硬體簡化程序。<indexterm> <primary>TCP/IP</primary> <secondary>封包</secondary> </indexterm>
  </para>
- <figure id="fig-net-allg-TCPPaket">
+ <figure xml:id="fig-net-allg-TCPPaket">
   <title>TCP/IP 乙太網路封包</title>
   <mediaobject>
    <imageobject role="fo">
@@ -129,19 +137,19 @@ Please see LICENSE.txt for this document's license.
  <para>
   當應用程式在網路上傳送資料時，資料會經過每一層，除實體層外，全部在 Linux 核心執行。每層都負責準備資料使其能夠傳送到下一層。最底層最後要負責傳送資料。接收到資料時則反轉執行整個程序。就如同洋蔥的層級一般，在每層中，會從已傳輸的資料上移除通訊協定標頭。最後，傳輸層負責讓目的地端的應用程式可以使用資料。以這種方式，每層僅直接與上下兩層通訊。對於應用程式而言，無論資料是透過 100 MBit/s FDDI 網路或 56-Kbit/s 數據線進行傳輸，都沒有關係。同樣地，對於資料線而言，只要封包的格式正確，無論傳送的是哪種類型的資料也是無關的。
  </para>
- <sect1 id="sec-basicnet-addresses">
+ <section xml:id="sec-basicnet-addresses">
   <title>IP 位址與路由</title><indexterm> <primary>IP 位址</primary> </indexterm> <indexterm> <primary>網路</primary> <secondary>路由</secondary> </indexterm> <indexterm> <primary>路由</primary> </indexterm>
 
   <para>
    在此節中的討論僅限於 IPv4 網路。如需有關 IPv6 通訊協定 (IPv4 的後繼者) 的資訊，請參閱<xref linkend="sec-basicnet-ipv6"/>。
   </para>
 
-  <sect2 id="sec-basicnet-addresses-ip">
+  <section xml:id="sec-basicnet-addresses-ip">
    <title>IP 位址</title>
    <para>
     網際網路上的每台電腦都有唯一的 32 位元位址。這些 32 位元 (或 4 位元組) 一般所寫入的格式，如 <xref linkend="aus-net-allg-ipaddress"/> 中的第二列所述。
    </para>
-   <example id="aus-net-allg-ipaddress">
+   <example xml:id="aus-net-allg-ipaddress">
     <title>寫入 IP 位址</title>
 <screen>IP Address (binary):  11000000 10101000 00000000 00010100
 IP Address (decimal):      192.     168.       0.      20</screen>
@@ -152,9 +160,9 @@ IP Address (decimal):      192.     168.       0.      20</screen>
    <para>
     IP 位址中的點表示階層系統。直到 1990 年代，IP 位址仍嚴格地以類別加以分類。然而，事實證明此系統太過死板，因此已停止使用。現在，則是使用<emphasis>無類別路由 (classless routing)</emphasis>，即 CIDR (無類別網域間路由，classless interdomain routing)。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-addresses-route">
+  <section xml:id="sec-basicnet-addresses-route">
    <title>網路遮罩與路由</title><indexterm> <primary>路由</primary> <secondary>網路遮罩</secondary> </indexterm> <indexterm> <primary>網路遮罩</primary> <secondary>路由</secondary> </indexterm> <indexterm> <primary>網路遮罩</primary> <secondary>網路遮罩</secondary> </indexterm>
    <para>
     網路遮罩是用來定義子網路的位址範圍。如果兩台主機位於相同的子網路遮罩內，他們可以直接連接。如果不在同一個子網路遮罩內，則需要閘道位址，由閘道處理子網路的所有流量。若要檢查兩個 IP 位址是否位於同一子網路，只要使用網路遮罩 <quote>AND</quote> 兩個位址。如果結果相同，兩個 IP 位址位於同一個網路。如果不同，遠端的 IP 位址，即為遠端介面，只能透過閘道來通訊。
@@ -162,7 +170,7 @@ IP Address (decimal):      192.     168.       0.      20</screen>
    <para>
     若要瞭解網路遮罩如何作用，請參閱<xref linkend="tab-net-allg-netmask"/>。網路遮罩由 32 位元組成，可辨認 IP 位址屬於哪個網路。這些位元為 <literal>1</literal> 標示 IP 位址中的對應位元，即表示為同屬一個網路。所有位元為 <literal>0</literal> 標示位元在子網路內。這表示愈多位元為 <literal>1</literal>，子網路就愈小。因為網路遮罩永遠由多個連續的 <literal>1</literal> 組成，也可以計算網路遮罩內的位元數。<xref linkend="tab-net-allg-netmask"/>中，第一個 24 位元的網路也可寫成 <literal>192.168.0.0/24</literal>。
    </para>
-   <example id="tab-net-allg-netmask">
+   <example xml:id="tab-net-allg-netmask">
     <title>連結 IP 位址到網路遮罩</title>
 <screen>
 IP address (192.168.0.20):  11000000 10101000 00000000 00010100
@@ -186,7 +194,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    <para>
     如果已經設定閘道，所有的外部 IP 封包會傳送到適當的閘道。然後此閘道會試圖以同樣方式傳送封包--主機對主機--直到連結到目標主機或封包 TTL (持續時間) 過期。
    </para>
-   <table id="net-allg-spezial-net">
+   <table xml:id="net-allg-spezial-net">
     <title>特定位址</title>
     <tgroup cols="2">
      <thead>
@@ -246,7 +254,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    <para>
     因為 IP 位址在全世界必須是唯一的，您不能只選取隨機位址。如果要設立私人 IP 結構的網路，有三種位址網域可以使用。這些將無法從其他網際網路取得連結，因為他們無法透過網路傳送。這些位址網域在 RFC 1597 指定並列於 <xref linkend="tab-net-allg-privat-net"/> 中。<indexterm> <primary>IP 位址</primary> <secondary>私人</secondary> </indexterm>
    </para>
-   <table id="tab-net-allg-privat-net">
+   <table xml:id="tab-net-allg-privat-net">
     <title>私人 IP 位址網域</title>
     <tgroup cols="2">
      <thead>
@@ -303,9 +311,9 @@ In the decimal system:           213.      95.      15.       0</screen>
      </tbody>
     </tgroup>
    </table>
-  </sect2>
- </sect1>
- <sect1 id="sec-basicnet-ipv6">
+  </section>
+ </section>
+ <section xml:id="sec-basicnet-ipv6">
   <title>IPv6 --下一代的網際網路</title><indexterm> <primary>IP 位址</primary> <secondary>IPv6</secondary> </indexterm> <indexterm> <primary>通訊協定</primary> <secondary>IPv6</secondary> </indexterm>
 
   <important arch="zseries" os="sles">
@@ -317,7 +325,7 @@ In the decimal system:           213.      95.      15.       0</screen>
   </important>
 
   <para>
-   由於全球資訊網 (WWW) 的出現，過去十五年內，越來越多的電腦透過 TCP/IP 進行通訊，網際網路的規模發生了爆炸性的增長。自從 CERN 的 Tim Berners-Lee (<ulink url="http://public.web.cern.ch"/>) 於 1990 年發明 WWW 以來，網際網路主機的數量從幾千台成長為幾百萬台。
+   由於全球資訊網 (WWW) 的出現，過去十五年內，越來越多的電腦透過 TCP/IP 進行通訊，網際網路的規模發生了爆炸性的增長。自從 CERN 的 Tim Berners-Lee (<link xlink:href="http://public.web.cern.ch"/>) 於 1990 年發明 WWW 以來，網際網路主機的數量從幾千台成長為幾百萬台。
   </para>
 
   <para>
@@ -332,7 +340,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    透過 IPv6，位址短少及繁複組態的情形應該都成為過去式了。以下小節說明更多 IPv6 改善的部分及它帶來的好處，還有關於從舊通訊協定轉移到新通訊協定的資訊。
   </para>
 
-  <sect2 id="sec-basicnet-ipv6-adv">
+  <section xml:id="sec-basicnet-ipv6-adv">
    <title>優點</title>
    <para>
     新通訊協定帶來的最重要、最顯而易見的改善，是能夠大量擴充可用的位址空間。IPv6 位址是由 128 個位元值組成，而不是傳統的 32 位元。這樣提供了數以千兆的 IP 位址。
@@ -388,13 +396,13 @@ In the decimal system:           213.      95.      15.       0</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
 <?dbfo-need height="10em"?>
 
 
 
-  <sect2 id="sec-basicnet-ipv6-address">
+  <section xml:id="sec-basicnet-ipv6-address">
    <title>定址類型與結構</title>
    <para>
     如上述，目前 IP 通訊協定有兩個重要缺失：IP 位址的短缺越來越嚴重，以及設定網路與管理輪遞表成為複雜而繁重的任務。IPv6 透過擴充位址空間到 128 個位元解決了第一個問題。第二個問題的解決方式則是引入階層位址結構，結合配置網路位址的複雜技術，以及 <emphasis>multihoming</emphasis> (指定數個位址到一個裝置，可以存取數個網路)。
@@ -431,7 +439,7 @@ In the decimal system:           213.      95.      15.       0</screen>
    <para>
     IPv6 位址由八個四位數欄位組成，每個都代表 16 個位元，以十六進位標記法寫入。位址與位址之間以冒號 (<literal>:</literal>) 分隔。指定欄位內的任何前導零位元組可以刪除，但是欄位內或尾端的零不能刪除。另一個慣例是多於四個連續的零位元組可能會摺疊成兩個冒號。然而，每個位址只允許一個 <literal>::</literal>。這類的簡略的標記法，顯示於<xref linkend="aus-netz-ipv6-add"/> 中，其中三行都是代表相同的位址。
    </para>
-   <example id="aus-netz-ipv6-add">
+   <example xml:id="aus-netz-ipv6-add">
     <title>範例 IPv6 位址</title>
 <screen>fe80 : 0000 : 0000 : 0000 : 0000 : 10 : 1000 : 1a4
 fe80 :    0 :    0 :    0 :    0 : 10 : 1000 : 1a4
@@ -440,14 +448,14 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
    <para>
     IPv6 位址的每個部分都有定義的功能。第一個位元組形成字首，指定位址類型。中間的部分是位址的網路部分，但是可能不會使用。位址的尾端形成主機部分。透過 IPv6，在位址尾端的斜線後表示字首的長度，可以定義網路遮罩。位址如 <xref linkend="aus-netz-ipv6-addpre"/> 中所示，包含的資訊是形成位址網路部分的前 64 個位元以及形成其主機部分的最後 64 個位元。換句話說，<literal>64</literal> 表示網路遮罩從左邊開始填入 64 個 1 位元值。就像 IPv4 一樣，IP 位址使用 AND 結合網路遮罩的值，判斷主機是否位於相同的子網路或另一個子網路。
    </para>
-   <example id="aus-netz-ipv6-addpre">
+   <example xml:id="aus-netz-ipv6-addpre">
     <title>指定字首長度的 IPv6 位址</title>
 <screen>fe80::10:1000:1a4/64</screen>
    </example>
    <para>
     IPv6 知道關於數個字首的預定類型。有一些顯示在 <xref linkend="tab-net-allg-ipv6-prefix"/> 中。
    </para>
-   <table id="tab-net-allg-ipv6-prefix">
+   <table xml:id="tab-net-allg-ipv6-prefix">
     <title>各種 IPv6 字首</title>
     <tgroup cols="2">
      <thead>
@@ -626,9 +634,9 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
    <para>
     如果主機要在不同的網路之間往返，至少需要兩個位址。其中一個，即<emphasis>主位址</emphasis>，不僅包含了介面識別碼，也包含了其通常所屬之主網路 (及其對應字首) 的識別碼。主位址是靜態位址，因此它通常不會變更。儘管如此，預定要送到行動主機的所有封包，還是可以傳送到主位址，無論是在主網路或其他外部網路中操作。這可藉由 IPv6 全新功能來達成，如「<emphasis>無狀態自動設定</emphasis>」與「<emphasis>網路芳鄰探查</emphasis>」。除了其主位址外，行動主機也取得一或多個其他的位址，這些位址屬於漫遊的外部網路。這些外部網路稱為 <emphasis>care-of</emphasis> 位址。主網路具有封包在外部漫遊時轉寄預定要送到主機的裝置。在 IPv6 環境中，這個任務是由<emphasis>主代理程式</emphasis>執行的，它會取得所有預定要送到主位址的封包，透過通道轉送它們。另一方面，預定送到 care-of 位址的封包會直接傳送到行動主機，不會特別繞行。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-ipv6-coexist">
+  <section xml:id="sec-basicnet-ipv6-coexist">
    <title>IPv4 與 IPv6 的共存</title>
    <para>
     連接網際網路的所有主機從 IPv4 轉移到 IPv6 是一種漸進程序。這兩種通訊協定某些時候會共存。在一個系統上共存，可保證執行兩種通訊協定的「<emphasis>雙重堆疊</emphasis>」。但是仍出現一些問題，就是使用 IPv6 的主機如何與 IPv4 主機通訊，以及由 IPv4 結構主導的目前網路如何傳輸 IPv6 封包。最佳的解決方案是提供通道及相容性位址 (請參閱<xref linkend="sec-basicnet-ipv6-address"/>)。
@@ -665,9 +673,9 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-ipv6-config">
+  <section xml:id="sec-basicnet-ipv6-config">
    <title>設定 IPv6</title><indexterm> <primary>設定</primary> <secondary>IPv6</secondary> </indexterm> <indexterm> <primary>網路</primary> <secondary>設定</secondary> <tertiary>IPv6</tertiary> </indexterm> <indexterm> <primary>IP 位址</primary> <secondary>IPv6</secondary> <tertiary>設定</tertiary> </indexterm>
 
    <para>
@@ -679,16 +687,16 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
    <para>
     請參閱 ifcfg-tunnel (5) man 頁面，瞭解如何使用 <filename>/etc/sysconfig/network</filename> 檔案來設定不同類型的通道。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-basicnet-ipv6-moreinfo">
+  <section xml:id="sec-basicnet-ipv6-moreinfo">
    <title>更多資訊</title>
    <para>
     上述綜覽沒有完整地涵蓋 IPv6 主題。如需更深入的探討這種新的通訊協定，請參閱以下線上文件和書籍：
    </para>
    <variablelist>
     <varlistentry>
-     <term><ulink url="http://www.ipv6.org/"/>
+     <term><link xlink:href="http://www.ipv6.org/"/>
      </term>
      <listitem>
       <para>
@@ -697,7 +705,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><ulink url="http://www.ipv6day.org"/>
+     <term><link xlink:href="http://www.ipv6day.org"/>
      </term>
      <listitem>
       <para>
@@ -706,7 +714,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><ulink url="http://www.ipv6-to-standard.org/"/>
+     <term><link xlink:href="http://www.ipv6-to-standard.org/"/>
      </term>
      <listitem>
       <para>
@@ -715,7 +723,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
     <varlistentry>
-     <term><ulink url="http://www.bieringer.de/linux/IPv6/"/>
+     <term><link xlink:href="http://www.bieringer.de/linux/IPv6/"/>
      </term>
      <listitem>
       <para>
@@ -740,9 +748,9 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-basicnet-nameres">
+  </section>
+ </section>
+ <section xml:id="sec-basicnet-nameres">
   <title>名稱解析</title><indexterm> <primary>DNS</primary> </indexterm> <indexterm> <primary>網路</primary> <secondary>DNS</secondary> </indexterm>
 
   <para>
@@ -762,7 +770,7 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
   </para><indexterm> <primary>組態檔案</primary> <secondary>主機</secondary> </indexterm>
 
   <para>
-   階層的最上層是由「<emphasis>root 名稱伺服器</emphasis>」(root name server) 所使用。這些 root 名稱伺服器管理最上層網域，且由「網路資訊中心」(Network Information Center，NIC) 負責管理。每個 root 名稱伺服器知道負責指定最上層網域的名稱伺服器。有關最上層網域 NIC 的資訊可從 <ulink url="http://www.internic.net"/> 取得。
+   階層的最上層是由「<emphasis>root 名稱伺服器</emphasis>」(root name server) 所使用。這些 root 名稱伺服器管理最上層網域，且由「網路資訊中心」(Network Information Center，NIC) 負責管理。每個 root 名稱伺服器知道負責指定最上層網域的名稱伺服器。有關最上層網域 NIC 的資訊可從 <link xlink:href="http://www.internic.net"/> 取得。
   </para><indexterm> <primary>DNS</primary> <secondary>NIC</secondary> </indexterm>
 
   <para>
@@ -788,16 +796,16 @@ fe80 :                           : 10 : 1000 : 1a4</screen>
     如果要在安裝期間關閉 MDNS，請使用 <literal>nomdns=1</literal> 做為開機參數。
    </para>
    <para>
-    如需有關多路廣播 DNS 的詳細資訊，請參閱 <ulink url="http://www.multicastdns.org"/>。
+    如需有關多路廣播 DNS 的詳細資訊，請參閱 <link xlink:href="http://www.multicastdns.org"/>。
    </para>
   </note>
- </sect1>
-<?dbfo-need height="20em"?>
+ </section>
 
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_lan.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="networkmanager.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_config_files.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_bonding.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="net_smpppd.xml" parse="xml"/>
+
+ <xi:include href="net_lan.xml" parse="xml"/>
+ <xi:include href="networkmanager.xml" parse="xml"/>
+ <xi:include href="net_config_files.xml" parse="xml"/>
+ <xi:include href="net_bonding.xml" parse="xml"/>
+ <xi:include href="net_smpppd.xml" parse="xml"/>
 </chapter>
