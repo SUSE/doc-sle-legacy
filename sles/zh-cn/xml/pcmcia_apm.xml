@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="pcmcia_apm.xml" id="cha-pmanage">
- <title>电源管理</title><indexterm id="idx-power-management" class="startofrange"> <primary>电源管理</primary> </indexterm> <indexterm id="idx-laptops-power-management" class="startofrange"> <primary>便携式计算机</primary> <secondary>电源管理</secondary> </indexterm> <indexterm> <primary>电源管理</primary> <secondary>ACPI</secondary> </indexterm>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="pcmcia_apm.xml" xml:id="cha-pmanage"><title>电源管理</title><info/>
+ <indexterm xml:id="idx-power-management" class="startofrange"> <primary>电源管理</primary> </indexterm> <indexterm xml:id="idx-laptops-power-management" class="startofrange"> <primary>便携式计算机</primary> <secondary>电源管理</secondary> </indexterm> <indexterm> <primary>电源管理</primary> <secondary>ACPI</secondary> </indexterm>
  <para os="sles" arch="zseries">
   本章介绍的功能和硬件在 IBM System z 中不存在，因此本章的内容与这些平台无关。
  </para>
@@ -17,7 +25,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   电源管理对于便携式计算机特别重要，但对于其他系统也是有用的。ACPI（高级配置和电源接口）在所有通用计算机（便携式计算机、台式机和服务器）上都可用。电源管理技术需要合适的硬件和 BIOS 例程。大多数便携式计算机、许多目前的台式机和服务器都符合这些要求。还可以通过控制 CPU 频率调节以达到省电或降低噪音的目的。
  </para>
- <sect1 id="sec-pmanage-save">
+ <section xml:id="sec-pmanage-save">
   <title>省电功能</title>
 
   <para>
@@ -79,9 +87,9 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-pmanage-acpi">
-  <title>高级配置和电源接口 (ACPI)</title><indexterm id="idx-power-management-ACPI" class="startofrange"><primary>电源管理</primary><secondary>ACPI</secondary> </indexterm>
+ </section>
+ <section xml:id="sec-pmanage-acpi">
+  <title>高级配置和电源接口 (ACPI)</title><indexterm xml:id="idx-power-management-ACPI" class="startofrange"><primary>电源管理</primary><secondary>ACPI</secondary> </indexterm>
 
   <para>
    ACPI 旨在支持操作系统设置和控制各个硬件组件。ACPI 取代即插即用电源管理 (PnP) 和高级电源管理 (APM)。它提供有关电池、AC 适配器、温度、风扇和系统事件（例如<quote>合上机盖</quote>或<quote>电池电量低</quote>）的信息。
@@ -91,7 +99,7 @@ Please see LICENSE.txt for this document's license.
    BIOS 提供包含有关各个部件和硬件访问方法信息的表。操作系统使用这些信息执行指派中断或激活和停用部件等任务。因为操作系统执行 BIOS 中储存的命令，所以功能取决于 BIOS 实施。/var/log/boot.msg<filename> 中报告了 ACPI 能够检测并装载的表。</filename> 有关对 ACPI 问题进行故障诊断的详细信息，请参见<xref linkend="sec-pmanage-probs"/>。
   </para><indexterm> <primary>日志文件</primary><secondary>boot.msg</secondary> </indexterm>
 
-  <sect2 id="sec-pmanage-powernow">
+  <section xml:id="sec-pmanage-powernow">
    <title>控制 CPU 性能</title>
    <para>
     CPU 可以采用三种节能方法：
@@ -125,9 +133,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     有关详细信息，请参见<xref linkend="cha-tuning-power"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-pmanage-probs">
+  <section xml:id="sec-pmanage-probs">
    <title>故障诊断</title>
    <para>
     问题有两种不同的类型。一种是内核的 ACPI 代码可能包含未及时检测出的错误。在这种情况下，可以通过下载获得解决方案。更多情况下，问题是由 BIOS 引起的。有时，会故意将一些不符合 ACPI 规范的配置集成在 BIOS 中，用于避免其他常用操作系统中 ACPI 实施的错误。在 ACPI 实施中有严重错误的硬件部件会被记录在一个黑名单中，防止 Linux 内核对这些部件使用 ACPI。
@@ -171,7 +179,7 @@ Please see LICENSE.txt for this document's license.
     有时，计算机会对通过 USB 或 FireWire 挂接的硬件感到困惑。如果一台计算机拒绝引导，请拔下所有不需要的硬件，然后再次重试。
    </para>
    <para>
-    引导后，用命令 <command>dmesg<option>| grep -2i acpi</option></command> 来监视系统的引导消息（或所有消息，因为问题可能不是由 ACPI 引起的）。如果在分析 ACPI 表时出错，则最重要的表 DSDT（<emphasis>区分系统描述表</emphasis>）可替换为改进的版本。在这种情况下，将忽略 BIOS 中有问题的 DSDT。<xref linkend="sec-powersave-faq"/>中对这一过程进行了介绍。
+    引导后，用命令 <command>dmesg</command> <option>| grep -2i acpi</option> 来监视系统的引导消息（或所有消息，因为问题可能不是由 ACPI 引起的）。如果在分析 ACPI 表时出错，则最重要的表 DSDT（<emphasis>区分系统描述表</emphasis>）可替换为改进的版本。在这种情况下，将忽略 BIOS 中有问题的 DSDT。<xref linkend="sec-powersave-faq"/>中对这一过程进行了介绍。
    </para>
    <para>
     在内核配置中，可以使用开关来激活 ACPI 调试消息。如果编译和安装的是带有 ACPI 调试功能的内核，则会显示详细信息。
@@ -179,34 +187,34 @@ Please see LICENSE.txt for this document's license.
    <para>
     如果遇到 BIOS 或硬件问题，则最好与制造商联系。特别是如果制造商不常对 Linux 提供支持，他们就应该面对这些问题。只有在制造商意识到有很多客户在使用 Linux 时，他们才会重视这一问题。
    </para>
-   <sect3 id="sec-pmanage-info">
+   <section xml:id="sec-pmanage-info">
     <title>更多信息</title>
     <itemizedlist mark="bullet" spacing="normal">
      <listitem>
       <para>
-       <ulink url="http://tldp.org/HOWTO/ACPI-HOWTO/"/>（详细的 ACPI HOWTO 文档，包含 DSDT 增补程序）
+       <link xlink:href="http://tldp.org/HOWTO/ACPI-HOWTO/"/>（详细的 ACPI HOWTO 文档，包含 DSDT 增补程序）
       </para>
      </listitem>
      <listitem>
       <para>
-       <ulink url="http://www.acpi.info"/>（高级配置和电源接口规范）
+       <link xlink:href="http://www.acpi.info"/>（高级配置和电源接口规范）
       </para>
      </listitem>
      <listitem>
       <para>
-       <ulink url="http://www.lesswatts.org/projects/acpi/"/>（Sourceforge 中的 ACPI4Linux 项目）
+       <link xlink:href="http://www.lesswatts.org/projects/acpi/"/>（Sourceforge 中的 ACPI4Linux 项目）
       </para>
      </listitem>
      <listitem>
       <para>
-       <ulink url="http://acpi.sourceforge.net/dsdt/index.php"/>（Bruno Ducrot 开发的 DSDT 增补程序）
+       <link xlink:href="http://acpi.sourceforge.net/dsdt/index.php"/>（Bruno Ducrot 开发的 DSDT 增补程序）
       </para>
      </listitem>
     </itemizedlist><indexterm class="endofrange" startref="idx-power-management-ACPI"/>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-pmanage-silenthd">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-pmanage-silenthd">
   <title>硬盘的休眠</title>
 
   <para>
@@ -214,7 +222,7 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <para>
-   它可用于修改各种磁盘设置。选项 <option>-y</option> 将硬盘立即切换到待机方式。<option>-Y</option> 使硬盘进入休眠状态。<command>hdparm <option>-S x</option></command> 会使硬盘在一段时间（未活动）后减慢运行速度。将 <replaceable>x</replaceable> 替换如下：<literal>0</literal> 表示禁用此机制，导致硬盘持续运行。值 <literal>1</literal> 到 <literal>240</literal> 表示的时间为所选的值乘以 5 秒。值 <literal>241</literal> 到 <literal>251</literal> 对应的时间分别是 30 分钟的 1 到 11 倍。
+   它可用于修改各种磁盘设置。选项 <option>-y</option> 将硬盘立即切换到待机方式。<option>-Y</option> 使硬盘进入休眠状态。<command>hdparm</command> <option>-S x</option> 会使硬盘在一段时间（未活动）后减慢运行速度。将 <replaceable>x</replaceable> 替换如下：<literal>0</literal> 表示禁用此机制，导致硬盘持续运行。值 <literal>1</literal> 到 <literal>240</literal> 表示的时间为所选的值乘以 5 秒。值 <literal>241</literal> 到 <literal>251</literal> 对应的时间分别是 30 分钟的 1 到 11 倍。
   </para>
 
   <para>
@@ -286,18 +294,18 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <indexterm class="endofrange" startref="idx-power-management"/><indexterm class="endofrange" startref="idx-laptops-power-management"/>
- </sect1>
- <sect1 id="sec-powersave-faq">
+ </section>
+ <section xml:id="sec-powersave-faq">
   <title>查错</title>
 
   <para>
    文件 <filename>/var/log/messages</filename> 中记录了所有错误消息和警报。以下几个部分介绍最常见的问题。
   </para>
 
-  <sect2 id="sec-powersave-faq-acpi">
+  <section xml:id="sec-powersave-faq-acpi">
    <title>硬件支持已激活 ACPI，但功能不工作</title>
    <para>
-    如果遇到 ACPI 问题，请在 <command>dmesg</command> 输出中使用 <command>dmesg|grep <option>-i acpi</option></command> 命令搜索 ACPI 特定的消息。
+    如果遇到 ACPI 问题，请在 <command>dmesg</command> 输出中使用 <command>dmesg|grep</command> <option>-i acpi</option> 命令搜索 ACPI 特定的消息。
    </para>
    <para>
     可能需要更新 BIOS 来解决问题。请转到便携式计算机制造商的主页，查找已更新的 BIOS 版本，然后安装它。要求制造商遵循最新的 ACPI 规范。如果在更新 BIOS 后错误仍然存在，则按以下步骤用已更新的 DSDT 替换 BIOS 中有问题的 DSDT 表。
@@ -307,43 +315,43 @@ Please see LICENSE.txt for this document's license.
     <para>
      对于以下过程，请确保安装以下包：<systemitem class="resource">kernel-source</systemitem>、<systemitem class="resource" os="sles;sled">pmtools</systemitem> 以及 <systemitem class="resource">mkinitrd</systemitem>。
     </para>
-    <step performance="required">
+    <step>
      <para>
-      从 <ulink url="http://acpi.sourceforge.net/dsdt/index.php"/> 为您的系统下载 DSDT。检查是否已解压缩并编译了此文件，如果文件扩展名是 <literal>.aml</literal>（ACPI 计算机语言），则表明已完成这些操作。如果是这种情况，请继续执行第 3 步。
+      从 <link xlink:href="http://acpi.sourceforge.net/dsdt/index.php"/> 为您的系统下载 DSDT。检查是否已解压缩并编译了此文件，如果文件扩展名是 <literal>.aml</literal>（ACPI 计算机语言），则表明已完成这些操作。如果是这种情况，请继续执行第 3 步。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果已下载表的文件扩展名是 <literal>.asl</literal>（ACPI 源语言），请执行以下命令编译扩展名：
      </para>
 <screen>iasl <option>-sa file.asl</option></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将（生成的）文件 <filename>DSDT.aml</filename> 复制到任意位置（建议复制到 <filename>/etc/DSDT.aml</filename>）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       编辑 <filename>/etc/sysconfig/kernel</filename> 并相应地调整指向 DSDT 文件的路径。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       启动 <command>mkinitrd</command>。一旦安装了内核并使用 <command>mkinitrd</command> 创建了 <filename>initrd</filename> 文件，引导系统时就会集成并装载修改过的 DSDT。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-powersave-faq-cpufreq">
+  <section xml:id="sec-powersave-faq-cpufreq">
    <title>CPU 频率不工作</title>
    <para>
     请参见内核源以确认是否支持您的处理器。您可能需要特殊内核模块或模块选项来激活 CPU 频率控制。如果安装了 <systemitem class="resource">kernel-source</systemitem> 包，则在 <filename>/usr/src/linux/Documentation/cpu-freq/*</filename> 中可找到此信息。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-powersave-faq-suspend">
+  <section xml:id="sec-powersave-faq-suspend">
    <title>暂挂和待机不工作</title>
    <para>
     ACPI 系统由于 DSDT 实现 (BIOS) 有问题，可能在暂挂和待机中会遇到问题。如果出现这种情况，请更新 BIOS。
@@ -351,22 +359,22 @@ Please see LICENSE.txt for this document's license.
    <para>
     当系统尝试卸载有问题的模块时，会停止系统或不触发暂挂事件。如果您未卸载模块或停止阻止成功暂停的服务，也会发生相同的情况。在这两种情况下，尝试确定阻止采用休眠方式的有问题的模块。日志文件 <filename>/var/log/pm-suspend.log</filename> 包含关于所发生的情况以及哪里可能有错误的详细信息。修改 <filename>/usr/lib/pm-utils/defaults</filename> 中的 <systemitem>SUSPEND_MODULES</systemitem> 变量以在暂挂或待机之前卸载有问题的模块。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-powersave-info">
+  </section>
+ </section>
+ <section xml:id="sec-powersave-info">
   <title>更多信息</title>
 
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <ulink url="http://en.opensuse.org/SDB:Suspend_to_RAM"/> — 如何使“暂挂到 RAM”正常工作
+     <link xlink:href="http://en.opensuse.org/SDB:Suspend_to_RAM"/> — 如何使“暂挂到 RAM”正常工作
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://old-en.opensuse.org/Pm-utils"/> — 如何修改常规暂挂框架
+     <link xlink:href="http://old-en.opensuse.org/Pm-utils"/> — 如何修改常规暂挂框架
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>
