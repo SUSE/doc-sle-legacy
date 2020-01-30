@@ -1,20 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_dns.xml" id="cha-dns">
- <title>ドメインネームシステム</title><indexterm> <primary>ドメインネームシステム</primary> <see>DNS</see> </indexterm> <indexterm> <primary>DNS</primary> <secondary>設定</secondary> </indexterm> <indexterm> <primary>設定</primary> <secondary>DNS</secondary> </indexterm><indexterm> <primary>ネームサーバ</primary> <see>DNS</see> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_dns.xml" xml:id="cha-dns"><title>ドメインネームシステム</title><info><abstract>
   <para>
    DNS (ドメインネームシステム)は、ドメイン名とホスト名をIPアドレスに解決するために必要です。これにより、たとえばIPアドレス192.168.2.100がホスト名<literal>jupiter</literal>に割り当てられます。独自のネームサーバをセットアップする前に、<xref linkend="sec-basicnet-nameres"/>で DNS に関する一般的な説明を参照してください。以降に示す設定例はBINDの場合のものです。
   </para>
- </abstract>
- <sect1 id="sec-dns-basic">
+ </abstract></info>
+ <indexterm> <primary>ドメインネームシステム</primary> <see>DNS</see> </indexterm> <indexterm> <primary>DNS</primary> <secondary>設定</secondary> </indexterm> <indexterm> <primary>設定</primary> <secondary>DNS</secondary> </indexterm><indexterm> <primary>ネームサーバ</primary> <see>DNS</see> </indexterm>
+ 
+ <section xml:id="sec-dns-basic">
   <title>DNS用語</title><indexterm> <primary>DNS</primary> <secondary>用語</secondary> </indexterm>
 
   <variablelist>
@@ -95,33 +103,33 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-dns-install">
+ </section>
+ <section xml:id="sec-dns-install">
   <title>インストール</title>
 
   <para>
    DNSサーバをインストールするには、YaSTを起動してから、<menuchoice><guimenu>ソフトウェア</guimenu><guimenu>ソフトウェア管理</guimenu></menuchoice>の順に選択します。<menuchoice><guimenu>表示</guimenu><guimenu>パターン</guimenu></menuchoice>の順に選択して、<guimenu>DHCPおよびDNSサーバ</guimenu>を選択します。依存関係のあるパッケージのインストールを確認して、インストールプロセスを完了します。
   </para>
- </sect1>
- <sect1 id="sec-dns-yast">
+ </section>
+ <section xml:id="sec-dns-yast">
   <title>YaSTでの設定</title>
 
   <para>
    YaST DNSモジュールを使用して、ローカルネットワーク用にDNSサーバを設定します。このモジュールを初めて起動すると、サーバ管理に関して2、3の決定を行うように要求されます。この初期セットアップを完了すると、基本的なサーバ設定が生成されます。エキスパートモードを使用すると、より詳細な設定タスク(ACLのセットアップ、ロギング、TSIGキーなどのオプション)を処理できます。
   </para>
 
-  <sect2 id="sec-dns-yast-wizard">
+  <section xml:id="sec-dns-yast-wizard">
    <title>ウィザードによる設定</title>
 
    <para>
     ウィザードは3つのステップ(ダイアログ)で構成されています。各ダイアログの適切な箇所でエキスパート用の設定モードに入ることができます。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       モジュールを初めて起動すると、のような<guimenu>フォワーダの設定</guimenu><xref linkend="fig-yast2-dnsinst-forwarders"/>ダイアログが表示されます。<guimenu>Netconfig DNS Policy</guimenu>を使用すると、フォワーダを提供するデバイスを決定したり、独自の<guimenu>Forwarder List</guimenu>を指定するかどうかを決定できます。netconfigの詳細については、<command>man 8 netconfig</command>を参照してください。
      </para>
-     <figure id="fig-yast2-dnsinst-forwarders">
+     <figure xml:id="fig-yast2-dnsinst-forwarders">
       <title>DNSサーバのインストール:フォワーダの設定</title>
       <mediaobject>
        <imageobject role="fo">
@@ -136,11 +144,11 @@ Please see LICENSE.txt for this document's license.
       フォワーダは、ご使用のDNSサーバが回答できないクエリの送信先とするDNSサーバです。フォワーダのIPアドレスを入力して、<guimenu>追加</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>DNSゾーン</guimenu>ダイアログは、複数の部分で構成されており、<xref linkend="sec-dns-zonefile"/>で説明するゾーンファイルの管理に関する項目を設定します。新しいゾーンの場合は、<guimenu>名前</guimenu>にゾーン名を入力します。逆引きゾーンを追加する場合は、<literal>.in-addr.arpa</literal>で終わる名前を入力しなければなりません。最後に、<guimenu>タイプ</guimenu>(マスタ、スレーブ、または転送)を選択します。<xref linkend="fig-yast2-dnsinst-zones"/>を参照してください。既存のゾーンのその他の項目を設定するには、<guimenu>Edit</guimenu>をクリックします。ゾーンを削除するには、<guimenu>Delete</guimenu>をクリックします。
      </para>
-     <figure id="fig-yast2-dnsinst-zones">
+     <figure xml:id="fig-yast2-dnsinst-zones">
       <title>DNSサーバのインストール:DNSゾーン</title>
       <mediaobject>
        <imageobject role="fo">
@@ -152,11 +160,11 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </figure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       最後のダイアログでは、<guimenu>ファイアウォールで開いているポート</guimenu>をクリックして、ファイアウォールのDNSポートを開くことができます。次に、ブート時にDNSサーバ を起動するかどうか(<guimenu>オン</guimenu>か、<guimenu>オフ</guimenu>か)を決定します。LDAPサポートを有効にすることもできます。詳細については、<xref linkend="fig-yast2-dnsinst-finish"/>を参照してください。
      </para>
-     <figure id="fig-yast2-dnsinst-finish">
+     <figure xml:id="fig-yast2-dnsinst-finish">
       <title>DNSサーバのインストール:完了ウィザード</title>
       <mediaobject>
        <imageobject role="fo">
@@ -169,14 +177,14 @@ Please see LICENSE.txt for this document's license.
      </figure>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>エキスパート設定</title>
    <para>
     YaSTのモジュールを起動するとウィンドウが開き、複数の設定オプションが表示されます。設定を完了すると、基本的な機能が組み込まれたDNSサーバ設定が作成されます。
    </para>
-   <sect3>
+   <section>
     <title>起動</title>
     <para>
      <guimenu>起動</guimenu>では、DNSサーバをシステムのブート中に起動するか、それとも手動で起動するか指定します。DNSサーバをすぐに起動するには、<guimenu>今すぐDNSサーバを起動する</guimenu>を選択します。DNSサーバを停止するには、<guimenu>今すぐDNSサーバを停止する</guimenu>を選択します。現在の設定を保存するには、<guimenu>設定を保存して、今すぐDNSサーバをリロードする</guimenu>を選択します。ファイアウォールのDNSポートを開くには<guimenu>ファイアウォール内でポートを開く</guimenu>を、ファイアウォールの設定を変更するには<guimenu>Firewall Details</guimenu>をクリックします。
@@ -184,21 +192,21 @@ Please see LICENSE.txt for this document's license.
     <para>
      <guimenu>LDAPサポートを有効にする</guimenu>を選択すると、ゾーンファイルがLDAPデータベースによって管理されるようになります。ゾーンデータを変更してそれがLDAPデータベースに書き込まれると、設定を再ロードするように要求されます。DNSサーバを再起動すると、変更がすぐに反映されます。
     </para>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>フォワーダ</title>
     <para>
      ローカルDNSサーバは、要求に応答できない場合、要求を<guimenu>フォワーダ</guimenu>に転送しようとします(そのように設定されている場合)。このフォワーダは、手動で、<guimenu>Forwarder List</guimenu>に追加できます。フォワーダが、ダイアルアップ接続でのように静的でない場合は、<guimenu>netconfig</guimenu>が設定を処理します。netconfigの詳細については、<command>man 8 netconfig</command>を参照してください。
     </para>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>基本的なオプション</title>
     <para>
      このセクションでは、基本的なサーバオプションを設定します。<guimenu>オプション</guimenu>メニューから設定する項目を選択して、対応する入力フィールドに値を指定します。新しいエントリを追加するには、<guimenu>追加</guimenu>を選択してください。
     </para>
 
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>ログ</title>
     <para>
      DNSサーバがログに記録する内容とログの方法を設定するには、<guimenu>ログ記録</guimenu>を選択します。<guimenu>Log Type</guimenu>に、DNSサーバがログデータを書き込む場所を指定します。システム全体のログファイル<filename>/var/log/messages</filename>を使用する場合は<guimenu>システムログ</guimenu>を、別のファイルを指定する場合は<guimenu>ファイル</guimenu>を選択します。別のファイルを指定する場合は、ファイル名、ログファイルの最大サイズ(メガバイト(MB))と保管するログファイル数(バージョン)も指定します。
@@ -206,7 +214,7 @@ Please see LICENSE.txt for this document's license.
     <para>
      <guimenu>追加ログ</guimenu>には、さらに詳細なオプションが用意されています。<guimenu>すべてのDNSクエリをログに記録</guimenu>を有効にすると、<emphasis>すべての</emphasis>クエリがログに記録されるため、ログファイルが非常に大きくなる可能性があります。ですから、このオプションを有効にするのはデバッグ時だけにすることをお勧めします。DHCPサーバとDNSサーバ間でのゾーン更新時のデータトラフィックをログに記録するには、<guimenu>ゾーン更新をログに記録</guimenu>を有効にします。マスタからスレーブへのゾーン転送時のデータトラフィックをログに記録するには、<guimenu>ゾーン転送をログに記録</guimenu>を有効にします。詳細については、<xref linkend="fig-yast2-dns-logging"/>を参照してください。
     </para>
-    <figure id="fig-yast2-dns-logging">
+    <figure xml:id="fig-yast2-dns-logging">
      <title>DNSサーバ:ログの記録</title>
      <mediaobject>
       <imageobject role="fo">
@@ -217,8 +225,8 @@ Please see LICENSE.txt for this document's license.
       </imageobject>
      </mediaobject>
     </figure>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>ACL</title>
     <para>
      このダイアログでは、アクセス制限を強制するACL(アクセス制御リスト)を定義します。<guimenu>名前</guimenu>に個別名を入力したら、次の形式で、<guimenu>値</guimenu>にIPアドレス(ネットマスクは省略可)を指定します。
@@ -228,8 +236,8 @@ Please see LICENSE.txt for this document's license.
      設定ファイルの構文に従って、アドレスの末尾にはセミコロンを付け、中カッコで囲む必要があります。
     </para>
 
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>TSIGキー</title>
     <para>
      TSIG (トランザクションシグネチャー)の主な目的は、DHCPおよびDNSサーバ間で安全な通信を行うことです。<xref linkend="sec-dns-tsig"/>を参照してください。
@@ -241,8 +249,8 @@ Please see LICENSE.txt for this document's license.
      作成済みのキーを使用するには、<guimenu>キーID</guimenu>フィールドを空白のままにして、<guimenu>ファイル名</guimenu>で、そのキーが保存されているファイルを選択します。その後、<guimenu>追加</guimenu>をクリックすると、入力内容が確定されます。
     </para>
 
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>DNSゾーン(スレーブゾーンの追加)</title>
     <para>
      スレーブゾーンを追加するには、<guimenu>DNSゾーン</guimenu>を選択し、ゾーンタイプに<guimenu>スレーブ</guimenu>を選択し、新規ゾーンの名前を書き込み、<guimenu>追加</guimenu>をクリックします。
@@ -252,14 +260,14 @@ Please see LICENSE.txt for this document's license.
 
     </para>
 
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>DNSゾーン(マスタゾーンの追加)</title>
     <para>
      マスタゾーンを追加するには、<guimenu>DNSゾーン</guimenu>を選択し、ゾーンタイプに<guimenu>マスタ</guimenu>を選択し、新規ゾーンの名前を書き込み、<guimenu>追加</guimenu>をクリックします。マスタゾーンの追加時には、逆引きゾーンも必要です。たとえば、ゾーン<systemitem>example.com</systemitem>(サブネット<literal>192.168.1.0/24</literal>内のホストをポイントするゾーン)を追加する際には、カバーされるIPアドレス範囲の逆引きゾーンも追加する必要があります。定義上、このゾーンの名前は、<literal>1.168.192.in-addr.arpa</literal>となります。
     </para>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>DNSゾーン(マスタゾーンの編集)</title>
     <para>
      マスタゾーンを編集するには、<guimenu>DNSゾーン</guimenu>を選択し、テーブルからマスタゾーンを選択し、<guimenu>編集</guimenu>をクリックします。このダイアログには、<guimenu>基本</guimenu>(最初に表示される)、<guimenu>NSレコード</guimenu>、<guimenu>MXレコード</guimenu>、<guimenu>SOA</guimenu>、および<guimenu>レコード</guimenu>のページがあります。
@@ -270,7 +278,7 @@ Please see LICENSE.txt for this document's license.
     <para>
      <guimenu>基本</guimenu>ダイアログで、ゾーン転送を有効にするかどうか選択します。リストされたACLを使用して、ゾーンをダウンロードできるユーザを定義します。
     </para>
-    <figure id="fig-yast2-dns-ddns" os="sles;osuse">
+    <figure xml:id="fig-yast2-dns-ddns" os="sles;osuse">
      <title>DNSサーバ: ゾーンエディタ(基本)</title>
      <mediaobject>
       <imageobject role="fo">
@@ -288,7 +296,7 @@ Please see LICENSE.txt for this document's license.
        <para>
         <guimenu>レコード</guimenu>ダイアログでは、指定したゾーンの代替ネームサーバを定義できます。リストに自分が使用しているネームサーバが含まれていることを確認してください。レコードを追加するには、<guimenu>追加するネームサーバ</guimenu>にレコード名を入力し、<guimenu>追加</guimenu>をクリックして確定します。詳細については、<xref linkend="fig-yast2-dns-nsrec"/>を参照してください。
        </para>
-       <figure id="fig-yast2-dns-nsrec">
+       <figure xml:id="fig-yast2-dns-nsrec">
         <title>DNSサーバ:ゾーンエディタ(NSレコード)</title>
         <mediaobject>
          <imageobject role="fo">
@@ -307,7 +315,7 @@ Please see LICENSE.txt for this document's license.
        <para>
         現行ゾーンのメールサーバを既存のリストに追加するには、対応するアドレスと優先順位の値を入力します。その後、<guimenu>追加</guimenu>を選択して確定します。詳細については、<xref linkend="fig-yast2-dns-mxrec"/>を参照してください。
        </para>
-       <figure id="fig-yast2-dns-mxrec">
+       <figure xml:id="fig-yast2-dns-mxrec">
         <title>DNSサーバ:ゾーンエディタ(MXレコード)</title>
         <mediaobject>
          <imageobject role="fo">
@@ -326,7 +334,7 @@ Please see LICENSE.txt for this document's license.
        <para>
         このページでは、SOA (start of authority)レコードを作成できます。個々のオプションについては、<xref linkend="ex-welt-zone"/>を参照してください。<phrase os="sles">LDAPを介して管理される動的ゾーンの場合、SOAレコードの変更がサポートされないので注意してください。</phrase>
        </para>
-       <figure id="fig-yast2-dns-soa">
+       <figure xml:id="fig-yast2-dns-soa">
         <title>DNSサーバ:ゾーンエディタ(SOA)</title>
         <mediaobject>
          <imageobject role="fo">
@@ -358,11 +366,11 @@ Please see LICENSE.txt for this document's license.
       正引きゾーンの追加後、メインメニューに戻って、編集用の逆引きゾーンを選択します。次に、タブ<guimenu>基本</guimenu>で、チェックボックス<guimenu>Automatically Generate Records From</guimenu>にチェック印を入れ、正引きゾーンを選択します。これにより、正引きゾーンでのすべての変更が、逆引きゾーンで自動的に更新されます。
      </para>
     </note>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-dns-bind">
-  <title>BINDネームサーバの起動</title><indexterm id="idx-DNS-BIND" class="startofrange"> <primary>DNS</primary> <secondary>BIND</secondary> </indexterm> <indexterm id="idx-BIND" class="startofrange"> <primary>BIND</primary> </indexterm>
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-dns-bind">
+  <title>BINDネームサーバの起動</title><indexterm xml:id="idx-DNS-BIND" class="startofrange"> <primary>DNS</primary> <secondary>BIND</secondary> </indexterm> <indexterm xml:id="idx-BIND" class="startofrange"> <primary>BIND</primary> </indexterm>
 
   <para>
    <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase>システムでは、ネームサーバBIND (<emphasis>Berkeley Internet Name Domain</emphasis>)は、事前設定されて提供されるので、インストールが正常に完了すればただちに起動できます。すでにインターネットに接続し、<systemitem class="ipaddress">/etc/resolv.conf</systemitem>の<systemitem class="domainname">localhost</systemitem>にネームサーバアドレス<filename>127.0.0.1</filename>が入力されている場合、通常、プロバイダのDNSを知らなくても、すでに機能する名前解決メカニズムが存在します。この場合、BINDは、ルートネームサーバを介して名前の解決を行うため、処理が非常に遅くなります。通常、効率的で安全な名前解決を実現するには、<filename>forwarders</filename>の下の設定ファイル<systemitem>/etc/named.conf</systemitem>にプロバイダのDNSとそのIPアドレスを入力する必要があります。いままでこれが機能している場合、ネームサーバは、純粋な<emphasis>キャッシュ専用</emphasis>ネームサーバとして動作しています。ネームサーバは、そのゾーンを設定してはじめて、正しいDNSにすることができます。簡単な例については、<filename>/usr/share/doc/packages/bind/config</filename>のドキュメントを参照してください。
@@ -389,7 +397,7 @@ Please see LICENSE.txt for this document's license.
    プロバイダのネームサーバ(またはすでにネットワーク上で動作しているネームサーバ)をフォワーダとして使用する場合は、<systemitem>forwarders</systemitem>の下の<systemitem>options</systemitem>セクションに、対応するIPアドレスまたはアドレスを入力します。に含まれているアドレスは、単なる例です。<xref linkend="ex-forward"/>各自サイトの設定に合わせて変更してください。<indexterm> <primary>DNS</primary> <secondary>転送</secondary> </indexterm>
   </para>
 
-  <example id="ex-forward">
+  <example xml:id="ex-forward">
    <title>named.confファイルの転送オプション</title>
 
 
@@ -405,9 +413,9 @@ Please see LICENSE.txt for this document's license.
   <para>
    options<systemitem>エントリの後には、ゾーン用のエントリ、</systemitem>localhost<systemitem class="domainname">と</systemitem>0.0.127.in-addr.arpa<systemitem>が続きます。</systemitem><quote>.</quote>の下の<literal>type hint(タイプヒント)</literal>は必ず存在しなければなりません。対応するファイルは、変更する必要がなく、そのままで機能します。また、各エントリの末尾が<quote>;</quote>で閉じられ、中カッコが適切な位置にあることを確認してください。設定ファイル<filename>/etc/named.conf</filename>またはゾーンファイルを変更したら、<command>rcnamed</command><option>reload</option>を使用して、BINDにそれらを再読み込みさせます。または、<command>rcnamed</command><option>restart</option>を使用してネームサーバを停止、再起動しても同じ結果が得られます。サーバは「<command>rcnamed</command><option>stop</option>」を入力していつでも停止することができます。
   </para>
- </sect1>
- <sect1 id="sec-dns-named">
-  <title>The /etc/named.conf環境設定ファイル</title><indexterm id="idx-configuration-files-named-conf" class="startofrange"> <primary>環境設定ファイル</primary><secondary>host.conf</secondary> </indexterm>
+ </section>
+ <section xml:id="sec-dns-named">
+  <title>The /etc/named.conf環境設定ファイル</title><indexterm xml:id="idx-configuration-files-named-conf" class="startofrange"> <primary>環境設定ファイル</primary><secondary>host.conf</secondary> </indexterm>
 
   <para>
    BINDネームサーバ自体のすべての設定は、<filename>/etc/named.conf</filename>ファイルに格納されます。ただし、処理するドメインのゾーンデータ(ホスト名、IPアドレスなどで構成されている)は、<filename>/var/lib/named</filename>ディレクトリ内の個別のファイルに格納されます。この詳細については、後述します。
@@ -417,7 +425,7 @@ Please see LICENSE.txt for this document's license.
    <filename>/etc/named.conf</filename>ファイルは、大きく2つのエリアに分けられます。1つは一般的な設定用の<systemitem>options</systemitem>セクション、もう1つは個々のドメインの<systemitem>zone</systemitem>エントリで構成されるセクションです。ログ<systemitem>セクションと</systemitem>acl<systemitem> (アクセス制御リスト)エントリは省略可能です。</systemitem>コメント行は、行頭に<literal>#</literal>記号または<literal>//</literal>を指定します。最も基本的な<filename>/etc/named.conf</filename>ファイルの例を、<xref linkend="ex-named-mini"/>に示します。
   </para>
 
-  <example id="ex-named-mini">
+  <example xml:id="ex-named-mini">
    <title>基本的な/etc/named.confファイル</title>
 <screen>options { 
         directory "/var/lib/named"; 
@@ -441,7 +449,7 @@ zone "." in {
 };</screen>
   </example>
 
-  <sect2 id="sec-dns-named-options">
+  <section xml:id="sec-dns-named-options">
    <title>重要な設定オプション</title><indexterm> <primary>DNS</primary> <secondary>オプション</secondary> </indexterm>
    <variablelist>
     <varlistentry>
@@ -552,24 +560,24 @@ zone "." in {
    <para>
     すべての利用可能なオプションのリストについては、マニュアルページ<command>man 5 named.conf</command>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-dns-named-log">
+  <section xml:id="sec-dns-named-log">
    <title>ロギング</title><indexterm> <primary>DNS</primary> <secondary>ログの記録</secondary> </indexterm>
    <para>
     BINDでは、何を、どのように、どこにログ出力するかを詳細に設定できます。通常は、デフォルト設定のままで十分です。<xref linkend="ex-no-log"/>に、このエントリの最も簡単な形式、すなわちログをまったく出力しない例を示します。
    </para>
-   <example id="ex-no-log">
+   <example xml:id="ex-no-log">
     <title>ログを無効にするエントリ</title>
 <screen>logging {
         category default { null; };
 };</screen>
    </example>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-dns-named-zones">
+  <section xml:id="sec-dns-named-zones">
    <title>ゾーンエントリ</title>
-   <example id="ex-meine-domain">
+   <example xml:id="ex-meine-domain">
     <title>example.comのゾーンエントリ</title>
 <screen>zone "example.com" in {
       type master;
@@ -580,7 +588,7 @@ zone "." in {
    <para>
     <systemitem>zone</systemitem>の後、管理対象のドメイン名(<systemitem class="domainname">example.com</systemitem>)を指定し、その後に<systemitem>in</systemitem>と関連のオプションを中カッコで囲んで指定します(<xref linkend="ex-meine-domain"/>参照)。スレーブゾーン<emphasis>を定義するには、<systemitem>type</systemitem>を<literal>slave</literal>に変更し、このゾーンを<literal>master</literal>として管理することをネームサーバに指定します(<xref linkend="ex-andere-domain"/>参照)。これが他のマスタのスレーブとなることもあります。</emphasis>
    </para>
-   <example id="ex-andere-domain">
+   <example xml:id="ex-andere-domain">
     <title>example.netのゾーンエントリ</title>
 <screen>zone "example.net" in {
       type slave;
@@ -644,9 +652,9 @@ zone "." in {
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-dns-zonefile">
+  </section>
+ </section>
+ <section xml:id="sec-dns-zonefile">
   <title>ゾーンファイル</title><indexterm> <primary>DNS</primary> <secondary>ゾーン</secondary> <tertiary>ファイル</tertiary> </indexterm>
 
   <para>
@@ -670,7 +678,7 @@ zone "." in {
    最初に、ドメイン<filename>example.com</filename>に責任を負うゾーンファイル<filename>example.com.zone</filename>について示します(<xref linkend="ex-welt-zone"/>を参照してください)。
   </para>
 
-  <example id="ex-welt-zone">
+  <example xml:id="ex-welt-zone">
    <title>/var/lib/named/example.com.zoneファイル</title>
 <screen linenumbering="numbered">1.  $TTL 2D 
 2.  example.com. IN SOA      dns  root.example.com. ( 
@@ -832,7 +840,7 @@ pluto     AAAA 2345:00D2:DA11::1234:5678:9ABC:DEF0</screen>
 
 
 
-  <example id="dat-arpa">
+  <example xml:id="dat-arpa">
    <title>逆引き</title>
 <screen linenumbering="numbered">1.  $TTL 2D
 2.  168.192.in-addr.arpa.   IN SOA dns.example.com. root.example.com. (
@@ -897,9 +905,9 @@ pluto     AAAA 2345:00D2:DA11::1234:5678:9ABC:DEF0</screen>
    通常、ゾーン転送は、異なるバージョンのBIND間でも問題なく行えるはずです。<indexterm class="endofrange" startref="idx-DNS-BIND"/><indexterm class="endofrange" startref="idx-BIND"/><indexterm class="endofrange" startref="idx-configuration-files-named-conf"/>
 
   </para>
- </sect1>
+ </section>
 
- <sect1 id="sec-dns-dynupdate">
+ <section xml:id="sec-dns-dynupdate">
   <title>ゾーンデータの動的アップデート</title>
 
   <para>
@@ -909,8 +917,8 @@ pluto     AAAA 2345:00D2:DA11::1234:5678:9ABC:DEF0</screen>
   <para>
    サーバに更新エントリを転送するには、<command>nsupdate</command>コマンドを使用します。このコマンドの詳細な構文については、nsupdateのマニュアルページ(<command>man</command><option>8 nsupdate</option>)を参照してください。セキュリティ上の理由から、こうした更新はTSIGキーを使用して実行するようにしてください(<xref linkend="sec-dns-tsig"/>参照)。
   </para>
- </sect1>
- <sect1 id="sec-dns-tsig">
+ </section>
+ <section xml:id="sec-dns-tsig">
   <title>安全なトランザクション</title>
 
   <para>
@@ -979,8 +987,8 @@ pluto     AAAA 2345:00D2:DA11::1234:5678:9ABC:DEF0</screen>
   <para>
    このトピックについての詳細は、<literal>update-policy</literal>の下の『<emphasis>BIND Administrator Reference Manual</emphasis>』を参照してください。
   </para>
- </sect1>
- <sect1 id="sec-dns-dnssec">
+ </section>
+ <section xml:id="sec-dns-dnssec">
   <title>DNSセキュリティ</title>
 
   <para>
@@ -996,12 +1004,12 @@ pluto     AAAA 2345:00D2:DA11::1234:5678:9ABC:DEF0</screen>
   </para>
 
 
- </sect1>
- <sect1 id="sec-dns-info">
+ </section>
+ <section xml:id="sec-dns-info">
   <title>その他の情報</title>
 
   <para>
    ここで扱ったトピックの詳細については、<emphasis>/usr/share/doc/packages/bind/</emphasis>ディレクトリにインストールされる<systemitem class="resource">bind-doc</systemitem>パッケージ内の『<filename>BIND Administrator Reference Manual</filename>』を参照してください。BINDに付属のマニュアルやマニュアルページで紹介されているRFCも、必要に応じて参照してください。<filename>/usr/share/doc/packages/bind/README.SUSE</filename>には、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>のBINDに関する最新情報が含まれています。
   </para>
- </sect1>
+ </section>
 </chapter>

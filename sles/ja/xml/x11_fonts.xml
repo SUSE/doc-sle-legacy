@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="x11_fonts.xml" id="sec-x11-fontconfig">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="x11_fonts.xml" xml:id="sec-x11-fontconfig">
  <title>フォントのインストールと設定</title><indexterm> <primary>X</primary> <secondary>TrueTypeフォント</secondary> </indexterm> <indexterm> <primary>フォント</primary> <secondary>TrueType</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>フォント</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>xft</secondary> </indexterm> <indexterm> <primary>X</primary> <secondary>文字セット</secondary> </indexterm>
 
  <para>
@@ -39,11 +47,11 @@ Please see LICENSE.txt for this document's license.
  </para>
 
  <para>
-  フォントを実際にコピーする代わりに、シンボリックリンクを作成することもできます。たとえば、マウントされているWindowsパーティション上にライセンスを取得しているフォントがあり、それらのフォントを使用したい場合は、シンボリックリンクを作成します。次に、<command>SuSEconfig<option>--module fonts</option></command>コマンドを実行します。
+  フォントを実際にコピーする代わりに、シンボリックリンクを作成することもできます。たとえば、マウントされているWindowsパーティション上にライセンスを取得しているフォントがあり、それらのフォントを使用したい場合は、シンボリックリンクを作成します。次に、<command>SuSEconfig</command> <option>--module fonts</option>コマンドを実行します。
  </para>
 
  <para>
-  <command>SuSEconfig<option>--module fonts</option></command>コマンドは、フォントを設定するスクリプト、<filename>/usr/sbin/fonts-config</filename>を実行します。このスクリプトの詳細については、マニュアルページ(<command>man <option>fonts-config</option></command>)を参照してください。
+  <command>SuSEconfig</command> <option>--module fonts</option>コマンドは、フォントを設定するスクリプト、<filename>/usr/sbin/fonts-config</filename>を実行します。このスクリプトの詳細については、マニュアルページ(<command>man</command> <option>fonts-config</option>)を参照してください。
  </para><indexterm> <primary>コマンド</primary> <secondary>fonts-config</secondary> </indexterm>
 
  <para>
@@ -54,7 +62,7 @@ Please see LICENSE.txt for this document's license.
   X.Orgには、従来の<guimenu>X11コアフォントシステム</guimenu>と、新たに設計された<guimenu>Xftおよびfontconfig</guimenu>システムの2種類のまったく異なるフォントシステムが含まれています。以降のセクションでは、これらの2つのシステムについて簡単に説明します。
  </para>
 
- <sect2 id="sec-x11-fontconfig-fontsys-x11core">
+ <section xml:id="sec-x11-fontconfig-fontsys-x11core">
   <title>X11コアフォント</title><indexterm> <primary>X</primary> <secondary>X11コアフォント</secondary> </indexterm> <indexterm> <primary>フォント</primary> <secondary>X11コア</secondary> </indexterm>
   <para>
    今日、X11コアフォントシステムは、ビットマップフォントだけでなく、Type1フォント、TrueTypeとOpenTypeフォントなどのスケーラブルフォントもサポートしています。スケーラブルフォントは、アンチエイリアスとサブピクセルレンダリングなしでサポートされており、多数の言語用のグリフを持つ大きいスケーラブルフォントのロードには時間がかかります。Unicodeフォントもサポートされていますが、使用すると時間がかかり、より多くのメモリが必要になります。
@@ -71,9 +79,9 @@ Please see LICENSE.txt for this document's license.
   <para>
    デフォルトでは、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>は、UTF-8ロケールを使用します。そのため、Unicodeフォントを使用するようにします(<literal>xlsfonts</literal>の出力中で<command>iso10646-1</command>で終了するフォント名)。使用可能なすべてのUnicodeフォントは、<command>xlsfonts</command><option>| grep iso10646-1</option>コマンドでリストを表示できます。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>で使用可能なほとんどすべてのUnicodeフォントには、少なくともヨーロッパ言語に必要なグリフが含まれています(以前は<literal>iso-8859-*</literal>としてエンコードされていました)。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-fontconfig-fontsys-xft">
+ <section xml:id="sec-x11-fontconfig-fontsys-xft">
   <title>Xft</title><indexterm> <primary>X</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>フォント</primary> <secondary>Xft</secondary> </indexterm> <indexterm> <primary>Xft</primary> </indexterm>
   <para>
    最初から、Xftのプログラムは、アンチエイリアスを含むスケーラブルフォントが適切にサポートされるようにしています。Xftが使用された場合、フォントは、X11コアフォントシステムにおけるXサーバではなく、そのフォントを使用するアプリケーションによってレンダリングされます。このようにすると、それぞれのアプリケーションは実際のフォントファイルにアクセスでき、グリフのレンダリング方法を完全に制御できます。これが、多数の言語においてテキストを正しく表示するための基本となっています。フォントファイルに直接アクセスできることは、印刷のためにフォントを組み込んで、画面出力と同じ印刷出力を得るのに役立ちます。
@@ -168,7 +176,7 @@ Lucida Sans:style=Regular:weight=80</screen>
   <para>
    fc-list<command>で調べることができる重要なパラメータ:</command>
   </para>
-  <table id="tab-x11-fonts-fclist">
+  <table xml:id="tab-x11-fonts-fclist">
    <title>fc-list<command>のパラメータ</command></title>
    <tgroup cols="2">
     <thead>
@@ -321,5 +329,5 @@ Lucida Sans:style=Regular:weight=80</screen>
     </tbody>
    </tgroup>
   </table>
- </sect2>
-</sect1>
+ </section>
+</section>

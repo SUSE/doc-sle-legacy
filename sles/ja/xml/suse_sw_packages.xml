@@ -1,20 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="suse_sw_packages.xml" id="sec-suse-packages">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="suse_sw_packages.xml" xml:id="sec-suse-packages">
  <title>特殊ソフトウェアパッケージ</title>
 
  <para>
   <systemitem class="resource">bash</systemitem>、<systemitem class="resource">cron</systemitem>、<systemitem class="resource">logrotate</systemitem>、<systemitem class="resource">locate</systemitem>、<systemitem class="resource">ulimit</systemitem>、<systemitem class="resource">free</systemitem>といったプログラムは、システム管理者および多くのユーザにとって非常に重要です。manのページとinfoのページは、コマンドについての2つの役立つ情報源ですが、その両方が常に利用できるとは限りません。GNU Emacsは、人気のある、自由度に設定できるテキストエディタです。
  </para>
 
- <sect2 id="sec-suse-packages-bash">
+ <section xml:id="sec-suse-packages-bash">
   <title>bashパッケージと/etc/profile</title><indexterm> <primary>Bash</primary> <secondary>プロファイル</secondary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>プロファイル</secondary> </indexterm>
   <para>
    Bashはデフォルトのシステムシェルです。ログインシェルとして使用する場合には、いくつかの初期化ファイルを読み込みます。Bashは、各ファイルを次の順序で処理します。
@@ -55,9 +63,9 @@ cp /etc/skel/.profile ~/.profile</screen>
    それから、個人的な調整点を、<literal>*.old</literal>ファイルから書き戻します。
 
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-packages-cron">
+ <section xml:id="sec-suse-packages-cron">
 
   <title>cronパッケージ</title><indexterm> <primary>cron</primary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>crontab</secondary> </indexterm>
   <para>
@@ -66,7 +74,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    cronテーブルは、<filename>/var/cron/tabs</filename>にあります。<filename>/etc/crontab</filename>はシステム全体のcronテーブルとして機能します。ユーザ名を入力して、タイムテーブルの後、コマンドの前に直接コマンドを実行するようにします。<xref linkend="ex-suse-packages-cron"/>では、<systemitem class="username">root</systemitem>が入力されています。<filename>/etc/cron.d</filename>にあるパッケージ固有のテーブルも同じ形式です。<command>cron</command>のマニュアルページを参照してください(<command>man cron</command>使用)。
   </para>
-  <example id="ex-suse-packages-cron">
+  <example xml:id="ex-suse-packages-cron">
    <title>/etc/crontab内のエントリ</title>
 <screen>1-59/5 * * * *   root   test -x /usr/sbin/atrun &amp;&amp; /usr/sbin/atrun</screen>
   </example>
@@ -79,7 +87,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    <filename>hourly</filename>、<filename>daily</filename>、または他の特定の周期の管理スクリプトをカスタム時間で実行するには、<filename>/etc/crontab</filename>のエントリを使用して、定期的にタイムスタンプファイルを削除します(<xref linkend="ex-suse-packages-cron-time"/>を参照してください。そこでは、<filename>hourly</filename>という名前の付いているファイルが毎時59分に、<filename>daily</filename>という名前の付いているファイルが毎日午前2時14分に削除されるようになっています)。
   </para>
-  <example id="ex-suse-packages-cron-time">
+  <example xml:id="ex-suse-packages-cron-time">
    <title>/etc/crontab:タイムスタンプファイルの削除</title>
 <screen>59 *  * * *     root  rm -f /var/spool/cron/lastrun/cron.hourly
 14 2  * * *     root  rm -f /var/spool/cron/lastrun/cron.daily
@@ -93,18 +101,18 @@ cp /etc/skel/.profile ~/.profile</screen>
    日常のシステムメンテナンスジョブは、わかりやすいようにさまざまなスクリプトに分散されています。これらはパッケージ<systemitem class="resource">aaa_base</systemitem>に含まれています。<filename>/etc/cron.daily</filename>に含まれています。このパッケージには、たとえば、コンポーネント<filename>suse.de-backup-rpmdb</filename>、<filename>suse.de-clean-tmp</filename>、または<filename>suse.de-cron-local</filename>が含まれています。
    
   </para>
- </sect2>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="suse_logfiles.xml" parse="xml"/>
+ <xi:include href="suse_logfiles.xml" parse="xml"/>
 
- <sect2 id="sec-suse-locate">
+ <section xml:id="sec-suse-locate">
   <title>locateコマンド</title><indexterm> <primary>ファイル</primary> <secondary>検索</secondary> </indexterm> <indexterm> <primary>locate</primary> </indexterm>
   <para>
    ファイルをすばやく検索するためのコマンド<command>locate</command>は、標準のインストール済みソフトウェアには含まれていません。必要であれば、パッケージ<systemitem>findutils-locate</systemitem>をインストールしてください。updatedbプロセスは、毎晩、またはシステムをブートしてから約15分で自動的に起動します。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-ulimit">
+ <section xml:id="sec-suse-ulimit">
   <title>ulimitコマンド</title><indexterm> <primary>ulimit</primary> </indexterm> <indexterm> <primary>コアファイル</primary> </indexterm> <indexterm> <primary>システム</primary> <secondary>リソースの使用制限</secondary> </indexterm>
   <para>
    <command>ulimit</command>(<emphasis>user limits</emphasis>)コマンドを使用すると、システムリソースの使用量に制限を設定して、それを表示できます。<command>ulimit</command>はアプリケーションが使用できるメモリの制限に特に役立ちます。これを使用して、アプリケーションがシステムリソースを過剰に使用して速度が低下したり、オペレーティングシステムをハングさせたりすることを防止できます。
@@ -112,7 +120,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    <command>ulimit</command>コマンドには、さまざまなオプションがあります。メモリの使用量を制限するには、<xref linkend="tab-suse-packages-ulimit"/>に示すオプションを使用します。
   </para><indexterm> <primary>ulimit</primary> <secondary>オプション</secondary> </indexterm>
-  <table id="tab-suse-packages-ulimit">
+  <table xml:id="tab-suse-packages-ulimit">
    <title><command>ulimit</command>:ユーザのためのリソースの設定</title>
 
    <tgroup cols="2">
@@ -183,7 +191,7 @@ cp /etc/skel/.profile ~/.profile</screen>
   <para>
    システム全体のエントリは、<filename>/etc/profile</filename>で設定できます。コアファイルの作成を有効にします(プログラマが<emphasis>デバッグ</emphasis>を行うために必要)。通常のユーザは、<filename>/etc/profile</filename>ファイルでシステム管理者が指定した値を大きくすることはできませんが、<filename>~/.bashrc</filename>に特別なエントリを作成することは可能です。
   </para><indexterm> <primary>環境設定ファイル</primary> <secondary>.bashrc</secondary> </indexterm>
-  <example id="ex-u-ulimit-bashrc">
+  <example xml:id="ex-u-ulimit-bashrc">
    <title>ulimit:~/.bashrc中の設定</title>
 <screen># Limits maximum resident set size (physical memory):
 ulimit -m 98304
@@ -199,9 +207,9 @@ ulimit -v 98304</screen>
     すべてのシェルが<command>ulimit</command>ディレクティブをサポートするわけではありません。ユーザが制約を包括的に設定する必要がある場合、PAM(たとえば、<literal>pam_limits</literal>)を使用すれば、包括的な調整が可能になります。
    </para>
   </important>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-free">
+ <section xml:id="sec-suse-free">
   <title>freeコマンド</title><indexterm> <primary>メモリ</primary> <secondary>RAM</secondary> </indexterm> <indexterm> <primary>コマンド</primary> <secondary>free</secondary> </indexterm>
   <para>
    <command>free</command>コマンドは、空いている物理メモリ、使用済み物理メモリ、システム内のスワップ領域のほか、カーネルによって消費されたバッファとキャッシュの合計量を表示します。利用可能な RAM<emphasis> という概念は、統一的なメモリ管理が生まれる以前の遺物です。</emphasis>空きメモリは悪いメモリ<emphasis>というスローガンは、Linux にぴったりです。</emphasis>結果として、Linuxでは、空きメモリや未使用メモリを実質的に発生させず、キャッシュの量を調整するよう努力が重ねられてきました。
@@ -215,26 +223,26 @@ ulimit -v 98304</screen>
   <para>
    ただし、目的が現在のRAM使用量である場合は、<filename>/proc/meminfo</filename>で情報を見つけてください。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-suse-manpages">
+ <section xml:id="sec-suse-manpages">
   <title>manページとinfoページ</title><indexterm> <primary>マニュアルページ</primary> </indexterm> <indexterm> <primary>infoページ</primary> </indexterm> <indexterm> <primary>ヘルプ</primary> <secondary>マニュアルページ</secondary> </indexterm> <indexterm> <primary>ヘルプ</primary> <secondary>infoページ</secondary> </indexterm>
   <para>
-   一部のGNUアプリケーション(tarなど)では、manページが提供されなくなりました。manページが用意されていたコマンドについては、<option>--help</option>オプションを使用して簡単な概要を表示するか、詳細な手順を説明するinfoページを使用します。infoは、GNUのハイパーテキストシステムです。このシステムについての説明は、「<command>info</command> <option>info</option>」と入力してください。Info ページは、「<command>emacs<option> -f info</option></command>」コマンドを入力してEmacsを起動するか、コンソールで直接「<command>info</command>」と入力します。あるいは、tkinfo、xinfo、またはヘルプシステムを使用して、infoページを表示できます。
+   一部のGNUアプリケーション(tarなど)では、manページが提供されなくなりました。manページが用意されていたコマンドについては、<option>--help</option>オプションを使用して簡単な概要を表示するか、詳細な手順を説明するinfoページを使用します。infoは、GNUのハイパーテキストシステムです。このシステムについての説明は、「<command>info</command> <option>info</option>」と入力してください。Info ページは、「<command>emacs</command> <option> -f info</option>」コマンドを入力してEmacsを起動するか、コンソールで直接「<command>info</command>」と入力します。あるいは、tkinfo、xinfo、またはヘルプシステムを使用して、infoページを表示できます。
   </para>
- </sect2>
+ </section>
 
 
 
- <sect2 id="sec-suse-packages-man">
+ <section xml:id="sec-suse-packages-man">
   <title><command>man</command>コマンドを使用したマニュアルページの選択</title>
   <para>
-   マニュアルページを読み込むには、<command>man マニュアルページ<replaceable/></command>を入力します。同じ名前でさまざまなセクションに存在するマニュアルページは、対応するセクション番号とともに一覧表示されます。表示するマニュアルページを選択します。セクション番号を数秒内に入力しないと、最初のマニュアルページが表示されます。
+   マニュアルページを読み込むには、<command>man マニュアルページ</command> <replaceable/>を入力します。同じ名前でさまざまなセクションに存在するマニュアルページは、対応するセクション番号とともに一覧表示されます。表示するマニュアルページを選択します。セクション番号を数秒内に入力しないと、最初のマニュアルページが表示されます。
   </para>
   <para>
    これをデフォルトのシステム動作に戻すには、<filename>~/.bashrc</filename>などのシェル初期化ファイルで<literal>MAN_POSIXLY_CORRECT=1</literal>を設定します。
   </para>
- </sect2>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="suse_emacs.xml" parse="xml"/>
-</sect1>
+ <xi:include href="suse_emacs.xml" parse="xml"/>
+</section>

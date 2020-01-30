@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="x11_optimierung.xml" id="sec-x11-optimieren">
- <title>X Window システムの手動設定</title><indexterm id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>設定</secondary></indexterm><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="x11_optimierung.xml" xml:id="sec-x11-optimieren">
+ <title>X Window システムの手動設定</title><indexterm xml:id="idx-X-optimizing" class="startofrange"> <primary>X</primary> <secondary>設定</secondary></indexterm><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary></indexterm><indexterm> <primary>X.Org</primary></indexterm>
 
  <para>
   デフォルトでは、X Windowシステムは<xref linkend="cha-y2-hw-graph"/>に説明されているSaX2インタフェースを使用して設定されます。代わりに設定ファイルを編集して、手動設定することもできます。
@@ -46,7 +54,7 @@ EndSection </screen>
   使用可能なセクションのタイプのリストは<xref linkend="tab-x11-sections"/>にあります。
  </para>
 
- <table id="tab-x11-sections">
+ <table xml:id="tab-x11-sections">
   <title>/etc/X11/xorg.confのセクション</title>
   <tgroup cols="2" align="left">
    <thead>
@@ -199,19 +207,19 @@ EndSection </screen>
   xorg.conf<systemitem>には、複数の異なる</systemitem>Monitor<systemitem>および</systemitem>Device<filename>セクションを記述できます。</filename>複数の<systemitem>Screen</systemitem>セクションを記述することも可能です。<systemitem>ServerLayout</systemitem>セクションでは、このセクションのうち使用するものを判定します。
  </para>
 
- <sect2 id="sec-x11-screen">
+ <section xml:id="sec-x11-screen">
   <title>Screenセクション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary> <tertiary>Screen</tertiary> </indexterm>
   <para>
    Screenセクションでは、MonitorセクションとDeviceセクションを組み合わせて、どの解像度とカラー設定を使用するかを決定します。Screenセクションは<xref linkend="dat-x11-scrsec"/>のようになります。
   </para>
-  <example id="dat-x11-scrsec">
+  <example xml:id="dat-x11-scrsec">
    <title>ファイル/etc/X11/xorg.confのScreenセクション</title>
-<screen>Section "Screen"<co id="co-x11-screen"/>
-  DefaultDepth  16<co id="co-x11-ddepth"/>
-  SubSection "Display"<co id="co-x11-display"/>
-    Depth       16<co id="co-x11-depth"/>
-    Modes       "1152x864" "1024x768" "800x600"<co id="co-x11-mode"/>
-    Virtual     1152x864<co id="co-x11-virt"/>
+<screen>Section "Screen"<co xml:id="co-x11-screen"/>
+  DefaultDepth  16<co xml:id="co-x11-ddepth"/>
+  SubSection "Display"<co xml:id="co-x11-display"/>
+    Depth       16<co xml:id="co-x11-depth"/>
+    Modes       "1152x864" "1024x768" "800x600"<co xml:id="co-x11-mode"/>
+    Virtual     1152x864<co xml:id="co-x11-virt"/>
   EndSubSection
   SubSection "Display"
     Depth       24
@@ -226,7 +234,7 @@ EndSection </screen>
     Modes       "1280x1024"
   EndSubSection
   Device        "Device[0]"
-  Identifier    "Screen[0]"<co id="co-x11-ident"/>
+  Identifier    "Screen[0]"<co xml:id="co-x11-ident"/>
   Monitor       "Monitor[0]"
 EndSection</screen>
   </example>
@@ -270,17 +278,17 @@ EndSection</screen>
     </para>
    </callout>
   </calloutlist>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-device-section">
+ <section xml:id="sec-x11-device-section">
   <title>Deviceセクション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary> <tertiary>Device</tertiary> </indexterm>
   <para>
    Deviceセクションでは、特定のグラフィックカードを記述します。名前が異なっていれば、キーワード<filename>Identifier</filename>を使用して<systemitem>xorg.conf</systemitem>内で必要な数だけデバイスエントリを指定できます。複数のグラフィックカードをインストールしている場合、セクションには順番に番号が付けられます。最初のセクションは<systemitem>Device[0]</systemitem>、2 番目のセクションは<systemitem>Device[1]</systemitem>となります。次のファイルは、Matrox Millennium PCIグラフィックカードが搭載されているコンピュータの<systemitem>Device</systemitem>セクションから抜粋したものです(SaX2が設定)。
   </para>
 <screen>Section "Device"
   BoardName     "MGA2064W"
-  BusID         "0:19:0"<co id="co-x11-bus"/>
-  Driver        "mga"<co id="co-x11-driver"/>
+  BusID         "0:19:0"<co xml:id="co-x11-bus"/>
+  Driver        "mga"<co xml:id="co-x11-driver"/>
   Identifier    "Device[0]"
   VendorName    "Matrox"
   Option        "sw_cursor"
@@ -303,9 +311,9 @@ EndSection</screen>
   <para>
    グラフィックカードに複数のビデオコネクタがある場合、この1枚のカードの異なるデバイスを単一ビューとして設定できます。SaX2を使用してグラフィックインタフェースをこのように設定します。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-x11-opt-monitor">
+ <section xml:id="sec-x11-opt-monitor">
   <title>MonitorセクションとModesセクション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>xorg.conf</secondary> <tertiary>Monitor</tertiary> </indexterm>
   <para>
    Device<systemitem>セクションと同様に、</systemitem>Monitor<systemitem>セクションと</systemitem>Modes<systemitem>セクションでもモニタを1つずつ記述します。</systemitem>設定ファイル<filename>/etc/X11/xorg.conf</filename>では、<systemitem>Monitor</systemitem>セクションを必要な数だけ指定できます。<systemitem>Monitor</systemitem>セクションはそれぞれ、<systemitem>UseModes</systemitem>行がある<systemitem>Modes</systemitem>セクションを参照します。<systemitem>Monitor</systemitem>セクションに<systemitem>Modes</systemitem>セクションがない場合、Xサーバは該当する値を一般的な同期の値から計算します。サーバレイアウトセクションでは、どの<systemitem>Monitor</systemitem>セクションが関係するかを指定します。
@@ -324,5 +332,5 @@ EndSection</screen>
   <para>
    modelineの手動指定が必要になることはほとんどありません。最新のマルチシンクモニタを使用している場合、許容周波数と最適解像度は、SaX2設定のセクションで説明したように、原則としてXサーバがDDCを介してモニタから直接読み込みます。何らかの原因で直接読み込めない場合は、Xサーバに付属するVESAモードの1つを使用してください。このモードは、実際にはグラフィックカードとモニタの大半の組み合わせに機能します。
   </para><indexterm class="endofrange" startref="idx-X-optimizing"/>
- </sect2>
-</sect1>
+ </section>
+</section>

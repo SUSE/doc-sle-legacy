@@ -1,15 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="vnc.xml" id="cha-vnc">
- <title>VNCによるリモートアクセス</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="vnc.xml" xml:id="cha-vnc"><title>VNCによるリモートアクセス</title><info><abstract>
   <para>
    VNC (Virtual Network Computing)では、グラフィカルなデスクトップを使用してリモートコンピュータを制御できます。これは、リモートシェルアクセスとは対照的です。VNCはプラットフォームに依存しないので、VNCを使用すれば、任意のオペレーティングシステムからリモートマシンにアクセスできます。
   </para>
@@ -17,43 +23,45 @@ Please see LICENSE.txt for this document's license.
   <para>
    <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>では、2種類のVNCセッションをサポートしています。1つはクライアントからのVNC接続が続く限り、<quote/>「存続する」一時的セッションで、もう1つは明示的に終了されるまで<quote/>「存続する」永続的セッションです。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <note>
   <title>セッションタイプ</title>
   <para>
    両方のタイプのセッションを1つのコンピュータの異なるポートから同時に提供ができます。ただし、オープンセッションを1つのタイプからもう一方のタイプに変換することはできません。
   </para>
  </note>
- <sect1 id="sec-vnc-one-time">
+ <section xml:id="sec-vnc-one-time">
   <title>一時的VNCセッション</title>
 
   <para>
    一時的セッションは、リモートクライアントによって開始されます。これにより、サーバにグラフィカルなログイン画面が開きます。この画面でセッションを開始するユーザを選択できます。さらに、ログインマネージャでサポートされている場合はデスクトップ環境も選択できます。そのようなVNCセッションへのクライアント接続を終了すると、そのセッション内で開始したアプリケーションもすべて終了します。一時的なVNCセッションは共用できませんが、1つのホストで同時に複数のセッションを実行することは可能です。
   </para>
 
-  <procedure id="pro-vnc-one-time-activate">
+  <procedure xml:id="pro-vnc-one-time-activate">
    <title>一時的VNCセッションの有効化</title>
-   <step performance="required">
+   <step>
     <para>
      まず、<menuchoice><guimenu>YaST</guimenu><guimenu>ネットワークサービス</guimenu><guimenu>リモート管理(VNC)</guimenu></menuchoice>の順に選択します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>(リモート管理を許可する</guimenu>にチェックマークを付けます。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      必要な場合は、<guimenu>ファイアウォールでポートを開く</guimenu>にもチェックマークを付けます (たとえば、ネットワークインタフェースを外部ゾーンに属するように設定する場合)。ネットワークインタフェースが複数ある場合は、<guimenu>ファイアウォールの詳細</guimenu>で、特定のインタフェースにだけファイアウォールポートを開くように制限します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>完了</guimenu>で設定を確認します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      必要なパッケージの一部をまだ入手できない場合は、足りないパッケージのインストールを承認する必要があります。
     </para>
@@ -74,7 +82,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <sect2 id="sec-vnc-one-time-connect">
+  <section xml:id="sec-vnc-one-time-connect">
    <title>一時的VNCセッションを開始する</title>
    <para>
     一時的VNCセッションを開始するには、VNCビューアをクライアントコンピュータにインストールしておく必要があります。SUSE Linux製品の標準ビューアは、<systemitem class="resource">tightvnc</systemitem>パッケージで提供される<command>vncviewer</command>です。WebブラウザとJavaアプレットを使用してVNCセッションを表示することもできます。
@@ -90,9 +98,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     または、Javaを有効にしたWebブラウザで、URLとして「<literal>http://jupiter.example.com:5801</literal>」を入力することにより、VNCセッションを表示できます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-vnc-one-time-config">
+  <section xml:id="sec-vnc-one-time-config">
    <title>一時的VNCセッションを設定する</title>
    <para>
     デフォルト設定を変更する必要も意志もない場合は、このセクションをスキップできます。
@@ -119,9 +127,9 @@ Please see LICENSE.txt for this document's license.
      <xref linkend="pro-vnc-one-time-activate"/>で説明されているように、リモート管理をアクティブにすると、ファイアウォール内でポート<systemitem class="resource">5801</systemitem>および<systemitem class="resource">5901</systemitem>が開きます。VNCセッションで使用されるネットワークインタフェースがファイアウォールで保護されている場合、VNCセッションの追加ポートをアクティブにする際には各ポートを手動で開く必要があります。手順については、<xref linkend="cha-security-firewall"/>を参照してください。
     </para>
    </important>
-  </sect2>
- </sect1>
- <sect1 id="sec-vnc-persistent">
+  </section>
+ </section>
+ <section xml:id="sec-vnc-persistent">
   <title>永続的VNCセッション</title>
 
   <para>
@@ -157,15 +165,15 @@ Please see LICENSE.txt for this document's license.
    1つのセッションに、両方の種類のクライアント接続が一度に複数存在できます。
   </para>
 
-  <procedure id="pro-vnc-persistent-activate">
+  <procedure xml:id="pro-vnc-persistent-activate">
    <title>永続的VNCセッションを開始する</title>
-   <step performance="required">
+   <step>
     <para>
      シェルを開き、VNCセッションを所有するユーザとしてログインしていることを確認します。
 
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      VNCセッションで使用されるネットワークインタフェースがファイアウォールで保護されている場合は、ファイアウォール内でセッションによって使用されるポートを手動で開く必要があります。複数のセッションを開始する場合は、一連のポートを開くことができます。ファイアウォールの設定方法の詳細については、<xref linkend="cha-security-firewall"/>を参照してください。
     </para>
@@ -173,7 +181,7 @@ Please see LICENSE.txt for this document's license.
      <command>vncserver</command>は、ディスプレイ<literal>:1</literal>にはポート<systemitem class="resource">5901</systemitem> 、ディスプレイ<literal>:2</literal>にはポート<systemitem class="resource">5902</systemitem>という順序でポートを使用します。永続的セッションの場合、VNCディスプレイとXディスプレイは、通常、同じ番号です。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      1024x769ピクセルの解像度と16ビットの色数でセッションを開始するには、次のコマンドを入力します。
     </para>
@@ -211,7 +219,7 @@ Please see LICENSE.txt for this document's license.
    セッションを手動で終了したい場合は、VNCサーバでシェルを開き、終了したいVNCセッションを所有するユーザとしてログインしていることを確認します。次のコマンドを実行して、ディスプレイ<literal>:1</literal>で実行されているセッションを終了します: <command>vncserver -kill :1</command>
   </para>
 
-  <sect2 id="sec-vnc-persistent-connect">
+  <section xml:id="sec-vnc-persistent-connect">
    <title>永続的VNCセッションに接続する</title>
    <para>
     永続的VNCセッションに接続するには、VCNビューアをインストールする必要があります。SUSE Linux製品の標準ビューアは、<systemitem class="resource">tightvnc</systemitem>パッケージで提供される<command>vncviewer</command>です。WebブラウザとJavaアプレットを使用してVNCセッションを表示することもできます。
@@ -227,9 +235,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     または、Javaを有効にしたWebブラウザで、URLとして「<literal>http://jupiter.example.com:5801</literal>」を入力することにより、VNCセッションを表示できます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-vnc-persistent-configure">
+  <section xml:id="sec-vnc-persistent-configure">
    <title>永続的VNCセッションを設定する</title>
    <para>
     永続的VNCセッションは、<filename>$HOME/.vnc/xstartup</filename>を編集することによって設定できます。デフォルトでは、このシェルスクリプトは、<command>xterm</command>と<command>twm</command>ウィンドウマネージャを起動します。代わりとして、GNOMEまたはKDEを起動するには、<command>twm</command>で始まる行を次のいずれかで置き換えます。
@@ -242,6 +250,6 @@ Please see LICENSE.txt for this document's license.
      永続的VNCセッションは、ユーザごとの単一設定として設定されます。1人のユーザが開始する複数のセッションでは、すべて同じ起動ファイルとパスワードファイルが使用されます。
     </para>
    </note>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>
