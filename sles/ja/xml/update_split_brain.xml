@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="update_split_brain.xml" id="sec-update-split-brain">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="update_split_brain.xml" xml:id="sec-update-split-brain">
  <title>Atomicアップデート</title>
 
  <para>
@@ -16,7 +24,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
- <sect2 id="cha-update-split-brain-setup">
+ <section xml:id="cha-update-split-brain-setup">
   <title>設定</title>
   <warning>
    <title>厳格なパーティション分割要件</title>
@@ -28,37 +36,37 @@ Please see LICENSE.txt for this document's license.
    </para>
   </warning>
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      <filename>/dev/sda1</filename>が単一のルートパーティションとして全ディスクサイズの半分未満を占めるシステムをインストールします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      インストールしたシステムを、必要に応じてカスタマイズします。<systemitem>multi-update-tools</systemitem>パッケージを必ずインストールしてください。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <command>multi-update-setup --partition</command>を実行します。このコマンドは、同様のサイズでシステムの2つ目のルートパーティション(<filename>/dev/sda2</filename>)を作成します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      必要に応じてディスクの残りをパーティション分割し、カスタマイズ(*)を続行します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <command>multi-update-setup --clone</command>を実行して、システムをもう一方のパーティションにコピーします。このコマンドで、ターゲットシステムの<filename>/etc/fstab</filename>にある<filename>/</filename> (ルート)エントリも変更します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      必要に応じて、さらにカスタマイズ(*)します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <command>multi-update-setup --bootloader</command>を実行して、ブートローダの設定を初期化します。ブートローダのメニューに、もう一方のシステムをブートするためのエントリが組み込まれます。
     </para>
@@ -69,26 +77,26 @@ Please see LICENSE.txt for this document's license.
      </para>
     </warning>
    </step>
-   <step performance="required">
+   <step>
     <para>
      (*)でマークされたカスタマイズがない場合は、<command>multi-update-setup --complete</command>を使用して3つのステップをすべて実行します。
     </para>
    </step>
   </procedure>
- </sect2>
+ </section>
 
 
 
- <sect2 id="cha-update-split-brain-updating">
+ <section xml:id="cha-update-split-brain-updating">
   <title>もう一方のシステムの更新</title>
   <para>
    <command>multi-update</command>を実行します。このコマンドは、<systemitem>chroot</systemitem>環境で<command>zypper</command>を実行し、もう一方のシステムを更新します。どちらのシステムがアクティブかは重要でありません。そのブートメニューは、ブート時にデフォルトとして表示されます。
   </para>
- </sect2>
+ </section>
 
 
 
- <sect2 id="cha-update-split-brain-touble">
+ <section xml:id="cha-update-split-brain-touble">
   <title>トラブルシューティング</title>
   <para>
    更新したシステムのブートローダが更新後に破損している場合は、<quote>アクティブ</quote>フラグを変更して、もう一方のシステムのルートパーティション用に設定し、そのシステムをブートできるようにする必要があります。
@@ -99,21 +107,21 @@ Please see LICENSE.txt for this document's license.
   <para>
    GRUBの詳細については、<xref linkend="cha-grub"/>を参照してください。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="cha-update-split-brain-limitation">
+ <section xml:id="cha-update-split-brain-limitation">
   <title>制限</title>
   <para>
    ルートパティションは、パーティション名またはIDによってマウントするか、その他の方法でマウントする必要があります。パーティションUUIDやラベルによるマウントはサポートされていません。
   </para>
- </sect2>
+ </section>
 
 
 
- <sect2 id="cha-update-split-brain-info">
+ <section xml:id="cha-update-split-brain-info">
   <title>詳細情報</title>
   <para>
    詳細については、<systemitem>multi-update-tools</systemitem>パッケージに同梱されている<filename>/usr/share/doc/packages/multi-update-tools/README</filename>を参照してください。
   </para>
- </sect2>
-</sect1>
+ </section>
+</section>

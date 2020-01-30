@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_dhcp.xml" id="cha-dhcp">
- <title>DHCP</title><indexterm class="startofrange" id="idx-DHCP"> <primary>DHCP</primary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>DHCP</secondary> </indexterm> <indexterm> <primary>IPアドレス</primary> <secondary>動的割り当て</secondary> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_dhcp.xml" xml:id="cha-dhcp"><title>DHCP</title><info><abstract>
   <para>
    DHCP(<emphasis>Dynamic Host Configuration Protocol</emphasis>)の目的は、ネットワーク設定を各ワークステーションでローカルに行うのではなく、(サーバから)一元的に割り当てることです。DHCPを使用するように設定されたクライアントは、自身の静的アドレスを制御できません。サーバからの指示に従って、すべてが自動的に設定されるからです。クライアント側でNetworkManagerを使用する場合は、クライアントを設定する必要はありません。これは、環境を変更し、一度に1つのインタフェースしかない場合に便利です。DHCPサーバが実行しているマシン上ではNetworkManagerを使用しないでください。
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm class="startofrange" xml:id="idx-DHCP"> <primary>DHCP</primary> </indexterm> <indexterm> <primary>ネットワーク</primary> <secondary>DHCP</secondary> </indexterm> <indexterm> <primary>IPアドレス</primary> <secondary>動的割り当て</secondary> </indexterm>
+ 
  <tip arch="zseries" os="sles">
   <title>IBM System z: DHCPのサポート</title>
   <para>
@@ -32,7 +40,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   DHCPサーバは、クライアントが使用するIPアドレスとネットマスクを供給するだけでなく、ホスト名、ドメイン名、ゲートウェイ、およびネームサーバアドレスも供給します。この他にも、DHCPを使用して一元的に設定できるパラメータがあり、たとえば、クライアントが現在時刻をポーリングするタイムサーバやプリントサーバも設定可能です。
  </para>
- <sect1 id="sec-dhcp-yast">
+ <section xml:id="sec-dhcp-yast">
   <title>YaSTによるDHCPサーバの設定</title><indexterm> <primary>YaST</primary> <secondary>DHCP</secondary></indexterm><indexterm> <primary>DHCP</primary> <secondary>YaSTによる設定</secondary></indexterm>
 
   <para>
@@ -53,18 +61,18 @@ Please see LICENSE.txt for this document's license.
    YaST　DHCPモジュール(<systemitem>yast2-dhcp-server</systemitem>)を使用すると、ローカルネットワーク用に独自のDHCPサーバをセットアップできます。このモジュールは、ウィザードモードまたはエキスパート設定モードで実行できます。
   </para>
 
-  <sect2 id="sec-dhcp-yast-init">
+  <section xml:id="sec-dhcp-yast-init">
    <title>初期設定(ウィザード)</title>
    <para>
     このモジュールを初めて起動すると、ウィザードが開始して、サーバ管理に関していくつかの基本的な事項を決定するように要求されます。この初期セットアップを完了すると、必要最低限の機能が設定された基本的なサーバ設定が生成されます。エキスパートモードは、さらに高度な設定タスクを行う場合に使用できます。次の手順に従います。
    </para>
    
-   <procedure id="pro-dhcp-yast-init">
-    <step performance="required">
+   <procedure xml:id="pro-dhcp-yast-init">
+    <step>
      <para>
       そのリストから、DHCPサーバがリスンするインタフェースを選択し、<guimenu>選択</guimenu>をクリックします。この後、<guimenu>選択したインタフェースのファイアウォールを開く</guimenu>を選択して、このインタフェース用のファイアウォールを開き、<guimenu>次へ</guimenu>をクリックします。詳細については、<xref linkend="fig-yast2-dhcp-wiz1"/>を参照してください。
      </para>
-     <figure id="fig-yast2-dhcp-wiz1">
+     <figure xml:id="fig-yast2-dhcp-wiz1">
       <title>DHCPサーバ:カードの選択</title>
       <mediaobject>
        <imageobject role="fo">
@@ -76,11 +84,11 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </figure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       チェックボックスを使って、LDAPサーバがDHCP設定を自動的に格納する必要があるかどうかを指定します。エントリフィールドに、DHCPサーバで管理する全クライアントのネットワークを指定します。この指定には、ドメイン名、タイムサーバのアドレス、プライマリネームサーバとセカンダリネームサーバのアドレス、印刷サーバとWINSサーバのアドレス(WindowsクライアントとLinuxクライアントの両方が混在するネットワークを使用する場合)、ゲートウェイアドレスおよびリース期間が含まれます。詳細については、<xref linkend="fig-yast2-dhcp-wiz2"/>を参照してください。
      </para>
-     <figure id="fig-yast2-dhcp-wiz2">
+     <figure xml:id="fig-yast2-dhcp-wiz2">
       <title>DHCPサーバ:グローバル設定</title>
       <mediaobject>
        <imageobject role="fo">
@@ -92,11 +100,11 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </figure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       クライアントに対する動的IPアドレスの割り当て方法を設定します。そのためには、サーバがDHCPクライアントに割当て可能なIPアドレスの範囲を指定します。これらのアドレスは、すべて同じネットマスクを使用する必要があります。また、クライアントがリースの延長を要求せずにIPアドレスを維持できるリース期間も指定します。必要に応じて、最大リース期間、つまりサーバが特定のクライアントのIPアドレスを保持している期間を指定します。詳細については、<xref linkend="fig-yast2-dhcp-wiz3"/>を参照してください。
      </para>
-     <figure id="fig-yast2-dhcp-wiz3">
+     <figure xml:id="fig-yast2-dhcp-wiz3">
       <title>DHCPサーバ:ダイナミックDHCP</title>
       <mediaobject>
        <imageobject role="fo">
@@ -108,12 +116,12 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </figure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       DHCPサーバ開始方法を定義します。システムのブート時にDHCPサーバを自動的に起動するか、必要に応じて(たとえば、テスト目的で)手動で起動するか指定します。<guimenu>完了</guimenu>をクリックして、サーバの環境設定を完了します。詳細については、<xref linkend="fig-yast2-dhcp-start"/>を参照してください。
 
      </para>
-     <figure id="fig-yast2-dhcp-start">
+     <figure xml:id="fig-yast2-dhcp-start">
       <title>DHCPサーバ:起動</title>
       <mediaobject>
        <imageobject role="fo">
@@ -125,11 +133,11 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </figure>
     </step>
-    <step os="sles" performance="required">
+    <step os="sles">
      <para>
       前のステップで説明した方法で動的DHCPを使用するかわりに、アドレスを疑似静的方式で割り当てるようにサーバを設定することもできます。下部のエントリフィールドを使用して、この方法で管理するホストのリストを指定します。具体的には、<guimenu>名前</guimenu>と<guimenu>IPアドレス</guimenu>に、この種のクライアントに与える名前とIPアドレスを指定し、さらに<guimenu>ハードウェアアドレス</guimenu>と<guimenu>ネットワークタイプ</guimenu>(トークンリングまたはイーサネット)を指定します。上部に表示されるクライアントリストを修正するには、<guimenu>追加</guimenu>、<guimenu>編集</guimenu>、および<guimenu>削除</guimenu>を使用します。詳細については、<xref linkend="fig-yast2-dhcp-statdhcp"/>を参照してください。
      </para>
-     <figure id="fig-yast2-dhcp-statdhcp">
+     <figure xml:id="fig-yast2-dhcp-statdhcp">
       <title>DHCPサーバ:ホスト管理</title>
       <mediaobject>
        <imageobject role="fo">
@@ -142,9 +150,9 @@ Please see LICENSE.txt for this document's license.
      </figure>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-dhcp-yast-expert" os="sles">
+  <section xml:id="sec-dhcp-yast-expert" os="sles">
    <title>DHCPサーバ設定(エキスパート)</title>
    <para>
     前述の環境設定方法に加えて、DHCPサーバのセットアップを詳細に変更できるようにエキスパート設定モードが用意されています。エキスパート環境設定を開始するには、<guimenu>スタートアップ</guimenu>ダイアログの<guimenu>DHCPサーバエキスパート環境設定</guimenu>をクリックします(<xref linkend="fig-yast2-dhcp-start"/>を参照)。
@@ -156,7 +164,7 @@ Please see LICENSE.txt for this document's license.
       <para>
        この最初のダイアログで<guimenu>DHCPサーバの起動</guimenu>を選択し、既存の環境設定を編集可能にします。DHCPサーバの動作のうち、重要なのはchroot環境またはchroot jailで動作してサーバホストを保護する機能です。DHCPサーバが外部からの攻撃にさらされるとしても、攻撃者はchroot jailの中にとどまるためシステムの残りの部分には進入できません。ダイアログの下部には、定義済みの宣言を示すツリービューが表示されます。これらの修正には、<guimenu>追加</guimenu>、<guimenu>削除</guimenu>、および<guimenu>編集</guimenu>を使用します。<guimenu>詳細</guimenu>を選択すると、上級者用のダイアログが追加表示されます。<xref linkend="fig-yast2-dhcp-chroot"/>を参照してください。 <guimenu>追加</guimenu>を選択後、追加する宣言の種類を定義します。<guimenu>詳細</guimenu>から、サーバのログファイルの表示、TSIGキー管理の設定、およびDHCPサーバのセットアップに応じたファイアウォール設定の調整を行うことができます。
       </para>
-      <figure id="fig-yast2-dhcp-chroot">
+      <figure xml:id="fig-yast2-dhcp-chroot">
        <title>DHCPサーバ:Chroot Jailと宣言</title>
        <mediaobject>
         <imageobject role="fo">
@@ -175,7 +183,7 @@ Please see LICENSE.txt for this document's license.
       <para>
        DHCPサーバの<guimenu>グローバルオプション</guimenu>は、多数の宣言で構成されています。このダイアログでは、宣言タイプ<guimenu>サブネット</guimenu>、<guimenu>ホスト</guimenu>、<guimenu>共有ネットワーク</guimenu>、<guimenu>グループ</guimenu>、<guimenu>アドレスプール</guimenu>、および<guimenu>クラス</guimenu>を設定できます。この例は、新しいサブネットワークの選択を示しています(<xref linkend="fig-yast2-dhcp-newdec"/>を参照)。
       </para>
-      <figure id="fig-yast2-dhcp-newdec">
+      <figure xml:id="fig-yast2-dhcp-newdec">
        <title>DHCPサーバ:宣言タイプの選択</title>
        <mediaobject>
         <imageobject role="fo">
@@ -194,7 +202,7 @@ Please see LICENSE.txt for this document's license.
       <para>
        このダイアログでは、IPアドレスとネットマスクを使用して新しいサブネットを指定できます。ダイアログの中央部分で<guimenu>追加</guimenu>、<guimenu>編集</guimenu>、および<guimenu>削除</guimenu>を使用して、選択したサブネットのDHCPサーバ起動オプションを変更します。サブネットのダイナミックDNSを設定するには、<guimenu>ダイナミックDNS</guimenu>を選択します。
       </para>
-      <figure id="fig-yast2-dhcp-sub">
+      <figure xml:id="fig-yast2-dhcp-sub">
        <title>DHCPサーバ:サブネットの設定</title>
        <mediaobject>
         <imageobject role="fo">
@@ -213,7 +221,7 @@ Please see LICENSE.txt for this document's license.
       <para>
        前のダイアログでダイナミックDNSを設定するように選択した場合は、セキュアゾーン転送用のキー管理を設定できます。<guimenu>OK</guimenu>を選択すると別のダイアログが表示され、ダイナミックDNSのインタフェースを設定できます(<xref linkend="fig-yast2-dhcp-dyndns"/>を参照)。
       </para>
-      <figure id="fig-yast2-dhcp-tsig">
+      <figure xml:id="fig-yast2-dhcp-tsig">
        <title>DHCPサーバ:TSIGの設定</title>
        <mediaobject>
         <imageobject role="fo">
@@ -232,7 +240,7 @@ Please see LICENSE.txt for this document's license.
       <para>
        ここでは、<guimenu>このサブネットでダイナミックDNSを有効にする</guimenu>を選択して、サブネットのダイナミックDNSを有効化できます。その後、ドロップダウンリストを使用して正引きゾーンと逆引きゾーン両方のTSIGキーを選択し、そのキーがDNSとDHCPサーバに共通であることを確認します。<guimenu>グローバルダイナミックDNS設定の更新</guimenu>を使用すると、ダイナミックDNS環境に従ってグローバルDHCPサーバ設定を自動的に更新および調整できます。最後に、ダイナミックDNSに従って更新する正引きゾーンと逆引きゾーンについて、プライマリネームサーバの名前を個別に指定し、この2つのゾーンを定義します。<guimenu>OK</guimenu>を選択すると、サブネットの設定ダイアログに戻ります(<xref linkend="fig-yast2-dhcp-sub"/>を参照)。<guimenu>OK</guimenu>を選択すると、エキスパート設定ダイアログに戻ります
       </para>
-      <figure id="fig-yast2-dhcp-dyndns">
+      <figure xml:id="fig-yast2-dhcp-dyndns">
        <title>DHCPサーバ:ダイナミックDNS用のインタフェースの設定</title>
        <mediaobject>
         <imageobject role="fo">
@@ -251,7 +259,7 @@ Please see LICENSE.txt for this document's license.
       <para>
        DHCPサーバがリスンするインタフェースを定義し、ファイアウォール設定を調整するには、［エキスパート環境設定］ダイアログで<menuchoice><guimenu>詳細</guimenu><guimenu>インタフェースの設定</guimenu></menuchoice>の順に選択します。表示されるインタフェースリストから、DHCPサーバがリッスンするインタフェースを1つ以上選択します。すべてのサブネット内のクライアントがサーバと通信できるようにする必要があり、サーバホストでもファイアウォールを実行する場合は、ファイアウォールを適宜調整してください。調整するには、<guimenu>Adapt Firewall Settings (ファイアウォール設定の調整)</guimenu>を選択します。設定を完了した後、<guimenu>OK</guimenu>をクリックして元のダイアログに戻ると、YaSTがSuSEfirewall2のルールを、新しい条件に調整します(<xref linkend="fig-yast2-dhcp-fire"/>を参照)。
       </para>
-      <figure id="fig-yast2-dhcp-fire">
+      <figure xml:id="fig-yast2-dhcp-fire">
        <title>DHCPサーバ:ネットワークインタフェースとファイアウォール</title>
        <mediaobject>
         <imageobject role="fo">
@@ -268,9 +276,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     設定ステップをすべて完了した後、<guimenu>OK</guimenu>を選択してダイアログを閉じます。これでサーバは新規環境設定に従って起動します。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-dhcp-soft">
+  </section>
+ </section>
+ <section xml:id="sec-dhcp-soft">
   <title>DHCPソフトウェアパッケージ</title><indexterm> <primary>DHCP</primary> <secondary>パッケージ</secondary> </indexterm>
 
   <para>
@@ -280,15 +288,15 @@ Please see LICENSE.txt for this document's license.
   <para>
    デフォルトでは、<systemitem class="daemon">dhcpcd</systemitem>がインストールされています。このプログラムは非常に扱いやすく、システムブート時に自動的に起動して、DHCPサーバを監視します。環境設定ファイルは必要ありません。標準的な設定であればほとんどの場合、そのまま使用できます。複雑な状況で使用する場合は、環境設定ファイル<filename>/etc/dhclient.conf</filename>によって制御されるISC <systemitem>dhcp-client</systemitem>を使用します。<indexterm> <primary>環境設定ファイル</primary> <secondary>dhclient.conf</secondary> </indexterm>
   </para>
- </sect1>
- <sect1 id="sec-dhcp-server">
-  <title>DHCPサーバdhcpd</title><indexterm> <primary>環境設定ファイル</primary> <secondary>dhcpd.conf</secondary> </indexterm> <indexterm class="startofrange" id="idx-dhcp-server"> <primary>DHCP</primary> <secondary>サーバ</secondary> </indexterm> <indexterm class="startofrange" id="idx-dhcp-dhcpd"> <primary>DHCP</primary> <secondary>dhcpd</secondary> </indexterm>
+ </section>
+ <section xml:id="sec-dhcp-server">
+  <title>DHCPサーバdhcpd</title><indexterm> <primary>環境設定ファイル</primary> <secondary>dhcpd.conf</secondary> </indexterm> <indexterm class="startofrange" xml:id="idx-dhcp-server"> <primary>DHCP</primary> <secondary>サーバ</secondary> </indexterm> <indexterm class="startofrange" xml:id="idx-dhcp-dhcpd"> <primary>DHCP</primary> <secondary>dhcpd</secondary> </indexterm>
 
   <para>
    DHCPシステムの中核には、動的ホスト環境設定プロトコルデーモンがあります。このサーバは、環境設定ファイル<emphasis>/etc/dhcpd.conf</emphasis>に定義された設定に従ってアドレスを<filename>「リース」し、その使用状況を監視します。</filename>システム管理者は、このファイルのパラメータと値を変更して、プログラムの動作をさまざまな方法で調整できます。<xref linkend="dat-dhcp-conf"/>で、<filename>/etc/dhcpd.conf</filename>ファイルの基本的な例を見てみましょう。
   </para>
 
-  <example id="dat-dhcp-conf">
+  <example xml:id="dat-dhcp-conf">
    <title>環境設定ファイル/etc/dhcpd.conf</title>
 <screen>
 default-lease-time 600;         # 10 minutes
@@ -360,7 +368,7 @@ subnet 192.168.2.0 netmask 255.255.255.0
    デフォルトの<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>システムでは、セキュリティ上の理由から、chroot環境でDHCPデーモンを起動します。デーモンが見つけられるように、環境設定ファイルは、chroot環境にコピーします。このファイルは、<command>rcdhcpd</command> <option>start</option>コマンドによって自動的にこのファイルがコピーされるので、通常は、手動でコピーする必要はありません。
   </para><indexterm class="endofrange" startref="idx-dhcp-server"/><indexterm class="endofrange" startref="idx-dhcp-dhcpd"/>
 
-  <sect2 id="sec-dhcp-statip">
+  <section xml:id="sec-dhcp-statip">
    <title>固定IPアドレスを持つクライアント</title><indexterm> <primary>DHCP</primary><secondary>静的アドレスの割り当て</secondary> </indexterm>
    <para>
     DHCPは、事前定義の静的アドレスを特定のクライアントに割り当てる場合にも使用できます。明示的に割り当てられるアドレスは、プールから割り当てられる動的アドレスに常に優先します。たとえばアドレスが不足していて、サーバがクライアント間でアドレスを再配布する必要がある場合でも、静的アドレスは動的アドレスと違って期限切れになりません。
@@ -368,7 +376,7 @@ subnet 192.168.2.0 netmask 255.255.255.0
    <para>
     静的アドレスを割り当てられたクライアントを識別するために、dhcpdは、ハードウェアアドレスを使用します。ハードウェアアドレスは、6つのオクテットペアで構成される世界で唯一の固定数値コードで、すべてのネットワークデバイスの識別に使用されます(たとえば、<literal>00:30:6E:08:EC:80</literal>)。たとえば、<xref linkend="dat-dhcp-conf-add"/>のような数行を<xref linkend="dat-dhcp-conf"/>に示す環境設定ファイルに追加すると、DHCPデーモンはあらゆる状況で、対応するホストに同じデータのセットを割り当てます。
    </para>
-   <example id="dat-dhcp-conf-add">
+   <example xml:id="dat-dhcp-conf-add">
     <title>環境設定ファイルへの追加</title>
 <screen>host jupiter {
 hardware ethernet 00:30:6E:08:EC:80;
@@ -376,15 +384,15 @@ fixed-address 192.168.2.100;
 }</screen>
    </example>
    <para>
-    クライアントの名前を1行目に(<literal>host</literal><replaceable>hostname</replaceable> (ここでは<systemitem>jupiter</systemitem>に置き換わる))、MACアドレスを2行目に入力します。LinuxホストでMACアドレスを確認するには、<command>ip <option>link show</option></command>コマンドの後にネットワークデバイス(たとえば、<literal>eth0</literal>)を指定して実行します。出力例を次に示します。
+    クライアントの名前を1行目に(<literal>host</literal><replaceable>hostname</replaceable> (ここでは<systemitem>jupiter</systemitem>に置き換わる))、MACアドレスを2行目に入力します。LinuxホストでMACアドレスを確認するには、<command>ip</command> <option>link show</option>コマンドの後にネットワークデバイス(たとえば、<literal>eth0</literal>)を指定して実行します。出力例を次に示します。
    </para>
 <screen>link/ether 00:30:6E:08:EC:80</screen>
    <para>
     上述の例では、MACアドレス<literal>00:30:6E:08:EC:80</literal>を持つネットワークカードが装着されたクライアントに、IPアドレス<systemitem class="ipaddress">192.168.2.100</systemitem>とホスト名<literal>jupiter</literal>が自動的に割り当てられます。指定するハードウェアの種類は、ほとんどの場合<literal>ethernet</literal>ですが、IBMシステムでよく使用される<literal>token-ring</literal>もサポートされています。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title><phrase role="productname">SUSE Linux Enterprise Server<phrase os="sles"/></phrase>のバージョン</title>
    <para>
     セキュリティ向上のため、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>バージョンのISC製DHCPサーバには、Ari Edelkind氏開発の非root/chrootパッチが付属しています。これにより、dhcpdをユーザID <systemitem class="username">nobody</systemitem>で実行したり、chroot環境で実行したりできます(<filename>/var/lib/dhcp</filename>)。これの機能を使用するには、環境設定ファイル<filename>dhcpd.conf</filename>が<filename>/var/lib/dhcp/etc</filename>に存在する必要があります。initスクリプトは、起動時に環境設定ファイルをこのディレクトリに自動的にコピーします。
@@ -426,13 +434,13 @@ fixed-address 192.168.2.100;
    <para>
     環境設定の中に、chroot環境にコピーすべき追加ファイルが存在する場合は、<systemitem>etc/sysconfig/dhcpd</systemitem>ファイルの<filename>DHCPD_CONF_INCLUDE_FILES</filename>変数で、これらのファイルを設定します。syslog-ngデーモンの再起動後もDHCPロギング機能が継続して動作するようにするには、<filename>/etc/sysconfig/syslog</filename>ファイル内の<systemitem>SYSLOGD_ADDITIONAL_SOCKET_DHCP</systemitem>エントリを指定します。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-dhcp-addinfo">
+  </section>
+ </section>
+ <section xml:id="sec-dhcp-addinfo">
   <title>その他の情報</title>
 
   <para>
-   DHCPの詳細については、<emphasis>Internet Systems Consortium</emphasis>のWebサイト(<ulink url="http://www.isc.org/products/DHCP/"/>)を参照してください。また、<option>dhcpd</option>、<option>dhcpd.conf</option>、<option>dhcpd.leases</option>、および<option>dhcp-options</option>のマニュアルページにも詳細が記載されています。
+   DHCPの詳細については、<emphasis>Internet Systems Consortium</emphasis>のWebサイト(<link xlink:href="http://www.isc.org/products/DHCP/"/>)を参照してください。また、<option>dhcpd</option>、<option>dhcpd.conf</option>、<option>dhcpd.leases</option>、および<option>dhcp-options</option>のマニュアルページにも詳細が記載されています。
   </para><indexterm class="endofrange" startref="idx-DHCP"/>
- </sect1>
+ </section>
 </chapter>

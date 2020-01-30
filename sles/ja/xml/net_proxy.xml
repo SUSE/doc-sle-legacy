@@ -1,33 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="net_proxy.xml" id="cha-squid">
- <title>Squidプロキシサーバ</title><indexterm> <primary>Squid</primary> </indexterm> <indexterm> <primary>プロキシ</primary> <see>Squid</see> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="net_proxy.xml" xml:id="cha-squid"><title>Squidプロキシサーバ</title><info><abstract>
   <para>
    Squidは、LinuxおよびUNIXプラットフォームで普及しているプロキシキャッシュです。これは、WebまたはFTPサーバなど、要求されたインターネットオブジェクトを、サーバよりも要求しているワークステーションに近いマシン上に格納することを意味します。Squidは、応答時間や低帯域幅の使用を最適化するために複数の階層上でセットアップされます。エンドユーザにとって透過的なモードである場合さえあります。squidGuardを利用すれば、Webコンテンツをフィルタリングすることができます。
   </para>
- </abstract><indexterm> <primary>Squid</primary> <secondary>キャッシュ</secondary> </indexterm> <indexterm> <primary>プロキシ</primary> <secondary>キャッシュ</secondary> </indexterm>
+ </abstract></info>
+ <indexterm> <primary>Squid</primary> </indexterm> <indexterm> <primary>プロキシ</primary> <see>Squid</see> </indexterm>
+ <indexterm> <primary>Squid</primary> <secondary>キャッシュ</secondary> </indexterm> <indexterm> <primary>プロキシ</primary> <secondary>キャッシュ</secondary> </indexterm>
  <para>
   Squidはプロキシキャッシュとして機能します。クライアント(この場合はWebブラウザ)からのオブジェクト要求をサーバにリダイレクトします。要求されたオブジェクトがサーバから到着すると、クライアントに配信され、そのコピーがディスクキャッシュに格納されます。キャッシングの利点の1つは、様々なクライアントが同じオブジェクトを要求した場合に、これらのオブジェクトをハードディスクのキャッシュから提供できることです。これにより、クライアントはインターネットから取得する場合に比べてはるかに高速にデータを受信できます。また、ネットワークトラフィックも減少します。<indexterm><primary>プロキシ</primary><secondary>利点</secondary> </indexterm>
  </para>
  <para>
   <indexterm><primary>Squid</primary><secondary>機能</secondary></indexterm>Squidは、実際のキャッシングとともに、プロキシサーバの通信階層にまたがる負荷の分散、プロキシにアクセスする全クライアントの厳密なアクセス制御リストの定義、他のアプリケーションを使用した特定のWebページへのアクセスの許可または拒否、ユーザのアクセスパターンの調査を目的としたアクセス回数の多いWebサイトに関する統計の生成など、多様な機能を備えています。Squidは汎用プロキシではありません。通常は、HTTP接続のみのプロキシを行います。また、FTP、Gopher、SSL、およびWAISの各プロトコルをサポートしていますが、Real Audio、news、またはビデオ会議など、他のインターネットプロトコルはサポートしていません。Squidは様々なキャッシュ間に通信を提供するUDPプロトコルのみをサポートしているため、他の多くのマルチメディアプログラムはサポートされません。
  </para>
- <sect1 id="sec-squid-cacheinfos">
+ <section xml:id="sec-squid-cacheinfos">
   <title>プロキシキャッシュに関する注意事項</title>
 
   <para>
    プロキシキャッシュとして、Squidは複数の方法で使用されます。ファイアウォールと組み合わせると、セキュリティに役立ちます。複数のプロキシを一緒に使用できます。また、キャッシュされるオブジェクトのタイプ、およびその期間も決定できます。
   </para>
 
-  <sect2 id="sec-squid-security">
+  <section xml:id="sec-squid-security">
    <title>Squidとセキュリティ</title><indexterm> <primary>Squid</primary> <secondary>セキュリティ</secondary> </indexterm> <indexterm> <primary>セキュリティ</primary> <secondary>Squid</secondary> </indexterm>
    <para>
     Squidをファイアウォールと併用し、プロキシキャッシュを使用して社内ネットワークを外部から保護することもできます。ファイアウォールは、Squidを除く外部サービスに対する全クライアントのアクセスを拒否します。すべてのWeb接続は、プロキシを使用して確立する必要があります。この設定では、SquidはWebアクセスを完全に制御します。
@@ -35,9 +43,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     <indexterm><primary>Squid</primary><secondary>セキュリティ</secondary></indexterm>ファイアウォール設定にDMZが含まれている場合、プロキシはこのゾーン内で動作しなければなりません。「<emphasis>透過的な</emphasis>」プロキシの実装方法については、<xref linkend="sec-squid-proxyconfigtrans"/>を参照してください。この場合、プロキシに関する情報が必要とされないので、クライアントの設定が簡略化されます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-morecaches">
+  <section xml:id="sec-squid-morecaches">
    <title>複数のキャッシュ</title><indexterm> <primary>Squid</primary> <secondary>キャッシュ</secondary> </indexterm>
    <para>
     複数のSquidインスタンスを設定して、これらの間でオブジェクトを交換できます。これにより、システム全体の負荷を削減し、ローカルネットワーク内の既存のオブジェクトの検出率を高めることができます。また、キャッシュから兄弟キャッシュまたは親キャッシュにオブジェクト要求を転送できるように、キャッシュ階層を設定することも可能です。これにより、ローカルネットワーク内の他のキャッシュから、またはソースから直接、オブジェクトを取得できるようになります。
@@ -56,9 +64,9 @@ Please see LICENSE.txt for this document's license.
      ネットワーク上の様々なキャッシュ内でオブジェクトの重複を回避するために、CARP (Cache Array Routing Protocol)やHTCP (Hypertext Cache Protocol)など、他のICPプロトコルが使用されます。ネットワーク上で維持されるオブジェクトが多くなるほど、必要なオブジェクトを検出できる可能性が高くなります。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-latching">
+  <section xml:id="sec-squid-latching">
    <title>インターネットオブジェクトのキャッシュ</title><indexterm> <primary>Squid</primary> <secondary>オブジェクトステータス</secondary> </indexterm>
    <para>
     ネットワーク上で使用可能なオブジェクトがすべてスタティックであるとは限りません。動的に生成されるCGIページ、アクセス件数カウンタ、暗号化されたSSLコンテンツドキュメントが多数存在します。この種のオブジェクトは、アクセスされるたびに変化するためキャッシュされません。
@@ -69,23 +77,23 @@ Please see LICENSE.txt for this document's license.
    <para>
     ハードディスクの空き容量不足が原因で、通常、キャッシュ内のオブジェクトはLRU (Least Recently Used)などのアルゴリズムを使用して置換されます。これは、基本的には、長期間要求されていないオブジェクトがプロキシにより消去されることを意味します。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-sysneeds">
+  </section>
+ </section>
+ <section xml:id="sec-squid-sysneeds">
   <title>システム要件</title><indexterm> <primary>Squid</primary> <secondary>システム要件</secondary> </indexterm>
 
   <para>
    最も重要なのは、システムにかかる最大ネットワーク負荷を判断することです。ピーク時の負荷は1日の平均負荷の4倍を超えることもあるため、負荷のピークに注意する必要があります。疑わしい場合は、システム要件を多めに見積もることをお勧めします。これは、Squidの動作状態が処理能力の限界に近づくと、サービス品質が著しく低下する可能性があるためです。次の各項では、システム要件を重要度に従って説明します。
   </para>
 
-  <sect2 id="sec-squid-sysneeds-disk">
+  <section xml:id="sec-squid-sysneeds-disk">
    <title>ハードディスク</title>
    <para>
     速度はキャッシュ処理に重要な役割を果たすため、この要件には特に注意する必要があります。ハードディスクの場合、このパラメータは<emphasis>ランダムシーク時間</emphasis>と呼ばれ、ミリ秒単位で計測されます。Squidがハードディスクとの間で読み書きするデータブロックは比較的少数である傾向があるため、データのスループットよりもハードディスクのシーク時間の方が重要です。プロキシに使用する場合は、回転速度の高い(つまり読取り/書込みヘッドが必要な位置に迅速に移動する)ハードディスクを選択するのが適切です。システムを高速化するには、同時に多数のディスクを使用する方法や、ストライピングRAIDアレイを使用する方法があります。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>ディスクキャッシュのサイズ</title><indexterm> <primary>Squid</primary> <secondary>キャッシュ</secondary> <tertiary>サイズ</tertiary> </indexterm>
    <para>
     キャッシュ容量が小さいと、簡単にいっぱいになってしまい、要求頻度の低いオブジェクトが新規オブジェクトで置換されるため、HIT (要求された既存のオブジェクトの検出)の可能性は低くなります。逆に、キャッシュに1GBが使用可能で、ユーザが1日に10MB分しかアクセスしなければ、キャッシュがいっぱいになるまでに100日以上かかることになります。
@@ -93,9 +101,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     必要なキャッシュサイズを判断する場合に最も簡単なのは、接続の最大転送速度を考慮することです。1MBit/sの接続の場合、最大転送速度は125KB/sになります。このトラフィックがすべてキャッシュに入ると、1時間で合計450MBとなり、このトラフィックがすべて8時間の営業時間帯にのみ発生すると仮定すれば、1日に3.6GBに達します。通常、接続が上限まで使用されることはないため、キャッシュで処理される合計データ量は約2GBと想定できます。このため、Squidで1日にブラウズされたデータをキャッシュに保持する例では、2GBのディスク容量が必要となります。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-ram">
+  <section xml:id="sec-squid-ram">
    <title>RAM</title><indexterm> <primary>Squid</primary> <secondary>RAM</secondary> </indexterm>
    <para>
     Squidに必要なメモリ容量(RAM)は、キャッシュ内のオブジェクト数に比例します。また、Squidでは、キャッシュオブジェクト参照と要求頻度の高いオブジェクトの検索を高速化するために、これらのデータがメインメモリに格納されます。ランダムアクセスメモリの方が、ハードディスクよりも高速です。
@@ -107,16 +115,16 @@ Please see LICENSE.txt for this document's license.
     ディスクにスワップする必要があるとシステムパフォーマンスが大幅に低下するため、Squidプロセス用に十分なメモリを用意する必要があります。キャッシュメモリの管理には、cachemgr.cgiツールを使用できます。このツールの詳細については、<xref linkend="sec-squid-cachemgr"/>を参照してください。
 
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-cpu">
+  <section xml:id="sec-squid-cpu">
    <title>CPU</title><indexterm> <primary>Squid</primary> <secondary>CPU</secondary> </indexterm>
    <para>
     Squidは、CPU集約型のプログラムではありません。プロセッサの負荷が増大するのは、キャッシュの内容がロードまたはチェックされる間のみです。マルチプロセッサマシンを使用しても、システムパフォーマンスは向上しません。効率を高めるには、高速ディスクまたは増設メモリを購入することをお薦めします。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-start">
+  </section>
+ </section>
+ <section xml:id="sec-squid-start">
   <title>Squidの起動</title><indexterm> <primary>Squid</primary> <secondary>開始</secondary> </indexterm>
 
   <para>
@@ -127,16 +135,16 @@ Please see LICENSE.txt for this document's license.
    SquidはSUSE® Linux Enterprise Serverで事前に設定されているため、インストール直後に起動できます。スムーズに起動するように、インターネットおよび少なくとも1つのネームサーバにアクセスできるようにネットワークを設定してください。ダイナミックDNS設定でダイヤルアップ接続を使用すると、問題が発生する可能性があります。このような場合は、少なくともネームサーバを明確に入力してください。というのは、<filename>/etc/resolv.conf</filename>内でDNSサーバが検出されないとSquidが起動しないためです。
   </para><indexterm> <primary>環境設定ファイル </primary><secondary>resolv.conf</secondary> </indexterm>
 
-  <sect2>
+  <section>
    <title>Squidの起動コマンドと停止コマンド</title><indexterm> <primary>Squid</primary> <secondary>ディレクトリ</secondary> </indexterm> <indexterm> <primary>スクリプト</primary> <secondary>init.d</secondary> <tertiary>squid</tertiary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>パーミッション</secondary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>squid.conf</secondary> </indexterm>
    <para>
-    Squidを起動するには、<systemitem class="username">root</systemitem>権限でコマンドラインに「<command>rcsquid <option>start</option></command>」と入力します。初期起動時には、最初に <filename>/var/cache/squid</filename>内でキャッシュのディレクトリ構造を定義する必要があります。この操作は、<filename>/etc/init.d/squid</filename>起動スクリプトにより自動的に実行され、完了までに数秒ないし数分かかります。右側に緑で<literal>完了</literal>と表示されたら、Squidは正常にロードされています。ローカルシステム上でSquidの機能をテストするには、ブラウザでプロキシとして「<option>localhost</option>」、ポートとして「<option>3128</option>」を入力します。
+    Squidを起動するには、<systemitem class="username">root</systemitem>権限でコマンドラインに「<command>rcsquid</command> <option>start</option>」と入力します。初期起動時には、最初に <filename>/var/cache/squid</filename>内でキャッシュのディレクトリ構造を定義する必要があります。この操作は、<filename>/etc/init.d/squid</filename>起動スクリプトにより自動的に実行され、完了までに数秒ないし数分かかります。右側に緑で<literal>完了</literal>と表示されたら、Squidは正常にロードされています。ローカルシステム上でSquidの機能をテストするには、ブラウザでプロキシとして「<option>localhost</option>」、ポートとして「<option>3128</option>」を入力します。
    </para>
    <para>
     ユーザ全員にSquidおよびインターネットへのアクセスを許可するには、設定ファイル<filename>/etc/squid/squid.conf</filename>内のエントリを<option>http_access deny all</option>から<option>http_access allow all</option>に変更します。ただし、その場合は、この操作によりSquidが完全に誰でもアクセス可能になることに注意してください。したがって、プロキシへのアクセスを制御するACLを定義します。この詳細については、<xref linkend="sec-squid-acl"/>ファイルを参照してください。
    </para><indexterm> <primary>Squid</primary> <secondary>停止</secondary> </indexterm>
    <para>
-    設定ファイル<filename>/etc/squid/squid.conf</filename>を変更した後、Squidで変更後の設定ファイルを再ロードする必要があります。それには、<command>rcsquid <option>reload</option></command>を使用します。または、「<command>rcsquid <option>restart</option></command>」と入力してSquidを完全に再起動します。
+    設定ファイル<filename>/etc/squid/squid.conf</filename>を変更した後、Squidで変更後の設定ファイルを再ロードする必要があります。それには、<command>rcsquid</command> <option>reload</option>を使用します。または、「<command>rcsquid</command> <option>restart</option>」と入力してSquidを完全に再起動します。
    </para>
    <para>
     プロキシが稼動しているかどうかを確認するには、<command>rcsquid</command><option>status</option>コマンドを使用します。Squidをシャットダウンするには、<command>rcsquid</command><option>stop</option>コマンドを使用します。Squidは、クライアントへの接続が切断されてデータがディスクに書き込まれるまで最大30秒(<filename>/etc/squid/squid.conf</filename>の<option>shutdown_lifetime</option>オプション）待機するため、終了までに少し時間がかかることがあります。
@@ -153,9 +161,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Squidをアンインストールしても、キャッシュ階層やログファイルは削除されません。これらを削除するには、<filename>/var/cache/squid</filename>ディレクトリを手動で削除します。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>ローカルDNSサーバ</title><indexterm> <primary>DNS</primary> <secondary>Squid and</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>DNS</secondary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>named.conf</secondary> </indexterm>
    <para>
     サーバで独自ドメインを管理しない場合も、ローカルDNSサーバをセットアップすると有効です。ローカルDNSサーバは単にキャッシュ専用ネームサーバとして機能し、特に設定しなくてもルートネームサーバを介してDNSリクエストを解決できます(<xref linkend="sec-dns-bind"/>を参照)。ローカルDNSサーバを有効にする方法は、インターネット接続の設定時にダイナミックDNSを選択したかどうかによって異なります。
@@ -165,11 +173,11 @@ Please see LICENSE.txt for this document's license.
      <term>ダイナミックDNS</term>
      <listitem>
       <para>
-       通常、ダイナミックDNSを使用すると、インターネット接続の確立時にプロバイダによってDNSサーバが設定され、ローカルの<filename>/etc/resolv.conf</filename>ファイルが自動的に調整されます。この動作は<filename>/etc/sysconfig/network/config</filename>ファイルの<systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem> sysconfig変数で制御されます。YaST sysconfigエディタで、<systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem>を<systemitem class="constant">""</systemitem>に設定します(<xref linkend="sec-boot-sysconfig-edit"/>を参照)。次に、<filename>/etc/resolv.conf</filename>ファイルに、ローカルのDNSサーバとして「<systemitem class="domainname">localhost</systemitem>」、そのIPアドレスとして「<systemitem class="ipaddress">127.0.0.1</systemitem>」を入力します。このようにすれば、Squidは常に、起動時にローカルのネームサーバを検出できます。
+       通常、ダイナミックDNSを使用すると、インターネット接続の確立時にプロバイダによってDNSサーバが設定され、ローカルの<filename>/etc/resolv.conf</filename>ファイルが自動的に調整されます。この動作は<filename>/etc/sysconfig/network/config</filename>ファイルの<constant>NETCONFIG_DNS_POLICY</constant> sysconfig変数で制御されます。YaST sysconfigエディタで、<constant>NETCONFIG_DNS_POLICY</constant>を<constant>""</constant>に設定します(<xref linkend="sec-boot-sysconfig-edit"/>を参照)。次に、<filename>/etc/resolv.conf</filename>ファイルに、ローカルのDNSサーバとして「<systemitem class="domainname">localhost</systemitem>」、そのIPアドレスとして「<systemitem class="ipaddress">127.0.0.1</systemitem>」を入力します。このようにすれば、Squidは常に、起動時にローカルのネームサーバを検出できます。
       </para>
       
       <para>
-       プロバイダのネームサーバにアクセスするには、<filename>/etc/named.conf</filename>設定ファイル内の<systemitem>forwarders</systemitem>にサーバ名とそのIPアドレスを入力します。ダイナミックDNSを使用すると、sysconfig変数の<systemitem class="constant">NETCONFIG_DNS_POLICY</systemitem>を「<systemitem class="constant">auto</systemitem>」に設定することによって、この動作を接続の確立時に自動的に実行することができます。
+       プロバイダのネームサーバにアクセスするには、<filename>/etc/named.conf</filename>設定ファイル内の<systemitem>forwarders</systemitem>にサーバ名とそのIPアドレスを入力します。ダイナミックDNSを使用すると、sysconfig変数の<constant>NETCONFIG_DNS_POLICY</constant>を「<constant>auto</constant>」に設定することによって、この動作を接続の確立時に自動的に実行することができます。
       </para>
      </listitem>
     </varlistentry>
@@ -188,9 +196,9 @@ Please see LICENSE.txt for this document's license.
      ただし、ファイアウォールを実行している場合は、DNSリクエストがファイアウォールを通過できることを確認してください。
     </para>
    </tip>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-configfile">
+  </section>
+ </section>
+ <section xml:id="sec-squid-configfile">
   <title>etc/squid/squid.conf設定ファイル</title><indexterm> <primary>Squid</primary> <secondary>設定</secondary> </indexterm> <indexterm> <primary>設定</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>squid.conf</secondary> </indexterm>
 
   <para>
@@ -204,7 +212,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </tip>
 
-  <sect2>
+  <section>
    <title>一般設定オプション(選択)</title>
    <variablelist>
     <varlistentry>
@@ -327,9 +335,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-squid-acl">
+  <section xml:id="sec-squid-acl">
    <title>アクセス制御オプション</title><indexterm> <primary>Squid</primary> <secondary>ACL</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>パーミッション</secondary> </indexterm>
    <para>
     Squidには、プロキシへのアクセスを制御する詳細システムが用意されています。ACLを実装することで、このシステムを簡単かつ包括的に設定できます。そのためには、順次処理されるルールを持ったリストが必要です。ACLは定義しなければ使用できません。<emphasis>all</emphasis>や<emphasis>localhost</emphasis>などのデフォルトACLがいくつか用意されています。ただし、ACLを定義しただけで、実際に適用されるわけではありません。実際に適用するには、<emphasis>http_access</emphasis>ルールも共に定義する必要があります。
@@ -424,9 +432,9 @@ http_access deny all
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-proxyconfigtrans">
+  </section>
+ </section>
+ <section xml:id="sec-squid-proxyconfigtrans">
   <title>透過型プロキシの設定</title><indexterm> <primary>プロキシ</primary> <secondary>透過型</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>透過型プロキシ</secondary> </indexterm>
 
   <para>
@@ -455,15 +463,15 @@ http_access deny all
    いずれの場合も、透過型プロキシを使用できます。原則はきわめて簡単で、プロキシはWebブラウザのリクエストを捕捉して応答するため、Webブラウザは要求したページを出所を認識せずに受信します。透過型プロキシと呼ばれるのは、このプロセス全体が透過的に実行されるためです。
   </para>
 
-  <sect2>
+  <section>
    <title>/etc/squid/squid.conf内の設定オプション</title><indexterm> <primary>環境設定ファイル</primary> <secondary>squid.conf</secondary> </indexterm>
    <para>
     squidを透過的なプロキシとして動作させるには、メインの設定ファイル<filename>/etc/squid/squid.conf</filename>内で<systemitem>http_port</systemitem>タグの<systemitem>transparent</systemitem>オプションを使用します。squidの再起動後に必要なことは、httpポートを<systemitem>http_port</systemitem>で指定されたポートにリダイレクトするようファイアウォールを再設定することだけです。次のsquid設定ラインでは、これはポート3128になっています。
    </para>
 <screen>http_port 3128 transparent</screen>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>SuSEfirewall2を使用したファイアウォール設定</title><indexterm> <primary>Squid</primary> <secondary>ファイアウォール</secondary> </indexterm> <indexterm> <primary>ファイアウォール</primary> <secondary>Squidおよび</secondary> </indexterm>
    <para>
     ファイアウォールを介して受信するリクエストをすべて、Squidポートへのポート転送ルールに従ってリダイレクトします。そのためには、<xref linkend="sec-fire-SuSE-yast"/>で説明しているように、同梱のツールであるSuSEfirewall2を使用します。このツールの設定ファイルは<filename>/etc/sysconfig/SuSEfirewall2</filename>にあります。この設定ファイルは、適切なエントリで構成されています。透過型プロキシを設定するには、次に示すようにいくつかのファイアウォールオプションを設定する必要があります。
@@ -502,7 +510,7 @@ FW_SERVICE_DNS="yes"
    <para>
     最も重要なのは<option>15</option>番目のオプションです。
    </para>
-   <example id="dat-fw-opt15">
+   <example xml:id="dat-fw-opt15">
     <title>ファイアウォールの設定:オプション15</title>
 <screen># 15.)
 # Which accesses to services should be redirected to a local port on
@@ -536,16 +544,16 @@ FW_REDIRECT="192.168.0.0/16,0/0,tcp,80,3128"
    <para>
     <indexterm> <primary>ログファイル</primary> <secondary>Squid</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>ログファイル</secondary> </indexterm><xref linkend="sec-squid-start"/>のように、Squidを起動します。すべてが正常に機能していることを確認するには、<filename>/var/log/squid/access.log</filename>のSquidログを確認します。<indexterm> <primary>ポート</primary> <secondary>スキャニング</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>透過型プロキシ</secondary> </indexterm>すべてのポートが正常に設定されていることを確認するには、ネットワーク外部の任意のコンピュータから、マシンのポートスキャンを実行します。Webサービス(ポート80)のみがオープンしている必要があります。nmapコマンドを使用してポートを検索する場合の構文は、<command>nmap</command> <option>-O IP_address</option>です。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-cachemgr">
+  </section>
+ </section>
+ <section xml:id="sec-squid-cachemgr">
   <title>cachemgr.cgi</title><indexterm> <primary>Squid</primary><secondary>統計情報</secondary></indexterm><indexterm><primary>Squid</primary><secondary>cachemgr.cgi </secondary></indexterm>
 
   <para>
    キャッシュマネージャ(cachemgr.cgi)は、実行中のSquidプロセスによるメモリ使用状況に関する統計を表示するCGIユーティリティです。また、キャッシュを管理し、サーバのロギングなしで統計を表示できる便利な手段でもあります。
   </para>
 
-  <sect2>
+  <section>
    <title>設定</title><indexterm> <primary>Squid</primary> <secondary>Apache</secondary> </indexterm> <indexterm> <primary>Apache</primary> <secondary>Squid</secondary> </indexterm>
    <para>
     最初に、システムでWebサーバを稼働させる必要があります。で説明しているように、Apacheを設定します。<xref linkend="cha-apache2"/>Apacheがすでに稼働しているかどうかを確認するには、<systemitem class="username">root</systemitem>として「<command>rcapache</command><option>status</option>」コマンドを入力します。次のようなメッセージが表示される場合は、マシンでApacheが実行されています。
@@ -562,9 +570,9 @@ Server uptime: 1 day 18 hours 29 minutes 39 seconds
     64ビット環境では、<filename>cachemgr.cgi</filename>ファイルは<filename>/usr/lib64/squid/</filename>の下に位置しており、これをApacheディレクトリにコピーするコマンドは次のとおりです。
    </para>
 <screen>cp /usr/lib64/squid/cachemgr.cgi /srv/www/cgi-bin/</screen>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>/etc/squid/squid.conf内のキャッシュマネージャACL</title><indexterm> <primary>Squid</primary> <secondary>アクセス制御</secondary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>squid.conf</secondary> </indexterm>
    <para>
     キャッシュマネージャの場合は、オリジナルファイル内で次のようなデフォルト設定が必要です。最初に、2つのACLを定義し、http_accessオプションがこれらのACLを使用して、CGIスクリプトからSquidへのアクセスを付与するようにします。キャッシュマネージャはcache_objectプロトコルを用いてSquidと通信するため、最初のACLが最も重要です。
@@ -583,7 +591,7 @@ http_access deny manager
    <para>
     これらの規則は、WebサーバとSquidが同じマシンで実行されている場合を想定しています。キャッシュマネージャとSquidとの通信が他のコンピュータ上のWebサーバで開始される場合は、<xref linkend="dat-acl"/>に示すACLを追加します。
    </para>
-   <example id="dat-acl">
+   <example xml:id="dat-acl">
     <title>アクセスルール</title>
 <screen>
 acl manager proto cache_object
@@ -594,7 +602,7 @@ acl webserver src 192.168.1.7/255.255.255.255 # webserver IP
    <para>
     次に、<xref linkend="dat-access"/>に規則を追加して、Webサーバからのアクセスを許可します。
    </para>
-   <example id="dat-access">
+   <example xml:id="dat-access">
     <title>アクセスルール</title>
 <screen>
 http_access allow manager localhost
@@ -608,20 +616,20 @@ http_access deny manager
    <para>
     設定ファイルを変更するたびにSquidを再起動してください。それには、<command>rcsquid</command> <option>reload</option>コマンドを使用します。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>統計情報の表示</title>
    <para>
-    対応するWebサイトの<ulink url="http://webserver.example.org/cgi-bin/cachemgr.cgi"/>にアクセスします。<guimenu>続行</guimenu>をクリックして様々な統計情報をブラウズします。<indexterm> <primary>Squid</primary><secondary>統計情報</secondary></indexterm><indexterm><primary>Squid</primary><secondary>cachemgr.cgi </secondary></indexterm>
+    対応するWebサイトの<link xlink:href="http://webserver.example.org/cgi-bin/cachemgr.cgi"/>にアクセスします。<guimenu>続行</guimenu>をクリックして様々な統計情報をブラウズします。<indexterm> <primary>Squid</primary><secondary>統計情報</secondary></indexterm><indexterm><primary>Squid</primary><secondary>cachemgr.cgi </secondary></indexterm>
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-squid-squidguard">
+  </section>
+ </section>
+ <section xml:id="sec-squid-squidguard">
   <title>squidGuard</title><indexterm> <primary>Squid</primary> <secondary>squidGuard</secondary> </indexterm>
 
   <para>
-   このセクションでは、squidGuardの詳細な設定については説明しません。ごく基本的な設定のみを紹介し、squidGuardの使用法についていくつか助言するに留めます。詳細な設定については、squidGuardのWebサイト<ulink url="http://www.squidguard.org"/>を参照してください。
+   このセクションでは、squidGuardの詳細な設定については説明しません。ごく基本的な設定のみを紹介し、squidGuardの使用法についていくつか助言するに留めます。詳細な設定については、squidGuardのWebサイト<link xlink:href="http://www.squidguard.org"/>を参照してください。
   </para>
 
   <para>
@@ -689,7 +697,7 @@ http_access deny manager
   </itemizedlist><indexterm> <primary>環境設定ファイル</primary> <secondary>squidguard.conf</secondary> </indexterm> <indexterm> <primary>環境設定ファイル</primary> <secondary>squid.conf</secondary> </indexterm>
 
   <para>
-   squidGuard<systemitem class="resource">を使用するにははじめに、インストールします。</systemitem>最小限の設定ファイルとして<filename>/etc/squidguard.conf</filename>を設定します。に設定例が用意されています。<ulink url="http://www.squidguard.org/Doc/examples.html"/>最小限の設定で正常に動作したら、より複雑な設定を試してみてください。
+   squidGuard<systemitem class="resource">を使用するにははじめに、インストールします。</systemitem>最小限の設定ファイルとして<filename>/etc/squidguard.conf</filename>を設定します。に設定例が用意されています。<link xlink:href="http://www.squidguard.org/Doc/examples.html"/>最小限の設定で正常に動作したら、より複雑な設定を試してみてください。
   </para>
 
   <para>
@@ -715,16 +723,16 @@ redirect_children 4
   <para>
    最後に、<command>rcsquid</command><option>reload</option>を実行し、Squidに新規設定をロードさせます。ここで、ブラウザで設定をテストします。
   </para>
- </sect1>
- <sect1 id="sec-squid-calamaris">
+ </section>
+ <section xml:id="sec-squid-calamaris">
   <title>Calamarisを使用したキャッシュレポート生成</title><indexterm> <primary>Squid</primary> <secondary>Calamaris</secondary> </indexterm> <indexterm> <primary>Squid</primary> <secondary>レポート</secondary> </indexterm>
 
   <para>
-   Calamarisは、ASCIIまたはHTML形式でキャッシュアクティビティレポートを生成するためのPerlスクリプトです。このスクリプトはネイティブのSquidアクセスログファイルを処理します。Calamarisのホームページは<ulink url="http://Calamaris.Cord.de/"/>にあります。このツールはSUSE Linux Enterprise Serverのデフォルトインストールスコープには含まれていません。これを使用するには、<systemitem>calamaris</systemitem>パッケージをインストールしてください。
+   Calamarisは、ASCIIまたはHTML形式でキャッシュアクティビティレポートを生成するためのPerlスクリプトです。このスクリプトはネイティブのSquidアクセスログファイルを処理します。Calamarisのホームページは<link xlink:href="http://Calamaris.Cord.de/"/>にあります。このツールはSUSE Linux Enterprise Serverのデフォルトインストールスコープには含まれていません。これを使用するには、<systemitem>calamaris</systemitem>パッケージをインストールしてください。
   </para>
 
   <para>
-   <systemitem class="username">root</systemitem>としてログインし、<command>「cat access.log | calamaris <replaceable>options</replaceable> &gt; reportfile</command>」と入力します。複数のログファイルをパイプする場合は、各ログファイルを古いものから時系列順に指定する必要があります。このプログラムには、次のようなオプションがあります。
+   <systemitem class="username">root</systemitem>としてログインし、<command>「cat access.log | calamaris</command> <replaceable>options</replaceable> &gt; reportfile」と入力します。複数のログファイルをパイプする場合は、各ログファイルを古いものから時系列順に指定する必要があります。このプログラムには、次のようなオプションがあります。
   </para>
 
   <tip>
@@ -779,16 +787,16 @@ cat access.log.{10..1} access.log | calamaris -a -w \
   </para>
 
   
- </sect1>
- <sect1 id="sec-squid-moreinfo">
+ </section>
+ <section xml:id="sec-squid-moreinfo">
   <title>詳細情報</title>
 
   <para>
-   にあるSquidのホームページにアクセスしてください。<ulink url="http://www.squid-cache.org/"/>ここにはS<quote>quid User Guide</quote>が置かれており、Squidに関する広範囲なFAQ集もあります。
+   にあるSquidのホームページにアクセスしてください。<link xlink:href="http://www.squid-cache.org/"/>ここにはS<quote>quid User Guide</quote>が置かれており、Squidに関する広範囲なFAQ集もあります。
   </para>
 
   <para>
-   透過型プロキシの使用方法に関する簡潔な情報は、<systemitem class="resource">/usr/share/doc/howto/en/txt/TransparentProxy.gz</systemitem>に<filename>howtoenh</filename>として含まれています。また、<ulink url="squid-users@squid-cache.org"/>で、Squidに関するメーリングリストに登録できます。このアーカイブは<ulink url="http://www.squid-cache.org/mail-archive/squid-users/"/>にあります。
+   透過型プロキシの使用方法に関する簡潔な情報は、<systemitem class="resource">/usr/share/doc/howto/en/txt/TransparentProxy.gz</systemitem>に<filename>howtoenh</filename>として含まれています。また、<link xlink:href="squid-users@squid-cache.org"/>で、Squidに関するメーリングリストに登録できます。このアーカイブは<link xlink:href="http://www.squid-cache.org/mail-archive/squid-users/"/>にあります。
   </para>
- </sect1>
+ </section>
 </chapter>

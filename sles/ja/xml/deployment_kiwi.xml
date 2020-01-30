@@ -1,21 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="deployment_kiwi.xml" id="cha-autokiwi">
-
- <title>プリロードイメージの自動展開</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="deployment_kiwi.xml" xml:id="cha-autokiwi"><title>プリロードイメージの自動展開</title><info><abstract>
   <para>
    KIWIを使用して、オペレーティングシステムイメージを作成できます。この章では、空のクライアントマシンにシステムイメージを展開するプロセスについて説明します。これを行なうには、ブート可能なRAWイメージを含むプリロードイメージを作成する必要があります。このファイルにはパーティションテーブルと、実際のオペレーティングシステムという2つの重要な部分が含まれます。このRAWイメージは空のハードディスクに書き込まれ、オペレーティングシステムは残りのディスクスペースを初回起動時に拡張します。
   </para>
 
- </abstract>
+ </abstract></info>
+
+ 
+ 
  <para>
   このようなイメージの作成については、<xref linkend="sec-kiwi-img"/>を参照してください。ISOイメージをビルドする場合は、「未加工」ファイルを宛先フォルダで見つけることができます。未加工イメージをディスクにダンプするには、多数の方法があります。
  </para>
@@ -44,7 +52,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   迅速な起動には、<xref linkend="sec-autokiwi-manual"/>で説明されている方法のうちいずれかを使用することをお勧めします。
  </para>
- <sect1 id="sec-autokiwi-manual">
+ <section xml:id="sec-autokiwi-manual">
   <title>レスキューイメージからの手動によるシステムの展開</title>
 
   <variablelist>
@@ -115,8 +123,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>PXEブートを使用した自動展開</title>
 
   <para>
@@ -162,28 +170,28 @@ Please see LICENSE.txt for this document's license.
    </varlistentry>
   </variablelist>
 
-  <sect2 id="sec-autokiwi-instserver">
+  <section xml:id="sec-autokiwi-instserver">
    <title>ブートおよびインストール用サーバのセットアップ</title>
    <para>
     SUSE Linux Enterprise Serverのインストール後にこのタスクを実行するには、4つのステップを完了する必要があります。
    </para>
-   <procedure id="proc-autokiwi-instserver">
-    <step performance="required">
+   <procedure xml:id="proc-autokiwi-instserver">
+    <step>
      <para>
       <xref linkend="sec-deployment-remoteinst-instserver"/>で説明されている方法でインストールソースをセットアップします。HTTPまたはFTPのネットワークサーバを選択します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       ブートイメージ(後で示すステップで作成)を保持するようにTFTPサーバを設定します。これは<xref linkend="sec-deployment-remoteinst-boot-tftp"/>で説明されています。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのコンピュータにIPアドレスを割り当て、ターゲットシステムにTFTPサーバの場所を知らせるように、DHCPサーバを設定します。これは<xref linkend="sec-deployment-remoteinst-boot-dhcp"/>で説明されています。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       インストールサーバPXEブートを準備します。この詳細は、<xref linkend="sec-deployment-remoteinst-boot-pxe"/>で説明しています。
      </para>
@@ -192,9 +200,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     このコンピュータにプリロードイメージを保持できる充分なメモリを用意しておけば、実際のインストールプロセスで非常に役立ちます。また、ギガビットイーサネットを使用すると、低速のネットワークを使用する場合と比べて、展開プロセスを大幅にスピードアップできます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-preloadimage">
+  <section xml:id="sec-autokiwi-preloadimage">
    <title>プリロードイメージの作成</title>
    <para>
     KIWIでのイメージの作成については、<xref linkend="sec-kiwi-img"/>を参照してください。ただし、大規模展開用のイメージを作成するには、次の点を考慮に入れる必要があります。
@@ -225,9 +233,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     展開する実際のイメージは、インストールサーバで指定したFTPサーバまたはHTTPサーバから入手できます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-initrd">
+  <section xml:id="sec-autokiwi-initrd">
    <title>プリロードイメージを展開する初期システムの作成</title>
    <para>
     自動展開を実行するには、ターゲットコンピュータで初期Linuxシステムを起動する必要があります。通常のインストール時には、ブートメディアからカーネルおよび初期RAMファイルシステムが読み込まれ、BIOSによって起動されます。必要な機能はRAMファイルシステムに実装できます。このRAMファイルシステムはカーネルと共に初期システムとして動作します。
@@ -239,17 +247,17 @@ Please see LICENSE.txt for this document's license.
     次の手順は、必要な初期RAMファイルシステムを作成する方法の一例にすぎません。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       ターゲットシステム上で<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase>の標準インストールを行います。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       このシステム上にパッケージ<systemitem>busybox</systemitem>をインストールします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドを使用して、新しいRAMファイルシステムを作成します。
      </para>
@@ -258,7 +266,7 @@ Please see LICENSE.txt for this document's license.
       ここで、eth0はネットワークケーブルの接続先のEthernetデバイスを表します。パラメータ<systemitem>-f busybox</systemitem>は、マルチコールバイナリ<systemitem>busybox</systemitem>をRAMファイルシステムに追加します。これを行なった後、このシステム内で多くの標準UNIXコマンドが利用できます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドを使用して、新しいRAMファイルシステムとカーネルをブートサーバにコピーします。
      </para>
@@ -267,35 +275,35 @@ Please see LICENSE.txt for this document's license.
       pxe.example.comは、ご使用のローカルブートサーバの名前またはIPアドレスに置き換えます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>ユーザとしてブートサーバにログインし、RAMシステムを変更できるディレクトリを作成します。
      </para>
 <screen>mkdir ~/bootimage</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <command>cd ~/bootimage</command>コマンドで、作業ディレクトリをこのディレクトリに変更します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドを使用して前にコピーした初期RAMファイルシステムを展開します。
      </para>
 <screen>zcat ../initrd | cpio -i</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <filename>run_all.sh</filename>ファイルを編集します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次の行を検索し、この行とファイルの残りを削除します。
      </para>
 <screen>[ "$debug" ] &amp;&amp; echo preping 21-nfs.sh </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <filename>run_all.sh</filename>ファイルの末尾に次の行を追加します。
      </para>
@@ -305,7 +313,7 @@ source boot/92-install.sh
 [ "$modules" ] &amp;&amp; load_modules
      </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次の内容を含む新しいスクリプト<filename>boot/92-install.sh</filename>を作成します。
      </para>
@@ -325,17 +333,17 @@ fi
 /bin/poweroff -f
 </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       コンピュータを閉じる前にデバッグシェルが必要な場合は、<filename>/bin/bash</filename>の前のコメント署名を削除します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <command>chmod 755 boot/92-install.sh</command>コマンドを使用してこのスクリプトを実行可能にします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドを使用して新しい初期RAMファイルシステムを作成します。
      </para>
@@ -343,7 +351,7 @@ fi
 find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
 /srv/tftpboot/initrd.boot</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       カーネルをこのディレクトリにコピーします。
      </para>
@@ -353,9 +361,9 @@ find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
    <para>
     これで初期RAMファイルシステムは、2つの新しいカーネルコマンドラインパラメータを使用する準備ができました。パラメータ<systemitem>rawimage=&lt;URL&gt;</systemitem>は、プリロードイメージの場所を特定するために使用されます。wgetが理解できるURLはどれでも使用できます。パラメータ<systemitem>rawdevice=&lt;device&gt;</systemitem>は、ターゲットコンピュータのハードディスクのブロックデバイスを特定するために使用されます。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>ブートサーバの設定</title>
    <para>
     ブートサーバの設定に関する詳細は、<xref linkend="sec-autokiwi-instserver"/>にリストされているように複数の章で説明されてます。このセクションでは、システムの設定に必要な手順を確認することができます。
@@ -390,10 +398,10 @@ label bootinstall
    <para>
     PXEネットワークブートを使用して、ターゲットシステムをブートし、セットアップをテストします。これによって、準備されたプリロードイメージが自動的にハードディスクにコピーされ、用意ができた時点でコンピュータが閉じられます。
    </para>
-  </sect2>
+  </section>
 
 
- </sect1>
+ </section>
 
 
 
