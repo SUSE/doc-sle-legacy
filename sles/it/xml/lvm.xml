@@ -1,13 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="lvm.xml" id="sec-yast2-system-lvm">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="lvm.xml" xml:id="sec-yast2-system-lvm">
  <title>Configurazione di LVM</title><indexterm> <primary>YaST</primary><secondary>LVM</secondary></indexterm><indexterm><primary>LVM</primary><secondary>Logical Volume Manager</secondary></indexterm><indexterm><primary>YaST</primary><see>LVM</see></indexterm>
 
  <para>
@@ -20,12 +28,12 @@ Please see LICENSE.txt for this document's license.
   </para>
  </warning>
 
- <sect2 id="sec-yast2-system-lvm-explained">
+ <section xml:id="sec-yast2-system-lvm-explained">
   <title>Gestore dei volumi logici</title>
   <para>
    LVM consente di distribuire lo spazio su disco in modo flessibile su più file system. Questa applicazione è stata sviluppata per far fronte alla necessità di modificare la segmentazione del disco rigido solo dopo la partizione iniziale effettuata al momento dell'installazione. Poiché è difficile modificare le partizioni su un sistema in esecuzione, LVM offre un pool virtuale (gruppo di volumi o VG) di spazio di memoria che può essere usato per creare i volumi logici (LV) necessari. Il sistema operativo accede a questi volumi logici anziché alle partizioni fisiche. I gruppi di volumi possono occupare più dischi, quindi più dischi o parti di essi possono costituire un unico volume logico. LVM fornisce una sorta di immagine astratta dello spazio fisico su disco che consente di modificare la segmentazione in modo molto più semplice e veloce rispetto a una nuova suddivisione in partizioni fisiche. Per informazioni generali sulla creazione di partizioni fisiche, vedere <xref linkend="sec-IB-part-typen"/> e <xref linkend="sec-yast2-i-y2-part-expert"/>.
   </para>
-  <figure id="fig-lvm-explained-schematic">
+  <figure xml:id="fig-lvm-explained-schematic">
    <title>Differenze tra la suddivisione in partizioni e il gestore di volumi logici</title>
    <mediaobject>
     <imageobject role="fo">
@@ -70,82 +78,82 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </itemizedlist>
   <para>
-   Queste funzioni rendono LVM immediatamente utilizzabile anche per i PC per uso domestico o i server di piccole dimensioni utilizzati intensamente. LVM è particolarmente indicato per gli utenti con uno stock di dati in continua crescita (come i database, gli archivi di musica o le directory utente), perché consente di gestire file system di dimensioni maggiori rispetto al disco rigido fisico. Un altro vantaggio di LVM deriva dal fatto che consente di aggiungere un massimo di 256 volumi logici. Tuttavia, le modalità di utilizzo di LVM sono diverse da quelle delle normali partizioni. Per istruzioni e ulteriori informazioni sulla configurazione di LVM, vedere il documento LVM HOWTO ufficiale alla pagina Web <ulink url="http://tldp.org/HOWTO/LVM-HOWTO/"/>.
+   Queste funzioni rendono LVM immediatamente utilizzabile anche per i PC per uso domestico o i server di piccole dimensioni utilizzati intensamente. LVM è particolarmente indicato per gli utenti con uno stock di dati in continua crescita (come i database, gli archivi di musica o le directory utente), perché consente di gestire file system di dimensioni maggiori rispetto al disco rigido fisico. Un altro vantaggio di LVM deriva dal fatto che consente di aggiungere un massimo di 256 volumi logici. Tuttavia, le modalità di utilizzo di LVM sono diverse da quelle delle normali partizioni. Per istruzioni e ulteriori informazioni sulla configurazione di LVM, vedere il documento LVM HOWTO ufficiale alla pagina Web <link xlink:href="http://tldp.org/HOWTO/LVM-HOWTO/"/>.
   </para>
   <para>
    Per i Kernel a partire dalla versione 2.6, è possibile usare la versione 2 di LVM, che è compatibile con tutte le versioni precedenti di LVM e consente di gestire i gruppi di volumi esistenti. Quando si creano nuovi gruppi di volumi è necessario specificare se utilizzare il nuovo formato oppure una versione compatibile con il formato precedente. LVM 2 non richiede patch del kernel specifiche. Sfrutta il mapper del dispositivo integrato nel kernel 2.6. Questo kernel supporta solo LVM versione 2. Pertanto, quando si parla di LVM, in questa sezione si fa riferimento sempre a LVM versione 2.
   </para>
-  <sect3>
+  <section>
    <title>Thin provisioning</title>
    <para>
     A partire dalla versione 3.4 del kernel, LVM supporta il thin provisioning. Un volume soggetto al thin provisioning ha una capacità virtuale e una capacità reale. La capacità <emphasis>virtuale</emphasis> è la capacità memorizzazione del volume disponibile in un host. La capacità <emphasis>reale</emphasis> è la capacità di memorizzazione allocata a una copia del volume da un pool di memorizzazione. In un volume completamente allocato, la capacità virtuale e quella reale sono uguali. In un volume soggetto a thin provisioning, tuttavia, la capacità virtuale può essere molto più grande di quella reale. Se la capacità reale di un volume soggetto a thin provisioning non è sufficiente per un'operazione di scrittura, il volume viene messo offline e viene registrato un errore.
    </para>
    <para>
-    Per ulteriori informazioni generali, vedere <ulink url="http://wikibon.org/wiki/v/Thin_provisioning"/>.
+    Per ulteriori informazioni generali, vedere <link xlink:href="http://wikibon.org/wiki/v/Thin_provisioning"/>.
    </para>
-  </sect3>
- </sect2>
+  </section>
+ </section>
 
- <sect2 id="sec-yast2-system-lvm-yast">
+ <section xml:id="sec-yast2-system-lvm-yast">
   <title>Configurazione di LVM con YaST</title>
   <para>
    È possibile accedere alla configurazione LVM di YaST tramite la Modalità di partizionamento per esperti YaST (vedere <xref linkend="sec-yast2-i-y2-part-expert"/>) nella voce <guimenu>Gestione volume</guimenu> del riquadro <guimenu>Vista sistema</guimenu>. La Modalità di partizionamento per esperti consente di modificare e cancellare le partizioni esistenti, nonché di crearne di nuove da utilizzare con LVM. Il primo task consiste nella creazione di volumi fisici che forniscano spazio a un gruppo di volumi:
   </para>
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      Selezionare un disco rigido da <guimenu>Dischi rigidi</guimenu>
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Passare alla scheda <guimenu>Partizioni</guimenu>.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Fare clic su <guimenu>Aggiungi</guimenu> e immettere la dimensione desiderata per il volume fisico sul disco.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Utilizzare <guimenu>Non formattare la partizione</guimenu> e modificare il valore del <guimenu>File system ID</guimenu> in <guimenu>0x8E Linux LVM</guimenu>. Non montare questa partizione.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Ripetere questa procedura finché non si sono definiti tutti i volumi fisici desiderati dei dischi disponibili.
     </para>
    </step>
   </procedure>
-  <sect3>
+  <section>
    <title>Creazione di gruppi di volumi</title>
    <para>
     Se nel sistema non esistono ancora gruppi di volumi, è necessario aggiungerne uno (vedere <xref linkend="fig-lvm-yast-volgrp"/>). È possibile creare gruppi aggiuntivi facendo clic su <guimenu>Gestione volume</guimenu> nel riquadro <guimenu>Vista sistema</guimenu> e successivamente su <guimenu>Aggiungi gruppo di volumi</guimenu>. Generalmente è sufficiente un solo gruppo di volumi.
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       Immettere un nome per il gruppo di volumi, ad esempio <literal>system</literal>.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Selezionare le <guimenu>dimensioni dell'estensione fisica</guimenu> desiderate. Questo valore definisce la dimensione di un blocco fisico nel gruppo di volumi. Tutto lo spazio su disco del gruppo di volumi viene gestito utilizzando blocchi della dimensione specificata.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Aggiungere i volumi fisici preparati al gruppo di volumi selezionando il dispositivo e facendo clic su <guimenu>Aggiungi</guimenu>. Per selezionare più dispositivi, tenere premuto il tasto <keycap>Ctrl</keycap> durante la selezione.
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Selezionare <guimenu>Fine</guimenu> per rendere il gruppo di volumi disponibile per le operazioni di configurazione.
      </para>
     </step>
    </procedure>
-   <figure id="fig-lvm-yast-volgrp">
+   <figure xml:id="fig-lvm-yast-volgrp">
     <title>Creazione di un gruppo di volumi</title>
     <mediaobject>
      <imageobject role="fo">
@@ -159,13 +167,13 @@ Please see LICENSE.txt for this document's license.
    <para>
     Se sono stati definiti più gruppi di volumi e si desidera aggiungere o rimuovere volumi fisici, selezionare il gruppo di volumi nell'elenco <guimenu>Gestione volume</guimenu>, quindi fare clic su <guimenu>Ridimensiona</guimenu>. Nella seguente finestra, è possibile aggiungere o rimuovere volumi fisici al/dal gruppo di volumi.
    </para>
-  </sect3>
-  <sect3>
+  </section>
+  <section>
    <title>Configurazione dei volumi logici</title>
    <para>
     Una volta aggiunto il volume fisico al gruppo di volumi, definire il volume logico che il sistema operativo deve utilizzare nella finestra di dialogo successiva. Scegliere il gruppo di volumi corrente e passare alla scheda <guimenu>Volumi logici</guimenu>. <guimenu>Aggiungere</guimenu>, <guimenu>modificare</guimenu>, <guimenu>ridimensionare</guimenu> e <guimenu>cancellare</guimenu> i volumi logici in base alle esigenze fino a quando tutto lo spazio nel gruppo di volumi non si esaurisce. Assegnare almeno un volume logico a ciascun gruppo di volumi.
    </para>
-   <figure id="fig-lvm-yast-mgmt">
+   <figure xml:id="fig-lvm-yast-mgmt">
     <title>Gestione dei volumi logici</title>
     <mediaobject>
      <imageobject role="fo">
@@ -218,8 +226,8 @@ Please see LICENSE.txt for this document's license.
    <para>
     Se si è già configurato LVM sul sistema, è possibile utilizzare anche i volumi logici esistenti. Prima di continuare, assegnare punti di montaggio appropriati a tali volumi logici. <guimenu>Fine</guimenu> consente di tornare alla Modalità di partizionamento per esperti YaST, per completare il lavoro.
    </para>
-  </sect3>
- </sect2>
+  </section>
+ </section>
 
 
-</sect1>
+</section>

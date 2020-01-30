@@ -1,14 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="depl_smt.xml" id="cha-smt">
- <title>Gestione delle sottoscrizioni</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="depl_smt.xml" xml:id="cha-smt"><title>Gestione delle sottoscrizioni</title><info/>
+ 
 
  <para>
   È possibile configurare qualsiasi computer che esegua SUSE Linux Enterprise Server 11 o SUSE Linux Enterprise Desktop 11 per la registrazione sul server Subscription Management Tool locale in modo da scaricare gli aggiornamenti del software, anziché comunicare direttamente con Novell Customer Center e i server NU. Per utilizzare un server SMT per la registrazione del client e come origine locale per gli aggiornamenti, è necessario prima configurare il server SMT nella rete. Il software del server SMT viene distribuito come componente aggiuntivo per SUSE Linux Enterprise Server e la rispettiva configurazione è descritta nel manuale <emphasis>Subscription Management Tool Guide</emphasis> (Guida relativa a Subscription Management Tool). Non è necessario configurare alcun componente aggiuntivo sui client che devono essere configurati per la registrazione su un server SMT.
@@ -25,7 +33,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   Vi sono vari modi di fornire queste informazioni e di configurare il computer client per l'utilizzo di SMT. Il primo modo consiste nel fornire le informazioni per mezzo dei parametri del kernel all'avvio. Il secondo modo consiste nel configurare i client utilizzando un profilo AutoYaST. È inoltre disponibile lo script <command>clientSetup4SMT.sh</command>, distribuito con Subscription Management Tool, che può essere eseguito su un client per registrarlo su un server SMT specificato. Questi metodi sono descritti nelle sezioni seguenti:
  </para>
- <sect1 id="smt-client-parameters">
+ <section xml:id="smt-client-parameters">
   <title>Utilizzo dei parametri kernel per accedere a un server SMT</title>
 
   <para>
@@ -115,8 +123,8 @@ Please see LICENSE.txt for this document's license.
     Se il server SMT riceve un nuovo certificato da un CA nuovo e non attendibile, i client devono recuperare il file del certificato del nuovo CA. Questa operazione viene effettuata automaticamente durante il processo di registrazione, ma solo nel caso in cui al momento dell'installazione sia stato usato un URL per recuperare il certificato oppure se il parametro <literal>regcert</literal> è stato omesso ed è quindi stato utilizzato l'URL di default. Se il certificato è stato caricato utilizzando un altro metodo (ad esempio, utilizzando il disco floppy o il percorso locale), il certificato CA non verrà aggiornato.
    </para>
   </warning>
- </sect1>
- <sect1 id="smt-client-autoyast">
+ </section>
+ <section xml:id="smt-client-autoyast">
   <title>Configurazione dei client con il profilo AutoYaST</title>
 
   <para>
@@ -128,7 +136,7 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      Avviare YaST come <systemitem class="username">root</systemitem> e selezionare <menuchoice> <guimenu>Varie</guimenu> <guimenu>Installazione automatica</guimenu> </menuchoice> per avviare il front-end grafico di AutoYaST.
     </para>
@@ -137,45 +145,45 @@ Please see LICENSE.txt for this document's license.
 
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Aprire un profilo esistente utilizzando <menuchoice><guimenu>File</guimenu><guimenu>Apri</guimenu></menuchoice>, creare un profilo basato sulla configurazione corrente del sistema utilizzando <menuchoice><guimenu>Strumenti</guimenu><guimenu>Modifica/crea profilo</guimenu></menuchoice>, o semplicemente lavorare con un profilo vuoto.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Selezionare <menuchoice><guimenu>Supporto</guimenu><guimenu>Configurazione di Novell Customer Center</guimenu></menuchoice>. Viene visualizzata una panoramica della configurazione corrente.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Fare clic su <guimenu>Modifica</guimenu>.
     </para>
    </step>
-   <step performance="required">
+   <step>
 
     <para>
      Per eseguire la registrazione durante l'installazione automatica, selezionare <guimenu>Esegui registrazione prodotto</guimenu>. Utilizzando <guimenu>Profilo hardware</guimenu> e <guimenu>Informazioni opzionali</guimenu>, sarà possibile includere informazioni sul sistema.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Impostare l'URL del <guimenu>server SMT</guimenu> e, facoltativamente, l'ubicazione del <guimenu>certificato SMT</guimenu>. I valori possibili sono gli stessi di quelli per i parametri del kernel, vale a dire <literal>regurl</literal> e <literal>regcert</literal> (vedere <xref linkend="smt-client-parameters"/>). L'unica eccezione è che il valore <literal>ask</literal> per <literal>regcert</literal> non funziona in AutoYaST, perché richiede l'interazione da parte dell'utente. Nel caso venisse utilizzato, il processo di registrazione verrà saltato.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Eseguire tutte le altre configurazioni necessarie per la distribuzione dei sistemi.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Selezionare <menuchoice> <guimenu>File</guimenu> <guimenu>Salva con nome</guimenu> </menuchoice> e specificare un nome file per il profilo, ad esempio, <filename>autoinst.xml</filename>.
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="smt-client-clientsetupscript">
+ </section>
+ <section xml:id="smt-client-clientsetupscript">
   <title>Configurazione dei client utilizzando lo script clientSetup4SMT.sh</title>
 
   <para>
@@ -187,14 +195,14 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      Copiare lo script <filename>/usr/share/doc/packages/smt/clientSetup4SMT.sh</filename> dal server SMT al computer client.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     Eseguire lo script sul computer client come <systemitem class="username">root</systemitem>. Lo script può essere eseguito in due modi. Nel primo caso, il nome dello script è seguito dall'URL di registrazione <command>./clientSetup4SMT.sh <replaceable>registration_URL</replaceable></command>, ad esempio, <command>./clientSetup4SMT.sh https://smt.example.com/center/regsvc</command>. Nel secondo caso, il nome dello script è seguito dall'opzione <option>--host</option>, seguita a sua volta dal nome host del server SMT: <command>./clientSetup4SMT.sh --host <replaceable>server_hostname</replaceable></command>, ad esempio, <command>./clientSetup4SMT.sh --host smt.example.com</command>.
+     Eseguire lo script sul computer client come <systemitem class="username">root</systemitem>. Lo script può essere eseguito in due modi. Nel primo caso, il nome dello script è seguito dall'URL di registrazione <command>./clientSetup4SMT.sh</command> <replaceable>registration_URL</replaceable>, ad esempio, <command>./clientSetup4SMT.sh https://smt.example.com/center/regsvc</command>. Nel secondo caso, il nome dello script è seguito dall'opzione <option>--host</option>, seguita a sua volta dal nome host del server SMT: <command>./clientSetup4SMT.sh --host</command> <replaceable>server_hostname</replaceable>, ad esempio, <command>./clientSetup4SMT.sh --host smt.example.com</command>.
     </para>
     
     <important>
@@ -205,17 +213,17 @@ Please see LICENSE.txt for this document's license.
     </important>
     
    </step>
-   <step performance="required">
+   <step>
     <para>
      Lo script effettua il download del certificato CA del server. Accettarlo premendo <keycap>s</keycap>.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Lo script esegue tutte le modifiche necessarie sul client. Tuttavia la registrazione vera e propria non viene eseguita dallo script.
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Eseguire una registrazione utilizzando <command>suse_register</command> o eseguendo il modulo <command>yast2 inst_suse_register</command> sul client.
     </para>
@@ -225,8 +233,8 @@ Please see LICENSE.txt for this document's license.
 
 
 
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>Registrazione dei client su un ambiente di prova SMT</title>
 
   <para>
@@ -240,5 +248,5 @@ Please see LICENSE.txt for this document's license.
   <para>
    Per ulteriori informazioni sull'utilizzo di SMT con un ambiente di test, fare riferimento alla <emphasis>Subscription Management Tool Guide</emphasis> (Guida relativa a Subscription Management Tool).
   </para>
- </sect1>
+ </section>
 </chapter>
