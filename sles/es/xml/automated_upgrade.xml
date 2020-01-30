@@ -1,18 +1,26 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="automated_upgrade.xml" id="cha-update-auto" os="sles">
- <title>Actualización automática de SUSE Linux Enterprise 11 SP2 a 11 SP3</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="automated_upgrade.xml" xml:id="cha-update-auto" os="sles"><title>Actualización automática de SUSE Linux Enterprise 11 SP2 a 11 SP3</title><info/>
+ 
  <para>
   El siguiente procedimiento es un modo de realizar una actualización masiva sin intervención del usuario de SUSE Linux Enterprise 11 SP2 a SUSE Linux Enterprise 11 SP3. Es necesario llevar a cabo varios pasos de preparación para crear un perfil de AutoYaST adecuado. Finalmente, AutoYaST ejecutará el proceso de actualización.
  </para>
- <sect1 id="sec-update-auto-prep-autoyast">
+ <section xml:id="sec-update-auto-prep-autoyast">
   <title>Preparación del perfil de AutoYaST</title>
 
   <para>
@@ -23,7 +31,7 @@ Please see LICENSE.txt for this document's license.
    Sin embargo, por motivos obvios, existen algunos aspectos del sistema (como el particionamiento) que no tiene sentido configurar durante la actualización. Por otra parte, resulta útil configurar opciones específicas de actualización mediante el perfil de AutoYaST.
   </para>
 
-  <sect2>
+  <section>
    <title>Actualización</title>
    <para>
     Las opciones de actualización definen el comportamiento de la resolución de dependencias durante la actualización:
@@ -54,9 +62,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Selección del software</title>
    <para>
     Las opciones de selección de software definen los componentes que se deben seleccionar o deseleccionar además de los resultados de la resolución:
@@ -75,9 +83,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     Es especialmente importante definir paquetes o patrones seleccionados o deseleccionados para resolver conflictos de paquetes y evitar la necesidad de una intervención interactiva. Una vez realizada la actualización, el archivo <filename>autoupg_updated.xml</filename> recién creado contendrá estos paquetes y patrones, además de los seleccionados o deseleccionados por cualquier otro motivo.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Copia de seguridad antes de la actualización</title>
    <para>
     Las opciones de copia de seguridad antes de la actualización se corresponden con estas funciones en la propuesta de actualización.
@@ -116,9 +124,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-update-auto-run">
+  </section>
+ </section>
+ <section xml:id="sec-update-auto-run">
   <title>Ejecución de la actualización automatizada</title>
 
   <para>
@@ -153,8 +161,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    Si hay más sistemas SUSE Linux Enterprise instalados en el equipo, siempre se le preguntará cuál desea actualizar. No es posible seleccionarlo por adelantado.
   </para>
- </sect1>
- <sect1 id="sec-update-auto-grub">
+ </section>
+ <section xml:id="sec-update-auto-grub">
   <title>Sección del menú de GRUB para arrancar la actualización</title>
 
   <para>
@@ -176,8 +184,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    En System z, debe añadir los parámetros al archivo PARM. Proceda del mismo modo que para realizar una instalación mediante AutoYaST.
   </para>
- </sect1>
- <sect1 id="sec-update-auto-2nd-stage">
+ </section>
+ <section xml:id="sec-update-auto-2nd-stage">
   <title>Segunda etapa de la actualización</title>
 
   <para>
@@ -198,20 +206,20 @@ Please see LICENSE.txt for this document's license.
   <para>
    Normalmente, el único ajuste de configuración que debe estar presente en el perfil de AutoYaST es el registro del sistema en Subscription Management Tool (SMT) o el Centro de servicios al cliente de Novell (NCC). Si falta este ajuste, el sistema no obtendrá el repositorio de actualización y no será posible realizar actualizaciones a menos que se configure de nuevo más adelante.
   </para>
- </sect1>
- <sect1 id="sec-update-auto-limitations">
+ </section>
+ <section xml:id="sec-update-auto-limitations">
   <title>Limitaciones y sugerencias</title>
 
   <para/>
 
-  <sect2>
+  <section>
    <title>NetworkManager y registro</title>
    <para>
     En caso de utilizar NetworkManager para la gestión de dispositivos y conexiones de red, las conexiones de red no estarán disponibles durante la segunda etapa de la actualización. Esto impide que el sistema lleve a cabo el registro.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Limpieza de ajustes de actualización</title>
    <para>
     Si realiza algún cambio en el sistema para activar el proceso de actualización (por ejemplo, añadir una nueva sección al menú del cargador de arranque), probablemente sea preferible eliminarlo una vez concluida la actualización.
@@ -219,17 +227,17 @@ Please see LICENSE.txt for this document's license.
    <para>
     Puede hacerlo automáticamente con un guion posterior a la instalación. Encontrará algunos ejemplos en <xref linkend="createprofile-scripts"/>. Hay un guion de ejemplo que limpia el archivo <filename>menu.lst</filename> de GRUB incluido en el archivo <filename>autoupg.xml</filename> de muestra. Asegúrese de que el guion coincide con su configuración concreta y solamente elimina los elementos deseados.
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>Información adicional</title>
    <itemizedlist mark="bullet" spacing="normal">
     <listitem>
      <para>
-      Documentación de Linuxrc: <ulink url="http://en.opensuse.org/SDB:Linuxrc"/>
+      Documentación de Linuxrc: <link xlink:href="http://en.opensuse.org/SDB:Linuxrc"/>
      </para>
     </listitem>
    </itemizedlist>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>
