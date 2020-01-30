@@ -1,21 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="deployment_kiwi.xml" id="cha-autokiwi">
-
- <title>自動部署預先載入影像</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="deployment_kiwi.xml" xml:id="cha-autokiwi"><title>自動部署預先載入影像</title><info><abstract>
   <para>
    借助於 KIWI，您可以建立作業系統影像。本章介紹了將系統影像部署至空用戶端機器的程序。出於此目的，您需要建立包含可開機之 RAW 影像的預先載入影像。此檔案包含兩個重要部分︰分割區表與實際的作業系統。首次開機時，此 RAW 影像將會寫入空的硬碟中，並且作業系統會延伸至剩餘的磁碟空間。
   </para>
 
- </abstract>
+ </abstract></info>
+
+ 
+ 
  <para>
   要建立這樣的影像，請參閱<xref linkend="sec-kiwi-img"/>。建立 ISO 影像時，可在目的資料夾中尋找 RAW 檔案。有多種方法可將 RAW 影像傾印到磁碟上。
  </para>
@@ -44,7 +52,7 @@ Please see LICENSE.txt for this document's license.
  <para>
   若要快速啟動，最好使用<xref linkend="sec-autokiwi-manual"/> 中描述的一種方法。
  </para>
- <sect1 id="sec-autokiwi-manual">
+ <section xml:id="sec-autokiwi-manual">
   <title>從救援影像手動部署系統</title>
 
   <variablelist>
@@ -115,8 +123,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1>
+ </section>
+ <section>
   <title>使用 PXE 開機進行自動部署</title>
 
   <para>
@@ -162,28 +170,28 @@ Please see LICENSE.txt for this document's license.
    </varlistentry>
   </variablelist>
 
-  <sect2 id="sec-autokiwi-instserver">
+  <section xml:id="sec-autokiwi-instserver">
    <title>設定開機與安裝伺服器</title>
    <para>
     在安裝 SUSE Linux Enterprise Server 後執行此任務需要完成四個步驟︰
    </para>
-   <procedure id="proc-autokiwi-instserver">
-    <step performance="required">
+   <procedure xml:id="proc-autokiwi-instserver">
+    <step>
      <para>
       依照<xref linkend="sec-deployment-remoteinst-instserver"/> 中的說明安裝安裝來源。選擇 HTTP 或 FTP 網路伺服器。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       設定 TFTP 伺服器以存放開機影像 (此影像將在後面的步驟中建立)。如需詳細資訊，請參閱<xref linkend="sec-deployment-remoteinst-boot-tftp"/>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       設定 DHCP 伺服器以向所有機器指派 IP 位址，並向目標系統顯示 TFTP 伺服器的位置。如需詳細資訊，請參閱<xref linkend="sec-deployment-remoteinst-boot-dhcp"/>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       準備安裝伺服器 PXE 開機。如需進一步詳細說明，請參閱<xref linkend="sec-deployment-remoteinst-boot-pxe"/>。
      </para>
@@ -192,9 +200,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     請注意，如果為此機器配備充足的記憶體以存放預先載入影像，則在實際安裝時會大大受益。另外，與速度較慢的網路相比，使用 gigabit 乙太網路可顯著提升部署的速度。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-preloadimage">
+  <section xml:id="sec-autokiwi-preloadimage">
    <title>建立預先載入影像</title>
    <para>
     使用 KIWI 建立影像的程序如<xref linkend="sec-kiwi-img"/> 中所述。但是，若要為大量部署建立有用的影像，則需要考慮以下幾個因素︰
@@ -225,9 +233,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     要部署的實際影像必須能夠從安裝伺服器上提供的 ftp 或 http 伺服器獲取。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-autokiwi-initrd">
+  <section xml:id="sec-autokiwi-initrd">
    <title>建立部署預先載入影像的啟始系統</title>
    <para>
     若要執行自動部署，必須啟動目標電腦上的啟始 linux 系統。典型安裝期間，會從部分開機媒體中讀取核心與啟始 ram 檔案系統，然後由 bios 啟動。所需的功能可在 ram 檔案系統中執行，該系統與核心將一起當做啟始系統提供服務。
@@ -239,17 +247,17 @@ Please see LICENSE.txt for this document's license.
     下列程序提供了如何建立所需的啟始 ram 檔案系統的一個範例︰
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       在目標系統上完成 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 的標準安裝。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在系統上安裝套件 <systemitem>busybox</systemitem>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用下列指令建立新的 ram 檔案系統︰
      </para>
@@ -258,7 +266,7 @@ Please see LICENSE.txt for this document's license.
       請注意，eth0 代表網路電纜所連接的乙太網路裝置。參數 <systemitem>-f busybox</systemitem> 會將二進位格式的多路呼叫 <systemitem>busybox</systemitem> 新增至 ram 檔案系統。完成此動作後，就可在此系統內部使用許多標準 unix 指令。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下指令將新的 ram 檔案系統與核心複製到您的開機伺服器︰
      </para>
@@ -267,35 +275,35 @@ Please see LICENSE.txt for this document's license.
       使用本地開機伺服器的名稱或 IP 位址取代 pxe.example.com。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       以使用者 <systemitem class="username">root</systemitem> 的身分登入開機伺服器，然後建立可修改 ram 檔案系統的目錄︰
      </para>
 <screen>mkdir ~/bootimage</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用指令 <command>cd ~/bootimage</command> 將您的工作目錄變更為此目錄。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下指令解壓縮先前複製的啟始 ram 檔案系統︰
      </para>
 <screen>zcat ../initrd | cpio -i</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       編輯檔案 <filename>run_all.sh</filename>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       搜尋下列一行，將其和檔案的剩餘部分一起刪除︰
      </para>
 <screen>[ "$debug" ] &amp;&amp; echo preping 21-nfs.sh </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       將下面几行新增至檔案 <filename>run_all.sh</filename> 的結尾︰
      </para>
@@ -305,7 +313,7 @@ source boot/92-install.sh
 [ "$modules" ] &amp;&amp; load_modules
      </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下內容建立新的程序檔 <filename>boot/92-install.sh</filename>︰
      </para>
@@ -325,17 +333,17 @@ fi
 /bin/poweroff -f
 </screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果希望在電腦關閉前獲取除錯外圍程序，請移除 <filename>/bin/bash</filename> 前面的備註符號。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用指令 <command>chmod 755 boot/92-install.sh</command> 將此程序檔變更為可執行檔。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下指令建立新的啟始 ram 檔案系統︰
      </para>
@@ -343,7 +351,7 @@ fi
 find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
 /srv/tftpboot/initrd.boot</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       將核心複製到此目錄︰
      </para>
@@ -353,9 +361,9 @@ find . | cpio --quiet -H newc -o | gzip -9 -n &gt; \
    <para>
     啟始 ram 檔案系統正準備接納兩個新的核心指令行參數。參數 <systemitem>rawimage=&lt;URL&gt;</systemitem> 用於識別預先載入影像的位置。可以使用 wget 可以理解的任何 URL。參數 <systemitem>rawdevice=&lt;裝置&gt;</systemitem> 用於識別目標機器上之硬碟的區塊裝置。
    </para>
-  </sect2>
+  </section>
 
-  <sect2>
+  <section>
    <title>開機伺服器組態</title>
    <para>
     <xref linkend="sec-autokiwi-instserver"/> 中所列的幾個不同章節中詳細介紹了開機伺服器的組態。本節中將提供設定系統所必需之步驟的核對清單。
@@ -390,10 +398,10 @@ label bootinstall
    <para>
     使用 PXE 網路開機啟動目標系統以測試您的設定。此動作會自動將準備好的預先載入影像複製到硬碟並在完成後關閉機器。
    </para>
-  </sect2>
+  </section>
 
 
- </sect1>
+ </section>
 
 
 

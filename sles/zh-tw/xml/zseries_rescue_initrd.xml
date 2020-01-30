@@ -1,20 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE sect1
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE sect1 PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<sect1 xml:base="zseries_rescue_initrd.xml" id="sec-zseries-rescue">
+<section xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="zseries_rescue_initrd.xml" xml:id="sec-zseries-rescue">
  <title>IBM System z：使用 initrd 做為救援系統</title>
 
  <para>
   如果升級或修改 SUSE® Linux Enterprise Server for IBM System z 的核心，可能會意外以不一致的狀態將系統重新開機，使得對所安裝的系統執行 IPL 的標準程序失敗。在已經安裝新的或更新的 SUSE Linux Enterprise Server 核心，但尚未執行 zipl 程式來更新 IPL 記錄時，最容易發生這種意外。在此狀況下，請使用標準安裝套件做為救援系統，可在其中執行 zipl 程式以更新 IPL 記錄。
  </para><indexterm> <primary>救援系統</primary> </indexterm>
 
- <sect2 id="sec-zseries-rescue-ipling">
+ <section xml:id="sec-zseries-rescue-ipling">
   <title>IPL 救援系統</title>
   <important>
    <title>提供使用安裝資料</title>
@@ -34,16 +42,16 @@ Rescue login:</screen>
   <para>
    您現在可以用 <systemitem class="username">root</systemitem> 身分登入而無需提供密碼。
   </para>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-configure-disks">
+ <section xml:id="sec-zseries-rescue-configure-disks">
   <title>設定磁碟</title>
   <para>
    在此狀態下，尚未設定任何磁碟。您必須先設定磁碟，才能繼續。
   </para>
   <procedure>
    <title>設定 DASD</title>
-   <step performance="required">
+   <step>
     <para>
      使用下列指令來設定 DASD：
     </para>
@@ -52,7 +60,7 @@ Rescue login:</screen>
      0.0.0150 是連接 DASD 的通道。<literal>1</literal> 表示啟用磁碟 (此處的 <literal>0</literal> 會停用磁碟)。<literal>0</literal> 表示磁碟的<quote>無 DIAG 模式</quote> (此處的 <literal>1</literal> 會啟用磁碟的 DAIG 存取)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      現在 DASD 已經上線 (請使用 <command>cat /proc/partitions</command> 來檢查)，而且可以用於後續指令。
     </para>
@@ -60,7 +68,7 @@ Rescue login:</screen>
   </procedure>
   <procedure>
    <title>設定 zFCP 磁碟</title>
-   <step performance="required">
+   <step>
     <para>
      若要設定 zFCP 磁碟，您必須先設定 zFCP 介面卡。使用下列指令來執行此動作：
     </para>
@@ -69,7 +77,7 @@ Rescue login:</screen>
      <literal>0.0.4000</literal> 是連接介面卡的通道，而 <literal>1</literal> 表示啟動 (此處的 <literal>0</literal> 會停用介面卡)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      啟用介面卡之後，便可以設定磁碟。使用下列指令來執行此動作：
     </para>
@@ -78,15 +86,15 @@ Rescue login:</screen>
      <literal>0.0.4000</literal> 是之前使用的通道 ID，<literal>1234567887654321</literal> 是 WWPN (全球連接埠號碼)，而 <literal>8765432100000000</literal> 則是 LUN (邏輯單元編號)。<literal>1</literal> 表示啟用磁碟 (此處的 <literal>0</literal> 會停用磁碟)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      現在 zFCP 磁碟已經上線 (請使用 <command>cat /proc/partitions</command> 來檢查)，而且可以用於後續指令。
     </para>
    </step>
   </procedure>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-mount">
+ <section xml:id="sec-zseries-rescue-mount">
   <title>裝載根裝置</title>
   <para>
    如果所有所需磁碟均已上線，您現在就應該能夠裝載根裝置。假設根裝置位於 DASD 裝置的第二分割區 (<literal>/dev/dasda2</literal>)，對應的指令為 <command>mount /dev/dasda2 /mnt</command>。
@@ -100,7 +108,7 @@ Rescue login:</screen>
   <para>
    僅需發出指令 <command>mount</command>，便可以檢查檔案系統是否已正確裝載。
   </para>
-  <example id="ex-zseries-rescue-mount-mount-output">
+  <example xml:id="ex-zseries-rescue-mount-mount-output">
    <title>裝載指令的輸出</title>
    <screen>SuSE Instsys suse:/ # mount
 shmfs on /newroot type shm (rw,nr_inodes=10240)
@@ -108,26 +116,26 @@ devpts on /dev/pts type devpts (rw)
 virtual-proc-filesystem on /proc type proc (rw)
 /dev/dasda2 on /mnt type reiserfs (rw)</screen>
   </example>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-chroot">
+ <section xml:id="sec-zseries-rescue-chroot">
   <title>變更至已裝載的檔案系統</title>
   <para>
    <literal>zipl</literal> 指令可從安裝的系統之根裝置讀取組態檔，而非從救援裝置，可使用 <command>chroot</command> 指令來變更安裝系統的根裝置：
   </para>
-  <example id="ex-zseries-rescue-chroot">
+  <example xml:id="ex-zseries-rescue-chroot">
    <title>chroot 至已裝載的檔案系統</title>
    <screen>SuSE Instsys suse:/ # cd /mnt 
 SuSE Instsys suse:/mnt # chroot /mnt</screen>
   </example>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-zipl">
+ <section xml:id="sec-zseries-rescue-zipl">
   <title>執行 zipl</title>
   <para>
    現在執行 <command>zipl</command> 將正確值重新寫入 IPL 記錄：
   </para>
-  <example id="ex-zseries-rescue-zipl">
+  <example xml:id="ex-zseries-rescue-zipl">
    <title>使用 zipl 安裝 IPL 記錄</title>
    <screen>sh-2.05b# zipl 
 building bootmap : /boot/zipl/bootmap 
@@ -138,14 +146,14 @@ Bootloader for ECKD type devices with z/OS compatible layout installed.
 Syncing disks.... 
 ...done</screen>
   </example>
- </sect2>
+ </section>
 
- <sect2 id="sec-zseries-rescue-exit">
+ <section xml:id="sec-zseries-rescue-exit">
   <title>結束救援系統</title>
   <para>
    若要結束救援系統，首先以 <command>chroot</command> 指令和 <command>exit</command> 讓外圍程序保持開啟。若要防止資料遺失，請將所有未寫入的緩衝區以 <command>sync</command> 指令沖洗至磁碟。現在切換至救援系統的根目錄，並卸載 SUSE Linux Enterprise Server for IBM System z 安裝的根裝置。
   </para>
-  <example id="ex-zseries-rescue-exit-umount">
+  <example xml:id="ex-zseries-rescue-exit-umount">
    <title>解除裝載檔案系統</title>
    <screen>SuSE Instsys suse:/mnt # cd / 
 SuSE Instsys suse:/ # umount /mnt</screen>
@@ -153,5 +161,5 @@ SuSE Instsys suse:/ # umount /mnt</screen>
   <para>
    最後，以 <command>halt</command> 指令停止救援系統。現在，可以依照章節<xref linkend="sec-s390-inst-reipl"/> 所述對 SUSE Linux Enterprise Server 系統執行 IPL。
   </para>
- </sect2>
-</sect1>
+ </section>
+</section>

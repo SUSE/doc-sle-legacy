@@ -1,19 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="grub.xml" id="cha-grub">
- <title>開機載入程式 GRUB</title><indexterm> <primary>開機</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="grub.xml" xml:id="cha-grub"><title>開機載入程式 GRUB</title><info><abstract>
   <para>
    本章介紹如何設定 <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 中使用的開機載入程式 GRUB (Grand Unified Bootloader)。一種特殊的 YaST 模組，可用於設定所有設定。如果您不熟悉 Linux 開機的要點，請閱讀以下章節，取得部份背景資訊。本章節也敘述使用 GRUB 開機時，經常遇到的部份問題以及它們的解決方案。
   </para>
- </abstract>
+ </abstract></info>
+ <indexterm> <primary>開機</primary> <secondary>GRUB </secondary></indexterm><indexterm> <primary>GRUB</primary></indexterm>
+ 
  <note os="sles;sled">
   <title>使用 UEFI 的機器上未安裝 GRUB</title>
   <para>
@@ -45,7 +53,7 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </varlistentry>
  </variablelist>
- <sect1 id="sec-grub-basic">
+ <section xml:id="sec-grub-basic">
   <title>使用 GRUB 開機</title><indexterm> <primary>GRUB</primary><secondary>開機</secondary></indexterm><indexterm><primary>安裝</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>開機</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>設定</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>指令</primary><secondary>grub</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>指令</secondary></indexterm>
 
   <para>
@@ -111,7 +119,7 @@ Please see LICENSE.txt for this document's license.
    GRUB 事實上有兩個版本：一個是開機載入程式，一個是位於 <filename>/usr/sbin/grub</filename> 的一般 Linux 程式。後者稱為 <emphasis>GRUB 外圍程序</emphasis>。它可以在安裝系統中提供 GRUB 模擬功能，並可用來安裝 GRUB 或是在套用之前測試設定。這種將 GRUB 安裝成硬碟或磁片上的開機載入程式的功能，以指令 <command>setup</command> 的形式整合於 GRUB。Linux 載入時，可以在 GRUB 外圍程序使用此指令。
   </para>
 
-  <sect2 id="sec-grub-menu">
+  <section xml:id="sec-grub-menu">
    <title>檔案 <filename>/boot/grub/menu.lst</filename></title><indexterm> <primary>組態檔案</primary><secondary>menu.lst</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>開機功能表</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>menu.lst</secondary></indexterm>
    <para>
     圖形開頭顯示畫面以及開機功能表是以 GRUB 組態檔 <filename>/boot/grub/menu.lst</filename> 為基礎的，它包含可以透過功能表啟動的所有分割區或作業系統，全部的相關資訊。
@@ -147,7 +155,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     撰寫所有功能表項目之後，將其中一個定義為 <literal>default</literal> 項目。否則，會使用第一個 (項目 <literal>0</literal>) 做為預設項目。您也可以指定預設項目要在幾秒後啟動。<literal>timeout</literal> 和 <literal>default</literal> 通常在功能表項目前面。如需參考範例，請參閱<xref linkend="sec-grub-menu-example"/>。
    </para>
-   <sect3 id="sec-grub-devices">
+   <section xml:id="sec-grub-devices">
     <title>硬碟和分割區的命名慣例</title><indexterm> <primary>GRUB</primary><secondary>裝置名稱</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>分割區名稱</secondary></indexterm>
     <para>
      GRUB 用於硬碟和分割區的命名慣例與用於一般 Linux 裝置的命名慣例不同。它比較類似 BIOS 的簡易磁碟列舉方式，而且語法類似一些 BSD 衍生版本中所用的語法。在 GRUB 中，分割區的編號從 0 開始。這表示 (<filename>hd0,0</filename>) 是第一個硬碟的第一個分割區。與一般桌上型機器的 primary master 硬碟對應的 Linux 裝置名稱是 <filename>/dev/sda1</filename>。
@@ -171,32 +179,32 @@ Please see LICENSE.txt for this document's license.
      完整 GRUB 路徑包含放在括號中的裝置名稱，以及指定分割區中檔案系統的檔案路徑。路徑開頭是一個斜線。例如，如果系統有一個 PATA (IDE) 硬碟，它的第一個分割區包含 Linux，則可以使用如下方式指定可開機核心：
     </para>
 <screen>(hd0,0)/boot/vmlinuz</screen>
-   </sect3>
-   <sect3 id="sec-grub-menu-example">
+   </section>
+   <section xml:id="sec-grub-menu-example">
     <title>功能表檔案範例</title>
     <para>
      以下範例顯示 GRUB 功能表檔案的結構。這個範例安裝會在 <filename>/dev/sda5</filename> 下建立 Linux 開機分割區，在 <filename>/dev/sda7</filename> 下建立根分割區，在 <filename>/dev/sda1</filename> 下進行 Windows 安裝。
     </para>
     
-<screen>gfxmenu (hd0,4)/boot/message<co id="grub-menu-example-gfxmenu"/>
-color white/blue black/light-gray<co id="grub-menu-example-color"/>
-default 0<co id="grub-menu-example-default"/>
-timeout 8<co id="grub-menu-example-timeout"/>
+<screen>gfxmenu (hd0,4)/boot/message<co xml:id="grub-menu-example-gfxmenu"/>
+color white/blue black/light-gray<co xml:id="grub-menu-example-color"/>
+default 0<co xml:id="grub-menu-example-default"/>
+timeout 8<co xml:id="grub-menu-example-timeout"/>
 
-title linux<co id="grub-menu-example-linux"/>
+title linux<co xml:id="grub-menu-example-linux"/>
    root (hd0,4)
    kernel /boot/vmlinuz root=/dev/sda7 vga=791 resume=/dev/sda9
    initrd /boot/initrd
 
-title windows<co id="grub-menu-example-windows"/>
+title windows<co xml:id="grub-menu-example-windows"/>
    rootnoverify (hd0,0)
    chainloader +1
 
-title floppy<co id="grub-menu-example-floppy"/>
+title floppy<co xml:id="grub-menu-example-floppy"/>
    rootnoverify (hd0,0)
    chainloader (fd0)+1
 
-title failsafe<co id="grub-menu-example-failsafe"/>
+title failsafe<co xml:id="grub-menu-example-failsafe"/>
    root (hd0,4)
    kernel /boot/vmlinuz.shipped root=/dev/sda7 ide=nodma \
    apm=off acpi=off vga=normal nosmp maxcpus=0 3 noresume
@@ -254,8 +262,8 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     <para>
      功能表檔案可以在需要時變更。GRUB 會在下次啟動時使用修改的設定。使用 YaST 或選擇的編輯器，永久地編輯檔案。另一種方法是，使用 GRUB 的編輯功能，以互動方式暫時變更 (請參閱<xref linkend="sec-grub-menu-change"/>)。
     </para>
-   </sect3>
-   <sect3 id="sec-grub-menu-change">
+   </section>
+   <section xml:id="sec-grub-menu-change">
     <title>在開機程序期間編輯功能表項目</title><indexterm> <primary>GRUB </primary> <secondary>功能表編輯器</secondary></indexterm>
     <para>
      在圖形化開機功能表中，可以使用方向鍵選取要啟動的作業系統。如果選取 Linux 系統，可以在開機提示時輸入其他啟動參數。若要直接編輯個別功能表項目，請按 <keycap>Esc</keycap> 結束開頭顯示畫面，然後跳到 GRUB 文字功能表，再按 <keycap>E</keycap>。用此方式所做的變更，只會套用到目前開機，因此不會永久變更。
@@ -282,10 +290,10 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     <para>
      GRUB 會在下次啟動系統時，使用新參數。另一種方法是，使用 YaST 開機載入器模組進行這項變更。將新參數加入至現有的行，並用空格分開。
     </para>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-grub-map">
+  <section xml:id="sec-grub-map">
    <title>檔案 device.map</title><indexterm> <primary>GRUB </primary> <secondary>device.map</secondary></indexterm>
    <para>
     檔案 <filename>device.map</filename> 會將 GRUB 和 BIOS 裝置名稱對應至 Linux 裝置名稱。在包含 PATA (IDE) 和 SCSI 硬碟的混合系統中，GRUB 必須透過特定程序來確定開機順序，因為 GRUB 可能無法存取 BIOS 的開機順序資訊。GRUB 儲存分析的結果至檔案 <filename>/boot/grub/device.map</filename>。對於 BIOS 中的開機順序設定為 PATA 先於 SCSI 的系統，其範例 <filename>device.map</filename> 檔案如下所示︰
@@ -312,9 +320,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     在手動變更檔案 <filename>device.map</filename> 之後，請執行以下指令來重新安裝 GRUB。此指令會造成檔案 <filename>device.map</filename> 重新載入，並以 <filename>grub.conf</filename> 列示的指令執行：
    </para>
 <screen>grub --batch &lt; /etc/grub.conf</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-conf">
+  <section xml:id="sec-grub-conf">
    <title>檔案 /etc/grub.conf</title><indexterm> <primary>組態檔案</primary><secondary>grub.conf</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>grub.conf</secondary></indexterm><indexterm><primary>設定</primary><secondary>GRUB</secondary></indexterm>
    <para>
     除了 <filename>menu.lst</filename> 和 <filename>device.map</filename> 之外，第三重要的 GRUB 組態檔案是 <filename>/etc/grub.conf</filename>。此檔案包含 GRUB 外圍程序正確安裝開機載入程式時需要的指令、參數和選項：
@@ -324,9 +332,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
    <para>
     此指令會告知 GRUB 自動將開機載入程式安裝到第一個硬碟上的第二個分割區 (hd0,1)，安裝時使用位於同一個分割區上的開機影像。從已掛接的檔案系統安裝 <option>stage2</option> 影像時必須使用 <filename>--stage2=/boot/grub/stage2</filename> 參數。部分 BIOS 的 LBA 支援實作錯誤，<option>--force-lba</option> 提供了忽略這些錯誤的解決方案。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-sysconfig">
+  <section xml:id="sec-grub-sysconfig">
    <title>檔案 <filename>/etc/sysconfig/language</filename></title><indexterm> <primary>GRUB </primary> <secondary>sysconfig/bootloader</secondary></indexterm>
    <para>
     此組態檔案只在借助 YaST 設定開機載入程式時以及每次安裝新的核心時才使用。它可以由修改開機載入程式組態檔案 (例如 GRUB 中的 <filename>/boot/grub/menu.lst</filename>) 的 perl-bootloader 程式庫進行相應的評估。<filename>/etc/sysconfig/bootloader</filename> 不是特定於 GRUB 的組態檔案，其值會套用於 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 上安裝的任何開機載入程式。
@@ -542,9 +550,9 @@ title failsafe<co id="grub-menu-example-failsafe"/>
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-grub-password">
+  <section xml:id="sec-grub-password">
    <title>設定啟動密碼</title><indexterm> <primary>GRUB </primary> <secondary>開機密碼</secondary></indexterm>
    <para>
     即使是在作業系統開機之前，GRUB 也支援對檔案系統的存取。沒有 root 許可權的使用者，在此時可以存取 Linux 系統中的檔案 (這些檔案在系統啟動後，他們並無法存取)。若要封鎖此類型的存取，或防止使用者啟動特定的作業系統，請設定開機密碼。
@@ -559,7 +567,7 @@ title failsafe<co id="grub-menu-example-failsafe"/>
     按照以下方式，以使用者 <literal>root</literal> 的身分設定開機密碼：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       在 root 提示下，使用 grub-md5-crypt 將密碼加密：
      </para>
@@ -568,7 +576,7 @@ Password: ****
 Retype password: ****
 Encrypted: $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       將加密字串貼到檔案 <filename>menu.lst</filename> 的全域區段：
      </para>
@@ -581,7 +589,7 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
       現在，GRUB 指令只會在按 <keycap>P</keycap> 並輸入密碼後的開機提示中執行。不過，使用者仍然可以從開機功能表，啟動所有作業系統。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要防止一或多個作業系統從開機功能表啟動，將項目 <literal>lock</literal> 新增至沒有密碼便不可以啟動的 <filename>menu.lst</filename> 每一個段落。例如：
      </para>
@@ -598,11 +606,11 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_yast_i.xml" parse="xml"/>
- <sect1 id="sec-grub-entfernen">
+ <xi:include href="grub_yast_i.xml" parse="xml"/>
+ <section xml:id="sec-grub-entfernen">
   <title>解除安裝 Linux 開機載入程式</title><indexterm> <primary>解除安裝</primary><secondary>GRUB</secondary></indexterm><indexterm><primary>解除安裝</primary><secondary>Linux</secondary></indexterm><indexterm><primary>GRUB</primary><secondary>解除安裝</secondary></indexterm><indexterm><primary>Linux</primary><secondary>解除安裝</secondary></indexterm>
 
   <para>
@@ -612,9 +620,9 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
   <para>
    若要解除安裝 GRUB，請啟動 YaST，然後按一下<menuchoice><guimenu>系統</guimenu><guimenu>開機載入程式</guimenu> </menuchoice>以啟動開機載入程式模組。選取<menuchoice> <guimenu>其他</guimenu><guimenu>還原硬碟的 MBR</guimenu> </menuchoice>，並以<guimenu>是，重新寫入</guimenu>進行確認。
   </para>
- </sect1>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="grub_bootcd_i.xml" parse="xml"/>
- <sect1 id="sec-boot-screen">
+ </section>
+ <xi:include href="grub_bootcd_i.xml" parse="xml"/>
+ <section xml:id="sec-boot-screen">
   <title>圖形化 GRUB 畫面</title><indexterm> <primary>開機</primary><secondary>圖形</secondary></indexterm><indexterm><primary>主控台 </primary><secondary>圖形化</secondary></indexterm>
 
   <para>
@@ -653,12 +661,12 @@ password --md5 $1$lS2dv/$JOYcdxIn7CJk9xShzzJVw/</screen>
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-grub-probs">
+ </section>
+ <section xml:id="sec-grub-probs">
   <title>疑難排解</title><indexterm> <primary>GRUB</primary><secondary>疑難排解</secondary></indexterm>
 
   <para>
-   本節會介紹在使用 GRUB 開機時，經常遇到的問題以及可能解決方案的簡要說明。部份問題已經在<phrase os="sled;sles">知識庫 (網址為 <ulink url="http://www.suse.com/support"/>)</phrase> 的文章中做了說明。使用搜尋對話方塊尋找 <emphasis>GRUB</emphasis>、<emphasis>開機</emphasis>和<emphasis>開機載入程式</emphasis>這類的關鍵字。
+   本節會介紹在使用 GRUB 開機時，經常遇到的問題以及可能解決方案的簡要說明。部份問題已經在<phrase os="sled;sles">知識庫 (網址為 <link xlink:href="http://www.suse.com/support"/>)</phrase> 的文章中做了說明。使用搜尋對話方塊尋找 <emphasis>GRUB</emphasis>、<emphasis>開機</emphasis>和<emphasis>開機載入程式</emphasis>這類的關鍵字。
   </para>
 
   <variablelist>
@@ -711,12 +719,12 @@ title windows
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-grub-info">
+ </section>
+ <section xml:id="sec-grub-info">
   <title>更多資訊</title>
 
   <para>
-   如需關於 GRUB 更進一步的資訊，請參閱 <ulink url="http://www.gnu.org/software/grub/"/>。另請參閱 <command>grub</command> info 頁面。<phrase os="sles;sled">您也可以在「技術資訊搜尋」中搜尋關鍵字<quote>GRUB </quote>，取得關於特殊問題的資訊，網址是 <ulink url="http://www.novell.com/support"/>。</phrase>
+   如需關於 GRUB 更進一步的資訊，請參閱 <link xlink:href="http://www.gnu.org/software/grub/"/>。另請參閱 <command>grub</command> info 頁面。<phrase os="sles;sled">您也可以在「技術資訊搜尋」中搜尋關鍵字<quote>GRUB </quote>，取得關於特殊問題的資訊，網址是 <link xlink:href="http://www.novell.com/support"/>。</phrase>
   </para>
- </sect1>
+ </section>
 </chapter>

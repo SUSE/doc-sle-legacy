@@ -1,20 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter
+[
+   <!ENTITY % entities SYSTEM "entity-decl.ent">
+   %entities;
+]>
 
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN"
-"novdocx.dtd">
+
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="bootconcept.xml" id="cha-boot">
- <title>啟動及設定 Linux 系統</title><indexterm> <primary>開機</primary> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="bootconcept.xml" xml:id="cha-boot"><title>啟動及設定 Linux 系統</title><info><abstract>
   <para>
    啟動 Linux 系統涉及多個元件。硬體自身是由 BIOS 啟動的。BIOS 會藉由開機載入程式啟動核心。此後，關於 <systemitem>init</systemitem> 和執行層級的開機程序完全由作業系統控制。憑藉執行層級的概念，您可以保持日常使用的設定，以及對系統執行維護任務。
   </para>
- </abstract>
- <sect1 id="sec-boot-proc">
+ </abstract></info>
+ <indexterm> <primary>開機</primary> </indexterm>
+ 
+ <section xml:id="sec-boot-proc">
   <title>Linux 開機程序</title>
 
   <para>
@@ -64,7 +72,7 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </orderedlist>
 
-  <sect2 id="sec-boot-initrd">
+  <section xml:id="sec-boot-initrd">
    <title><systemitem>initramfs</systemitem></title>
    <para>
     <systemitem>initramfs</systemitem> 是一個小型 cpio 歸檔，可由核心載入 RAM 磁碟。在實際根檔案系統掛接之前，它提供可讓程式執行的最小 Linux 環境。BIOS 常式會將這個精簡的 Linux 環境載入記憶體，該環境只要求記憶體空間足夠大，此外沒有特定的硬體要求。<systemitem>initramfs</systemitem> 在任何情況下都必須提供一個名為 <systemitem>init</systemitem> 的可執行檔，由它來在根檔案系統上執行實際的 <systemitem>init</systemitem> 程式，如此開機程序才可繼續進行。
@@ -73,7 +81,7 @@ Please see LICENSE.txt for this document's license.
     在根檔案系統能夠掛接以及作業系統可以啟動之前，核心需要相應的驅動程式才能存取根檔案系統所在的裝置。這些驅動程式可能包含特定類型硬碟的特殊驅動程式，或者甚至包含存取網路檔案系統的網路驅動程式。<systemitem>initramfs</systemitem> 上的 <systemitem>init</systemitem> 可以載入根檔案系統所需的模組。當模組載入之後，<systemitem class="service">udev</systemitem> 便會為 <systemitem>initramfs</systemitem> 提供所需的裝置。在後來的開機程序中，變更根檔案系統後，必須重新產生這些裝置。結合使用 <filename>boot.udev</filename> 和指令 <command>udevtrigger</command> 可以實現此目的。
    </para><indexterm> <primary>開機</primary> <secondary>initramfs</secondary> </indexterm> <indexterm> <primary>開機</primary> <secondary>initrd</secondary> </indexterm> <indexterm> <primary>程序</primary> <secondary>mkinitrd</secondary> </indexterm>
    <para>
-    如果您要變更已安裝系統上的硬體 (例如硬碟)，而開機時此硬體需要核心中存在與原先不同的驅動程式，那麼您就必須更新 <systemitem>initramfs</systemitem>。此過程與更新其前任 (<systemitem>init</systemitem>) 一樣，需要透過呼叫 <command>mkinitrd</command> 來完成。如果不使用任何引數呼叫 <command>mkinitrd</command>，將會建立一個 <systemitem>initramfs</systemitem>。呼叫 <command>mkinitrd <option>-R</option></command> 則會建立一個 <systemitem>init</systemitem>。在 <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 上，<filename>/etc/sysconfig/kernel</filename> 中的變數 <systemitem>INITRD_MODULES</systemitem> 會指定要載入的模組。<indexterm> <primary>組態檔案</primary> <secondary>核心</secondary> </indexterm> 安裝之後，此變數會自動設定為正確值。模組會確實依據它們在 <systemitem>INITRD_MODULES</systemitem> 中出現的順序來載入。如果您不依賴於 <filename>/dev/sd?</filename> 裝置檔案的正確設定，這一點將無關緊要。不過，在目前系統中，您也可以使用 <filename>/dev/disk/</filename> 下以幾個不同子目錄分類的裝置檔案，這些子目錄的名稱為 <filename>by-id</filename>、<filename>by-path</filename> 和 <filename>by-uuid</filename>，這些目錄總是代表相同磁碟。在安裝時也可以透過指定相應的掛接選項來實現此目的。
+    如果您要變更已安裝系統上的硬體 (例如硬碟)，而開機時此硬體需要核心中存在與原先不同的驅動程式，那麼您就必須更新 <systemitem>initramfs</systemitem>。此過程與更新其前任 (<systemitem>init</systemitem>) 一樣，需要透過呼叫 <command>mkinitrd</command> 來完成。如果不使用任何引數呼叫 <command>mkinitrd</command>，將會建立一個 <systemitem>initramfs</systemitem>。呼叫 <command>mkinitrd</command> <option>-R</option> 則會建立一個 <systemitem>init</systemitem>。在 <phrase role="productname"><phrase os="sles">SUSE® Linux Enterprise Server</phrase></phrase> 上，<filename>/etc/sysconfig/kernel</filename> 中的變數 <systemitem>INITRD_MODULES</systemitem> 會指定要載入的模組。<indexterm> <primary>組態檔案</primary> <secondary>核心</secondary> </indexterm> 安裝之後，此變數會自動設定為正確值。模組會確實依據它們在 <systemitem>INITRD_MODULES</systemitem> 中出現的順序來載入。如果您不依賴於 <filename>/dev/sd?</filename> 裝置檔案的正確設定，這一點將無關緊要。不過，在目前系統中，您也可以使用 <filename>/dev/disk/</filename> 下以幾個不同子目錄分類的裝置檔案，這些子目錄的名稱為 <filename>by-id</filename>、<filename>by-path</filename> 和 <filename>by-uuid</filename>，這些目錄總是代表相同磁碟。在安裝時也可以透過指定相應的掛接選項來實現此目的。
    </para>
    <important>
     <title>更新 <systemitem>initramfs</systemitem> 或 <systemitem>init</systemitem></title>
@@ -81,9 +89,9 @@ Please see LICENSE.txt for this document's license.
      開機載入程式將採用與核心相同的方式載入 <systemitem>initramfs</systemitem> 或 <systemitem>init</systemitem>。更新 <systemitem>initramfs</systemitem> 或 <systemitem>init</systemitem> 之後不需要重新安裝 GRUB，因為開機時 GRUB 會在目錄中搜尋適當的檔案。
     </para>
    </important>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-boot-linuxrc">
+  <section xml:id="sec-boot-linuxrc">
    <title><systemitem>initramfs</systemitem> 上的 init</title>
    <para>
     <systemitem>initramfs</systemitem> 上的 <systemitem>init</systemitem> 主要用途是為掛接以及存取實際根檔案系統做好準備。根據您的系統組態，<systemitem>init</systemitem> 負責下列任務。
@@ -116,7 +124,7 @@ Please see LICENSE.txt for this document's license.
       </para>
      </listitem>
     </varlistentry>
-    <varlistentry id="ve-net">
+    <varlistentry xml:id="ve-net">
      <term>管理網路組態</term>
      <listitem>
       <para>
@@ -165,10 +173,10 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
- </sect1>
- <sect1 id="sec-boot-init">
-  <title><systemitem>init</systemitem> 程序</title><indexterm id="idx-init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
+  </section>
+ </section>
+ <section xml:id="sec-boot-init">
+  <title><systemitem>init</systemitem> 程序</title><indexterm xml:id="idx-init" class="startofrange"> <primary>init</primary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>inittab</secondary> </indexterm> <indexterm> <primary>init</primary> <secondary>inittab</secondary> </indexterm>
 
   <para>
    <systemitem>init</systemitem> 程式是第一個程序，它負責以所需的方式來啟始化系統。<systemitem>init</systemitem> 由核心直接啟動，它拒絕訊號 9，因為這個訊號通常會結束程序。所有其他程式不是由 <systemitem>init</systemitem> 直接啟動，就是由它的子程序啟動。
@@ -182,12 +190,12 @@ Please see LICENSE.txt for this document's license.
    系統啟動和關閉的程序，是由 <systemitem>init</systemitem> 維護。從這個角度看，核心可以視為一個背景程序，負責維護所有其他的程序，以及根據其他程式的要求來調整 CPU 時間和硬體存取。
   </para><indexterm class="endofrange" startref="idx-init"/>
 
-  <sect2 id="sec-boot-runlevel">
-   <title>執行層級</title><indexterm id="idx-runlevels" class="startofrange"> <primary>執行層級</primary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>inittab</secondary> </indexterm>
+  <section xml:id="sec-boot-runlevel">
+   <title>執行層級</title><indexterm xml:id="idx-runlevels" class="startofrange"> <primary>執行層級</primary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>inittab</secondary> </indexterm>
    <para>
     在 Linux 中是由<emphasis>執行層級</emphasis>定義啟動系統的方式，以及在所執行的系統可以使用哪些服務。開機之後，系統會按照 <filename>/etc/inittab </filename> 中的 <literal>initdefault</literal> 這一行文字的定義而啟動。一般是 <literal>3</literal> 或 <literal>5</literal>。請參閱<xref linkend="tab-boot-runlevel"/>。 還有一種方法是，執行層級可以在開機期間指定 (例如，在開機提示時新增執行層級編號)。所有不是由核心自身直接計算的參數，都會傳送至 <systemitem>init</systemitem>。要開機進入 runlevel 3，只需在開機提示處新增數字 3。
    </para>
-   <table id="tab-boot-runlevel">
+   <table xml:id="tab-boot-runlevel">
     <title>可用的 Runlevel</title>
     <tgroup cols="2">
      <thead>
@@ -354,16 +362,16 @@ Please see LICENSE.txt for this document's license.
    <warning>
     <title><filename>/etc/inittab</filename> 中有錯誤可能會造成系統開機發生錯誤</title>
     <para>
-     <indexterm> <primary>組態檔案</primary> <secondary>inittab</secondary> </indexterm> 如果 <filename>/etc/inittab</filename> 損毀，系統可能無法正常開機。因此，在編輯 <filename>/etc/inittab</filename> 時要格外小心。將機器重新開機前，請務必使用 <command>telinit <option>q</option></command> 指令讓 <systemitem>init</systemitem> 重新讀取 <filename>/etc/inittab</filename>。
+     <indexterm> <primary>組態檔案</primary> <secondary>inittab</secondary> </indexterm> 如果 <filename>/etc/inittab</filename> 損毀，系統可能無法正常開機。因此，在編輯 <filename>/etc/inittab</filename> 時要格外小心。將機器重新開機前，請務必使用 <command>telinit</command> <option>q</option> 指令讓 <systemitem>init</systemitem> 重新讀取 <filename>/etc/inittab</filename>。
     </para>
-   </warning><indexterm id="idx-runlevels-changing" class="startofrange"> <primary>執行層級</primary> <secondary>變更</secondary> </indexterm>
+   </warning><indexterm xml:id="idx-runlevels-changing" class="startofrange"> <primary>執行層級</primary> <secondary>變更</secondary> </indexterm>
    <para>
     通常，當您變更執行層級時會發生兩件事。首先，啟動目前執行層級中的停止程序檔，關閉對目前執行層級很重要的一些程式。然後啟動新執行層級的啟動程序檔。在大部份的情況下，此時也會啟動一些程式。例如，從執行層級 3 變更成 5 時，會發生以下事件：
    </para>
    <orderedlist spacing="normal">
     <listitem>
      <para>
-      管理員 (<systemitem class="username">root</systemitem>) 可以透過輸入 <command>telinit <option>5</option></command>，要求 <systemitem>init</systemitem> 變更為不同的執行層級。
+      管理員 (<systemitem class="username">root</systemitem>) 可以透過輸入 <command>telinit</command> <option>5</option>，要求 <systemitem>init</systemitem> 變更為不同的執行層級。
      </para>
     </listitem>
     <listitem>
@@ -385,10 +393,10 @@ Please see LICENSE.txt for this document's license.
    <para>
     變更成與目前 runlevel 相同的 runlevel 時，<systemitem>init</systemitem> 只會檢查 <filename>/etc/inittab</filename> 是否變更，並啟動適當的步驟，例如，在另一個介面啟動 <command>getty</command>。使用指令 <command>telinit q</command> 也可以完成相同功能。
    </para><indexterm class="endofrange" startref="idx-runlevels-changing"/><indexterm class="endofrange" startref="idx-runlevels"/>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-boot-init-skripte">
-   <title>Init 程序檔</title><indexterm id="idx-init-scripts" class="startofrange"> <primary>init</primary> <secondary>程序檔</secondary> </indexterm> <indexterm id="idx-scripts-init-d" class="startofrange"> <primary>程序檔</primary> <secondary>init.d</secondary> </indexterm>
+  <section xml:id="sec-boot-init-skripte">
+   <title>Init 程序檔</title><indexterm xml:id="idx-init-scripts" class="startofrange"> <primary>init</primary> <secondary>程序檔</secondary> </indexterm> <indexterm xml:id="idx-scripts-init-d" class="startofrange"> <primary>程序檔</primary> <secondary>init.d</secondary> </indexterm>
    <para>
     <filename>/etc/init.d</filename> 中的程序檔有兩種類型：
    </para>
@@ -415,7 +423,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     所有程序檔都位於 <filename>/etc/init.d</filename>。在開機時執行的程序檔會透過 <filename>/etc/init.d/boot.d</filename> 的符號連結來呼叫。用於變更執行層級的程序也可以透過其中一個子目錄 (<filename>/etc/init.d/rc0.d</filename> 到 <filename>/etc/init.d/rc6.d</filename>) 的符號連結來呼叫。這樣的安排是為了更加明確，避免程序檔用於多個執行層級時，造成重複情況。因為每一個程序檔都可當成啟動程序檔和停止程序檔來執行，所以這些程序檔必須瞭解參數 <option>start</option> 和 <option>stop</option>。程序檔也瞭解 <option>restart</option>、<option>reload</option>、<option>force-reload</option> 和 <option>status</option> 選項。這些不同選項在 <xref linkend="tab-boot-initscript-opt"/> 都有說明。直接由 <systemitem>init</systemitem> 執行的程序檔沒有這些連結。他們可以根據需要從執行層級獨立執行。
    </para>
-   <table id="tab-boot-initscript-opt">
+   <table xml:id="tab-boot-initscript-opt">
     <title>可用的 <systemitem>init</systemitem> 程序檔選項</title>
     <tgroup cols="2">
      <thead>
@@ -576,7 +584,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     上方的 <literal>INIT INFO</literal> 區塊是程序檔的必要組件，因此必須進行編輯。請參閱<xref linkend="aus-boot-init-skripte-add-initinfo"/>。
    </para>
-   <example id="aus-boot-init-skripte-add-initinfo">
+   <example xml:id="aus-boot-init-skripte-add-initinfo">
     <title>迷你 INIT INFO 區塊</title>
 <screen>### BEGIN INIT INFO
 # Provides:          FOO
@@ -591,7 +599,7 @@ Please see LICENSE.txt for this document's license.
     請在 <literal>INFO</literal> 區塊的第一行中、<literal>Provides:</literal> 後面，為此 init 程序檔所控制的程式或服務指定名稱。<systemitem/>在 <literal>Required-Start:</literal> 與 <literal>Required-Stop:</literal> 這兩行中，指定服務本身停止後仍必須處於執行狀態的所有服務。此資訊以後會用來產生程序檔名稱的編號，這些就是在執行層級目錄可以找到的編號。<literal>Default-Start:</literal> 和 <literal>Default-Stop:</literal> 之後，指定應該自動啟動或停止服務的執行層級。最後，會在 <literal>Description:</literal> 簡要說明討論中的服務。
    </para>
    <para>
-    若要從執行層級目錄 (<filename>/etc/init.d/rc?.d/</filename>) 建立對應到 <filename>/etc/init.d/</filename> 中的程序檔，請輸入 <command>insserv <replaceable>new-script-name</replaceable></command>指令。<command>insserv</command> 會根據 <literal>INIT INFO</literal> 標頭進行計算，在執行層級目錄 (<filename>/etc/init.d/rc?.d/</filename>) 中建立啟動和停止程序檔的必要連結。該程式也會為這些連結的名稱加上必要的編號，即可依正確順序啟動和停止每一個執行層級。如果您偏好以圖形工具來建立類似連結，請使用 YaST 提供的 runlevel 編輯器 (請參閱 <xref linkend="sec-boot-runlevel-edit"/>)。
+    若要從執行層級目錄 (<filename>/etc/init.d/rc?.d/</filename>) 建立對應到 <filename>/etc/init.d/</filename> 中的程序檔，請輸入 <command>insserv</command> <replaceable>new-script-name</replaceable>指令。<command>insserv</command> 會根據 <literal>INIT INFO</literal> 標頭進行計算，在執行層級目錄 (<filename>/etc/init.d/rc?.d/</filename>) 中建立啟動和停止程序檔的必要連結。該程式也會為這些連結的名稱加上必要的編號，即可依正確順序啟動和停止每一個執行層級。如果您偏好以圖形工具來建立類似連結，請使用 YaST 提供的 runlevel 編輯器 (請參閱 <xref linkend="sec-boot-runlevel-edit"/>)。
    </para>
    <para>
     如果 <filename>/etc/init.d/</filename> 裡已經有程序檔，應該整合至現有的 runlevel 配置，使用 insserv 在 runlevel 目錄中立即建立連結，或者在 YaST 的 runlevel 編輯器中啟用對應的服務。<command/>下次重新啟動時，將會套用您所做的變更 - 新服務會自動啟動。
@@ -599,9 +607,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     請勿手動設定這些連結。如果 <literal>INFO</literal> 區塊發生錯誤，稍後執行某些其他服務的 <command>insserv</command> 將會發生問題。手動新增的服務將會在下次為此程序檔執行 <command>insserv</command> 時予以移除。
    </para><indexterm class="endofrange" startref="idx-init-scripts"/><indexterm class="endofrange" startref="idx-scripts-init-d"/>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-boot-runlevel-edit">
+  <section xml:id="sec-boot-runlevel-edit">
    <title>使用 YaST 設定系統服務 (Runlevel)</title><indexterm> <primary>YaST</primary><secondary>執行層級</secondary></indexterm><indexterm><primary>執行層級</primary><secondary>在 YaST 編輯 </secondary></indexterm>
    <para>
     使用 <menuchoice><guimenu>YaST</guimenu><guimenu>系統</guimenu><guimenu>系統服務 (執行層級)</guimenu></menuchoice> 啟動 YaST 模組後，會出現一個概觀清單，其中會列出所有可用的服務和每個服務目前的狀態 (停用或啟用)。決定要以<guimenu>簡單模式</guimenu>或<guimenu>進階模式</guimenu>使用模組。大部份情況下，預設的<guimenu>簡單模式</guimenu>應該都已夠用。左欄顯示服務的名稱，中間欄顯示其目前狀態，而右欄提供簡短說明。視窗下方為選取的服務提供更詳細的說明。若要啟用服務，在表格中選取它，然後選取<guimenu>啟用</guimenu>。停用服務的步驟也一樣。
@@ -618,7 +626,7 @@ Please see LICENSE.txt for this document's license.
      錯誤的執行層級設定可能會導致系統無法使用。在您套用變更之前，請務必確定您知道它們的後果。
     </para>
    </warning>
-   <figure id="fig-yast2-runlevel">
+   <figure xml:id="fig-yast2-runlevel">
     <title>系統服務 (執行層級)</title>
     <mediaobject>
      <imageobject role="fo">
@@ -632,10 +640,10 @@ Please see LICENSE.txt for this document's license.
    <para>
     使用<guimenu>啟動、停止或重新整理</guimenu>，決定是否啟動服務。<guimenu>重新整理狀態</guimenu> 檢查目前狀態。您可以使用<guimenu>設定或重設</guimenu>來做選擇，將您的變更套用至系統，或復原啟動執行層級編輯器之前的設定。選取<guimenu>確定</guimenu>即可將變更的設定儲存至磁碟。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-boot-sysconfig">
-  <title>透過 <filename>/etc/sysconfig</filename> 設定系統組態</title><indexterm> <primary>組態</primary> </indexterm> <indexterm id="idx-scripts-SuSEconfig" class="startofrange"> <primary>程序檔</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm id="idx-configuration-files-sysconfig" class="startofrange"> <primary>組態檔</primary> <secondary>sysconfig</secondary> </indexterm>
+  </section>
+ </section>
+ <section xml:id="sec-boot-sysconfig">
+  <title>透過 <filename>/etc/sysconfig</filename> 設定系統組態</title><indexterm> <primary>組態</primary> </indexterm> <indexterm xml:id="idx-scripts-SuSEconfig" class="startofrange"> <primary>程序檔</primary> <secondary>SuSEconfig</secondary> </indexterm> <indexterm xml:id="idx-configuration-files-sysconfig" class="startofrange"> <primary>組態檔</primary> <secondary>sysconfig</secondary> </indexterm>
 
   <para>
    <filename>/etc/sysconfig</filename> 中的組態檔是控制 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise Server</phrase></phrase> 主要組態的檔案。<filename>/etc/sysconfig</filename> 中個別的檔案只由相關的程式檔讀取。這可以確保例如網路設定，只由網路相關的程序檔來剖析。
@@ -645,7 +653,7 @@ Please see LICENSE.txt for this document's license.
    有兩種方式可以編輯系統組態：使用 YaST Sysconfig 編輯器或手動編輯組態檔。
   </para>
 
-  <sect2 id="sec-boot-sysconfig-edit">
+  <section xml:id="sec-boot-sysconfig-edit">
    <title>使用 YaST Sysconfig 編輯器變更系統組態</title><indexterm> <primary>YaST</primary> <secondary>sysconfig 編輯器</secondary> </indexterm>
    <para>
     YaST sysconfig 編輯器會提供一個易於使用的前端工具，用於設定系統。假使您對要變更的組態變數實際位置不甚了解，您只要使用此模組內建的搜尋功能即可變更所需的組態變數值，接著 YaST 會套用這些變更、根據 <filename>sysconfig</filename> 中設定的值更新組態，然後重新啟動服務。
@@ -656,7 +664,7 @@ Please see LICENSE.txt for this document's license.
      如果您先前並無經驗和相關知識，請勿修改 <filename>/etc/sysconfig</filename> 檔案。它可能會嚴重損毀您的系統。/etc/sysconfig<filename> 中的檔案包含每一個變數的簡短註解，說明它們的實際作用。</filename>
     </para>
    </warning>
-   <figure id="fig-yast2-sysconfig">
+   <figure xml:id="fig-yast2-sysconfig">
     <title>使用 sysconfig 編輯器的系統組態</title>
     <mediaobject>
      <imageobject role="fo">
@@ -670,29 +678,29 @@ Please see LICENSE.txt for this document's license.
    <para>
     YaST Sysconfig 對話方塊分為三個部分。對話方塊的左側顯示所有可設定變數的樹狀結構檢視。當您選取變數時，右側會顯示目前的選擇，以及此變數的目前設定。下方的第三個視窗對變數的用途、可能值、預設值以及產生此變數的實際組態檔提供了簡短說明。對話方塊也提供關於變更變數後要執行的組態程序檔，以及變更結果會啟動什麼新服務等等的相關資訊。YaST 會要求您確認變更，並告訴您在選取<guimenu>完成</guimenu>並離開對話方塊後會執行的程序檔。請選取目前要略過的服務和程序檔，它們會在稍後啟動。為了讓變更生效，YaST 會自動套用所有變更並重新啟動已變更組態的服務。
    </para>
-  </sect2>
+  </section>
 
 <?dbfo-need height="20em"?>
 
 
 
-  <sect2 id="sec-boot-sysconfig-man">
+  <section xml:id="sec-boot-sysconfig-man">
    <title>手動變更系統組態</title>
    <para>
     若要手動變更系統組態，請執行下列步驟：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 使用者身分登入。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>telinit 1</command>，將系統置於單一使用者模式 (執行層級 1)。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用選擇的編輯器對組態檔進行所需變更。
      </para>
@@ -700,14 +708,14 @@ Please see LICENSE.txt for this document's license.
       如果未使用 YaST 來變更 <filename>/etc/sysconfig</filename> 中的組態檔，請確定空的變數值是由兩個引號所表示 (<systemitem>KEYTABLE=</systemitem><literal>""</literal>)，而且該值與其中的空格包括在引號中。由一個文字組成的值不需要包夾在引號中。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       執行 <command>SUSEconfig</command> 來確定變更生效。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      使用 <command>telinit <replaceable>預設 執行層級</replaceable></command> 指令，將系統還原成先前的執行層級。採用系統預設的執行層級來取代 <replaceable>default_runlevel</replaceable>。若要返回有網路和 X 的完整多重使用者模式，請選擇 <literal>5</literal>；若要在有網路的完整多重使用者模式下工作，請選擇 <literal>3</literal>。
+      使用 <command>telinit</command> <replaceable>預設 執行層級</replaceable> 指令，將系統還原成先前的執行層級。採用系統預設的執行層級來取代 <replaceable>default_runlevel</replaceable>。若要返回有網路和 X 的完整多重使用者模式，請選擇 <literal>5</literal>；若要在有網路的完整多重使用者模式下工作，請選擇 <literal>3</literal>。
      </para>
     </step>
    </procedure>
@@ -720,6 +728,6 @@ Please see LICENSE.txt for this document's license.
      <indexterm> <primary>程序檔</primary> <secondary>SuSEconfig</secondary> <tertiary>停用</tertiary> </indexterm> <indexterm> <primary>組態檔</primary> <secondary>suseconfig</secondary> </indexterm> 若要停用由 SuSEconfig 自動設定的系統組態，請將 <filename>/etc/sysconfig/suseconfig</filename> 中的 <systemitem>ENABLE_SUSECONFIG</systemitem> 變數設為 <literal>no</literal>。如果您想使用 SUSE 安裝支援，那麼請勿停用 SUSEconfig。也可以停用部分自動組態。
     </para>
    </tip><indexterm class="endofrange" startref="idx-scripts-SuSEconfig"/><indexterm class="endofrange" startref="idx-configuration-files-sysconfig"/>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>
