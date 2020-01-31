@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_config_gui.xml" id="cha-ha-configuration-gui">
- <title>クラスタリソースの設定と管理(GUI)</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_config_gui.xml" xml:id="cha-ha-configuration-gui"><?dbfo-need height="20em"?><?dbfo-need height="20em"?><title>クラスタリソースの設定と管理(GUI)</title><info><abstract>
   <para>
    この章では、Pacemaker GUIを紹介し、グローバルクラスタオプションの変更、基本的なリソースと高度なリソース(グループとクローン)の作成、制約の設定、フェールオーバーノードとフェールバックノードの指定、リソースモニタリングの設定、リソースの始動、クリーンアップ、または削除、および手動によるリソースの移行など、クラスタリソースの設定と管理に必要な基本的な作業について説明します。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <para>
   GUIのサポートは、2つのパッケージで提供されます。<systemitem class="resource">pacemaker-mgmt</systemitem>パッケージには、GUIのバックエンド(<systemitem class="daemon">mgmtd</systemitem>デーモン)が含まれています。このパッケージは、GUIで接続するすべてのクラスタノードにインストールする必要があります。GUIを実行するコンピュータには、<systemitem class="resource">pacemaker-mgmt-client</systemitem>パッケージをインストールします。
  </para>
@@ -27,17 +31,17 @@ Please see LICENSE.txt for this document's license.
    Pacemaker GUIを使用して、接続先の各ノードでこれを実行します。
   </para>
  </note>
-<?dbfo-need height="20em"?>
 
 
- <sect1 id="sec-ha-configuration-gui-intro">
+
+ <section xml:id="sec-ha-configuration-gui-intro">
   <title>Pacemaker GUI - 概要</title>
 
   <para>
    Pacemaker GUIを開始するには、コマンドラインに「<command>crm_gui</command>」と入力します。設定と管理のオプションにアクセスするには、クラスタにログインする必要があります。
   </para>
 
-  <sect2 id="sec-ha-configuration-gui-intro-connect">
+  <section xml:id="sec-ha-configuration-gui-intro-connect">
    <title>クラスタにログインする</title>
    <para>
     クラスタに接続するには、<menuchoice><guimenu>接続</guimenu><guimenu>ログイン</guimenu></menuchoice>の順に選択します。デフォルトでは、<guimenu>サーバ</guimenu>フィールドにローカルホストのIPアドレスと<systemitem>hacluster</systemitem>が<guimenu>ユーザ名</guimenu>として表示されています。ユーザのパスワードを入力して続行します。
@@ -56,13 +60,13 @@ Please see LICENSE.txt for this document's license.
    <para>
     Pacemaker GUIをリモートで実行している場合は、クラスタノードのIPアドレスを<guimenu>サーバ</guimenu>として入力します。<guimenu>ユーザ名</guimenu>に、<systemitem>haclient</systemitem>グループに属する他の任意のユーザ使用して、クラスタに接続することもできます。
    </para>
-  </sect2>
+  </section>
 
 <?dbfo-need height="20em"?>
 
 
 
-  <sect2 id="sec-ha-configuration-gui-intro-main">
+  <section xml:id="sec-ha-configuration-gui-intro-main">
    <title>メインウィンドウ</title>
    <para>
     接続後、メインウィンドウが開きます。
@@ -134,9 +138,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     以降のセクションでは、クラスタオプションとリソースの設定時に必要な主要作業について説明し、Pacemaker GUIでリソースを管理する方法を示します。特に説明されない限り、ステップバイステップの説明は、簡易モードで実行される手順を反映しています。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-gui-global">
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-gui-global">
   <title>グローバルクラスタオプションの設定</title>
 
   <para>
@@ -156,29 +160,29 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </itemizedlist>
 
-  <procedure id="pro-ha-config-gui-global">
+  <procedure xml:id="pro-ha-config-gui-global">
    <title>グローバルクラスタオプションを変更する</title>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <menuchoice><guimenu>表示</guimenu><guimenu>簡易モード</guimenu></menuchoice>の順に選択します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      左ペインで、<guimenu>CRM Config</guimenu>を選択して、グローバルクラスタオプションとそれらの現在の値を表示します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      クラスタ要件に応じて、<guimenu>クォーラムなしポリシー</guimenu>を適切な値に設定します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      なんらかの理由でフェンシングを無効にする必要がある場合は、<guimenu>stonith-enabled</guimenu>の選択を解除します。
     </para>
@@ -189,7 +193,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </important>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>適用</guimenu>をクリックして、変更を確認します。
     </para>
@@ -199,11 +203,11 @@ Please see LICENSE.txt for this document's license.
   <para>
    左ペインの<guimenu>CRM Config</guimenu>を選択して<guimenu>デフォルト</guimenu>をクリックすると、すべてのオプションを、いつでもデフォルト値に戻すことができます。
   </para>
- </sect1>
-<?dbfo-need height="20em"?>
+ </section>
 
 
- <sect1 id="sec-ha-config-gui-resources">
+
+ <section xml:id="sec-ha-config-gui-resources">
   <title>クラスタリソースの設定</title>
 
   <para>
@@ -214,44 +218,44 @@ Please see LICENSE.txt for this document's license.
    作成できるリソースタイプの概要については、<xref linkend="sec-ha-config-basics-resources-types"/>を参照してください。
   </para>
 
-  <sect2 id="sec-ha-configuration-create">
+  <section xml:id="sec-ha-configuration-create">
    <title>単純なクラスタリソースの作成</title>
    <para>
     最も基本的なタイプのリソースを作成するには、次の手順に従います。
    </para>
-   <procedure id="pro-ha-config-gui-primitives">
+   <procedure xml:id="pro-ha-config-gui-primitives">
     <title>プリミティブリソースを追加する</title>
-    <step id="st-ha-configuration-create-start" performance="required">
+    <step xml:id="st-ha-configuration-create-start">
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで、<guimenu>リソース</guimenu>を選択し、<menuchoice> <guimenu>追加</guimenu><guimenu>プリミティブ</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のダイアログで、リソースに次のようなパラメータを設定します。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         リソースに固有の<guimenu>ID</guimenu>を入力します。
        </para>
       </step>
-      <step id="step-ha-config-gui-primitives-start" performance="required">
+      <step xml:id="step-ha-config-gui-primitives-start">
        <para>
         <guimenu>クラス</guimenu>リストから、そのリソースに使用するリソースエージェントクラスを選択します。<guimenu>lsb</guimenu>、<guimenu>ocf</guimenu>、<guimenu>service</guimenu>、または<guimenu>stonith</guimenu>を選択できます。 詳細については、<xref linkend="sec-ha-config-basics-raclasses"/>を参照してください。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>ocf</guimenu>をクラスとして選択した場合、OCFリソースエージェントの<guimenu>プロバイダ</guimenu>も指定します。OCFの指定によって、複数のベンダが同じリソースエージェントを提供できるようになります。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>タイプ</guimenu>リストから、使用するリソースエージェントを選択します(たとえば<guimenu>IPaddr</guimenu>または<guimenu>Filesystem</guimenu>)。このリソースエージェントの簡単な説明を次に表示します。
        </para>
@@ -259,12 +263,12 @@ Please see LICENSE.txt for this document's license.
         <guimenu>タイプ</guimenu>リストに表示される選択肢は、選択した<guimenu>クラス</guimenu>(OCFリソースの場合は、<guimenu>プロバイダ</guimenu>も)によって異なります。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>オプション</guimenu>の下で、<guimenu>Initial state of resource (リソースの当初の状態)</guimenu>を設定します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         リソースのヘルスが維持されているかどうかをクラスタに監視させる場合は、<guimenu>Add monitor operation(モニタ操作の追加)</guimenu>を有効にします。
        </para>
@@ -281,12 +285,12 @@ Please see LICENSE.txt for this document's license.
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>進む</guimenu>をクリックします。次のウィンドウには、そのリソースに定義したパラメータのサマリが表示されます。そのリソースに必要なすべての<guimenu>Instance Attributes (インスタンス属性)</guimenu>が一覧が表示されます。適切な値に設定するには、編集する必要があります。展開や設定によっては、属性の追加が必要な場合もあります。詳細については<xref linkend="pro-ha-config-gui-parameters"/>を参照してください。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>適用</guimenu>をクリックして、そのリソースの設定を完了します。環境設定ダイアログが閉じて、メインウィンドウに新しく追加されたリソースが表示されます。
      </para>
@@ -312,14 +316,14 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <procedure id="pro-ha-config-gui-parameters">
+   <procedure xml:id="pro-ha-config-gui-parameters">
     <title>メタ属性およびインスタンス属性を追加または変更する</title>
-    <step performance="required">
+    <step>
      <para>
       Pacemaker GUIのメインウィンドウの左側のペインで、<guimenu>リソース</guimenu>をクリックして、そのクラスタに設定されているリソースを表示します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右側のペインで、変更するリソースを選択し、<guimenu>編集</guimenu>をクリックします(またはリソースをダブルクリックします)。次のウィンドウには、そのリソースに定義された基本的なリソースパラメータと<guimenu>メタ属性</guimenu>、<guimenu>インスタンス属性</guimenu>、または<guimenu>操作</guimenu>が表示されます。
      </para>
@@ -334,27 +338,27 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       新しいメタ属性またはインスタンス属性を追加するには、該当するタブを選択して<guimenu>追加</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       追加する属性の<guimenu>名前</guimenu>を選択します。短い<guimenu>説明</guimenu>が表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       必要に応じて、属性の<guimenu>値</guimenu>を指定します。指定しなければ、その属性のデフォルト値が使用されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>OK</guimenu>をクリックして変更を確認します。新しく追加または変更された属性がタブに表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>OK</guimenu>をクリックして、そのリソースの設定を完了します。環境設定ダイアログが閉じ、メインウィンドウに変更済みのリソースが表示されます。
      </para>
@@ -372,9 +376,9 @@ Please see LICENSE.txt for this document's license.
      XMLコードを表示しているエディタで、XML要素を<guimenu>インポート</guimenu>または<guimenu>エクスポート</guimenu>、あるいは手動でXMLコードを編集することができます。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-stonith">
+  <section xml:id="sec-ha-configuration-stonith">
    <title>STONITHリソースの作成</title>
    <important>
     <title>STONITHがない場合はサポートなし</title>
@@ -385,56 +389,56 @@ Please see LICENSE.txt for this document's license.
    <para>
     デフォルトでは、グローバルクラスタオプション<literal>stonith-enabled</literal>は<literal>true</literal>に設定されています。STONITHリソースが定義されていない場合、クラスタはどのリソースの開始も拒否します。STONITHのセットアップを完了するには、1つ以上のSTONITHリソースを構成する必要があります。STONITHは他のリソースと同様に設定しますが、その動作はいくつかの点で異なっています。詳細については、<xref linkend="sec-ha-fencing-config"/>を参照してください。
    </para>
-   <procedure id="pro-ha-config-gui-stonith">
+   <procedure xml:id="pro-ha-config-gui-stonith">
     <title>STONITHリソースの追加</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで、<guimenu>リソース</guimenu>を選択し、<menuchoice> <guimenu>追加</guimenu><guimenu>プリミティブ</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のダイアログで、リソースに次のようなパラメータを設定します。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         リソースに固有の<guimenu>ID</guimenu>を入力します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>クラス</guimenu>リストで、リソースエージェントクラスとして<guimenu>stonith</guimenu>を選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>タイプ</guimenu>リストから、使用しているSTONITHデバイスのSTONITHプラグインを選択します。このプラグインの簡単な説明が下に表示されます。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>オプション</guimenu>の下で、<guimenu>Initial state of resource (リソースの当初の状態)</guimenu>を設定します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         クラスタにフェンシングデバイスの監視を行わせたい場合は、<guimenu>Add monitor operation (監視操 の追加)</guimenu>を起動します。詳細については、<xref linkend="sec-ha-fencing-monitor"/>を参照してください。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>進む</guimenu>をクリックします。次のウィンドウには、そのリソースに定義したパラメータのサマリが表示されます。選択したSTONITHプラグインに必要なすべての<guimenu>インスタンス属性</guimenu>が一覧に表示されます。適切な値に設定するには、編集する必要があります。展開と設定によっては、監視操作のための属性を追加しなければならない場合もあります。詳細については、<xref linkend="pro-ha-config-gui-parameters"/>および<xref linkend="sec-ha-configuration-monitor"/>を参照してください。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>適用</guimenu>をクリックして、そのリソースの設定を完了します。環境設定ダイアログが閉じて、メインウィンドウに新しく追加されたリソースが表示されます。
      </para>
@@ -443,90 +447,90 @@ Please see LICENSE.txt for this document's license.
    <para>
     フェンシングを設定するには、制約の追加とクローンの使用のいずれか、またはその両方を行います。詳細については、<xref linkend="cha-ha-fencing"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-config-gui-templates">
+  <section xml:id="sec-ha-config-gui-templates">
    <title>リソーステンプレートの使用</title>
    <para>
     類似した設定のリソースを複数作成する最も簡単な方法は、リソーステンプレートを定義することです。リソーステンプレートを定義しておくと、プリミティブの中や、特定のタイプの制約で参照できるようになります。リソーステンプレートの機能と使用方法の詳細については、<xref linkend="sec-ha-config-basics-constraints-templates"/>を参照してください。
    </para>
-   <procedure id="pro-ha-config-gui-templates-create">
-    <step performance="required">
+   <procedure xml:id="pro-ha-config-gui-templates-create">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで、<guimenu>リソース</guimenu>を選択し、<menuchoice> <guimenu>追加</guimenu><guimenu>テンプレート</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       テンプレートに固有の<guimenu>ID</guimenu>を入力します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       プリミティブを指定するリソーステンプレートを指定します。<xref linkend="pro-ha-config-gui-primitives" xrefstyle="select:label title nopage"/>に従って、<xref linkend="step-ha-config-gui-primitives-start" xrefstyle="select:label"/>を開始します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>適用</guimenu>をクリックしてリソーステンプレートの設定を完了します環境設定ダイアログが閉じて、メインウィンドウに新しく追加されたリソーステンプレートが表示されます。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-config-gui-templates-use">
+   <procedure xml:id="pro-ha-config-gui-templates-use">
     <title>リソーステンプレートの参照</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       新しく作成したリソーステンプレートをプリミティブで参照するには、次の手順に従います。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         左側のペインで、<guimenu>リソース</guimenu>を選択し、<menuchoice> <guimenu>追加</guimenu><guimenu>プリミティブ</guimenu></menuchoice>の順にクリックします。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         固有の<guimenu>ID</guimenu>を入力して、<guimenu>クラス</guimenu>、<guimenu>プロバイダ</guimenu>、および<guimenu>タイプ</guimenu>を指定します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         参照する<guimenu>テンプレート</guimenu>を選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         テンプレートのものとは異なる特定のインスタンス属性、操作またはメタ属性を設定する場合には、<xref linkend="pro-ha-config-gui-primitives"/>で説明した方法で、リソースの設定を継続します。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       新しく作成したリソーステンプレートをコロケーションまたは順序の制約で参照するには
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         制約を<xref linkend="pro-ha-config-gui-constraints-collocation"/>または<xref linkend="pro-ha-config-gui-constraints-order"/>でそれぞれ説明した方法で設定します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         コロケーション制約の場合には、<guimenu>リソース</guimenu>ドロップダウンリストに、設定されたすべてのリソースとリソーステンプレートのIDが表示されます。参照するテンプレートを選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         同様に、順序の制約の場合には、<guimenu>最初</guimenu>および<guimenu>次</guimenu>ドロップダウンリストに、リソースとリソーステンプレートの両方が表示されます。参照するテンプレートを選択します。
        </para>
@@ -534,9 +538,9 @@ Please see LICENSE.txt for this document's license.
      </substeps>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-constraints">
+  <section xml:id="sec-ha-configuration-constraints">
    <title>リソース制約の設定</title>
    <para>
     すべてのリソースを設定する以外にも、多くの作業が必要です。クラスタが必要なすべてのリソースを認識しても、正しく処理できるとは限りません。リソースの制約を指定して、リソースを実行可能なクラスタノード、リソースのロード順序、特定のリソースが依存している他のリソースを指定することができます。
@@ -550,45 +554,45 @@ Please see LICENSE.txt for this document's license.
 <?dbfo-need height="20em"?>
 
 
-   <procedure id="pro-ha-config-gui-constraints-location">
+   <procedure xml:id="pro-ha-config-gui-constraints-location">
     <title>場所の制約を追加または変更する</title>
-    <step id="step-ha-configuration-constraints-start" performance="required">
+    <step xml:id="step-ha-configuration-constraints-start">
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Pacemaker GUIのメインウィンドウの左側のペインで、<guimenu>制約</guimenu>をクリックして、そのクラスタに設定されている制約を表示します。
      </para>
     </step>
-    <step id="step-ha-configuration-constraints-stop" performance="required">
+    <step xml:id="step-ha-configuration-constraints-stop">
      <para>
       左側のペインで<guimenu>制約</guimenu>を選択し、<guimenu>追加</guimenu>をクリックします。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>Resource Location (リソース位置)</guimenu>を選択し、<guimenu>OK</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       制約に固有の<guimenu>ID</guimenu>を入力します。既存の制約を変更する場合、IDはすでに定義されているため、環境設定ダイアログに表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       制約を設定する<guimenu>リソース</guimenu>を選択します。リストには、そのクラスタに設定されているすべてのリソースのIDが表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       制約の<guimenu>Score (スコア)</guimenu>を設定します。正の値は、下で指定した<guimenu>ノード</guimenu>でリソースを実行できることを示します。負の値は、リソースをこのノードで実行すべきではないことを示します。スコアを<literal>INFINITY</literal>に設定すれば、リソースはこのノードで実行されるように強制されます。<literal>-INFINITY</literal>に設定すれば、リソースはそのノードで実行してはならないことになります。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       制約を設定する<guimenu>ノード</guimenu>を選択します。
      </para>
@@ -603,47 +607,47 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       
       <guimenu>ノード</guimenu>および<guimenu>Score (スコア)</guimenu>フィールドを空のままにしておくと、<menuchoice><guimenu>追加</guimenu><guimenu>ルール</guimenu></menuchoice>の順にクリックしてルールを追加することもできます。有効期間を追加するには、<menuchoice><guimenu>追加</guimenu><guimenu>有効期間</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおり設定されたら、<guimenu>OK</guimenu>をクリックして、制約の設定を完了します。環境設定ダイアログが閉じて、メインウィンドウに新しく追加または変更された制約が表示されます。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-config-gui-constraints-collocation">
+   <procedure xml:id="pro-ha-config-gui-constraints-collocation">
     <title>コロケーション制約を追加または変更する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Pacemaker GUIのメインウィンドウの左側のペインで、<guimenu>制約</guimenu>をクリックして、そのクラスタに設定されている制約を表示します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで<guimenu>制約</guimenu>を選択し、<guimenu>追加</guimenu>をクリックします。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>Resource Colocation (リソースのコロケーション)</guimenu>を選択し、<guimenu>OK</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       制約に固有の<guimenu>ID</guimenu>を入力します。既存の制約を変更する場合、IDはすでに定義されているため、環境設定ダイアログに表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       コロケーションソースとなる<guimenu>リソース</guimenu>を選択します。リストには、そのクラスタに設定されているすべてのリソースとリソーステンプレートのIDが表示されます。
      </para>
@@ -651,23 +655,23 @@ Please see LICENSE.txt for this document's license.
       制約が満たされないと、クラスタはリソースがまったく実行しないようにすることがあります。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       
       <guimenu>リソース</guimenu>と<guimenu>With Resource (対象リソース)</guimenu>フィールドを両方とも空のままにしておくと、<menuchoice><guimenu>追加</guimenu><guimenu>リソースセット</guimenu></menuchoice>の順にクリックしてリソースを追加することもできます。有効期間を追加するには、<menuchoice><guimenu>追加</guimenu><guimenu>有効期間</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>With Resource (対象リソース)</guimenu>には、コロケーション先を定義します。クラスタはこのリソースの配置先を最初に決定し、次に<guimenu>リソース</guimenu>フィールドのリソースを配置する場所を決定します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>Score (スコア)</guimenu>を定義して、両方のリソース間の位置関係を決定します。正の値は、リソースを同じノードで実行するべきであることを示します。負の値は、リソースを同じノードで実行するべきではないことを示します。スコアを<literal>INFINITY</literal>に設定すれば、リソースは同じノードで実行されるように強制されます。<literal>-INFINITY</literal>に設定すれば、リソースは同じノードで実行してはならないことになります。スコアと他の要因との組み合わせによって、ノードの配置先が決定します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       必要に応じて、<guimenu>Resource Role (リソース役割)</guimenu>などの追加のパラメータも指定します。
      </para>
@@ -675,46 +679,46 @@ Please see LICENSE.txt for this document's license.
       選択したパラメータとオプションに応じて、短い<guimenu>説明</guimenu>が表示され、設定しているコロケーション制約の効果を確認できます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおり設定されたら、<guimenu>OK</guimenu>をクリックして、制約の設定を完了します。環境設定ダイアログが閉じて、メインウィンドウに新しく追加または変更された制約が表示されます。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-config-gui-constraints-order">
+   <procedure xml:id="pro-ha-config-gui-constraints-order">
     <title>順序の制約を追加または変更する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Pacemaker GUIのメインウィンドウの左側のペインで、<guimenu>制約</guimenu>をクリックして、そのクラスタに設定されている制約を表示します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで<guimenu>制約</guimenu>を選択し、<guimenu>追加</guimenu>をクリックします。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>Resource Order (リソース順序)</guimenu>を選択し、<guimenu>OK</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       制約に固有の<guimenu>ID</guimenu>を入力します。既存の制約を変更する場合、IDはすでに定義されているため、環境設定ダイアログに表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>最初</guimenu>では、<guimenu>次</guimenu>で指定するリソースの開始前に開始するリソースを定義します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>次</guimenu>では、<guimenu>最初</guimenu>のリソースより後に開始するリソースを定義します。
      </para>
@@ -722,24 +726,24 @@ Please see LICENSE.txt for this document's license.
       選択したパラメータとオプションに応じて、短い<guimenu>説明</guimenu>が表示され、設定している順序の制約の効果を確認できます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       必要な場合は、さらにパラメータを定義します。たとえば、次のように定義します。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         <guimenu>スコア</guimenu>でスコアを指定します。制約は、ゼロより大きい場合は必須になりますが、そうでない場合はアドバイスにすぎません。デフォルト値は、<literal>INFINITY</literal>です。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>シンメトリック</guimenu>の値を指定します。<literal>true</literal>を指定した場合は、リソースが逆の順序で停止されます。デフォルト値は、<literal>true</literal>です。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおり設定されたら、<guimenu>OK</guimenu>をクリックして、制約の設定を完了します。環境設定ダイアログが閉じて、メインウィンドウに新しく追加または変更された制約が表示されます。
      </para>
@@ -759,9 +763,9 @@ Please see LICENSE.txt for this document's license.
      </imageobject>
     </mediaobject>
    </figure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-failover">
+  <section xml:id="sec-ha-configuration-failover">
    <title>リソースフェールオーバーノードの指定</title>
    <para>
     リソースに障害が発生すると、自動的に再起動されます。現在のノードで再起動できない場合、または現在のノードでN回失敗した場合は、別のノードへのフェールオーバーが試行されます。新しいノードへのマイグレートを行う基準(<literal>migration-threshold</literal>)となるリソースの失敗数を定義できます。クラスタ内に3つ以上ノードがある場合、特定のリソースのフェールオーバー先のノードはHigh Availabilityソフトウェアが選択します。
@@ -769,24 +773,24 @@ Please see LICENSE.txt for this document's license.
    <para>
     ただし、次の手順を実行すると、リソースのフェールオーバー先のノードを指定できます。
    </para>
-   <procedure id="pro-ha-config-gui-failover">
-    <step performance="required">
+   <procedure xml:id="pro-ha-config-gui-failover">
+    <step>
      <para>
       <xref linkend="pro-ha-config-gui-constraints-location"/>に記載の手順に従って、そのリソースの場所の制約を設定します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-config-gui-parameters"/>に記載の手順に従って、<literal>migration-threshold</literal>メタ属性をそのリソースに追加し、マイグレーションしきい値の<guimenu>値</guimenu>を入力します。INFINITY未満の正の値を指定する必要があります。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースの失敗回数を自動的に失効させる場合は、<xref linkend="pro-ha-config-gui-parameters"/>に記載の手順に従って<literal>failure-timeout</literal>メタ属性をそのリソースに追加し、失敗タイムアウトの<guimenu>値</guimenu>を入力します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースの初期設定として、追加のフェールオーバーノードを指定する場合は、追加の場所の制約を作成します。
      </para>
@@ -798,9 +802,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     リソースの失敗回数は、自動的に期限切れにする代わりに、いつでも、手動でクリーンアップすることもできます。詳細については、<xref linkend="sec-ha-configuration-cleanup"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-failback">
+  <section xml:id="sec-ha-configuration-failback">
    <title>リソースフェールバックノードの指定(リソースの固着性)</title>
    <para>
     ノードがオンライン状態に戻り、クラスタ内にある場合は、リソースが元のノードにフェールバックすることがあります。フェールオーバー前にリソースを実行していたノードにリソースをフェールバックさせたくない場合や、リソースのフェールバック先として別のノードを指定する場合は、リソースの固着性の値を変更する必要があります。リソースの固着性は、リソースの作成時でも、その後でも指定できます。
@@ -811,9 +815,9 @@ Please see LICENSE.txt for this document's license.
 <?dbfo-need height="20em"?>
 
 
-   <procedure id="pro-ha-config-gui-stickiness">
+   <procedure xml:id="pro-ha-config-gui-stickiness">
     <title>リソースの固着性を指定する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-config-gui-parameters"/>に従って、<literal>resource-stickiness</literal>メタ属性をリソースに追加します。
      </para>
@@ -828,15 +832,15 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       resource-stickinessの<guimenu>値</guimenu>として、<literal>-INFINITY</literal>から<literal>INFINITY</literal>の範囲の値を指定します。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-utilization">
+  <section xml:id="sec-ha-configuration-utilization">
    <title>負荷インパクトに基づくリソース配置の設定</title>
    <para>
     すべてのリソースが同等ではありません。Xenゲストなどの一部のリソースでは、そのホストであるノードがリソースの容量要件を満たす必要があります。リソースの組み合わされたニーズが提供された容量より大きくなるようにリソースが配置されると、リソースのパフォーマンスが低下します(あるいは失敗することさえあります)。
@@ -867,66 +871,66 @@ Please see LICENSE.txt for this document's license.
    <para>
     リソースの要件とノードが提供する容量を手動で設定するには、<xref linkend="pro-ha-config-gui-capacity"/>の手順に従ってください。使用属性に任意の名前を付け、設定に必要なだけ名前/値のペアを定義します。
    </para>
-   <procedure id="pro-ha-config-gui-capacity">
+   <procedure xml:id="pro-ha-config-gui-capacity">
     <title>使用属性を追加または変更する</title>
     <para>
      次の例では、クラスタのノードとリソースの基本設定がすでに完了しているところへ、さらに、一定のノードが提供する容量と一定のリソースが必要とする容量の設定を行う場合を想定しています。使用属性の追加手順は、基本的に同じであり、異なるのは<xref linkend="step-ha-config-gui-capacity-node"/>と<xref linkend="step-ha-config-gui-capacity-resource"/>だけです。
     </para>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step id="step-ha-config-gui-capacity-node" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-node">
      <para>
       ノードが<emphasis>提供する</emphasis>容量を指定するには、次の手順に従います。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         左ペインで、<guimenu>ノード</guimenu>をクリックします。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         右ペインで、容量を設定するノードを選択し、<guimenu>編集</guimenu>をクリックします。
        </para>
       </step>
      </substeps>
     </step>
-    <step id="step-ha-config-gui-capacity-resource" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-resource">
      <para>
       リソースが<emphasis>要求する</emphasis>容量を指定するには、次の手順に従います。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         左ペインで、<guimenu>リソース</guimenu>をクリックします。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         右ペインで、容量を設定するリソースを選択して、<guimenu>編集</guimenu>をクリックします。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>使用</guimenu>タブを選択し、<guimenu>追加</guimenu>をクリックして使用属性を追加します。
      </para>
     </step>
-    <step id="step-ha-config-gui-capacity-attr-name" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-attr-name">
      <para>
       新しい属性の<guimenu>名前</guimenu>を入力します。使用属性には、好きな名前を付けることができます。
      </para>
     </step>
-    <step id="step-ha-config-gui-capacity-attr-value" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-attr-value">
      <para>
       属性の<guimenu>値</guimenu>を入力し、<guimenu>OK</guimenu>をクリックします。属性値は整数にする必要があります。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用属性をさらに追加する場合は、<xref linkend="step-ha-config-gui-capacity-attr-name"/>から<xref linkend="step-ha-config-gui-capacity-attr-value"/>まで繰り返します。
      </para>
@@ -934,7 +938,7 @@ Please see LICENSE.txt for this document's license.
       <guimenu>使用</guimenu>タブに、そのノードまたはリソースに定義した使用属性の要約が表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが望みどおりに設定されたら、<guimenu>OK</guimenu>をクリックして、設定ダイアログを閉じます。
      </para>
@@ -943,7 +947,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     <xref linkend="fig-ha-config-gui-capacit-node"/>は、8つのCPUユニットと16GBのメモリを、そのノードで実行中のリソースに提供するノードの設定を示しています。
    </para>
-   <figure id="fig-ha-config-gui-capacit-node">
+   <figure xml:id="fig-ha-config-gui-capacit-node">
     <title>ノード容量の設定例</title>
     <mediaobject>
      <imageobject role="fo">
@@ -957,7 +961,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     たとえば、ノードの4096メモリ単位と4つのCPUユニットを必要とするリソースの設定例は、次のようになります。
    </para>
-   <figure id="fig-ha-config-gui-capacit-resource">
+   <figure xml:id="fig-ha-config-gui-capacit-resource">
     <title>リソース容量の設定例</title>
     <mediaobject>
      <imageobject role="fo">
@@ -971,68 +975,68 @@ Please see LICENSE.txt for this document's license.
    <para>
     ノードが提供する容量とリソースが要求する容量を(手動または自動で)設定した後、グローバルクラスタオプションで配置ストラテジを設定する必要があります。これを設定しないと、容量の設定は有効になりません。負荷のスケジュールに使用できるストラテジがいくつかあります。たとえば、負荷をできるだけ少ない数のノードに集中したり、使用可能なすべてのノードに均等に分散できます。詳細については、<xref linkend="sec-ha-config-basics-utilization"/>を参照してください。
    </para>
-   <procedure id="pro-ha-config-gui-placement">
+   <procedure xml:id="pro-ha-config-gui-placement">
     <title>配置ストラテジを設定する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <menuchoice><guimenu>表示</guimenu><guimenu>簡易モード</guimenu></menuchoice>の順に選択します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>CRM Config</guimenu>を選択して、グローバルクラスタオプションとそれらの現在の値を表示します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要件に応じて、<guimenu>配置ストラテジ</guimenu>を適切な値に設定します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       何らかの理由でフェンシングを無効にする必要がある場合は、<literal>Stonith Enabled</literal>の選択を解除します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>適用</guimenu>をクリックして、変更を確認します。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
 <?dbfo-need height="20em"?>
 
 
 
-  <sect2 id="sec-ha-configuration-monitor">
+  <section xml:id="sec-ha-configuration-monitor">
    <title>リソース監視の設定</title>
    <para>
     High Availability Extensionはノード障害を検出できますが、ノード上の個々のリソースで障害が発生した場合にも検出することができます。リソースが実行中であるかどうか確認するには、そのリソースにリソースの監視を設定しておく必要があります。リソース監視は、タイムアウト、開始遅延のいずれか、または両方と、間隔を指定することで設定できます。間隔の指定によって、CRMにリソースステータスの確認頻度を指示します。<literal>start</literal>または<literal>stop</literal>操作に対する<literal>Timeout</literal>など、特定のパラメータも設定できます。
    </para>
-   <procedure id="pro-ha-config-gui-operations">
+   <procedure xml:id="pro-ha-config-gui-operations">
     <title>監視操作を追加または変更する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Pacemaker GUIのメインウィンドウの左側のペインで、<guimenu>リソース</guimenu>をクリックして、そのクラスタに設定されているリソースを表示します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右側のペインで、変更するリソースを選択して<guimenu>編集</guimenu>をクリックします。次のウィンドウには、そのリソースに定義された基本的なリソースパラメータとメタ属性、インスタンス属性、および操作が表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       新しい監視操作を追加するには、該当するタブを選択して<guimenu>追加</guimenu>をクリックします。
      </para>
@@ -1042,7 +1046,7 @@ Please see LICENSE.txt for this document's license.
     </step>
 
 
-    <step performance="required">
+    <step>
      <para>
       <guimenu>名前</guimenu>で、<literal>monitor</literal>、<literal>start</literal>、<guimenu>stop</guimenu>など、実行するアクションを選択します。
      </para>
@@ -1060,17 +1064,17 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>タイムアウト</guimenu>フィールドに、値を秒単位で入力します。指定したタイムアウトを過ぎると、操作は<literal>failed</literal>と見なされます。PEは何を行うか、あるいは監視操作の<guimenu>On Fail (障害発生時の動作)</guimenu>フィールドで指定した内容を実行するかどうかを判断します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       必要な場合は、<guimenu>オプション</guimenu>セクションを開いて、<guimenu>失敗の場合</guimenu>(このアクションが失敗した場合の処理)または<guimenu>必要</guimenu>(このアクションを発生する前に満たす必要がある条件)などのパラメータを追加します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>OK</guimenu>をクリックして、そのリソースの設定を完了します。設定ダイアログが閉じて、メインウィンドウに変更されたリソースが表示されます。
      </para>
@@ -1093,9 +1097,9 @@ Please see LICENSE.txt for this document's license.
      </imageobject>
     </mediaobject>
    </figure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-group">
+  <section xml:id="sec-ha-configuration-group">
    <title>クラスタリソースグループの構成</title>
    <para>
     クラスタリソースの中には、他のコンポーネントやリソースに依存しており、各コンポーネントや各リソースを特定の順序で開始したり、同じサーバ上で一緒に実行しなければならないものもあります。この構成を簡単にするため、グループのコンセプトをサポートしています。
@@ -1109,39 +1113,39 @@ Please see LICENSE.txt for this document's license.
      グループには1つ以上のリソースを含む必要があります。空の場合は設定は無効になります。
     </para>
    </note>
-   <procedure id="pro-ha-config-gui-group">
+   <procedure xml:id="pro-ha-config-gui-group">
     <title>リソースグループを追加する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで<guimenu>リソース</guimenu>を選択し、<menuchoice><guimenu>追加</guimenu><guimenu>グループ</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       グループに固有の<guimenu>ID</guimenu>を入力します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>オプション</guimenu>の下で、<guimenu>Initial state of resource (リソースの当初の状態)</guimenu>を設定し、<guimenu>転送</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のステップでは、グループのサブリソースとしてプリミティブを追加できます。プリミティブは<xref linkend="pro-ha-config-gui-primitives"/>と類似の方法で作成します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>適用</guimenu>をクリックして、プリミティブの設定を完了します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のウィンドウでは、再度<guimenu>プリミティブ</guimenu>を選択し、<guimenu>OK</guimenu>をクリックすることで、グループのサブリソースの追加を継続できます。
      </para>
@@ -1149,12 +1153,12 @@ Please see LICENSE.txt for this document's license.
       グループに追加するプリミティブがなくなったら、代わりに<guimenu>キャンセル</guimenu>をクリックします。次のウィンドウには、そのグループに定義したパラメータの概要が表示されます。グループの<guimenu>メタ属性</guimenu>および<guimenu>プリミティブ</guimenu>の一覧が表示されます。<guimenu>プリミティブ</guimenu>タブのリソースの場所は、クラスタ内でのリソース開始順序を示します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       グループ内のリソースの順序は重要なので、<guimenu>上へ</guimenu>ボタンと<guimenu>下へ</guimenu>ボタンを使用して、グループ内で<guimenu>プリミティブ</guimenu>をソートします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのパラメータが希望どおりに設定されたら、<guimenu>OK</guimenu>をクリックして、そのグループの設定を完了します。環境設定ダイアログが閉じ、メインウィンドウに新しく作成された、または変更されたグループが表示されます。
      </para>
@@ -1177,76 +1181,76 @@ Please see LICENSE.txt for this document's license.
 <?dbfo-need height="20em"?>
 
 
-   <procedure id="pro-ha-config-gui-group-modify">
+   <procedure xml:id="pro-ha-config-gui-group-modify">
     <title>既存のグループにリソースを追加する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで<guimenu>リソース</guimenu>ビューに切り替え、右側のペインで、変更するグループを選択して<guimenu>編集</guimenu>をクリックします。次のウィンドウには、そのリソースに定義された基本的なグループパラメータとメタ属性とプリミティブが表示されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>プリミティブ</guimenu>タブをクリックして、<guimenu>追加</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のダイアログで、次のパラメータを設定してIPアドレスをグループのサブリソースとして追加します。
      </para>
      <substeps performance="required">
-      <step id="step-ha-config-gui-group-prim-start" performance="required">
+      <step xml:id="step-ha-config-gui-group-prim-start">
        <para>
         一意の<guimenu>ID</guimenu>を入力します(たとえば、<literal>my_ipaddress</literal>)。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>クラス</guimenu>リストで、リソースエージェントクラスとして<guimenu>ocf</guimenu>を選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         OCFリソースエージェントの<guimenu>プロバイダ</guimenu>として、<guimenu>heartbeat</guimenu>を選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>タイプ</guimenu>リストで、リソースエージェントとして<guimenu>IPaddr</guimenu>を選択します。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>進む</guimenu>をクリックします。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>Instance Attribute (インスタンス属性)</guimenu>タブで、<guimenu>IP</guimenu>エントリを選択して<guimenu>編集</guimenu>をクリックします(または<guimenu>IP</guimenu>エントリをダブルクリックします)。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         <guimenu>値</guimenu>として、目的のIPアドレスを入力します。たとえば「<literal>192.168.1.180</literal>」と入力します。
        </para>
       </step>
-      <step id="step-ha-config-gui-group-prim-stop" performance="required">
+      <step xml:id="step-ha-config-gui-group-prim-stop">
        <para>
         <guimenu>OK</guimenu>、<guimenu>適用</guimenu>の順にクリックします。グループ設定ダイアログには、新しく追加去れたプリミティブが表示されます。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       再度<guimenu>追加</guimenu>をクリックして、次のサブリソース(ファイルシステムとWebサーバ)を追加します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       「<xref linkend="step-ha-config-gui-group-prim-start"/>」から「<xref linkend="step-ha-config-gui-group-prim-stop"/>」のような手順に従って、グループの全サブリソースの設定を終了するまで、各サブリソースの該当するパラメータを設定します。
      </para>
@@ -1264,25 +1268,25 @@ Please see LICENSE.txt for this document's license.
       クラスタ内で開始する順序でサブリソースを設定したので、<guimenu>プリミティブ</guimenu>タブ内の順序はすでに正しいものになっています。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       グループのリソースの順序を変更する必要がある場合は、<guimenu>上へ</guimenu>ボタンと<guimenu>下へ</guimenu>ボタンを使用して、<guimenu>プリミティブ</guimenu>タブのリソースをソートします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       グループからリソースを削除するには、<guimenu>プリミティブ</guimenu>タブのリソースを選択し、<guimenu>削除</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>OK</guimenu>をクリックしてそのグループの設定を完了します。環境設定ダイアログが閉じて、メインウィンドウに変更されたグループが表示されます。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-clone">
+  <section xml:id="sec-ha-configuration-clone">
    <title>クローンリソースの設定</title>
    <para>
     クラスタ内の複数のノードで特定のリソースを同時に実行することができます。このためには、リソースをクローンとして設定する必要があります。クローンとして設定するリソースの1例として、STONITHや、OCFS2などのクラスタファイルシステムが挙げられます。提供されているどのリソースも、クローンとして設定できます。これは、リソースのリソースエージェントによってサポートされます。クローンリソースは、ホスティングされているノードによって異なる設定をすることもできます。
@@ -1290,47 +1294,47 @@ Please see LICENSE.txt for this document's license.
    <para>
     使用できるリソースクローンのタイプの概要については、<xref linkend="sec-ha-config-basics-resources-advanced-clones"/>を参照してください。
    </para>
-   <procedure id="pro-ha-config-gui-clone">
+   <procedure xml:id="pro-ha-config-gui-clone">
     <title>クローンを追加または変更する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左側のペインで<guimenu>リソース</guimenu>を選択し、<menuchoice><guimenu>追加</guimenu><guimenu>クローン</guimenu></menuchoice>の順にクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       クローンに固有の<guimenu>ID</guimenu>を入力します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>オプション</guimenu>の下で、<guimenu>Initial state of resource (リソースの当初の状態)</guimenu>を設定します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       クローンに設定するオプションを起動し、<guimenu>転送</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のステップでは、<guimenu>プリミティブ</guimenu>または<guimenu>グループ</guimenu>をクローンのサブリソースとして追加することができます。<xref linkend="pro-ha-config-gui-primitives"/>または<xref linkend="pro-ha-config-gui-group"/>で説明している方法のように作成します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       クローン設定ダイアログ内のすべてのパラメータが希望どおりに設定されたら、<guimenu>適用</guimenu>をクリックして、クローンの設定を完了します。
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-gui-manage">
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-gui-manage">
   <title>クラスタリソースの管理</title>
 
   <para>
@@ -1349,7 +1353,7 @@ Please see LICENSE.txt for this document's license.
    </mediaobject>
   </figure>
 
-  <sect2 id="sec-ha-configuration-start">
+  <section xml:id="sec-ha-configuration-start">
    <title>リソースの開始</title>
    <para>
     クラスタリソースは、起動する前に、正しく設定されているようにします。たとえば、Apacheサーバをクラスタリソースとして使用する場合は、まず、Apacheサーバをセットアップし、Apacheの環境設定を完了してから、クラスタで個々のリソースを起動します。
@@ -1369,27 +1373,27 @@ Please see LICENSE.txt for this document's license.
    <para>
     Pacemaker GUIによるリソースの作成時に、リソースの初期状態を<literal>target-role</literal>メタ属性で設定できます。その値を<literal>stopped</literal>に設定した場合、リソースは、その作成後に自動的に起動しません。
    </para>
-   <procedure id="pro-ha-config-gui-start">
+   <procedure xml:id="pro-ha-config-gui-start">
     <title>新しいリソースを起動する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>管理</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右ペインで、リソースを右クリックして、コンテキストメニューから<guimenu>開始</guimenu>を選択します(または、ツールバーの<guimenu>リソースの開始</guimenu>アイコンを使用します)。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-cleanup">
+  <section xml:id="sec-ha-configuration-cleanup">
    <title>リソースのクリーンアップ</title>
    <para>
     リソースは、失敗した場合は自動的に再起動しますが、失敗のたびにリソースの失敗回数が増加します。リソースの失敗回数をPacemaker GUIで表示するには、左ペインで<guimenu>管理</guimenu>をクリックしてから、右ペインでリソースを選択します。リソースが失敗している場合は、その<guimenu>失敗回数</guimenu>が右ペインの中ほど(<guimenu>移行しきい値</guimenu>エントリの下)に表示されます。
@@ -1400,33 +1404,33 @@ Please see LICENSE.txt for this document's license.
    <para>
     リソースの失敗回数は、(リソースに<literal>failure-timeout</literal>オプションを設定することにより)自動的にリセットするか、または次に示すように手動でリセットできます。
    </para>
-   <procedure id="pro-ha-config-gui-clean">
+   <procedure xml:id="pro-ha-config-gui-clean">
     <title>リソースをクリーンアップする</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>管理</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右ペインで、該当するリソースを右クリックし、コンテキストメニューから<guimenu>リソースのクリーンアップ</guimenu>を選択します(またはツールバーの<guimenu>リソースのクリーンアップ</guimenu>アイコンを使用します)。
      </para>
      <para>
-      これによって指定したノード上の指定したリソースに対して、コマンド<command>crm_resource<option> -C</option></command>および<command>crm_failcount<option> -D</option></command>が実行されます。
+      これによって指定したノード上の指定したリソースに対して、コマンド<command>crm_resource</command> <option> -C</option>および<command>crm_failcount</command> <option> -D</option>が実行されます。
      </para>
     </step>
    </procedure>
    <para>
     詳細は、<command>crm_resource</command>および<command>crm_failcount</command>のマニュアルページを参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-remove">
+  <section xml:id="sec-ha-configuration-remove">
    <title>クラスタリソースの削除</title>
    <para>
     リソースをクラスタから削除する必要がある場合は、次の手順に従って、設定エラーが発生しないようにします。
@@ -1438,59 +1442,59 @@ Please see LICENSE.txt for this document's license.
      何らかの制約によってIDが参照されているクラスタリソースは削除できません。リソースを削除できない場合は、リソースIDが参照されている場所を確認し、最初に制約からリソースを削除します。
     </para>
    </note>
-   <procedure id="pro-ha-config-gui-rm">
+   <procedure xml:id="pro-ha-config-gui-rm">
     <title>クラスタリソースの削除</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>管理</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右ペインで、該当するリソースを選択します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-config-gui-clean"/>の説明に従って、すべてのノードでリソースをクリーンアップします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>停止</guimenu>でリソースを停止します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースに関するすべての制約を削除します。これを行わないと、リソースは削除できません。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-migrate">
+  <section xml:id="sec-ha-configuration-migrate">
    <title>クラスタリソースの移行</title>
    <para>
     <xref linkend="sec-ha-configuration-failover"/>で説明したように、ソフトウェアまたはハードウェアの障害時には、クラスタは定義可能な特定のパラメータ(たとえばマイグレーションしきい値やリソースの固着性など)に従って、リソースを自動的にフェールオーバー(マイグレート)させます。それ以外に、クラスタ内の別なノードにリソースを手動でマイグレートさせることもできます。
    </para>
-   <procedure id="pro-ha-config-gui-migrate">
+   <procedure xml:id="pro-ha-config-gui-migrate">
     <title>リソースを手動で移行する</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>管理</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右ペインで、該当するリソースを右クリックし、<guimenu>リソースの移行</guimenu>を選択します。
      </para>
@@ -1505,17 +1509,17 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       新規ウィンドウで、<guimenu>To Node (マイグレート先ノード)</guimenu>で、リソースの移動先ノードを選択します。これによって移動先ノードに対して<literal>INFINITY</literal>スコアの場所の制約が作成されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースを一時的にマイグレートするには、<guimenu>Duration (期間)</guimenu>をアクティブにしてリソースが新規ノードにマイグレートされる時間を入力します。指定した時間を経過したら、リソースは元の場所に戻ることが<emphasis>できます</emphasis>。あるいは、現在の場所に残ることもできます(リソースへの固着性による)。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースをマイグレートできない場合は(リソースの固着性と制約スコアの合計が現在のノードで<literal>INFINITY</literal>を超えている場合)、<guimenu>強制</guimenu>オプションを有効にします。これによって現在の場所に対するルールと<literal>-INFINITY</literal>のスコアを作成して、リソースを強制的に移動させます。
      </para>
@@ -1525,7 +1529,7 @@ Please see LICENSE.txt for this document's license.
       </para>
      </note>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>OK</guimenu>をクリックして、マイグレーションを確認します。
      </para>
@@ -1534,55 +1538,55 @@ Please see LICENSE.txt for this document's license.
    <para>
     リソースを再び元に戻すには、次の手順に従います。
    </para>
-   <procedure id="pro-ha-config-gui-migrate-back">
+   <procedure xml:id="pro-ha-config-gui-migrate-back">
     <title>移行制約をクリアする</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>管理</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右ペインで、該当するリソースを右クリックし、<guimenu>移行制約のクリア</guimenu>を選択します。
      </para>
      <para>
-      これによって、<command>crm_resource <option>-U</option></command>コマンドが使用されます。リソースは元の場所に戻ることができます<emphasis/>。あるいは現在の場所に残ることもあります(リソースの固着性によって)。
+      これによって、<command>crm_resource </command> <option>-U</option>コマンドが使用されます。リソースは元の場所に戻ることができます<emphasis/>。あるいは現在の場所に残ることもあります(リソースの固着性によって)。
      </para>
     </step>
    </procedure>
    <para>
-    詳細は、<command>crm_resource</command>のマニュアルページ、または<citetitle>Pacemaker Explained</citetitle>を参照してください。<ulink url="http://www.clusterlabs.org/doc/"/>から入手できます。特に、「<citetitle>Resource Migration</citetitle>」のセクションを参照してください。
+    詳細は、<command>crm_resource</command>のマニュアルページ、または<citetitle>Pacemaker Explained</citetitle>を参照してください。<link xlink:href="http://www.clusterlabs.org/doc/"/>から入手できます。特に、「<citetitle>Resource Migration</citetitle>」のセクションを参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-mgmt-mode">
+  <section xml:id="sec-ha-configuration-mgmt-mode">
    <title>リソースの管理モードの変更</title>
    <para>
     リソースがクラスタで管理されているときは、他の方法で(つまり、クラスタ外で)リソースを操作しないでください。個々のリソースの保守する場合は、各リソースを<literal>unmanaged mode</literal>に設定すると、クラスタ外でそのリソースを変更できます。
    </para>
    <procedure>
     <title>リソースの管理モードの変更</title>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してクラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       左ペインで、<guimenu>管理</guimenu>をクリックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       右ペインで、該当するリソースを右クリックし、コンテキストメニューから、<guimenu>リソースの管理解除</guimenu>を選択します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       そのリソースの保守作業を完了したら、右ペインで、再び該当するリソースを右クリックして、<guimenu>リソースの管理</guimenu>を選択します。
      </para>
@@ -1591,6 +1595,6 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>

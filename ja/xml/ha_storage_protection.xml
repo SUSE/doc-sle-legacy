@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_storage_protection.xml" id="cha-ha-storage-protect">
- <title>ストレージ保護</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_storage_protection.xml" xml:id="cha-ha-storage-protect"><title>ストレージ保護</title><info><abstract>
 
   <para>
    High Availabilityクラスタスタックでは、データの整合性の保護が最優先されます。これは、データストレージへの未調整の同時アクセスを防止することによって達成されます。たとえば、Ext3ファイルシステムは、クラスタに一回だけマウントされ、OCFS2ボリュームは、他のクラスタノードとの調整が可能になるまでマウントされません。正常に機能するクラスタでは、Pacemakerによって、リソースがそれらの同時並行性の制限を超えてアクティブであるかどうかが検出され、復元が開始されます。さらに、そのポリシーエンジンがそれらの制限を超えることは決してありません。
@@ -24,15 +26,17 @@ Please see LICENSE.txt for this document's license.
   <para>
    この章では、ストレージ自体を活用するIOフェンシングについて説明し、次に、排他的ストレージアクセスを確保する追加保護レイヤについて説明します。これら2つのメカニズムを組み合わせると、より高度な保護を実現できます。
   </para>
- </abstract>
- <sect1 id="sec-ha-storage-protect-fencing">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-ha-storage-protect-fencing">
   <title>ストレージベースのフェンシング</title>
 
   <para>
    1つ以上のSTONITHブロックデバイス(SBD)、<literal>watchdog</literal>サポート、<literal>external/sbd</literal> STONITHエージェントを使用することで、スプリットブレインシナリオを確実に回避することができます。
   </para>
 
-  <sect2 id="sec-ha-storage-protect-fencing-oview">
+  <section xml:id="sec-ha-storage-protect-fencing-oview">
    <title>概要</title>
    <para>
     すべてのノードが共有ストレージへのアクセスを持つ環境で、デバイスの小さなパーティションをSBDで使用できるようにフォーマットします。パーティションのサイズは、使用されるディスクのブロックサイズによって異なります(512バイトのブロックサイズの標準SCSIディスクには1MB、4KBブロックサイズのDASDディスクには4MB必要です)。SBDは、そのデーモンの設定後、クラスタスタックの他のコンポーネントが起動される前に各ノードでオンラインになります。SBDデーモンは、他のすべてのクラスタコンポーネントがシャットダウンされた後で終了されます。したがって、クラスタリソースがSBDの監督なしでアクティブになることはありません。
@@ -49,11 +53,11 @@ Please see LICENSE.txt for this document's license.
    <para>
     Pacemaker統合が有効になっている場合、デバイスの過半数が失われてもSBDはセルフフェンスを行いません。たとえば、クラスタにA、B、Cの3つのノードが含まれており、ネットワーク分割によってAには自分自身しか表示できず、BとCはまだ通信可能な状態であるとします。この場合、2つのクラスタパーティションが存在し、1つは過半数(B、C)であるためにクォーラムがあり、もう1つにはクォーラムがない(A)ことになります。過半数のフェンシングデバイスに到達できないときにこれが発生した場合、ノードAはすぐに自らダウンしますが、BとCは引き続き実行されます。
    </para>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-storage-protect-fencing-number">
+  <section xml:id="sec-ha-storage-protect-fencing-number">
    <title>SBDデバイスの数</title>
    <para>
     SBDは、1～3台のデバイスの使用をサポートします。
@@ -87,35 +91,35 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-storageprotection-fencing-setup">
+  <section xml:id="sec-ha-storageprotection-fencing-setup">
    <title>ストレージベースの保護のセットアップ</title>
    <para>
     ストレージベースの保護を設定するには、次の手順に従う必要があります。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-sbd-create" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-watchdog" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-sbd-daemon" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-sbd-test" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-fencing" xrefstyle="select:title"/>
      </para>
@@ -145,7 +149,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </itemizedlist>
    </important>
-   <sect3 id="pro-ha-storage-protect-sbd-create">
+   <section xml:id="pro-ha-storage-protect-sbd-create">
     <title>SBDパーティションの作成</title>
     <para>
      デバイスの起動時に1MBのパーティションを作成することを推奨します。SBDデバイスがマルチパスグループ上にある場合は、MPIOのパスダウン検出によって遅延が発生することがあるので、SBDが使用するタイムアウトを調整する必要があります。<literal>msgwait</literal>タイムアウト後、メッセージがノードに配信されたと想定されます。この時間は、マルチパスの場合、MPIOがパスの障害を検出し、次のパスに切り替えるために必要な時間です。これは、ご使用の環境でテストする必要があるかもしれません。ノード上で実行しているSBDデーモンがウォッチドッグタイマを十分な速さで更新していない場合、ノード自体が終了します。選択したタイムアウトを特定の環境でテストします。1台のSBDデバイスしかないマルチパスストレージを使用する場合は、発生したフェールオーバーの遅延に特別の注意を払ってください。
@@ -163,7 +167,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </important>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        次のコマンドで、SBDデバイスを初期化します。
       </para>
@@ -176,12 +180,12 @@ Please see LICENSE.txt for this document's license.
       </para>
 <screen><prompt role="root">root # </prompt><command>sbd</command> -d /dev/<replaceable>SBD1</replaceable> -d /dev/<replaceable>SBD2</replaceable> -d /dev/<replaceable>SBD3</replaceable> create</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        SBDデバイスがマルチパスグループ上にある場合は、SBDが使用するタイムアウトを調整します。これは、SBDデバイスの初期化時に指定できます(すべてのタイムアウトは秒単位で指定)。
       </para>
 
-<screen><prompt role="root">root # </prompt><command>/usr/sbin/sbd</command> -d /dev/<replaceable>SBD</replaceable> -4 180<co id="co-msgwait"/> -1 90<co id="co-watchdog"/> create</screen>
+<screen><prompt role="root">root # </prompt><command>/usr/sbin/sbd</command> -d /dev/<replaceable>SBD</replaceable> -4 180<co xml:id="co-msgwait"/> -1 90<co xml:id="co-watchdog"/> create</screen>
       <calloutlist>
        <callout arearefs="co-msgwait">
         <para>
@@ -195,7 +199,7 @@ Please see LICENSE.txt for this document's license.
        </callout>
       </calloutlist>
      </step>
-     <step performance="required">
+     <step>
       <para>
        次のコマンドで、デバイスに何が書き込まれたか確認します。
       </para>
@@ -212,8 +216,8 @@ Timeout (msgwait)  : 10</screen>
     <para>
      ご覧のように、タイムアウトがヘッダにも保存され、それらに関するすべての参加ノードの合意が確保されます。
     </para>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-watchdog">
+   </section>
+   <section xml:id="pro-ha-storage-protect-watchdog">
     <title>ソフトウェアウォッチドッグのセットアップ</title>
     <para>ウォッチドッグを他のソフトウェアが使用していない場合は、ウォッチドッグがシステムをSBD障害から保護します。</para>
      
@@ -222,7 +226,7 @@ Timeout (msgwait)  : 10</screen>
      </important>
      
      <para>
-     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>では、カーネル内のウォッチドッグサポートはデフォルトで有効化されています。これは、ハードウェア指定のウォッチドッグドライバを提供する、さまざまなカーネルモジュールを標準装備しています。High Availability Extensionはウォッチドッグに<quote>フィード</quote>するソフトウェアコンポーネントとしてSBDデーモンを使用します。<xref linkend="pro-ha-storage-protect-sbd-daemon"/>で説明されているとおり設定した場合、SBDデーモンは、それぞれのノードが<command>rcopenais <option>start</option></command>でオンラインにする際に自動的に開始します。
+     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase>では、カーネル内のウォッチドッグサポートはデフォルトで有効化されています。これは、ハードウェア指定のウォッチドッグドライバを提供する、さまざまなカーネルモジュールを標準装備しています。High Availability Extensionはウォッチドッグに<quote>フィード</quote>するソフトウェアコンポーネントとしてSBDデーモンを使用します。<xref linkend="pro-ha-storage-protect-sbd-daemon"/>で説明されているとおり設定した場合、SBDデーモンは、それぞれのノードが<command>rcopenais </command> <option>start</option>でオンラインにする際に自動的に開始します。
     </para>
     <para>
      通常、ハードウェアに適したウォッチドッグドライバがシステムブート中に自動的にロードされます。<literal>softdog</literal>が最も一般的なドライバですが、実際のハードウェア統合のあるドライバの使用を推奨します。例:
@@ -252,7 +256,7 @@ Timeout (msgwait)  : 10</screen>
      <para>次の<quote/>式は、これら3つの値の関係を簡潔に示しています。
     </para>
      
-     <example id="ex-ha-storage-protect-sbd-timings">
+     <example xml:id="ex-ha-storage-protect-sbd-timings">
        <title>STONITHデバイスとしてSBDを使用したクラスタのタイミング</title>
        <screen>Timeout (msgwait) = (Timeout (watchdog) * 2)
 stonith-timeout = Timeout (msgwait) + 20%</screen>
@@ -273,15 +277,15 @@ Timeout (loop)     : 1
 Timeout (msgwait)  : 40
 ==Header on disk /dev/sdb is dumped</screen>
      <para>新しいクラスタをセットアップした場合は、先に示した考慮事項を<command>sleha-init</command>コマンドに反映できます。</para>
-    <para>SBDに関連するタイミング変数の詳細については、技術情報文書『<citetitle>SBD Operation Guidelines for HAE Clusters</citetitle>』(<ulink url="https://www.suse.com/support/kb/doc.php?id=7011346"/>で入手可能)を参照してください。</para>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-sbd-daemon">
+    <para>SBDに関連するタイミング変数の詳細については、技術情報文書『<citetitle>SBD Operation Guidelines for HAE Clusters</citetitle>』(<link xlink:href="https://www.suse.com/support/kb/doc.php?id=7011346"/>で入手可能)を参照してください。</para>
+   </section>
+   <section xml:id="pro-ha-storage-protect-sbd-daemon">
     <title>SBDデーモンの起動</title>
     <para>
      SBDデーモンは、クラスタスタックの不可欠なコンポーネントです。このデーモンは、クラスタスタックの実行中はもちろんのこと、クラスタスタックの一部がクラッシュしたときでも、実行されている必要があります。これにより、ノードのフェンシングが可能になります。
     </para>
     <procedure>
-        <step performance="required">
+        <step>
        <para><command>sleha-init</command>を実行します。このスクリプトによりSBDが正しく設定され、設定ファイル<filename>/etc/sysconfig/sbd</filename>が、Csync2で同期される必要のあるファイルのリストに追加されます。 </para>
        <para>SBDを手動で設定する場合は、次の手順を実行します。</para>
             <para> OpenAISのinitスクリプトでSBDを開始および停止するには、ファイル<filename>/etc/sysconfig/sbd</filename>で次の行を探し出し、<replaceable>SBD</replaceable>を、使用しているSBDデバイスに置き換えます。 </para>
@@ -299,17 +303,17 @@ Timeout (msgwait)  : 40
        </para>
       </note>
      </step>     
-     <step performance="required">
+     <step>
       <para>
-       先に進む前に、<command>rcopenais<option> restart</option></command>を実行して、SBDがすべてのノード上で開始しているようにします。
+       先に進む前に、<command>rcopenais</command> <option> restart</option>を実行して、SBDがすべてのノード上で開始しているようにします。
       </para>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-sbd-test">
+   </section>
+   <section xml:id="pro-ha-storage-protect-sbd-test">
     <title>SBDのテスト</title>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        次のコマンドを使用すると、ノードスロットとそれらの現在のメッセージがSBDデバイスからダンプされます。
       </para>
@@ -318,14 +322,14 @@ Timeout (msgwait)  : 40
        ここに、SBDとともに起動されたすべてのクラスタノードが一覧され、メッセージスロットには<literal>clear</literal>が表示されるはずです。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        ノードの1つにテストメッセージを送信してみます。
       </para>
       
 <screen><prompt role="root">root # </prompt><command>sbd</command> -d /dev/<replaceable>SBD</replaceable> message alice test</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        ノードがシステムログファイルにメッセージの受信を記録します。
       </para>
@@ -335,8 +339,8 @@ Timeout (msgwait)  : 40
       </para>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-fencing">
+   </section>
+   <section xml:id="pro-ha-storage-protect-fencing">
     <title>フェンシングリソースの設定</title>
     <para>
      SBDのセットアップを完了するには、SBDをCIB内でSTONITH/フェンシングメカニズムとして設定します。
@@ -347,16 +351,16 @@ Timeout (msgwait)  : 40
      <para>2ノードクラスタ(および<literal>no-quorum-policy</literal>を<literal>ignore</literal>に設定した他のクラスタ)では、タイミングを外したフェンシングが頻繁に発生します。これは、スプリットブレインが発生した状況で、両方のノードが互いをフェンシングしようとするためです。このダブルフェンシングを避けるには、STONITHTリソースの設定に<literal>pcmk_delay_max</literal>パラメータを追加します。これにより、機能しているネットワークカードを備えたサーバが稼動を継続できる可能性が高くなります。</para>
     </tip>
     <procedure>
-     <step performance="required">
+     <step>
       <para>いずれかのノードにログインし、<command>crm configure</command>を使用して対話型crmshを起動します。</para>
      </step>
-     <step performance="required">
+     <step>
       <para>次のように入力します。</para>
       
       <screen><prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-enabled="true"
-<prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-timeout="40s" <co id="co-ha-sbd-stonith-timeout"/>
+<prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-timeout="40s" <co xml:id="co-ha-sbd-stonith-timeout"/>
 <prompt role="custom">crm(live)configure# </prompt><command>primitive</command> stonith_sbd stonith:external/sbd \
-   pcmk_delay_max="30" <co id="co-ha-sbd-pcmk-delay-max"/></screen>
+   pcmk_delay_max="30" <co xml:id="co-ha-sbd-pcmk-delay-max"/></screen>
       <para> リソースのクローンを作成する必要はありません。ノードスロットは自動的に割り当てられるので、手動のホストリストを定義する必要はありません。 </para>
       <calloutlist>
        <callout arearefs="co-ha-sbd-stonith-timeout">
@@ -369,11 +373,11 @@ Timeout (msgwait)  : 40
        </callout>
       </calloutlist>
       </step>
-     <step performance="required">
+     <step>
       <para> 変更をコミットします。 </para>
       <screen><prompt role="custom">crm(live)# </prompt><command>configure</command> commit</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        以前設定した他のフェンシングデバイスを無効にします。現在、この機能にはSBDメカニズムが使用されるからです。
       </para>
@@ -382,16 +386,16 @@ Timeout (msgwait)  : 40
     <para>
      一度リソースが起動すれば、クラスタは共有ストレージフェンシング用に正常に設定されます。クラスタは、ノードのフェンシングが必要になると、この方法を使用します。
     </para>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>その他の情報</title>
     <para>
-     <ulink url="http://www.linux-ha.org/wiki/SBD_Fencing"/>
+     <link xlink:href="http://www.linux-ha.org/wiki/SBD_Fencing"/>
     </para>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-storageprotection-exstoract">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-ha-storageprotection-exstoract">
   <title>排他的ストレージアクティベーションの確保</title>
 
   <para>
@@ -402,7 +406,7 @@ Timeout (msgwait)  : 40
    設計上、sfexは、同時並行性を必要とするOCFS2のようなワークロードには使用できませんが、従来のフェールオーバー方式のワークロードに対しては保護層として機能できます。これは、実際にはSCSI-2予約と似ていますが、もっと一般的です。
   </para>
 
-  <sect2 id="sec-ha-storageprotection-exstoract-description">
+  <section xml:id="sec-ha-storageprotection-exstoract-description">
    <title>概要</title>
    <para>
     共有ストレージ環境では、ストレージの小さなパーティションが1つ以上のロックの保存用に確保されます。
@@ -413,9 +417,9 @@ Timeout (msgwait)  : 40
    <para>
     ノードのダウンが永続的にロックをブロックせず、他のノードが続行できるように、これらのロックも定期的に更新される必要があります。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-storageprotection-exstoract-requirements">
+  <section xml:id="sec-ha-storageprotection-exstoract-requirements">
    <title>設定</title>
    <para>
     次に、sfexで使用する共有パーティションの作成方法と、CIBでsfexロック用にリソースを設定する方法を説明します。1つのsfexパーティションは任意の数のロックを保持できますが、デフォルトは1に設定されています。ロックごとに1KBのストレージスペースを割り当てる必要があります。
@@ -442,18 +446,18 @@ Timeout (msgwait)  : 40
    </important>
    <procedure>
     <title>sfexパーティションを作成する</title>
-    <step performance="required">
+    <step>
      <para>
       sfexで使用する共有パーティションを作成します。このパーティションの名前を書き留め、以降の手順の<filename>/dev/sfex</filename>をこの名前で置き換えます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドで、sfexメタデータを作成します。
      </para>
 <screen><prompt role="root">root # </prompt><command>sfex_init</command> -n 1 /dev/sfex</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       メタデータが正しく作成されたかどうか検証します。
      </para>
@@ -465,7 +469,7 @@ Timeout (msgwait)  : 40
    </procedure>
    <procedure>
     <title>sfexロック用リソースを設定する</title>
-    <step performance="required">
+    <step>
      <para>
       sfexロックは、CIB内のリソースを介して表現され、次のように設定されます。
      </para>
@@ -474,27 +478,27 @@ Timeout (msgwait)  : 40
       lock_timeout="70" monitor_interval="10" \
 #	op monitor interval="10s" timeout="30s" on_fail="fence"</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       sfexロックによってリソースを保護するには、保護対象とsfexリソース間の必須の順序付けと配置の制約を作成します。保護対象のリソースが<literal>filesystem1</literal>というIDを持つ場合は、次のようになります。
      </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>order</command> order-sfex-1 inf: sfex_1 filesystem1
 <prompt role="custom">crm(live)configure# </prompt><command>colocation</command> colo-sfex-1 inf: filesystem1 sfex_1</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       グループ構文を使用する場合は、sfexリソースを最初のリソースとしてグループに追加します。
      </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>group</command> LAMP sfex_1 filesystem1 apache ipaddr</screen>
     </step>
    </procedure>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-storage-moreinfo">
+  </section>
+ </section>
+ <section xml:id="sec-ha-storage-moreinfo">
   <title>その他の情報</title>
 
   <para>
-   <ulink url="http://www.linux-ha.org/wiki/SBD_Fencing"/>および<command>man sbd</command>を参照してください。
+   <link xlink:href="http://www.linux-ha.org/wiki/SBD_Fencing"/>および<command>man sbd</command>を参照してください。
   </para>
- </sect1>
+ </section>
 </chapter>

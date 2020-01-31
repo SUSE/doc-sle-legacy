@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_config_hawk.xml" id="cha-ha-config-hawk">
- <title>クラスタリソースの設定と管理(Webインタフェース)</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_config_hawk.xml" xml:id="cha-ha-config-hawk"><title>クラスタリソースの設定と管理(Webインタフェース)</title><info><abstract>
   <para>
    <command>crm</command>コマンドラインツールとPacemaker GUIの他に、High Availability Extensionには、管理作業用のWebベースのユーザインタフェースであるHA Web Konsole (Hawk)も付属しています。このインタフェースを使用すれば、Linux以外のコンピュータからも、Linuxクラスタを監視し、管理することができます。さらにこれは、ご使用のシステムが最小限のグラフィカルユーザインタフェースしか提供していない場合に最適なソリューションです。
   </para>
@@ -15,15 +17,17 @@ Please see LICENSE.txt for this document's license.
   <para>
    この章では、Hawkを紹介し、グローバルクラスタオプションの変更、基本的なリソースと高度なリソース(グループとクローン)の作成、制約の設定、フェールオーバーノードとフェールバックノードの指定、リソースモニタリングの設定、リソースの始動、クリーンアップ、または削除、および手動によるリソースの移行など、クラスタリソースの設定と管理のための基本的な作業について説明します。Hawkは、クラスタステータスの詳細な分析のために、クラスタレポート(<literal>hb_report</literal>)を生成します。クラスタの履歴を表示できます。また、シミュレータにより、可能性のある障害シナリオを検討することができます。
   </para>
- </abstract>
- <sect1 id="sec-ha-config-hawk-intro">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-ha-config-hawk-intro">
   <title>Hawk - 概要</title>
 
   <para>
    HawkのWebインタフェースを使用すれば、Linux以外のマシンからも、Linuxクラスタを監視し、管理することができます。さらにこれは、ご使用のシステムが最小限のグラフィカルユーザインタフェースしか提供していない場合に最適なソリューションです。
   </para>
 
-  <sect2 id="sec-ha-config-hawk-intro-connect">
+  <section xml:id="sec-ha-config-hawk-intro-connect">
    <title>Hawkの起動とログイン</title>
    <para>
     このWebインタフェースは、<systemitem class="resource">hawk</systemitem>パッケージに含まれています。これは、Hawkで接続するすべてのクラスタノードにインストールする必要があります。Hawkを使用してクラスタノードにアクセスするマシンに必要なものは、JavaScriptとクッキーを有効にして接続を確立できる(グラフィカル)Webブラウザだけです。
@@ -34,20 +38,20 @@ Please see LICENSE.txt for this document's license.
    <para>
     <systemitem class="resource">sleha-bootstrap</systemitem>パッケージのスクリプトを使用してクラスタをセットアップした場合は、Hawkサービスがすでに開始されています。その場合は、<xref linkend="pro-ha-hawk-service"/>をスキップして<xref linkend="pro-ha-hawk-login"/>に進みます。
    </para>
-   <procedure id="pro-ha-hawk-service">
+   <procedure xml:id="pro-ha-hawk-service">
     <title>Hawkサービスの開始</title>
-    <step performance="required">
+    <step>
      <para>
       接続先にするノードで、シェルを開き、<systemitem class="username">root</systemitem>としてログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のように入力して、サービスのステータスをチェックします。
      </para>
 <screen><prompt role="root">root # </prompt>rchawk status</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       サービスが実行されていない場合は、次のコマンドでサービスを開始します。
      </para>
@@ -70,7 +74,7 @@ Please see LICENSE.txt for this document's license.
      Hawkを使用して接続する各ノードでこれを実行します。
     </para>
    </note>
-   <procedure id="pro-ha-hawk-login">
+   <procedure xml:id="pro-ha-hawk-login">
     <title>Hawk Webインタフェースへのログイン</title>
     <para>
      Hawk Webインタフェースは、HTTPSプロトコルとポート<literal>7630</literal>を使用します。
@@ -80,12 +84,12 @@ Please see LICENSE.txt for this document's license.
      <title>仮想IPによるHawkへのアクセス</title>
      <para>通常接続するクラスタノードがダウンしている場合でもHawkにアクセスできるようにするには、クラスタリソースとしてのHawkに仮想IPアドレス(<literal>IPaddr</literal>または<literal>IPaddr2</literal>)を設定します。そのための特別な設定は不要です。</para>
     </note>
-    <step performance="required">
+    <step>
      <para>
       任意のコンピュータで、Webブラウザを起動し、JavaScriptとクッキーが有効なことを確認します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       URLとして、Hawk Webサービスを実行するクラスタノードのIPアドレスまたはホスト名を入力します。または、クラスタオペレータがリソースとして設定した可能性のある任意の仮想IPアドレスを入力します:
      </para>
@@ -106,12 +110,12 @@ Please see LICENSE.txt for this document's license.
       </para>
      </note>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Hawkログイン画面で、<systemitem class="username">hacluster</systemitem>ユーザ(または、<systemitem class="groupname">haclient</systemitem>グループのメンバーである他の任意のユーザ)の<guimenu>ユーザ名</guimenu>と<guimenu>パスワード</guimenu>を入力します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>ログイン</guimenu>をクリックします。
      </para>
@@ -120,15 +124,15 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-config-hawk-intro-main">
+  <section xml:id="sec-ha-config-hawk-intro-main">
    <title>メイン画面: クラスタステータス</title>
    
    <para>
     ログインした後、Hawkは<guimenu>クラスタステータス</guimenu>画面を表示します。重要なグローバルクラスタパラメータと、クラスタノードおよびリソースのステータスを示すサマリが表示されます。ノードとリソースのステータスを表示するのに、次のカラーコードが用いられます。
    </para>
-   <itemizedlist id="il-ha-config-hawk-colors" mark="bullet" spacing="normal">
+   <itemizedlist xml:id="il-ha-config-hawk-colors" mark="bullet" spacing="normal">
     <title>Hawkのカラーコード</title>
     <listitem>
      <para>
@@ -213,7 +217,7 @@ Please see LICENSE.txt for this document's license.
      <para>
       <guimenu>クラスタダイアグラム</guimenu>:ノードのグラフィック表現とCIBで設定されたリソースについては、このエントリを選択します。このダイアグラムには、リソースとノード割り当て(スコア)の間の順序とコロケーションも表示されます。
      </para>
-     <figure id="fig-ha-cluster-diagram" pgwide="0">
+     <figure xml:id="fig-ha-cluster-diagram" pgwide="0">
       <title>Hawk - クラスタダイアグラム</title>
       <mediaobject>
        <imageobject role="fo">
@@ -300,9 +304,9 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </itemizedlist>
    </note>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-hawk-global">
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-hawk-global">
   <title>グローバルクラスタオプションの設定</title>
 
   <para>
@@ -322,14 +326,14 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </itemizedlist>
 
-  <procedure id="pro-ha-config-hawk-global">
+  <procedure xml:id="pro-ha-config-hawk-global">
    <title>グローバルクラスタオプションを変更する</title>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="sec-ha-config-hawk-intro-connect"/>で説明したように、Webブラウザを起動してクラスタにログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      左のナビゲーションバーで、<guimenu>クラスタのプロパティ</guimenu>を選択して、グローバルクラスタオプションとそれらの現在の値を表示します。Hawkは、<guimenu>CRM設定</guimenu>、<guimenu>リソースのデフォルト</guimenu>、<guimenu>操作のデフォルト</guimenu>に関する重要なパラメータを表示します。
 
@@ -346,17 +350,17 @@ Please see LICENSE.txt for this document's license.
      </mediaobject>
     </figure>
    </step>
-   <step performance="required">
+   <step>
     <para>
      クラスタの要件に応じて、<guimenu>CRM Configuration</guimenu>を調整します。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        <guimenu>no-quorum-policy</guimenu>を適切な値に設定します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        なんらかの理由でフェンシングを無効にする必要がある場合は、<guimenu>stonith-enabled</guimenu>の選択を解除します。
       </para>
@@ -367,41 +371,41 @@ Please see LICENSE.txt for this document's license.
        </para>
       </important>
      </step>
-     <step performance="required">
+     <step>
       <para>
        CRM設定からプロ化ティを削除するには、プロパティの横のマイナスアイコンをクリックします。プロパティが削除されたら、クラスタはそのプロパティがデフォルト値に設定されているように動作します。デフォルト値の詳細については、<xref linkend="sec-ha-config-basics-meta-attr"/>を参照してください。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        CRM設定に新しいプロパティを追加するには、ドロップダウンボックスからプロパティを1つ選択し、プラスアイコンをクリックします。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>リソースのデフォルト</guimenu>または<guimenu>操作のデフォルト</guimenu>を変更する必要がある場合は、次のような処理を実行します。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        すでに表示されているデフォルトの値を変更するには、それぞれの入力フィールドで値を編集します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        新しいリソースのデフォルトまたは操作のデフォルトを追加するには、空のドロップダウンリストから1つ選択し、プラスアイコンをクリックして値を入力します。定義されたデフォルト値が存在する場合は、Hawkから自動的に提示されます。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        リソースまたは操作のデフォルトを削除するには、パラメータの横のマイナスアイコンをクリックします。<guimenu>リソースのデフォルト</guimenu>と<guimenu>操作のデフォルト</guimenu>に値が指定されていない場合、クラスタは<xref linkend="sec-ha-config-basics-meta-attr"/>および<xref linkend="sec-ha-config-basics-operations"/>にドキュメントされているデフォルト値を使用します。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      変更内容を確認します。
     </para>
@@ -409,10 +413,10 @@ Please see LICENSE.txt for this document's license.
   </procedure>
 
 
- </sect1>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ha_hawk_rsc_config_i.xml" parse="xml"/>
- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ha_hawk_rsc_manage_i.xml" parse="xml"/>
- <sect1 id="sec-ha-config-hawk-dashboard">
+ </section>
+ <xi:include href="ha_hawk_rsc_config_i.xml" parse="xml"/>
+ <xi:include href="ha_hawk_rsc_manage_i.xml" parse="xml"/>
+ <section xml:id="sec-ha-config-hawk-dashboard">
 
 
   <title>複数のクラスタの監視</title>
@@ -425,7 +429,7 @@ Please see LICENSE.txt for this document's license.
    <guimenu>Cluster Dashboard</guimenu>に表示されているクラスタ情報は、永続クッキーに保存されます。つまり、<guimenu>Cluster Dashboard</guimenu>を表示するHawkインスタンスを決定し、そのインスタンスを常に使用する必要があります。Hawkを実行するマシンは、その目的のためにクラスタの一部である必要はなく、別個の無関係のシステムで構いません。
   </para>
 
-  <procedure id="pro-ha-config-hawk-dashboard">
+  <procedure xml:id="pro-ha-config-hawk-dashboard">
    <title>Hawkによる複数クラスタの監視</title>
    <itemizedlist mark="bullet" spacing="normal">
     <title>前提条件</title>
@@ -445,18 +449,18 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <step performance="required">
+   <step>
     <para>
      複数のクラスタを監視するマシン上で、Hawk Webサービスを開始します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Webブラウザを起動して、Hawkを実行するマシンのIPアドレスまたはホスト名を入力します。
     </para>
 <screen>https://<replaceable>IPaddress</replaceable>:7630/</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      Hawkのログイン画面で、右上隅の<guimenu>ダッシュボード</guimenu>リンクをクリックします。
     </para>
@@ -474,12 +478,12 @@ Please see LICENSE.txt for this document's license.
      </mediaobject>
     </informalfigure>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>Cluster Dashboard</guimenu>でクラスタを識別するためのカスタムのクラスタ名を<guimenu>クラスタ名</guimenu>に入力します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      クラスタノードのいずれかの<guimenu>ホスト名</guimenu>を入力し、変更内容を確認します。
     </para>
@@ -487,7 +491,7 @@ Please see LICENSE.txt for this document's license.
      <guimenu>クラスタダッシュボード</guimenu>が開き、追加したクラスタのサマリが表示されます。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      ダッシュボードにクラスタをさらに追加するには、プラスアイコンをクリックして、次のクラスタの詳細を入力します。
     </para>
@@ -503,12 +507,12 @@ Please see LICENSE.txt for this document's license.
      </mediaobject>
     </figure>
    </step>
-   <step performance="required">
+   <step>
     <para>
      ダッシュボードからクラスタを削除するには、クラスタのサマリの隣の<literal>x</literal>アイコンをクリックします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      クラスタの詳細を表示するには、ダッシュボード上でクラスタのボックス内の任意の場所をクリックします。
     </para>
@@ -516,7 +520,7 @@ Please see LICENSE.txt for this document's license.
      これにより、新しいブラウザウィンドウまたは新しいブラウザタブが開きます。クラスタに現在ログインしていない場合は、Hawkのログイン画面が開きます。ログインしたら、Hawkのサマリビューに、そのクラスタの<guimenu>クラスタステータス</guimenu>が表示されます。その時点から、Hawkで通常どおりにクラスタを管理できます。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>クラスタダッシュボード</guimenu>は独立したブラウザウィンドウまたはタブで開いたままになっているので、ダッシュボードとHawkによる個々のクラスタの管理とは、簡単に切り替えることができます。
     </para>
@@ -528,15 +532,15 @@ Please see LICENSE.txt for this document's license.
   </para>
 
 
- </sect1>
- <sect1 id="sec-ha-config-hawk-geo">
+ </section>
+ <section xml:id="sec-ha-config-hawk-geo">
   <title>GeoクラスタのＨａｗｋ</title>
 
   <para>
    地理的に離れたクラスタ(Geoクラスタ)に関連するHawk機能の詳細については、『Geo Clustering for SUSE Linux Enterprise High Availability Extensionクイックスタート』<citetitle><phrase role="productname"><phrase os="sles"/></phrase></citetitle>を参照してください。
   </para>
- </sect1>
- <sect1 id="sec-ha-config-hawk-trouble">
+ </section>
+ <section xml:id="sec-ha-config-hawk-trouble">
   <title>トラブルシューティング</title>
 
   <variablelist>
@@ -559,7 +563,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </varlistentry>
-   <varlistentry id="vle-ha-hawk-certificate">
+   <varlistentry xml:id="vle-ha-hawk-certificate">
     <term>自己署名証明書の置き換え</term>
     <listitem>
      <para>
@@ -605,5 +609,5 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
+ </section>
 </chapter>
