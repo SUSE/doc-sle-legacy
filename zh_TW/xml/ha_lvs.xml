@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_lvs.xml" id="cha-ha-lvs">
- <title>藉由 Linux Virtual Server 實現負載平衡</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_lvs.xml" xml:id="cha-ha-lvs"><title>藉由 Linux Virtual Server 實現負載平衡</title><info/>
+ 
 
  <para>
   Linux Virtual Server (LVS) 的目標是提供一個基本架構，將各網路連接導向至多部可分攤其工作負載的伺服器。Linux Virtual Server 是一組伺服器叢集 (一或多個負載平衡器與幾部執行服務的實際伺服器)，對外部用戶端而言則是一個大型的高速伺服器。這種表面上的單個伺服器稱為<emphasis>虛擬伺服器</emphasis>。Linux Virtual Server 可用於構建擴充性強、可用性高的網路服務，例如 Web、快取、郵件、FTP、媒體和 VoIP 服務。
@@ -14,14 +18,14 @@ Please see LICENSE.txt for this document's license.
  <para>
   實際的伺服器與負載平衡器之間可透過高速 LAN 或地理位置分散的 WAN 來連接。負載平衡器可將請求發送到不同的伺服器。它們可以讓叢集的多個平行服務顯示為單一 IP 位址 (虛擬 IP 位址或 VIP) 上的一個虛擬服務。發送請求可以使用 IP 負載平衡技術或應用程式層級的負載平衡技術。以透明方式在叢集中新增或移除節點可以實現系統的延展性。透過偵測節點或精靈故障，然後重新正確地設定系統可以提供高可用性。
  </para>
- <sect1 id="sec-ha-lvs-overview">
+ <section xml:id="sec-ha-lvs-overview">
   <title>概念綜覽</title>
 
   <para>
    以下幾節概要介紹了主要的 LVS 元件和概念。
   </para>
 
-  <sect2 id="sec-ha-lvs-overview-director">
+  <section xml:id="sec-ha-lvs-overview-director">
    <title>導向器</title>
    <para>
     LVS 的主要元件是 ip_vs (或 IPVS) 核心代碼。它會在 Linux 核心 (第 4 層交換) 內執行輸送層負載平衡。執行包含 IPVS 代碼的 Linux 核心的節點稱為<emphasis>導向器</emphasis>。在導向器上執行的 IPVS 代碼是 LVS 的必要特性。
@@ -32,9 +36,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     依預設，此核心不需要安裝 IPVS 模組。IPVS 核心模組包含在 <systemitem class="resource">cluster-network-kmp-default</systemitem> 套件內。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-lvs-overview-userspace">
+  <section xml:id="sec-ha-lvs-overview-userspace">
    <title>使用者空間控制器和精靈</title>
    <para>
     <systemitem class="daemon">ldirectord</systemitem> 是一個使用者空間精靈，可在 LVS 負載平衡虛擬伺服器叢集中管理 Linux Virtual Server 和監控實際的伺服器。組態檔案 <filename>/etc/ha.d/ldirectord.cf</filename> 指定虛擬服務及其關聯的實際伺服器，並告知 <systemitem class="daemon">ldirectord</systemitem> 如何將伺服器設定為 LVS 重新導向器。啟始化精靈時，會為叢集建立虛擬服務。
@@ -45,9 +49,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     <systemitem class="daemon">ldirectord</systemitem> 使用 <systemitem>ipvsadm</systemitem> 工具 (<systemitem class="resource">ipvsadm</systemitem> 套件) 來處理 Linux 核心中的虛擬伺服器表格。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-lvs-overview-forwarding">
+  <section xml:id="sec-ha-lvs-overview-forwarding">
    <title>封包轉遞</title>
    <para>
     導向器將用戶端封包傳送至實際伺服器的方式有三種︰
@@ -78,16 +82,16 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-lvs-overview-schedulers">
+  <section xml:id="sec-ha-lvs-overview-schedulers">
    <title>排程演算法</title>
    <para>
     使用哪一部實際伺服器來處理用戶端請求的新連接，是由不同的演算法決定的。這些演算法以模組的形式提供，可根據特定需求進行調整。如需可用模組的綜覽，請參閱 <command>ipvsadm(8)</command> man 頁面。從用戶端接收到連接請求後，導向器會依據<emphasis>排程</emphasis>為該用戶端指定實際的伺服器。排程器是 IPVS 核心代碼的一部分，用於決定哪一部實際伺服器將獲取下一個新連接。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-lvs-ldirectord">
+  </section>
+ </section>
+ <section xml:id="sec-ha-lvs-ldirectord">
   <title>使用 YaST 設定 IP 負載平衡</title>
 
   <para>
@@ -113,69 +117,69 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <procedure id="sec-ha-lvs-ldirectord-global">
+  <procedure xml:id="sec-ha-lvs-ldirectord-global">
    <title>設定全域參數</title>
    <para>
     以下程序介紹如何設定最重要的全域參數。如需個別參數和此處未涉及之參數的詳細資料，請按一下<guimenu>說明</guimenu>或參閱 <systemitem class="daemon">ldirectord</systemitem> man 頁面。
    </para>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>檢查間隔時間</guimenu>定義 <systemitem class="daemon">ldirectord</systemitem> 連接各個實際伺服器以檢查它們是否連接的時間間隔。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>檢查逾時</guimenu>設定實際伺服器應在上次檢查後的多少時間內給於回應。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>失敗計數</guimenu>可以定義當 <systemitem class="daemon">ldirectord</systemitem> 嘗試向實際伺服器發出多少次要求後即判定檢查失敗。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>協議逾時</guimenu>可以定義協議檢查的逾時時間 (秒)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>錯誤回復</guimenu>中，輸入當所有實際伺服器都當機時，Web 服務重新導向到之 Web 伺服器的主機名稱或 IP 位址。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果希望系統在與實際伺服器的連接狀態發生變更時傳送警示，請在<guimenu>電子郵件警示</guimenu>中輸入有效的電子郵件地址。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>電子郵件警示頻率</guimenu>可以定義當實際伺服器長時間無法存取時，重新傳送電子郵件警示的間隔時間 (秒)。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>電子郵件警示狀態</guimenu>中指定出現哪種伺服器狀態時傳送電子郵件警示。如果要定義多種狀態，可以逗號分隔。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>自動重新載入</guimenu>定義 <systemitem class="daemon">ldirectord</systemitem> 是否應持續監控組態檔案的修改情況。如果設定為<literal>是</literal>，便會在變更後自動重新載入組態。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用<guimenu>Quiescent</guimenu>參數定義是否要從核心的 LVS 表格中移除發生故障的實際伺服器。如果設定為<guimenu>是</guimenu>，則不會移除出現故障的伺服器。而是將其權值設為 <literal>0</literal>，表示不接受任何新的連接。已建立的連接將保持，直到逾時。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果要讓記錄使用不同的路徑，則在<guimenu>記錄檔案</guimenu>中指定記錄的路徑。依預設，<systemitem class="daemon">ldirectord</systemitem> 會將其記錄寫入 <filename>/var/log/ldirectord.log</filename>。
     </para>
    </step>
   </procedure>
 
-  <figure id="fig-ha-lvs-yast-global">
+  <figure xml:id="fig-ha-lvs-yast-global">
    <title>YaST IP 負載平衡 — 全域參數</title>
    <mediaobject>
     <imageobject role="fo">
@@ -187,27 +191,27 @@ Please see LICENSE.txt for this document's license.
    </mediaobject>
   </figure>
 
-  <procedure id="sec-ha-lvs-ldirectord-virtual">
+  <procedure xml:id="sec-ha-lvs-ldirectord-virtual">
    <title>設定虛擬服務</title>
    <para>
     您可以透過為各項虛擬服務定義一對參數的方式設定一或多個虛擬服務。以下程序介紹如何為虛擬服務設定最重要的全域參數。如需個別參數和此處未涉及之參數的詳細資料，請按一下<guimenu>說明</guimenu>或參閱 <systemitem class="daemon">ldirectord</systemitem> man 頁面。
    </para>
-   <step performance="required">
+   <step>
     <para>
      在 YaST IP 負載平衡模組中，切換至<guimenu>虛擬伺服器組態</guimenu>索引標籤。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>新增</guimenu>新的虛擬伺服器，或<guimenu>編輯</guimenu>現有的虛擬伺服器。此時會出現一個新的對話方塊並顯示可用的選項。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>虛擬伺服器</guimenu>中輸入以 LVS 形式存取負載平衡器和實際伺服器時所使用的共享虛擬 IP 位址 (IPv4 或 IPv6) 及連接埠。也可以指定主機名稱和服務來代替 IP 位址和連接埠號。或者，也可以使用防火牆標記。防火牆標記是將任意一組 <literal>VIP:連接埠</literal>服務集結到一個虛擬服務的一種方式。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      若要指定<guimenu>實際伺服器</guimenu>，需要輸入伺服器的 IP 位址 (IPv4、IPv6 或主機名稱)、連接埠 (或服務名稱) 及轉遞方式。轉遞方式必須是 <literal>gate</literal>、<literal>ipip</literal> 或 <literal>masq</literal>，詳情請參閱<xref linkend="sec-ha-lvs-overview-forwarding"/>。
     </para>
@@ -215,47 +219,47 @@ Please see LICENSE.txt for this document's license.
      按一下<guimenu>新增</guimenu>按鈕並輸入各個實際伺服器所需的引數。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>檢查類型</guimenu>中，選取測試實際伺服器是否仍在工作時執行的檢查類型。例如，若要傳送請求並檢查回應中是否包含預期字串，請選取「<literal>協議</literal>」。
     </para>
    </step>
-   <step id="step-ha-lvs-ldirectord-service" performance="required">
+   <step xml:id="step-ha-lvs-ldirectord-service">
     <para>
      如果<guimenu>檢查類型</guimenu>已設定為「<literal>協議</literal>」，則還需要定義要監控之服務的類型。從<guimenu>服務</guimenu>下拉式清單中選取所需的服務類型。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>請求</guimenu>中輸入檢查間隔期間向每部實際伺服器所請求之物件的 URI。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果要檢查實際伺服器的回應中是否包含某個字串 (<quote>I'm alive</quote>訊息)，請定義要比對的正規表示式。在<guimenu>接收</guimenu>中輸入正規表示式。如果實際伺服器的回應中包含此表示式，說明此實際伺服器正在運行。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      根據您在<xref linkend="step-ha-lvs-ldirectord-service"/> 中選取的<guimenu>服務</guimenu>類型，您還需要指定其他參數以進行驗證。切換至<guimenu>驗證類型</guimenu>索引標籤，然後輸入<guimenu>登入名稱</guimenu>、<guimenu>密碼</guimenu>、<guimenu>資料庫</guimenu>或<guimenu>秘密</guimenu>等詳細資料。如需詳細資訊，請參閱 YaST 說明文字或 <systemitem class="daemon">ldirectord</systemitem> man 頁面。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      切換至<guimenu>其他</guimenu>索引標籤。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      選取用於負載平衡的<guimenu>規劃程式</guimenu>。如需可用之規劃程式的相關資訊，請參閱 <command>ipvsadm(8)</command> man 頁面。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      選取要使用的<guimenu>協定</guimenu>。如果虛擬服務指定為 IP 位址和連接埠，則必須是 <literal>tcp</literal> 或 <literal>udp</literal> 協定。如果虛擬服務指定為防火牆標記，則必須是 <literal>fwm</literal> 協定。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      根據需要定義其他參數。按一下<guimenu>確定</guimenu>確認您的組態。YaST 會將此組態寫入 <filename>/etc/ha.d/ldirectord.cf</filename>。
     </para>
@@ -264,7 +268,7 @@ Please see LICENSE.txt for this document's license.
 
 
 
-  <figure id="fig-ha-lvs-yast-virtual">
+  <figure xml:id="fig-ha-lvs-yast-virtual">
    <title>YaST IP 負載平衡 — 虛擬服務</title>
    <mediaobject>
     <imageobject role="fo">
@@ -276,25 +280,25 @@ Please see LICENSE.txt for this document's license.
    </mediaobject>
   </figure>
 
-  <example id="ex-ha-lvs-ldirectord">
+  <example xml:id="ex-ha-lvs-ldirectord">
    <title>簡單的 ldirectord 組態</title>
    <para>
     <xref linkend="fig-ha-lvs-yast-global"/> 和<xref linkend="fig-ha-lvs-yast-virtual"/> 中的顯示的值會產生以下組態 (定義於 <filename>/etc/ha.d/ldirectord.cf</filename>)︰
    </para>
-<screen>autoreload = yes <co id="co-ha-ldirectord-autoreload"/>
-checkinterval = 5 <co id="co-ha-ldirectord-checkintervall"/>
-checktimeout = 3 <co id="co-ha-ldirectord-checktimeout"/>
-quiescent = yes <co id="co-ha-ldirectord-quiescent"/>
-    virtual = 192.168.0.200:80 <co id="co-ha-ldirectord-virtual"/>
-    checktype = negotiate <co id="co-ha-ldirectord-checktype"/>
-    fallback = 127.0.0.1:80 <co id="co-ha-ldirectord-fallback"/>
-    protocol = tcp <co id="co-ha-ldirectord-protocol"/>
-    real = 192.168.0.110:80 gate <co id="co-ha-ldirectord-real"/>
+<screen>autoreload = yes <co xml:id="co-ha-ldirectord-autoreload"/>
+checkinterval = 5 <co xml:id="co-ha-ldirectord-checkintervall"/>
+checktimeout = 3 <co xml:id="co-ha-ldirectord-checktimeout"/>
+quiescent = yes <co xml:id="co-ha-ldirectord-quiescent"/>
+    virtual = 192.168.0.200:80 <co xml:id="co-ha-ldirectord-virtual"/>
+    checktype = negotiate <co xml:id="co-ha-ldirectord-checktype"/>
+    fallback = 127.0.0.1:80 <co xml:id="co-ha-ldirectord-fallback"/>
+    protocol = tcp <co xml:id="co-ha-ldirectord-protocol"/>
+    real = 192.168.0.110:80 gate <co xml:id="co-ha-ldirectord-real"/>
     real = 192.168.0.120:80 gate <xref linkend="co-ha-ldirectord-real" xrefstyle="select:label nopage"/>
-    receive = "still alive" <co id="co-ha-ldirectord-receive"/>
-    request = "test.html" <co id="co-ha-ldirectord-request"/>
-    scheduler = wlc <co id="co-ha-ldirectord-scheduler"/>
-    service = http <co id="co-ha-ldirectord-service"/></screen>
+    receive = "still alive" <co xml:id="co-ha-ldirectord-receive"/>
+    request = "test.html" <co xml:id="co-ha-ldirectord-request"/>
+    scheduler = wlc <co xml:id="co-ha-ldirectord-scheduler"/>
+    service = http <co xml:id="co-ha-ldirectord-service"/></screen>
    <calloutlist>
     <callout arearefs="co-ha-ldirectord-autoreload">
      <para>
@@ -367,8 +371,8 @@ quiescent = yes <co id="co-ha-ldirectord-quiescent"/>
     此組態會產生以下程序流︰<systemitem class="daemon">ldirectord</systemitem> 將每隔 5 秒 (<xref linkend="co-ha-ldirectord-checkintervall" xrefstyle="select:label nopage"/>) 連接一次各個實際伺服器，並請求<xref linkend="co-ha-ldirectord-real" xrefstyle="select:label nopage"/> 和<xref linkend="co-ha-ldirectord-request" xrefstyle="select:label nopage"/> 中指定的 <literal>192.168.0.110:80/test.html</literal> 或 <literal>192.168.0.120:80/test.html</literal>。如果最後一次檢查時，3 秒內 (<xref linkend="co-ha-ldirectord-checktimeout" xrefstyle="select:label nopage"/>) 未從某部實際伺服器收到預期的 <literal>still alive</literal> 字串 (<xref linkend="co-ha-ldirectord-receive" xrefstyle="select:label nopage"/>)，則會將該實際伺服器從可用池中移除。但是，由於設定了 <literal>quiescent=yes</literal> (<xref linkend="co-ha-ldirectord-quiescent" xrefstyle="select:label nopage"/>)，因此該部實際伺服器不會從 LVS 表格移除，但其權值會設為 <literal>0</literal>，這樣便不會接受與此實際伺服器的新連接。已建立的連接將保持，直到逾時。
    </para>
   </example>
- </sect1>
- <sect1 id="sec-ha-lvs-further">
+ </section>
+ <section xml:id="sec-ha-lvs-further">
   <title>更多設定</title>
 
   <para>
@@ -397,16 +401,16 @@ quiescent = yes <co id="co-ha-ldirectord-quiescent"/>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="sec-ha-lvs-more">
+ </section>
+ <section xml:id="sec-ha-lvs-more">
   <title>更多資訊</title>
 
   <para>
-   如需有關 Linux Virtual Server 的詳細資訊，請參閱專案首頁 <ulink url="http://www.linuxvirtualserver.org/"/>。
+   如需有關 Linux Virtual Server 的詳細資訊，請參閱專案首頁 <link xlink:href="http://www.linuxvirtualserver.org/"/>。
   </para>
 
   <para>
    如需有關 <systemitem class="daemon">ldirectord</systemitem> 的資訊，請參閱完整的 man 頁面。
   </para>
- </sect1>
+ </section>
 </chapter>

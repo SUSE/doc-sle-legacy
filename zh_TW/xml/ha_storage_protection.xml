@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_storage_protection.xml" id="cha-ha-storage-protect">
- <title>儲存保護</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_storage_protection.xml" xml:id="cha-ha-storage-protect"><title>儲存保護</title><info><abstract>
 
   <para>
    高可用性叢集堆疊的首要任務是保護資料的完整性。具體是透過防止在未經協調的情況下同時存取資料儲存來實現此目標。舉例來說，叢集中只會掛接一次 Ext3 檔案系統，以及只有在與其他叢集節點協調後才會掛接 OCFS2 磁碟區。在正常運作的叢集中，如果使用中的資源超出其同步限制，Pacemaker 會偵測到此情況，並啟動復原操作。而且，其規則引擎永遠不會超出這些限制。
@@ -24,15 +26,17 @@ Please see LICENSE.txt for this document's license.
   <para>
    本章先介紹可充分利用自身儲存的 IO 圍籬區隔機制，然後介紹為確保獨佔式儲存存取而增設的保護層。這兩項機制聯合可實現更高級別的保護。
   </para>
- </abstract>
- <sect1 id="sec-ha-storage-protect-fencing">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-ha-storage-protect-fencing">
   <title>基於儲存的圍籬區隔</title>
 
   <para>
    使用一或多個 STONITH 區塊裝置 (SBD)、<literal>監視程式</literal>支援和 <literal>external/sbd</literal> STONITH 代辦，可以有效地避免出現電腦分裂的情況。
   </para>
 
-  <sect2 id="sec-ha-storage-protect-fencing-oview">
+  <section xml:id="sec-ha-storage-protect-fencing-oview">
    <title>綜覽</title>
    <para>
     如果一個環境中的所有節點都可以存取共享儲存，系統會格式化裝置的一小塊分割區用於 SBD。該分割區的大小取決於所用磁碟的區塊大小 (對於區塊大小為 512 位元組的標準 SCSI 磁碟，該分割區大小為 1 MB；區塊大小為 4 KB 的 DASD 磁碟需要 4 MB)。設定各自的精靈之後，系統會連接每個節點上 SBD，然後啟動其餘的叢集堆疊。當其他所有叢集元件都關閉後，SBD 才會終止，這樣便確保了只要叢集資源啟動，SBD 就會加以監督。
@@ -49,11 +53,11 @@ Please see LICENSE.txt for this document's license.
    <para>
     如果已啟動 Pacemaker 整合，則在大部分裝置的連接已中斷的情況下，SBD 將不會自我圍籬區隔。例如，假定您的叢集包含 3 個節點：A、B 和 C。由於網路分隔，A 只能看到它自己，而 B 和 C 之間仍然能夠通訊。此時就有兩個叢集分割區，一個由於節點占多數 (B 和 C) 而達到最低節點數，另一個 (A) 則未達到。如果在大部分圍籬區隔裝置無法連接時發生這種情況，節點 A 將立即確認終止，但是節點 B 和 C 將繼續執行。
    </para>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-storage-protect-fencing-number">
+  <section xml:id="sec-ha-storage-protect-fencing-number">
    <title>SBD 裝置數量</title>
    <para>
     SBD 支援使用 1-3 個裝置：
@@ -87,35 +91,35 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </varlistentry>
    </variablelist>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-storageprotection-fencing-setup">
+  <section xml:id="sec-ha-storageprotection-fencing-setup">
    <title>設定基於儲存的保護</title>
    <para>
     設定基於儲存的保護時必須執行下列步驟︰
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-sbd-create" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-watchdog" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-sbd-daemon" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-sbd-test" xrefstyle="select:title"/>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <xref linkend="pro-ha-storage-protect-fencing" xrefstyle="select:title"/>
      </para>
@@ -145,7 +149,7 @@ Please see LICENSE.txt for this document's license.
      </listitem>
     </itemizedlist>
    </important>
-   <sect3 id="pro-ha-storage-protect-sbd-create">
+   <section xml:id="pro-ha-storage-protect-sbd-create">
     <title>建立 SBD 分割區</title>
     <para>
      建議在裝置啟動時建立 1MB 的分割區。如果 SBD 裝置位於多重路徑群組中，MPIO 的向下路徑偵測可能會導致一定程度的延遲，因此需要調整 SBD 使用的逾時。達到 <literal>msgwait</literal> 逾時後，系統會認為訊息已傳送到節點。對多重路徑而言，這一時間也就是 MPIO 偵測到路徑故障並切換到下一個路徑所需的時間。您可能需要在自己的環境中對此進行測試。如果節點上執行的 SBD 精靈更新監視程式計時器的速度不夠快，此節點將自行終止。請在特定的環境中測試所選逾時。如果只對一個 SBD 裝置使用多路徑儲存，請密切關注發生的容錯移轉延遲。
@@ -163,7 +167,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </important>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        使用下列指令啟始化 SBD 裝置︰
       </para>
@@ -176,12 +180,12 @@ Please see LICENSE.txt for this document's license.
       </para>
 <screen><prompt role="root">root # </prompt><command>sbd</command> -d /dev/<replaceable>SBD1</replaceable> -d /dev/<replaceable>SBD2</replaceable> -d /dev/<replaceable>SBD3</replaceable> create</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        如果 SBD 裝置位於多重路徑群組中，則調整 SBD 使用的逾時。逾時可以在啟始化 SBD 裝置時指定 (所有逾時均以秒計)︰
       </para>
 
-<screen><prompt role="root">root # </prompt><command>/usr/sbin/sbd</command> -d /dev/<replaceable>SBD</replaceable> -4 180<co id="co-msgwait"/> -1 90<co id="co-watchdog"/> create</screen>
+<screen><prompt role="root">root # </prompt><command>/usr/sbin/sbd</command> -d /dev/<replaceable>SBD</replaceable> -4 180<co xml:id="co-msgwait"/> -1 90<co xml:id="co-watchdog"/> create</screen>
       <calloutlist>
        <callout arearefs="co-msgwait">
         <para>
@@ -195,7 +199,7 @@ Please see LICENSE.txt for this document's license.
        </callout>
       </calloutlist>
      </step>
-     <step performance="required">
+     <step>
       <para>
        使用下列指令查看寫入裝置的內容︰
       </para>
@@ -212,8 +216,8 @@ Timeout (msgwait)  : 10</screen>
     <para>
      如您所見，逾時也會存入標頭，以確保所有參與的節點在逾時上達成一致。
     </para>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-watchdog">
+   </section>
+   <section xml:id="pro-ha-storage-protect-watchdog">
     <title>設定軟體監視程式</title>
     <para>在未由其他軟體使用的情況下，監視程式可以在發生 SBD 失敗時保護系統。</para>
      
@@ -222,7 +226,7 @@ Timeout (msgwait)  : 10</screen>
      </important>
      
      <para>
-     依預設，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 的核心中會啟用監視程式支援：本產品隨附了多個不同的核心模組，可提供特定於硬體的監視程式驅動程式。High Availability Extension 使用 SBD 精靈做為給監視程式<quote>餵食</quote>的軟體元件。如果已依<xref linkend="pro-ha-storage-protect-sbd-daemon"/> 所述進行設定，SBD 精靈會在您使用 <command>rcopenais <option>start</option></command> 將相應的節點上線時自動啟動。
+     依預設，<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 的核心中會啟用監視程式支援：本產品隨附了多個不同的核心模組，可提供特定於硬體的監視程式驅動程式。High Availability Extension 使用 SBD 精靈做為給監視程式<quote>餵食</quote>的軟體元件。如果已依<xref linkend="pro-ha-storage-protect-sbd-daemon"/> 所述進行設定，SBD 精靈會在您使用 <command>rcopenais</command> <option>start</option> 將相應的節點上線時自動啟動。
     </para>
     <para>
      通常，適當的硬體監視程式驅動程式會在系統開機時自動載入。<literal>softdog</literal> 是最常見的驅動程式，不過建議您使用實際硬體中整合的驅動程式。例如︰
@@ -252,7 +256,7 @@ Timeout (msgwait)  : 10</screen>
      <para>以下<quote>公式</quote>大致表達了這三個值之間的關係：
     </para>
      
-     <example id="ex-ha-storage-protect-sbd-timings">
+     <example xml:id="ex-ha-storage-protect-sbd-timings">
        <title>使用 SBD 做為 STONITH 裝置的叢集計時</title>
        <screen>Timeout (msgwait) = (Timeout (watchdog) * 2)
 stonith-timeout = Timeout (msgwait) + 20%</screen>
@@ -273,15 +277,15 @@ Timeout (loop)     : 1
 Timeout (msgwait)  : 40
 ==Header on disk /dev/sdb is dumped</screen>
      <para>如果您要設定新叢集，<command>sleha-init</command> 指令會將上述因素納入考量。</para>
-    <para>如需 SBD 相關計時變數的詳細資料，請參閱 <ulink url="https://www.suse.com/support/kb/doc.php?id=7011346"/> 上的《<citetitle>SBD Operation Guidelines for HAE Clusters</citetitle>》(HAE 叢集的 SBD 操作準則)。</para>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-sbd-daemon">
+    <para>如需 SBD 相關計時變數的詳細資料，請參閱 <link xlink:href="https://www.suse.com/support/kb/doc.php?id=7011346"/> 上的《<citetitle>SBD Operation Guidelines for HAE Clusters</citetitle>》(HAE 叢集的 SBD 操作準則)。</para>
+   </section>
+   <section xml:id="pro-ha-storage-protect-sbd-daemon">
     <title>啟動 SBD 精靈</title>
     <para>
      SBD 精靈是叢集堆疊的重要組成部分。只要叢集堆疊正在執行，SBD 精靈就必須執行，即使叢集堆疊的一部分損毀時也是如此，這樣才能圍籬區隔節點。
     </para>
     <procedure>
-        <step performance="required">
+        <step>
        <para>執行 <command>sleha-init</command>。此程序檔可確保正確設定 SBD，並將組態檔案 <filename>/etc/sysconfig/sbd</filename> 新增至需要與 Csync2 同步化的檔案清單。 </para>
        <para>若要手動設定 SBD，請執行以下步驟：</para>
             <para> 若要啟動 OpenAIS init 程序檔和停止 SBD，請編輯 <filename>/etc/sysconfig/sbd</filename> 檔案，搜尋下面一行，搜尋時用您的 SBD 裝置取代 <replaceable>SBD</replaceable>： </para>
@@ -299,17 +303,17 @@ Timeout (msgwait)  : 40
        </para>
       </note>
      </step>     
-     <step performance="required">
+     <step>
       <para>
-       繼續下一步之前，先執行 <command>rcopenais <option>restart</option></command> 來確保所有節點上都已啟動 SBD。
+       繼續下一步之前，先執行 <command>rcopenais</command> <option>restart</option> 來確保所有節點上都已啟動 SBD。
       </para>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-sbd-test">
+   </section>
+   <section xml:id="pro-ha-storage-protect-sbd-test">
     <title>測試 SBD</title>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        下列指令會從 SBD 裝置傾印節點插槽及其目前的訊息︰
       </para>
@@ -318,14 +322,14 @@ Timeout (msgwait)  : 40
        現在您會看到，此處列出 SBD 的所有叢集節點均已啟動，訊息槽應顯示<literal>清除</literal>。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        嘗試向其中一個節點傳送一則測試訊息︰
       </para>
       
 <screen><prompt role="root">root # </prompt><command>sbd</command> -d /dev/<replaceable>SBD</replaceable> message alice test</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        節點會在系統記錄檔案中確認收到訊息︰
       </para>
@@ -335,8 +339,8 @@ Timeout (msgwait)  : 40
       </para>
      </step>
     </procedure>
-   </sect3>
-   <sect3 id="pro-ha-storage-protect-fencing">
+   </section>
+   <section xml:id="pro-ha-storage-protect-fencing">
     <title>設定圍籬區隔資源</title>
     <para>
      若要完成 SBD 設定，請將 SBD 設定為 CIB 中的 STONITH/圍籬區隔機制。
@@ -347,16 +351,16 @@ Timeout (msgwait)  : 40
      <para>在雙節點叢集 (及 <literal>no-quorum-policy</literal> 設定為 <literal>ignore</literal> 的其他叢集) 中，經常會發生不合時宜的圍籬區隔，因為這兩個節點會在發生電腦分裂時相互圍籬區隔。若要避免這種雙重圍籬區隔，請將 <literal>pcmk_delay_max</literal> 參數新增至 STONITH 資源的組態中。如此，網路卡正常運作的伺服器就更有機會得以留存。</para>
     </tip>
     <procedure>
-     <step performance="required">
+     <step>
       <para>登入某個節點，然後使用 <command>crm configure</command> 啟動互動式 crmsh。</para>
      </step>
-     <step performance="required">
+     <step>
       <para>輸入以下內容：</para>
       
       <screen><prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-enabled="true"
-<prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-timeout="40s" <co id="co-ha-sbd-stonith-timeout"/>
+<prompt role="custom">crm(live)configure# </prompt><command>property</command> stonith-timeout="40s" <co xml:id="co-ha-sbd-stonith-timeout"/>
 <prompt role="custom">crm(live)configure# </prompt><command>primitive</command> stonith_sbd stonith:external/sbd \
-   pcmk_delay_max="30" <co id="co-ha-sbd-pcmk-delay-max"/></screen>
+   pcmk_delay_max="30" <co xml:id="co-ha-sbd-pcmk-delay-max"/></screen>
       <para> 不需要複製資源。由於系統會自動配置節點插槽，因此不需要手動定義主機清單。 </para>
       <calloutlist>
        <callout arearefs="co-ha-sbd-stonith-timeout">
@@ -369,11 +373,11 @@ Timeout (msgwait)  : 40
        </callout>
       </calloutlist>
       </step>
-     <step performance="required">
+     <step>
       <para> 提交變更： </para>
       <screen><prompt role="custom">crm(live)# </prompt><command>configure</command> commit</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        因為現在透過 SBD 機制來實現圍籬區隔功能，所以請停用先前設定過的其他所有圍籬區隔裝置。
       </para>
@@ -382,16 +386,16 @@ Timeout (msgwait)  : 40
     <para>
      資源啟動後，叢集的共享儲存圍籬區隔組態即已成功設定，叢集將在需要對節點進行圍籬區隔時使用此方法。
     </para>
-   </sect3>
-   <sect3>
+   </section>
+   <section>
     <title>更多資訊</title>
     <para>
-     <ulink url="http://www.linux-ha.org/wiki/SBD_Fencing"/>
+     <link xlink:href="http://www.linux-ha.org/wiki/SBD_Fencing"/>
     </para>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-storageprotection-exstoract">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-ha-storageprotection-exstoract">
   <title>確保啟動獨佔性儲存</title>
 
   <para>
@@ -402,7 +406,7 @@ Timeout (msgwait)  : 40
    由於內在設計的原因，sfex 無法用於要求同時操作的工作負載 (如 OCFS2)，但可用做傳統容錯移轉式工作負載的保護層。其效果與保留 SCSI-2 類似，但更加常用。
   </para>
 
-  <sect2 id="sec-ha-storageprotection-exstoract-description">
+  <section xml:id="sec-ha-storageprotection-exstoract-description">
    <title>綜覽</title>
    <para>
     在共享儲存環境中，會額外設定一個小分割區，用於儲存一或多個鎖定。
@@ -413,9 +417,9 @@ Timeout (msgwait)  : 40
    <para>
     系統必須定期重新整理鎖定，這樣即使節點停止回應，也不會永久封鎖鎖定，其他節點仍能繼續處理。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-storageprotection-exstoract-requirements">
+  <section xml:id="sec-ha-storageprotection-exstoract-requirements">
    <title>設定</title>
    <para>
     下例說明了如何建立用於 sfex 的共享分割區，以及如何在 CIB 中為 sfex 鎖定設定資源。一個 sfex 分割區可保存任意個鎖定 (預設為一個)，每個鎖定需要配置 1 KB 儲存空間。
@@ -442,18 +446,18 @@ Timeout (msgwait)  : 40
    </important>
    <procedure>
     <title>建立 sfex 分割區</title>
-    <step performance="required">
+    <step>
      <para>
       建立一個共享分割區用於 sfex。記下此分割區的名稱，並用其取代下面的 <filename>/dev/sfex</filename>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下指令建立 sfex 中繼資料︰
      </para>
 <screen><prompt role="root">root # </prompt><command>sfex_init</command> -n 1 /dev/sfex</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       驗證該中繼資料已正確建立︰
      </para>
@@ -465,7 +469,7 @@ Timeout (msgwait)  : 40
    </procedure>
    <procedure>
     <title>設定 sfex 鎖定的資源</title>
-    <step performance="required">
+    <step>
      <para>
       sfex 鎖定透過 CIB 中的資源表示，設定如下所示︰
      </para>
@@ -474,27 +478,27 @@ Timeout (msgwait)  : 40
       lock_timeout="70" monitor_interval="10" \
 #	op monitor interval="10s" timeout="30s" on_fail="fence"</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       若要透過 sfex 鎖定保護資源，請在保護對象與 sfex 資源之間建立強制性順序和配置條件約束。假設要保護之資源的 ID 為 <literal>filesystem1</literal>︰
      </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>order</command> order-sfex-1 inf: sfex_1 filesystem1
 <prompt role="custom">crm(live)configure# </prompt><command>colocation</command> colo-sfex-1 inf: filesystem1 sfex_1</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果使用群組語法，請將 sfex 資源做為第一個資源新增到群組中︰
      </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>group</command> LAMP sfex_1 filesystem1 apache ipaddr</screen>
     </step>
    </procedure>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-storage-moreinfo">
+  </section>
+ </section>
+ <section xml:id="sec-ha-storage-moreinfo">
   <title>更多資訊</title>
 
   <para>
-   請參閱 <ulink url="http://www.linux-ha.org/wiki/SBD_Fencing"/> 和 <command>man sbd</command>。
+   請參閱 <link xlink:href="http://www.linux-ha.org/wiki/SBD_Fencing"/> 和 <command>man sbd</command>。
   </para>
- </sect1>
+ </section>
 </chapter>
