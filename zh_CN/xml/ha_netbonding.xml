@@ -1,12 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_netbonding.xml" id="cha-ha-netbonding">
- <title>网络设备绑定</title>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_netbonding.xml" xml:id="cha-ha-netbonding"><title>网络设备绑定</title><info/>
+ 
  <para>
   对于许多系统，需要实施高于典型以太网设备的标准数据安全性或可用性要求的网络连接。在这些情况下，可以将多个以太网设备聚合到单个绑定设备。
  </para>
@@ -17,7 +21,7 @@ Please see LICENSE.txt for this document's license.
   使用 OpenAIS 时，联接设备并不是通过群集软件管理的。因此，必须在每个可能需要访问联接设备的群集节点上配置联接设备。
  </para>
 
- <sect1 id="sec-ha-netbond-yast">
+ <section xml:id="sec-ha-netbond-yast">
   <title>使用 YaST 配置联接设备</title>
 
   <para>
@@ -25,27 +29,27 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 用户身份启动 YaST 并选择<menuchoice> <guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>网络设置</guimenu>中，切换到<guimenu>概述</guimenu>选项卡以显示可用的设备。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      检查要聚合到联接设备的以太网设备是否有指定的 IP 地址。如果有，更改此地址：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        选择要更改的设备，然后单击<guimenu>编辑</guimenu>。
       </para>
      </step>
-     <step id="step-bond-slave" performance="required">
+     <step xml:id="step-bond-slave">
       <para>
        在打开的<guimenu>网卡设置</guimenu>对话框的<guimenu>地址</guimenu>选项卡中，选择<guimenu>无链接和 IP 设置（绑定从属）</guimenu>选项。
       </para>
@@ -60,24 +64,24 @@ Please see LICENSE.txt for this document's license.
        </mediaobject>
       </informalfigure>
      </step>
-     <step performance="required">
+     <step>
       <para>
        单击<guimenu>下一步</guimenu>，返回到<guimenu>网络设置</guimenu>对话框中的<guimenu>概述</guimenu>选项卡。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      添加新联接设备：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        单击<guimenu>添加</guimenu>并将<guimenu>设备类型</guimenu>更改为<guimenu>绑定</guimenu>。按<guimenu>下一步</guimenu>继续。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        选择如何为联接设备指派 IP 地址。有三种方法可供选择：
       </para>
@@ -102,12 +106,12 @@ Please see LICENSE.txt for this document's license.
        使用最适合您环境的方法。如果使用 OpenAIS 管理虚拟 IP 地址，请选择<guimenu>静态指派的 IP 地址</guimenu>，并为接口指派一个 IP 地址。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        切换到<guimenu>绑定从属</guimenu>选项卡。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        它会显示在<xref linkend="step-bond-slave" xrefstyle="select:label       nopage"/> 中已配置为绑定从属的所有以太网设备。要选择需要加入绑定的以太网设备，请激活相关<guimenu>绑定从属</guimenu>前面的复选框。
       </para>
@@ -122,7 +126,7 @@ Please see LICENSE.txt for this document's license.
        </mediaobject>
       </informalfigure>
      </step>
-     <step performance="required">
+     <step>
       <para>
        编辑<guimenu>联接驱动程序选项</guimenu>。可以使用以下模式：
       </para>
@@ -192,22 +196,22 @@ Please see LICENSE.txt for this document's license.
        </varlistentry>
       </variablelist>
      </step>
-     <step performance="required">
+     <step>
       <para>
        务必向<guimenu>联接驱动程序选项</guimenu>添加参数 <literal>miimon=100</literal>。如果不指定此参数，则不会定期检查链路，因此，绑定驱动程序可能会持续在有故障的链路上丢包。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      单击<guimenu>下一步</guimenu>，将 YaST 保留为<guimenu>确定</guimenu>，完成联接设备的配置。YaST 将配置写入 <filename>/etc/sysconfig/network/ifcfg-bond<replaceable>DEVICENUMBER</replaceable></filename>。
     </para>
    </step>
   </procedure>
- </sect1>
+ </section>
 
- <sect1 id="sec-ha-netbond-hotpug-yast">
+ <section xml:id="sec-ha-netbond-hotpug-yast">
   <title>联接从属的热插拔</title>
 
   <para>
@@ -220,12 +224,12 @@ Please see LICENSE.txt for this document's license.
    <para>
     如果您想改用手动配置，请在《SUSE Linux Enterprise Server 11 管理指南》中参考“<citetitle>基础网络</citetitle>”一章内的“<citetitle>绑定从属的热插拔</citetitle>”部分。
    </para>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 用户身份启动 YaST 并选择<menuchoice> <guimenu>网络设备</guimenu> <guimenu>网络设置</guimenu></menuchoice>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在<guimenu>网络设置</guimenu>中，切换到<guimenu>概述</guimenu>选项卡以显示已配置的设备。如果已配置绑定从属，则会显示在<guimenu>备注</guimenu>栏中。
     </para>
@@ -240,39 +244,39 @@ Please see LICENSE.txt for this document's license.
      </mediaobject>
     </informalfigure>
    </step>
-   <step performance="required">
+   <step>
     <para>
      对于已经聚合到联接设备的每个以太网设备，请执行以下步骤：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        选择要更改的设备，然后单击<guimenu>编辑</guimenu>。<guimenu>网卡设置</guimenu>对话框随即打开。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        切换到<guimenu>常规</guimenu>选项卡，确保将<guimenu>激活设备</guimenu>设置为<literal>在热插拔时</literal>。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        切换到<guimenu>硬件</guimenu>选项卡。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        针对 <guimenu>Udev 规则</guimenu>，单击<guimenu>更改</guimenu>并选择 <guimenu>BusID</guimenu> 选项。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        单击<guimenu>确定</guimenu>和<guimenu>下一步</guimenu>，返回到<guimenu>网络设置</guimenu>对话框中的<guimenu>概述</guimenu>选项卡。如果您现在单击以太网设备项，底部窗格会显示设备的详细信息，包括总线 ID。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      单击<guimenu>确定</guimenu>确认您的更改，并退出网络设置。
     </para>
@@ -282,8 +286,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    在引导时，<filename>/etc/init.d/network</filename> 不会等待热插拔从属接口，而是等待绑定准备就绪，而这需要至少有一个从属接口可用。当从系统中去除一个从属接口时（从 NIC 驱动程序拆开绑定、执行 NIC 驱动程序的 <command>rmmod</command> 命令或 PCI 热插拔去除为 true），内核会自动从绑定中将其去除。当向系统添加新网卡时（替换插槽中的硬件），<systemitem>udev</systemitem> 会应用基于总线的永久名称规则对新网卡进行重命名，并为其调用 <command>ifup</command>。<command>ifup</command> 命令会自动调用以将新网卡加入联接。
   </para>
- </sect1>
- <sect1 id="sec-ha-netbonding-more">
+ </section>
+ <section xml:id="sec-ha-netbonding-more">
   <title>更多信息</title>
 
   <para>
@@ -292,5 +296,5 @@ Please see LICENSE.txt for this document's license.
   <para>对于高可用性设置，本指南中所述的以下选项特别重要：<option>miimon</option> 和 <option>use_carrier</option>。</para>
 
 
- </sect1>
+ </section>
 </chapter>

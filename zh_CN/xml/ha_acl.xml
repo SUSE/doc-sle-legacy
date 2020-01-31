@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_acl.xml" id="cha-ha-acl">
- <title>访问控制列表</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_acl.xml" xml:id="cha-ha-acl"><title>访问控制列表</title><info><abstract>
   <para>
    crm 外壳 (crmsh)、Hawk 或 Pacemaker GUI 等群集管理工具可由 <systemitem class="username">root</systemitem> 用户或 <systemitem class="groupname">haclient</systemitem> 组内的任何用户使用。默认情况下，这些用户具有完全读/写访问权。要限制访问权或指派更加细化的访问权限，可以使用<emphasis>访问控制列表</emphasis> (ACL)。
   </para>
@@ -15,14 +17,16 @@ Please see LICENSE.txt for this document's license.
   <para>
    访问控制列表由一组有序的访问规则构成。每个规则针对一部分群集配置赋予用户读取或写入访问权限，或拒绝其访问。规则通常会组合在一起产生特定角色，然后可以为用户指派与其任务匹配的角色。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  
  <note>
   <title>CIB 验证版本和 ACL 的差异</title>
   <para>仅当您的 CIB 是使用 <literal>pacemaker-2.0</literal> 或更高 CIB 语法版本验证的情况下，此 ACL 文档才适用。有关如何查验这一点以及升级 CIB 版本的细节，请参见<xref linkend="note-ha-cib-upgrade"/>。 </para>
-  <para>如果您已从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升级并保留了以前的 CIB 版本，请参见《<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 高可用性指南》中的“<citetitle>访问控制列表</citetitle>”一章。网址：<ulink url="http://www.suse.com/documentation/"/>。</para>
+  <para>如果您已从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升级并保留了以前的 CIB 版本，请参见《<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 高可用性指南》中的“<citetitle>访问控制列表</citetitle>”一章。网址：<link xlink:href="http://www.suse.com/documentation/"/>。</para>
  </note>
- <sect1 id="sec-ha-acl-require">
+ <section xml:id="sec-ha-acl-require">
   <title>要求和先决条件</title>
 
   <para>
@@ -74,10 +78,10 @@ Please see LICENSE.txt for this document's license.
   </important>
 
   <para>
-   要使用 ACL，需要具备一些关于 XPath 的知识。XPath 是在 XML 文档中选择节点所用的语言。请参见 <ulink url="http://en.wikipedia.org/wiki/XPath"/> 或查找位于 <ulink url="http://www.w3.org/TR/xpath/"/> 的规范。
+   要使用 ACL，需要具备一些关于 XPath 的知识。XPath 是在 XML 文档中选择节点所用的语言。请参见 <link xlink:href="http://en.wikipedia.org/wiki/XPath"/> 或查找位于 <link xlink:href="http://www.w3.org/TR/xpath/"/> 的规范。
   </para>
- </sect1>
- <sect1 id="sec-ha-acl-enable">
+ </section>
+ <section xml:id="sec-ha-acl-enable">
   <title>在群集中启用 ACL</title>
 
   <para>
@@ -90,31 +94,31 @@ Please see LICENSE.txt for this document's license.
    也可以根据<xref linkend="pro-ha-acl-enable-hawk"/>中所述使用 Hawk。
   </para>
 
-  <procedure id="pro-ha-acl-enable-hawk">
+  <procedure xml:id="pro-ha-acl-enable-hawk">
    <title>使用 Hawk 启用 ACL</title>
-   <step performance="required">
+   <step>
     <para>
      按<xref linkend="sec-ha-config-hawk-intro-connect"/>中所述，启动 Web 浏览器并登录到群集。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在左侧导航栏中，选择<guimenu>群集属性</guimenu>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在 <guimenu>CRM 配置</guimenu>组中，从空下拉框中选择 <guimenu>enable-acl</guimenu> 属性，然后单击加号图标添加该属性。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      要设置 <literal>enable-acl=true</literal>，请激活 <literal>enable-acl</literal> 旁边的复选框，并确认您所做的更改。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-acl-basics">
+ </section>
+ <section xml:id="sec-ha-acl-basics">
   <title>ACL 的基本原理</title>
 
   <para>
@@ -151,14 +155,14 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </itemizedlist>
 
-  <sect2 id="sec-ha-acl-config-xpath">
+  <section xml:id="sec-ha-acl-config-xpath">
    <title>通过 XPath 表达式设置 ACL 规则</title>
    <para>
     要通过 XPath 管理 ACL 规则，需要知道基础 XML 的结构。可使用以下命令来检索结构（该命令将显示 XML 格式的群集配置，请参见<xref linkend="ex-ha-acl-excerpt" xrefstyle="select:label nopage"/>）：
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure show xml</screen>
    
-   <example id="ex-ha-acl-excerpt">
+   <example xml:id="ex-ha-acl-excerpt">
     <title>XML 格式群集配置摘录</title>
 <screen>&lt;num_updates="59" 
       dc-uuid="175704363"
@@ -193,7 +197,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     例如，<xref linkend="tab-ha-acl-operator"/>显示了用于创建<quote>操作员</quote>角色的参数（访问类型和 XPath 表达式）。具有此角色的用户只能执行第二列中所述的任务 - 他们既不能重新配置任何资源（例如，更改参数或操作），也不能更改共置约束或顺序约束的配置。
    </para>
-   <table id="tab-ha-acl-operator">
+   <table xml:id="tab-ha-acl-operator">
     <title>Operator 角色 - 访问类型和 XPath 表达式</title>
     <tgroup cols="2">
      <thead>
@@ -305,10 +309,10 @@ Please see LICENSE.txt for this document's license.
      </tbody>
     </tgroup>
    </table>
-  </sect2>
+  </section>
 
   
-   <sect2 id="sec-ha-acl-config-tag">
+   <section xml:id="sec-ha-acl-config-tag">
    <title>通过缩写设置 ACL 规则</title>
    <para>
     对于不想使用 XML 结构的用户，有一种更简单的方法。 
@@ -331,51 +335,51 @@ Please see LICENSE.txt for this document's license.
     可以在 crmsh 和 Hawk 中使用缩写语法。CIB 守护程序知道如何将 ACL 规则应用到匹配的对象。
    </para>
    
-   </sect2>
-  </sect1>
- <sect1 id="sec-ha-acl-config-hbgui">
+   </section>
+  </section>
+ <section xml:id="sec-ha-acl-config-hbgui">
   <title>使用 Pacemaker GUI 配置 ACL</title>
 
   <para> 以下过程说明如何通过定义 <literal>monitor</literal> 角色并将其指派给用户，来配置对群集配置的只读访问权。您也可以根据<xref linkend="sec-ha-acl-config-hawk"/>和<xref linkend="pro-ha-acl-crm"/>所述使用 Hawk 或 crmsh 来实现此目的。 </para>
 
-  <procedure id="pro-ha-acl-hbgui">
+  <procedure xml:id="pro-ha-acl-hbgui">
    <title>使用 Pacemaker GUI 添加监视者角色和指派用户</title>
-   <step performance="required">
+   <step>
     <para>
      如<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      单击<guimenu>配置</guimenu>树中的 <guimenu>ACL</guimenu> 条目。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      单击<guimenu>添加</guimenu>。将显示一个对话框。选择 <guimenu>ACL 目标</guimenu>或 <guimenu>ACL 角色</guimenu>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      定义 ACL 角色：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        选择 <guimenu>ACL 角色</guimenu>。将打开一个窗口，可在其中添加配置选项。
       </para>
      </step>
-     <step id="st-ha-acl-config-hbgui-id" performance="required">
+     <step xml:id="st-ha-acl-config-hbgui-id">
       <para>
        在 <guimenu>ID</guimenu> 文本字段中添加唯一标识符，例如 <literal>monitor</literal>。
       </para>
      </step>
-     <step id="st-ha-acl-config-hbgui-add" performance="required">
+     <step xml:id="st-ha-acl-config-hbgui-add">
       <para>
        单击<guimenu>添加</guimenu>并选择权限（<guimenu>读</guimenu>、<guimenu>写</guimenu>或<guimenu>拒绝</guimenu>）。本示例中选择<guimenu>读</guimenu>。
       </para>
      </step>
-     <step id="st-ha-acl-config-hbgui-xpath" performance="required">
+     <step xml:id="st-ha-acl-config-hbgui-xpath">
       <para>
        在 <guimenu>Xpath</guimenu> 文本字段中输入 XPath 表达式 <literal>/cib</literal>。单击<guimenu>确定</guimenu>继续。
       </para>
@@ -383,34 +387,34 @@ Please see LICENSE.txt for this document's license.
        旁注：如果具有资源或约束，还可使用<xref linkend="sec-ha-acl-config-tag"/>中所述的缩写语法。 
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        如果有其他条件，请重复步骤（<xref linkend="st-ha-acl-config-hbgui-add"/>和<xref linkend="st-ha-acl-config-hbgui-xpath"/>）。在本例中，并没有其他条件，因此角色完成，可以按<guimenu>确定</guimenu>关闭窗口。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      将角色指派给用户：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        单击<guimenu>添加</guimenu>按钮。一个对话框即会显示，您可在其中选择 <guimenu>ACL 目标</guimenu>或 <guimenu>ACL 角色</guimenu>。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        选择 <guimenu>ACL 目标</guimenu>。将打开一个窗口，可在其中添加配置选项。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        在 <guimenu>ID</guimenu> 文本字段中输入用户名。确保此用户属于 <systemitem class="groupname">haclient</systemitem> 组。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        单击并使用<xref linkend="st-ha-acl-config-hbgui-id"/>中指定的角色名称。
       </para>
@@ -418,47 +422,47 @@ Please see LICENSE.txt for this document's license.
     </substeps>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-acl-config-hawk">
+ </section>
+ <section xml:id="sec-ha-acl-config-hawk">
   <title>使用 Hawk 配置 ACL</title>
   
   <para>
    以下过程说明如何通过定义 <literal>monitor</literal> 角色并将其指派给用户，来配置对群集配置的只读访问权。您也可以根据<xref linkend="pro-ha-acl-crm"/>中所述使用 crmsh 来实现此目的。
   </para>
   
-  <procedure id="pro-ha-acl-hawk">
+  <procedure xml:id="pro-ha-acl-hawk">
    <title>使用 Hawk 添加 Monitor 角色并指派用户</title>
-   <step performance="required">
+   <step>
     <para>
      按<xref linkend="sec-ha-config-hawk-intro-connect"/>中所述，启动 Web 浏览器并登录到群集。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在左侧导航栏中，选择<guimenu>访问控制列表</guimenu>。视图将显示已定义的<guimenu>角色</guimenu>和<guimenu>用户</guimenu>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      定义 ACL 角色：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        选择<guimenu>角色</guimenu>类别，然后单击加号图标。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        输入唯一的<guimenu>角色 ID</guimenu>，例如 <literal>monitor</literal>。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        本示例是要定义一个 <literal>monitor</literal> 角色，因此请从<guimenu>权限</guimenu>下拉框中选择<literal>读</literal>。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        在 <guimenu>Xpath</guimenu> 文本框中，输入 Xpath 表达式 <literal>/cib</literal> 并单击<guimenu>创建角色</guimenu>。
       </para>
@@ -466,19 +470,19 @@ Please see LICENSE.txt for this document's license.
        这将会创建名为 <literal>monitor</literal> 的新角色，为其设置<literal>读</literal>权限并通过使用 XPath 表达式 <literal>/cib</literal> 将其应用到 CIB 中的所有元素。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        如果需要，可以通过单击加号图标并指定相应的参数，来添加更多的访问权限和 XPath 自变量。确认更改。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      将角色指派给用户:
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        选择<guimenu>用户</guimenu>类别，然后单击加号图标。
       </para>
@@ -486,12 +490,12 @@ Please see LICENSE.txt for this document's license.
        <guimenu>创建用户</guimenu>视图中会显示可用的角色。此外，该视图中还包含一个附加行用于配置该用户的个别 ACL 规则。在该视图中，您可以向用户指派一个或多个角色，<emphasis>或者</emphasis>为该用户定义一个或多个不同的规则。选择某个角色后各规则对应的行将会消失；取消选择后，该行将会显示。无法同时指派角色和定义各个规则。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        输入唯一的<guimenu>用户 ID</guimenu>，例如 <literal>tux</literal>。确保此用户属于 <systemitem class="groupname">haclient</systemitem> 组。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        要将角色指派给用户，请从<guimenu>角色</guimenu>中选择相应的条目。对于本示例，请选择您创建的 <literal>monitor</literal> 角色。
       </para>
@@ -510,12 +514,12 @@ Please see LICENSE.txt for this document's license.
        </mediaobject>
       </figure>
      </step>
-     <step performance="required">
+     <step>
       <para>
        如果想要定义单个规则，请选择<guimenu>权限</guimenu>并为该规则输入相应的 Xpath 参数。单击加号图标可定义更多规则。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        确认您的选择，然后单击<guimenu>创建用户</guimenu>将角色或规则指派给用户。
       </para>
@@ -527,35 +531,35 @@ Please see LICENSE.txt for this document's license.
   <para>
    要配置资源或约束的访问权限，还可使用<xref linkend="sec-ha-acl-config-tag"/>中所述的缩写语法。 
   </para>
- </sect1>
+ </section>
  
- <sect1 id="sec-ha-acl-config-crm">
+ <section xml:id="sec-ha-acl-config-crm">
   <title>使用 crmsh 配置 ACL</title>
 
   <para>
    以下过程说明如何通过定义 <literal>monitor</literal> 角色并将其指派给用户，来配置对群集配置的只读访问权。
   </para>
 
-  <procedure id="pro-ha-acl-crm">
+  <procedure xml:id="pro-ha-acl-crm">
    <title>使用 crmsh 添加 Monitor 角色并指派用户</title>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 身份登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      启动 crmsh 的交互模式：
     </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure
 <prompt role="custom">crm(live)configure# </prompt></screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      定义 ACL 角色：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        使用 <command>role</command> 命令定义新角色：
       </para>
@@ -564,26 +568,26 @@ Please see LICENSE.txt for this document's license.
        上面的命令会创建名为 <literal>monitor</literal> 的新角色，为其设置<literal>读</literal>权限并通过使用 XPath 表达式 <literal>/cib</literal> 将其应用到 CIB 中的所有元素。如有必要，可添加更多访问权限和 XPath 自变量。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        根据需要添加其他角色。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      将角色指派给一个或多个 ACL 目标，即相应的系统用户。确保这些目标属于 <systemitem class="groupname">haclient</systemitem> 组。
     </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>acl_target</command> tux monitor</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      检查更改：
     </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>show</command></screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      提交更改：
     </para>
@@ -594,6 +598,6 @@ Please see LICENSE.txt for this document's license.
   <para>
    要配置资源或约束的访问权限，还可使用<xref linkend="sec-ha-acl-config-tag"/>中所述的缩写语法。 
   </para>
- </sect1>
+ </section>
  
 </chapter>
