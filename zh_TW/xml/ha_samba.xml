@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_samba.xml" id="cha-ha-samba">
- <title>Samba 叢集</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_samba.xml" xml:id="cha-ha-samba"><title>Samba 叢集</title><info><abstract>
   <para>
    叢集化 Samba 伺服器為您的異質網路提供了高可用性解決方案。本章介紹了一些背景知識並說明如何設定叢集化 Samba 伺服器。
   </para>
- </abstract>
- <sect1 id="sec-ha-samba-overview">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-ha-samba-overview">
   <title>概念綜覽</title>
 
   <para>
@@ -37,7 +41,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <figure id="fig-ha-samba-overview">
+  <figure xml:id="fig-ha-samba-overview">
    <title>CTDB 叢集的結構</title>
    <mediaobject>
     <imageobject role="fo">
@@ -79,8 +83,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    目的是讓擁有 N+1 個節點的叢集化 Samba 伺服器快於僅有 N 個節點的 Samba 伺服器。一個節點不會慢於一部未叢集化的 Samba 伺服器。
   </para>
- </sect1>
- <sect1 id="sec-ha-samba-basicconf">
+ </section>
+ <section xml:id="sec-ha-samba-basicconf">
   <title>基本組態</title>
   
   <note>
@@ -94,24 +98,24 @@ Please see LICENSE.txt for this document's license.
    若要設定叢集化的 Samba 伺服器，請執行下列步驟：
   </para>
 
-  <procedure id="pro-ha-samba-basicconf">
+  <procedure xml:id="pro-ha-samba-basicconf">
    <title>設定基本的叢集化 Samba 伺服器</title>
-   <step performance="required">
+   <step>
     <para>
      準備叢集：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        依本指南<xref linkend="part-config"/> 所述設定叢集 (OpenAIS、Pacemaker、OCFS2)。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        設定共享檔案系統 (例如 OCFS2) 並予以掛接 (例如，掛接至 <filename>/shared</filename>)。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        如果想要開啟 POSIX ACL，則將其啟用：
       </para>
@@ -134,7 +138,7 @@ Please see LICENSE.txt for this document's license.
        </listitem>
       </itemizedlist>
      </step>
-     <step performance="required">
+     <step>
       <para>
        確定 <systemitem class="service">ctdb</systemitem>、<systemitem class="service">smb</systemitem>、<systemitem class="service">nmb</systemitem> 與 <systemitem class="service">winbind</systemitem> 服務已停用：
       </para>
@@ -145,20 +149,20 @@ Please see LICENSE.txt for this document's license.
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在共享檔案系統上建立一個 CTDB 鎖定目錄：
     </para>
     <screen><prompt role="root">root # </prompt><command>mkdir</command> -p /shared/samba/</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在 <filename>/etc/ctdb/nodes</filename> 中插入包含叢集中每個節點之全部私人 IP 位址的所有節點：
     </para>
 <screen>192.168.1.10
 192.168.1.11</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用 <command>csync2</command> 將組態檔案複製到所有節點：
     </para>
@@ -169,7 +173,7 @@ Please see LICENSE.txt for this document's license.
    </step>
 
 
-   <step performance="required">
+   <step>
     <para>
      將 CTDB 資源新增至叢集：
     </para>
@@ -188,7 +192,7 @@ Please see LICENSE.txt for this document's license.
 <prompt role="custom">crm(live)configure# </prompt><command>order</command> start-ctdb-after-fs inf: fs-clone ctdb-clone
 <prompt role="custom">crm(live)configure# </prompt><command>commit</command></screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      新增叢集化 IP 位址：
     </para>
@@ -199,7 +203,7 @@ Please see LICENSE.txt for this document's license.
 <prompt role="custom">crm(live)configure# </prompt><command>order</command> start-ip-after-ctdb inf: ctdb-clone ip-clone
 <prompt role="custom">crm(live)configure# </prompt><command>commit</command></screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      檢查結果：
     </para>
@@ -216,19 +220,19 @@ Clone Set: dlm-clone
      ip:0       (ocf::heartbeat:IPaddr2):       Started hex-13
      ip:1       (ocf::heartbeat:IPaddr2):       Started hex-14</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>從用戶端機器執行測試。在 Linux 用戶端上，新增一個用於存取 Samba 的使用者：
     </para>
     <screen><prompt role="root">root # </prompt><command>smbpasswd</command> <option>-a</option> <replaceable>USERNAME</replaceable></screen>
    </step>
-   <step performance="required"><para>測試您是否可以連接至該新使用者的主目錄：</para>
+   <step><para>測試您是否可以連接至該新使用者的主目錄：</para>
     <screen><prompt role="root">root # </prompt>smbclient -u <replaceable>USERNAME</replaceable>//192.168.2.222/<replaceable>USERNAME</replaceable></screen>
    </step>
 
 
   </procedure>
- </sect1>
- <sect1 id="sec-ha-samba-ad">
+ </section>
+ <section xml:id="sec-ha-samba-ad">
   <title>加入 Active Directory 網域</title>
 
   
@@ -242,7 +246,7 @@ Clone Set: dlm-clone
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      查閱 Windows 伺服器文件，以獲取如何設定 Active Directory 網域的指示。在本範例中，我們使用了以下參數：
     </para>
@@ -284,12 +288,12 @@ Clone Set: dlm-clone
     </informaltable>
 
    </step>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="pro-ha-samba-config-ctdb"/>
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="pro-ha-samba-config-join-ad"/>
     </para>
@@ -300,20 +304,20 @@ Clone Set: dlm-clone
    下一步是設定 CTDB：
   </para>
 
-  <procedure id="pro-ha-samba-config-ctdb">
+  <procedure xml:id="pro-ha-samba-config-ctdb">
    <title>設定 CTDB</title>
-   <step performance="required">
+   <step>
     <para>
      確定已依<xref linkend="sec-ha-samba-basicconf"/> 中所示設定了叢集。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在一個節點上停止 CTDB 資源：
     </para>
 <screen><prompt role="root">root # </prompt> crm resource stop ctdb-clone</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      開啟 <filename>/etc/samba/smb.conf</filename> 組態檔案，新增 NetBIOS 名稱，然後關閉該檔案：
     </para>
@@ -323,13 +327,13 @@ Clone Set: dlm-clone
      其他設定，例如安全性、工作群組等透過 YaST 精靈新增。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在所有節點上更新檔案 <filename>/etc/samba.conf</filename>：
     </para>
 <screen><prompt role="root">root # </prompt>csync2 -xv</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      重新啟動 CTDB 資源：
     </para>
@@ -341,9 +345,9 @@ Clone Set: dlm-clone
    最後，將您的叢集加入 Active Directory 伺服器：
   </para>
 
-  <procedure id="pro-ha-samba-config-join-ad">
+  <procedure xml:id="pro-ha-samba-config-join-ad">
    <title>加入 Active Directory</title>
-   <step performance="required">
+   <step>
     <para>
      確定下列檔案包含在要在所有叢集主機上安裝的 Csync2 組態中。
     </para>
@@ -357,24 +361,24 @@ Clone Set: dlm-clone
      您也可以使用 YaST 的<guimenu>設定 Csync2</guimenu>模組來完成此任務，請參閱<xref linkend="sec-ha-installation-setup-csync2"/>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      依<xref linkend="pro-ha-samba-basicconf"/> 所述建立 CTDB 資源。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      執行 YaST 並從<guimenu>網路服務</guimenu>項目中開啟<guimenu>Windows 網域成員</guimenu>模組。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      輸入網域或工作群組設定，然後按一下<guimenu>確定</guimenu>完成操作。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-samba-testing">
+ </section>
+ <section xml:id="sec-ha-samba-testing">
   <title>對叢集化 Samba 進行除錯與測試</title>
 
   <para>
@@ -416,7 +420,7 @@ Clone Set: dlm-clone
     </term>
     <listitem>
      <para>
-      使用 <command>ping_pong</command> 可以檢查您的檔案系統是否適用 CTDB。它會對叢集檔案系統執行某些測試，例如連貫性和效能測試 (請參閱 <ulink url="http://wiki.samba.org/index.php/Ping_pong"/>)，讓您瞭解叢集在高負載下的表現。
+      使用 <command>ping_pong</command> 可以檢查您的檔案系統是否適用 CTDB。它會對叢集檔案系統執行某些測試，例如連貫性和效能測試 (請參閱 <link xlink:href="http://wiki.samba.org/index.php/Ping_pong"/>)，讓您瞭解叢集在高負載下的表現。
      </para>
     </listitem>
    </varlistentry>
@@ -428,7 +432,7 @@ Clone Set: dlm-clone
       <systemitem class="resource">SendArp</systemitem> 資源代辦位於 <filename>/usr/lib/heartbeat/send_arp</filename> (或 <filename>/usr/lib64/heartbeat/send_arp</filename>)。<command>send_arp</command> 工具會送出無故 ARP (位址解析通訊協定) 封包，可以用來更新其他機器的 ARP 表。這有助於確認容錯移轉程序完成後的通訊問題。如果節點對 samba 顯示了叢集 IP 位址，而您卻無法連接到此節點或 ping 通此節點，請使用 <command>send_arp</command> 指令測試節點是否只需要 ARP 表更新。
      </para>
      <para>
-      如需詳細資訊，請參閱<ulink url="http://wiki.wireshark.org/Gratuitous_ARP"/>。
+      如需詳細資訊，請參閱<link xlink:href="http://wiki.wireshark.org/Gratuitous_ARP"/>。
      </para>
     </listitem>
    </varlistentry>
@@ -440,7 +444,7 @@ Clone Set: dlm-clone
 
   <procedure>
    <title>測試叢集檔案系統的連貫性和效能</title>
-   <step performance="required">
+   <step>
     <para>
      在一個節點上啟動指令 <command>ping_pong</command> 並將預留位址 <replaceable>N</replaceable> 取代為節點數量加 1。該檔案存放於 <filename><replaceable>ABSPATH</replaceable>/data.txt</filename> 共享儲存，因此從任何節點上都可存取 (<replaceable>ABSPATH </replaceable> 表示絕對路徑)：
     </para>
@@ -449,7 +453,7 @@ Clone Set: dlm-clone
      僅執行一個節點時，鎖定率應該會很高。如果程式未顯示鎖定率，請更換您的叢集檔案系統。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在另一個節點上啟動第二個 <command>ping_pong</command>，並使用相同的參數。
     </para>
@@ -474,42 +478,42 @@ Clone Set: dlm-clone
      </listitem>
     </itemizedlist>
    </step>
-   <step performance="required">
+   <step>
     <para>
      啟動第三個 <command>ping_pong</command>。新增其他節點並注意鎖定率的變化。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      逐個停止 <command>ping_pong</command> 指令。在回到單一節點的情況之前，應會看到鎖定率不斷提高。如果未發生預期的情況，請參閱<xref linkend="cha-ha-ocfs2"/> 中的詳細資訊。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-samba-moreinfo">
+ </section>
+ <section xml:id="sec-ha-samba-moreinfo">
   <title>更多資訊</title>
 
   <itemizedlist mark="bullet" spacing="normal">
    <listitem>
     <para>
-     <ulink url="http://linux-ha.org/wiki/CTDB_(resource_agent)"/>
+     <link xlink:href="http://linux-ha.org/wiki/CTDB_(resource_agent)"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://wiki.samba.org/index.php/CTDB_Setup"/>
+     <link xlink:href="http://wiki.samba.org/index.php/CTDB_Setup"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://ctdb.samba.org"/>
+     <link xlink:href="http://ctdb.samba.org"/>
     </para>
    </listitem>
    <listitem>
     <para>
-     <ulink url="http://wiki.samba.org/index.php/Samba_%26_Clustering"/>
+     <link xlink:href="http://wiki.samba.org/index.php/Samba_%26_Clustering"/>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>
