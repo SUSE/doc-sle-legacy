@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_config_cli.xml" id="cha-ha-manual-config">
- <title>配置和管理群集资源（命令行）</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_config_cli.xml" xml:id="cha-ha-manual-config"><title>配置和管理群集资源（命令行）</title><info><abstract>
   <para>
    要配置和管理群集资源，可使用图形用户界面 (Pacemaker GUI) 或 <command>crm</command> 命令行实用程序。有关 GUI 方法，请参见<xref linkend="cha-ha-configuration-gui"/>。
   </para>
@@ -15,7 +17,9 @@ Please see LICENSE.txt for this document's license.
   <para>
    本章介绍了命令行工具 <command>crm</command>，并包含此工具的概述以及如何使用模板，主要介绍如何配置和管理群集资源：创建基本和高级类型的资源（组和克隆资源）、配置约束、指定故障转移节点和故障回复节点、配置资源监视以及手动启动、清理、删除和迁移资源。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <note>
   <title>用户特权</title>
   <para>
@@ -29,7 +33,7 @@ Please see LICENSE.txt for this document's license.
    请注意，您需要将 <filename>/etc/sudoers</filename> 设置为 <command>sudo</command> 不要求提供密码。
   </para>
  </note>
- <sect1 id="sec-ha-manual-config-crm">
+ <section xml:id="sec-ha-manual-config-crm">
   <title>crmsh - 概述</title>
 
   <para>
@@ -61,7 +65,7 @@ Please see LICENSE.txt for this document's license.
    </itemizedlist>
   </tip>
 
-  <sect2 id="sec-ha-manual-config-crm-help">
+  <section xml:id="sec-ha-manual-config-crm-help">
    <title>获得帮助</title>
    <para>
     可通过以下方式之一访问帮助：
@@ -105,15 +109,15 @@ Please see LICENSE.txt for this document's license.
    <para>
     几乎所有 <command>help</command> 子命令（请不要与 <option>--help</option> 选项混淆）的输出都会打开文本编辑器。此文本编辑器允许您向上/向下滚动，以便更加方便地阅读帮助文本。要退出文本编辑器，请按 <keycap>Q</keycap> 键。
    </para>
-   <tip id="tip-crm-tabcompletion">
+   <tip xml:id="tip-crm-tabcompletion">
     <title>在 Bash 和交互式外壳中使用 Tab 键补全</title>
     <para>
      crmsh 不仅为交互式外壳提供 Tab 键补全，还全面支持在 Bash 中直接使用此功能。例如，键入 <literal>crm help config</literal><keycap function="tab"/> 会补全文字（就像在交互式外壳中一样）。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-crm-run">
+  <section xml:id="sec-ha-manual-config-crm-run">
    <title>执行 crmsh 的子命令</title>
    <para>
     <command>crm</command> 命令本身可按以下方式使用：
@@ -177,9 +181,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     以下小节概述了 <command>crm</command> 工具的一些重要方面。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-ocf">
+  <section xml:id="sec-ha-manual-config-ocf">
    <title>显示有关 OCF 资源代理的信息</title>
    <para>
     由于在群集配置中一直需要处理资源代理，<command>crm</command> 工具包含了 <command>ra</command> 命令。使用该命令可以显示有关资源代理的信息并对其进行管理（如需其他信息，另请参见<xref linkend="sec-ha-config-basics-raclasses"/>）：
@@ -242,9 +246,9 @@ Operations' defaults (advisory minimum):
      在之前的示例中，我们使用了 <command>crm</command> 命令的内壳。但是您不一定非要使用它。将相应子命令添加到 <command>crm</command> 中也可获得相同的结果。例如，在外壳中输入 <command>crm</command> <option>ra list ocf</option> 可以列出所有 OCF 资源代理。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-template">
+  <section xml:id="sec-ha-manual-config-template">
    <title>使用配置模板</title>
 
    <para>
@@ -256,32 +260,32 @@ Operations' defaults (advisory minimum):
    <para>
     以下步骤显示了如何创建简单有效的 Apache 配置：
    </para>
-   <procedure id="pro-ha-manual-config-template">
-    <step performance="required">
+   <procedure xml:id="pro-ha-manual-config-template">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       从配置模板创建一个新配置：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         切换到 <command>template</command> 子命令：
        </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>template</command></screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         列出可用的配置模板：
        </para>
 <screen><prompt role="custom">crm(live)configure template# </prompt><command>list</command> templates
 gfs2-base   filesystem  virtual-ip  apache   clvm     ocfs2    gfs2</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         确定需要的配置模板。由于我们需要 Apache 配置，因此选择了 <literal>apache</literal> 模板并将其命名为 <literal>g-intranet</literal>：
        </para>
@@ -291,19 +295,19 @@ INFO: pulling in template virtual-ip</screen>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       定义参数：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         列出您创建的配置：
        </para>
 <screen><prompt role="custom">crm(live)configure template# </prompt><command>list</command>
 g-intranet</screen>
       </step>
-      <step id="st-config-cli-show" performance="required">
+      <step xml:id="st-config-cli-show">
        <para>
         显示需要由您填充的最少的必要更改：
        </para>
@@ -312,7 +316,7 @@ ERROR: 23: required parameter ip not set
 ERROR: 61: required parameter id not set
 ERROR: 65: required parameter configfile not set</screen>
       </step>
-      <step id="st-config-cli-edit" performance="required">
+      <step xml:id="st-config-cli-edit">
        <para>
         调用首选的文本编辑器，填写显示为错误（如<xref linkend="st-config-cli-show"/> 中所示）的所有行：
        </para>
@@ -321,7 +325,7 @@ ERROR: 65: required parameter configfile not set</screen>
 
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       显示配置并检查配置是否有效（粗体文本取决于您在<xref linkend="st-config-cli-edit" xrefstyle="select:label"/> 中进入的配置）：
      </para>
@@ -334,7 +338,7 @@ primitive apache ocf:heartbeat:apache \
 group <emphasis role="strong">g-intranet</emphasis> \
     apache virtual-ip</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       应用配置：
      </para>
@@ -342,7 +346,7 @@ group <emphasis role="strong">g-intranet</emphasis> \
 <prompt role="custom">crm(live)configure# </prompt><command>cd ..</command>
 <prompt role="custom">crm(live)configure# </prompt><command>show</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将更改提交到 CIB：
      </para>
@@ -363,9 +367,9 @@ group <emphasis role="strong">g-intranet</emphasis> \
    <para>
     但是，前一条命令仅会从配置模板创建其配置。它不会将其应用或提交到 CIB。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-shadowconfig">
+  <section xml:id="sec-ha-manual-config-shadowconfig">
    <title>使用阴影配置进行测试</title>
    <para>
     阴影配置可用于测试不同的配置方案。如果创建了多个阴影配置，则可逐一测试这些配置，以查看更改的影响。
@@ -374,13 +378,13 @@ group <emphasis role="strong">g-intranet</emphasis> \
     一般的流程显示如下：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       创建新的阴影配置：
      </para>
@@ -390,7 +394,7 @@ INFO: myNewConfig shadow CIB created</screen>
       如果省略阴影 CIB 的名称，则会创建临时名称 <literal>@tmp@</literal>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果要将当前的活动配置复制到阴影配置中，可使用以下命令，否则请跳过此步骤：
      </para>
@@ -399,13 +403,13 @@ INFO: myNewConfig shadow CIB created</screen>
       使用上面的命令便于稍后修改现有资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       照常进行更改。创建阴影配置后，会应用所有更改。要保存所有更改，请使用以下命令：
      </para>
 <screen>crm(myNewConfig)# <command>commit</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果再次需要活动群集配置，可使用以下命令切换回此配置：
      </para>
@@ -413,9 +417,9 @@ INFO: myNewConfig shadow CIB created</screen>
 <prompt role="custom">crm(live)# </prompt></screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-debugging">
+  <section xml:id="sec-ha-manual-config-debugging">
    <title>调试配置更改</title>
    <para>
     将配置更改装载回群集之前，建议使用 <command>ptest</command> 复查更改。使用 <command>ptest</command> 命令可显示提交更改后产生的操作图。需要 <systemitem>graphviz</systemitem> 包才能显示这些图。以下示例是一个抄本，添加了监视操作：
@@ -431,9 +435,9 @@ primitive fence-bob stonith:apcsmart \
         op monitor interval="120m" timeout="60s"
 <prompt role="custom">crm(live)configure# </prompt><emphasis role="strong">ptest</emphasis>
 <prompt role="custom">crm(live)configure# </prompt>commit</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-diagram">
+  <section xml:id="sec-ha-manual-config-diagram">
    <title>群集图表</title>
    <para>
     要输出如<xref linkend="fig-ha-cluster-diagram"/>中所示的群集图表，请使用命令 <command>crm</command> <command>configure graph</command>。它会在当前的窗口上显示当前配置，因此需要配备 X11。
@@ -442,10 +446,10 @@ primitive fence-bob stonith:apcsmart \
     如果您希望使用可缩放矢量图 (SVG)，请使用以下命令：
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure graph dot config.svg svg</screen>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
- <sect1 id="sec-ha-config-crm-global">
+ <section xml:id="sec-ha-config-crm-global">
   <title>配置全局群集选项</title>
 
   <para>
@@ -454,13 +458,13 @@ primitive fence-bob stonith:apcsmart \
 
   <procedure>
    <title>使用 <command>crm</command> 修改全局群集选项</title>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 工具：
     </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用以下命令可以仅为两个节点的群集设置选项：
     </para>
@@ -473,7 +477,7 @@ primitive fence-bob stonith:apcsmart \
      </para>
     </important>
    </step>
-   <step performance="required">
+   <step>
     <para>
      显示更改：
     </para>
@@ -485,7 +489,7 @@ property $id="cib-bootstrap-options" \
    no-quorum-policy="ignore" \
    stonith-enabled="true"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      提交更改并退出：
     </para>
@@ -493,8 +497,8 @@ property $id="cib-bootstrap-options" \
 <prompt role="custom">crm(live)configure# </prompt><command>exit</command></screen>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-config-crm-resources">
+ </section>
+ <section xml:id="sec-ha-config-crm-resources">
   <title>配置群集资源</title>
 
   <para>
@@ -505,19 +509,19 @@ property $id="cib-bootstrap-options" \
    有关可创建的资源类型的概述，请参见<xref linkend="sec-ha-config-basics-resources-types"/>。
   </para>
 
-  <sect2 id="sec-ha-manual-config-create">
+  <section xml:id="sec-ha-manual-config-create">
    <title>创建群集资源</title>
    <para>
     有三种 RA（资源代理）类型可用于群集（有关背景信息，请参见<xref linkend="sec-ha-config-basics-raclasses"/>）。要将新资源添加到群集，请按如下操作：
    </para>
-   <procedure id="pro-ha-manual-config-create">
-    <step performance="required">
+   <procedure xml:id="pro-ha-manual-config-create">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 工具：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       配置原始 IP 地址：
      </para>
@@ -527,13 +531,13 @@ property $id="cib-bootstrap-options" \
       上一命令配置了名称为 <literal>myIP</literal> 的<quote>原始资源</quote>。需要选择一个类（此处为 <literal>ocf</literal>）、提供程序 (<literal>heartbeat</literal>) 和类型 (<literal>IPaddr</literal>)。此外，此原始资源还需要其他参数，如 IP 地址。根据设置更改地址。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       显示您所做的更改并进行复查：
      </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>show</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       提交更改使其生效：
      </para>
@@ -541,11 +545,11 @@ property $id="cib-bootstrap-options" \
     </step>
    </procedure>
 
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-manual-config-rsc-template">
+  <section xml:id="sec-ha-manual-config-rsc-template">
    <title>创建资源模板</title>
    <para>
     如果希望使用类似的配置创建多个资源，则资源模板可以简化此项任务。有关一些基本背景信息，另请参见<xref linkend="sec-ha-config-basics-constraints-templates"/>。不要将它们与<xref linkend="sec-ha-manual-config-template"/>中的<quote>常规</quote>模板相混淆。使用 <command>rsc_template</command> 命令可以熟悉其语法：
@@ -588,23 +592,23 @@ usage: rsc_template &lt;name&gt; [&lt;class&gt;:[&lt;provider&gt;:]]&lt;type&gt;
    <para>
     资源模板可以在约束中引用，以表示所有原始资源都派生自该模板。这有助于生成更加清晰明了的群集配置。除了位置约束外，允许在所有约束中进行资源模板引用。共置约束不能包含多次模板引用。
    </para>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-manual-create-stonith">
+  <section xml:id="sec-ha-manual-create-stonith">
    <title>创建 STONITH 资源</title>
    <para>
     就 <command>crm</command> 而言，STONITH 设备只是另一种资源。要创建 STONITH 资源，请执行以下操作：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下命令获取所有 STONITH 类型的列表：
      </para>
@@ -622,7 +626,7 @@ ipmilan                    meatware                   nw_rpc100s
 rcd_serial                 rps10                      suicide
 wti_mpc                    wti_nps</screen>
     </step>
-    <step id="st-ha-manual-create-stonith-type" performance="required">
+    <step xml:id="st-ha-manual-create-stonith-type">
      <para>
       从以上列表中选择 STONITH 类型并查看可用的选项列表。使用以下命令：
      </para>
@@ -641,7 +645,7 @@ hostname (string): Hostname
     The name of the host to be managed by this STONITH device.
 ...</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <literal>stonith</literal> 类（您在<xref linkend="st-ha-manual-create-stonith-type" xrefstyle="select:label nopage"/>中选择的类型）和相应的参数（如果需要）创建 STONITH 资源，例如：
      </para>
@@ -653,9 +657,9 @@ hostname (string): Hostname
     op monitor interval=60m timeout=120s  </screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-constraints">
+  <section xml:id="sec-ha-manual-config-constraints">
    <title>配置资源约束</title>
    <para>
     配置所有资源只是任务的一部分。即使群集了解所有需要的资源，它仍然不能正确处理它们。例如，尽量不要在 DRBD 的从属节点上装入文件系统（事实上，这将导致 DRBD 出现故障）。定义约束以使这些信息可用于群集。
@@ -663,7 +667,7 @@ hostname (string): Hostname
    <para>
     有关约束的更多信息，请参见<xref linkend="sec-ha-config-basics-constraints"/>。
    </para>
-   <sect3 id="sec-ha-manual-config-constraints-locational">
+   <section xml:id="sec-ha-manual-config-constraints-locational">
     <title>位置约束</title>
     <para>
      <command>location</command> 命令定义资源可以、不可以或首选在哪些节点上运行。
@@ -696,8 +700,8 @@ hostname (string): Hostname
      在某些情况下，为 <command>location</command> 命令使用资源模式会有效且方便得多。资源模式是用两个斜杠括起的正则表达式。例如，可以使用以下命令全部匹配上述虚拟 IP 地址：
     </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>location</command>  loc-alice /vip.*/ inf: alice</screen>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-collocational">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-collocational">
     <title>共置约束</title>
     <para>
      <command>colocation</command> 命令用于定义哪些资源应在相同主机上运行，哪些资源应在不同主机上运行。
@@ -713,8 +717,8 @@ hostname (string): Hostname
     <para>
      对于主从属配置，除在本地运行资源以外，还有必要了解当前节点是否为主节点。
     </para>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-weak-bond">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-weak-bond">
     <title>共置没有依赖性的资源集</title>
 
     <para>
@@ -727,8 +731,8 @@ hostname (string): Hostname
     <para>
      <command>weak-bond</command> 的实施将使用给定的资源自动创建虚设资源和共置约束。
     </para>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-ordering">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-ordering">
     <title>顺序约束</title>
     <para>
      <command>order</command> 命令定义操作顺序。
@@ -741,8 +745,8 @@ hostname (string): Hostname
     </para>
 
 <screen><prompt role="custom">crm(live)configure# </prompt><command>order</command> nfs_after_filesystem mandatory: filesystem_resource nfs_group</screen>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-example">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-example">
     <title>示例配置约束</title>
     <para>
      本节中使用的示例必须与其他约束结合使用。其中最基本的就是让所有资源与 DRBD 资源的主资源在同一台计算机上运行。在启动其他资源前，DRBD 资源必须是主资源。在 DRBD 设备不是主资源时尝试装入 DRBD 只会失败。必须实现以下约束：
@@ -777,10 +781,10 @@ hostname (string): Hostname
     drbd_resource:promote filesystem_resource:start</screen>
      </listitem>
     </itemizedlist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-failover">
+  <section xml:id="sec-ha-manual-config-failover">
    <title>指定资源故障转移节点</title>
    <para>
     要确定资源故障转移，可使用元属性 migration-threshold。如果所有节点上的故障计数超过 migration-threshold，资源将处于停止状态。例如：
@@ -796,9 +800,9 @@ hostname (string): Hostname
    <para>
     有关概述，请参见<xref linkend="sec-ha-config-basics-failover"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-failback">
+  <section xml:id="sec-ha-manual-config-failback">
    <title>指定资源故障回复节点（资源黏性）</title>
      <para>
     当原始节点恢复联机并位于群集中时，资源可能会故障回复到该节点。如果要防止资源故障回复到之前运行的节点，或者想为该资源指定故障回复到的其他节点，请更改其 <literal>resource stickiness</literal> 值。可以在创建资源时指定资源粘性或稍后指定。
@@ -806,9 +810,9 @@ hostname (string): Hostname
    <para>
     有关概述，请参见<xref linkend="sec-ha-config-basics-failback"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-utilization">
+  <section xml:id="sec-ha-manual-config-utilization">
    <title>根据负载影响配置资源放置</title>
    <para>
     某些资源可能具有特定的容量要求，如最低内存量。如果无法满足要求，资源可能无法完全启动或运行时性能下降。
@@ -846,13 +850,13 @@ hostname (string): Hostname
    </para>
    <procedure>
     <title>使用 <command>crm</command> 添加或修改利用率属性</title>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要指定节点<emphasis>提供</emphasis>的容量，请使用以下命令并将占位符 <replaceable>NODE_1</replaceable> 替换为节点名称：
      </para>
@@ -862,7 +866,7 @@ hostname (string): Hostname
       上例中的这些值将假定 <replaceable>NODE_1</replaceable> 向资源提供 16 GB 内存和 8 个 CPU 核心。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要指定资源<emphasis>需要</emphasis>的容量，请使用：
      </para>
@@ -872,7 +876,7 @@ hostname (string): Hostname
       这会使资源消耗 nodeA 的 4096 个内存单元以及 4 个 CPU 单元。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>property</command> 命令配置放置策略：
      </para>
@@ -924,7 +928,7 @@ hostname (string): Hostname
     </para>
    </note>
     </step>
-    <step performance="required">
+    <step>
      <para>
       退出 crmsh 之前提交更改：
      </para>
@@ -956,9 +960,9 @@ hostname (string): Hostname
    <para>
     如果一个节点出现故障，可用的总内存将不足以托管所有资源。将确保分配 xenA，xenD 也同样如此。但是，只能再分配 xenB 和 xenC 中的一个，由于它们的优先级相同，结果不确定。要解决这种不确定性，需要为其中一个资源设置更高的优先级。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-monitor">
+  <section xml:id="sec-ha-manual-config-monitor">
    <title>配置资源监视</title>
 
    <para>
@@ -976,21 +980,21 @@ hostname (string): Hostname
    <para>
     有关概述，请参见<xref linkend="sec-ha-config-basics-monitoring"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-group">
+  <section xml:id="sec-ha-manual-config-group">
    <title>配置群集资源组</title>
 
    <para>
     群集的一个最常见元素是需要放置在一起的一组资源。按顺序启动，并按相反顺序停止。为了简化此配置，我们支持组的概念。以下示例创建了两个原始资源（一个 IP 地址和一个电子邮件资源）：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       以系统管理员的身份运行 <command>crm</command> 命令。提示符更改为 <literal>crm(live)</literal>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       配置这两个原始资源：
      </para>
@@ -1000,7 +1004,7 @@ hostname (string): Hostname
 <prompt role="custom">crm(live)configure# </prompt><command>primitive</command> Email lsb:exim \
    params id=p.lsb-exim</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       以正确顺序按其相关标识符对原始资源进行分组：
      </para>
@@ -1019,9 +1023,9 @@ hostname (string): Hostname
    <para>
     有关概述，请参见<xref linkend="sec-ha-config-basics-resources-advanced-groups"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-clone">
+  <section xml:id="sec-ha-manual-config-clone">
    <title>配置克隆资源</title>
 
    <para>
@@ -1031,46 +1035,46 @@ hostname (string): Hostname
    <para>
     要了解有关克隆资源的更多信息，请参见<xref linkend="sec-ha-config-basics-resources-advanced-clones"/>。
    </para>
-   <sect3 id="sec-ha-manual-config-clone-anonymous">
+   <section xml:id="sec-ha-manual-config-clone-anonymous">
     <title>创建匿名克隆资源</title>
     <para>
      要创建匿名克隆资源，首先要创建一个原始资源，然后使用 <command>clone</command> 命令来引用它。执行下列操作：
     </para>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
       </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        配置原始资源，例如：
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>primitive</command> Apache lsb:apache</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        克隆原始资源：
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>clone</command> cl-apache Apache </screen>
      </step>
     </procedure>
-   </sect3>
+   </section>
 
-   <sect3 id="sec-ha-manual-config-clone-stateful">
+   <section xml:id="sec-ha-manual-config-clone-stateful">
     <title>创建有状态/多状态克隆资源</title>
     <para>
      要创建有状态的克隆资源，首先要创建一个基元资源，然后再创建多状态资源。多状态资源必须至少支持升级和降级操作。
     </para>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
       </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        配置原始资源。必要时更改时间间隔：
       </para>
@@ -1078,62 +1082,62 @@ hostname (string): Hostname
     op monitor interval=60 \
     op monitor interval=61 role=Master</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        创建多状态资源：
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>ms</command> ms-rsc my-rsc</screen>
      </step>
     </procedure>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-crm">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-crm">
   <title>管理群集资源</title>
 
   <para>
    除可用于配置群集资源外，<command>crm</command> 工具还可用于管理现有资源。以下小节进行了概述。
   </para>
 
-  <sect2 id="sec-ha-manual-config-start">
+  <section xml:id="sec-ha-manual-config-start">
    <title>启动新的群集资源</title>
    <para>
     要启动新的群集资源，您需要相应的标识符。按如下所示继续：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       切换到资源级别：
      </para>
 <screen><prompt role="custom">crm(live)# </prompt><command>resource</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>start</command> 启动资源，然后按 <keycap function="tab"/> 键显示所有已知资源：
      </para>
 <screen><prompt role="custom">crm(live)resource# </prompt><command>start</command> <replaceable>ID</replaceable></screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-cleanup">
+  <section xml:id="sec-ha-manual-config-cleanup">
    <title>清理资源</title>
    <para>
     如果资源失败，它会自动重启动，但每次失败都会增加资源的失败计数。如果已为此资源设置 <literal>migration-threshold</literal>，那么一旦失败计数达到迁移阈值，节点将不再能运行此资源。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       打开外壳并以 <systemitem class="username">root</systemitem> 用户身份登录。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       获取所有资源的列表。
      </para>
@@ -1144,28 +1148,28 @@ Resource Group: dlm-clvm:1
          clvm:1 (ocf::lvm2:clvmd) Started
          cmirrord:1     (ocf::lvm2:cmirrord) Started</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       例如，要清理资源 <literal>dlm</literal>，请执行以下操作：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> resource cleanup dlm</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-remove">
+  <section xml:id="sec-ha-manual-config-remove">
    <title>删除群集资源</title>
    <para>
     请按如下操作以删除群集资源：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份登录，然后启动 <command>crm</command> 交互式外壳：
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       运行以下命令来获取您的资源列表：
      </para>
@@ -1175,22 +1179,22 @@ Resource Group: dlm-clvm:1
      </para>
 <screen>myIP    (ocf::IPaddr:heartbeat) ...</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       删除具有相关标识符的资源（也暗指 <command>commit</command>）：
      </para>
 <screen><prompt role="custom">crm(live)# </prompt><command>configure</command> delete <replaceable>YOUR_ID</replaceable></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       提交更改：
      </para>
 <screen><prompt role="custom">crm(live)# </prompt><command>configure</command> commit</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-migrate">
+  <section xml:id="sec-ha-manual-config-migrate">
    <title>迁移群集资源</title>
    <para>
     虽然资源已配置为在发生硬件或软件故障时自动故障转移（或迁移）到群集的其他节点，但您也可以使用 Pacemaker GUI 或命令行将资源手动迁移到群集中的其他节点。
@@ -1200,9 +1204,9 @@ Resource Group: dlm-clvm:1
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> resource
 <prompt role="custom">crm(live)resource# </prompt><command>migrate</command> ipaddress1 bob</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-tag">
+  <section xml:id="sec-ha-manual-config-tag">
    <title>分组/标记资源</title>
 
    <para>
@@ -1223,9 +1227,9 @@ Resource Group: dlm-clvm:1
     <para>标记（用于对资源分组）和某些 ACL 功能仅适用于 <literal>pacemaker-2.0</literal> 或更高的 CIB 语法版本。有关如何查验这一点以及升级 CIB 版本的细节，请参见《<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> <phrase role="productnumber"><phrase os="sles">11 SP4</phrase></phrase> <citetitle>高可用性指南</citetitle>》中“<citetitle>从 SLE HA 11 SP3 升级到 SLE HA 11 SP4</citetitle>”一节所述的指导。
     </para>
    </note>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-cli-maint-mode">
+  <section xml:id="sec-ha-manual-config-cli-maint-mode">
    <title>使用维护模式</title>
 
    
@@ -1287,10 +1291,10 @@ Resource Group: dlm-clvm:1
    <para>
     有关处于维护模式的资源和群集的行为的细节，请参见<xref linkend="sec-ha-config-basics-maint-mode"/>。
    </para>
-  </sect2>
-</sect1>
+  </section>
+</section>
 
- <sect1 id="sec-ha-config-crm-setpwd">
+ <section xml:id="sec-ha-config-crm-setpwd">
   <title>设置独立于 <filename>cib.xml</filename> 的密码</title>
 
   <para>
@@ -1322,9 +1326,9 @@ linux</screen>
   <para>
    请注意，节点之间需要同步参数，使用 <command>crm resource secret</command> 命令可以帮助您处理好同步问题。强烈建议仅使用此命令管理机密参数。
   </para>
- </sect1>
+ </section>
 
- <sect1 id="sec-ha-config-crm-history">
+ <section xml:id="sec-ha-config-crm-history">
   <title>检索历史记录信息</title>
 
   <para>
@@ -1381,7 +1385,7 @@ linux</screen>
 
 
   <para>
-   要查找更多示例以及如何创建时间段的信息，请访问 <ulink url="http://labix.org/python-dateutil"/>。
+   要查找更多示例以及如何创建时间段的信息，请访问 <link xlink:href="http://labix.org/python-dateutil"/>。
   </para>
 
   <para>
@@ -1429,8 +1433,8 @@ INFO: fetching new logs, please wait ...</screen>
   </para>
 
 <screen><prompt role="custom">crm(live)history# </prompt><command>transition</command> -1 nograph</screen>
- </sect1>
- <sect1 id="sec-ha-config-crm-more">
+ </section>
+ <section xml:id="sec-ha-config-crm-more">
   <title>更多信息</title>
 
   <itemizedlist mark="bullet" spacing="normal">
@@ -1441,7 +1445,7 @@ INFO: fetching new logs, please wait ...</screen>
    </listitem>
    <listitem>
     <para>
-     访问 <ulink url="http://crmsh.github.io/documentation"/> 中的上游项目文档。
+     访问 <link xlink:href="http://crmsh.github.io/documentation"/> 中的上游项目文档。
     </para>
    </listitem>
    <listitem>
@@ -1450,5 +1454,5 @@ INFO: fetching new logs, please wait ...</screen>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>

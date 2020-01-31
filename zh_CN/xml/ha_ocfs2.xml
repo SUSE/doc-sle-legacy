@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_ocfs2.xml" id="cha-ha-ocfs2">
- <title>OCFS2</title><indexterm class="startofrange" id="idx-filesystems-ocfs2"> <primary>文件系统</primary> <secondary>OCFS2</secondary> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_ocfs2.xml" xml:id="cha-ha-ocfs2"><title>OCFS2</title><info><abstract>
   <para>
    Oracle Cluster File System 2 (OCFS2) 是一个自 Linux 2.6 内核以来完全集成的通用日记文件系统。OCFS2 可将应用程序二进制文件、数据文件和数据库储存到共享储存设备。群集中的所有节点对文件系统都有并行的读和写权限。用户空间控制守护程序（由克隆资源管理）提供与 HA 堆栈的集成，尤其是与 OpenAIS/Corosync 和分布式锁管理器 (DLM) 的集成。
   </para>
- </abstract>
- <sect1 id="sec-ha-ocfs2-features">
+ </abstract></info>
+ <indexterm class="startofrange" xml:id="idx-filesystems-ocfs2"> <primary>文件系统</primary> <secondary>OCFS2</secondary> </indexterm>
+ 
+ <section xml:id="sec-ha-ocfs2-features">
   <title>功能和优点</title>
 
   <para>
@@ -104,8 +108,8 @@ Please see LICENSE.txt for this document's license.
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="sec-ha-ocfs2-utils">
+ </section>
+ <section xml:id="sec-ha-ocfs2-utils">
   <title>OCFS2 包和管理实用程序</title>
 
   <para>
@@ -197,8 +201,8 @@ Please see LICENSE.txt for this document's license.
     </tbody>
    </tgroup>
   </table>
- </sect1>
- <sect1 id="sec-ha-ocfs2-create-service">
+ </section>
+ <section xml:id="sec-ha-ocfs2-create-service">
   <title>配置 OCFS2 服务和 STONITH 资源</title>
 
 
@@ -218,7 +222,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <procedure id="pro-ocfs2-resources">
+  <procedure xml:id="pro-ocfs2-resources">
    <title>配置 DLM 和 O2CB 资源</title>
    <para>
     这种配置由包含多个原始资源的基本组和一个基本克隆构成。基本组和基本克隆随后可以用于各种方案（例如，用于 OCFS2 和 cLVM）。您只需根据需要用相应的原始资源扩展基本组。由于基本组具有内部共置和排序功能，您不必指定许多单个组、克隆及其依赖性，方便了总体设置。
@@ -226,17 +230,17 @@ Please see LICENSE.txt for this document's license.
    <para>
     对群集中的一个节点执行以下步骤：
    </para>
-   <step performance="required">
+   <step>
     <para>
      启动壳层，并以 <systemitem class="username">root</systemitem> 用户身份或同等身份登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     运行 <command>crm <option>configure</option></command>。
+     运行 <command>crm</command> <option>configure</option>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      输入以下命令创建 DLM 和 O2CB 的原始资源：
     </para>
@@ -250,7 +254,7 @@ Please see LICENSE.txt for this document's license.
      <literal>dlm</literal> 克隆资源会控制分布式锁管理器服务，并确保此服务在群集中的所有节点上都启动。由于基本组具有内部共置和排序功能，<literal>o2cb</literal> 服务仅在已有一个 <literal>dlm</literal> 服务副本在运行的节点上启动。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      输入以下命令以创建基本组和基本克隆：
 
@@ -259,19 +263,19 @@ Please see LICENSE.txt for this document's license.
 <command>clone</command> base-clone base-group \
       meta interleave="true"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用 <command>show</command> 复查更改。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果全部都正确，请使用 <command>commit</command> 提交更改，并使用 <command>exit</command> 退出 crm 当前配置。
     </para>
    </step>
   </procedure>
 
-  <procedure id="pro-ocfs2-stonith">
+  <procedure xml:id="pro-ocfs2-stonith">
    <title>配置 STONITH 资源</title>
    <note>
     <title>所需的 STONITH 设备</title>
@@ -279,22 +283,22 @@ Please see LICENSE.txt for this document's license.
      您需要配置屏蔽设备。没有一个适当的 STONITH 机制（如 <literal>external/sbd</literal>），则配置会失败。
     </para>
    </note>
-   <step performance="required">
+   <step>
     <para>
      启动壳层，并以 <systemitem class="username">root</systemitem> 用户身份或同等身份登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如<xref linkend="pro-ha-storage-protect-sbd-create"/>中所述，创建 SBD 分区。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     运行 <command>crm <option>configure</option></command>。
+     运行 <command>crm</command> <option>configure</option>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在将 <literal>/dev/sdb2</literal> 作为共享储存区上用于检测信号和屏蔽的专用分区的同时，将 <literal>external/sdb</literal> 配置为屏蔽设备：
     </para>
@@ -302,19 +306,19 @@ Please see LICENSE.txt for this document's license.
       params pcmk_delay_max="15" \
       op monitor interval="15" timeout="15"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用 <command>show</command> 复查更改。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果全部内容都正确，请使用 <command>commit</command> 提交更改，并使用 <command>exit</command> 退出 crm 当前配置。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-ocfs2-create">
+ </section>
+ <section xml:id="sec-ha-ocfs2-create">
   <title>创建 OCFS2 卷</title>
 
   <para>
@@ -336,7 +340,7 @@ Please see LICENSE.txt for this document's license.
    然后，按<xref linkend="pro-ocfs2-volume"/>中所述使用 <command>mkfs.ocfs2</command> 创建和格式化 OCFS2 卷。此命令最重要的参数列于<xref linkend="tab-ha-ofcs2-mkfs-ocfs2-params"/>中。有关此命令的更多信息和命令语法，请参见 <command>mkfs.ocfs2</command> 手册页。
   </para>
 
-  <table id="tab-ha-ofcs2-mkfs-ocfs2-params">
+  <table xml:id="tab-ha-ofcs2-mkfs-ocfs2-params">
    <title>重要的 OCFS2 参数</title>
    <tgroup cols="2">
     <thead>
@@ -449,22 +453,22 @@ Please see LICENSE.txt for this document's license.
 
 
 
-  <procedure id="pro-ocfs2-volume">
+  <procedure xml:id="pro-ocfs2-volume">
    <title>创建并格式化 OCFS2 卷</title>
    <para>
     只在群集节点之<emphasis>一</emphasis>上执行以下步骤。
    </para>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 用户身份打开终端窗口并登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用命令 <command>crm status</command> 检查群集是否联机。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用 <command>mkfs.ocfs2</command> 实用程序创建并格式化卷。有关此命令语法的信息，请参见 <command>mkfs.ocfs2</command> 手册页。
     </para>
@@ -475,27 +479,27 @@ Please see LICENSE.txt for this document's license.
 
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-ocfs2-mount">
+ </section>
+ <section xml:id="sec-ha-ocfs2-mount">
   <title>装入 OCFS2 卷</title>
 
   <para>
    可以手动装入 OCFS2 卷，也可以按<xref linkend="pro-ocfs2-mount-cluster"/>中所述使用群集管理器将其装入。
   </para>
 
-  <procedure id="pro-ocfs2-mount-manual">
+  <procedure xml:id="pro-ocfs2-mount-manual">
    <title>手动装入 OCFS2 卷</title>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 用户身份打开终端窗口并登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用命令 <command>crm status</command> 检查群集是否联机。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使用 <command>mount</command> 命令从命令行装入卷。
     </para>
@@ -509,22 +513,22 @@ Please see LICENSE.txt for this document's license.
    </para>
   </warning>
 
-  <procedure id="pro-ocfs2-mount-cluster">
+  <procedure xml:id="pro-ocfs2-mount-cluster">
    <title>使用群集管理器装入 OCFS2 卷</title>
    <para>
     要为 High Availability 软件安装 OCFS2 卷，请在群集中配置 ocf 文件系统资源。以下过程使用 <command>crm</command> 外壳配置群集资源。或者，您还可以使用 Pacemaker GUI 配置该资源。
    </para>
-   <step performance="required">
+   <step>
     <para>
      启动壳层，并以 <systemitem class="username">root</systemitem> 用户身份或同等身份登录。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     运行 <command>crm <option>configure</option></command>。
+     运行 <command>crm</command> <option>configure</option>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      配置 Pacemaker 以在群集中的每个节点上装入 OCFS2 文件系统：
     </para>
@@ -532,19 +536,19 @@ Please see LICENSE.txt for this document's license.
       params device="/dev/sdb1" directory="/mnt/shared" fstype="ocfs2" options="acl" \
       op monitor interval="20" timeout="40"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      将文件系统原始资源添加到您在<xref linkend="pro-ocfs2-resources"/>中配置的基本组：
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        输入
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt>edit base-group</screen>
      </step>
 
-     <step performance="required">
+     <step>
       <para>
        在打开的 vi 编辑器中，如下所示修改组并保存更改：
       </para>
@@ -556,19 +560,19 @@ Please see LICENSE.txt for this document's license.
     </substeps>
    </step>
 
-   <step performance="required">
+   <step>
     <para>
      使用 <command>show</command> 复查更改。要检查是否配置了所有需要的资源，另请参考<xref linkend="cha-ha-config-example"/>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果全部都正确，则使用 <command>commit</command> 提交更改，并使用 <command>exit</command> 退出 crm 当前配置。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-ocfs2-quota">
+ </section>
+ <section xml:id="sec-ha-ocfs2-quota">
   <title>在 OCFS2 文件系统上使用定额</title>
 
 
@@ -592,8 +596,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    由于性能原因，每个群集节点都会在本地执行定额会计，并每 10 秒将此信息与通用中央储存同步一次。此间隔可使用 <command>tunefs.ocfs2</command> 及 <option>usrquota-sync-interval</option> 和 <option>grpquota-sync-interval</option> 选项调整。因此，定额信息可能不会始终都准确，因而在几个群集节点上并行操作时，用户或组可以稍微超出其定额限制。
   </para>
- </sect1>
- <sect1 id="sec-ha-ocfs2-more">
+ </section>
+ <section xml:id="sec-ha-ocfs2-more">
   <title>更多信息</title>
 
   <para>
@@ -602,7 +606,7 @@ Please see LICENSE.txt for this document's license.
 
   <variablelist>
    <varlistentry>
-    <term><ulink url="http://oss.oracle.com/projects/ocfs2/"/>
+    <term><link xlink:href="http://oss.oracle.com/projects/ocfs2/"/>
     </term>
     <listitem>
      <para>
@@ -611,7 +615,7 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><ulink url="http://oss.oracle.com/projects/ocfs2/documentation"/>
+    <term><link xlink:href="http://oss.oracle.com/projects/ocfs2/documentation"/>
     </term>
     <listitem>
      <para>
@@ -620,5 +624,5 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist><indexterm class="endofrange" startref="idx-filesystems-ocfs2"/>
- </sect1>
+ </section>
 </chapter>

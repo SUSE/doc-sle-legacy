@@ -1,19 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE appendix PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE appendix>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<appendix xml:base="ha_migration.xml" id="app-ha-migration">
- <title>升级群集和更新软件包</title>
- <abstract>
+<appendix xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_migration.xml" xml:id="app-ha-migration"><title>升级群集和更新软件包</title><info><abstract>
   <para>
    本章介绍两种不同方案：将群集升级为 <phrase role="productnamereg"><phrase os="sles">SUSE® Linux Enterprise High Availability Extension</phrase></phrase> 的另一个版本（主要版本或服务包），以及更新各群集节点上的单个包。
   </para>
- </abstract>
+ </abstract></info>
  
- <sect1 id="sec-ha-migration-terminology">
+ 
+ 
+ <section xml:id="sec-ha-migration-terminology">
   <title>术语</title>
   
   <para>
@@ -57,13 +61,13 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
+ </section>
  
- <sect1 id="sec-ha-migration-upgrade">
+ <section xml:id="sec-ha-migration-upgrade">
   <title>将群集升级到最新产品版本</title>
   
   <para>
-   至于支持哪种升级路径以及如何执行升级，取决于运行群集的当前产品版本，以及您要迁移到的目标版本。有关一般信息，请参见《<citetitle>SUSE Linux Enterprise Server 11 部署指南</citetitle>》中的“<citetitle>更新 SUSE Linux Enterprise</citetitle>”一章。可通过 <ulink url="http://www.suse.com/documentation/"/> 获得。
+   至于支持哪种升级路径以及如何执行升级，取决于运行群集的当前产品版本，以及您要迁移到的目标版本。有关一般信息，请参见《<citetitle>SUSE Linux Enterprise Server 11 部署指南</citetitle>》中的“<citetitle>更新 SUSE Linux Enterprise</citetitle>”一章。可通过 <link xlink:href="http://www.suse.com/documentation/"/> 获得。
   </para>
   
   <important>
@@ -84,7 +88,7 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </itemizedlist>
   </important>
- <sect2 id="sec-ha-migration-sle11">
+ <section xml:id="sec-ha-migration-sle11">
   <title>从 SLES 10 升级到 SLE HA 11</title>
 
    <important>
@@ -134,34 +138,34 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <sect3 id="sec-ha-migration-sle11-prep">
+  <section xml:id="sec-ha-migration-sle11-prep">
    <title>准备和备份</title>
    <para>
     将群集升级为下一个产品版本并相应地转换数据之前，需要准备当前群集。
    </para>
-   <procedure id="pro-ha-migration-sle11-prep">
+   <procedure xml:id="pro-ha-migration-sle11-prep">
     <title>准备 SUSE Linux Enterprise Server 10 SP4 群集</title>
-    <step performance="required">
+    <step>
      <para>
       登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       查看检测信号配置文件 <filename>/etc/ha.d/ha.cf</filename> 并检查是否所有通讯媒体都支持多路广播。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       确保以下文件在所有节点上都是相同的：<filename>/etc/ha.d/ha.cf</filename> 和 <filename>/var/lib/heartbeat/crm/cib.xml</filename>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       通过在每个节点上执行 <command>rcheartbeat stop</command> 使所有节点都处于脱机状态。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       除了在更新到最新版本之前执行所推荐的常规系统备份外，另请备份以下文件，以便在升级到 SUSE Linux Enterprise Server 11 之后用来运行转换脚本：
      </para>
@@ -188,36 +192,36 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </itemizedlist>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果有 EVMS2 资源，请将非 LVM EVMS2 卷转换为 SUSE Linux Enterprise Server 10 上的兼容卷。在转换过程中（请参见<xref linkend="sec-ha-migration-sle11-convert"/>），它们会随即转换为 LVM2 卷组。转换后，请务必使用 <command>vgchange -c y</command> 将每个卷组都标记为 High Availability 群集的成员。
 
      </para>
     </step>
    </procedure>
-  </sect3>
+  </section>
 
-  <sect3 id="sec-ha-migration-sle11-install">
+  <section xml:id="sec-ha-migration-sle11-install">
    <title>升级/安装</title>
    <para>
     做好群集准备和文件备份后，在群集节点上全新安装 SUSE Linux Enterprise 11。
    </para>
-   <procedure id="pro-ha-migration-sle11-install">
+   <procedure xml:id="pro-ha-migration-sle11-install">
     <title>升级到 SUSE Linux Enterprise 11</title>
-    <step performance="required">
+    <step>
      <para>
       在所有群集节点上全新安装 SUSE Linux Enterprise Server 11。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在所有群集节点上，安装 SUSE Linux Enterprise Server 之后随即安装 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11，使之做为外接式附件。有关详细信息，请参见<xref linkend="sec-ha-installation-add-on"/>。
      </para>
     </step>
    </procedure>
-  </sect3>
+  </section>
 
-  <sect3 id="sec-ha-migration-sle11-convert">
+  <section xml:id="sec-ha-migration-sle11-convert">
    <title>数据转换</title>
    <para>
     SUSE Linux Enterprise Server 11 和 High Availability Extension 均安装完成后，即可开始进行数据转换。High Availability Extension 附带的转换脚本已经过谨慎的设置，但是无法在全自动模式下处理所有设置。它会其所作更改显示警报，但是需要您进行干预和决策。您需要详细地了解群集 - 因为更改是否有意义取决于您的需求。转换脚本位于 <filename>/usr/lib/heartbeat</filename>（如果使用 64 位系统，则位于 <filename>/usr lib64/heartbeat</filename>）。
@@ -228,9 +232,9 @@ Please see LICENSE.txt for this document's license.
      要熟悉转换进程，我们强烈建议您首先测试一下转换（不作任何更改）。可以使用同一测试目录执行重复的测试运行，但是只需要复制一次文件。
     </para>
    </note>
-   <procedure id="pro-ha-migration-sle11-test">
+   <procedure xml:id="pro-ha-migration-sle11-test">
     <title>测试转换</title>
-    <step performance="required">
+    <step>
      <para>
       在某个节点上创建测试目录，并将备份文件复制到此测试目录：
      </para>
@@ -240,7 +244,7 @@ $ cp /var/lib/heartbeat/hostcache /tmp/hb2openais-testdir
 $ cp /etc/logd.cf /tmp/hb2openais-testdir
 $ sudo cp /var/lib/heartbeat/crm/cib.xml /tmp/hb2openais-testdir</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用以下命令开始测试运行
      </para>
@@ -250,7 +254,7 @@ $ sudo cp /var/lib/heartbeat/crm/cib.xml /tmp/hb2openais-testdir</screen>
      </para>
 <screen>$ /usr/lib64/heartbeat/hb2openais.sh -T /tmp/hb2openais-testdir -U</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       阅读并校验生成的 <filename>openais.conf</filename> 和 <filename>cib-out.xml</filename> 文件：
      </para>
@@ -262,27 +266,27 @@ $ crm_verify -V -x cib-out.xml</screen>
    <para>
     有关转换阶段的详细信息，请参见所安装的 High Availability Extension 中的 <filename>/usr/share/doc/packages/pacemaker/README.hb2openais</filename>。
    </para>
-   <procedure id="pro-ha-migration-sle11-convert">
+   <procedure xml:id="pro-ha-migration-sle11-convert">
     <title>转换数据</title>
     <para>
      执行测试运行并检查输出后，可以立即开始数据转换。只需在<emphasis>一个</emphasis>节点上运行转换。主群集配置 (CIB) 会自动复制到其他节点。需要复制的所有其他文件会由转换脚本自动进行复制。
     </para>
-    <step performance="required">
+    <step>
      <para>
       确保 <systemitem class="daemon">sshd</systemitem> 运行于 <systemitem class="username">root</systemitem> 有权访问的所有节点上，以便转换脚本成功地将文件复制到其他群集节点。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       确保所有 ocfs2 文件系统都已卸载。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       High Availability Extension 随附一个默认的 OpenAIS 配置文件。如果要防止在后面的步骤中重写此默认配置，请制作 <filename>/etc/ais/openais.conf</filename> 配置文件的副本。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 身份启动转换脚本。如果使用 sudo，请使用 <option>-u</option> 选项指定特权用户：
      </para>
@@ -291,7 +295,7 @@ $ crm_verify -V -x cib-out.xml</screen>
       基于 <filename>/etc/ha.d/ha.cf</filename> 中所存储的配置，脚本将为 OpenAIS 群集堆栈生成新的配置文件 <filename>/etc/ais/openais.conf</filename>。由于从 Heartbeat 更改到 OpenAIS，它还会分析 CIB 配置，并让您了解是否需要更改群集配置。在转换运行的节点上完成所有文件处理，并将文件处理复制到其他节点。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       按照屏幕指导执行操作。
      </para>
@@ -304,16 +308,16 @@ $ crm_verify -V -x cib-out.xml</screen>
     升级之后，不支持还原到 SUSE Linux Enterprise Server 10。
    </para>
 
-  </sect3>
+  </section>
 
-  <sect3 id="sec-ha-migration-sle11-more">
+  <section xml:id="sec-ha-migration-sle11-more">
    <title>更多信息</title>
    <para>
     有关转换脚本和转换阶段的更多细节，请参见所安装的 High Availability Extension 中的 <filename>/usr/share/doc/packages/pacemaker/README.hb2openais</filename>。
    </para>
-  </sect3>
- </sect2>
- <sect2 id="sec-ha-migration-sle11-sp1">
+  </section>
+ </section>
+ <section xml:id="sec-ha-migration-sle11-sp1">
   <title>从 SLE HA 11 升级到 SLE HA 11 SP1</title>
 
    <note>
@@ -325,7 +329,7 @@ $ crm_verify -V -x cib-out.xml</screen>
 
 
 
-  <procedure id="pro-ha-migration-rolling-upgrade">
+  <procedure xml:id="pro-ha-migration-rolling-upgrade">
    <title>执行滚动升级</title>
 
     <warning>
@@ -335,36 +339,36 @@ $ crm_verify -V -x cib-out.xml</screen>
       如果在软件更新期间，群集资源管理器所在节点处于活动状态，可能会导致不可预料的结果，例如活动的节点被屏蔽。
      </para>
     </warning>
-   <step performance="required">
+   <step>
     <para>
      以 <systemitem class="username">root</systemitem> 用户身份登录要更新的节点，然后停止 OpenAIS：
     </para>
 <screen>rcopenais stop</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      检查系统备份是否为最新并且可恢复。
     </para>
    </step>
-   <step id="step-ha-migration-upgrade-tolatest" performance="required">
+   <step xml:id="step-ha-migration-upgrade-tolatest">
     <para>
      从 SUSE Linux Enterprise Server 11 升级到 SUSE Linux Enterprise Server 11 SP1，然后从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 升级到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP1。有关如何升级产品的信息，请参见《SUSE Linux Enterprise Server 11 SP1 部署指南》中的<citetitle>“更新 SUSE Linux Enterprise”</citetitle>一章。
     </para>
    </step>
-   <step id="step-ha-migration-upgrade-ais" performance="required">
+   <step xml:id="step-ha-migration-upgrade-ais">
     <para>
      在升级后的节点上重启动 OpenAIS/Corosync，使此节点重新加入群集：
     </para>
 <screen>rcopenais start</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      使下一个节点处于脱机状态，并对此节点重复上述过程。
     </para>
    </step>
   </procedure>
- </sect2>
- <sect2 id="sec-ha-migration-sle11-sp2">
+ </section>
+ <section xml:id="sec-ha-migration-sle11-sp2">
   <title>从 SLE HA 11 SP1 升级到 SLE HA 11 SP2</title>
 
   <para>
@@ -398,8 +402,8 @@ $ crm_verify -V -x cib-out.xml</screen>
     只有在<emphasis>所有</emphasis>群集节点升级到最新产品版本后，才可使用 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP2 所具有的新功能。对于 SP1/SP2 并存的群集，其在滚动升级期间受支持的时间非常短暂。请在一周内完成滚动升级。
    </para>
   </important>
- </sect2>
- <sect2 id="sec-ha-migration-sle11-sp3">
+ </section>
+ <section xml:id="sec-ha-migration-sle11-sp3">
   <title>从 SLE HA 11 SP2 升级到 SLE HA 11 SP3</title>
 
   <para>
@@ -416,9 +420,9 @@ $ crm_verify -V -x cib-out.xml</screen>
     只有在<emphasis>所有</emphasis>群集节点升级到最新产品版本后，才可使用 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 所具有的新功能。对于 SP2/SP3 并存的群集，其在滚动升级期间受支持的时间非常短暂。请在一周内完成滚动升级。
    </para>
   </important>
- </sect2>
+ </section>
   
-  <sect2 id="sec-ha-migration-sle11-sp4">
+  <section xml:id="sec-ha-migration-sle11-sp4">
    <title>从 SLE HA 11 SP3 升级到 SLE HA 11 SP4</title>
    
    <para>
@@ -429,7 +433,7 @@ $ crm_verify -V -x cib-out.xml</screen>
     使用以下偏差执行<xref linkend="pro-ha-migration-rolling-upgrade"/>中所述的步骤：在<xref linkend="step-ha-migration-upgrade-tolatest" xrefstyle="select:name"/>中，从 SUSE Linux Enterprise Server 11 SP3 升级到 SUSE Linux Enterprise Server 11 SP4，然后从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升级到 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4。
    </para>
    
-   <note id="note-ha-cib-upgrade">
+   <note xml:id="note-ha-cib-upgrade">
     <title>升级 CIB 语法版本</title>
     <para>标记（用于对资源分组）和某些 ACL 功能仅适用于 <literal>pacemaker-2.0</literal> 或更高的 CIB 语法版本。（要检查版本，请运行 <command>cibadmin -Q |grep validate-with</command>）。如果您已从 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3 升级，则 CIB 版本默认<emphasis>不会</emphasis>升级。要手动升级到最新的 CIB 版本，请使用以下命令之一：</para>
     <screen><prompt role="root">root # </prompt>cibadmin --upgrade --force</screen>
@@ -443,10 +447,10 @@ $ crm_verify -V -x cib-out.xml</screen>
      只有在<emphasis>所有</emphasis>群集节点升级到最新产品版本后，才可使用 <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4 所具有的新功能。对于 SP3/SP4 并存的群集，其在滚动升级期间受支持的时间非常短暂。请在一周内完成滚动升级。
     </para>
    </important>
-  </sect2>
+  </section>
   
- </sect1>
- <sect1 id="sec-ha-update">
+ </section>
+ <section xml:id="sec-ha-update">
   <title>更新群集节点上的软件包</title>
   
   <warning>
@@ -461,7 +465,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    在节点上安装任何包更新之前，请先确认以下问题：
   </para>
   
-  <itemizedlist id="il-ha-update-cond" mark="bullet" spacing="normal">
+  <itemizedlist xml:id="il-ha-update-cond" mark="bullet" spacing="normal">
    <title>停止群集堆栈的条件</title>
    <listitem>
     <para>
@@ -499,13 +503,13 @@ $ crm_verify -V -x cib-out.xml</screen>
   </para>
   
   <screen><prompt role="root">root # </prompt>rcopenais start</screen>
- </sect1>
+ </section>
  
- <sect1 id="sec-ha-migration-more">
+ <section xml:id="sec-ha-migration-more">
   <title>更多信息</title>
 
   <para>
-   关您要升级到的产品的任何更改和新功能的详细信息，请参见其发行说明，所在网址为 <ulink url="https://www.suse.com/releasenotes/"/>。
+   关您要升级到的产品的任何更改和新功能的详细信息，请参见其发行说明，所在网址为 <link xlink:href="https://www.suse.com/releasenotes/"/>。
   </para>
- </sect1>
+ </section>
 </appendix>

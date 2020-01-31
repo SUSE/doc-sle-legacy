@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_clvm.xml" id="cha-ha-clvm">
- <title>群集式逻辑卷管理器 (cLVM)</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_clvm.xml" xml:id="cha-ha-clvm"><title>群集式逻辑卷管理器 (cLVM)</title><info><abstract>
   <para>
    当管理群集上的共享储存区时，所有节点必须收到有关对储存子系统所做更改的通知。Linux 卷管理器 2 (LVM2) 广泛用于管理本地储存，已扩展为支持对整个群集中的卷组进行透明管理。可使用与本地储存相同的命令来管理群集卷组。
   </para>
- </abstract>
- <sect1 id="sec-ha-clvm-overview">
+ </abstract></info>
+ 
+ 
+ <section xml:id="sec-ha-clvm-overview">
   <title>概念概述</title>
 
 
@@ -47,8 +51,8 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
- <sect1 id="sec-ha-clvm-config">
+ </section>
+ <section xml:id="sec-ha-clvm-config">
   <title>cLVM 配置</title>
 
   <para>
@@ -117,7 +121,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <sect2 id="sec-ha-clvm-config-cmirrord">
+  <section xml:id="sec-ha-clvm-config-cmirrord">
    <title>配置 Cmirrord</title>
 
    <para>
@@ -127,12 +131,12 @@ Please see LICENSE.txt for this document's license.
     假定 <filename>/dev/sda</filename> 和 <filename>/dev/sdb</filename> 是共享储存设备。必要时请使用您自己的设备名称替换上述名称。按如下所示继续：
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       创建一个至少包含两个节点的群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       配置群集以运行 <command>dlm</command>、<command>clvmd</command> 和 STONITH：
      </para>
@@ -150,12 +154,12 @@ Please see LICENSE.txt for this document's license.
 <prompt role="custom">crm(live)configure# </prompt><command>clone</command> base-clone base-group \
         meta interleave="true"</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>exit</command> 退出 crmsh 并提交更改。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       创建群集卷组 (VG)：
 
@@ -163,45 +167,45 @@ Please see LICENSE.txt for this document's license.
 <screen><prompt role="root">root # </prompt><command>pvcreate</command> /dev/sda /dev/sdb
 <prompt role="root">root # </prompt><command>vgcreate</command> -cy vg /dev/sda /dev/sdb</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在群集中创建镜像日志逻辑卷 (LV)：
      </para>
 <screen><prompt role="root">root # </prompt><command>lvcreate</command> -nlv -m1 -l10%VG vg --mirrorlog mirrored</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>lvs</command> 显示进度。如果百分数已达到 100%，则表示镜像磁盘已成功同步。
      </para>
     </step>
-    <step id="st-ha-clvm-config-cmirrord-test" performance="required">
+    <step xml:id="st-ha-clvm-config-cmirrord-test">
      <para>
       要测试群集卷 <filename>/dev/vg/lv</filename>，请执行下列步骤：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         读取或写入到 <filename>/dev/vg/lv</filename>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         使用 <command>lvchange</command> <option>-an</option> 停用 LV。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         使用 <command>lvchange</command> <option>-ay</option> 激活 LV。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         使用 <command>lvconvert</command> 将镜像日志转换为磁盘日志。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在其他群集 VG 中创建镜像日志 LV。此卷组与先前的卷组不同。
      </para>
@@ -216,20 +220,20 @@ Please see LICENSE.txt for this document's license.
    </para>
    <procedure>
 
-    <step performance="required">
+    <step>
      <para>
       创建卷组 (VG)：
      </para>
 <screen><prompt role="root">root # </prompt><command>pvcreate</command> /dev/sda /dev/sdb
 <prompt role="root">root # </prompt><command>vgcreate</command> vg /dev/sda /dev/sdb</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       打开文件 <filename>/etc/lvm/lvm.conf</filename> 并转到 <literal>allocation</literal> 部分。设置下列行并保存文件：
      </para>
 <screen>mirror_legs_require_separate_pvs = 1</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将标记添加到 PV：
      </para>
@@ -239,7 +243,7 @@ Please see LICENSE.txt for this document's license.
       标记是无序的关键字或指派给储存对象元数据的术语。使用标记功能可以采用您认为有用的方式将无序的标记列表附加到 LVM 储存对象元数据，从而对储存对象集合进行分类。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       列出标记：
      </para>
@@ -253,11 +257,11 @@ Please see LICENSE.txt for this document's license.
     </step>
    </procedure>
    <para>
-    如需有关 LVM 的更多信息，请参见《SUSE Linux Enterprise Server <phrase role="productnumber"><phrase os="sles">11 SP4</phrase></phrase> <citetitle>储存管理指南</citetitle>》中的“<citetitle>LVM 配置</citetitle>”一章，网址：<ulink url="http://www.suse.com/documentation/"/>。
+    如需有关 LVM 的更多信息，请参见《SUSE Linux Enterprise Server <phrase role="productnumber"><phrase os="sles">11 SP4</phrase></phrase> <citetitle>储存管理指南</citetitle>》中的“<citetitle>LVM 配置</citetitle>”一章，网址：<link xlink:href="http://www.suse.com/documentation/"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-clvm-config-resources">
+  <section xml:id="sec-ha-clvm-config-resources">
    <title>创建群集资源</title>
    <para>
     准备群集以便使用 cLVM 包括以下基本步骤：
@@ -274,7 +278,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <procedure id="pro-ha-clvm-dlmresource">
+   <procedure xml:id="pro-ha-clvm-dlmresource">
     <title>创建 DLM 资源</title>
 
     <note>
@@ -283,22 +287,22 @@ Please see LICENSE.txt for this document's license.
       cLVM 和 OCFS2 都需要一个在群集中的所有节点上运行的 DLM 资源，因而通常配置为一个克隆。如果设置既包括 OCFS2 也包括 cLVM，则为 OCFS2 和 cLVM 配置<emphasis>一个</emphasis> DLM 资源就足够了。
      </para>
     </note>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份启动外壳并登录。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      运行 <command>crm <option>configure</option></command>。
+      运行 <command>crm</command> <option>configure</option>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>show</command> 检查群集资源的当前配置。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果已经配置 DLM 资源（及相应的基本组和基本克隆），则继续<xref linkend="pro-ha-clvm-lvmresources"/>。
      </para>
@@ -306,25 +310,25 @@ Please see LICENSE.txt for this document's license.
       否则，如<xref linkend="pro-ocfs2-resources"/>中所述配置 DLM 资源和相应的基本组和基本克隆。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>exit</command> 保留 crm 当前配置。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-clvm-lvmresources">
+   <procedure xml:id="pro-ha-clvm-lvmresources">
     <title>创建 LVM 和 cLVM 资源</title>
-    <step performance="required">
+    <step>
      <para>
       以 <systemitem class="username">root</systemitem> 用户身份启动外壳并登录。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
-      运行 <command>crm <option>configure</option></command>。
+      运行 <command>crm</command> <option>configure</option>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如下所示配置 cLVM 资源：
      </para>
@@ -333,7 +337,7 @@ Please see LICENSE.txt for this document's license.
 
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       如下所示为卷组配置 LVM 资源：
      </para>
@@ -341,7 +345,7 @@ Please see LICENSE.txt for this document's license.
       params volgrpname="cluster-vg" \
       op monitor interval="60" timeout="60"</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果希望仅在<emphasis>一个</emphasis>节点上激活卷组，则如下所述配置 LVM 资源并忽略<xref linkend="step-ha-clvm-lvmresources-group"/>：
      </para>
@@ -352,18 +356,18 @@ Please see LICENSE.txt for this document's license.
       在这种情况下，cLVM 将保护 VG 内的所有逻辑卷，防止它们在多个节点上激活，这也是非群集应用程序的一种附加保护措施。
      </para>
     </step>
-    <step id="step-ha-clvm-lvmresources-group" performance="required">
+    <step xml:id="step-ha-clvm-lvmresources-group">
      <para>
       要确保在群集范围内激活 cLVM 和 LVM 资源，请向在<xref linkend="pro-ocfs2-resources"/>中创建的基本组添加这两个原始资源：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         输入
        </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>edit</command> base-group</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在打开的 vi 编辑器中，如下所示修改组并保存更改：
        </para>
@@ -377,25 +381,25 @@ Please see LICENSE.txt for this document's license.
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>show</command> 复查更改。要检查是否配置了所有需要的资源，另请参考<xref linkend="cha-ha-config-example"/>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果全部都正确，则使用 <command>commit</command> 提交更改，并使用 <command>exit</command> 退出 crm 当前配置。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-clvm-scenario-iscsi">
+  <section xml:id="sec-ha-clvm-scenario-iscsi">
    <title>方案：iSCSI 在 SAN 上的 cLVM</title>
    <para>
     以下方案使用两个 SAN 盒，将其 iSCSI 目标导出到多个客户端。大致想法如<xref linkend="fig-ha-clvm-scenario-iscsi"/>所示。
    </para>
-   <figure id="fig-ha-clvm-scenario-iscsi">
+   <figure xml:id="fig-ha-clvm-scenario-iscsi">
     <title>设置使用 cLVM 的 iSCSI</title>
     <mediaobject>
      <imageobject role="fo">
@@ -416,80 +420,80 @@ Please see LICENSE.txt for this document's license.
     首先只配置一个 SAN 盒。每个 SAN Box 都需要导出自己的 iSCSI 目标。按如下所示继续：
    </para>
 
-   <procedure id="pro-ha-clvm-scenario-iscsi-targets">
+   <procedure xml:id="pro-ha-clvm-scenario-iscsi-targets">
     <title>配置 iSCSI 目标 (SAN)</title>
-    <step performance="required">
+    <step>
      <para>
       运行 YaST，然后单击<menuchoice> <guimenu>网络服务</guimenu> <guimenu>iSCSI 目标</guimenu> </menuchoice>以启动 iSCSI 服务器模块。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果要在计算机引导时启动 iSCSI 目标，请选择<guimenu>引导时</guimenu>，否则请选择<guimenu>手动</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果正在运行防火墙，请启用<guimenu>打开防火墙中的端口</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       切换到<guimenu>全局</guimenu>选项卡。如果需要身份验证，请启用进来的和/或出去的身份验证。在本例中，我们选择<guimenu>无身份验证</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       添加新的 iSCSI 目标：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         切换到<guimenu>目标</guimenu>选项卡。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         单击<guimenu>添加</guimenu>。
        </para>
       </step>
-      <step id="st-ha-clvm-iscsi-iqn" performance="required">
+      <step xml:id="st-ha-clvm-iscsi-iqn">
        <para>
         输入目标名称。名称需要采用如下所示的格式：
        </para>
 <screen>iqn.<replaceable>DATE</replaceable>.<replaceable>DOMAIN</replaceable></screen>
        <para>
-        有关格式的更多信息，请参见 <citetitle>3.2.6.3.1. Type "iqn." (iSCSI Qualified Name)</citetitle>（3.2.6.3.1.“iqn.”（iSCSI 限定名称）类型）一节，网址：<ulink url="http://www.ietf.org/rfc/rfc3720.txt"/>。
+        有关格式的更多信息，请参见 <citetitle>3.2.6.3.1. Type "iqn." (iSCSI Qualified Name)</citetitle>（3.2.6.3.1.“iqn.”（iSCSI 限定名称）类型）一节，网址：<link xlink:href="http://www.ietf.org/rfc/rfc3720.txt"/>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         如果需要描述性更强的名称，可以进行更改，但要确保不同目标之间的标识符是唯一的。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         单击<guimenu>添加</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在<guimenu>路径</guimenu>中输入设备名，并使用 <guimenu>Scsiid</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         单击<guimenu>下一步</guimenu>两次。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       出现警告框时单击<guimenu>是</guimenu>进行确认。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       打开配置文件 <filename>/etc/iscsi/iscsi.conf</filename>，并将参数 <literal>node.startup</literal> 更改为 <literal>automatic</literal>。
      </para>
@@ -498,71 +502,71 @@ Please see LICENSE.txt for this document's license.
    <para>
     现在按如下方式设置 iSCSI 发起程序：
    </para>
-   <procedure id="pro-ha-clvm-scenarios-iscsi-initiator">
+   <procedure xml:id="pro-ha-clvm-scenarios-iscsi-initiator">
     <title>配置 iSCSI 发起程序</title>
-    <step performance="required">
+    <step>
      <para>
       运行 YaST，然后单击<menuchoice> <guimenu>网络服务</guimenu> <guimenu>iSCSI 发起程序</guimenu> </menuchoice>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果要在计算机引导时启动 iSCSI 发起程序，请选择<guimenu>引导时</guimenu>，否则请将其设置为<guimenu>手动</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       切换到<guimenu>发现</guimenu>选项卡并单击<guimenu>发现</guimenu>按钮。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       添加 iSCSI 目标的 IP 地址和端口（请参见<xref linkend="pro-ha-clvm-scenario-iscsi-targets"/>）。通常，可以保留端口并使用其默认值。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果使用身份验证，请插入进来的和出去的用户名和口令，否则请激活<guimenu>无身份验证</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择<guimenu>下一步</guimenu>。找到的连接随即显示在列表中。
      </para>
     </step>
     
-    <step performance="required">
+    <step>
      <para>要测试 iSCSI 发起程序是否已成功启动，请选择显示的目标之一，然后单击<guimenu>登录</guimenu>。</para>
     </step>
 
    </procedure>
-   <procedure id="pro-ha-clvm-scenarios-iscsi-lvm">
+   <procedure xml:id="pro-ha-clvm-scenarios-iscsi-lvm">
     <title>创建 LVM 卷组</title>
-    <step performance="required">
+    <step>
      <para>
       打开已按<xref linkend="pro-ha-clvm-scenarios-iscsi-initiator"/>运行 iSCSI 发起程序的一个节点上的 <systemitem class="username">root</systemitem> 外壳。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用命令 <command>pvcreate</command> 在磁盘 <filename>/dev/sdd</filename> 和 <filename>/dev/sde</filename> 上准备 LVM 的物理卷：
      </para>
 <screen><prompt role="root">root # </prompt><command>pvcreate</command> /dev/sdd
 <prompt role="root">root # </prompt><command>pvcreate</command> /dev/sde</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在这两个磁盘上创建群集感知卷组：
      </para>
 <screen><prompt role="root">root # </prompt><command>vgcreate</command> --clustered y clustervg /dev/sdd /dev/sde</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       根据需要创建逻辑卷：
      </para>
 <screen><prompt role="root">root # </prompt><command>lvcreate</command> --name clusterlv --size 500M clustervg</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>pvdisplay</command> 检查物理卷：
      </para>
@@ -588,7 +592,7 @@ Please see LICENSE.txt for this document's license.
       Allocated PE          0
       PV UUID               Ouj3Xm-AI58-lxB1-mWm2-xn51-agM2-0UuHFC</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <command>vgdisplay</command> 检查卷组：
      </para>
@@ -621,28 +625,28 @@ Please see LICENSE.txt for this document's license.
    </para>
 
 
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-clvm-scenario-drbd">
+  <section xml:id="sec-ha-clvm-scenario-drbd">
    <title>方案：使用 DRBD 的 cLVM</title>
    <para>
     如果数据中心位于城市、国家/地区或大洲的不同区域，则可使用以下方案。
    </para>
-   <procedure id="pro-ha-clvm-withdrbd">
+   <procedure xml:id="pro-ha-clvm-withdrbd">
     <title>创建使用 DRBD 的群集感知卷组</title>
-    <step performance="required">
+    <step>
      <para>
       创建主/主 DRBD 资源：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         首先，按<xref linkend="step-drbd-configure"/>中所述将 DRBD 设备设置为主/从模式。确保两个节点上的磁盘状态均为 <literal>up-to-date</literal>。使用 <command>cat</command> <option>/proc/drbd</option> 或 <command>rcdrbd</command> <option>status</option> 检查情况是否如此。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         将以下选项添加到配置文件（通常类似 <filename>/etc/drbd.d/r0.res</filename>）：
        </para>
@@ -657,13 +661,13 @@ Please see LICENSE.txt for this document's license.
   ...
 }</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         将更改的配置文件复制到另一个节点，例如：
        </para>
 <screen><prompt role="root">root # </prompt><command>scp</command> /etc/drbd.d/r0.res venus:/etc/drbd.d/</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在<emphasis>两个</emphasis>节点上运行以下命令：
        </para>
@@ -671,7 +675,7 @@ Please see LICENSE.txt for this document's license.
 <prompt role="root">root # </prompt><command>drbdadm</command> connect r0
 <prompt role="root">root # </prompt><command>drbdadm</command> primary r0</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         检查节点的状态：
        </para>
@@ -681,24 +685,24 @@ Please see LICENSE.txt for this document's license.
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       将 clvmd 资源作为克隆品包含在 Pacemaker 配置中，并让它依赖于 DLM 克隆资源。有关详细指示信息，请参见<xref linkend="pro-ha-clvm-dlmresource"/>。继续之前，请确认这些资源已在群集上成功启动。可以使用 <command>crm_mon</command> 或 Web 界面检查正在运行的服务。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用命令 <command>pvcreate</command> 准备 LVM 的物理卷。例如，在设备 <filename>/dev/drbd_r0</filename> 上，命令应类似于：
      </para>
 <screen><prompt role="root">root # </prompt><command>pvcreate</command> /dev/drbd_r0</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       创建群集感知卷组：
      </para>
 <screen><prompt role="root">root # </prompt><command>vgcreate</command> --clustered y myclusterfs /dev/drbd_r0</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       根据需要创建逻辑卷。您可能想要更改逻辑卷的大小。例如，使用以下命令创建 4 GB 的逻辑卷：
      </para>
@@ -706,7 +710,7 @@ Please see LICENSE.txt for this document's license.
     </step>
 
 
-    <step performance="required">
+    <step>
      <para>
       
       现在 VG 内的逻辑卷可作为文件系统装入或原始用法提供。确保使用逻辑卷的服务具备适当的依赖性，以便在激活 VG 后对它们进行共置和排序。
@@ -716,9 +720,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     完成这些配置步骤后，即可像在任何独立工作站中一样进行 LVM2 配置。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-clvm-drbd">
+  </section>
+ </section>
+ <section xml:id="sec-ha-clvm-drbd">
   <title>显式配置合格的 LVM2 设备</title>
 
   <para>
@@ -734,17 +738,17 @@ Please see LICENSE.txt for this document's license.
   </para>
 
   <procedure>
-   <step performance="required">
+   <step>
     <para>
      编辑文件 <filename>/etc/lvm/lvm.conf</filename> 并搜索以 <literal>filter</literal> 开头的行。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      其中的模式作为正则表达式来处理。前面的<quote>a</quote>表示接受扫描的设备模式，前面的<quote>r</quote>表示拒绝遵守该设备模式的设备。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      要删除名为 <filename>/dev/sdb1</filename> 的设备，请向过滤规则添加以下表达式：
     </para>
@@ -759,22 +763,22 @@ Please see LICENSE.txt for this document's license.
 <screen>filter = [ "a|/dev/drbd.*|", "a|/dev/.*/by-id/dm-uuid-mpath-.*|", "r/.*/" ]</screen>
    </step>
 
-   <step performance="required">
+   <step>
     <para>
      编写配置文件并将它复制到所有群集节点。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-clvm-more">
+ </section>
+ <section xml:id="sec-ha-clvm-more">
   <title>更多信息</title>
 
   <para>
-   可从 <ulink url="http://www.clusterlabs.org/wiki/Help:Contents"/> 处的 pacemaker 邮件列表中获取完整信息。
+   可从 <link xlink:href="http://www.clusterlabs.org/wiki/Help:Contents"/> 处的 pacemaker 邮件列表中获取完整信息。
   </para>
 
   <para>
-   官方 cLVM 常见问题可在以下网址中找到：<ulink url="http://sources.redhat.com/cluster/wiki/FAQ/CLVM"/>。
+   官方 cLVM 常见问题可在以下网址中找到：<link xlink:href="http://sources.redhat.com/cluster/wiki/FAQ/CLVM"/>。
   </para>
- </sect1>
+ </section>
 </chapter>

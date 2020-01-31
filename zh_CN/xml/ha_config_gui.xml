@@ -1,17 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_config_gui.xml" id="cha-ha-configuration-gui">
- <title>配置和管理群集资源 (GUI)</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_config_gui.xml" xml:id="cha-ha-configuration-gui"><?dbfo-need height="20em"?><?dbfo-need height="20em"?><title>配置和管理群集资源 (GUI)</title><info><abstract>
   <para>
    本章介绍了 Pacemaker GUI，并包含配置和管理群集资源时所需的基本任务：修改全局群集选项、创建基本和高级类型的资源（组和克隆）、配置约束、指定故障转移节点和故障回复节点、配置资源监视以及手动启动、清理、删除和迁移资源。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <para>
   通过以下两个包提供 GUI 支持：<systemitem class="resource">pacemaker-mgmt</systemitem> 包，它包含 GUI 后端（<systemitem class="daemon">mgmtd</systemitem> 守护程序）。它必须安装在要使用 GUI 连接到的所有群集节点上。在要运行 GUI 的任何计算机上，安装 <systemitem class="resource">pacemaker-mgmt-client</systemitem> 包。
  </para>
@@ -27,17 +31,17 @@ Please see LICENSE.txt for this document's license.
    在要使用 Pacemaker GUI 连接到的所有节点上执行此操作。
   </para>
  </note>
-<?dbfo-need height="20em"?>
 
 
- <sect1 id="sec-ha-configuration-gui-intro">
+
+ <section xml:id="sec-ha-configuration-gui-intro">
   <title>Pacemaker GUI - 概述</title>
 
   <para>
    要启动 Pacemaker GUI，请在命令行输入 <command>crm_gui</command>。要访问配置和管理选项，需要登录到群集。
   </para>
 
-  <sect2 id="sec-ha-configuration-gui-intro-connect">
+  <section xml:id="sec-ha-configuration-gui-intro-connect">
    <title>登录到群集</title>
    <para>
     要连接到群集，请选择 <menuchoice> <guimenu>连接</guimenu><guimenu>登录</guimenu> </menuchoice>。默认情况下，<guimenu>Server</guimenu>（服务器）字段会显示本地主机的 IP 地址，<guimenu>User Name</guimenu>（用户名）字段会显示 <systemitem>hacluster</systemitem>。输入该用户的密码以继续。
@@ -56,13 +60,13 @@ Please see LICENSE.txt for this document's license.
    <para>
     如果是远程运行 Pacemaker GUI，请为<guimenu>服务器</guimenu>字段输入群集节点的 IP 地址。对于<guimenu>用户名</guimenu>，您还可以使用属于 <systemitem>haclient</systemitem> 组的任何其他用户连接到群集。
    </para>
-  </sect2>
+  </section>
 
 <?dbfo-need height="20em"?>
 
 
 
-  <sect2 id="sec-ha-configuration-gui-intro-main">
+  <section xml:id="sec-ha-configuration-gui-intro-main">
    <title>主窗口</title>
    <para>
     连接后，系统会打开主窗口：
@@ -134,9 +138,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     以下各节将指导您完成配置群集选项和资源时需要执行的主要任务，并介绍如何使用 Pacemaker GUI 管理资源。除非另有说明，否则逐步指示信息反映了在简单模式下执行的过程。
    </para>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-gui-global">
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-gui-global">
   <title>配置全局群集选项</title>
 
   <para>
@@ -156,29 +160,29 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </itemizedlist>
 
-  <procedure id="pro-ha-config-gui-global">
+  <procedure xml:id="pro-ha-config-gui-global">
    <title>修改全局群集选项</title>
-   <step performance="required">
+   <step>
     <para>
      按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      选择<menuchoice> <guimenu>视图</guimenu> <guimenu>简单模式</guimenu> </menuchoice>。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      在左窗格中，选择 <guimenu>CRM 配置</guimenu>可查看全局群集选项及其当前值。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      根据群集要求，将<guimenu>无仲裁人数策略</guimenu>设置为适当值。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      如果由于某些原因需要禁用屏蔽，请取消选择 <guimenu>stonith 已启用</guimenu>。
     </para>
@@ -189,7 +193,7 @@ Please see LICENSE.txt for this document's license.
      </para>
     </important>
    </step>
-   <step performance="required">
+   <step>
     <para>
      单击<guimenu>应用</guimenu>确认更改。
     </para>
@@ -199,11 +203,11 @@ Please see LICENSE.txt for this document's license.
   <para>
    通过在左窗格中选择 <guimenu>CRM 配置</guimenu>并单击<guimenu>默认值</guimenu>可随时切换回所有选项的默认值。
   </para>
- </sect1>
-<?dbfo-need height="20em"?>
+ </section>
 
 
- <sect1 id="sec-ha-config-gui-resources">
+
+ <section xml:id="sec-ha-config-gui-resources">
   <title>配置群集资源</title>
 
   <para>
@@ -214,44 +218,44 @@ Please see LICENSE.txt for this document's license.
    有关可创建的资源类型的概述，请参见<xref linkend="sec-ha-config-basics-resources-types"/>。
   </para>
 
-  <sect2 id="sec-ha-configuration-create">
+  <section xml:id="sec-ha-configuration-create">
    <title>创建简单群集资源</title>
    <para>
     要创建最基本的资源类型，请按如下操作：
    </para>
-   <procedure id="pro-ha-config-gui-primitives">
+   <procedure xml:id="pro-ha-config-gui-primitives">
     <title>添加原始资源</title>
-    <step id="st-ha-configuration-create-start" performance="required">
+    <step xml:id="st-ha-configuration-create-start">
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择<guimenu>资源</guimenu>并单击<menuchoice> <guimenu>添加</guimenu> <guimenu>Primitive</guimenu></menuchoice>（原始）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在下一个对话框中，为资源设置以下参数：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         为资源输入唯一的 <guimenu>ID</guimenu>。
        </para>
       </step>
-      <step id="step-ha-config-gui-primitives-start" performance="required">
+      <step xml:id="step-ha-config-gui-primitives-start">
        <para>
         从<guimenu>类</guimenu>列表中，选择要用于该资源的资源代理类：<guimenu>lsb</guimenu>、<guimenu>ocf</guimenu>、<guimenu>service</guimenu> 或 <guimenu>stonith</guimenu>。有关详细信息，请参见 <xref linkend="sec-ha-config-basics-raclasses"/>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         如果选择了 <guimenu>ocf</guimenu> 作为类，请同时指定 OCF 资源代理的<guimenu>提供程序</guimenu>。OCF 规范允许多个供应商供应相同的资源代理。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         从 <guimenu>Type</guimenu>（类型）列表中，选择要使用的资源代理（例如 <guimenu>IPaddr</guimenu> 或 <guimenu>Filesystem</guimenu>）。该资源代理的简短描述显示在下方。
        </para>
@@ -259,12 +263,12 @@ Please see LICENSE.txt for this document's license.
         <guimenu>Type</guimenu>（类型）列表中提供的选项取决于您选择的 <guimenu>Class</guimenu>（类）（对于 OCF 资源还取决于 <guimenu>Provider</guimenu>（提供程序）中选择的内容）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在 <guimenu>Options</guimenu>（选项）下面，设置 <guimenu>Initial state of resource</guimenu>（资源的初始状态）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         如果希望群集监视资源状况是否仍然正常，请激活 <guimenu>Add monitor operation</guimenu>（添加监视操作）。
        </para>
@@ -281,12 +285,12 @@ Please see LICENSE.txt for this document's license.
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击 <guimenu>Forward</guimenu>（前进）。下一个窗口将显示已为该资源定义的参数摘要。系统会列出该资源的所有必需的 <guimenu>Instance Attributes</guimenu>（实例属性）。若要设置相应的值，需要对实例属性进行编辑。可能还需要添加更多的属性，具体取决于您的部署和设置。有关如何操作的细节，请参考<xref linkend="pro-ha-config-gui-parameters"/>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击<guimenu>应用</guimenu>完成该资源的配置。配置对话框关闭，主窗口显示新添加的资源。
      </para>
@@ -312,14 +316,14 @@ Please see LICENSE.txt for this document's license.
      </para>
     </listitem>
    </itemizedlist>
-   <procedure id="pro-ha-config-gui-parameters">
+   <procedure xml:id="pro-ha-config-gui-parameters">
     <title>添加或修改元属性和实例属性</title>
-    <step performance="required">
+    <step>
      <para>
       在 Pacemaker GUI 主窗口中，单击左窗格中的<guimenu>资源</guimenu>可查看已为群集配置的资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中，选择要修改的资源并单击 <guimenu>Edit</guimenu>（编辑）（或双击资源）。下一个窗口将显示已为该资源定义的基本资源参数和 <guimenu>Meta Attributes</guimenu>（元属性）、<guimenu>Instance Attributes</guimenu>（实例属性）或 <guimenu>Operations</guimenu>（操作）。
      </para>
@@ -334,27 +338,27 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要添加新的元属性或实例属性，请选择相应的选项卡并单击 <guimenu>Add</guimenu>（添加）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择要添加的属性<guimenu>名称</guimenu>。将显示简短的<guimenu>描述</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果需要，请指定属性<guimenu>值</guimenu>。否则，使用该属性的默认值。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击 <guimenu>OK</guimenu>（确定）确认更改。新添加或新修改的属性便显示在选项卡上。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>OK</guimenu>（确定）完成该资源的配置。配置对话框关闭，主窗口显示已修改的资源。
      </para>
@@ -372,9 +376,9 @@ Please see LICENSE.txt for this document's license.
      编辑器将显示 XML 代码，允许您 <guimenu>Import</guimenu>（导入）或 <guimenu>Export</guimenu>（导出）XML 元素或手动编辑 XML 代码。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-stonith">
+  <section xml:id="sec-ha-configuration-stonith">
    <title>创建 STONITH 资源</title>
    <important>
     <title>无 STONITH 资源不受支持</title>
@@ -385,56 +389,56 @@ Please see LICENSE.txt for this document's license.
    <para>
     默认情况下，全局群集选项 <literal>stonith-enabled</literal> 设置为 <literal>true</literal>：如果未定义任何 STONITH 资源，群集将拒绝启动任何资源。要完成 STONITH 设置，需要配置一个或多个 STONITH 资源。虽然 STONITH 资源的配置过程与其他资源类似，但它们的行为在某些方面有所不同。有关细节，请参见<xref linkend="sec-ha-fencing-config"/>。
    </para>
-   <procedure id="pro-ha-config-gui-stonith">
+   <procedure xml:id="pro-ha-config-gui-stonith">
     <title>添加 STONITH 资源</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择<guimenu>资源</guimenu>并单击<menuchoice> <guimenu>添加</guimenu> <guimenu>Primitive</guimenu></menuchoice>（原始）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在下一个对话框中，为资源设置以下参数：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         为资源输入唯一的 <guimenu>ID</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         从 <guimenu>Class</guimenu>（类）列表，选择资源代理类 <guimenu>stonith</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         从<guimenu>类型</guimenu>列表中，选择 用于控制 STONITH 设备的 STONITH 插件。该插件的简短描述显示在下方。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在 <guimenu>Options</guimenu>（选项）下面，设置 <guimenu>Initial state of resource</guimenu>（资源的初始状态）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         如果希望群集监视屏蔽设备，请激活 <guimenu>Add monitor operation</guimenu>（添加监视操作）。有关更多信息，请参考<xref linkend="sec-ha-fencing-monitor"/>。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击 <guimenu>Forward</guimenu>（前进）。下一个窗口将显示已为该资源定义的参数摘要。系统会针对所选 STONITH 插件列出所有必需的<guimenu>实例属性</guimenu>。若要设置相应的值，需要对实例属性进行编辑。可能还需要添加更多的属性或监视操作，具体取决于您的部署和设置。有关如何操作的细节，请参考<xref linkend="pro-ha-config-gui-parameters"/>和<xref linkend="sec-ha-configuration-monitor"/>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>Apply</guimenu>（应用）完成该资源的配置。配置对话框关闭，主窗口显示新添加的资源。
      </para>
@@ -443,90 +447,90 @@ Please see LICENSE.txt for this document's license.
    <para>
     要完成屏蔽配置，请添加约束和/或使用克隆。有关详细信息，请参见<xref linkend="cha-ha-fencing"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-config-gui-templates">
+  <section xml:id="sec-ha-config-gui-templates">
    <title>使用资源模板</title>
    <para>
     如果希望创建具有类似配置的多个资源，则定义资源模板是最简单的方式。定义后，就可在原始资源或特定类型的约束中引用它。有关功能及使用资源模板的详细信息，请参考<xref linkend="sec-ha-config-basics-constraints-templates"/>。
    </para>
-   <procedure id="pro-ha-config-gui-templates-create">
-    <step performance="required">
+   <procedure xml:id="pro-ha-config-gui-templates-create">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择<guimenu>资源</guimenu>，然后单击<menuchoice> <guimenu>添加</guimenu> <guimenu>模板</guimenu> </menuchoice>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为模板输入唯一的 <guimenu>ID</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       像指定原始资源一样指定资源模板。遵循<xref linkend="pro-ha-config-gui-primitives" xrefstyle="select:label title nopage"/>操作，从<xref linkend="step-ha-config-gui-primitives-start" xrefstyle="select:label"/>开始。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击<guimenu>应用</guimenu>完成资源模板的配置。配置对话框关闭，主窗口显示新添加的资源模板。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-config-gui-templates-use">
+   <procedure xml:id="pro-ha-config-gui-templates-use">
     <title>引用资源模板</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要在原始资源中引用新创建的资源模板，请遵循以下步骤：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         在左窗格中，选择<guimenu>资源</guimenu>并单击<menuchoice> <guimenu>添加</guimenu> <guimenu>Primitive</guimenu></menuchoice>（原始）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         输入唯一的 <guimenu>ID</guimenu>，并指定<guimenu>类</guimenu>、<guimenu>提供程序</guimenu>和<guimenu>类型</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         选择要引用的<guimenu>模板</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         如果要设置派生自该模板的特定实例属性、操作或元属性，请继续按<xref linkend="pro-ha-config-gui-primitives"/>中所述配置资源。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要在共置或顺序约束中引用新创建的资源模板：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         分别按<xref linkend="pro-ha-config-gui-constraints-collocation"/>或<xref linkend="pro-ha-config-gui-constraints-order"/>中所述配置约束。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         对于共置约束，<guimenu>资源</guimenu>下拉列表将显示已配置的所有资源和资源模板的 ID。从此列表中选择要引用的模板。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         类似地，对于顺序约束，<guimenu>首先</guimenu>和<guimenu>然后</guimenu>下拉列表将显示资源和资源列表。从这些列表中选择要引用的模板。
        </para>
@@ -534,9 +538,9 @@ Please see LICENSE.txt for this document's license.
      </substeps>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-constraints">
+  <section xml:id="sec-ha-configuration-constraints">
    <title>配置资源约束</title>
    <para>
     配置好所有资源只是完成了该任务的一部分。即便群集熟悉所有必需资源，它可能还无法进行正确处理。资源约束允许您指定在哪些群集节点上运行资源、以何种顺序装载资源，以及特定资源依赖于哪些其他资源。
@@ -550,45 +554,45 @@ Please see LICENSE.txt for this document's license.
 <?dbfo-need height="20em"?>
 
 
-   <procedure id="pro-ha-config-gui-constraints-location">
+   <procedure xml:id="pro-ha-config-gui-constraints-location">
     <title>添加或修改位置约束</title>
-    <step id="step-ha-configuration-constraints-start" performance="required">
+    <step xml:id="step-ha-configuration-constraints-start">
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 Pacemaker GUI 主窗口中，单击左窗格中的<guimenu>约束</guimenu>以查看已为群集配置的约束。
      </para>
     </step>
-    <step id="step-ha-configuration-constraints-stop" performance="required">
+    <step xml:id="step-ha-configuration-constraints-stop">
      <para>
       在左窗格中，选择 <guimenu>Constraints</guimenu>（约束）并单击 <guimenu>Add</guimenu>（添加）。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择 <guimenu>Resource Location</guimenu>（资源位置）并单击 <guimenu>OK</guimenu>（确定）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为约束输入唯一的 <guimenu>ID</guimenu>。修改现有约束时，ID 已经定义并显示在配置对话框中。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择要定义约束的<guimenu>资源</guimenu>。列表中显示群集已配置的所有资源的 ID。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       设置约束的<guimenu>分数</guimenu>。正值表示资源可以在以下指定的<guimenu>节点</guimenu>上运行。负值表示它不应在该节点上运行。将分数设置为 <literal>INFINITY</literal> 将强制资源在该节点上运行。将其设置为 <literal>-INFINITY</literal> 则表示资源不得在该节点上运行。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择约束的<guimenu>节点</guimenu>。
      </para>
@@ -603,47 +607,47 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       
       如果将 <guimenu>Node</guimenu>（节点）和 <guimenu>Score</guimenu>（分数）字段留为空白，也可以通过单击<menuchoice> <guimenu>Add</guimenu><guimenu>Rule</guimenu></menuchoice>（添加 &gt; 规则）来添加规则。要添加有效期，只需单击 <menuchoice> <guimenu>Add</guimenu> <guimenu>Lifetime</guimenu></menuchoice>（添加&gt;有效期）即可。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>OK</guimenu>（确定）完成约束配置。配置对话框关闭，主窗口显示新添加或新修改的约束。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-config-gui-constraints-collocation">
+   <procedure xml:id="pro-ha-config-gui-constraints-collocation">
     <title>添加或修改共置约束</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 Pacemaker GUI 主窗口中，单击左窗格中的<guimenu>约束</guimenu>以查看已为群集配置的约束。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择 <guimenu>Constraints</guimenu>（约束）并单击 <guimenu>Add</guimenu>（添加）。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择<guimenu>资源共置</guimenu>，然后单击<guimenu>确定</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为约束输入唯一的 <guimenu>ID</guimenu>。修改现有约束时，ID 已经定义并显示在配置对话框中。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择要充当共置源的<guimenu>资源</guimenu>。此列表显示已为群集配置的所有资源和资源模板的 ID。
      </para>
@@ -651,23 +655,23 @@ Please see LICENSE.txt for this document's license.
       如果约束无法满足，群集可以决定根本不允许运行资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       
       如果将 <guimenu>Resource</guimenu>（资源）和 <guimenu>With Resource</guimenu>（排列资源）字段都保留为空，也可以通过单击<menuchoice> <guimenu>Add</guimenu> <guimenu>Resource Set</guimenu></menuchoice>（添加 &gt; 资源集）来添加资源集。要添加有效期，只需单击 <menuchoice> <guimenu>Add</guimenu><guimenu>Lifetime</guimenu></menuchoice>（添加 &gt; 有效期）即可。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在<guimenu>共置资源</guimenu>中，定义共置目标。群集先决定将此资源放置在什么位置，再决定将此资源放置在 <guimenu>Resource</guimenu>（资源）字段的什么位置。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       定义 <guimenu>Score</guimenu>（分数）可确定两个资源的位置关系。正值表示两个资源应在相同的节点上运行。负值表示两个资源不应在相同的节点上运行。将分数设置为 <literal>INFINITY</literal> 将强制资源在同一个节点上运行。将其设置为 <literal>-INFINITY</literal> 则表示资源不得在同一个节点上运行。分数将与其他因数结合使用，以确定放置资源的位置。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果需要，请指定进一步参数，如 <guimenu>Resource Role</guimenu>（资源角色）。
      </para>
@@ -675,46 +679,46 @@ Please see LICENSE.txt for this document's license.
       根据选择的参数和选项，显示简短<guimenu>描述</guimenu>，解释您正在配置的共置约束的效果。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>OK</guimenu>（确定）完成约束配置。配置对话框关闭，主窗口显示新添加或新修改的约束。
      </para>
     </step>
    </procedure>
-   <procedure id="pro-ha-config-gui-constraints-order">
+   <procedure xml:id="pro-ha-config-gui-constraints-order">
     <title>添加或修改顺序约束</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 Pacemaker GUI 主窗口中，单击左窗格中的<guimenu>约束</guimenu>以查看已为群集配置的约束。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择 <guimenu>Constraints</guimenu>（约束）并单击 <guimenu>Add</guimenu>（添加）。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择 <guimenu>Resource Order</guimenu>（资源顺序）并单击 <guimenu>OK</guimenu>（确定）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为约束输入唯一的 <guimenu>ID</guimenu>。修改现有约束时，ID 已经定义并显示在配置对话框中。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用<guimenu>首先</guimenu>定义必须先于使用<guimenu>然后</guimenu>指定的资源启动的资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       使用 <guimenu>Then</guimenu>（然后）定义必须后于 <guimenu>First</guimenu>（首先）资源启动的资源。
      </para>
@@ -722,24 +726,24 @@ Please see LICENSE.txt for this document's license.
       根据选择的参数和选项，显示简短<guimenu>描述</guimenu>，解释您正在配置的顺序约束的效果。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果需要，定义更多参数，例如：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         指定<guimenu>分数</guimenu>。如果分数大于零，则约束为强制性的，否则只是建议。默认值为 <literal>INFINITY</literal>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         为<guimenu>对称</guimenu>指定值。如果为 <literal>true</literal>，则资源将按相反顺序停止。默认值为 <literal>true</literal>。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>OK</guimenu>（确定）完成约束配置。配置对话框关闭，主窗口显示新添加或新修改的约束。
      </para>
@@ -759,9 +763,9 @@ Please see LICENSE.txt for this document's license.
      </imageobject>
     </mediaobject>
    </figure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-failover">
+  <section xml:id="sec-ha-configuration-failover">
    <title>指定资源故障转移节点</title>
    <para>
     资源在出现故障时会自动重启动。如果在当前节点上无法实现重启动，或如果在当前节点上发生 N 次故障，则资源会试图故障转移到其他节点。您可以多次定义资源的故障次数（<literal>migration-threshold</literal>），在该值之后资源会迁移到新节点。如果群集中存在两个以上的节点，则特定资源故障转移的节点由 High Availability 软件选择。
@@ -769,24 +773,24 @@ Please see LICENSE.txt for this document's license.
    <para>
     但您可以按如下操作指定资源将故障转移到的节点：
    </para>
-   <procedure id="pro-ha-config-gui-failover">
-    <step performance="required">
+   <procedure xml:id="pro-ha-config-gui-failover">
+    <step>
      <para>
       按<xref linkend="pro-ha-config-gui-constraints-location"/>中所述，为该资源配置位置约束。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="pro-ha-config-gui-parameters"/>中所述，为该资源添加 <literal>migration-threshold</literal> 元属性，并输入迁移阈值的<guimenu>值</guimenu>。值应该是小于 INFINITY 的正值。
      </para>
 
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果希望资源的故障计数自动失效，请按<xref linkend="pro-ha-config-gui-parameters"/>中所述为该资源添加 <literal>failure-timeout</literal> 元属性，并输入故障超时的<guimenu>值</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果希望为资源指定更多的首选故障转移节点，请创建更多的位置约束。
      </para>
@@ -798,9 +802,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     您可以随时手动清理资源的失败计数，而不是让资源的失败计数自动失效。有关细节，请参见<xref linkend="sec-ha-configuration-cleanup"/>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-failback">
+  <section xml:id="sec-ha-configuration-failback">
    <title>指定资源故障回复节点（资源黏性）</title>
    <para>
     当原始节点恢复联机并位于群集中时，资源可能会故障回复到该节点。如果要防止资源在故障转移前故障回复到之前运行的节点，或者要指定此资源故障回复到的其他节点，必须更改其资源粘性值。可以在创建资源时指定资源粘性或稍后指定。
@@ -811,9 +815,9 @@ Please see LICENSE.txt for this document's license.
 <?dbfo-need height="20em"?>
 
 
-   <procedure id="pro-ha-config-gui-stickiness">
+   <procedure xml:id="pro-ha-config-gui-stickiness">
     <title>指定资源黏性</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="pro-ha-config-gui-parameters"/>中所述为资源添加 <literal>resource-stickiness</literal> 元属性。
      </para>
@@ -828,15 +832,15 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在资源黏性<guimenu>值</guimenu>中，指定介于 <literal>-INFINITY</literal> 和 <literal>INFINITY</literal> 之间的值。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-utilization">
+  <section xml:id="sec-ha-configuration-utilization">
    <title>根据负载影响配置资源放置</title>
    <para>
     并非所有资源都相等。某些资源（如 Xen guest）需要托管它们的节点满足其容量要求。如果所放置资源的总需求超过了提供的容量，则资源性能将降低（或甚至失败）。
@@ -867,66 +871,66 @@ Please see LICENSE.txt for this document's license.
    <para>
     要手动配置资源要求和节点提供的容量，请按<xref linkend="pro-ha-config-gui-capacity"/>中所述继续。可根据个人喜好命名利用率属性，并根据配置需要定义多个名称/值对。
    </para>
-   <procedure id="pro-ha-config-gui-capacity">
+   <procedure xml:id="pro-ha-config-gui-capacity">
     <title>添加或修改利用率属性</title>
     <para>
      在下例中，我们假定您已有群集节点和资源的基本配置，现在想要配置特定节点提供的容量以及特定资源需要的容量。添加利用率属性的过程基本相同，仅<xref linkend="step-ha-config-gui-capacity-node"/>和<xref linkend="step-ha-config-gui-capacity-resource"/>有所不同。
     </para>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step id="step-ha-config-gui-capacity-node" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-node">
      <para>
       指定节点<emphasis>提供</emphasis>的容量：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         在左窗格中，单击<guimenu>节点</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在右窗格中，选择要配置其容量的节点，然后单击<guimenu>编辑</guimenu>。
        </para>
       </step>
      </substeps>
     </step>
-    <step id="step-ha-config-gui-capacity-resource" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-resource">
      <para>
       指定资源<emphasis>需要</emphasis>的容量：
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         在左窗格中，单击<guimenu>资源</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在右窗格中，选择要配置其容量的资源，然后单击<guimenu>编辑</guimenu>。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择<guimenu>利用率</guimenu>选项卡，然后单击<guimenu>添加</guimenu>以添加利用率属性。
      </para>
     </step>
-    <step id="step-ha-config-gui-capacity-attr-name" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-attr-name">
      <para>
       为新属性输入<guimenu>名称</guimenu>。可以根据个人喜好命名利用率属性。
      </para>
     </step>
-    <step id="step-ha-config-gui-capacity-attr-value" performance="required">
+    <step xml:id="step-ha-config-gui-capacity-attr-value">
      <para>
       为属性输入<guimenu>值</guimenu>，然后单击<guimenu>确定</guimenu>。属性值必须是整数。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果需要更多利用率属性，请重复<xref linkend="step-ha-config-gui-capacity-attr-name"/>到<xref linkend="step-ha-config-gui-capacity-attr-value"/>。
      </para>
@@ -934,7 +938,7 @@ Please see LICENSE.txt for this document's license.
       <guimenu>利用率</guimenu>选项卡显示已为此节点或资源定义的利用率属性的摘要。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       根据意愿设置所有参数后，单击<guimenu>确定</guimenu>关闭配置对话框。
      </para>
@@ -943,7 +947,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     <xref linkend="fig-ha-config-gui-capacit-node"/>显示了将向运行在此节点上的资源提供 8 个 CPU 单元和 16 GB 内存的节点配置：
    </para>
-   <figure id="fig-ha-config-gui-capacit-node">
+   <figure xml:id="fig-ha-config-gui-capacit-node">
     <title>节点容量配置示例</title>
     <mediaobject>
      <imageobject role="fo">
@@ -957,7 +961,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     需要使用节点 4096 个内存单元和 4 个 CPU 单元的资源的配置示例如下所示：
    </para>
-   <figure id="fig-ha-config-gui-capacit-resource">
+   <figure xml:id="fig-ha-config-gui-capacit-resource">
     <title>资源容量配置示例</title>
     <mediaobject>
      <imageobject role="fo">
@@ -971,68 +975,68 @@ Please see LICENSE.txt for this document's license.
    <para>
     （手动或自动）配置了节点提供的容量和资源需要的容量后，需要设置全局群集选项中的放置策略，否则容量配置将不会生效。可使用多个策略来调度负载：例如，可以将负载集中到尽可能少的节点上，或使其均匀分布在所有可用节点上。有关更多信息，请参见<xref linkend="sec-ha-config-basics-utilization"/>。
    </para>
-   <procedure id="pro-ha-config-gui-placement">
+   <procedure xml:id="pro-ha-config-gui-placement">
     <title>设置放置策略</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       选择<menuchoice> <guimenu>视图</guimenu> <guimenu>简单模式</guimenu> </menuchoice>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择 <guimenu>CRM 配置</guimenu>可查看全局群集选项及其当前值。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       根据要求，将<guimenu>放置策略</guimenu>设置为适当值。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果由于某些原因需要禁用屏蔽，请取消选择 <literal>Stonith Enabled</literal>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击<guimenu>应用</guimenu>确认更改。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
 <?dbfo-need height="20em"?>
 
 
 
-  <sect2 id="sec-ha-configuration-monitor">
+  <section xml:id="sec-ha-configuration-monitor">
    <title>配置资源监视</title>
    <para>
     虽然 High Availability Extension 可以检测节点故障，但也能够检测节点上的单个资源何时发生故障。如果要确保资源正在运行，必须为其配置资源监视。资源监视包括指定超时和/或启动延迟值以及间隔。间隔告诉 CRM 检查资源状态的频率。您还可以设置特定参数，如为 <literal>start</literal> 或 <literal>stop</literal> 操作设置 <literal>timeout</literal>。
    </para>
-   <procedure id="pro-ha-config-gui-operations">
+   <procedure xml:id="pro-ha-config-gui-operations">
     <title>添加或修改监视操作</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 Pacemaker GUI 主窗口中，单击左窗格中的<guimenu>资源</guimenu>可查看已为群集配置的资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中，选择要修改的资源并单击 <guimenu>Edit</guimenu>（编辑）。下一个窗口将显示为该资源定义的基本资源参数、元属性、实例属性和操作。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要添加新的监视操作，请选择各自选项卡并单击 <guimenu>Add</guimenu>（添加）。
      </para>
@@ -1042,7 +1046,7 @@ Please see LICENSE.txt for this document's license.
     </step>
 
 
-    <step performance="required">
+    <step>
      <para>
       在 <guimenu>Name</guimenu>（名称）中，选择要执行的操作，例如 <literal>monitor</literal>、<literal>start</literal> 或 <guimenu>stop</guimenu>。
      </para>
@@ -1060,17 +1064,17 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 <guimenu>timeout</guimenu>（超时）字段中，输入以秒表示的值。在指定的超时期间后，操作会被视为 <literal>failed</literal>。PE 会决定如何做或执行您在监视操作的 <guimenu>On Fail</guimenu>（失败时）字段中指定的操作。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果需要，可展开<guimenu>可选</guimenu>部分并添加参数，如<guimenu>失败时</guimenu>（如果此操作失败将执行什么操作？）或 <guimenu>Requires</guimenu>（要求）（发生此操作前需要满足哪些条件？）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>OK</guimenu>（确定）完成该资源的配置。配置对话框关闭，主窗口显示已修改的资源。
      </para>
@@ -1093,9 +1097,9 @@ Please see LICENSE.txt for this document's license.
      </imageobject>
     </mediaobject>
    </figure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-group">
+  <section xml:id="sec-ha-configuration-group">
    <title>配置群集资源组</title>
    <para>
     某些群集资源依赖于其他组件或资源，并且要求每个组件或资源都按特定顺序启动并在同一服务器上一起运行。为了简化此配置，我们支持组的概念。
@@ -1109,39 +1113,39 @@ Please see LICENSE.txt for this document's license.
      组必须包含至少一个资源，否则配置无效。
     </para>
    </note>
-   <procedure id="pro-ha-config-gui-group">
+   <procedure xml:id="pro-ha-config-gui-group">
     <title>添加资源组</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择 <guimenu>Resources</guimenu>（资源）并单击 <menuchoice> <guimenu>Add</guimenu> <guimenu>Group</guimenu> </menuchoice>（添加 &gt; 组）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为组输入唯一的 <guimenu>ID</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 <guimenu>Options</guimenu>（选项）下面，设置 <guimenu>Initial state of resource</guimenu>（资源的初始状态）并单击 <guimenu>Forward</guimenu>（前进）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在下一个步骤中，可以添加原始资源作为组的子资源。它们的创建方式与<xref linkend="pro-ha-config-gui-primitives"/>中描述的步骤类似。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>Apply</guimenu>（应用）完成原始资源的配置。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在下一个窗口中，可以通过再次选择 <guimenu>Primitive</guimenu>（原始）并单击 <guimenu>OK</guimenu>（确定）来继续为组添加子资源。
      </para>
@@ -1149,12 +1153,12 @@ Please see LICENSE.txt for this document's license.
       当不希望再向组中添加原始资源时，单击 <guimenu>Cancel</guimenu>（取消）。下一个窗口将显示您为该组定义的参数摘要。系统会列出组的 <guimenu>Meta Attributes</guimenu>（元属性）和 <guimenu>Primitives</guimenu>（原始）资源。资源在 <guimenu>Primitive</guimenu>（原始）选项卡上的位置代表资源在群集中的启动顺序。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       由于资源在组中的顺序很重要，可使用<guimenu>向上</guimenu>和<guimenu>向下</guimenu>按钮对组中的<guimenu>原始资源</guimenu>进行排序。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>OK</guimenu>（确定）完成该组的配置。配置对话框关闭，主窗口显示新创建或新修改的组。
      </para>
@@ -1177,76 +1181,76 @@ Please see LICENSE.txt for this document's license.
 <?dbfo-need height="20em"?>
 
 
-   <procedure id="pro-ha-config-gui-group-modify">
+   <procedure xml:id="pro-ha-config-gui-group-modify">
     <title>向现有组添加资源</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，切换到 <guimenu>Resources</guimenu>（资源）视图；在右窗格中，选择要修改的组并单击 <guimenu>Edit</guimenu>（编辑）。下一个窗口将显示为该资源定义的基本组参数以及元属性和原始资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击 <guimenu>Primitives</guimenu>（原始）选项卡并单击 <guimenu>Add</guimenu>（添加）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在下一个对话框中，若要将 IP 地址添加为组的子资源，请设置以下参数：
      </para>
      <substeps performance="required">
-      <step id="step-ha-config-gui-group-prim-start" performance="required">
+      <step xml:id="step-ha-config-gui-group-prim-start">
        <para>
         输入唯一的 <guimenu>ID</guimenu>（例如，<literal>my_ipaddress</literal>）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         从 <guimenu>Class</guimenu>（类）列表中，选择 <guimenu>ocf</guimenu> 作为资源代理类。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在 OCF 资源代理的 <guimenu>Provider</guimenu>（提供程序）中，选择 <guimenu>heartbeat</guimenu>。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         从 <guimenu>Type</guimenu>（类型）列表中，选择 <guimenu>IPaddr</guimenu> 作为资源代理。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         单击 <guimenu>Forward</guimenu>（前进）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在 <guimenu>Instance Attribute</guimenu>（实例属性）选项卡中，选择 <guimenu>IP </guimenu>条目并单击 <guimenu>Edit</guimenu>（编辑）（或双击 <guimenu>IP</guimenu> 条目）。
        </para>
       </step>
-      <step performance="required">
+      <step>
        <para>
         在<guimenu>值</guimenu>中输入所需的 IP 地址，例如 <literal>192.168.1.180</literal>。
        </para>
       </step>
-      <step id="step-ha-config-gui-group-prim-stop" performance="required">
+      <step xml:id="step-ha-config-gui-group-prim-stop">
        <para>
         单击 <guimenu>OK</guimenu>（确定）并单击 <guimenu>Apply</guimenu>（应用）。组配置对话框将显示新添加的原始资源。
        </para>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       再次单击 <guimenu>Add</guimenu>（添加）可添加下一个子资源（文件系统和 Web 服务器）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       设置每个子资源各自的参数，其过程类似于从<xref linkend="step-ha-config-gui-group-prim-start"/>到<xref linkend="step-ha-config-gui-group-prim-stop"/>的步骤，直到为组配置完所有子资源为止。
      </para>
@@ -1264,25 +1268,25 @@ Please see LICENSE.txt for this document's license.
       由于已按子资源在群集中所需的启动顺序对子资源进行了配置，所以 <guimenu>Primitives</guimenu>（原始）选项卡上的顺序已是正确的。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果需要更改组的资源顺序，请使用<guimenu>向上</guimenu>和<guimenu>向下</guimenu>按钮对<guimenu>原始资源</guimenu>选项卡上的资源排序。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       要从组中删除资源，请在 <guimenu>Primitive</guimenu>（原始）选项卡上选择资源，并单击 <guimenu>Remove</guimenu>（删除）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击 <guimenu>OK</guimenu>（确定）完成该组的配置。配置对话框关闭，主窗口显示修改后的组。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-clone">
+  <section xml:id="sec-ha-configuration-clone">
    <title>配置克隆资源</title>
    <para>
     您可能希望某些资源在群集的多个节点上同时运行。为此，必须将资源配置为克隆资源。可以配置为克隆资源的资源示例包括 STONITH 和群集文件系统（如 OCFS2）。可以克隆提供的任何资源。资源的资源代理支持此操作。克隆资源的配置甚至也有不同，具体取决于资源驻留的节点。
@@ -1290,47 +1294,47 @@ Please see LICENSE.txt for this document's license.
    <para>
     有关可用的资源克隆类型的概述，请参见<xref linkend="sec-ha-config-basics-resources-advanced-clones"/>。
    </para>
-   <procedure id="pro-ha-config-gui-clone">
+   <procedure xml:id="pro-ha-config-gui-clone">
     <title>添加或修改克隆</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中，选择 <guimenu>Resources</guimenu>（资源）并单击 <menuchoice> <guimenu>Add</guimenu><guimenu>Clone</guimenu></menuchoice>（添加 &gt; 克隆）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为克隆资源输入唯一的 <guimenu>ID</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在 <guimenu>Options</guimenu>（选项）下面，设置 <guimenu>Initial state of resource</guimenu>（资源的初始状态）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       为克隆资源激活要设置的各个选项，并单击 <guimenu>Forward</guimenu>（前进）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在下一个步骤中，可以添加 <guimenu>Primitive</guimenu>（原始）或 <guimenu>Group</guimenu>（组）作为克隆资源的子资源。创建方式与<xref linkend="pro-ha-config-gui-primitives"/>或<xref linkend="pro-ha-config-gui-group"/>中描述的过程类似。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果所有参数都按您的需要进行了设置，请单击 <guimenu>Apply</guimenu>（应用）完成复制配置。
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-gui-manage">
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-gui-manage">
   <title>管理群集资源</title>
 
   <para>
@@ -1349,7 +1353,7 @@ Please see LICENSE.txt for this document's license.
    </mediaobject>
   </figure>
 
-  <sect2 id="sec-ha-configuration-start">
+  <section xml:id="sec-ha-configuration-start">
    <title>启动资源</title>
    <para>
     启动群集资源之前，应确保资源设置正确。例如，如果要使用 Apache 服务器作为群集资源，请先设置 Apache 服务器并完成 Apache 配置，然后才能启动群集中的相应资源。
@@ -1369,27 +1373,27 @@ Please see LICENSE.txt for this document's license.
    <para>
     在使用 Pacemaker GUI 创建资源的过程中，可以使用 <literal>target-role</literal> 元属性设置资源的初始状态。如果其值已设置为 <literal>stopped</literal>，则资源不会在创建后自动启动。
    </para>
-   <procedure id="pro-ha-config-gui-start">
+   <procedure xml:id="pro-ha-config-gui-start">
     <title>启动新资源</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中单击<guimenu>管理</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中，右键单击资源并从上下文菜单中选择<guimenu>启动</guimenu>（或使用工具栏中的<guimenu>启动资源</guimenu>图标）。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-cleanup">
+  <section xml:id="sec-ha-configuration-cleanup">
    <title>清理资源</title>
    <para>
     如果资源失败，它会自动重启动，但每次失败都会增加资源的失败计数。要使用 Pacemaker GUI 查看资源的失败计数，请在左窗格中单击<guimenu>管理</guimenu>，然后在右窗格中选择该资源。如果资源失败，其<guimenu>失败计数</guimenu>将显示在右窗格中间（<guimenu>迁移阈值</guimenu>项下面）。
@@ -1400,33 +1404,33 @@ Please see LICENSE.txt for this document's license.
    <para>
     可自动重设置资源的失败计数（通过设置资源的 <literal>failure-timeout</literal> 选项），也可如下所述手动重设置。
    </para>
-   <procedure id="pro-ha-config-gui-clean">
+   <procedure xml:id="pro-ha-config-gui-clean">
     <title>清理资源</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中单击<guimenu>管理</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中，右键单击相应资源，然后从上下文菜单中选择<guimenu>清理资源</guimenu>（或使用工具栏中的<guimenu>清理资源</guimenu>图标）。
      </para>
      <para>
-      这将对指定节点上的指定资源执行命令 <command>crm_resource <option>-C</option></command> 和 <command>crm_failcount <option>-D</option></command>。
+      这将对指定节点上的指定资源执行命令 <command>crm_resource </command> <option>-C</option> 和 <command>crm_failcount </command> <option>-D</option>。
      </para>
     </step>
    </procedure>
    <para>
     有关更多信息，请参见手册页 <command>crm_resource</command> 和 <command>crm_failcount</command>。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-remove">
+  <section xml:id="sec-ha-configuration-remove">
    <title>删除群集资源</title>
    <para>
     如果需要从群集中删除资源，请遵循以下过程以免出现配置错误：
@@ -1438,59 +1442,59 @@ Please see LICENSE.txt for this document's license.
      如果群集资源的 ID 由任何约束引用，则无法删除该群集资源。如果您无法删除某个资源，请检查引用资源 ID 的位置，然后先从该约束删除资源。
     </para>
    </note>
-   <procedure id="pro-ha-config-gui-rm">
+   <procedure xml:id="pro-ha-config-gui-rm">
     <title>删除群集资源</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中单击<guimenu>管理</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中选择相应的资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="pro-ha-config-gui-clean"/>中所述清理所有节点上的资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <guimenu>停止</guimenu>资源。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       删除与资源相关的所有约束，否则将无法删除资源。
      </para>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-migrate">
+  <section xml:id="sec-ha-configuration-migrate">
    <title>迁移群集资源</title>
    <para>
     如<xref linkend="sec-ha-configuration-failover"/>中所述，如果软件或硬件发生故障，群集会根据可自定义的特定参数（例如，迁移阈值或资源粘性），自动进行资源故障转移（迁移）。除此之外，还可以手动将资源迁移到群集中的其他节点。
    </para>
-   <procedure id="pro-ha-config-gui-migrate">
+   <procedure xml:id="pro-ha-config-gui-migrate">
     <title>手动迁移资源</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中单击<guimenu>管理</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中右键单击相应资源，然后选择<guimenu>迁移资源</guimenu>。
      </para>
@@ -1505,17 +1509,17 @@ Please see LICENSE.txt for this document's license.
       </mediaobject>
      </informalfigure>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在新窗口的 <guimenu>To Node</guimenu>（目标节点）中，选择资源要移动到的节点。此操作将创建目标节点分数为 <literal>INFINITY</literal> 的位置约束。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果只是希望临时迁移资源，请激活 <guimenu>Duration</guimenu>（持续时间）并输入资源迁移到新节点的时间范围。在持续时间到期后，资源<emphasis>可以</emphasis>移回到其原始位置，也可以留在当前位置（取决于资源黏性）。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       如果资源无法迁移（若资源在当前节点上的黏性和约束总分数大于 <literal>INFINITY</literal>），请激活 <guimenu>Force</guimenu>（强制）选项。它通过创建当前位置规则和 <literal>-INFINITY</literal> 的分数强制资源移动。
      </para>
@@ -1525,7 +1529,7 @@ Please see LICENSE.txt for this document's license.
       </para>
      </note>
     </step>
-    <step performance="required">
+    <step>
      <para>
       单击 <guimenu>OK</guimenu>（确定）确认迁移。
      </para>
@@ -1534,55 +1538,55 @@ Please see LICENSE.txt for this document's license.
    <para>
     要使资源重新移回，请按如下操作：
    </para>
-   <procedure id="pro-ha-config-gui-migrate-back">
+   <procedure xml:id="pro-ha-config-gui-migrate-back">
     <title>清除迁移约束</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中单击<guimenu>管理</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中右键单击相应资源，然后选择<guimenu>清除迁移约束</guimenu>。
      </para>
      <para>
-      这将使用 <command>crm_resource <option>-U</option></command> 命令。资源<emphasis>可以</emphasis>移回到其原始位置，也可以留在当前位置（取决于资源黏性）。
+      这将使用 <command>crm_resource </command> <option>-U</option> 命令。资源<emphasis>可以</emphasis>移回到其原始位置，也可以留在当前位置（取决于资源黏性）。
      </para>
     </step>
    </procedure>
    <para>
-    有关更多信息，请参见 <command>crm_resource</command> 手册页，或<citetitle>“Pacemaker Explained”</citetitle>（Pacemaker 配置说明），可从 <ulink url="http://www.clusterlabs.org/doc/"/> 获取。请参见<citetitle>“Resource Migration”</citetitle>（资源迁移）一章。
+    有关更多信息，请参见 <command>crm_resource</command> 手册页，或<citetitle>“Pacemaker Explained”</citetitle>（Pacemaker 配置说明），可从 <link xlink:href="http://www.clusterlabs.org/doc/"/> 获取。请参见<citetitle>“Resource Migration”</citetitle>（资源迁移）一章。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-configuration-mgmt-mode">
+  <section xml:id="sec-ha-configuration-mgmt-mode">
    <title>更改资源的管理模式</title>
    <para>
     由群集管理资源时，不得以其他方式（在群集外）处理资源。要维护各个资源，可将相应资源设置为 <literal>unmanaged mode</literal>，在此模式下可在群集外修改资源。
    </para>
    <procedure>
     <title>更改资源的管理模式</title>
-    <step performance="required">
+    <step>
      <para>
       按<xref linkend="sec-ha-configuration-gui-intro-connect"/>中所述，启动 Pacemaker GUI 并登录到群集。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在左窗格中单击<guimenu>管理</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       在右窗格中右键单击相应资源，然后从上下文菜单中选择<guimenu>不受管资源</guimenu>。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       完成此资源的维护任务后，在右窗格中再次右键单击相应资源，然后选择<guimenu>管理资源</guimenu>。
      </para>
@@ -1591,6 +1595,6 @@ Please see LICENSE.txt for this document's license.
      </para>
     </step>
    </procedure>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 </chapter>
