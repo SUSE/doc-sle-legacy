@@ -1,19 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE appendix PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE appendix>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<appendix xml:base="ha_migration.xml" id="app-ha-migration">
- <title>クラスタアップグレードとソフトウェアパッケージの更新</title>
- <abstract>
+<appendix xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_migration.xml" xml:id="app-ha-migration"><title>クラスタアップグレードとソフトウェアパッケージの更新</title><info><abstract>
   <para>
    この章では、<phrase role="productnamereg"><phrase os="sles">SUSE® Linux Enterprise High Availability Extension</phrase></phrase>の別バージョン(メジャーリリースまたはサービスパック)にクラスタをアップグレードするシナリオおよびクラスタノード上でパッケージを個別に更新するシナリオの2種類を取り上げます。
   </para>
- </abstract>
+ </abstract></info>
  
- <sect1 id="sec-ha-migration-terminology">
+ 
+ 
+ <section xml:id="sec-ha-migration-terminology">
   <title>用語集</title>
   
   <para>
@@ -57,13 +61,13 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist>
- </sect1>
+ </section>
  
- <sect1 id="sec-ha-migration-upgrade">
+ <section xml:id="sec-ha-migration-upgrade">
   <title>最新の製品バージョンへのクラスタアップグレード</title>
   
   <para>
-   サポートされるアップグレードパスおよびアップグレードの実行方法は、クラスタが実行されている現在の製品バージョンおよび移行したいターゲットバージョンによって異なります。アップグレードに関する一般的な情報については、『<citetitle/>SUSE Linux Enterprise Server 11  導入ガイド』の「<citetitle/>SUSE Linux Enterpriseのアップデート」の章を参照してください。<ulink url="http://www.suse.com/documentation/"/>で入手できます。
+   サポートされるアップグレードパスおよびアップグレードの実行方法は、クラスタが実行されている現在の製品バージョンおよび移行したいターゲットバージョンによって異なります。アップグレードに関する一般的な情報については、『<citetitle/>SUSE Linux Enterprise Server 11  導入ガイド』の「<citetitle/>SUSE Linux Enterpriseのアップデート」の章を参照してください。<link xlink:href="http://www.suse.com/documentation/"/>で入手できます。
   </para>
   
   <important>
@@ -84,7 +88,7 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </itemizedlist>
   </important>
- <sect2 id="sec-ha-migration-sle11">
+ <section xml:id="sec-ha-migration-sle11">
   <title>SLES 10からSLE HA 11へのアップグレード</title>
 
    <important>
@@ -134,34 +138,34 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <sect3 id="sec-ha-migration-sle11-prep">
+  <section xml:id="sec-ha-migration-sle11-prep">
    <title>準備とバックアップ</title>
    <para>
     クラスタを次の製品バージョンへアップグレードし、適宜、データを変換するには、その前に、現在のクラスタを準備する必要があります。
    </para>
-   <procedure id="pro-ha-migration-sle11-prep">
+   <procedure xml:id="pro-ha-migration-sle11-prep">
     <title>SUSE Linux Enterprise Server 10 SP4クラスタを準備する</title>
-    <step performance="required">
+    <step>
      <para>
       クラスタにログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       Heartbeat環境設定ファイル<filename>/etc/ha.d/ha.cf</filename>をレビューし、すべての通信メディアがマルチキャストをサポートしているかどうかチェックします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のファイルがすべてのノード で等しいことを確認します。<filename>/etc/ha.d/ha.cf</filename>および<filename>/var/lib/heartbeat/crm/cib.xml</filename>
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       各ノードで<command>rcheartbeat stop</command>を実行することで、すべてのノードをオフラインにします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       最新バージョンへの更新前の一般的なシステムバックアップ(推奨)に加えて、次のファイルをバックアップします。これらのファイルは、SUSE Linux Enterprise Server 11へのアップグレード後の変換スクリプトの実行で必要になります。
      </para>
@@ -188,36 +192,36 @@ Please see LICENSE.txt for this document's license.
       </listitem>
      </itemizedlist>
     </step>
-    <step performance="required">
+    <step>
      <para>
       EVMS2リソースがある場合は、非LVM EVMS2ボリュームをSUSE Linux Enterprise Server 10上の互換ボリュームに変換します。これらは、変換処理中(<xref linkend="sec-ha-migration-sle11-convert"/>参照)に、LVM2ボリュームグループになります。変換後は、<command>vgchange -c y</command>を使用して、各ボリュームグループをHigh Availabilityクラスタのメンバとして必ずマークしてください。
 
      </para>
     </step>
    </procedure>
-  </sect3>
+  </section>
 
-  <sect3 id="sec-ha-migration-sle11-install">
+  <section xml:id="sec-ha-migration-sle11-install">
    <title>アップグレード/インストール</title>
    <para>
     クラスタを準備してファイルをバックアップしたら、クラスタノード上でSUSE Linux Enterprise 11のフレッシュインストールを行います。
    </para>
-   <procedure id="pro-ha-migration-sle11-install">
+   <procedure xml:id="pro-ha-migration-sle11-install">
     <title>SUSE Linux Enterprise 11にアップグレードする</title>
-    <step performance="required">
+    <step>
      <para>
       すべてのクラスタノードにSUSE Linux Enterprise Server 11をフレッシュインストールします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのクラスタノードで、<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11を、SUSE Linux Enterprise Server上のアドオンとしてインストールします。詳細については、<xref linkend="sec-ha-installation-add-on"/>を参照してください。
      </para>
     </step>
    </procedure>
-  </sect3>
+  </section>
 
-  <sect3 id="sec-ha-migration-sle11-convert">
+  <section xml:id="sec-ha-migration-sle11-convert">
    <title>データの変換</title>
    <para>
     SUSE Linux Enterprise Server 11およびHigh Availability Extensionのインストールが完了したら、データ変換を開始できます。High Availability Extensionとともに出荷される変換スクリプトは、注意深く設定されていますが、完全な自動モードですべての設定を行うことはできません。このスクリプトでは、実行する変更について管理者に警告し、対話と管理者側での決定を必要とします。管理者は、クラスタの詳細を知っている必要があり、変更の妥当性を検証する責任があります。変換スクリプトは、<filename>/usr/lib/heartbeat</filename>(<filename>64ビットマシンの場合は、/usr/lib64/heartbeat</filename>)に格納されています。
@@ -228,9 +232,9 @@ Please see LICENSE.txt for this document's license.
      変換プロセスをよく知るために、まず、変換をテストすること(変更なしで)を強くお勧めします。同じテストディレクトリを使用すると、ファイルを1回コピーするだけで、テストランを繰り返すことができます。
     </para>
    </note>
-   <procedure id="pro-ha-migration-sle11-test">
+   <procedure xml:id="pro-ha-migration-sle11-test">
     <title>変換をテストする</title>
-    <step performance="required">
+    <step>
      <para>
       ノードの1つで、テストディレクトリを作成し、そのテストディレクトリにバックアップファイルをコピーします。
      </para>
@@ -240,7 +244,7 @@ $ cp /var/lib/heartbeat/hostcache /tmp/hb2openais-testdir
 $ cp /etc/logd.cf /tmp/hb2openais-testdir
 $ sudo cp /var/lib/heartbeat/crm/cib.xml /tmp/hb2openais-testdir</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドで、テストランを開始します。
      </para>
@@ -250,7 +254,7 @@ $ sudo cp /var/lib/heartbeat/crm/cib.xml /tmp/hb2openais-testdir</screen>
      </para>
 <screen>$ /usr/lib64/heartbeat/hb2openais.sh -T /tmp/hb2openais-testdir -U</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       結果として生成された<filename>openais.conf</filename>ファイルと<filename>cib-out.xml</filename>ファイルを読んで検証します。
      </para>
@@ -262,27 +266,27 @@ $ crm_verify -V -x cib-out.xml</screen>
    <para>
     変換段階の詳細については、インストールしたHigh Availability Extensionの<filename>/usr/share/doc/packages/pacemaker/README.hb2openais</filename>を参照してください。
    </para>
-   <procedure id="pro-ha-migration-sle11-convert">
+   <procedure xml:id="pro-ha-migration-sle11-convert">
     <title>データの変換</title>
     <para>
      テストランを実行し、出力をチェックしたら、データ変換を開始できます。変換は、<emphasis>1つ</emphasis>のノードで実行するだけで済みます。メインクラスタ設定(CIB)が自動的にその他のノードにレプリケートされます。レプリケートの必要がある他のすべてのファイルは、変換スクリプトによって自動的にコピーされます。
     </para>
-    <step performance="required">
+    <step>
      <para>
       変換スクリプトで他のクラスタノードにファイルを正常にコピーするため、<systemitem class="username">root</systemitem>に許可されたアクセスで<systemitem class="daemon">sshd</systemitem>がすべてのノードで実行されていることを確認します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのOCFS2ファイルシステムがマウント解除されていることを確認します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       High Availability ExtensionにはデフォルトのOpenAIS設定ファイルが付属しています。以降の手順で、デフォルトの環境設定を上書きしたくない場合は、<filename>/etc/ais/openais.conf</filename>環境設定ファイルのコピーを作成します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       変換スクリプトを<systemitem class="username">root</systemitem>として起動します。sudoを使用する場合は、<option>-u</option>オプションで特権ユーザを指定します。
      </para>
@@ -291,7 +295,7 @@ $ crm_verify -V -x cib-out.xml</screen>
       <filename>/etc/ha.d/ha.cf</filename>に保存されている環境設定に基づいて、スクリプトは、OpenAISクラスタスタック用の新しい環境設定ファイル<filename>/etc/ais/openais.conf</filename>を生成します。スクリプトは、CIBの設定を分析し、HeartbeatからOpenAISへの変更に伴いクラスタ設定の変更が必要かどうか通知してきます。すべてのファイル処理は、変換が実行されるノードで行われ、他のノードにレプリケートされます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       画面の指示に従います。
      </para>
@@ -304,16 +308,16 @@ $ crm_verify -V -x cib-out.xml</screen>
     アップグレードプロセスの完了後、SUSE Linux Enterprise Server 10に戻ることはできません。
    </para>
 
-  </sect3>
+  </section>
 
-  <sect3 id="sec-ha-migration-sle11-more">
+  <section xml:id="sec-ha-migration-sle11-more">
    <title>その他の情報</title>
    <para>
     変換スクリプトおよび変換の各段階の詳細については、インストールしたHigh Availability Extensionの<filename>/usr/share/doc/packages/pacemaker/README.hb2openais</filename>を参照してください。
    </para>
-  </sect3>
- </sect2>
- <sect2 id="sec-ha-migration-sle11-sp1">
+  </section>
+ </section>
+ <section xml:id="sec-ha-migration-sle11-sp1">
   <title>SLE HA 11からSLE HA 11 SP1へのアップグレード</title>
 
    <note>
@@ -325,7 +329,7 @@ $ crm_verify -V -x cib-out.xml</screen>
 
 
 
-  <procedure id="pro-ha-migration-rolling-upgrade">
+  <procedure xml:id="pro-ha-migration-rolling-upgrade">
    <title>ローリングアップグレードを実行する</title>
 
     <warning>
@@ -335,36 +339,36 @@ $ crm_verify -V -x cib-out.xml</screen>
       ソフトウェアの更新中にノード上のクラスタリソースマネージャがアクティブな場合、アクティブノードのフェンシングのような予期しない結果を招く場合があります。
      </para>
     </warning>
-   <step performance="required">
+   <step>
     <para>
      アップグレードするノードで<systemitem class="username">root</systemitem>としてログインし、OpenAISを停止します。
     </para>
 <screen>rcopenais stop</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      システムバックアップが最新で、復元可能かどうか確認します。
     </para>
    </step>
-   <step id="step-ha-migration-upgrade-tolatest" performance="required">
+   <step xml:id="step-ha-migration-upgrade-tolatest">
     <para>
      SUSE Linux Enterprise Server 11からSUSE Linux Enterprise Server 11 SP1、および<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11から<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP1へのアップグレードを実行します。 お使いの製品のアップグレード方法の詳細については、『SUSE Linux Enterprise Server 11 SP1 Deployment Guide』の「<citetitle>Updating SUSE Linux Enterprise</citetitle>」の章を参照してください。
     </para>
    </step>
-   <step id="step-ha-migration-upgrade-ais" performance="required">
+   <step xml:id="step-ha-migration-upgrade-ais">
     <para>
      アップグレードしたノードでOpenAIS/Corosyncを再起動して、ノードをクラスタに再加入させます。
     </para>
 <screen>rcopenais start</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      次のノードをオフラインにし、そのノードに関して手順を繰り返します。
     </para>
    </step>
   </procedure>
- </sect2>
- <sect2 id="sec-ha-migration-sle11-sp2">
+ </section>
+ <section xml:id="sec-ha-migration-sle11-sp2">
   <title>SLE HA 11 SP1からSLE HA 11 SP2へのアップグレード</title>
 
   <para>
@@ -398,8 +402,8 @@ $ crm_verify -V -x cib-out.xml</screen>
     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP2に装備されている新機能は、<emphasis>すべての</emphasis>クラスタノードが最新の製品バージョンにアップグレードされた後でないと使用できません。SP1/SP2の混合クラスタは、ローリングアップグレード中の短いタイムフレームのみ、サポートされます。ローリングアップグレードは1週間以内に完了してください。
    </para>
   </important>
- </sect2>
- <sect2 id="sec-ha-migration-sle11-sp3">
+ </section>
+ <section xml:id="sec-ha-migration-sle11-sp3">
   <title>SLE HA 11 SP2からSLE HA 11 SP3へのアップグレード</title>
 
   <para>
@@ -416,9 +420,9 @@ $ crm_verify -V -x cib-out.xml</screen>
     <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3に装備されている新機能は、<emphasis>すべての</emphasis>クラスタノードが最新の製品バージョンにアップグレードされた後でないと使用できません。SP2/SP3の混合クラスタは、ローリングアップグレード中の短いタイムフレームのみ、サポートされます。ローリングアップグレードは1週間以内に完了してください。
    </para>
   </important>
- </sect2>
+ </section>
   
-  <sect2 id="sec-ha-migration-sle11-sp4">
+  <section xml:id="sec-ha-migration-sle11-sp4">
    <title>SLE HA 11 SP3からSLE HA 11 SP4へのアップグレード</title>
    
    <para>
@@ -429,7 +433,7 @@ $ crm_verify -V -x cib-out.xml</screen>
     <xref linkend="pro-ha-migration-rolling-upgrade"/>で説明したように実行しますが、次の点が異なります。<xref linkend="step-ha-migration-upgrade-tolatest" xrefstyle="select:name"/>で、SUSE Linux Enterprise Server 11  SP3からSUSE Linux Enterprise Server 11 SP4、および<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3から<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4へのアップグレードを実行します。
    </para>
    
-   <note id="note-ha-cib-upgrade">
+   <note xml:id="note-ha-cib-upgrade">
     <title>CIB構文バージョンのアップグレード</title>
     <para>リソースをグループ化するタグと一部のACLの機能は、<literal>pacemaker-2.0</literal>以上のCIB構文バージョンでのみ動作します。(現在のバージョンを確認するには、<command>cibadmin -Q |grep validate-with</command>を実行します)。<phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3からアップグレードした場合、デフォルトではCIBバージョンがアップグレード<emphasis>されません</emphasis>。最新のCIBバージョンに手動でアップグレードするには、以下のコマンドのいずれかを使用します:</para>
     <screen><prompt role="root">root # </prompt>cibadmin --upgrade --force</screen>
@@ -443,10 +447,10 @@ $ crm_verify -V -x cib-out.xml</screen>
      <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP4に装備されている新機能は、<emphasis>すべての</emphasis>クラスタノードが最新の製品バージョンにアップグレードされた後でないと使用できません。SP3/SP4の混合クラスタは、ローリングアップグレード中の短いタイムフレームのみ、サポートされます。ローリングアップグレードは1週間以内に完了してください。
     </para>
    </important>
-  </sect2>
+  </section>
   
- </sect1>
- <sect1 id="sec-ha-update">
+ </section>
+ <section xml:id="sec-ha-update">
   <title>クラスタノード上のソフトウェアパッケージの更新</title>
   
   <warning>
@@ -461,7 +465,7 @@ $ crm_verify -V -x cib-out.xml</screen>
    ノード上にパッケージ更新をインストールする前に、次の内容を確認してください。
   </para>
   
-  <itemizedlist id="il-ha-update-cond" mark="bullet" spacing="normal">
+  <itemizedlist xml:id="il-ha-update-cond" mark="bullet" spacing="normal">
    <title>クラスタスタックを停止する条件</title>
    <listitem>
     <para>
@@ -499,13 +503,13 @@ $ crm_verify -V -x cib-out.xml</screen>
   </para>
   
   <screen><prompt role="root">root # </prompt>rcopenais start</screen>
- </sect1>
+ </section>
  
- <sect1 id="sec-ha-migration-more">
+ <section xml:id="sec-ha-migration-more">
   <title>その他の情報</title>
 
   <para>
-   アップグレード先の製品の変更点と新機能の詳細については、それぞれのリリースノートを参照してください。リリースノートは、<ulink url="https://www.suse.com/releasenotes/"/>で入手できます。
+   アップグレード先の製品の変更点と新機能の詳細については、それぞれのリリースノートを参照してください。リリースノートは、<link xlink:href="https://www.suse.com/releasenotes/"/>で入手できます。
   </para>
- </sect1>
+ </section>
 </appendix>

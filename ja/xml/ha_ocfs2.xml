@@ -1,18 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_ocfs2.xml" id="cha-ha-ocfs2">
- <title>OCFS2</title><indexterm class="startofrange" id="idx-filesystems-ocfs2"> <primary>ファイルシステム</primary> <secondary>OCFS2</secondary> </indexterm>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_ocfs2.xml" xml:id="cha-ha-ocfs2"><title>OCFS2</title><info><abstract>
   <para>
    OCFS 2 (Oracle Cluster File System 2)は、Linux 2.6以降のカーネルに完全に統合されている汎用ジャーナリングファイルシステムです。Oracle Cluster File System 2を利用すれば、アプリケーションバイナリファイル、データファイル、およびデータベースを、共有ストレージ中のデバイスに保管することができます。このファイルシステムには、クラスタ中のすべてのノードが同時に読み書きすることができます。ユーザスペース管理デーモンは、クローンリソースを介して管理され、HAスタック(特に、OpenAIS/CorosyncおよびDLM (Distributed Lock Manager))との統合を実現します。
   </para>
- </abstract>
- <sect1 id="sec-ha-ocfs2-features">
+ </abstract></info>
+ <indexterm class="startofrange" xml:id="idx-filesystems-ocfs2"> <primary>ファイルシステム</primary> <secondary>OCFS2</secondary> </indexterm>
+ 
+ <section xml:id="sec-ha-ocfs2-features">
   <title>特長と利点</title>
 
   <para>
@@ -104,8 +108,8 @@ Please see LICENSE.txt for this document's license.
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
- <sect1 id="sec-ha-ocfs2-utils">
+ </section>
+ <section xml:id="sec-ha-ocfs2-utils">
   <title>OCFS2のパッケージと管理ユーティリティ</title>
 
   <para>
@@ -197,8 +201,8 @@ Please see LICENSE.txt for this document's license.
     </tbody>
    </tgroup>
   </table>
- </sect1>
- <sect1 id="sec-ha-ocfs2-create-service">
+ </section>
+ <section xml:id="sec-ha-ocfs2-create-service">
   <title>OCFS2サービスとSTONITHリソースの設定</title>
 
 
@@ -218,7 +222,7 @@ Please see LICENSE.txt for this document's license.
    </para>
   </note>
 
-  <procedure id="pro-ocfs2-resources">
+  <procedure xml:id="pro-ocfs2-resources">
    <title>DLMリソースおよびO2CBリソースの設定</title>
    <para>
     設定は複数のプリミティブおよび1つのベースクローンを含むベースグループで設定されます。ベースグループとベースクローンはどちらも後でさまざまなシナリオで使用できます(例: OCFS2およびcLVM)。必要に応じてそれぞれのプリミティブを持つベースグループを拡張する必要があるだけです。ベースグループは内部コロケーションおよび順序付けを持つため、個々のグループ、クローン、その依存性をいくつも指定する必要がなく、セットアップ全体を容易にします。
@@ -226,17 +230,17 @@ Please see LICENSE.txt for this document's license.
    <para>
     クラスタ内の1つのノードについて、次の手順を実行してください。
    </para>
-   <step performance="required">
+   <step>
     <para>
      シェルを起動し、<systemitem class="username">root</systemitem>または同等のものとしてログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     <command>crm <option>configure</option></command>を実行します。
+     <command>crm</command> <option>configure</option>を実行します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      次を入力して、DLMおよびO2CBのプリミティブリソースを作成します。
     </para>
@@ -250,7 +254,7 @@ Please see LICENSE.txt for this document's license.
      <literal>dlm</literal>クローンリソースが、分散ロックマネージャサービスを制御し、クラスタ内のすべてのノード上でこのサービスが開始するようにします。ベースグループの内部コロケーションおよび順序付けによって、<literal>o2cb</literal>サービスは、すでに実行している<literal>dlm</literal>サービスのコピーを持つノード上でのみ開始されます。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      次を入力してベースグループおよびベースクローンを作成します。
 
@@ -259,19 +263,19 @@ Please see LICENSE.txt for this document's license.
 <command>clone</command> base-clone base-group \
       meta interleave="true"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <command>show</command>で変更内容をレビューします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      すべて正しければ、<command>commit</command>で変更を送信し、<command>exit</command>でcrmライブ設定を終了します。
     </para>
    </step>
   </procedure>
 
-  <procedure id="pro-ocfs2-stonith">
+  <procedure xml:id="pro-ocfs2-stonith">
    <title>STONITHリソースの設定</title>
    <note>
     <title>必要なSTONITHデバイス</title>
@@ -279,22 +283,22 @@ Please see LICENSE.txt for this document's license.
      フェンシングデバイスを設定する必要があります。STONITHなしでは、設定内に配置されたメカニズム(<literal>external/sbd</literal>など)は失敗します。
     </para>
    </note>
-   <step performance="required">
+   <step>
     <para>
      シェルを起動し、<systemitem class="username">root</systemitem>または同等のものとしてログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="pro-ha-storage-protect-sbd-create"/>で説明されるとおり、SBDパーティションを作成します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     <command>crm <option>configure</option></command>を実行します。
+     <command>crm</command> <option>configure</option>を実行します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <literal>external/sdb</literal>をフェンシングデバイスとして設定し、<literal>/dev/sdb2</literal>を共有ストレージ上のハートビートとフェンシング専用のパーティションにします。
     </para>
@@ -302,19 +306,19 @@ Please see LICENSE.txt for this document's license.
       params pcmk_delay_max="15" \
       op monitor interval="15" timeout="15"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <command>show</command>で変更内容をレビューします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      すべて正しければ、<command>commit</command>で変更を送信し、<command>exit</command>でcrmライブ設定を終了します。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-ocfs2-create">
+ </section>
+ <section xml:id="sec-ha-ocfs2-create">
   <title>OCFS2ボリュームの作成</title>
 
   <para>
@@ -336,7 +340,7 @@ Please see LICENSE.txt for this document's license.
    次に、<xref linkend="pro-ocfs2-volume"/>で説明されているように、<command>mkfs.ocfs2</command>で、OCFS2ボリュームを作成し、フォーマットします。そのコマンドの重要なパラメータは、<xref linkend="tab-ha-ofcs2-mkfs-ocfs2-params"/>に一覧されています。詳細情報とコマンド構文については、<command>mkfs.ocfs2</command>のマニュアルページを参照してください。
   </para>
 
-  <table id="tab-ha-ofcs2-mkfs-ocfs2-params">
+  <table xml:id="tab-ha-ofcs2-mkfs-ocfs2-params">
    <title>重要なOCFS2パラメータ </title>
    <tgroup cols="2">
     <thead>
@@ -449,22 +453,22 @@ Please see LICENSE.txt for this document's license.
 
 
 
-  <procedure id="pro-ocfs2-volume">
+  <procedure xml:id="pro-ocfs2-volume">
    <title>OCFS2ボリュームを作成し、フォーマットする</title>
    <para>
     クラスタノードの<emphasis>1つ</emphasis>だけで、次の手順を実行します。
    </para>
-   <step performance="required">
+   <step>
     <para>
      端末ウィンドウを開いて、<systemitem class="username">root</systemitem>としてログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      クラスタがオンラインであることをコマンド<command>crm status</command>で確認します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <command>mkfs.ocfs2</command>ユーティリティを使用して、ボリュームを作成およびフォーマットします。このコマンドの指定形式については、<command>mkfs.ocfs2</command>マニュアルページを参照してください。
     </para>
@@ -475,27 +479,27 @@ Please see LICENSE.txt for this document's license.
 
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-ocfs2-mount">
+ </section>
+ <section xml:id="sec-ha-ocfs2-mount">
   <title>OCFS2ボリュームのマウント</title>
 
   <para>
    OCFS2ボリュームは、手動でマウントするか、クラスタマネージャでマウントできます(<xref linkend="pro-ocfs2-mount-cluster"/>参照)。
   </para>
 
-  <procedure id="pro-ocfs2-mount-manual">
+  <procedure xml:id="pro-ocfs2-mount-manual">
    <title>OCFS2ボリュームを手動でマウントする</title>
-   <step performance="required">
+   <step>
     <para>
      端末ウィンドウを開いて、<systemitem class="username">root</systemitem>としてログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      クラスタがオンラインであることをコマンド<command>crm status</command>で確認します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      コマンドラインから、<command>mount</command>コマンドを使ってボリュームをマウントします。
     </para>
@@ -509,22 +513,22 @@ Please see LICENSE.txt for this document's license.
    </para>
   </warning>
 
-  <procedure id="pro-ocfs2-mount-cluster">
+  <procedure xml:id="pro-ocfs2-mount-cluster">
    <title>クラスタマネージャでOCFS2ボリュームをマウントする</title>
    <para>
     High AvailabilityソフトウェアでOCFS2ボリュームをマウントするには、クラスタ内でocf File Systemリソースを設定します。次の手順では、<command>crm</command>シェルを使用してクラスタリソースを設定します。リソースの設定には、Pacemaker GUIを使用することもできます。
    </para>
-   <step performance="required">
+   <step>
     <para>
      シェルを起動し、<systemitem class="username">root</systemitem>または同等のものとしてログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
-     <command>crm <option>configure</option></command>を実行します。
+     <command>crm</command> <option>configure</option>を実行します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      OCFS2ファイルシステムをクラスタ内のすべてのノードにマウントするように、Pacemakerを設定します。
     </para>
@@ -532,19 +536,19 @@ Please see LICENSE.txt for this document's license.
       params device="/dev/sdb1" directory="/mnt/shared" fstype="ocfs2" options="acl" \
       op monitor interval="20" timeout="40"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="pro-ocfs2-resources"/>で設定したベースグループにファイルシステムのプリミティブを追加します。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        入力
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt>edit base-group</screen>
      </step>
 
-     <step performance="required">
+     <step>
       <para>
        Viエディタが開いたら、そこに次のようにグループを変更し、変更を保存します。
       </para>
@@ -556,19 +560,19 @@ Please see LICENSE.txt for this document's license.
     </substeps>
    </step>
 
-   <step performance="required">
+   <step>
     <para>
      <command>show</command>で変更内容をレビューします。必要なリソースをすべて設定したことを確認するには、<xref linkend="cha-ha-config-example"/>も参照してください。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      すべて正しければ、<command>commit</command>で変更を送信し、<command>exit</command>でcrmライブ設定を終了します。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-ocfs2-quota">
+ </section>
+ <section xml:id="sec-ha-ocfs2-quota">
   <title>OCFS2ファイルシステム上でクォータを使用する</title>
 
 
@@ -592,8 +596,8 @@ Please see LICENSE.txt for this document's license.
   <para>
    パフォーマンス上の理由で、各クラスタノードはクォータの計算をローカルに行い、この情報を、10秒ごとに共通の中央ストレージに同期するようになっています。この間隔は、<command>tunefs.ocfs2</command>と、<option>usrquota-sync-interval</option>および<option>grpquota-sync-interval</option>オプションで調整することができます。クォータ情報は必ずしも常に正確というわけではないので、複数のクラスタノードを並列に運用している場合、ユーザまたはグループがクォータ制限をいくらか超えることもあります。
   </para>
- </sect1>
- <sect1 id="sec-ha-ocfs2-more">
+ </section>
+ <section xml:id="sec-ha-ocfs2-more">
   <title>詳細情報</title>
 
   <para>
@@ -602,7 +606,7 @@ Please see LICENSE.txt for this document's license.
 
   <variablelist>
    <varlistentry>
-    <term><ulink url="http://oss.oracle.com/projects/ocfs2/"/>
+    <term><link xlink:href="http://oss.oracle.com/projects/ocfs2/"/>
     </term>
     <listitem>
      <para>
@@ -611,7 +615,7 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><ulink url="http://oss.oracle.com/projects/ocfs2/documentation"/>
+    <term><link xlink:href="http://oss.oracle.com/projects/ocfs2/documentation"/>
     </term>
     <listitem>
      <para>
@@ -620,5 +624,5 @@ Please see LICENSE.txt for this document's license.
     </listitem>
    </varlistentry>
   </variablelist><indexterm class="endofrange" startref="idx-filesystems-ocfs2"/>
- </sect1>
+ </section>
 </chapter>

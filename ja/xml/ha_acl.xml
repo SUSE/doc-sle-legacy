@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_acl.xml" id="cha-ha-acl">
- <title>アクセス制御リスト</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_acl.xml" xml:id="cha-ha-acl"><title>アクセス制御リスト</title><info><abstract>
   <para>
    crmシェル(crmsh)、Hawk、Pacemaker GUIなどのクラスタ管理ツールは、<systemitem class="username">root</systemitem>ユーザまたは<systemitem class="groupname">haclient</systemitem>グループに属するユーザが使用できます。デフォルトで、これらのユーザは完全な読み込み/書き込みのアクセス権を持ちます。アクセスを制限するか、または詳細なアクセス権を割り当てるには、<emphasis/>「アクセス制御リスト」(ACL)を使用できます。
   </para>
@@ -15,14 +17,16 @@ Please see LICENSE.txt for this document's license.
   <para>
    アクセス制御リストは、順序付けされたアクセスルールセットで構成されています。各ルールにより、クラスタ設定の一部への読み込みまたは書き込みアクセスの許可、またはアクセスの拒否が行われます。ルールは通常、組み合わせて特定の役割を生成し、ユーザを自分のタスクに一致する役割に割り当てることができます。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  
  <note>
   <title>CIB検証バージョンとACLとの違い</title>
   <para>このACLマニュアルは、<literal>pacemaker-2.0</literal>以上のCIB構文バージョンでCIBを検証する場合にのみ適用します。この検証方法およびCIBバージョンのアップグレード方法の詳細については、<xref linkend="note-ha-cib-upgrade"/>を参照してください。 </para>
-  <para><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3からアップグレードする一方で、それまで使用してきたCIBバージョンを保持している場合は、『High Availability Guide for <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3』の「<citetitle>アクセス制御リスト</citetitle>」の章を参照してください。<ulink url="http://www.suse.com/documentation/"/>から入手できます。</para>
+  <para><phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3からアップグレードする一方で、それまで使用してきたCIBバージョンを保持している場合は、『High Availability Guide for <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> 11 SP3』の「<citetitle>アクセス制御リスト</citetitle>」の章を参照してください。<link xlink:href="http://www.suse.com/documentation/"/>から入手できます。</para>
  </note>
- <sect1 id="sec-ha-acl-require">
+ <section xml:id="sec-ha-acl-require">
   <title>要件と前提条件</title>
 
   <para>
@@ -74,10 +78,10 @@ Please see LICENSE.txt for this document's license.
   </important>
 
   <para>
-   ACLを使用するには、XPathに関するいくらかの知識が必要になります。XPathはXMLドキュメントでノードを選択するための言語です。<ulink url="http://en.wikipedia.org/wiki/XPath"/>を参照するか、<ulink url="http://www.w3.org/TR/xpath/"/>の仕様を確認してください。
+   ACLを使用するには、XPathに関するいくらかの知識が必要になります。XPathはXMLドキュメントでノードを選択するための言語です。<link xlink:href="http://en.wikipedia.org/wiki/XPath"/>を参照するか、<link xlink:href="http://www.w3.org/TR/xpath/"/>の仕様を確認してください。
   </para>
- </sect1>
- <sect1 id="sec-ha-acl-enable">
+ </section>
+ <section xml:id="sec-ha-acl-enable">
   <title>クラスタでのACLの使用の有効化</title>
 
   <para>
@@ -90,31 +94,31 @@ Please see LICENSE.txt for this document's license.
    または、<xref linkend="pro-ha-acl-enable-hawk"/>で説明するように、Hawkを使用します。
   </para>
 
-  <procedure id="pro-ha-acl-enable-hawk">
+  <procedure xml:id="pro-ha-acl-enable-hawk">
    <title>HawkでのACLの使用の有効化</title>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="sec-ha-config-hawk-intro-connect"/>で説明したように、Webブラウザを起動してクラスタにログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      左のナビゲーションバーで、<guimenu>クラスタのプロパティ</guimenu>を選択します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>CRMの環境設定</guimenu>グループで、空のドロップダウンボックスから<guimenu>enable-acl</guimenu>属性を選択し、プラスアイコンをクリックして追加します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <literal>enable-acl=true</literal>を設定するには、<literal>enable-acl</literal>の隣のチェックボックスをオンにして、変更内容を確認します。
     </para>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-acl-basics">
+ </section>
+ <section xml:id="sec-ha-acl-basics">
   <title>ACLの基\'96\'7b事項</title>
 
   <para>
@@ -151,14 +155,14 @@ Please see LICENSE.txt for this document's license.
    </listitem>
   </itemizedlist>
 
-  <sect2 id="sec-ha-acl-config-xpath">
+  <section xml:id="sec-ha-acl-config-xpath">
    <title>XPath式によるACLルールの設定</title>
    <para>
     XPathによってACLルールを管理するには、その記述言語であるXMLの構造を理解している必要があります。XMLでクラスタ設定を表示する次のコマンドで構造を取得します(<xref linkend="ex-ha-acl-excerpt" xrefstyle="select:label nopage"/>を参照)。
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure show xml</screen>
    
-   <example id="ex-ha-acl-excerpt">
+   <example xml:id="ex-ha-acl-excerpt">
     <title>XML内のクラスタ設定の例</title>
 <screen>&lt;num_updates="59" 
       dc-uuid="175704363"
@@ -193,7 +197,7 @@ Please see LICENSE.txt for this document's license.
    <para>
     一例として、<xref linkend="tab-ha-acl-operator"/>は、<quote>オペレータ</quote>の役割を作成するためのパラメータ(アクセスタイプおよびXPath式)を示しています。この役割を持つユーザは、2番目の列で説明されるタスクのみ実行することができ、リソースを再構成することはできません(たとえば、パラメータや操作の変更など)。また、コロケーションや順序の制約の設定を変更することもできません。
    </para>
-   <table id="tab-ha-acl-operator">
+   <table xml:id="tab-ha-acl-operator">
     <title>オペレータ役割 - アクセスタイプおよびXPath式</title>
     <tgroup cols="2">
      <thead>
@@ -305,10 +309,10 @@ Please see LICENSE.txt for this document's license.
      </tbody>
     </tgroup>
    </table>
-  </sect2>
+  </section>
 
   
-   <sect2 id="sec-ha-acl-config-tag">
+   <section xml:id="sec-ha-acl-config-tag">
    <title>短縮によるACLルールの設定</title>
    <para>
     XML構造を扱いたくないユーザ向には、より簡単な方法があります。 
@@ -331,51 +335,51 @@ Please see LICENSE.txt for this document's license.
     短縮構文はcrmshおよびHawkで使用できます。CIBデーモンは一致するオブジェクトにACLルールを適用する方法を認識しています。
    </para>
    
-   </sect2>
-  </sect1>
- <sect1 id="sec-ha-acl-config-hbgui">
+   </section>
+  </section>
+ <section xml:id="sec-ha-acl-config-hbgui">
   <title>Pacemaker GUIによるACLの構成</title>
 
   <para> 次の手順は、<literal>monitor</literal>役割を定義し、それをユーザに割り当てることで、クラスタ設定への読み込み専用アクセスを設定する方法を示しています。または、<xref linkend="sec-ha-acl-config-hawk"/>と<xref linkend="pro-ha-acl-crm"/>で説明されているように、Hawkあるいはcrmshを使用してこの操作を実行することもできます。 </para>
 
-  <procedure id="pro-ha-acl-hbgui">
+  <procedure xml:id="pro-ha-acl-hbgui">
    <title>Pacemaker GUIを使用して、監視の役割を追加し、ユーザを割り当てる</title>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="sec-ha-configuration-gui-intro-connect"/>の説明に従い、Pacemaker GUIを起動してログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>設定</guimenu>ツリー内の<guimenu>ACL</guimenu>エントリをクリックします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      <guimenu>追加</guimenu>をクリックします。ダイアログボックスが表示されます。<guimenu>ACL Target (ACLターゲット)</guimenu>または<guimenu>ACLの役割</guimenu>を選択します。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      ACLの役割を定義するには、次のとおり実行します。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        <guimenu> ACLの役割</guimenu>を選択します。設定オプションを追加するウィンドウが開きます。
       </para>
      </step>
-     <step id="st-ha-acl-config-hbgui-id" performance="required">
+     <step xml:id="st-ha-acl-config-hbgui-id">
       <para>
        <guimenu>ID</guimenu>テキストフィールド内に固有の識別子を追加します(例［<literal>監視</literal>］)。
       </para>
      </step>
-     <step id="st-ha-acl-config-hbgui-add" performance="required">
+     <step xml:id="st-ha-acl-config-hbgui-add">
       <para>
        <guimenu>追加</guimenu>をクリックして、権利(<guimenu>読み込み</guimenu>、<guimenu>書き込み</guimenu>、または<guimenu>拒否</guimenu>)を選択します。ここの例では<guimenu>読み込み</guimenu>を選択します。
       </para>
      </step>
-     <step id="st-ha-acl-config-hbgui-xpath" performance="required">
+     <step xml:id="st-ha-acl-config-hbgui-xpath">
       <para>
        XPath式<literal>/cib</literal>を<guimenu>Xpath</guimenu>テキストフィールドに入力します。<guimenu>OK</guimenu>をクリックして、続行します。
       </para>
@@ -383,34 +387,34 @@ Please see LICENSE.txt for this document's license.
        傍注: リソースや制約がある場合、<xref linkend="sec-ha-acl-config-tag"/>で説明したように、短縮構文も使用できます。 
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        その他の条件がある場合、手順(<xref linkend="st-ha-acl-config-hbgui-add"/>および<xref linkend="st-ha-acl-config-hbgui-xpath"/>)を繰り返します。この例ではあてはまらないため、役割は完了し、<guimenu>OK</guimenu>をクリックしてウィンドウを閉じることができます。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      次のようにユーザに役割を割り当てます
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        <guimenu>追加</guimenu>ボタンをクリックします。<guimenu>ACL Target (ACLターゲット)</guimenu>または<guimenu>ACLの役割</guimenu>を選択するダイアログボックスが表示されます。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <guimenu>ACL Target (ACLターゲット)</guimenu>を選択します。設定オプションを追加するウィンドウが開きます。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <guimenu>ID</guimenu>テキストフィールドにユーザ名を入力します。このユーザが<systemitem class="groupname">haclient</systemitem>グループに属することを確認します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <xref linkend="st-ha-acl-config-hbgui-id"/>で指定されている役割名をクリックして使用します。
       </para>
@@ -418,47 +422,47 @@ Please see LICENSE.txt for this document's license.
     </substeps>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-acl-config-hawk">
+ </section>
+ <section xml:id="sec-ha-acl-config-hawk">
   <title>HawkによるACLの設定</title>
   
   <para>
    次の手順は、<literal>monitor</literal>役割を定義し、それをユーザに割り当てることで、クラスタ設定への読み込み専用アクセスを設定する方法を示しています。または、<xref linkend="pro-ha-acl-crm"/>で説明されているように、crmshを使用してこの操作を実行することもできます。
   </para>
   
-  <procedure id="pro-ha-acl-hawk">
+  <procedure xml:id="pro-ha-acl-hawk">
    <title>監視の役割を追加して、Hawkを持つユーザに割り当てる</title>
-   <step performance="required">
+   <step>
     <para>
      <xref linkend="sec-ha-config-hawk-intro-connect"/>で説明したように、Webブラウザを起動してクラスタにログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      左のナビゲーションバーで、<guimenu>アクセス制御リスト</guimenu>を選択します。このビューには、すでに定義済みの<guimenu>役割</guimenu>と<guimenu>ユーザ</guimenu>が表示されます。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      ACLの役割を定義するには、次のとおり実行します。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        <guimenu>役割</guimenu>カテゴリを選択し、プラスアイコンをクリックします。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        固有な<guimenu>役割ID</guimenu>として、<literal>monitor</literal>などを入力します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <literal>monitor</literal>役割を定義する例として、<guimenu>右</guimenu>ドロップダウンボックスから<literal>read</literal>を選択します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        <guimenu>Xpath</guimenu>テキストボックスに、Xpath式<literal>/cib</literal>を入力し、<guimenu>役割の作成</guimenu>をクリックします。
       </para>
@@ -466,19 +470,19 @@ Please see LICENSE.txt for this document's license.
        この操作は、<literal>monitor</literal>の名前を持つ新しい役割を作成して、<literal>read</literal>の権利を設定し、XPath式<literal>/cib</literal>を使用してCIB内のすべての要素に適用します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        必要に応じて、プラスアイコンをクリックして各パラメータを指定し、さらにアクセス権およびXPath引数を追加できます。変更内容を確認します。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      次のようにユーザに役割を割り当てます。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        <guimenu>ユーザ</guimenu>カテゴリを選択し、プラスアイコンをクリックします。
       </para>
@@ -486,12 +490,12 @@ Please see LICENSE.txt for this document's license.
        <guimenu>ユーザの作成</guimenu>ビューに使用可能な役割が表示されます。このビューにはそのユーザの個別ACLルールを設定するための追加の行も含まれます。このビューでは、ユーザに1つまたは複数の役割を割り当てたり、ユーザに1つ以上の個別ルールを定義することもできます。<emphasis/>役割を選択すると、個別ルールの行が非表示となり、その逆も同様になります。役割と個別ルールを割り当てることはできません。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        固有な<guimenu>ユーザID</guimenu>として、<literal>tux</literal>などを入力します。このユーザが<systemitem class="groupname">haclient</systemitem>グループに属することを確認します。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        ユーザに役割を割り当てるには、<guimenu>役割</guimenu>から各エントリを選択します。例では、作成した<literal>monitor</literal>役割を選択します。
       </para>
@@ -510,12 +514,12 @@ Please see LICENSE.txt for this document's license.
        </mediaobject>
       </figure>
      </step>
-     <step performance="required">
+     <step>
       <para>
        代わりに個別ルールを定義する場合は、<guimenu>右</guimenu>を選択し、ルールに対する各Xpathパラメータを入力します。追加のルールを定義するには、プラスアイコンをクリックします。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        選択内容を確認し、<guimenu>ユーザの作成</guimenu>をクリックしてユーザに役割またはルールを割り当てます。
       </para>
@@ -527,35 +531,35 @@ Please see LICENSE.txt for this document's license.
   <para>
    リソースや制約に対するアクセス権を設定するには、<xref linkend="sec-ha-acl-config-tag"/>で説明したように、短縮構文も使用できます。 
   </para>
- </sect1>
+ </section>
  
- <sect1 id="sec-ha-acl-config-crm">
+ <section xml:id="sec-ha-acl-config-crm">
   <title>crmshによるACLの設定</title>
 
   <para>
    次の手順は、<literal>monitor</literal>役割を定義し、それをユーザに割り当てることで、クラスタ設定への読み込み専用アクセスを設定する方法を示しています。
   </para>
 
-  <procedure id="pro-ha-acl-crm">
+  <procedure xml:id="pro-ha-acl-crm">
    <title>監視の役割を追加して、crmshを持つユーザに割り当てる</title>
-   <step performance="required">
+   <step>
     <para>
      <systemitem class="username">root</systemitem>としてログインします。
     </para>
    </step>
-   <step performance="required">
+   <step>
     <para>
      crmshの対話モードを開始します。
     </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure
 <prompt role="custom">crm(live)configure# </prompt></screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      ACLの役割を次のとおり定義します。
     </para>
     <substeps performance="required">
-     <step performance="required">
+     <step>
       <para>
        <command>role</command>コマンドを使用して、新しい役割を定義します。
       </para>
@@ -564,26 +568,26 @@ Please see LICENSE.txt for this document's license.
        前のコマンドは、<literal>monitor</literal>の名前を持つ新しい役割を作成して、<literal>read</literal>の権利を設定し、XPath式<literal>/cib</literal>を使用してCIB内のすべての要素に適用します。必要な場合は、アクセス権およびXPath引数をさらに追加できます。
       </para>
      </step>
-     <step performance="required">
+     <step>
       <para>
        必要に応じてさらに役割を追加します。
       </para>
      </step>
     </substeps>
    </step>
-   <step performance="required">
+   <step>
     <para>
      役割を1つ以上のACLターゲットに割り当てます。このACLターゲットは、該当のシステムユーザです。これらのシステムユーザが<systemitem class="groupname">haclient</systemitem>グループに属していることを確認します。
     </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>acl_target</command> tux monitor</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      変更を確認します:
     </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>show</command></screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      変更をコミットします:
     </para>
@@ -594,6 +598,6 @@ Please see LICENSE.txt for this document's license.
   <para>
    リソースや制約に対するアクセス権を設定するには、<xref linkend="sec-ha-acl-config-tag"/>で説明したように、短縮構文も使用できます。 
   </para>
- </sect1>
+ </section>
  
 </chapter>

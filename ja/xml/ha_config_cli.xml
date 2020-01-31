@@ -1,13 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE chapter PUBLIC "-//Novell//DTD NovDoc XML V1.0//EN" "novdocx.dtd">
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="urn:x-suse:xslt:profiling:docbook51-profile.xsl"
+    type="text/xml"
+    title="Profiling step"
+?>
+<!DOCTYPE chapter>
 <!--
 *********************************
 Please see LICENSE.txt for this document's license.
 *********************************
 -->
-<chapter xml:base="ha_config_cli.xml" id="cha-ha-manual-config">
- <title>クラスタリソースの設定と管理(コマンドライン)</title>
- <abstract>
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:base="ha_config_cli.xml" xml:id="cha-ha-manual-config"><title>クラスタリソースの設定と管理(コマンドライン)</title><info><abstract>
   <para>
    クラスタリソースを設定および管理するには、グラフィカルユーザインタフェース(Pacemaker GUI)または<command>crm</command>コマンドラインユーティリティのいずれかを使用します。GUIを使用する方法については、<xref linkend="cha-ha-configuration-gui"/>を参照してください。
   </para>
@@ -15,7 +17,9 @@ Please see LICENSE.txt for this document's license.
   <para>
    この章では、<command>crm</command>コマンドラインツールを紹介し、このツールの概要、テンプレートの使用方法、そして、主にクラスタリソースの設定と管理(基本的なリソースと高度なリソース(グループとクローン)の作成、制約の設定、フェールオーバーノードとフェールバックノードの指定、リソース監視の設定、リソースの開始、クリーンアップ、または削除、および手動によるリソースの移行について説明します。
   </para>
- </abstract>
+ </abstract></info>
+ 
+ 
  <note>
   <title>ユーザの権限</title>
   <para>
@@ -29,7 +33,7 @@ Please see LICENSE.txt for this document's license.
    <filename>/etc/sudoers</filename>を設定しておいて、<command>sudo</command>がパスワードを要求しないようにしておく必要があることに注意してください。
   </para>
  </note>
- <sect1 id="sec-ha-manual-config-crm">
+ <section xml:id="sec-ha-manual-config-crm">
   <title>crmsh - 概要</title>
 
   <para>
@@ -61,7 +65,7 @@ Please see LICENSE.txt for this document's license.
    </itemizedlist>
   </tip>
 
-  <sect2 id="sec-ha-manual-config-crm-help">
+  <section xml:id="sec-ha-manual-config-crm-help">
    <title>ヘルプの表示</title>
    <para>
     ヘルプには複数の方法でアクセスできます。
@@ -105,15 +109,15 @@ Please see LICENSE.txt for this document's license.
    <para>
     <command>help</command>サブコマンド(<option>--help</option>オプションと混同しないこと)のほとんどすべての出力によって、テキストビューアが開きます。このテキストビューアは上下にスクロール可能で、ヘルプテキストが読みやすくなっています。テキストビューアを閉じるには、<keycap>Q</keycap>キーを押します。
    </para>
-   <tip id="tip-crm-tabcompletion">
+   <tip xml:id="tip-crm-tabcompletion">
     <title>バッシュおよび対話型シェルでタブ補完機能を使用</title>
     <para>
      crmshは、対話型シェルに対してだけではなく、バッシュでの直接的で完全なタブ補完機能をサポートしています。たとえば、<literal>crm help config</literal><keycap function="tab"/>と入力すると、対話型シェルと同様に単語が補完されます。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-crm-run">
+  <section xml:id="sec-ha-manual-config-crm-run">
    <title>crmshのサブコマンドの実行</title>
    <para>
     <command>crm</command>コマンドそのものは、次のように使用できます。
@@ -177,9 +181,9 @@ Please see LICENSE.txt for this document's license.
    <para>
     以降のサブセクションでは、<command>crm</command>ツールの重要な側面について、その概要を示します。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-ocf">
+  <section xml:id="sec-ha-manual-config-ocf">
    <title>OCFリソースエージェントに関する情報の表示</title>
    <para>
     リソースエージェントはクラスタ設定で常に操作する必要があるため、<command>crm</command>ツールには、<command>ra</command>コマンドが含まれています。このコマンドを使用して、リソースエージェントの情報を表示し、リソースエージェントを管理します(詳細は<xref linkend="sec-ha-config-basics-raclasses"/>も参照)。
@@ -242,9 +246,9 @@ Operations' defaults (advisory minimum):
      前の例では、<command>crm</command>コマンドの内部シェルを使用しました。ただし、必ずしも、それを使用する必要はありません。該当するサブコマンドを<command>crm</command>に追加すれば、同じ結果が得られます。たとえば、すべてのOCFリソースエージェントを一覧するには、シェルに「<command>crm</command> <option>ra list ocf</option>」を入力すれば済みます。
     </para>
    </tip>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-template">
+  <section xml:id="sec-ha-manual-config-template">
    <title>設定テンプレートの使用</title>
 
    <para>
@@ -256,32 +260,32 @@ Operations' defaults (advisory minimum):
    <para>
     次の手順は、簡単ですが機能的なApache設定を作成する方法を示しています。
    </para>
-   <procedure id="pro-ha-manual-config-template">
-    <step performance="required">
+   <procedure xml:id="pro-ha-manual-config-template">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       設定テンプレートから新しい設定を作成します。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         <command>template</command>サブコマンドに切り替えます。
        </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>template</command></screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         使用可能な設定テンプレートを一覧します。
        </para>
 <screen><prompt role="custom">crm(live)configure template# </prompt><command>list</command> templates
 gfs2-base   filesystem  virtual-ip  apache   clvm     ocfs2    gfs2</screen>
       </step>
-      <step performance="required">
+      <step>
        <para>
         必要な設定テンプレートを決めます。Apache設定が必要なので、<literal>apache</literal>テンプレートを選択し、<literal>g-intranet</literal>と名付けます。
        </para>
@@ -291,19 +295,19 @@ INFO: pulling in template virtual-ip</screen>
       </step>
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       パラメータを定義します。
      </para>
      <substeps performance="required">
-      <step performance="required">
+      <step>
        <para>
         作成した設定を一覧表示します。
        </para>
 <screen><prompt role="custom">crm(live)configure template# </prompt><command>list</command>
 g-intranet</screen>
       </step>
-      <step id="st-config-cli-show" performance="required">
+      <step xml:id="st-config-cli-show">
        <para>
         入力を必要とする最小限の変更項目を表示します。
        </para>
@@ -312,7 +316,7 @@ ERROR: 23: required parameter ip not set
 ERROR: 61: required parameter id not set
 ERROR: 65: required parameter configfile not set</screen>
       </step>
-      <step id="st-config-cli-edit" performance="required">
+      <step xml:id="st-config-cli-edit">
        <para>
         好みのテキストエディタを起動し、<xref linkend="st-config-cli-show"/>でエラーとして表示されたすべての行に入力します。
        </para>
@@ -321,7 +325,7 @@ ERROR: 65: required parameter configfile not set</screen>
 
      </substeps>
     </step>
-    <step performance="required">
+    <step>
      <para>
       設定を表示し、設定が有効かどうか確認します(太字のテキストは、<xref linkend="st-config-cli-edit" xrefstyle="select:label"/>で入力した設定によって異なります)。
      </para>
@@ -334,7 +338,7 @@ primitive apache ocf:heartbeat:apache \
 group <emphasis role="strong">g-intranet</emphasis> \
     apache virtual-ip</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       設定を適用します。
      </para>
@@ -342,7 +346,7 @@ group <emphasis role="strong">g-intranet</emphasis> \
 <prompt role="custom">crm(live)configure# </prompt><command>cd ..</command>
 <prompt role="custom">crm(live)configure# </prompt><command>show</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       変更内容をCIBに送信します。
      </para>
@@ -363,9 +367,9 @@ group <emphasis role="strong">g-intranet</emphasis> \
    <para>
     ただし、このコマンドは、設定テンプレートから設定を作成するだけです。設定をCIBに適用したり、コミットすることはありません。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-shadowconfig">
+  <section xml:id="sec-ha-manual-config-shadowconfig">
    <title>シャドーイング設定のテスト</title>
    <para>
     シャドーイング設定は、異なる設定シナリオのテストに使用されます。複数のシャドウ設定を作成した場合は、1つ1つテストして変更を加えた影響を確認できます。
@@ -374,13 +378,13 @@ group <emphasis role="strong">g-intranet</emphasis> \
     通常の処理は次のようになります。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       新しいシャドウ設定を作成します。
      </para>
@@ -390,7 +394,7 @@ INFO: myNewConfig shadow CIB created</screen>
       シャドウCIBの名前を省略する場合は、一時名の<literal>@tmp@</literal>が作成されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       現在のライブ設定をシャドウ設定にコピーする場合は、次のコマンドを使用します。コピーしない場合は、このステップをスキップします。
      </para>
@@ -399,13 +403,13 @@ INFO: myNewConfig shadow CIB created</screen>
       このコマンドを使用すると、既存のリソースを後から編集する場合に、簡単に編集できます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       通常どおり変更を行います。シャドウ設定の作成後は、すべての変更がシャドウ設定に適用されます。すべての変更を保存するには、次のコマンドを使用します。
      </para>
 <screen>crm(myNewConfig)# <command>commit</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       ライブクラスタ設定が再び必要な場合は、次のコマンドでライブ設定に戻ります。
      </para>
@@ -413,9 +417,9 @@ INFO: myNewConfig shadow CIB created</screen>
 <prompt role="custom">crm(live)# </prompt></screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-debugging">
+  <section xml:id="sec-ha-manual-config-debugging">
    <title>設定の変更のデバッグ</title>
    <para>
     設定の変更をクラスタにロードする前に、変更内容を<command>ptest</command>でレビューすることを推奨します。<command>ptest</command>コマンドを指定すると、変更のコミットによって生じるアクションのダイアグラムを表示できます。ダイアグラムを表示するには、<systemitem>graphviz</systemitem>パッケージが必要です。次の例は監視操作を追加するスクリプトです。
@@ -431,9 +435,9 @@ primitive fence-bob stonith:apcsmart \
         op monitor interval="120m" timeout="60s"
 <prompt role="custom">crm(live)configure# </prompt><emphasis role="strong">ptest</emphasis>
 <prompt role="custom">crm(live)configure# </prompt>commit</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-diagram">
+  <section xml:id="sec-ha-manual-config-diagram">
    <title>クラスタダイアグラム</title>
    <para>
     <xref linkend="fig-ha-cluster-diagram"/>に示すようなクラスタダイアグラムを出力するには、コマンド<command>crm</command> <command>configure graph</command>を使用します。これにより現在の設定が現在のウィンドウに表示されるので、X11が必要になります。
@@ -442,10 +446,10 @@ primitive fence-bob stonith:apcsmart \
     SVG (Scalable Vector Graphics)を使用する場合は、次のコマンドを使用します。
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure graph dot config.svg svg</screen>
-  </sect2>
- </sect1>
+  </section>
+ </section>
 
- <sect1 id="sec-ha-config-crm-global">
+ <section xml:id="sec-ha-config-crm-global">
   <title>グローバルクラスタオプションの設定</title>
 
   <para>
@@ -454,13 +458,13 @@ primitive fence-bob stonith:apcsmart \
 
   <procedure>
    <title><command>crm</command>でグローバルクラスタオプションを変更する</title>
-   <step performance="required">
+   <step>
     <para>
      <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>ツールを開始します。
     </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      次のコマンドを使用して、2ノードクラスタだけのオプションを設定します。
     </para>
@@ -473,7 +477,7 @@ primitive fence-bob stonith:apcsmart \
      </para>
     </important>
    </step>
-   <step performance="required">
+   <step>
     <para>
      変更内容を表示します。
     </para>
@@ -485,7 +489,7 @@ property $id="cib-bootstrap-options" \
    no-quorum-policy="ignore" \
    stonith-enabled="true"</screen>
    </step>
-   <step performance="required">
+   <step>
     <para>
      変更内容をコミットして終了します。
     </para>
@@ -493,8 +497,8 @@ property $id="cib-bootstrap-options" \
 <prompt role="custom">crm(live)configure# </prompt><command>exit</command></screen>
    </step>
   </procedure>
- </sect1>
- <sect1 id="sec-ha-config-crm-resources">
+ </section>
+ <section xml:id="sec-ha-config-crm-resources">
   <title>クラスタリソースの設定</title>
 
   <para>
@@ -505,19 +509,19 @@ property $id="cib-bootstrap-options" \
    作成できるリソースタイプの概要については、<xref linkend="sec-ha-config-basics-resources-types"/>を参照してください。
   </para>
 
-  <sect2 id="sec-ha-manual-config-create">
+  <section xml:id="sec-ha-manual-config-create">
    <title>クラスタリソースの作成</title>
    <para>
     クラスタで使用できるRA(リソースエージェント)には3種類あります(背景情報については<xref linkend="sec-ha-config-basics-raclasses"/>を参照)。新しいリソースをクラスタに追加するには、次の手順に従います。
    </para>
-   <procedure id="pro-ha-manual-config-create">
-    <step performance="required">
+   <procedure xml:id="pro-ha-manual-config-create">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>ツールを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       プリミティブIPアドレスを設定ます。
      </para>
@@ -527,13 +531,13 @@ property $id="cib-bootstrap-options" \
       前のコマンドは<quote>プリミティブ</quote>に名前<literal>myIP</literal>を設定します。クラス(ここでは<literal>ocf</literal>)、プロバイダ(<literal>heartbeat</literal>)、およびタイプ(<literal>IPaddr</literal>)を選択する必要があります。さらに、このプリミティブでは、IPアドレスなどのパラメータが必要です。自分の設定に合わせてアドレスを変更してください。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       行った変更を表示して確認します。
      </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>show</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       変更をコミットして反映させます。
      </para>
@@ -541,11 +545,11 @@ property $id="cib-bootstrap-options" \
     </step>
    </procedure>
 
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-manual-config-rsc-template">
+  <section xml:id="sec-ha-manual-config-rsc-template">
    <title>リソーステンプレートの作成</title>
    <para>
     類似した設定で複数のリソースを作成する場合、リソーステンプレートを使用すれば作業が簡単になります。基本的なバックグラウンド情報については、<xref linkend="sec-ha-config-basics-constraints-templates"/>を参照してください。これらを、<quote>通常の</quote>テンプレート(<xref linkend="sec-ha-manual-config-template"/>で説明したもの)と混同しないでください。次の構文を知るには、<command>rsc_template</command>コマンドを使用してください。
@@ -588,23 +592,23 @@ usage: rsc_template &lt;name&gt; [&lt;class&gt;:[&lt;provider&gt;:]]&lt;type&gt;
    <para>
     リソーステンプレートは、そのテンプレートから派生するすべてのプリミティブを表すものとして、制約で参照することができます。これにより、クラスタ設定をいっそう簡潔かつクリアに行うことができます。リソーステンプレートは、場所の制約を除くすべての制約から参照することができます。コロケーション制約には、複数のテンプレート参照を含めることはできません。
    </para>
-  </sect2>
+  </section>
 
 
 
-  <sect2 id="sec-ha-manual-create-stonith">
+  <section xml:id="sec-ha-manual-create-stonith">
    <title>STONITHリソースの作成</title>
    <para>
     <command>crm</command>からは、STONITHデバイスは単なる1つのリソースと認識されます。STONITHリソースを作成するには、次の手順に従います。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドで、すべてのSTONITHタイプのリストを取得します。
      </para>
@@ -622,7 +626,7 @@ ipmilan                    meatware                   nw_rpc100s
 rcd_serial                 rps10                      suicide
 wti_mpc                    wti_nps</screen>
     </step>
-    <step id="st-ha-manual-create-stonith-type" performance="required">
+    <step xml:id="st-ha-manual-create-stonith-type">
      <para>
       上記のリストからSTONITHタイプを選択し、利用できるオプションのリストを表示します。次のコマンドを実行します。
      </para>
@@ -641,7 +645,7 @@ hostname (string): Hostname
     The name of the host to be managed by this STONITH device.
 ...</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <literal>stonith</literal>クラス、<xref linkend="st-ha-manual-create-stonith-type" xrefstyle="select:label nopage"/>で選択したタイプ、および必要に応じて該当するパラメータを使用して、STONITHリソースを作成します。たとえば、次のコマンドを使用します。
      </para>
@@ -653,9 +657,9 @@ hostname (string): Hostname
     op monitor interval=60m timeout=120s  </screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-constraints">
+  <section xml:id="sec-ha-manual-config-constraints">
    <title>リソース制約の設定</title>
    <para>
     すべてのリソースを設定することは、ジョブのほんの一部分です。クラスタが必要なすべてのリソースを認識しても、正しく処理できるとは限りません。たとえば、DRBDのスレーブノードにファイルシステムをマウントしないようにしてください(実際、DRBDでは失敗します)。このような情報をクラスタが利用できるように、制約を定義します。
@@ -663,7 +667,7 @@ hostname (string): Hostname
    <para>
     制約の詳細については、<xref linkend="sec-ha-config-basics-constraints"/>を参照してください。
    </para>
-   <sect3 id="sec-ha-manual-config-constraints-locational">
+   <section xml:id="sec-ha-manual-config-constraints-locational">
     <title>場所の制約</title>
     <para>
      <command>location</command>コマンドは、リソースを実行できるノード、できないノード、または実行に適したノードを定義するものです。
@@ -696,8 +700,8 @@ hostname (string): Hostname
      ある場合には、<command>location</command>コマンドでリソースパターンを使用すると、より効率的で便利です。リソースパターンは、2つのスラッシュ間の正規表現です。たとえば、前に示した仮想IPアドレスは、次とすべて一致させることができます。
     </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>location</command>  loc-alice /vip.*/ inf: alice</screen>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-collocational">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-collocational">
     <title>コロケーション制約</title>
     <para>
      <command>colocation</command>コマンドは、同じホストまたは別のホストで実行するべきリソースを定義するために使用します。
@@ -713,8 +717,8 @@ hostname (string): Hostname
     <para>
      マスタスレーブ構成では、現在のノートがマスタかどうかと、リソースをローカルに実行しているかどうかを把握することが必要です。
     </para>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-weak-bond">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-weak-bond">
     <title>依存性なしのリソースセットのコロケーション</title>
 
     <para>
@@ -727,8 +731,8 @@ hostname (string): Hostname
     <para>
      <command>weak-bond</command>の実装により、指定されたリソースを持つダミーリソースとコロケーション制約が自動的に作成されます。
     </para>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-ordering">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-ordering">
     <title>順序の制約</title>
     <para>
      <command>order</command>コマンドは、アクションのシーケンスを定義します。
@@ -741,8 +745,8 @@ hostname (string): Hostname
     </para>
 
 <screen><prompt role="custom">crm(live)configure# </prompt><command>order</command> nfs_after_filesystem mandatory: filesystem_resource nfs_group</screen>
-   </sect3>
-   <sect3 id="sec-ha-manual-config-constraints-example">
+   </section>
+   <section xml:id="sec-ha-manual-config-constraints-example">
     <title>サンプル設定のための制約</title>
     <para>
      このセクションで使用される例は、制約を追加しないと機能しません。すべてのリソースは、必ず、マスタであるDRBDリソースと同じマシンで実行される必要があります。DRBDリソースは、他のリソースが開始する前にマスタにする必要があります。マスタでないときに、drbdデバイスをマウントしようとすると失敗します。次の制約を満たす必要があります。
@@ -777,10 +781,10 @@ hostname (string): Hostname
     drbd_resource:promote filesystem_resource:start</screen>
      </listitem>
     </itemizedlist>
-   </sect3>
-  </sect2>
+   </section>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-failover">
+  <section xml:id="sec-ha-manual-config-failover">
    <title>リソースフェールオーバーノードの指定</title>
    <para>
     リソースフェールオーバーを判定するには、メタ属性migration-thresholdを使用します。すべてのノードで失敗回数がmigration-thresholdを超えている場合には、リソースは停止したままになります。例:
@@ -796,9 +800,9 @@ hostname (string): Hostname
    <para>
     概要については、<xref linkend="sec-ha-config-basics-failover"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-failback">
+  <section xml:id="sec-ha-manual-config-failback">
    <title>リソースフェールバックノードの指定(リソースの固着性)</title>
      <para>
     ノードがオンライン状態に戻り、クラスタ内にある場合は、リソースが元のノードにフェールバックすることがあります。リソースを実行していたノードにリソースをフェールバックさせたくない場合や、リソースのフェールバック先として別のノードを指定する場合は、リソースの<literal>resource stickiness</literal>値を変更します。リソースの固着性は、リソースの作成時でも、その後でも指定できます。
@@ -806,9 +810,9 @@ hostname (string): Hostname
    <para>
     概要については、<xref linkend="sec-ha-config-basics-failback"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-utilization">
+  <section xml:id="sec-ha-manual-config-utilization">
    <title>負荷インパクトに基づくリソース配置の設定</title>
    <para>
     一部のリソースは、メモリの最小量など、特定の容量要件を持っています。要件が満たされていない場合、リソースは全く開始しないか、またはパフォーマンスを下げた状態で実行されます。
@@ -846,13 +850,13 @@ hostname (string): Hostname
    </para>
    <procedure>
     <title><command>crm</command>で使用属性を追加または変更する</title>
-    <step performance="required">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       ノードが<emphasis>提供する</emphasis>容量を指定するには、次のコマンドを使用し、プレースホルダ<replaceable>NODE_1</replaceable>をノードの名前に置き換えます。
      </para>
@@ -862,7 +866,7 @@ hostname (string): Hostname
       これらの値によって、<replaceable>NODE_1</replaceable>は16GBのメモリと8つのCPUコアをリソースに提供すると想定されます。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースが<emphasis>要求する</emphasis>容量を指定するには、次のコマンドを使用します。
      </para>
@@ -872,7 +876,7 @@ hostname (string): Hostname
       これによって、リソースはnodeAからの4096のメモリ単位と4つのCPUユニットを使用します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <command>property</command>コマンドを使用して、配置ストラテジを設定します。
      </para>
@@ -924,7 +928,7 @@ hostname (string): Hostname
     </para>
    </note>
     </step>
-    <step performance="required">
+    <step>
      <para>
       変更をコミットしてから、crmshを終了します。
      </para>
@@ -956,9 +960,9 @@ hostname (string): Hostname
    <para>
     1つのノードに障害が発生した場合、残りのノード上で利用できるメモリ合計が少なすぎて、これらのリソースすべてはホストできません。xenAは確実に割り当てられ、xenDも同様です。ただし、xenBとxenCは、そのどちらか1つしか割り当てられません。xenBとxenCの優先度は同等なので、結果はまだ未定義です。これを解決するためにも、どちらかに高い優先度を設定する必要があります。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-monitor">
+  <section xml:id="sec-ha-manual-config-monitor">
    <title>リソース監視の設定</title>
 
    <para>
@@ -976,21 +980,21 @@ hostname (string): Hostname
    <para>
     概要については、<xref linkend="sec-ha-config-basics-monitoring"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-group">
+  <section xml:id="sec-ha-manual-config-group">
    <title>クラスタリソースグループの構成</title>
 
    <para>
     クラスタの一般的な要素の1つは、一緒の場所で見つける必要のあるリソースのセットです。連続的に開始し、逆の順序で停止します。この設定を簡単にするため、グループのコンセプトをサポートしています。次の例では、2つのプリミティブ(IPアドレスと電子メールリソース)を作成します。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <command>crm</command>コマンドをシステム管理者として実行します。プロンプトが<literal>crm(live)</literal>に変化します。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       プリミティブを設定します。
      </para>
@@ -1000,7 +1004,7 @@ hostname (string): Hostname
 <prompt role="custom">crm(live)configure# </prompt><command>primitive</command> Email lsb:exim \
    params id=p.lsb-exim</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       該当するIDを使用して、正しい順序で、プリミティブをグループ化します。
      </para>
@@ -1019,9 +1023,9 @@ hostname (string): Hostname
    <para>
     概要については、<xref linkend="sec-ha-config-basics-resources-advanced-groups"/>を参照してください。
    </para>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-clone">
+  <section xml:id="sec-ha-manual-config-clone">
    <title>クローンリソースの設定</title>
 
    <para>
@@ -1031,46 +1035,46 @@ hostname (string): Hostname
    <para>
     クローンリソースの詳細については、<xref linkend="sec-ha-config-basics-resources-advanced-clones"/>を参照してください。
    </para>
-   <sect3 id="sec-ha-manual-config-clone-anonymous">
+   <section xml:id="sec-ha-manual-config-clone-anonymous">
     <title>匿名クローンリソースの作成</title>
     <para>
      匿名クローンリソースを作成するには、まずプリミティブリソースを作成して、それを<command>clone</command>コマンドで指定することです。次の操作を実行してください:
     </para>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
       </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        次のように、プリミティブを設定します。
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>primitive</command> Apache lsb:apache</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        プリミティブをクローンします。
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>clone</command> cl-apache Apache </screen>
      </step>
     </procedure>
-   </sect3>
+   </section>
 
-   <sect3 id="sec-ha-manual-config-clone-stateful">
+   <section xml:id="sec-ha-manual-config-clone-stateful">
     <title>ステートフル/マルチステートクローンリソースの作成</title>
     <para>
      ステートフルクローンリソースを作成するには、まずプリミティブリソースを作成してから、マルチステートリソースを作成します。マルチステートリソースは少なくとも、昇格および降格操作をサポートしている必要があります。
     </para>
     <procedure>
-     <step performance="required">
+     <step>
       <para>
        <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
       </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        プリミティブを作成します。必要に応じて間隔を変更します。
       </para>
@@ -1078,62 +1082,62 @@ hostname (string): Hostname
     op monitor interval=60 \
     op monitor interval=61 role=Master</screen>
      </step>
-     <step performance="required">
+     <step>
       <para>
        マルチステートリソースを作成します。
       </para>
 <screen><prompt role="custom">crm(live)configure# </prompt><command>ms</command> ms-rsc my-rsc</screen>
      </step>
     </procedure>
-   </sect3>
-  </sect2>
- </sect1>
- <sect1 id="sec-ha-config-crm">
+   </section>
+  </section>
+ </section>
+ <section xml:id="sec-ha-config-crm">
   <title>クラスタリソースの管理</title>
 
   <para>
    <command>crm</command>ツールでは、クラスタリソースの設定が可能なだけでなく、既存リソースを管理することもできます。移行のサブセクションで概要を示します。
   </para>
 
-  <sect2 id="sec-ha-manual-config-start">
+  <section xml:id="sec-ha-manual-config-start">
    <title>新しいクラスタリソースの開始</title>
    <para>
     新しいクラスタリソースを開始するには、そのIDが必要です。次の手順に従います。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソースレベルに切り替えます。
      </para>
 <screen><prompt role="custom">crm(live)# </prompt><command>resource</command></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       <command>start</command>でリソースを開始し、<keycap function="tab"/>キーを押してすべての既知のリソースを表示します。
      </para>
 <screen><prompt role="custom">crm(live)resource# </prompt><command>start</command> <replaceable>ID</replaceable></screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-cleanup">
+  <section xml:id="sec-ha-manual-config-cleanup">
    <title>リソースのクリーンアップ</title>
    <para>
     リソースは、失敗した場合は自動的に再起動しますが、失敗のたびにリソースの失敗回数が増加します。<literal>migration-threshold</literal>がそのリソースに設定されている場合は、失敗の数が移行しきい値に達するとただちに、そのリソースはノードで実行できなくなります。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       シェルを開いて、<systemitem class="username">root</systemitem>ユーザとしてログインします。
      </para>
     </step>
-    <step performance="required">
+    <step>
      <para>
       すべてのリソースのリストを取得します。
      </para>
@@ -1144,28 +1148,28 @@ Resource Group: dlm-clvm:1
          clvm:1 (ocf::lvm2:clvmd) Started
          cmirrord:1     (ocf::lvm2:cmirrord) Started</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       リソース<literal>dlm</literal>をクリーンアップするには、たとえば、以下の手順を実行します:
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> resource cleanup dlm</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-remove">
+  <section xml:id="sec-ha-manual-config-remove">
    <title>クラスタリソースの削除</title>
    <para>
     次の手順に従って、クラスタリソースを削除します。
    </para>
    <procedure>
-    <step performance="required">
+    <step>
      <para>
       <systemitem class="username">root</systemitem>としてログインし、<command>crm</command>対話型シェルを開始します。
      </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> configure</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       次のコマンドを実行して、リソースのリストを取得します。
      </para>
@@ -1175,22 +1179,22 @@ Resource Group: dlm-clvm:1
      </para>
 <screen>myIP    (ocf::IPaddr:heartbeat) ...</screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       該当するIDを持つリソースを削除します(これは、<command>commit</command>も含意します)。
      </para>
 <screen><prompt role="custom">crm(live)# </prompt><command>configure</command> delete <replaceable>YOUR_ID</replaceable></screen>
     </step>
-    <step performance="required">
+    <step>
      <para>
       変更をコミットします。
      </para>
 <screen><prompt role="custom">crm(live)# </prompt><command>configure</command> commit</screen>
     </step>
    </procedure>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-migrate">
+  <section xml:id="sec-ha-manual-config-migrate">
    <title>クラスタリソースのマイグレーション</title>
    <para>
     リソースは、ハードウェアまたはソフトウェアに障害が発生した場合、クラスタ内の他のノードに自動的にフェールオーバー(つまり移行)するよう設定されていますが、Pacemaker GUIまたはコマンドラインを使用して、手動でリソースをクラスタ内の別のノードに移動することもできます。
@@ -1200,9 +1204,9 @@ Resource Group: dlm-clvm:1
    </para>
 <screen><prompt role="root">root # </prompt><command>crm</command> resource
 <prompt role="custom">crm(live)resource# </prompt><command>migrate</command> ipaddress1 bob</screen>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-tag">
+  <section xml:id="sec-ha-manual-config-tag">
    <title>リソースのグループ化/タグ付け</title>
 
    <para>
@@ -1223,9 +1227,9 @@ Resource Group: dlm-clvm:1
     <para>リソースをグループ化するタグと一部のACLの機能は、<literal>pacemaker-2.0</literal>以上のCIB構文バージョンでのみ動作します。この点に該当するタグやACLであるかどうかを確認して、CIBバージョンをアップグレードする方法の詳細については、『<citetitle>High Availability Guide</citetitle> for <phrase role="productname"><phrase os="sles">SUSE Linux Enterprise High Availability Extension</phrase></phrase> <phrase role="productnumber"><phrase os="sles">11 SP4</phrase></phrase>』のセクション「<citetitle>SLE HA 11 SP3からSLE HA 11 SP4へのアップグレード</citetitle>」を参照してください。
     </para>
    </note>
-  </sect2>
+  </section>
 
-  <sect2 id="sec-ha-manual-config-cli-maint-mode">
+  <section xml:id="sec-ha-manual-config-cli-maint-mode">
    <title>保守モードの使用</title>
 
    
@@ -1287,10 +1291,10 @@ Resource Group: dlm-clvm:1
    <para>
     保守モード中にリソースおよびクラスタで何が発生するかの詳細については、<xref linkend="sec-ha-config-basics-maint-mode"/>を参照してください。
    </para>
-  </sect2>
-</sect1>
+  </section>
+</section>
 
- <sect1 id="sec-ha-config-crm-setpwd">
+ <section xml:id="sec-ha-config-crm-setpwd">
   <title><filename>cib.xml</filename>から独立したパスワードの設定</title>
 
   <para>
@@ -1322,9 +1326,9 @@ linux</screen>
   <para>
    パラメータは、ノード間で同期する必要があることに注意してください。<command>crm resource secret</command>コマンドを使用すれば、この処理が実行されます。秘密のパラメータを管理する場合には、このコマンドを使用することを強く推奨します。
   </para>
- </sect1>
+ </section>
 
- <sect1 id="sec-ha-config-crm-history">
+ <section xml:id="sec-ha-config-crm-history">
   <title>履歴情報の取得</title>
 
   <para>
@@ -1381,7 +1385,7 @@ linux</screen>
 
 
   <para>
-   その他の例とタイムフレームの作成方法については、<ulink url="http://labix.org/python-dateutil"/>を参照してください。
+   その他の例とタイムフレームの作成方法については、<link xlink:href="http://labix.org/python-dateutil"/>を参照してください。
   </para>
 
   <para>
@@ -1429,8 +1433,8 @@ INFO: fetching new logs, please wait ...</screen>
   </para>
 
 <screen><prompt role="custom">crm(live)history# </prompt><command>transition</command> -1 nograph</screen>
- </sect1>
- <sect1 id="sec-ha-config-crm-more">
+ </section>
+ <section xml:id="sec-ha-config-crm-more">
   <title>詳細</title>
 
   <itemizedlist mark="bullet" spacing="normal">
@@ -1441,7 +1445,7 @@ INFO: fetching new logs, please wait ...</screen>
    </listitem>
    <listitem>
     <para>
-     アップストリームプロジェクトマニュアルにアクセスします(<ulink url="http://crmsh.github.io/documentation"/>)。
+     アップストリームプロジェクトマニュアルにアクセスします(<link xlink:href="http://crmsh.github.io/documentation"/>)。
     </para>
    </listitem>
    <listitem>
@@ -1450,5 +1454,5 @@ INFO: fetching new logs, please wait ...</screen>
     </para>
    </listitem>
   </itemizedlist>
- </sect1>
+ </section>
 </chapter>
