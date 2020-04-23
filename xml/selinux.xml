@@ -9,18 +9,15 @@
    %entities;
 ]>
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink" version="5.1" xml:id="cha-selinux">
- <title>Configuring &selnx; on &sle; 11 SP2</title>
- <info/>
+ <title>Configuring &selnx;</title>
  <para>
-  Since &sle; 11 SP2, the &selnx; framework is supported on SUSE Linux
-  Enterprise. In this article you’ll learn how to set it up and how to manage
-  &selnx; on SLE 11 SP2 once it has been installed. The following topics are
-  covered in this article:
+  In this chapter, you will learn how to set up and manage &selnx; on &productname;.
+  The following topics are covered:
  </para>
- <itemizedlist mark="bullet" spacing="normal">
+ <itemizedlist>
   <listitem>
    <para>
-    &selnx; backgrounds
+    Why Use &selnx;?
    </para>
   </listitem>
   <listitem>
@@ -30,17 +27,17 @@
   </listitem>
   <listitem>
    <para>
-    Setting up &selnx; on SLE 11 SP2
+    Setting up &selnx;
    </para>
   </listitem>
   <listitem>
    <para>
-    Managing &selnx; on SLE 11 SP2
+    Managing &selnx;
    </para>
   </listitem>
  </itemizedlist>
  <section>
-  <title>&selnx; backgrounds</title>
+  <title>Why Use &selnx;?</title>
   <para>
    &selnx; was developed as an additional Linux security solution that uses the
    security framework in the Linux kernel. The purpose was to allow for a more
@@ -55,11 +52,11 @@
   </para>
   <para>
    An example explains why a solution such as &selnx; (or its counterpart
-   AppArmor) is needed.
+   &aa;) is needed:
   </para>
   <para>
    <quote>One morning, I found out that my server was hacked. The server was
-   running SLES 10 SP 3 server, which was patched up to the latest level. A
+   running a fully patched &slsa; installation. A
    firewall was configured on it and no unnecessary services were offered by
    this server. Further analysis learned that the hacker had come in through a
    flaky PHP script that was a part of one of the Apache virtual hosts that
@@ -69,19 +66,19 @@
    <systemitem class="username">wwwrun</systemitem> user, the intruder had
    created several scripts in the <filename>/var/tmp</filename> and the
    <filename>/tmp</filename> directories, which were a part of a botnet that
-   was launching a Distributed Denial of Service attack against different
-   servers on the planet.</quote>
+   was launching a Distributed Denial of Service attack against a number of
+   servers.</quote>
   </para>
   <para>
    The interesting thing about this hack is that it occurred on a server where
    nothing was really wrong. All permissions where set OK, but the intruder had
    managed to get into the system. What becomes clearly evident from this
    example is that in some cases additional security is needed&mdash;a security
-   that goes beyond what is offered by using &selnx;. As a less complete and
-   less complex alternative, AppArmor can be used.
+   &selnx;. As a less complete and less complex alternative, &aa; can be
+   used.
   </para>
   <para>
-   AppArmor confines specific processes in their abilities to read/write and
+   &aa; confines specific processes in their abilities to read/write and
    execute files (and other things). Its view is mostly that things that happen
    inside a process cannot escape.
   </para>
@@ -108,26 +105,25 @@
   </para>
   <para>
    As an alternative to &selnx;, Immunix, a company that was purchased by
-   Novell in 2005, had developed AppArmor. AppArmor was built on top of the
+   Novell in 2005, had developed &aa;. &aa; was built on top of the
    same security principles as &selnx;, but took a completely different
    approach, where it was possible to restrict services to exactly what they
-   needed to do by using an easy to use wizard-driven procedure. Nevertheless,
-   AppArmor has never reached the same status as &selnx;, even if there are
-   some good arguments to secure a server with AppArmor rather than with
+   needed to do by using an easy to use wizard-driven procedure.
+   Nevertheless, &aa; has never reached the same status as &selnx;, even
+   if there are some good arguments to secure a server with &aa; rather
    &selnx;.
   </para>
   <para>
-   Because more and more governmental organizations currently are requesting
-   &selnx; to be present in the Linux distributions they are using, SUSE is
-   offering support for the &selnx; framework in the latest versions of &sle;
-   Server. This doesn’t mean that SUSE is about to switch from AppArmor to
-   &selnx; soon, for SUSE it is important that the customer can choose the
-   security solution that fits his needs best.
+   Because many organizations are requesting
+   &selnx; to be present in the Linux distributions they are using, &suse; is
+   offering support for the &selnx; framework in &productname;. This does not
+   mean that the default installation of &productname; will switch from &aa; to
+   &selnx; in the near future.
   </para>
   <section>
    <title>Support Status</title>
    <para>
-    Currently, the &selnx; framework is supported in &sle; 11 SP2. This means
+    The &selnx; framework is supported in &sle; &productnumber;. This means
     that you can expect that &sle; is offering all binaries and libraries you
     need to be able to use &selnx; on your server without any problems. A
     policy however is not included and you will also miss some binaries that
@@ -166,7 +162,7 @@
     </listitem>
    </itemizedlist>
    <para>
-    &sle; 11 SP2 and later comes with the standard support for &selnx; in the
+    &sle; 11 SP2 and later come with the standard support for &selnx; in the
     Linux kernel, and the tools that are needed to manage the &selnx; solution.
     You will shortly learn how to install these tools on your server. The most
     important part of the work of the administrator with regards to &selnx; is
@@ -183,7 +179,7 @@
     configure parts of a system to run in unconfined mode, which means that
     specific ports, programs, users, files and directories are not protected at
     all by &selnx;. This mode is useful if you just want to use SELinux to
-    protect some essential services, while you aren't specifically worried
+    protect some essential services, while you are not specifically worried
     about other services. To get a really secure system, you should try to
     avoid this.
    </para>
@@ -208,7 +204,7 @@
     happening.
    </para>
    <para>
-    In &sle; 11 SP2, the &selnx; framework is supported and provided. The
+    In &productname;, the &selnx; framework is supported and provided. The
     &selnx; policy is not. Therefore, as an administrator that wishes to use
     &selnx; on &sle;, you will have to create your own policy, or use one of
     the standard policies that are available for free. Do notice though that a
@@ -231,7 +227,7 @@
    directory to find the security context for the files in that directory.
    <xref linkend="ex-selnx-con-set" xrefstyle="select:label quotedtitle nopage"/>
    shows the security context settings for the directories in the
-   <filename>/</filename> directory of an SLES 11 SP2 system with an
+   <filename>/</filename> directory of an &productname; system with an
    &selnx;-labeled file system.
   </para>
   <example xml:id="ex-selnx-con-set">
@@ -291,7 +287,7 @@ system_u:object_r:httpd_sys_content_t www</screen>
   </para>
  </section>
  <section>
-  <title>Installing &selnx; on &sle; 11 SP2</title>
+  <title>Installing &selnx;</title>
   <para>
    <remark>Not sure if this is a section2</remark>
    You can install all SELinux components while performing the installation of
@@ -321,7 +317,7 @@ system_u:object_r:httpd_sys_content_t www</screen>
   <para>
    The easiest way to make sure that all &selnx; components are installed is by
    using YaST2. The procedure described below shows what to do on an installed
-   SLES 11 SP2 server.
+   &productname; server.
   </para>
   <procedure>
    <step>
@@ -372,9 +368,9 @@ system_u:object_r:httpd_sys_content_t www</screen>
   <para>
    After installing the &selnx; packages, you have to modify the GRUB boot
    loader. To do this, from YaST select <guimenu>System &gt; Boot
-   loader</guimenu>. On the Section Management tab, you'll now see the current
+   loader</guimenu>. On the Section Management tab, you will now see the current
    GRUB configuration. Select the label that starts with <guimenu>SUSE Linux
-   Enterprise Server 11 SP2</guimenu> and click <guimenu>Edit</guimenu>. Now
+   Enterprise Server 11 SP4</guimenu> and click <guimenu>Edit</guimenu>. Now
    select the line that contains the Optional Kernel Command Line Parameters
    and add the following to the end of this line:
    <literal>security=selinux</literal> <literal>selinux=1</literal>
@@ -428,13 +424,13 @@ system_u:object_r:httpd_sys_content_t www</screen>
    As mentioned, the policy is an essential component of &selnx; but no default
    policy is available for &sle;. This means that you’ll need to get a policy
    from somewhere else. The best choice is to get a policy from the openSUSE
-   download site at <link xlink:href="http://software.opensuse.org"/>. In the
+   download site at <link xlink:href="https://software.opensuse.org"/>. In the
    Package Search bar presented at this site, type
    <literal>selinux-policy</literal> to get access to a list of all open source
-   policy packages presented at <link xlink:href="http://openSUSE.org"/>.
+   policy packages presented at <link xlink:href="https://openSUSE.org"/>.
   </para>
   <figure xml:id="fig-policy-package">
-   <title>Get an open source policy package from http://software.opensuse.org</title>
+   <title>Get an open source policy package from software.opensuse.org</title>
    <mediaobject>
     <imageobject role="pdf">
      <imagedata fileref="selnx_se_policy_compiler.png" width="85%"/>
@@ -450,7 +446,7 @@ system_u:object_r:httpd_sys_content_t www</screen>
    an unstable state, but still they are the best available option because they
    match the layout of the file system on SLE better than the default policy
    for openSUSE 12.x. Many items have changed in the openSUSE 12.x file system
-   as compared to the SLE file system, so open the SUSE SLE-11 SP1 link, accept
+   as compared to the SLE file system, so open the SUSE SLE-11 SP2 link, accept
    the unstable package and click <guimenu>Source to download</guimenu> the
    policy source file and save it to disk. This gives you a file with the name
    <filename>selinux-policy-2.20081210-12.2.src.rpm</filename> (the exact name
@@ -466,7 +462,7 @@ system_u:object_r:httpd_sys_content_t www</screen>
     <para>
      Extract the archive from the source RPM, using
     </para>
-<screen>rpm2cpio selinux-policy- &gt;version&gt;.src.rpm | cpio -idmv</screen>
+<screen>rpm2cpio selinux-policy-&gt;version&gt;.src.rpm | cpio -idmv</screen>
     <para>
      This gives you a tarball in the current directory, with the name
      <filename>refpolicy-<replaceable>version</replaceable>.tar.bz2.</filename>
@@ -543,9 +539,9 @@ MONOLITHIC = n</screen>
    tune the contents of the <filename>file_contexts</filename> file to match
    the structure of the file system your server is using. Before doing this,
    make sure to read the rest of this article so that you fully understand how
-   context type is applied to files and directories (and don't forget to make a
+   context type is applied to files and directories (and do not forget to make a
    backup of the <filename>file_contexts</filename> file before starting). At
-   the end of this article you'll find tips that help you in troubleshooting
+   the end of this article you will find tips that help you in troubleshooting
    &selnx; and creating a system that fully works with your &selnx; policy.
   </para>
   <para>
@@ -563,7 +559,7 @@ MONOLITHIC = n</screen>
   </para>
   <example xml:id="ex-selnx-sestatus">
    <title>After labeling the file system you can verify that &selnx; is functional using <command>sestatus -v</command></title>
-<screen>sestatus -v          
+<screen>sestatus -v
 mmi:/ # sestatus -v
 SELinux status:                 enabled
 SELinuxfs mount:                /selinux
@@ -571,13 +567,13 @@ Current mode:                   permissive
 Mode from config file:          permissive
 Policy version:                 26
 Policy from config file:        refpolicy
-                
+
 Process contexts:
 Current context:                root:staff_r:staff_t
 Init context:                   system_u:system_r:init_t
 /sbin/mingetty                  system_u:system_r:sysadm_t
 /usr/sbin/sshd                  system_u:system_r:sshd_t
-                
+
 File contexts:
 Controlling term:               root:object_r:user_devpts_t
 /etc/passwd                     system_u:object_r:etc_t
@@ -734,7 +730,7 @@ drwxr-xr-x. root root system_u:object_r:var_t:s0       var</screen>
     It consists of a user, a role, and a type. The s0 setting indicates the
     security level in Multi Level Security environments. These environments are
     not discussed in this article, so just make sure that it is set to s0 and
-    you'll be fine. The Context Type defines what kind of activity is permitted
+    you will be fine. The Context Type defines what kind of activity is permitted
     in the directory. Compare, for example, the <filename>/root</filename>
     directory, which has the <filename>admin_home_t</filename> context type,
     and the <filename>/home</filename> directory, which has the
@@ -844,7 +840,7 @@ system_u:system_r:sysadm_t      root      3442  0.0  0.0   4596   800 tty2     S
     <title>Showing Displaying default file contexts with <command>semanage fcontext -l</command></title>
 <screen>[root@hnl ~]# semanage fcontext -l | less
 &selnx; fcontext                                   type               Context
-              
+
 /                                                  directory          system_u:object_r:root_t:s0
 /.*                                                all files          system_u:object_r:default_t:s0
 /[^/]+                                             regular file       system_u:object_r:etc_runtime_t:s0
@@ -951,7 +947,7 @@ system_u:system_r:sysadm_t      root      3442  0.0  0.0   4596   800 tty2     S
     </step>
     <step>
      <para>
-      Use <command>semanage fcontext -a -f “”-t httpd_sys_content_t
+      Use <command>semanage fcontext -a -f ""-t httpd_sys_content_t
       ‘/web(/.*) ?’</command> to set the new context in the policy and
       press <keycap function="enter"/>.
      </para>
@@ -1110,21 +1106,21 @@ system_u:system_r:sysadm_t      root      3442  0.0  0.0   4596   800 tty2     S
    <example xml:id="ex-selnx-li-apachefc">
     <title>The first 20 lines from the <filename>apache.fc</filename> file</title>
 <screen>/etc/apache(2)?(/.*)? gen_context(system_u:object_r:httpd_config_t,s0)
-       /etc/apache-ssl(2)?(/.*)? gen_context(system_u:object_r:httpd_config_t,s0)
-       /etc/htdig(/.*)? gen_context(system_u:object_r:httpd_sys_content_t,s0)
-       /etc/httpd -d gen_context(system_u:object_r:httpd_config_t,s0) /etc/httpd/conf.*
-       gen_context(system_u:object_r:httpd_config_t,s0) /etc/httpd/logs
-       gen_context(system_u:object_r:httpd_log_t,s0) /etc/httpd/modules
-       gen_context(system_u:object_r:httpd_modules_t,s0) /etc/vhosts --
-       gen_context(system_u:object_r:httpd_config_t,s0) /srv/([^/]*/)?www(/.*)?
-       gen_context(system_u:object_r:httpd_sys_content_t,s0) /srv/gallery2(/.*)?
-       gen_context(system_u:object_r:httpd_sys_content_t,s0) /usr/bin/htsslpass --
-       gen_context(system_u:object_r:httpd_helper_exec_t,s0) /usr/lib/apache-ssl/.+ --
-       gen_context(system_u:object_r:httpd_exec_t,s0) /usr/lib/cgi-bin(/.*)?
-       gen_context(system_u:object_r:httpd_sys_script_exec_t,s0)
-       /usr/lib(64)?/apache(/.*)? gen_context(system_u:object_r:httpd_modules_t,s0)
-       /usr/lib(64)?/apache2/modules(/.*)?
-       gen_context(system_u:object_r:httpd_modules_t,s0)</screen>
+/etc/apache-ssl(2)?(/.*)? gen_context(system_u:object_r:httpd_config_t,s0)
+/etc/htdig(/.*)? gen_context(system_u:object_r:httpd_sys_content_t,s0)
+/etc/httpd -d gen_context(system_u:object_r:httpd_config_t,s0) /etc/httpd/conf.*
+gen_context(system_u:object_r:httpd_config_t,s0) /etc/httpd/logs
+gen_context(system_u:object_r:httpd_log_t,s0) /etc/httpd/modules
+gen_context(system_u:object_r:httpd_modules_t,s0) /etc/vhosts --
+gen_context(system_u:object_r:httpd_config_t,s0) /srv/([^/]*/)?www(/.*)?
+gen_context(system_u:object_r:httpd_sys_content_t,s0) /srv/gallery2(/.*)?
+gen_context(system_u:object_r:httpd_sys_content_t,s0) /usr/bin/htsslpass --
+gen_context(system_u:object_r:httpd_helper_exec_t,s0) /usr/lib/apache-ssl/.+ --
+gen_context(system_u:object_r:httpd_exec_t,s0) /usr/lib/cgi-bin(/.*)?
+gen_context(system_u:object_r:httpd_sys_script_exec_t,s0)
+/usr/lib(64)?/apache(/.*)? gen_context(system_u:object_r:httpd_modules_t,s0)
+/usr/lib(64)?/apache2/modules(/.*)?
+gen_context(system_u:object_r:httpd_modules_t,s0)</screen>
    </example>
    <para>
     In the <filename>fc</filename> file, you’ll be able to recognize
@@ -1232,7 +1228,7 @@ Thu Sep 20 16:45:01 EDT 2012</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><literal>comm=”syslog-ng”</literal>:</term>
+    <term><literal>comm="syslog-ng"</literal>:</term>
     <listitem>
      <para>
       the specific command that was associated with that PID
@@ -1240,7 +1236,7 @@ Thu Sep 20 16:45:01 EDT 2012</screen>
     </listitem>
    </varlistentry>
    <varlistentry>
-    <term><literal>name=”acpid”</literal>:</term>
+    <term><literal>name="acpid"</literal>:</term>
     <listitem>
      <para>
       the name of the subject of the action
@@ -1315,7 +1311,7 @@ scontext=system_u:system_r:syslogd_t tcontext=system_u:object_r:apmd_log_t tclas
   <example>
    <title>Using audit2allow to see which lines have denied access</title>
 <screen>mmi:/var/log/audit # audit2allow -i testfile
-                                
+
 #============= syslogd_t ==============
 allow syslogd_t apmd_log_t:file append;</screen>
   </example>
@@ -1332,7 +1328,7 @@ allow syslogd_t apmd_log_t:file append;</screen>
 <screen>mmi:/var/log/audit # audit2allow -i testfile -M blah
 ******************** IMPORTANT ***********************
 To make this policy package active, execute:
-                
+
 semodule -i blah.pp</screen>
   </example>
   <para>
@@ -1345,23 +1341,23 @@ semodule -i blah.pp</screen>
  <section>
   <title>Switching to Enforcing Mode</title>
   <para>
-   With everything you've done so far, you still cannot switch SELinux to
+   With everything you have done so far, you still cannot switch SELinux to
    enforcing mode. This is because of a misconfiguration in the context types
    for some files. If you switch to enforcing mode now, you can see that many
    AVC denied messages are written that are related to the tmpfs, and following
-   these messages your system hangs with the message <quote>“INIT: Id “1”
-   respawning too fast”</quote>.
+   these messages your system hangs with the message <quote>"INIT: Id "1"
+   respawning too fast"</quote>.
   </para>
   <example>
-   <title>The messages that you'll see, just before the system stops, look as follows:</title>
+   <title>The messages that you will see, just before the system stops, look as follows:</title>
 <screen>[ 5.595812] type=1400 audit(1361363803.588:3): avc: denied { read write }
-                for pid=431 comm=”sh” name=”console” dev=tmpfs ino=2513
-                scontext=system_u:system_r:sysadm_t tcontext=system_u:object_r:tmpfs_t
-                tclass=chr_file
-                [ 5.607734] type=1400 audit(1361363803.604:4): avc: denied { read write } for
-                pid=431 comm=”sh” path=”/dev/console” dev=tmpfs ino=2513
-                scontext=system_u:system_r:sysadm_t tcontext=system_u:object_r:tmpfs_t
-                tclass=chr_file</screen>
+for pid=431 comm="sh" name="console" dev=tmpfs ino=2513
+scontext=system_u:system_r:sysadm_t tcontext=system_u:object_r:tmpfs_t
+tclass=chr_file
+[ 5.607734] type=1400 audit(1361363803.604:4): avc: denied { read write } for
+pid=431 comm="sh" path="/dev/console" dev=tmpfs ino=2513
+scontext=system_u:system_r:sysadm_t tcontext=system_u:object_r:tmpfs_t
+tclass=chr_file</screen>
   </example>
   <para>
    As you will see, this message is repeated several times.
@@ -1371,7 +1367,7 @@ semodule -i blah.pp</screen>
    <filename>/var/log/audit/audit.log</filename> file to a temporary file (like
    <filename>/var/log/audit/audit.2allow</filename>) and remove all lines with
    the exception of the lines that contain the audit log messages for the
-   errors listed above. Assuming that the name of the log file that you've
+   errors listed above. Assuming that the name of the log file that you have
    created is <filename>audit.2allow</filename>, you should now run the
    following command: <command>audit2allow -i audit.2allow -M bootme</command>.
   </para>
@@ -1381,18 +1377,18 @@ semodule -i blah.pp</screen>
    your &selnx; configuration by using <command>semodule -i
    bootme.pp</command>. Now reboot your computer in enforcing mode. You will be
    able to boot and log in as root in your &selnx;-protected system. If this is
-   not the case, you'll have to repeat this procedure until you have no more
+   not the case, you will have to repeat this procedure until you have no more
    messages in your <filename>audit.log</filename> that refer to
-   <filename>path=”/dev/console” dev=tmpfs</filename>. This may involve
+   <filename>path="/dev/console" dev=tmpfs</filename>. This may involve
    several reboots.
   </para>
   <para>
    From here, the fine tuning begins. You will notice that many items on your
-   system don't work yet. You'll have to fix them one by one. The approach for
+   system do not work yet. You will have to fix them one by one. The approach for
    fixing all of these errors is by using audit2allow as described in the above
    example, and by setting the appropriate context on files and directories on
    your system. Until a supported version of the &selnx; policy is provided
-   with SUSE Linux Enterprise, you'll have to follow this approach to get it to
+   with &productname;, you will have to follow this approach to get it to
    work. At least using this procedure does allow you to configure a computer
    with the very detailed security settings that are offered with &selnx; and
    will make your system more secure than when using other solutions.
