@@ -8,12 +8,12 @@
    <!ENTITY % entities SYSTEM "entity-decl.ent">
    %entities;
 ]>
-<!-- 
+<!--
 
 toms 2011-08-05 feedback from jsrain:
-"separate the way of invoking the installation (WOL vs. static vs. 
-dynamic config) and SSH vs. VNC - that's just a formality. And, BTW, 
-I don't really understand how the static/dynamic version differs excelt 
+"separate the way of invoking the installation (WOL vs. static vs.
+dynamic config) and SSH vs. VNC - that's just a formality. And, BTW,
+I don't really understand how the static/dynamic version differs excelt
 the need to find the assigned address of the target system, but that's
 really just about the point of view."
 
@@ -1060,7 +1060,7 @@ cd install/<replaceable>product</replaceable>/<replaceable>productversion</repla
       configuration file with the following lines:
      </para>
 <screen><?dbsuse-fo font-size="7pt"?># Register the NFS Installation Server
-service:install.suse:nfs://$HOSTNAME/<replaceable>path_to_repository</replaceable>/DVD1,en,65535 
+service:install.suse:nfs://$HOSTNAME/<replaceable>path_to_repository</replaceable>/DVD1,en,65535
 description=NFS Repository</screen>
      <para>
       Replace <replaceable>path_to_repository</replaceable> with the actual
@@ -1153,7 +1153,7 @@ description=NFS Repository</screen>
         configuration file with the following lines:
        </para>
 <screen><?dbsuse-fo font-size="7pt"?># Register the FTP Installation Server
-service:install.suse:ftp://$HOSTNAME/<replaceable>repository</replaceable>/DVD1,en,65535 
+service:install.suse:ftp://$HOSTNAME/<replaceable>repository</replaceable>/DVD1,en,65535
 description=FTP Repository</screen>
        <para>
         Replace <replaceable>repository</replaceable> with the actual name to
@@ -1256,7 +1256,7 @@ description=FTP Repository</screen>
         configuration file with the following lines:
        </para>
 <screen><?dbsuse-fo font-size="6.5pt"?># Register the HTTP Installation Server<!--adjust to standard network example-->
-service:install.suse:http://$HOSTNAME/<replaceable>repository</replaceable>/DVD1/,en,65535 
+service:install.suse:http://$HOSTNAME/<replaceable>repository</replaceable>/DVD1/,en,65535
 description=HTTP Repository</screen>
        <para>
         Replace <replaceable>repository</replaceable> with the actual path to
@@ -1543,15 +1543,15 @@ description=HTTP Repository</screen>
        server's configuration file located under
        <filename>/etc/dhcpd.conf</filename>:
       </para>
-<screen><!--adjust to standard network example-->subnet 192.168.1.0 netmask 255.255.255.0 { 
+<screen><!--adjust to standard network example-->subnet 192.168.1.0 netmask 255.255.255.0 {
   range dynamic-bootp 192.168.1.200 192.168.1.228;
-  # PXE related stuff 
-  # 
-  # "next-server" defines the TFTP server that will be used 
-  next-server <replaceable>ip_tftp_server</replaceable>; 
+  # PXE related stuff
+  #
+  # "next-server" defines the TFTP server that will be used
+  next-server <replaceable>ip_tftp_server</replaceable>;
   #
   # "filename" specifies the pxelinux image on the TFTP server
-  # the server runs in chroot under /srv/tftpboot 
+  # the server runs in chroot under /srv/tftpboot
   filename  "pxelinux.0";
 }</screen>
       <para>
@@ -1575,17 +1575,17 @@ description=HTTP Repository</screen>
      installation target. To achieve this, modify the above mentioned DHCP
      configuration according to the following example:
     </para>
-<screen>group { 
-  # PXE related stuff 
-  # 
-  # "next-server" defines the TFTP server that will be used 
+<screen>group {
+  # PXE related stuff
+  #
+  # "next-server" defines the TFTP server that will be used
   next-server <replaceable>ip_tftp_server</replaceable>:
-  # 
-  # "filename" specifies the pxelinux image on the TFTP server 
+  #
+  # "filename" specifies the pxelinux image on the TFTP server
   # the server runs in chroot under /srv/tftpboot
   filename "pxelinux.0";
   host test {
-    hardware ethernet <replaceable>mac_address</replaceable>; 
+    hardware ethernet <replaceable>mac_address</replaceable>;
     fixed-address <replaceable>some_ip_address</replaceable>;
     }
 }
@@ -1699,15 +1699,15 @@ description=HTTP Repository</screen>
         <para>
          Open the file <filename>tftp</filename> and add the following lines:
         </para>
-<screen>service tftp 
-{ 
+<screen>service tftp
+{
         socket_type            = dgram
-        protocol               = udp 
-        wait                   = yes 
-        user                   = root 
-        server                 = /usr/sbin/in.tftpd 
-        server_args            = -s /srv/tftpboot 
-        disable                = no 
+        protocol               = udp
+        wait                   = yes
+        user                   = root
+        server                 = /usr/sbin/in.tftpd
+        server_args            = -s /srv/tftpboot
+        disable                = no
 }
 </screen>
        </step>
@@ -1850,70 +1850,70 @@ description=HTTP Repository</screen>
       continuous line without a line break and without the
       <literal>\</literal>.
      </para>
-<screen os="sles;sled">default hard disk 
-        
+<screen os="sles;sled">default hard disk
+
 # default
-label linux 
-  kernel linux 
+label linux
+  kernel linux
   append initrd=initrd ramdisk_size=65536 \
-     install=nfs://<replaceable>ip_instserver</replaceable>/<replaceable>path_to_repository</replaceable>/<replaceable>product</replaceable>/DVD1 
-	    
+     install=nfs://<replaceable>ip_instserver</replaceable>/<replaceable>path_to_repository</replaceable>/<replaceable>product</replaceable>/DVD1
+
 # repair
 label repair
   kernel linux
   append initrd=initrd splash=silent repair=1 showopts
 
-# rescue 
-label rescue 
-  kernel linux 
-  append initrd=initrd ramdisk_size=65536 rescue=1 
+# rescue
+label rescue
+  kernel linux
+  append initrd=initrd ramdisk_size=65536 rescue=1
 
 # bios test
 label firmware
   kernel linux
   append initrd=biostest,initrd splash=silent install=exec:/bin/run_biostest showopts
 
-#  memory test 
-label memtest 
-  kernel memtest 
+#  memory test
+label memtest
+  kernel memtest
 
-#  hard disk 
+#  hard disk
 label hard disk
   localboot 0
 
-implicit     0 
+implicit     0
 display      message
-prompt       1 
+prompt       1
 timeout      100</screen>
-<screen os="osuse">default hard disk 
+<screen os="osuse">default hard disk
 
 # default
-label linux 
-  kernel linux 
+label linux
+  kernel linux
   append initrd=initrd ramdisk_size=65536 \
-     install=nfs://<replaceable>ip_instserver</replaceable>/<replaceable>path_to_repository</replaceable>/<replaceable>product</replaceable>/DVD1 
-           
+     install=nfs://<replaceable>ip_instserver</replaceable>/<replaceable>path_to_repository</replaceable>/<replaceable>product</replaceable>/DVD1
+
 # rescue
-label rescue 
-  kernel linux 
-  append initrd=initrd ramdisk_size=65536 rescue=1 
+label rescue
+  kernel linux
+  append initrd=initrd ramdisk_size=65536 rescue=1
 
 # bios test
 label firmware
   kernel linux
   append initrd=biostest,initrd splash=silent install=exec:/bin/run_biostest showopts
 
-# memory test 
-label memtest 
-  kernel memtest 
+# memory test
+label memtest
+  kernel memtest
 
 # hard disk
 label hard disk
   localboot 0
 
-implicit     0 
+implicit     0
 display      message
-prompt       1 
+prompt       1
 timeout      100</screen>
     </step>
     <step>
@@ -2083,15 +2083,15 @@ timeout      100</screen>
       <para>
        Note that &grub; uses the following syntax:
       </para>
-<screen>title mytitle 
-  kernel <replaceable>my_kernel</replaceable><replaceable>my_kernel_options</replaceable> 
+<screen>title mytitle
+  kernel <replaceable>my_kernel</replaceable><replaceable>my_kernel_options</replaceable>
   initrd <replaceable>myinitrd</replaceable></screen>
 
       <para>
        PXELINUX uses the following syntax:
       </para>
-<screen>label <replaceable>mylabel</replaceable> 
-  kernel <replaceable>mykernel</replaceable> 
+<screen>label <replaceable>mylabel</replaceable>
+  kernel <replaceable>mykernel</replaceable>
   append <replaceable>myoptions</replaceable></screen>
       <para>
        <remark role="trans">rwalter: mangling is a technical term here.</remark>
@@ -2117,15 +2117,15 @@ timeout      100</screen>
       <informaltable frame="topbot" rowsep="0">
        <tgroup cols="2">
 <!--<colspec colnum="1" colname="1" colwidth="20"/>
-	<colspec colnum="2" colname="2" colwidth="60"/>-->
+        <colspec colnum="2" colname="2" colwidth="60"/>-->
         <thead>
          <row>
-          <entry colname="1">
+          <entry>
            <para>
             Argument
            </para>
           </entry>
-          <entry colname="2">
+          <entry>
            <para>
             Description
            </para>
@@ -2134,24 +2134,24 @@ timeout      100</screen>
         </thead>
         <tbody>
          <row>
-          <entry colname="1">
+          <entry>
            <para>
             <literal>0</literal>
            </para>
           </entry>
-          <entry colname="2">
+          <entry>
            <para>
             Perform a normal boot
            </para>
           </entry>
          </row>
          <row>
-          <entry colname="1">
+          <entry>
            <para>
             <literal>4</literal>
            </para>
           </entry>
-          <entry colname="2">
+          <entry>
            <para>
             Perform a local boot with the Universal Network Driver Interface
             (UNDI) driver still resident in memory
@@ -2159,12 +2159,12 @@ timeout      100</screen>
           </entry>
          </row>
          <row>
-          <entry colname="1">
+          <entry>
            <para>
             <literal>5</literal>
            </para>
           </entry>
-          <entry colname="2">
+          <entry>
            <para>
             Perform a local boot with the entire PXE stack, including the UNDI
             driver, still resident in memory
@@ -2205,8 +2205,8 @@ timeout      100</screen>
        prompt.
       </para>
 <screen>F2  <replaceable>filename</replaceable>
-F1  <replaceable>filename</replaceable> 
-..etc... 
+F1  <replaceable>filename</replaceable>
+..etc...
 F9  <replaceable>filename</replaceable>
 F10 <replaceable>filename</replaceable></screen>
       <para>
@@ -2295,9 +2295,9 @@ F10 <replaceable>filename</replaceable></screen>
     </step>
    </procedure>
   </section>
-<!-- 2008-10-09 bg: package netdiag is missing on distribution. 
-  
-  
+<!-- 2008-10-09 bg: package netdiag is missing on distribution.
+
+
   <sect2 id="sec-deployment-remoteinst-boot-wolman">
    <title>Manual Wake on LAN</title>
    <procedure id="proc-deployment-remoteinst-boot-wolman">
@@ -2356,7 +2356,7 @@ F10 <replaceable>filename</replaceable></screen>
     <xref linkend="sec-i-yast2-bootscreen"/>.
    </para>
   </section>
-<!-- bg: added reference to inst_yast2 instead. 
+<!-- bg: added reference to inst_yast2 instead.
   <sect2 id="sec-deployment-remoteinst-bootinst-fkeys">
    <title>Using the F Keys </title>
    <para>The menu bar at the bottom screen offers some advanced
@@ -2369,7 +2369,7 @@ F10 <replaceable>filename</replaceable></screen>
     available.<phrase os="sled"> To
     access the complete set of F keys available, first press
     <keycap>F3</keycap>.</phrase></para>
-   
+
    <table id="tab-deployment-remoteinst-bootinst-fkeys">
     <title>F Keys During Installation</title>
     <tgroup cols="4">
@@ -2378,136 +2378,136 @@ F10 <replaceable>filename</replaceable></screen>
      <colspec colnum="3" colname="3" />
      <thead>
       <row>
-       <entry colname="1">
-	<para>Key</para>
+       <entry>
+        <para>Key</para>
        </entry>
-       <entry colname="2">
-	<para>Purpose</para>
+       <entry>
+        <para>Purpose</para>
        </entry>
-       <entry colname="3">
-	<para>Available Options</para>
+       <entry>
+        <para>Available Options</para>
        </entry>
       </row>
      </thead>
      <tbody>
       <row>
-       <entry colname="1">
-	<para><keycap>F1</keycap></para>
+       <entry>
+        <para><keycap>F1</keycap></para>
        </entry>
-       <entry colname="2">
-	<para>Provide help</para>
+       <entry>
+        <para>Provide help</para>
        </entry>
-       <entry colname="3">
-	<para>None</para>
-       </entry>
-      </row>
-      <row>
-       <entry colname="1">
-	<para><keycap>F2</keycap></para>
-       </entry>
-       <entry colname="2">
-	<para>Select the installation language</para>
-       </entry>
-       <entry colname="3">
-	<para>All supported languages</para>
-       </entry>
-      </row>
-      <row>
-       <entry colname="1">
-	<para><keycap>F3</keycap></para>
-       </entry>
-       <entry colname="2">
-	<para>Change screen resolution for installation</para>
-       </entry>
-       <entry colname="3">
-	<itemizedlist>
-	 <listitem>
-	  <para>Text mode</para>
-	 </listitem>
-	 <listitem>
-	  <para>VESA</para>
-	 </listitem>
-	 <listitem>
-	  <para>resolution #1</para>
-	 </listitem>
-	 <listitem>
-	  <para>resolution #2</para>
-	 </listitem>
-	 <listitem>
-	  <para>...</para>
-	 </listitem>
-	</itemizedlist>
-       </entry>
-      </row>
-      <row>
-       <entry colname="1">
-	<para><keycap>F4</keycap></para>
-       </entry>
-       <entry colname="2">
-	<para>Select the Repository</para>
-       </entry>
-       <entry colname="3">
-	<itemizedlist>
-	 <listitem>
-	  <para>CD-ROM or DVD</para>
-	 </listitem>
-	 <listitem>
-	  <para>SLP</para>
-	 </listitem>
-	 <listitem>
-	  <para>FTP</para>
-	 </listitem>
-	 <listitem>
-	  <para>HTTP</para>
-	 </listitem>
-	 <listitem>
-	  <para>NFS</para>
-	 </listitem>
-	 <listitem>
-	  <para>SMB</para>
-	 </listitem>
-	 <listitem>
-	  <para>Hard Disk</para>
-	 </listitem>
-	</itemizedlist>
-       </entry>
-      </row>
-      <row>
-       <entry colname="1">
-	<para><keycap>F5</keycap></para>
-       </entry>
-       <entry colname="2">
-	<para>Choose appropriate Kernel options</para>
-       </entry>
-       <entry colname="4">
-	<itemizedlist>
-	 <listitem>
-	  <para>Default</para>
-	 </listitem>
-	 <listitem>
-	  <para>No ACPI</para>
-	 </listitem>
-	 <listitem>
-	  <para>No local APIC</para>
-	 </listitem>
-	 <listitem>
-	  <para>Installation&mdash;ACPI Disabled</para>
-	 </listitem>
-	 <listitem>
-	  <para>Installation&mdash;Safe Settings</para>
-	 </listitem>
-	</itemizedlist>
+       <entry>
+        <para>None</para>
        </entry>
       </row>
       <row>
        <entry>
-	<para><keycap>F6</keycap></para>
+        <para><keycap>F2</keycap></para>
        </entry>
        <entry>
-	<para>Apply driver update disk</para>
+        <para>Select the installation language</para>
        </entry>
        <entry>
-	<para>Driver</para>
+        <para>All supported languages</para>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para><keycap>F3</keycap></para>
+       </entry>
+       <entry>
+        <para>Change screen resolution for installation</para>
+       </entry>
+       <entry>
+        <itemizedlist>
+         <listitem>
+          <para>Text mode</para>
+         </listitem>
+         <listitem>
+          <para>VESA</para>
+         </listitem>
+         <listitem>
+          <para>resolution #1</para>
+         </listitem>
+         <listitem>
+          <para>resolution #2</para>
+         </listitem>
+         <listitem>
+          <para>...</para>
+         </listitem>
+        </itemizedlist>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para><keycap>F4</keycap></para>
+       </entry>
+       <entry>
+        <para>Select the Repository</para>
+       </entry>
+       <entry>
+        <itemizedlist>
+         <listitem>
+          <para>CD-ROM or DVD</para>
+         </listitem>
+         <listitem>
+          <para>SLP</para>
+         </listitem>
+         <listitem>
+          <para>FTP</para>
+         </listitem>
+         <listitem>
+          <para>HTTP</para>
+         </listitem>
+         <listitem>
+          <para>NFS</para>
+         </listitem>
+         <listitem>
+          <para>SMB</para>
+         </listitem>
+         <listitem>
+          <para>Hard Disk</para>
+         </listitem>
+        </itemizedlist>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para><keycap>F5</keycap></para>
+       </entry>
+       <entry>
+        <para>Choose appropriate Kernel options</para>
+       </entry>
+       <entry>
+        <itemizedlist>
+         <listitem>
+          <para>Default</para>
+         </listitem>
+         <listitem>
+          <para>No ACPI</para>
+         </listitem>
+         <listitem>
+          <para>No local APIC</para>
+         </listitem>
+         <listitem>
+          <para>Installation&mdash;ACPI Disabled</para>
+         </listitem>
+         <listitem>
+          <para>Installation&mdash;Safe Settings</para>
+         </listitem>
+        </itemizedlist>
+       </entry>
+      </row>
+      <row>
+       <entry>
+        <para><keycap>F6</keycap></para>
+       </entry>
+       <entry>
+        <para>Apply driver update disk</para>
+       </entry>
+       <entry>
+        <para>Driver</para>
        </entry>
       </row>
      </tbody>
@@ -2550,17 +2550,17 @@ partition.
      <colspec colnum="3" colname="3" colwidth="46"/>-->
      <thead>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          Installation Scenario
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <para>
          Parameters Needed for Booting
         </para>
        </entry>
-       <entry colname="3">
+       <entry>
         <para>
          Boot Options
         </para>
@@ -2569,17 +2569,17 @@ partition.
      </thead>
      <tbody>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="cha-inst"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <para>
          None: system boots automatically
         </para>
        </entry>
-       <entry colname="3">
+       <entry>
         <para>
          None needed
         </para>
@@ -2587,57 +2587,57 @@ partition.
       </row>
 <!-- commented for SL10.0
       <row>
-      <entry colname="1">
+      <entry>
       <para>
       <remark role="generic"> 2005-07-29 - jjaeger: adjust content
       for SL10 </remark> <phrase os="sled"><xref
       linkend="sec-deployment-maninst-network"/></phrase>
      </para>
      </entry>
-      <entry colname="2">
+      <entry>
        <itemizedlist spacing="compact">
-	<listitem>
-	 <para>Location of the network installation server</para>
-	</listitem>
-	<listitem>
-	 <para>Network setup if DHCP is not supported</para>
-	</listitem>
+        <listitem>
+         <para>Location of the network installation server</para>
+        </listitem>
+        <listitem>
+         <para>Network setup if DHCP is not supported</para>
+        </listitem>
        </itemizedlist>
       </entry>
-      <entry colname="3">
+      <entry>
        <itemizedlist spacing="compact">
-	<listitem>
-	 <para>
-	  <filename>install=(nfs,http,&#x200b;ftp,smb)://<replaceable>path_to_instmedia</replaceable></filename>
-	 </para>
-	</listitem>
-	<listitem>
-	 <para>
-	  <filename>hostip=<replaceable>some_ip</replaceable></filename>
-      
-	 </para>
-	</listitem>
-	<listitem>
-	 <para>
-	  <filename>netmask=<replaceable>some_netmask</replaceable> </filename>
-	 </para>
-	</listitem>
-	<listitem>
-	 <para>
-	  <filename>gateway=<replaceable>ip_gateway</replaceable> </filename>
-	 </para>
-	</listitem>
+        <listitem>
+         <para>
+          <filename>install=(nfs,http,&#x200b;ftp,smb)://<replaceable>path_to_instmedia</replaceable></filename>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <filename>hostip=<replaceable>some_ip</replaceable></filename>
+
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <filename>netmask=<replaceable>some_netmask</replaceable> </filename>
+         </para>
+        </listitem>
+        <listitem>
+         <para>
+          <filename>gateway=<replaceable>ip_gateway</replaceable> </filename>
+         </para>
+        </listitem>
        </itemizedlist>
       </entry>
      </row>
       -->
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="sec-deployment-remoteinst-scenario-vncstat"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2676,7 +2676,7 @@ partition.
          </listitem>
         </itemizedlist>
        </entry>
-       <entry colname="3">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2720,12 +2720,12 @@ partition.
        </entry>
       </row>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="sec-deployment-remoteinst-scenario-vncdyn"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2744,7 +2744,7 @@ partition.
          </listitem>
         </itemizedlist>
        </entry>
-       <entry colname="3">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2766,12 +2766,12 @@ partition.
        </entry>
       </row>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="sec-deployment-remoteinst-scenario-vncpxe"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2795,19 +2795,19 @@ partition.
          </listitem>
         </itemizedlist>
        </entry>
-       <entry colname="3">
+       <entry>
         <para>
          Not applicable; process managed through PXE and DHCP
         </para>
        </entry>
       </row>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="sec-deployment-remoteinst-scenario-sshstat"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2846,7 +2846,7 @@ partition.
          </listitem>
         </itemizedlist>
        </entry>
-       <entry colname="3">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2890,12 +2890,12 @@ partition.
        </entry>
       </row>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="sec-deployment-remoteinst-scenario-sshdyn"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2914,7 +2914,7 @@ partition.
          </listitem>
         </itemizedlist>
        </entry>
-       <entry colname="3">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2936,12 +2936,12 @@ partition.
        </entry>
       </row>
       <row>
-       <entry colname="1">
+       <entry>
         <para>
          <xref linkend="sec-deployment-remoteinst-scenario-sshpxe"/>
         </para>
        </entry>
-       <entry colname="2">
+       <entry>
         <itemizedlist spacing="compact" mark="bullet">
          <listitem>
           <para>
@@ -2965,7 +2965,7 @@ partition.
          </listitem>
         </itemizedlist>
        </entry>
-       <entry colname="3">
+       <entry>
         <para>
          Not applicable; process managed through PXE and DHCP
         </para>
